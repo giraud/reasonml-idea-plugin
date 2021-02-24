@@ -49,12 +49,9 @@ allprojects {
             untilBuild = pluginUntilBuild
             changeNotes """
                 <ul>
-                    <li>#304 - Properties in component using external are not found</li>
-                    <li>Keep caret at position when reformat</li>
-                    <li>Fix file pattern introduced in bs-platform 8.3</li>
-                    <li>Fix reformatOnSave when multiple projects (different settings) are opened</li>
-                    <li>Update ErrorAnnotator to use new ninja format introduced since bs-platform 8.4</li>
-                    <li>Update ppx error extraction</li>
+                    <li>highlight of ocaml annotation include arrobase</li>
+                    <li>#309 - incorrectly parse infix operators</li>
+                    <li>#261 - warning configuration in bsconfig.json is not being applied</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
