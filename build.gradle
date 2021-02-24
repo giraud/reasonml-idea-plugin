@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version '0.6.5'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '0.7.2'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 allprojects {
@@ -11,7 +11,7 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'org.jetbrains.intellij'
 
-    sourceCompatibility = '11.0.9'
+    sourceCompatibility = '1.8'
     version = pluginVersion + '-' + platformVersion
     compileJava.options.encoding = 'UTF-8'
     group 'com.reason'

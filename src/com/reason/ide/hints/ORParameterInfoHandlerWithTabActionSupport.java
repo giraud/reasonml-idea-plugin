@@ -1,5 +1,6 @@
 package com.reason.ide.hints;
 
+import com.intellij.codeInsight.lookup.*;
 import com.intellij.lang.parameterInfo.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
@@ -37,6 +38,16 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
     @Override
     public @NotNull Class<PsiFunctionCallParams> getArgumentListClass() {
         return PsiFunctionCallParams.class;
+    }
+
+    @Override
+    public boolean couldShowInLookup() {
+        return true;
+    }
+
+    @Override
+    public @Nullable Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context) {
+        return null;
     }
 
     @Override

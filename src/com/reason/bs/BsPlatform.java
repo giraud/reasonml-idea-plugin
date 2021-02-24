@@ -75,7 +75,7 @@ public class BsPlatform {
     public static Optional<VirtualFile> findRefmtExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         Optional<VirtualFile> bsPlatformDirectoryOptional =
                 findBsPlatformDirectory(project, sourceFile);
-        if (bsPlatformDirectoryOptional.isEmpty()) {
+        if (!bsPlatformDirectoryOptional.isPresent()) {
             return Optional.empty();
         }
         VirtualFile bsPlatformDirectory = bsPlatformDirectoryOptional.get();
@@ -126,7 +126,7 @@ public class BsPlatform {
 
     private static Optional<VirtualFile> findBinaryInBsPlatform(@NotNull String executableName, @NotNull VirtualFile bsPlatformDirectory) {
         Optional<String> platform = getOsBsPrefix();
-        if (platform.isEmpty()) {
+        if (!platform.isPresent()) {
             LOG.warn("Unable to determine OS prefix.");
             return Optional.empty();
         }

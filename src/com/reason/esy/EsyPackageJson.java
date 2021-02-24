@@ -39,7 +39,7 @@ public class EsyPackageJson {
     private static @NotNull ElementPattern<FileContent> createFilePattern() {
         return FileContentPattern.fileContent()
                 .withName(EsyPackageJsonFileType.getDefaultFilename())
-                .with(new PatternCondition<>("esyPackageJsonPattern") {
+                .with(new PatternCondition<FileContent>("esyPackageJsonPattern") {
                     @Override
                     public boolean accepts(@NotNull FileContent fileContent, ProcessingContext context) {
                         PsiFile psiFile = fileContent.getPsiFile();
