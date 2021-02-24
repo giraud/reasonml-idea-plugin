@@ -17,7 +17,7 @@ import java.util.*;
 
 public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     @Override
-    protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
+    protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
         PsiElement parent = element.getParent();
         FileBase containingFile = (FileBase) element.getContainingFile();
 

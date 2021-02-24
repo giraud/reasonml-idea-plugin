@@ -17,8 +17,9 @@ import java.nio.file.*;
 import java.util.*;
 
 public abstract class OCamlExecutable {
-
     private static final Log LOG = Log.create("sdk");
+    // public in 2020.2
+    private static final String UNC_PREFIX = "\\\\wsl$\\";
 
     protected Sdk m_odk;
     protected String m_id;
@@ -64,11 +65,11 @@ public abstract class OCamlExecutable {
         if (!WSLUtil.isSystemCompatible()) {
             return null;
         }
-        if (!path.startsWith(WSLDistribution.UNC_PREFIX)) {
+        if (!path.startsWith(UNC_PREFIX)) {
             return null;
         }
 
-        path = StringUtil.trimStart(path, WSLDistribution.UNC_PREFIX);
+        path = StringUtil.trimStart(path, UNC_PREFIX);
         int index = path.indexOf('\\');
         if (index == -1) {
             return null;
@@ -77,7 +78,7 @@ public abstract class OCamlExecutable {
         String distName = path.substring(0, index);
         String wslPath = FileUtil.toSystemIndependentName(path.substring(index));
 
-        WSLDistribution distribution = WSLUtil.getDistributionByMsId(distName);
+        WSLDistribution distribution = WSLUtil.getDistributionById(distName);
         if (distribution == null) {
             LOG.debug(String.format("Unknown WSL distribution: %s, known distributions: %s", distName,
                     StringUtil.join(WSLUtil.getAvailableDistributions(), WSLDistribution::getMsId, ", ")));
@@ -105,6 +106,11 @@ public abstract class OCamlExecutable {
             return "$PATH";
         }
 
+        // public in 2020.2
+        File getUNCRoot() {
+            return new File(UNC_PREFIX + m_distribution.getMsId());
+        }
+
         @Override
         public String convertPath(Path path) {
             // 'C:\Users\file.txt' -> '/mnt/c/Users/file.txt'
@@ -114,7 +120,7 @@ public abstract class OCamlExecutable {
             }
 
             // '\\wsl$\_ubuntu\home\_user\file.txt' -> '/home/user/file.txt'
-            File uncRoot = m_distribution.getUNCRoot();
+            File uncRoot = getUNCRoot();
             if (FileUtil.isAncestor(uncRoot, path.toFile(), false)) {
                 return StringUtil.trimStart(
                         FileUtil.toSystemIndependentName(path.toString()),
