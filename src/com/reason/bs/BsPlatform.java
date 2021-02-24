@@ -56,8 +56,7 @@ public class BsPlatform {
         return Optional.ofNullable(LocalFileSystem.getInstance().findFileByPath(esyExecutable));
     }
 
-    public static Optional<VirtualFile> findContentRootForFile(
-            @NotNull Project project, @NotNull VirtualFile sourceFile) {
+    public static Optional<VirtualFile> findContentRootForFile(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         return findBsConfigForFile(project, sourceFile).map(VirtualFile::getParent);
     }
 

@@ -39,29 +39,30 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
         VirtualFile sourceFile = psiFile.getVirtualFile();
 
         VirtualFile contentRoot = BsPlatform.findContentRootForFile(project, sourceFile).orElse(null);
+
+        // Read bsConfig to get the compilation directives
+        VirtualFile bsConfigFile = contentRoot == null ? null : contentRoot.findFileByRelativePath(BsConfigJsonFileType.FILENAME);
+        BsConfig config = bsConfigFile == null ? null : BsConfigReader.read(bsConfigFile);
+        if (config == null) {
+            LOG.info("No bsconfig.json found for content root: " + contentRoot);
+            return null;
+        }
+
+        VirtualFile libRoot = contentRoot.findFileByRelativePath("lib/bs");
+        if (libRoot == null) {
+            LOG.info("Unable to find BuckleScript lib root.");
+            return null;
+        }
+
         Ninja ninja = ServiceManager.getService(project, BsCompiler.class).readNinjaBuild(contentRoot);
 
         if (ninja.isRescriptFormat()) {
-            VirtualFile libRoot = contentRoot == null ? null : contentRoot.findFileByRelativePath("lib/bs");
-            return libRoot == null ? null : new InitialInfo(psiFile, libRoot, null, editor, ninja.getArgs());
+            List<String> args = isDevSource(sourceFile, contentRoot, config) ? ninja.getArgsDev() : ninja.getArgs();
+            return new InitialInfo(psiFile, libRoot, null, editor, args);
         } else {
             // create temporary compilation directory
             File tempCompilationDirectory = getOrCreateTempDirectory(project);
             cleanTempDirectory(tempCompilationDirectory, sourceFile.getNameWithoutExtension());
-
-            VirtualFile libRoot = contentRoot == null ? null : contentRoot.findFileByRelativePath("lib/bs");
-            if (libRoot == null) {
-                LOG.info("Unable to find BuckleScript lib root.");
-                return null;
-            }
-
-            // Read bsConfig to get the compilation directives
-            VirtualFile bsConfigFile = contentRoot.findFileByRelativePath(BsConfigJsonFileType.FILENAME);
-            BsConfig config = bsConfigFile == null ? null : BsConfigReader.read(bsConfigFile);
-            if (config == null) {
-                LOG.info("No bsconfig.json found for content root: " + contentRoot);
-                return null;
-            }
 
             String jsxVersion = config.getJsxVersion();
             String namespace = config.getNamespace();
@@ -118,6 +119,16 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
 
             return new InitialInfo(psiFile, libRoot, sourceTempFile, editor, arguments);
         }
+    }
+
+    private boolean isDevSource(@NotNull VirtualFile sourceFile, @NotNull VirtualFile contentRoot, @NotNull BsConfig config) {
+        for (String devSource : config.getDevSources()) {
+            VirtualFile devFile = contentRoot.findFileByRelativePath(devSource);
+            if (devFile != null && FileUtil.isAncestor(devFile.getPath(), sourceFile.getPath(), true)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
