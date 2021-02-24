@@ -32,10 +32,10 @@ public class IconProvider extends com.intellij.ide.IconProvider {
       if (element instanceof RmlInterfaceFile) {
         return ORIcons.RML_INTERFACE_FILE;
       }
-      if (element instanceof NsFile) {
+      if (element instanceof ResFile) {
         return ORIcons.NS_FILE;
       }
-      if (element instanceof NsInterfaceFile) {
+      if (element instanceof ResInterfaceFile) {
         return ORIcons.NS_INTERFACE_FILE;
       }
       if (isEsyPackageJson((PsiFile) element)) {

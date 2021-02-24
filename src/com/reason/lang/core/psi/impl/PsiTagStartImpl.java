@@ -34,9 +34,11 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
     static class TagPropertyImpl implements TagProperty {
         private final @Nullable String m_name;
         private final String m_type;
+        private final PsiElement m_psiElement;
         private boolean m_mandatory;
 
         TagPropertyImpl(@NotNull PsiRecordField field, @NotNull List<PsiAnnotation> annotations) {
+            m_psiElement = field;
             m_name = field.getName();
             PsiSignature signature = field.getSignature();
             m_type = signature == null ? "" : signature.asText(RmlLanguage.INSTANCE);
@@ -50,21 +52,33 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
         }
 
         TagPropertyImpl(@NotNull PsiParameter parameter) {
+            m_psiElement = parameter;
             m_name = parameter.getName();
             PsiSignature signature = parameter.getSignature();
             m_type = signature == null ? "" : signature.asText(parameter.getLanguage());
             m_mandatory = parameter.getDefaultValue() != null;
         }
 
+        public TagPropertyImpl(@NotNull PsiSignatureItem signatureItem) {
+            m_psiElement = signatureItem;
+            m_name = signatureItem.getName();
+            m_type = signatureItem.asText(signatureItem.getLanguage());
+            m_mandatory = !signatureItem.isOptional();
+        }
+
         TagPropertyImpl(@Nullable String name, String type) {
+            m_psiElement = null;
             m_name = name;
             m_type = type;
             m_mandatory = false;
         }
 
-        @Nullable
+        @Override public @Nullable PsiElement getElement() {
+            return m_psiElement;
+        }
+
         @Override
-        public String getName() {
+        public @Nullable String getName() {
             return m_name;
         }
 
@@ -78,9 +92,8 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
             return m_mandatory;
         }
 
-        @NotNull
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return m_name + ":" + m_type;
         }
     }
@@ -182,7 +195,7 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
                                 if (signature != null) {
                                     signature.getItems().stream()
                                             .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
-                                            .forEach(p -> result.add(new TagPropertyImpl(p.getName(), p.getText())));
+                                            .forEach(p -> result.add(new TagPropertyImpl(p)));
                                 }
                             }
                         }

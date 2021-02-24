@@ -5,7 +5,7 @@ import com.reason.lang.core.psi.PsiOpen;
 
 public class OpenParsingTest extends BaseParsingTestCase {
   public OpenParsingTest() {
-    super("", "res", new NsParserDefinition());
+    super("", "res", new ResParserDefinition());
   }
 
   public void test_basic() {

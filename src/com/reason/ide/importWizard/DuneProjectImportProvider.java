@@ -1,7 +1,7 @@
 package com.reason.ide.importWizard;
 
 import com.intellij.ide.util.projectWizard.*;
-import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.*;
 import com.intellij.projectImport.*;
 import org.jetbrains.annotations.*;

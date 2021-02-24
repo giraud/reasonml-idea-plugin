@@ -19,7 +19,7 @@ public class CmtFileType implements FileType {
   @NotNull
   @Override
   public String getDescription() {
-    return "cmt";
+    return "Cmt";
   }
 
   @NotNull

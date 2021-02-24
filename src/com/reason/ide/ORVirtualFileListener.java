@@ -2,6 +2,7 @@ package com.reason.ide;
 
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.components.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
@@ -14,8 +15,6 @@ import com.reason.ide.console.*;
 import com.reason.ide.files.*;
 import org.jetbrains.annotations.*;
 
-import java.io.*;
-import java.nio.charset.*;
 import java.util.*;
 
 /**
@@ -23,7 +22,7 @@ import java.util.*;
  * This class receives events from all projects.
  */
 class ORVirtualFileListener implements AsyncFileListener {
-    private static Log LOG = Log.create("VFSlistener");
+    private static final Log LOG = Log.create("VFSlistener");
 
     @Override
     public @Nullable ChangeApplier prepareChange(@NotNull List<? extends VFileEvent> events) {

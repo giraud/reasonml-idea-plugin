@@ -8,7 +8,7 @@ ReasonML language plugin for IDEA. Supports Reason, ReScript and OCaml.
 
 ![Build Status](https://github.com/reasonml-editor/reasonml-idea-plugin/workflows/Build%20Status/badge.svg)
 [![JetBrains IntelliJ plugins](https://img.shields.io/jetbrains/plugin/d/9440-reasonml.svg)](https://plugins.jetbrains.com/plugin/9440-reasonml)
-[![Discord](https://img.shields.io/discord/713777184996589580)](https://discord.com/channels/713777184996589580)
+[![Discord](https://img.shields.io/discord/713777184996589580)](https://discord.gg/65fz5jb)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ![screenshot](screenshot.png)
@@ -17,7 +17,6 @@ ReasonML language plugin for IDEA. Supports Reason, ReScript and OCaml.
 
 Download and install the [plugin from the JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/9440-reasonml).
 
-Reformat using `refmt` (_press `crtl alt shift R` or `⌘⎇⇧R` on Mac_)
 > Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
 
 ## 📔 Documentation 
@@ -58,7 +57,7 @@ Please see the [FAQ](https://reasonml-editor.github.io/reasonml-idea-plugin/docs
 page or [report](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/new)
 an issue.
 
-Post any questions or feedback in [Discord](https://discord.com/channels/713777184996589580).
+Post any questions or feedback in [Discord](https://discord.gg/65fz5jb).
 
 ## 💁 How to Help 
 

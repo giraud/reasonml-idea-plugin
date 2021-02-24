@@ -52,7 +52,7 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_SIG_ITEM) {
             return new PsiSignatureItemImpl(m_types, type);
         }
-        if (type == m_types.C_SCOPED_EXPR || type == m_types.C_IF_THEN_SCOPE || type == m_types.C_DO_LOOP) {
+        if (type == m_types.C_CUSTOM_OPERATOR || type == m_types.C_SCOPED_EXPR || type == m_types.C_IF_THEN_SCOPE || type == m_types.C_DO_LOOP) {
             return new PsiScopedExpr(m_types, type);
         }
         if (type == m_types.C_LOCAL_OPEN) {

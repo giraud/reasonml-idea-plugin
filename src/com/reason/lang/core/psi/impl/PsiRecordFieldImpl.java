@@ -16,8 +16,7 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordFieldStub> implements PsiRecordField {
-
+public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, PsiRecordFieldStub> implements PsiRecordField {
     // region Constructors
     public PsiRecordFieldImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);

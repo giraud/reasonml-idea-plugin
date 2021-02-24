@@ -1,12 +1,15 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
     <JavaCodeStyleSettings>
-      <option name="FIELD_NAME_PREFIX" value="m_" />
+      <option name="FIELD_NAME_PREFIX" value="my" />
       <option name="USE_SINGLE_CLASS_IMPORTS" value="false" />
       <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="3" />
     </JavaCodeStyleSettings>
     <codeStyleSettings language="JAVA">
+      <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="IF_BRACE_FORCE" value="3" />
+      <option name="METHOD_ANNOTATION_WRAP" value="0" />
+      <option name="FIELD_ANNOTATION_WRAP" value="0" />
     </codeStyleSettings>
   </code_scheme>
 </component>
