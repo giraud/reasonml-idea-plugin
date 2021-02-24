@@ -1,6 +1,5 @@
 package com.reason.bs;
 
-import com.intellij.execution.*;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
@@ -39,7 +38,7 @@ public class BscProcess {
     @Nullable
     public Integer run(@NotNull VirtualFile sourceFile, @NotNull VirtualFile workDir, @NotNull List<String> arguments, @NotNull ProcessListener processListener) throws ORProcessException {
         Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
-        if (!bscPath.isPresent()) {
+        if (bscPath.isEmpty()) {
             LOG.error("Unable to find bsc.exe.");
             return null;
         }
@@ -72,7 +71,7 @@ public class BscProcess {
 
     public @NotNull List<OutputInfo> exec(@NotNull VirtualFile sourceFile, @NotNull VirtualFile workDir, @NotNull List<String> arguments) {
         Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
-        if (!bscPath.isPresent()) {
+        if (bscPath.isEmpty()) {
             LOG.error("Unable to find bsc.exe.");
             return emptyList();
         }

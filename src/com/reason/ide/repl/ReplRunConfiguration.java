@@ -17,8 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ReplRunConfiguration extends RunConfigurationBase<ReplRunConfiguration> {
-    @Nullable
-    private Sdk m_sdk;
+    private @Nullable Sdk m_sdk;
 
     ReplRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, String name) {
         super(project, factory, name);
@@ -34,9 +33,8 @@ public class ReplRunConfiguration extends RunConfigurationBase<ReplRunConfigurat
 */
     }
 
-    @NotNull
     @Override
-    public SettingsEditor<ReplRunConfiguration> getConfigurationEditor() {
+    public @NotNull SettingsEditor<ReplRunConfiguration> getConfigurationEditor() {
         return new ReplRunSettingsEditor(getProject());
     }
 
@@ -47,9 +45,8 @@ public class ReplRunConfiguration extends RunConfigurationBase<ReplRunConfigurat
         }
     }
 
-    @Nullable
     @Override
-    public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) {
+    public @Nullable RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) {
         return new ReplGenericState(executionEnvironment);
     }
 

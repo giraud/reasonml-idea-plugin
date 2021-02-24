@@ -65,6 +65,7 @@ public class Ninja {
     private final @NotNull List<String> m_bscFlags;
 
     private final @NotNull List<String> m_args = new ArrayList<>();
+    private final @NotNull List<String> m_argsDev = new ArrayList<>();
     private final boolean m_isRescriptFormat;
 
     public Ninja(@Nullable String contents) {
@@ -75,8 +76,11 @@ public class Ninja {
         m_bscFlags = readBscFlags(contents);
 
         if (m_isRescriptFormat) {
-            m_args.addAll(extractRuleAstj(contents));
-            m_args.addAll(extractedRuleMij(contents));
+            List<String> astj = extractRuleAstj(contents);
+            m_args.addAll(astj);
+            m_args.addAll(extractRuleMij(contents));
+            m_argsDev.addAll(astj);
+            m_argsDev.addAll(extractRuleMijDev(contents));
         }
     }
 
@@ -103,24 +107,50 @@ public class Ninja {
         return filteredTokens;
     }
 
-    private @NotNull List<String> extractedRuleMij(@NotNull String contents) {
+    private @NotNull List<String> extractMijCommand(int rulePos, @NotNull String contents) {
+        int commandPos = contents.indexOf("command", rulePos);
+        if (0 < commandPos) {
+            int commandEolPos = contents.indexOf("\n", commandPos);
+            String command = contents.substring(commandPos + 9, commandEolPos).trim();
+            String[] tokens = command.split(" ");
+            List<String> filteredTokens = Arrays.stream(tokens).filter(s -> !s.isEmpty() && !"$g_finger".equals(s) && !"$i".equals(s) && !"-bs-v".equals(s) && !"-bs-package-output".equals(s) && !s.contains("$in_d:")).collect(Collectors.toList());
+            filteredTokens.remove(0);
+            return filteredTokens;
+        }
+        return emptyList();
+    }
+
+    private @NotNull List<String> extractRuleMij(@NotNull String contents) {
         int ruleMijPos = contents.indexOf("rule mij");
         if (0 < ruleMijPos) {
-            int commandPos = contents.indexOf("command", ruleMijPos);
-            if (0 < commandPos) {
-                int commandEolPos = contents.indexOf("\n", commandPos);
-                String command = contents.substring(commandPos + 9, commandEolPos).trim();
-                String[] tokens = command.split(" ");
-                List<String> filteredTokens = Arrays.stream(tokens).filter(s -> !s.isEmpty() && !"$g_finger".equals(s) && !"$i".equals(s) && !"-bs-v".equals(s) && !"-bs-package-output".equals(s) && !s.startsWith("commonjs")).collect(Collectors.toList());
-                filteredTokens.remove(0);
-                return filteredTokens;
+            String ruleValue = contents.substring(ruleMijPos, ruleMijPos + 12);
+            if ("rule mij_dev".equals(ruleValue)) {
+                // search again
+                ruleMijPos = contents.indexOf("rule mij", ruleMijPos + 12);
+                if (0 < ruleMijPos) {
+                    return extractMijCommand(ruleMijPos, contents);
+                }
+            } else {
+                return extractMijCommand(ruleMijPos, contents);
             }
+        }
+        return emptyList();
+    }
+
+    private @NotNull List<String> extractRuleMijDev(@NotNull String contents) {
+        int ruleMijPos = contents.indexOf("rule mij_dev");
+        if (0 < ruleMijPos) {
+            return extractMijCommand(ruleMijPos, contents);
         }
         return emptyList();
     }
 
     public @NotNull List<String> getArgs() {
         return m_args;
+    }
+
+    public @NotNull List<String> getArgsDev() {
+        return m_argsDev;
     }
 
     private @NotNull List<String> readIncludes(@Nullable String contents) {

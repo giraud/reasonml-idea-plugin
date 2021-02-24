@@ -11,7 +11,7 @@ import java.util.*;
 @SuppressWarnings("ConstantConditions")
 public class QNameFinderRsTest extends ORBasePlatformTestCase {
 
-  private final QNameFinder qNameFinder = NsQNameFinder.INSTANCE;
+  private final QNameFinder qNameFinder = ResQNameFinder.INSTANCE;
 
   public void testLetBinding() {
     FileBase f = configureCode("A.res", "let make = { increase<caret>(); }");

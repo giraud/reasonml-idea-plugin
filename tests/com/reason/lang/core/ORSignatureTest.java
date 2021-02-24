@@ -13,7 +13,7 @@ import org.jetbrains.annotations.*;
 
 public class ORSignatureTest extends LightJavaCodeInsightTestCase {
 
-    private static final NsLanguage NS = NsLanguage.INSTANCE;
+    private static final ResLanguage NS = ResLanguage.INSTANCE;
     private static final RmlLanguage RML = RmlLanguage.INSTANCE;
     private static final OclLanguage OCL = OclLanguage.INSTANCE;
 

@@ -24,7 +24,7 @@ public class FileHelper {
     }
 
     public static boolean isRescript(@Nullable FileType fileType) {
-        return fileType instanceof NsFileType || fileType instanceof NsInterfaceFileType;
+        return fileType instanceof ResFileType || fileType instanceof ResInterfaceFileType;
     }
 
     private static boolean isOCamlLexer(@Nullable FileType fileType) {
@@ -45,7 +45,7 @@ public class FileHelper {
 
     public static boolean isInterface(@Nullable FileType fileType) {
         return fileType instanceof RmlInterfaceFileType
-                || fileType instanceof NsInterfaceFileType
+                || fileType instanceof ResInterfaceFileType
                 || fileType instanceof OclInterfaceFileType;
     }
 

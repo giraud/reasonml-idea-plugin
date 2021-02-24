@@ -21,120 +21,113 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.util.containers.ContainerUtil;
+
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
+
 import org.jetbrains.annotations.NotNull;
 
 public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactory {
-  @Override
-  public SdkPathEditor createPathEditor(final Sdk sdk) {
-    FileChooserDescriptor descriptor =
-        new FileChooserDescriptor(true, true, false, false, false, true);
-    return new OCamlSourcesOrderRootTypeUIFactory.SourcesPathEditor(descriptor);
-  }
-
-  @Override
-  public @NotNull Icon getIcon() {
-    return AllIcons.Nodes.Package;
-  }
-
-  @Override
-  public @NotNull String getNodeText() {
-    return ProjectBundle.message("library.sources.node");
-  }
-
-  private static class SourcesPathEditor extends SdkPathEditor {
-
-    SourcesPathEditor(@NotNull FileChooserDescriptor descriptor) {
-      super(
-          ProjectBundle.message("sdk.configure.sourcepath.tab"),
-          OCamlSourcesOrderRootType.getInstance(),
-          descriptor);
-    }
-
-    @NotNull
     @Override
-    protected VirtualFile[] adjustAddedFileSet(
-        final Component component, final VirtualFile[] files) {
-      java.util.List<OrderRoot> orderRoots =
-          RootDetectionUtil.detectRoots(
-              Arrays.asList(files),
-              component,
-              null,
-              new OCamlRootsDetector(),
-              new OrderRootType[] {OCamlSourcesOrderRootType.getInstance()});
-
-      List<VirtualFile> result = new ArrayList<>();
-      for (OrderRoot root : orderRoots) {
-        result.add(root.getFile());
-      }
-
-      return VfsUtil.toVirtualFileArray(result);
+    public SdkPathEditor createPathEditor(final Sdk sdk) {
+        FileChooserDescriptor descriptor =
+                new FileChooserDescriptor(true, true, false, false, false, true);
+        return new OCamlSourcesOrderRootTypeUIFactory.SourcesPathEditor(descriptor);
     }
 
-    private static class OCamlRootsDetector extends LibraryRootsDetector {
-      @NotNull
-      @Override
-      public Collection<DetectedLibraryRoot> detectRoots(
-          @NotNull VirtualFile rootCandidate, @NotNull ProgressIndicator progressIndicator) {
-        List<DetectedLibraryRoot> result = new ArrayList<>();
-        OrderRootType OCAML_SOURCES = OCamlSourcesOrderRootType.getInstance();
-        Collection<VirtualFile> files = suggestOCamlRoots(rootCandidate, progressIndicator);
-        for (VirtualFile file : files) {
-          result.add(new DetectedLibraryRoot(file, OCAML_SOURCES, false));
-        }
-        return result;
-      }
+    @Override
+    public @NotNull Icon getIcon() {
+        return AllIcons.Nodes.Package;
+    }
 
-      @NotNull
-      List<VirtualFile> suggestOCamlRoots(
-          @NotNull VirtualFile dir, @NotNull final ProgressIndicator progressIndicator) {
-        if (!dir.isDirectory()) {
-          return ContainerUtil.emptyList();
+    @Override
+    public @NotNull String getNodeText() {
+        return ProjectBundle.message("library.sources.node");
+    }
+
+    private static class SourcesPathEditor extends SdkPathEditor {
+        SourcesPathEditor(@NotNull FileChooserDescriptor descriptor) {
+            super(ProjectBundle.message("sdk.configure.sourcepath.tab"), OCamlSourcesOrderRootType.getInstance(), descriptor);
         }
 
-        final FileTypeManager typeManager = FileTypeManager.getInstance();
-        final ArrayList<VirtualFile> foundDirectories = new ArrayList<>();
-        try {
-          VfsUtilCore.visitChildrenRecursively(
-              dir,
-              new VirtualFileVisitor() {
-                @NotNull
-                @Override
-                public Result visitFileEx(@NotNull VirtualFile file) {
-                  progressIndicator.checkCanceled();
+        @Override
+        protected @NotNull VirtualFile[] adjustAddedFileSet(final Component component, final VirtualFile[] files) {
+            java.util.List<OrderRoot> orderRoots =
+                    RootDetectionUtil.detectRoots(
+                            Arrays.asList(files),
+                            component,
+                            null,
+                            new OCamlRootsDetector(),
+                            new OrderRootType[]{OCamlSourcesOrderRootType.getInstance()});
 
-                  if (!file.isDirectory()) {
-                    FileType type = typeManager.getFileTypeByFileName(file.getName());
+            List<VirtualFile> result = new ArrayList<>();
+            for (OrderRoot root : orderRoots) {
+                result.add(root.getFile());
+            }
 
-                    if (type.getDefaultExtension().equals("ml")) {
-                      VirtualFile root = file.getParent();
-                      if (root != null) {
-                        foundDirectories.add(root);
-                        return skipTo(root);
-                      }
-                    }
-                  }
+            return VfsUtil.toVirtualFileArray(result);
+        }
 
-                  return CONTINUE;
+        private static class OCamlRootsDetector extends LibraryRootsDetector {
+            @Override
+            public @NotNull Collection<DetectedLibraryRoot> detectRoots(@NotNull VirtualFile rootCandidate, @NotNull ProgressIndicator progressIndicator) {
+                List<DetectedLibraryRoot> result = new ArrayList<>();
+                OrderRootType OCAML_SOURCES = OCamlSourcesOrderRootType.getInstance();
+                Collection<VirtualFile> files = suggestOCamlRoots(rootCandidate, progressIndicator);
+                for (VirtualFile file : files) {
+                    result.add(new DetectedLibraryRoot(file, OCAML_SOURCES, false));
                 }
-              });
-        } catch (ProcessCanceledException ignore) {
-        }
+                return result;
+            }
 
-        return foundDirectories;
-      }
+            @NotNull
+            List<VirtualFile> suggestOCamlRoots(
+                    @NotNull VirtualFile dir, @NotNull final ProgressIndicator progressIndicator) {
+                if (!dir.isDirectory()) {
+                    return ContainerUtil.emptyList();
+                }
 
-      @Override
-      public String getRootTypeName(@NotNull LibraryRootType rootType) {
-        if (OCamlSourcesOrderRootType.getInstance().equals(rootType.getType())
-            && !rootType.isJarDirectory()) {
-          return "sources";
+                final FileTypeManager typeManager = FileTypeManager.getInstance();
+                final ArrayList<VirtualFile> foundDirectories = new ArrayList<>();
+                try {
+                    VfsUtilCore.visitChildrenRecursively(
+                            dir,
+                            new VirtualFileVisitor<VirtualFile>() {
+                                @Override
+                                public @NotNull Result visitFileEx(@NotNull VirtualFile file) {
+                                    progressIndicator.checkCanceled();
+
+                                    if (!file.isDirectory()) {
+                                        FileType type = typeManager.getFileTypeByFileName(file.getName());
+
+                                        if (type.getDefaultExtension().equals("ml")) {
+                                            VirtualFile root = file.getParent();
+                                            if (root != null) {
+                                                foundDirectories.add(root);
+                                                return skipTo(root);
+                                            }
+                                        }
+                                    }
+
+                                    return CONTINUE;
+                                }
+                            });
+                } catch (ProcessCanceledException ignore) {
+                }
+
+                return foundDirectories;
+            }
+
+            @Override
+            public String getRootTypeName(@NotNull LibraryRootType rootType) {
+                if (OCamlSourcesOrderRootType.getInstance().equals(rootType.getType())
+                        && !rootType.isJarDirectory()) {
+                    return "sources";
+                }
+                return null;
+            }
         }
-        return null;
-      }
     }
-  }
 }

@@ -4,7 +4,8 @@ package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
-import com.intellij.lexer.FlexLexer;import com.reason.lang.ocaml.*;
+import com.intellij.lexer.FlexLexer;
+import com.reason.lang.ocaml.*;
 
 import static com.intellij.psi.TokenType.*;
 
@@ -1217,7 +1218,7 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 209: break;
           case 55: 
-            { if (!(types instanceof OclTypes)) { yybegin(IN_REASON_SL_COMMENT); tokenStart(); }
+            { if (types instanceof OclTypes) { return types.SLASH_2; } else { yybegin(IN_REASON_SL_COMMENT); tokenStart(); }
             } 
             // fall through
           case 210: break;

@@ -1,6 +1,5 @@
 package com.reason.ide.hints;
 
-import com.intellij.codeInsight.lookup.*;
 import com.intellij.lang.parameterInfo.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
@@ -15,64 +14,44 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfoHandlerWithTabActionSupport<PsiFunctionCallParams, PsiSignature, PsiElement> {
-
-    @NotNull
     @Override
-    public IElementType getActualParameterDelimiterType() {
+    public @NotNull IElementType getActualParameterDelimiterType() {
         return RmlTypes.INSTANCE.COMMA;
     }
 
-    @NotNull
     @Override
-    public IElementType getActualParametersRBraceType() {
+    public @NotNull IElementType getActualParametersRBraceType() {
         return RmlTypes.INSTANCE.RBRACE;
     }
 
-    @NotNull
     @Override
-    public Set<Class<?>> getArgumentListAllowedParentClasses() {
+    public @NotNull Set<Class<?>> getArgumentListAllowedParentClasses() {
         return Collections.singleton(PsiFunctionCallParams.class);
     }
 
-    @NotNull
     @Override
-    public Set<? extends Class<?>> getArgListStopSearchClasses() {
+    public @NotNull Set<? extends Class<?>> getArgListStopSearchClasses() {
         return java.util.Collections.emptySet();
     }
 
-    @NotNull
     @Override
-    public Class<PsiFunctionCallParams> getArgumentListClass() {
+    public @NotNull Class<PsiFunctionCallParams> getArgumentListClass() {
         return PsiFunctionCallParams.class;
     }
 
     @Override
-    public boolean couldShowInLookup() {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public Object @Nullable [] getParametersForLookup(LookupElement item, ParameterInfoContext context) {
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public PsiElement[] getActualParameters(@NotNull PsiFunctionCallParams paramsOwner) {
+    public @NotNull PsiElement[] getActualParameters(@NotNull PsiFunctionCallParams paramsOwner) {
         Collection<PsiParameter> childrenOfType = paramsOwner.getParametersList();
         return childrenOfType.toArray(new PsiElement[0]);
     }
 
-    @Nullable
     @Override
-    public PsiFunctionCallParams findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {
+    public @Nullable PsiFunctionCallParams findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {
         return findFunctionParams(context.getFile(), context.getOffset());
     }
 
-    @Nullable
     @Override
-    public PsiFunctionCallParams findElementForUpdatingParameterInfo(@NotNull UpdateParameterInfoContext context) {
+    public @Nullable PsiFunctionCallParams findElementForUpdatingParameterInfo(@NotNull UpdateParameterInfoContext context) {
         PsiFunctionCallParams paramsOwner = findFunctionParams(context.getFile(), context.getOffset());
         if (paramsOwner != null) {
             PsiElement currentOwner = context.getParameterOwner();
@@ -86,8 +65,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
 
     @Override
     public void showParameterInfo(@NotNull PsiFunctionCallParams paramsOwner, @NotNull CreateParameterInfoContext context) {
-        PsiLowerSymbol functionName =
-                PsiTreeUtil.getPrevSiblingOfType(paramsOwner, PsiLowerSymbol.class);
+        PsiLowerSymbol functionName = PsiTreeUtil.getPrevSiblingOfType(paramsOwner, PsiLowerSymbol.class);
         if (functionName != null) {
             PsiReference reference = functionName.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolve();
@@ -124,7 +102,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
                             PsiFunction function = resolvedLet.getFunction();
                             if (function != null) {
                                 Collection<PsiParameter> parameters = function.getParameters();
-                                context.setItemsToShow(new Object[]{signature});
+                                context.setItemsToShow(new Object[]{});
                                 context.showHint(paramsOwner, paramsOwner.getTextOffset(), this);
                             }
                         }
@@ -150,7 +128,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
     public void updateUI(@Nullable PsiSignature signature, @NotNull ParameterInfoUIContext context) {
         if (signature == null) {
             context.setUIComponentEnabled(false);
-            return;
+            //return;
         }
 
     /* TODO:
