@@ -319,13 +319,17 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.is(m_types.C_CONSTRAINT)) {
             state.popEnd().advance().mark(m_types.C_CONSTRAINT);
         } else {
-            // pop scopes until a known context is found
-            ParserScope latestScope = endUntilStartExpression(state);
+            // pop scopes until a chainable expression is found
+            ParserScope latestScope = state.getLatestScope();
+            while (!state.isRoot() && !state.is(m_types.C_LET_DECLARATION) && !state.is(m_types.C_TYPE_DECLARATION)) {
+                state.popEnd();
+                latestScope = state.getLatestScope();
+            }
+
+            state.popEnd().advance();
 
             if (latestScope != null) {
-                if (latestScope.isCompositeType(m_types.C_MODULE_DECLARATION)) {
-                    state.mark(m_types.C_MODULE_DECLARATION).resolution(module).setStart();
-                } else if (latestScope.isCompositeType(m_types.C_LET_DECLARATION)) {
+                if (latestScope.isCompositeType(m_types.C_LET_DECLARATION)) {
                     state.mark(m_types.C_LET_DECLARATION).setStart();
                 } else if (latestScope.isCompositeType(m_types.C_TYPE_DECLARATION)) {
                     state.mark(m_types.C_TYPE_DECLARATION).setStart();
@@ -351,9 +355,7 @@ public class OclParser extends CommonParser<OclTypes> {
         state.popEnd();
 
         // Remove nested let
-        while (state.is(m_types.C_LET_BINDING)
-                || state.is(m_types.C_PATTERN_MATCH_BODY)
-                || state.is(m_types.C_FUN_BODY)) {
+        while (state.is(m_types.C_LET_BINDING) || state.is(m_types.C_PATTERN_MATCH_BODY) || state.is(m_types.C_FUN_BODY)) {
             state.popEndUntilStart();
             latestScope = state.getLatestScope();
             state.popEnd();
@@ -514,15 +516,13 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseIn(@NotNull ParserState state) {
-        if (!state.is(m_types.C_FUN_BODY)) {
-            if (state.is(m_types.C_TRY_HANDLER)) {
-                state.popEndUntil(m_types.C_TRY_EXPR);
-            } else if (state.in(m_types.C_LET_DECLARATION)) {
-                state.popEndUntil(m_types.C_LET_DECLARATION);
-            }
-
-            state.popEnd();
+        if (state.is(m_types.C_TRY_HANDLER)) {
+            state.popEndUntil(m_types.C_TRY_EXPR);
+        } else if (state.in(m_types.C_LET_DECLARATION)) {
+            state.popEndUntil(m_types.C_LET_DECLARATION);
         }
+
+        state.popEnd();
     }
 
     private void parseBegin(@NotNull ParserState state) {

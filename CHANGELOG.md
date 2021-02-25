@@ -16,6 +16,8 @@ are solved.
 
 ## Unreleased
 
+- :bug: [#293](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/293) ![o] Incorrectly parsing 'and' in pattern match
+
 # 0.98 - 2021/02/24
 
 - ![o] highlight of ocaml annotation include arrobase
