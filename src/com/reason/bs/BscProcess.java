@@ -39,7 +39,7 @@ public class BscProcess {
     public Integer run(@NotNull VirtualFile sourceFile, @NotNull VirtualFile workDir, @NotNull List<String> arguments, @NotNull ProcessListener processListener) throws ORProcessException {
         Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
         if (!bscPath.isPresent()) {
-            LOG.error("Unable to find bsc.exe.");
+            LOG.info("Unable to find bsc.exe."); // not an error, don't want to generate popups
             return null;
         }
 
@@ -72,7 +72,7 @@ public class BscProcess {
     public @NotNull List<OutputInfo> exec(@NotNull VirtualFile sourceFile, @NotNull VirtualFile workDir, @NotNull List<String> arguments) {
         Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
         if (!bscPath.isPresent()) {
-            LOG.error("Unable to find bsc.exe.");
+            LOG.warn("Unable to find bsc.exe for " + sourceFile);
             return emptyList();
         }
 

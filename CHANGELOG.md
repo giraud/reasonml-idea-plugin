@@ -16,9 +16,14 @@ are solved.
 
 ## Unreleased
 
-# 0.98 - 2021/02/24
+# 0.98.1 - 2021/03/02
 
-- ![o] highlight of ocaml annotation include arrobase
+- :bug: [#293](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/293) ![o] Better 'and' parsing
+- :house: Better integration with yarn workspaces (v2?): search for node_modules in parent directory also
+
+0.98
+
+- :nail_care: ![o] highlight of ocaml annotation include arrobase
 - :bug: [#309](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/309) incorrectly parse infix operators
 - :bug: [#261](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/261) warning configuration in bsconfig.json is not being applied
 

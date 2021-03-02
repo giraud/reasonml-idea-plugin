@@ -38,7 +38,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
         Project project = psiFile.getProject();
         VirtualFile sourceFile = psiFile.getVirtualFile();
 
-        VirtualFile contentRoot = BsPlatform.findContentRootForFile(project, sourceFile).orElse(null);
+        VirtualFile contentRoot = BsPlatform.findContentRoot(project, sourceFile).orElse(null);
 
         // Read bsConfig to get the compilation directives
         VirtualFile bsConfigFile = contentRoot == null ? null : contentRoot.findFileByRelativePath(BsConfigJsonFileType.FILENAME);
