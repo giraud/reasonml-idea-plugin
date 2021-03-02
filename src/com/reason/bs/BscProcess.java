@@ -72,7 +72,7 @@ public class BscProcess {
     public @NotNull List<OutputInfo> exec(@NotNull VirtualFile sourceFile, @NotNull VirtualFile workDir, @NotNull List<String> arguments) {
         Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
         if (!bscPath.isPresent()) {
-            LOG.error("Unable to find bsc.exe.");
+            LOG.warn("Unable to find bsc.exe for " + sourceFile);
             return emptyList();
         }
 

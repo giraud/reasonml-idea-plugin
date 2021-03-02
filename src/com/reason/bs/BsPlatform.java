@@ -1,63 +1,24 @@
 package com.reason.bs;
 
-import static com.reason.Platform.WINDOWS_EXECUTABLE_SUFFIX;
+import com.google.common.annotations.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.util.*;
+import com.intellij.openapi.vfs.*;
+import com.reason.*;
+import com.reason.esy.*;
+import com.reason.ide.*;
+import com.reason.ide.settings.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
+
+import static com.reason.Platform.*;
 import static com.reason.bs.BsConstants.*;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.SystemInfo;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VFileProperty;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.Log;
-import com.reason.esy.Esy;
-import com.reason.ide.ORFileUtils;
-import com.reason.ide.settings.ORSettings;
-
-import java.util.Optional;
-
-import org.jetbrains.annotations.NotNull;
 
 public class BsPlatform {
     private static final Log LOG = Log.create("bs.platform");
 
     private BsPlatform() {
-    }
-
-    /**
-     * Find `bs-platform` directory. Given a `sourceFile`, searches from that file's location for a
-     * `bsconfig.json` file. If found, then checks for a `./node_modules/bs-platform` directory
-     * relative to the `bsconfig.json`.
-     *
-     * @param project    project to use
-     * @param sourceFile starting location for search
-     * @return `bs-platform` directory, if found
-     */
-    public static Optional<VirtualFile> findBsPlatformDirectory(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsConfigForFile(project, sourceFile)
-                .flatMap(bsContent -> findBsPlatformPathForConfigFile(project, bsContent));
-    }
-
-    public static Optional<VirtualFile> findBsbExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsPlatformDirectory(project, sourceFile)
-                .flatMap(bsPlatform -> findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, bsPlatform));
-    }
-
-    public static Optional<VirtualFile> findBscExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsPlatformDirectory(project, sourceFile)
-                .flatMap(bsPlatform -> findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatform));
-    }
-
-    public static Optional<VirtualFile> findEsyExecutable(@NotNull Project project) {
-        String esyExecutable = ORSettings.getInstance(project).getEsyExecutable();
-        if (esyExecutable.isEmpty()) {
-            return Esy.findEsyExecutable();
-        }
-        return Optional.ofNullable(LocalFileSystem.getInstance().findFileByPath(esyExecutable));
-    }
-
-    public static Optional<VirtualFile> findContentRootForFile(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsConfigForFile(project, sourceFile).map(VirtualFile::getParent);
     }
 
     /**
@@ -68,39 +29,83 @@ public class BsPlatform {
      * @param sourceFile starting point for search
      * @return `bsconfig.json` file, if found
      */
-    public static Optional<VirtualFile> findBsConfigForFile(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return ORFileUtils.findAncestorRecursive(project, BS_CONFIG_FILENAME, sourceFile);
+    public static @NotNull Optional<VirtualFile> findBsConfig(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        return ORFileUtils.findAncestor(project, BS_CONFIG_FILENAME, sourceFile);
+    }
+
+    public static @NotNull Optional<VirtualFile> findContentRoot(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        return findBsConfig(project, sourceFile).map(VirtualFile::getParent);
+    }
+
+    public static @NotNull Optional<VirtualFile> findBsbExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        return findBsConfig(project, sourceFile)
+                .flatMap(bsConfig -> {
+                    VirtualFile bsPlatform = findBsPlatformPathForConfigFile(project, bsConfig).orElse(null);
+                    if (bsPlatform != null) {
+                        return findBinaryInBsPlatform(BSB_EXE_NAME, bsPlatform);
+                    } else {
+                        // maybe a yarn v2 monorepo ? continue to parent to find a node_modules, unless root is reached
+                        return ORFileUtils.findAncestor(project, NODE_MODULES, bsConfig.getParent()).
+                                flatMap(nodeModules -> findBsPlatformPathInNodeModules(project, nodeModules).
+                                        flatMap(bsPlatformDirectory -> findBinaryInBsPlatform(BSB_EXE_NAME, bsPlatformDirectory)));
+                    }
+                });
+    }
+
+    public static @NotNull Optional<VirtualFile> findBscExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        return findBsConfig(project, sourceFile)
+                .flatMap(bsContent -> {
+                    VirtualFile bsPlatform = findBsPlatformPathForConfigFile(project, bsContent).orElse(null);
+                    if (bsPlatform != null) {
+                        return findBinaryInBsPlatform(BSC_EXE_NAME, bsPlatform);
+                    } else {
+                        // maybe a yarn v2 monorepo ? continue to parent to find a node_modules, unless root is reached
+                        return ORFileUtils.findAncestor(project, NODE_MODULES, bsContent.getParent()).
+                                flatMap(nodeModules -> findBsPlatformPathInNodeModules(project, nodeModules).
+                                        flatMap(bsPlatformDirectory -> findBinaryInBsPlatform(BSC_EXE_NAME, bsPlatformDirectory)));
+                    }
+                });
+    }
+
+    public static Optional<VirtualFile> findEsyExecutable(@NotNull Project project) {
+        String esyExecutable = ORSettings.getInstance(project).getEsyExecutable();
+        if (esyExecutable.isEmpty()) {
+            return Esy.findEsyExecutable();
+        }
+        return Optional.ofNullable(LocalFileSystem.getInstance().findFileByPath(esyExecutable));
     }
 
     public static Optional<VirtualFile> findRefmtExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        Optional<VirtualFile> bsPlatformDirectoryOptional =
-                findBsPlatformDirectory(project, sourceFile);
-        if (!bsPlatformDirectoryOptional.isPresent()) {
+        VirtualFile bsPlatformDirectory = findBsConfig(project, sourceFile)
+                .map(bsContent -> findBsPlatformPathForConfigFile(project, bsContent)
+                        .orElseGet(() ->
+                                // maybe a yarn v2 monorepo ? continue to parent to find a node_modules, unless root is reached
+                                ORFileUtils.findAncestor(project, NODE_MODULES, bsContent.getParent())
+                                        .flatMap(nodeModules -> findBsPlatformPathInNodeModules(project, nodeModules))
+                                        .orElse(null))).orElse(null);
+        if (bsPlatformDirectory == null) {
             return Optional.empty();
         }
-        VirtualFile bsPlatformDirectory = bsPlatformDirectoryOptional.get();
+
         Optional<VirtualFile> binaryInBsPlatform;
 
         // first, try standard name
-        binaryInBsPlatform = findBinaryInBsPlatform(REFMT_EXECUTABLE_NAME, bsPlatformDirectory);
-        if (binaryInBsPlatform.isPresent()) {
-            return binaryInBsPlatform;
+        binaryInBsPlatform = findBinaryInBsPlatform(REFMT_EXE_NAME, bsPlatformDirectory);
+        if (!binaryInBsPlatform.isPresent()) {
+            // next, try alternative names
+            binaryInBsPlatform = findBinaryInBsPlatform("refmt3", bsPlatformDirectory);
+            if (!binaryInBsPlatform.isPresent()) {
+                binaryInBsPlatform = findBinaryInBsPlatform("bsrefmt", bsPlatformDirectory);
+            }
         }
-        // next, try alternative names
-        binaryInBsPlatform = findBinaryInBsPlatform("refmt3", bsPlatformDirectory);
-        if (binaryInBsPlatform.isPresent()) {
-            return binaryInBsPlatform;
-        }
-        return findBinaryInBsPlatform("bsrefmt", bsPlatformDirectory);
+
+        return binaryInBsPlatform;
     }
 
-    private static Optional<VirtualFile> findBsPlatformPathForConfigFile(@NotNull Project project, @NotNull VirtualFile bsConfigFile) {
-        VirtualFile parentDir = bsConfigFile.getParent();
-        VirtualFile bsPlatform =
-                parentDir.findFileByRelativePath("node_modules/" + BS_PLATFORM_DIRECTORY_NAME);
+    private static Optional<VirtualFile> findBsPlatformPathInNodeModules(@NotNull Project project, @NotNull VirtualFile nodeModules) {
+        VirtualFile bsPlatform = nodeModules.findFileByRelativePath(BS_PLATFORM_NAME);
         if (bsPlatform == null) {
-            VirtualFile bsbBinary =
-                    parentDir.findFileByRelativePath("node_modules/.bin/" + BSB_EXECUTABLE_NAME);
+            VirtualFile bsbBinary = nodeModules.findFileByRelativePath(".bin/" + BSB_EXE_NAME);
             if (bsbBinary != null) {
                 // This must be a mono-repo, only the .bin is found
                 VirtualFile canonicalFile = bsbBinary.getCanonicalFile();
@@ -109,14 +114,42 @@ public class BsPlatform {
                         // Mac/Linux: .bin contains symlinks to real exe, must follow
                         VirtualFile canonicalBsPlatformDirectory = canonicalFile.getParent();
                         while (canonicalBsPlatformDirectory != null
-                                && !canonicalBsPlatformDirectory.getName().equals(BS_PLATFORM_DIRECTORY_NAME)) {
+                                && !canonicalBsPlatformDirectory.getName().equals(BS_PLATFORM_NAME)) {
                             canonicalBsPlatformDirectory = canonicalBsPlatformDirectory.getParent();
                         }
                         return Optional.ofNullable(canonicalBsPlatformDirectory);
                     } else {
                         // Windows: no symlinks, only bat files
-                        return ORFileUtils.findAncestorRecursive(project, "node_modules", parentDir.getParent())
-                                .map(nodeModules -> nodeModules.findFileByRelativePath("bs-platform"));
+                        return ORFileUtils.findAncestor(project, NODE_MODULES, nodeModules.getParent())
+                                .map(nodeModules2 -> nodeModules2.findFileByRelativePath(BS_PLATFORM_NAME));
+                    }
+                }
+            }
+        }
+        return Optional.ofNullable(bsPlatform).filter(VirtualFile::isDirectory);
+    }
+
+    private static Optional<VirtualFile> findBsPlatformPathForConfigFile(@NotNull Project project, @NotNull VirtualFile bsConfigFile) {
+        VirtualFile parentDir = bsConfigFile.getParent();
+        VirtualFile bsPlatform = parentDir.findFileByRelativePath("node_modules/" + BS_PLATFORM_NAME);
+        if (bsPlatform == null) {
+            VirtualFile bsbBinary = parentDir.findFileByRelativePath("node_modules/.bin/" + BSB_EXE_NAME);
+            if (bsbBinary != null) {
+                // This must be a mono-repo, only the .bin is found
+                VirtualFile canonicalFile = bsbBinary.getCanonicalFile();
+                if (canonicalFile != null) {
+                    if (bsbBinary.is(VFileProperty.SYMLINK)) {
+                        // Mac/Linux: .bin contains symlinks to real exe, must follow
+                        VirtualFile canonicalBsPlatformDirectory = canonicalFile.getParent();
+                        while (canonicalBsPlatformDirectory != null
+                                && !canonicalBsPlatformDirectory.getName().equals(BS_PLATFORM_NAME)) {
+                            canonicalBsPlatformDirectory = canonicalBsPlatformDirectory.getParent();
+                        }
+                        return Optional.ofNullable(canonicalBsPlatformDirectory);
+                    } else {
+                        // Windows: no symlinks, only bat files
+                        return ORFileUtils.findAncestor(project, NODE_MODULES, parentDir.getParent())
+                                .map(nodeModules -> nodeModules.findFileByRelativePath(BS_PLATFORM_NAME));
                     }
                 }
             }
@@ -125,35 +158,28 @@ public class BsPlatform {
     }
 
     private static Optional<VirtualFile> findBinaryInBsPlatform(@NotNull String executableName, @NotNull VirtualFile bsPlatformDirectory) {
-        Optional<String> platform = getOsBsPrefix();
-        if (!platform.isPresent()) {
+        String platform = getOsBsPrefix();
+        if (platform == null) {
             LOG.warn("Unable to determine OS prefix.");
             return Optional.empty();
         }
+
         VirtualFile executable;
+
         // first, try to find platform-specific binary
-        executable =
-                bsPlatformDirectory.findFileByRelativePath(
-                        platform.get() + "/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
-        if (executable != null) {
-            return Optional.of(executable);
+        executable = bsPlatformDirectory.findFileByRelativePath(platform + "/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
+        if (executable == null) {
+            // next, try to find platform-agnostic wrappers
+            executable = bsPlatformDirectory.findFileByRelativePath(executableName + getOsBinaryWrapperExtension());
+            if (executable == null) {
+                // last, try old locations of binary
+                executable = bsPlatformDirectory.findFileByRelativePath("bin/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
+                if (executable == null) {
+                    executable = bsPlatformDirectory.findFileByRelativePath("lib/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
+                }
+            }
         }
-        // next, try to find platform-agnostic wrappers
-        executable =
-                bsPlatformDirectory.findFileByRelativePath(executableName + getOsBinaryWrapperExtension());
-        if (executable != null) {
-            return Optional.of(executable);
-        }
-        // last, try old locations of binary
-        executable =
-                bsPlatformDirectory.findFileByRelativePath(
-                        "bin/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
-        if (executable != null) {
-            return Optional.of(executable);
-        }
-        executable =
-                bsPlatformDirectory.findFileByRelativePath(
-                        "lib/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
+
         return Optional.ofNullable(executable);
     }
 
@@ -163,16 +189,16 @@ public class BsPlatform {
     }
 
     @VisibleForTesting
-    static Optional<String> getOsBsPrefix() {
+    static @Nullable String getOsBsPrefix() {
         if (SystemInfo.isWindows) {
-            return Optional.of("win32");
+            return "win32";
         }
         if (SystemInfo.isLinux) {
-            return Optional.of("linux");
+            return "linux";
         }
         if (SystemInfo.isMac) {
-            return Optional.of("darwin");
+            return "darwin";
         }
-        return Optional.empty();
+        return null;
     }
 }
