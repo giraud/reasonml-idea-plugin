@@ -9,25 +9,23 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DunePairedBraceMatcher implements PairedBraceMatcher {
-  private static final BracePair[] PAIRS =
-      new BracePair[] {
-        new BracePair(DuneTypes.INSTANCE.LPAREN, DuneTypes.INSTANCE.RPAREN, true),
-      };
+    private static final BracePair[] PAIRS =
+            new BracePair[]{
+                    new BracePair(DuneTypes.INSTANCE.LPAREN, DuneTypes.INSTANCE.RPAREN, true),
+            };
 
-  @NotNull
-  @Override
-  public BracePair @NotNull [] getPairs() {
-    return PAIRS;
-  }
+    @Override
+    public @NotNull BracePair[] getPairs() {
+        return PAIRS;
+    }
 
-  @Override
-  public boolean isPairedBracesAllowedBeforeType(
-      @NotNull IElementType lbraceType, @Nullable IElementType contextType) {
-    return true;
-  }
+    @Override
+    public boolean isPairedBracesAllowedBeforeType(@NotNull IElementType lbraceType, @Nullable IElementType contextType) {
+        return true;
+    }
 
-  @Override
-  public int getCodeConstructStart(PsiFile file, int openingBraceOffset) {
-    return openingBraceOffset;
-  }
+    @Override
+    public int getCodeConstructStart(PsiFile file, int openingBraceOffset) {
+        return openingBraceOffset;
+    }
 }

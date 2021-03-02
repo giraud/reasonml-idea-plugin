@@ -68,7 +68,7 @@ public class ODocLexer implements FlexLexer {
           + "\1\0\1\21\1\22\1\23\1\24\2\0\1\25\1\26"
           + "\1\27\1\30\1\17\2\20\1\31\1\32\1\33";
 
-  private static int @NotNull [] zzUnpackAction() {
+  private static int  [] zzUnpackAction() {
     int[] result = new int[46];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
@@ -99,7 +99,7 @@ public class ODocLexer implements FlexLexer {
           + "\0\140\0\140\0\u01c8\0\u01e0\0\u01f8\0\140\0\140\0\140"
           + "\0\u0210\0\140\0\u0228\0\140\0\u0240\0\u0258";
 
-  private static int @NotNull [] zzUnpackRowMap() {
+  private static int  [] zzUnpackRowMap() {
     int[] result = new int[46];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
@@ -139,7 +139,7 @@ public class ODocLexer implements FlexLexer {
           + "\3\0\1\51\23\0\1\51\1\0\1\52\31\0\1\55"
           + "\23\0\1\55\3\0\1\56\23\0\1\56";
 
-  private static int @NotNull [] zzUnpackTrans() {
+  private static int  [] zzUnpackTrans() {
     int[] result = new int[624];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
@@ -181,7 +181,7 @@ public class ODocLexer implements FlexLexer {
           + "\1\0\4\11\2\0\1\1\3\11\1\1\1\11\1\1"
           + "\1\11\2\1";
 
-  private static int @NotNull [] zzUnpackAttribute() {
+  private static int  [] zzUnpackAttribute() {
     int[] result = new int[46];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
@@ -270,7 +270,7 @@ public class ODocLexer implements FlexLexer {
    * @param packed the packed character translation table
    * @return the unpacked character translation table
    */
-  private static char @NotNull [] zzUnpackCMap(@NotNull String packed) {
+  private static char  [] zzUnpackCMap(@NotNull String packed) {
     int size = 0;
     for (int i = 0, length = packed.length(); i < length; i += 2) {
       size += packed.charAt(i);

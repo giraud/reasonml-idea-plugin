@@ -70,7 +70,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
             FileBase psiFile = (FileBase) inputData.getPsiFile();
 
             Optional<VirtualFile> bsconfigFile =
-                    BsPlatform.findBsConfigForFile(inputData.getProject(), inputData.getFile());
+                    BsPlatform.findBsConfig(inputData.getProject(), inputData.getFile());
             if (bsconfigFile.isPresent()) {
                 VirtualFile parent = bsconfigFile.get().getParent();
                 boolean useExternalAsSource = "bs-platform".equals(parent.getName());

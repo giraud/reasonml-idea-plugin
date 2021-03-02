@@ -2,22 +2,17 @@ package com.reason;
 
 import com.intellij.execution.process.*;
 import com.intellij.lang.*;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.ResolveResult;
-import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.intellij.openapi.diagnostic.*;
+import com.intellij.openapi.module.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 import java.io.*;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.*;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class Log {
 
@@ -237,14 +232,6 @@ public class Log {
         }
     }
 
-    public void error(String message, Exception e) {
-        m_log.error(message, e);
-    }
-
-    public void error(String msg) {
-        m_log.error(msg);
-    }
-
     public void info(String msg) {
         m_log.info(msg);
     }
@@ -320,5 +307,13 @@ public class Log {
         if (m_log.isDebugEnabled()) {
             debug(comment, t == null ? null : t.getVirtualFile());
         }
+    }
+
+    public void error(String message, Exception e) {
+        m_log.error(message, e);
+    }
+
+    public void error(String msg) {
+        m_log.error(msg);
     }
 }

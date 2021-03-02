@@ -15,8 +15,7 @@ public class DuneProjectImportProvider extends ProjectImportProvider {
         return new DuneProjectImportBuilder();
     }
 
-    @NotNull
-    public ModuleWizardStep @NotNull [] createSteps(@NotNull WizardContext context) {
+    public @NotNull ModuleWizardStep[] createSteps(@NotNull WizardContext context) {
         return new ModuleWizardStep[]{new OclProjectJdkWizardStep(context)};
     }
 

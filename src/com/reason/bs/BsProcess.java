@@ -100,7 +100,7 @@ public final class BsProcess implements CompilerProcess {
 
     @Nullable
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType) {
-        Optional<VirtualFile> bsContentRootOptional = BsPlatform.findContentRootForFile(m_project, sourceFile);
+        Optional<VirtualFile> bsContentRootOptional = BsPlatform.findContentRoot(m_project, sourceFile);
         if (!bsContentRootOptional.isPresent()) {
             BsNotification.showWorkingDirectoryNotFound();
             return null;

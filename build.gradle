@@ -49,9 +49,8 @@ allprojects {
             untilBuild = pluginUntilBuild
             changeNotes """
                 <ul>
-                    <li>highlight of ocaml annotation include arrobase</li>
-                    <li>#309 - incorrectly parse infix operators</li>
-                    <li>#261 - warning configuration in bsconfig.json is not being applied</li>
+                    <li>#293 - Incorrectly parsing 'and' in pattern match</li>
+                    <li>Better integration with yarn workspaces (v2?): search for node_modules in parent directory also</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

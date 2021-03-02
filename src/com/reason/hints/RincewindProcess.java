@@ -25,7 +25,7 @@ public class RincewindProcess {
     public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
         LOG.debug("Looking for types for file", sourceFile);
 
-        Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(m_project, sourceFile);
+        Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(m_project, sourceFile);
         if (!contentRoot.isPresent()) {
             return;
         }
@@ -114,7 +114,7 @@ public class RincewindProcess {
     }
 
     public void dumper(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile, @NotNull String arg, @NotNull DumpVisitor visitor) {
-        Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(m_project, cmtFile);
+        Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(m_project, cmtFile);
         if (contentRoot.isPresent()) {
             Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 
