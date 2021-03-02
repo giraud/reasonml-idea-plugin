@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BsConsoleFilterProvider implements ConsoleFilterProvider {
     @Override
-    public Filter @NotNull [] getDefaultFilters(@NotNull Project project) {
+    public @NotNull Filter[] getDefaultFilters(@NotNull Project project) {
         return new Filter[]{new BsConsoleFilter(project)};
     }
 }

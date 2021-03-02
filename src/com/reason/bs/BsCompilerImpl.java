@@ -45,7 +45,7 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public @NotNull String getNamespace(@NotNull VirtualFile sourceFile) {
-        Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfigForFile(m_project, sourceFile);
+        Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfig(m_project, sourceFile);
         if (bsConfigFile.isPresent()) {
             BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile.get());
             return bsConfig == null ? "" : bsConfig.getNamespace();
@@ -81,7 +81,7 @@ public class BsCompilerImpl implements BsCompiler {
     @Override
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
         if (!isDisabled() && ORSettings.getInstance(m_project).isBsEnabled()) {
-            Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfigForFile(m_project, sourceFile);
+            Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfig(m_project, sourceFile);
             if (!bsConfigFile.isPresent()) {
                 return;
             }
@@ -137,7 +137,7 @@ public class BsCompilerImpl implements BsCompiler {
         if (file == null) {
             return false;
         }
-        Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfigForFile(m_project, file);
+        Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfig(m_project, file);
         BsConfig bsConfig = bsConfigFile.map(this::getOrRefreshBsConfig).orElse(null);
         return bsConfig == null || bsConfig.accept(file.getPath());
     }

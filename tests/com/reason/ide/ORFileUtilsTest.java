@@ -44,7 +44,7 @@ public class ORFileUtilsTest {
 //    VirtualFile mockFile = spy(VirtualFile.class);
 //    when(mockFile.isDirectory()).thenReturn(false);
 //    when(mockFile.getParent()).thenReturn(null);
-//    Optional<VirtualFile> ancestor = ORFileUtils.findAncestorRecursive(mockProject, "", mockFile);
+//    Optional<VirtualFile> ancestor = ORFileUtils.findAncestor(mockProject, "", mockFile);
 //    verify(mockFile).isDirectory();
 //    verify(mockFile).getParent();
 //    assertFalse(ancestor.isPresent());
@@ -58,7 +58,7 @@ public class ORFileUtilsTest {
 //    VirtualFile mockStart = spy(VirtualFile.class);
 //    when(mockStart.isDirectory()).thenReturn(true);
 //    when(mockStart.getPath()).thenReturn(mockProjectBasePath);
-//    Optional<VirtualFile> ancestor = ORFileUtils.findAncestorRecursive(mockProject, "", mockStart);
+//    Optional<VirtualFile> ancestor = ORFileUtils.findAncestor(mockProject, "", mockStart);
 //    assertFalse(ancestor.isPresent());
         assertTrue(true); // mock not working
     }
@@ -71,7 +71,7 @@ public class ORFileUtilsTest {
 //    when(mockStart.isDirectory()).thenReturn(true);
 //    when(mockStart.findChild(targetName)).thenReturn(mockTarget);
 //    Optional<VirtualFile> ancestor =
-//        ORFileUtils.findAncestorRecursive(mockProject, targetName, mockStart);
+//        ORFileUtils.findAncestor(mockProject, targetName, mockStart);
 //    assertTrue(ancestor.isPresent());
 //    assertEquals(mockTarget, ancestor.get());
         assertTrue(true); // mock not working
