@@ -556,6 +556,10 @@ public class OclParser extends CommonParser<OclTypes> {
                     state.advance().mark(m_types.C_MODULE_DECLARATION).resolution(module).setStart();
                 }
             }
+            else if (scope.isCompositeType(m_types.C_OBJECT)) {
+                // Close a class
+                state.popEnd();
+            }
         }
     }
 
