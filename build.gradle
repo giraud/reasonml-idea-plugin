@@ -49,6 +49,8 @@ allprojects {
             untilBuild = pluginUntilBuild
             changeNotes """
                 <ul>
+                    <li>#312 - switch with optional is not parsed correctly</li>
+                    <li>#311 - Missing icon in mli file</li>
                     <li>#310 - Missing types in structure panel after class definition</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

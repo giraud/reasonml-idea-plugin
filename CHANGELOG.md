@@ -16,9 +16,13 @@ are solved.
 
 ## Unreleased
 
+# 0.98.2 - 2021/03/30
+
+- :bug: [#312](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/312) ![o] switch with optional is not parsed correctly
+- :bug: [#311](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/311) ![o] Missing icon in mli file
 - :bug: [#310](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/310) ![o] Missing types in structure panel after class definition
 
-# 0.98.1 - 2021/03/02
+0.98.1
 
 - :bug: [#293](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/293) ![o] Better 'and' parsing
 - :house: Better integration with yarn workspaces (v2?): search for node_modules in parent directory also

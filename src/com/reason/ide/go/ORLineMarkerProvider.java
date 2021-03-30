@@ -78,7 +78,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         }
     }
 
-    private <T extends PsiQualifiedElement> void extractRelatedExpressions(
+    @SafeVarargs private final <T extends PsiQualifiedElement> void extractRelatedExpressions(
             @Nullable PsiElement element,
             @Nullable String qname,
             @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result,
@@ -93,8 +93,13 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 PsiFinder.getInstance(containingFile.getProject()).findRelatedFile(containingFile);
         if (psiRelatedFile != null) {
             List<T> expressions = psiRelatedFile.getQualifiedExpressions(qname, clazz);
-            if (expressions.size() == 1) {
-                T relatedElement = expressions.iterator().next();
+            if (expressions.size() >= 1) {
+                // Get latest
+                T relatedElement = null;
+                for (T expression : expressions) {
+                    relatedElement = expression;
+                }
+
                 if (relatedElement != null) {
                     boolean isInterface = containingFile.isInterface();
                     String tooltip =
