@@ -555,6 +555,9 @@ public class OclParser extends CommonParser<OclTypes> {
                     // module M = struct .. end |>and<|
                     state.advance().mark(m_types.C_MODULE_DECLARATION).resolution(module).setStart();
                 }
+            } else if (scope.isCompositeType(m_types.C_OBJECT)) {
+                // Close a class
+                state.popEnd();
             }
         }
     }
@@ -626,17 +629,21 @@ public class OclParser extends CommonParser<OclTypes> {
                     .mark(m_types.C_FUN_PARAM)
                     .advance()
                     .markOptionalParenDummyScope(m_types, m_types.C_NAMED_PARAM);
-        } else if (state.is(m_types.C_BINARY_CONDITION)) {
-            // ... |>?<| ... : ...
-            state.popEnd();
-        } else if (!state.in(m_types.C_TERNARY)) {
-            // ... |>?<| ... : ...
+        } else if (state.is(m_types.C_BINARY_CONDITION) && !state.isPrevious(m_types.C_MATCH_EXPR)) {
+            IElementType nextRawElementType = state.rawLookup(1);
+            if (nextRawElementType != m_types.LIDENT) {
+                // ... |>?<| ... : ...
+                state.popEnd();
+            }
+        }
       /* precedeMark is not working
-      state
+        else if (!state.in(m_types.C_TERNARY)) {
+          // ... |>?<| ... : ...
+          state
           .precedeMark(m_types.C_BINARY_CONDITION)
           .precedeScope(m_types.C_TERNARY).popEnd();
-      */
         }
+      */
     }
 
     private void parseFunction(@NotNull ParserState state) {
