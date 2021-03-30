@@ -16,6 +16,7 @@ are solved.
 
 ## Unreleased
 
+- :bug: [#312](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/312) ![o] switch with optional is not parsed correctly
 - :bug: [#311](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/311) ![o] Missing icon in mli file
 - :bug: [#310](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/310) ![o] Missing types in structure panel after class definition
 
