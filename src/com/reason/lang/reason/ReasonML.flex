@@ -1,4 +1,4 @@
-package com.reason.lang;
+package com.reason.lang.reason;
 
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
@@ -82,7 +82,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 %state IN_STRING
 %state IN_REASON_ML_COMMENT
 %state IN_REASON_SL_COMMENT
-%state IN_OCAML_ML_COMMENT
 
 %%
 
@@ -178,8 +177,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_REASON_ML_COMMENT); commentDepth = 1; tokenStart(); }
-    "//" { if (types instanceof OclTypes) { return types.SLASH_2; } else { yybegin(IN_REASON_SL_COMMENT); tokenStart(); } }
-    "(*" { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; tokenStart(); }
+    "//" { yybegin(IN_REASON_SL_COMMENT); tokenStart(); }
 
     "#if"     { return types.DIRECTIVE_IF; }
     "#else"   { return types.DIRECTIVE_ELSE; }
@@ -288,14 +286,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     .         { }
     {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
     <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
-}
-
-<IN_OCAML_ML_COMMENT> {
-    "(*" { if (!inCommentString) commentDepth += 1; }
-    "*)" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
-    "\"" { inCommentString = !inCommentString; }
-     . | {NEWLINE} { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

@@ -211,6 +211,7 @@ public class OclTypes extends ORTypes {
         STAR = new ORTokenElementType("STAR", OclLanguage.INSTANCE);
         STARDOT = new ORTokenElementType("STARDOT", OclLanguage.INSTANCE);
         STRUCT = new ORTokenElementType("STRUCT", OclLanguage.INSTANCE);
+        OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", OclLanguage.INSTANCE);
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", OclLanguage.INSTANCE);
         TAG_NAME = new ORTokenElementType("TAG_NAME", OclLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", OclLanguage.INSTANCE);
