@@ -49,6 +49,7 @@ allprojects {
             untilBuild = pluginUntilBuild
             changeNotes """
                 <ul>
+                    <li>#314 - missing item in structure panel (structural diff operator)</li>
                     <li>#313 - alphabetize opened/included modules in the structure panel</li>
                     <li>#312 - switch with optional is not parsed correctly</li>
                     <li>#311 - Missing icon in mli file</li>

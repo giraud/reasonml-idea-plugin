@@ -16,6 +16,7 @@ are solved.
 
 ## Unreleased
 
+- :bug: [#314](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/314) missing item in structure panel (structural diff operator)
 - :bug: [#313](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/313) alphabetize opened/included modules in the structure panel
 
 # 0.98.2 - 2021/03/30
