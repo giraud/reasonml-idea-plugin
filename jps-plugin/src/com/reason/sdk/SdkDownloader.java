@@ -1,35 +1,24 @@
 package com.reason.sdk;
 
-import com.intellij.notification.Notifications;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
+import com.intellij.notification.*;
+import com.intellij.openapi.progress.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.io.Decompressor;
-import com.reason.ORNotification;
-import com.reason.WGet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.vfs.*;
+import com.intellij.util.io.*;
+import com.reason.*;
+import org.jetbrains.annotations.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.zip.GZIPInputStream;
+import java.io.*;
+import java.util.function.*;
+import java.util.zip.*;
 
-import static com.intellij.notification.NotificationType.ERROR;
+import static com.intellij.notification.NotificationType.*;
 
 public class SdkDownloader {
-
-    private static final Condition<String> KEEP_OCAML_SOURCES =
-            s ->
-                    s.endsWith(".ml")
-                            || s.endsWith(".mli")
-                            || s.endsWith(".ml4")
-                            || s.endsWith(".mll")
-                            || s.endsWith(".mly");
+    private static final Condition<String> KEEP_OCAML_SOURCES = s ->
+            s.endsWith(".ml") || s.endsWith(".mli") || s.endsWith(".ml4") || s.endsWith(".mll") || s.endsWith(".mly");
 
     private final @NotNull String m_sdk;
     private final @NotNull String m_major;

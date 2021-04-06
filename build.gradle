@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version '0.6.5'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '0.7.2'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 allprojects {
@@ -25,7 +25,7 @@ allprojects {
 
     sourceSets {
         main {
-            java.srcDirs 'src', 'gen'
+            java.srcDirs 'src'
             resources.srcDirs 'resources'
         }
         test {
@@ -49,12 +49,11 @@ allprojects {
             untilBuild = pluginUntilBuild
             changeNotes """
                 <ul>
-                    <li>#304 - Properties in component using external are not found</li>
-                    <li>Keep caret at position when reformat</li>
-                    <li>Fix file pattern introduced in bs-platform 8.3</li>
-                    <li>Fix reformatOnSave when multiple projects (different settings) are opened</li>
-                    <li>Update ErrorAnnotator to use new ninja format introduced since bs-platform 8.4</li>
-                    <li>Update ppx error extraction</li>
+                    <li>#314 - missing item in structure panel (structural diff operator)</li>
+                    <li>#313 - alphabetize opened/included modules in the structure panel</li>
+                    <li>#312 - switch with optional is not parsed correctly</li>
+                    <li>#311 - Missing icon in mli file</li>
+                    <li>#310 - Missing types in structure panel after class definition</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

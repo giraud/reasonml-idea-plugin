@@ -26,7 +26,7 @@ abstract class KeywordCompletionContributor extends com.intellij.codeInsight.com
     KeywordCompletionContributor(@NotNull ORTypes types) {
         extend(CompletionType.BASIC,
                 psiElement(),
-                new CompletionProvider<>() {
+                new CompletionProvider<CompletionParameters>() {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
                         PsiElement position = parameters.getPosition();

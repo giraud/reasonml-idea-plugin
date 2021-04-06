@@ -17,23 +17,19 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub>
-        implements PsiModule, StubBasedPsiElement<PsiModuleStub> {
-
+public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStub> implements PsiModule, StubBasedPsiElement<PsiModuleStub> {
     // region Constructors
     public PsiFakeModule(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public PsiFakeModule(
-            @NotNull ORTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
+    public PsiFakeModule(@NotNull ORTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
 
-    @NotNull
     @Override
-    public String getPath() {
+    public @NotNull String getPath() {
         PsiFile file = getContainingFile();
         return file instanceof FileBase ? ((FileBase) file).getModuleName() : "";
     }

@@ -82,12 +82,12 @@ public class EsyProcess implements CompilerProcess {
         killIt();
 
         Optional<VirtualFile> workingDirOptional = findWorkingDirectory(m_project);
-        if (workingDirOptional.isEmpty()) {
+        if (!workingDirOptional.isPresent()) {
             return null;
         }
 
         Optional<VirtualFile> esyExecutableOptional = BsPlatform.findEsyExecutable(m_project);
-        if (esyExecutableOptional.isEmpty()) {
+        if (!esyExecutableOptional.isPresent()) {
             return null;
         }
 
@@ -154,7 +154,7 @@ public class EsyProcess implements CompilerProcess {
     private static Optional<VirtualFile> findWorkingDirectory(@NotNull Project project) {
         Optional<VirtualFile> esyContentRootOptional =
                 ORProjectManager.findFirstEsyContentRoot(project);
-        if (esyContentRootOptional.isEmpty()) {
+        if (!esyContentRootOptional.isPresent()) {
             EsyNotification.showEsyProjectNotFound();
             return Optional.empty();
         }

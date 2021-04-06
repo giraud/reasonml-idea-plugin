@@ -29,7 +29,7 @@ let component = ReasonReact.statelessComponent("$NAME$");
 let make = (~$PROP$, _children) => {...component, render: _self => <div />};
 $END$
 /*
- JS interop
+ JS interop
  expose an helper for js - can be deleted when no more used by javascript code
  */
 let jsComponent =

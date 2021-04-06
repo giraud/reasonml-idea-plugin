@@ -71,7 +71,7 @@ class YaccLexer implements FlexLexer {
           + "\1\23\4\0\1\24\1\0\1\25\14\0\1\26\2\0"
           + "\1\27\1\30\1\31\1\32";
 
-  private static int @NotNull [] zzUnpackAction() {
+  private static @NotNull int[] zzUnpackAction() {
     int[] result = new int[56];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
@@ -103,7 +103,7 @@ class YaccLexer implements FlexLexer {
           + "\0\u0294\0\u02b5\0\u02d6\0\u02f7\0\u0318\0\u0339\0\u035a\0\u037b"
           + "\0\u039c\0\306\0\u03bd\0\u03de\0\306\0\306\0\306\0\306";
 
-  private static int @NotNull [] zzUnpackRowMap() {
+  private static @NotNull int [] zzUnpackRowMap() {
     int[] result = new int[56];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
@@ -140,7 +140,7 @@ class YaccLexer implements FlexLexer {
           + "\22\0\1\65\44\0\1\66\34\0\1\67\40\0\1\70"
           + "\30\0";
 
-  private static int @NotNull [] zzUnpackTrans() {
+  private static int [] zzUnpackTrans() {
     int[] result = new int[1023];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
@@ -181,7 +181,7 @@ class YaccLexer implements FlexLexer {
           + "\1\1\3\11\4\0\1\11\1\0\1\11\14\0\1\11"
           + "\2\0\4\11";
 
-  private static int @NotNull [] zzUnpackAttribute() {
+  private static int [] zzUnpackAttribute() {
     int[] result = new int[56];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
@@ -271,7 +271,7 @@ class YaccLexer implements FlexLexer {
    * @param packed the packed character translation table
    * @return the unpacked character translation table
    */
-  private static char @NotNull [] zzUnpackCMap(@NotNull String packed) {
+  private static char  [] zzUnpackCMap(@NotNull String packed) {
     int size = 0;
     for (int i = 0, length = packed.length(); i < length; i += 2) {
       size += packed.charAt(i);

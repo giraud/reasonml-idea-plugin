@@ -39,6 +39,7 @@ public class RmlTypes extends ORTypes {
     C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", RmlLanguage.INSTANCE);
     C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", RmlLanguage.INSTANCE);
     C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", RmlLanguage.INSTANCE);
+    C_CUSTOM_OPERATOR = new ORCompositeElementType("C_CUSTOM_OPERATOR", RmlLanguage.INSTANCE);
     C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", RmlLanguage.INSTANCE);
     C_DEFAULT_VALUE = new ORCompositeElementType("C_DEFAULT_VALUE", RmlLanguage.INSTANCE);
     C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", RmlLanguage.INSTANCE);
@@ -206,11 +207,13 @@ public class RmlTypes extends ORTypes {
     SHARPSHARP = new ORTokenElementType("SHARPSHARP", RmlLanguage.INSTANCE);
     SHORTCUT = new ORTokenElementType("SHORTCUT", RmlLanguage.INSTANCE);
     SLASH = new ORTokenElementType("SLASH", RmlLanguage.INSTANCE);
+    SLASH_2 = new ORTokenElementType("SLASH_2", RmlLanguage.INSTANCE);
     SLASHDOT = new ORTokenElementType("SLASHDOT", RmlLanguage.INSTANCE);
     SOME = new ORTokenElementType("SOME", RmlLanguage.INSTANCE);
     STAR = new ORTokenElementType("STAR", RmlLanguage.INSTANCE);
     STARDOT = new ORTokenElementType("STARDOT", RmlLanguage.INSTANCE);
     STRUCT = new ORTokenElementType("STRUCT", RmlLanguage.INSTANCE);
+    OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", RmlLanguage.INSTANCE);
     TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", RmlLanguage.INSTANCE);
     TAG_NAME = new ORTokenElementType("TAG_NAME", RmlLanguage.INSTANCE);
     TAG_LT = new ORTokenElementType("TAG_LT", RmlLanguage.INSTANCE);

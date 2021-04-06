@@ -18,9 +18,8 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements PsiLet {
-
-    private PsiSignature m_inferredType;
+public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implements PsiLet {
+    private PsiSignature myInferredType;
 
     // region Constructors
     public PsiLetImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
@@ -32,10 +31,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     }
     // endregion
 
-    @NotNull
-    private static List<PsiObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
+    private static @NotNull List<PsiObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
         List<PsiObjectField> fields = new ArrayList<>();
-
 
         PsiElement prevParent = null;
         boolean isAdding = false;
@@ -120,8 +117,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     // region PsiNamedElement
     @Nullable
     public PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(
-                this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class);
     }
 
     @Nullable
@@ -256,17 +252,17 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     // region Inferred type
     @Override
     public @Nullable PsiSignature getInferredType() {
-        return m_inferredType;
+        return myInferredType;
     }
 
     @Override
     public void setInferredType(@NotNull PsiSignature inferredType) {
-        m_inferredType = inferredType;
+        myInferredType = inferredType;
     }
 
     @Override
     public boolean hasInferredType() {
-        return m_inferredType != null;
+        return myInferredType != null;
     }
     // endregion
 

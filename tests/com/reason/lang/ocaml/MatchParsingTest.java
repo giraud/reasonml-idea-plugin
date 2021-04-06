@@ -136,4 +136,16 @@ public class MatchParsingTest extends OclParsingTestCase {
     assertEquals("Empty", patterns.get(1).getText());
     assertEquals("Unknown -> None", patterns.get(2).getText());
   }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/312
+  public void test_GH_312() {
+    PsiFile f = parseCode("match fn ?arg with |None -> false |Some f -> true");
+
+    PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
+    List<PsiPatternMatch> patterns = e.getPatterns();
+
+    assertSize(2, patterns);
+    assertEquals("None -> false", patterns.get(0).getText());
+    assertEquals("Some f -> true", patterns.get(1).getText());
+  }
 }

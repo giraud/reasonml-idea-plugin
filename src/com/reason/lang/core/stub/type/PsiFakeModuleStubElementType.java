@@ -50,7 +50,7 @@ public class PsiFakeModuleStubElementType extends ORStubElementType<PsiModuleStu
         String namespace =
                 originalFile == null
                         ? null
-                        : BsPlatform.findBsConfigForFile(file.getProject(), originalFile)
+                        : BsPlatform.findBsConfig(file.getProject(), originalFile)
                         .map((bsConfig) -> BsConfigReader.read(bsConfig).getNamespace())
                         .orElse(null);
 

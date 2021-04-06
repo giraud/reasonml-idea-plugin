@@ -37,7 +37,7 @@ abstract class CompilerAction extends DumbAwareAction {
     private static void compileDirectory(@NotNull Project project, @NotNull CliType cliType) {
         ORCompilerManager compilerManager = ServiceManager.getService(project, ORCompilerManager.class);
         Optional<Compiler> compilerOptional = compilerManager.getCompiler(cliType);
-        if (compilerOptional.isEmpty()) {
+        if (!compilerOptional.isPresent()) {
             return;
         }
         Compiler compiler = compilerOptional.get();

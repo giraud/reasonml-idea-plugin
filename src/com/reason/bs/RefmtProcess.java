@@ -30,7 +30,7 @@ public class RefmtProcess {
     @NotNull
     public String convert(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
         Optional<VirtualFile> refmtPath = BsPlatform.findRefmtExecutable(m_project, sourceFile);
-        if (refmtPath.isEmpty()) {
+        if (!refmtPath.isPresent()) {
             LOG.debug("No refmt binary found, reformat cancelled");
             return code;
         }

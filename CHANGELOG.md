@@ -14,7 +14,31 @@ Please note that **rescript development is paused** until issues in rescript too
 [#4846](https://github.com/rescript-lang/rescript-compiler/issues/4846) and [#22](https://github.com/rescript-lang/rescript-vscode/issues/22)
 are solved.
 
-## 0.97 - 2021/02/04
+## Unreleased
+
+# 0.98.3 - 2021/04/06
+
+- :bug: [#314](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/314) missing item in structure panel (structural diff operator)
+- :bug: [#313](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/313) alphabetize opened/included modules in the structure panel
+
+0.98.2
+
+- :bug: [#312](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/312) ![o] switch with optional is not parsed correctly
+- :bug: [#311](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/311) ![o] Missing icon in mli file
+- :bug: [#310](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/310) ![o] Missing types in structure panel after class definition
+
+0.98.1
+
+- :bug: [#293](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/293) ![o] Better 'and' parsing
+- :house: Better integration with yarn workspaces (v2?): search for node_modules in parent directory also
+
+0.98
+
+- :nail_care: ![o] highlight of ocaml annotation include arrobase
+- :bug: [#309](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/309) incorrectly parse infix operators
+- :bug: [#261](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/261) warning configuration in bsconfig.json is not being applied
+
+# 0.97 - 2021/02/04
 
 - :bug: [#304](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/304) ![r] Properties in component using external are not found
 - :bug: Keep caret at position when reformat

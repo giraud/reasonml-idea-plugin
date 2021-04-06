@@ -1,8 +1,8 @@
-package com.reason.lang;
+package com.reason.lang.napkin;
 
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
-import com.intellij.lexer.FlexLexer;import com.reason.lang.ocaml.*;
+import com.intellij.lexer.FlexLexer;
 
 import static com.intellij.psi.TokenType.*;
 
@@ -10,7 +10,7 @@ import static com.intellij.psi.TokenType.*;
 %%
 
 %{
-    public ReasonMLLexer(ORTypes types) {
+    public ResFlexLexer(ORTypes types) {
         this.types = types;
     }
 
@@ -32,7 +32,7 @@ import static com.intellij.psi.TokenType.*;
 %}
 
 %public
-%class ReasonMLLexer
+%class ResFlexLexer
 %implements FlexLexer
 %unicode
 %function advance
@@ -79,9 +79,9 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 
 %state INITIAL
 %state IN_STRING
-%state IN_REASON_ML_COMMENT
-%state IN_REASON_SL_COMMENT
-%state IN_OCAML_ML_COMMENT
+%state IN_ML_STRING
+%state IN_ML_COMMENT
+%state IN_SL_COMMENT
 
 %%
 
@@ -96,6 +96,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "as"          { return types.AS; }
     "assert"      { return types.ASSERT; }
     "begin"       { return types.BEGIN; }
+    "catch"       { return types.CATCH; }
     "class"       { return types.CLASS; }
     "constraint"  { return types.CONSTRAINT; }
     "do"          { return types.DO; }
@@ -107,7 +108,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "exception"   { return types.EXCEPTION; }
     "external"    { return types.EXTERNAL; }
     "for"         { return types.FOR; }
-    "fun"         { return types.FUN; }
     "function"    { return types.FUNCTION; }
     "functor"     { return types.FUNCTOR; }
     "if"          { return types.IF; }
@@ -127,6 +127,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "or"          { return types.OR; }
     "pub"         { return types.PUB; }
     "pri"         { return types.PRI; }
+    "raw"         { return types.RAW; }
     "rec"         { return types.REC; }
     "sig"         { return types.SIG; }
     "struct"      { return types.STRUCT; }
@@ -140,7 +141,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "when"        { return types.WHEN; }
     "while"       { return types.WHILE; }
     "with"        { return types.WITH; }
-    "raw"         { return types.RAW; }
 
     "mod"         { return types.MOD; }
     "land"        { return types.LAND; }
@@ -166,30 +166,22 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 
     "_"   { return types.UNDERSCORE; }
 
+    "j`"                             { return types.JS_STRING_OPEN/*Template*/; }
+
     "'" ( {ESCAPE_CHAR} | . ) "'"    { return types.CHAR_VALUE; }
     {LOWERCASE}{IDENTCHAR}*          { return types.LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return types.UIDENT; }
     {INT_LITERAL}{LITERAL_MODIFIER}? { return types.INT_VALUE; }
     ({FLOAT_LITERAL} | {HEXA_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return types.FLOAT_VALUE; }
     "'"{LOWERCASE}{IDENTCHAR}*       { return types.TYPE_ARGUMENT; }
-    "`"{UPPERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
-    "`"{LOWERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
+    "#"{UPPERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
+    "#"{LOWERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
-    "/*" { yybegin(IN_REASON_ML_COMMENT); commentDepth = 1; tokenStart(); }
-    "//" { if (!(types instanceof OclTypes)) { yybegin(IN_REASON_SL_COMMENT); tokenStart(); } }
-    "(*" { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; tokenStart(); }
-
-    "#if"     { return types.DIRECTIVE_IF; }
-    "#else"   { return types.DIRECTIVE_ELSE; }
-    "#elif"   { return types.DIRECTIVE_ELIF; }
-    "#endif"  { return types.DIRECTIVE_ENDIF; }
-    "#end"    { return types.DIRECTIVE_END; }
+    "/*" { yybegin(IN_ML_COMMENT); commentDepth = 1; tokenStart(); }
+    "//" { yybegin(IN_SL_COMMENT); tokenStart(); }
 
     "##"  { return types.SHARPSHARP; }
-    "@@"  { return types.ARROBASE_2; }
-    "@@@" { return types.ARROBASE_3; }
-
     "::"  { return types.SHORTCUT; }
     "=>"  { return types.ARROW; }
     "->"  { return types.RIGHT_ARROW; }
@@ -198,17 +190,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "|."  { return types.PIPE_FIRST; }
     "</"  { return types.TAG_LT_SLASH; }
     "/>"  { return types.TAG_AUTO_CLOSE; }
-    "[|"  { return types.LARRAY; }
-    "|]"  { return types.RARRAY; }
-    //">]"  { return types.GT_BRACKET; }
-    //">}"  { return types.GT_BRACE; }
-    //"{<"  { return types.BRACE_LT; }
-    //"[<"  { return types.BRACKET_LT; }
-    //"[>"  { return types.BRACKET_GT; }
-    "{|"  { return types.ML_STRING_OPEN; /*bs MultiLine*/ }
-    "|}"  { return types.ML_STRING_CLOSE; /*bs MultiLine*/ }
-    "{j|"  { return types.JS_STRING_OPEN; /*js interpolation*/ }
-    "|j}"  { return types.JS_STRING_CLOSE; /*js interpolation*/ }
 
     "===" { return types.EQEQEQ; }
     "=="  { return types.EQEQ; }
@@ -218,16 +199,15 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     ":="  { return types.COLON_EQ; }
     ":>"  { return types.COLON_GT; }
     "<="  { return types.LT_OR_EQUAL; }
-    ">="  { return types.GT_OR_EQUAL; }
-    ";;"  { return types.SEMISEMI; }
-    "||"  { return types.L_OR; }
+    //">="  { return types.GT_OR_EQUAL; } // Incompatible with type argument -> external x : (~props: Js.t<{..}>=?)
     "&&"  { return types.L_AND; }
+    "||"  { return types.L_OR; }
 
     ","   { return types.COMMA; }
     ":"   { return types.COLON; }
     ";"   { return types.SEMI; }
     "'"   { return types.SINGLE_QUOTE; }
-    "\""  { return types.DOUBLE_QUOTE; }
+    //"\""  { return types.DOUBLE_QUOTE; }
     "..." { return types.DOTDOTDOT; }
     ".."  { return types.DOTDOT; }
     "."   { return types.DOT; }
@@ -243,7 +223,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "?"   { return types.QUESTION_MARK; }
     "!"   { return types.EXCLAMATION_MARK; }
     "$"   { return types.DOLLAR; }
-    "`"   { return types.BACKTICK; }
+    "`"   { yybegin(IN_ML_STRING); tokenStart(); }
     "~"   { return types.TILDE; }
     "&"   { return types.AMPERSAND; }
 
@@ -260,6 +240,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "/"   { return types.SLASH; }
     "*"   { return types.STAR; }
     "%"   { return types.PERCENT; }
+    "\\"  { return types.BACKSLASH; }
 }
 
 <IN_STRING> {
@@ -275,7 +256,20 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
 }
 
-<IN_REASON_ML_COMMENT> {
+<IN_ML_STRING> {
+    "`" { yybegin(INITIAL); tokenEnd(); return types.ML_STRING_VALUE; }
+    "\\" { NEWLINE } ([ \t] *) { }
+    "\\" [\\\'\"ntbr ] { }
+    "\\" [0-9] [0-9] [0-9] { }
+    "\\" "o" [0-3] [0-7] [0-7] { }
+    "\\" "x" [0-9a-fA-F] [0-9a-fA-F] { }
+    "\\" . { }
+    { NEWLINE } { }
+    . { }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.ML_STRING_VALUE; }
+}
+
+<IN_ML_COMMENT> {
     "/*" { if (!inCommentString) commentDepth += 1; }
     "*/" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
     "\"" { inCommentString = !inCommentString; }
@@ -283,18 +277,10 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
 }
 
-<IN_REASON_SL_COMMENT> {
+<IN_SL_COMMENT> {
     .         { }
     {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
     <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
-}
-
-<IN_OCAML_ML_COMMENT> {
-    "(*" { if (!inCommentString) commentDepth += 1; }
-    "*)" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
-    "\"" { inCommentString = !inCommentString; }
-     . | {NEWLINE} { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

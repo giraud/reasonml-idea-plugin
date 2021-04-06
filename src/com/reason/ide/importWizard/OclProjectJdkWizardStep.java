@@ -190,7 +190,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
         VirtualFileSystem fileSystem = LocalFileSystem.getInstance();
 
         Files.walkFileTree(targetSdkLocation.toPath(),
-                new SimpleFileVisitor<>() {
+                new SimpleFileVisitor<Path>() {
                     @Override
                     public @NotNull FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
                         VirtualFile file = fileSystem.findFileByPath(path.toString());

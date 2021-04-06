@@ -78,9 +78,9 @@
                   implementationClass="com.reason.ide.files.RmlFileType"/>
         <!-- Bs/Napkin -->
         <fileType extensions="resi" name="RESCRIPT_INTF" fieldName="INSTANCE" language="NapkinScript"
-                  implementationClass="com.reason.ide.files.NsInterfaceFileType"/>
+                  implementationClass="com.reason.ide.files.ResInterfaceFileType"/>
         <fileType extensions="res" name="RESCRIPT" fieldName="INSTANCE" language="NapkinScript"
-                  implementationClass="com.reason.ide.files.NsFileType"/>
+                  implementationClass="com.reason.ide.files.ResFileType"/>
         <!-- OCaml -->
         <fileType extensions="mli" name="OCAML_INTF" fieldName="INSTANCE" language="OCaml"
                   implementationClass="com.reason.ide.files.OclInterfaceFileType"/>
@@ -135,10 +135,10 @@
         <!-- Rescript -->
         <stubElementTypeHolder externalIdPrefix="NapkinScript."
                                class="com.reason.lang.core.stub.RescriptStubBasedElementTypes"/>
-        <lang.ast.factory language="NapkinScript" implementationClass="com.reason.lang.napkin.RescriptASTFactory"/>
-        <lang.parserDefinition language="NapkinScript" implementationClass="com.reason.lang.napkin.NsParserDefinition"/>
+        <lang.ast.factory language="NapkinScript" implementationClass="com.reason.lang.napkin.ResASTFactory"/>
+        <lang.parserDefinition language="NapkinScript" implementationClass="com.reason.lang.napkin.ResParserDefinition"/>
         <lang.syntaxHighlighterFactory language="NapkinScript"
-                                       implementationClass="com.reason.ide.highlight.NsSyntaxHighlighterFactory"/>
+                                       implementationClass="com.reason.ide.highlight.ResSyntaxHighlighterFactory"/>
         <!-- OCaml -->
         <stubElementTypeHolder externalIdPrefix="OCaml." class="com.reason.lang.core.stub.OclStubBasedElementTypes"/>
         <lang.ast.factory language="OCaml" implementationClass="com.reason.lang.ocaml.OclASTFactory"/>
@@ -206,7 +206,7 @@
         <lang.commenter language="Dune" implementationClass="com.reason.ide.comment.DuneCommenter"/>
 
         <lang.braceMatcher language="Reason" implementationClass="com.reason.ide.match.RmlPairedBraceMatcher"/>
-        <lang.braceMatcher language="NapkinScript" implementationClass="com.reason.ide.match.RsPairedBraceMatcher"/>
+        <lang.braceMatcher language="NapkinScript" implementationClass="com.reason.ide.match.ResPairedBraceMatcher"/>
         <lang.braceMatcher language="OCaml" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="OCamlP4" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="Mlg" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
@@ -261,7 +261,7 @@
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.findUsagesProvider language="NapkinScript"
-                                 implementationClass="com.reason.ide.search.NsFindUsagesProvider"/>
+                                 implementationClass="com.reason.ide.search.ResFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCamlP4" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
         <lang.findUsagesProvider language="Mlg" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
@@ -321,8 +321,8 @@
         <projectService serviceImplementation="com.reason.ide.console.ORToolWindowManager"/>
 
         <typedHandler implementation="com.reason.ide.handlers.ORTypedHandler" id="RmlTypedHandler"/>
-        <quoteHandler fileType="RESCRIPT" className="com.reason.ide.handlers.NsQuoteHandler"/>
-        <quoteHandler fileType="RESCRIPT_INTF" className="com.reason.ide.handlers.NsQuoteHandler"/>
+        <quoteHandler fileType="RESCRIPT" className="com.reason.ide.handlers.ResQuoteHandler"/>
+        <quoteHandler fileType="RESCRIPT_INTF" className="com.reason.ide.handlers.ResQuoteHandler"/>
         <quoteHandler fileType="REASON" className="com.reason.ide.handlers.RmlQuoteHandler"/>
         <quoteHandler fileType="REASON_INTF" className="com.reason.ide.handlers.RmlQuoteHandler"/>
         <quoteHandler fileType="OCAML" className="com.reason.ide.handlers.OclQuoteHandler"/>
@@ -341,7 +341,7 @@
         <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>
 
         <annotator language="Reason" implementationClass="com.reason.ide.highlight.RmlSyntaxAnnotator"/>
-        <annotator language="NapkinScript" implementationClass="com.reason.ide.highlight.NsSyntaxAnnotator"/>
+        <annotator language="NapkinScript" implementationClass="com.reason.ide.highlight.ResSyntaxAnnotator"/>
         <annotator language="OCaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
         <annotator language="Dune" implementationClass="com.reason.ide.highlight.DuneSyntaxAnnotator"/>
 
@@ -355,9 +355,9 @@
         <completion.contributor language="Reason"
                                 implementationClass="com.reason.ide.insight.RmlKeywordCompletionContributor"/>
         <completion.contributor language="NapkinScript"
-                                implementationClass="com.reason.ide.insight.NsCompletionContributor"/>
+                                implementationClass="com.reason.ide.insight.ResCompletionContributor"/>
         <completion.contributor language="NapkinScript"
-                                implementationClass="com.reason.ide.insight.NsKeywordCompletionContributor"/>
+                                implementationClass="com.reason.ide.insight.ResKeywordCompletionContributor"/>
         <completion.contributor language="OCaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
         <completion.contributor language="OCaml"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>

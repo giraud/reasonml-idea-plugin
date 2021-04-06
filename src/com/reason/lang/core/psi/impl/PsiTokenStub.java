@@ -2,10 +2,11 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;
+import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
 import org.jetbrains.annotations.*;
 
-public class PsiTokenStub<T, S extends StubElement> extends StubBasedPsiElementBase<S> {
+public class PsiTokenStub<T, P extends PsiElement, S extends StubElement<P>> extends StubBasedPsiElementBase<S> {
     @NotNull protected final T m_types;
 
     public PsiTokenStub(@NotNull T types, @NotNull ASTNode node) {

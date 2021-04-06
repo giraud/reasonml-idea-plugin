@@ -35,6 +35,7 @@ public class OclTypes extends ORTypes {
         C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
         C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", OclLanguage.INSTANCE);
         C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", OclLanguage.INSTANCE);
+        C_CUSTOM_OPERATOR = new ORCompositeElementType("C_CUSTOM_OPERATOR", OclLanguage.INSTANCE);
         C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", OclLanguage.INSTANCE);
         C_DEFAULT_VALUE = new ORCompositeElementType("C_DEFAULT_VALUE", OclLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", OclLanguage.INSTANCE);
@@ -204,11 +205,13 @@ public class OclTypes extends ORTypes {
         SHARPSHARP = new ORTokenElementType("SHARPSHARP", OclLanguage.INSTANCE);
         SHORTCUT = new ORTokenElementType("SHORTCUT", OclLanguage.INSTANCE);
         SLASH = new ORTokenElementType("SLASH", OclLanguage.INSTANCE);
+        SLASH_2 = new ORTokenElementType("SLASH_2", OclLanguage.INSTANCE);
         SLASHDOT = new ORTokenElementType("SLASHDOT", OclLanguage.INSTANCE);
         SOME = new ORTokenElementType("SOME", OclLanguage.INSTANCE);
         STAR = new ORTokenElementType("STAR", OclLanguage.INSTANCE);
         STARDOT = new ORTokenElementType("STARDOT", OclLanguage.INSTANCE);
         STRUCT = new ORTokenElementType("STRUCT", OclLanguage.INSTANCE);
+        OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", OclLanguage.INSTANCE);
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", OclLanguage.INSTANCE);
         TAG_NAME = new ORTokenElementType("TAG_NAME", OclLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", OclLanguage.INSTANCE);
