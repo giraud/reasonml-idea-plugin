@@ -77,11 +77,7 @@ public abstract class OCamlExecutable {
         String distName = path.substring(0, index);
         String wslPath = FileUtil.toSystemIndependentName(path.substring(index));
 
-        WSLDistribution distribution = WSLUtil.getDistributionByMsId(distName);
-        if (distribution == null) {
-            LOG.debug(String.format("Unknown WSL distribution: %s, known distributions: %s", distName,
-                    StringUtil.join(WSLUtil.getAvailableDistributions(), WSLDistribution::getMsId, ", ")));
-        }
+        WSLDistribution distribution = WslDistributionManager.getInstance().getOrCreateDistributionByMsId(distName);
 
         return Pair.create(wslPath, distribution);
     }
