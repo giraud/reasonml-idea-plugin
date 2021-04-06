@@ -30,7 +30,7 @@ public class ComponentPropertyAdapter {
         m_psiElement = parameter;
         m_name = parameter.getName();
         PsiSignature signature = parameter.getSignature();
-        m_type = signature == null ? "" : signature.asText(parameter.getLanguage());
+        m_type = signature == null ? (parameter.getDefaultValue() == null ? "" : "=" + parameter.getDefaultValue().getText()) : signature.asText(parameter.getLanguage());
         m_mandatory = parameter.getDefaultValue() == null;
     }
 

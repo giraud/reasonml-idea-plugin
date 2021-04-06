@@ -53,11 +53,13 @@ public class JsxAttributeCompletionProvider {
                     boolean mandatory = attribute.isMandatory();
                     Icon icon = mandatory ? LayeredIcon.create(ORIcons.ATTRIBUTE, ORIcons.OVERLAY_MANDATORY) : ORIcons.ATTRIBUTE;
                     LookupElementBuilder lookupElementBuilder = attribute.getElement() == null ? LookupElementBuilder.create(attributeName) : LookupElementBuilder.createWithSmartPointer(attributeName, attribute.getElement());
-                    resultSet.addElement(lookupElementBuilder
-                            .withBoldness(mandatory)
-                            .withTypeText(attribute.getType(), true)
-                            .withIcon(icon)
-                            .withInsertHandler((context, item) -> insertTagAttributeHandler(context)));
+                    resultSet.addElement(PrioritizedLookupElement.withPriority(
+                            lookupElementBuilder
+                                    .withBoldness(mandatory)
+                                    .withTypeText(attribute.getType(), true)
+                                    .withIcon(icon)
+                                    .withInsertHandler((context, item) -> insertTagAttributeHandler(context)),
+                            mandatory ? 1 : 0));
                 }
             }
         }

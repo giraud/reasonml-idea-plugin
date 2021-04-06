@@ -16,6 +16,8 @@ are solved.
 
 ## Unreleased
 
+- :nail_care: order jsx attributes, mandatory first
+
 # 0.98.3 - 2021/04/06
 
 - :bug: [#314](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/314) missing item in structure panel (structural diff operator)
