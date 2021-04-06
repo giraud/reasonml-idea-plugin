@@ -10,12 +10,9 @@ import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiAnnotation;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
-import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -31,76 +28,8 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
         super(types, elementType);
     }
 
-    static class TagPropertyImpl implements TagProperty {
-        private final @Nullable String m_name;
-        private final String m_type;
-        private final PsiElement m_psiElement;
-        private boolean m_mandatory;
-
-        TagPropertyImpl(@NotNull PsiRecordField field, @NotNull List<PsiAnnotation> annotations) {
-            m_psiElement = field;
-            m_name = field.getName();
-            PsiSignature signature = field.getSignature();
-            m_type = signature == null ? "" : signature.asText(RmlLanguage.INSTANCE);
-            m_mandatory = false; // TODO: hmSignature.isMandatory(0);
-
-            for (PsiAnnotation annotation : annotations) {
-                if ("@bs.optional".equals(annotation.getName())) {
-                    m_mandatory = false;
-                }
-            }
-        }
-
-        TagPropertyImpl(@NotNull PsiParameter parameter) {
-            m_psiElement = parameter;
-            m_name = parameter.getName();
-            PsiSignature signature = parameter.getSignature();
-            m_type = signature == null ? "" : signature.asText(parameter.getLanguage());
-            m_mandatory = parameter.getDefaultValue() != null;
-        }
-
-        public TagPropertyImpl(@NotNull PsiSignatureItem signatureItem) {
-            m_psiElement = signatureItem;
-            m_name = signatureItem.getName();
-            m_type = signatureItem.asText(signatureItem.getLanguage());
-            m_mandatory = !signatureItem.isOptional();
-        }
-
-        TagPropertyImpl(@Nullable String name, String type) {
-            m_psiElement = null;
-            m_name = name;
-            m_type = type;
-            m_mandatory = false;
-        }
-
-        @Override public @Nullable PsiElement getElement() {
-            return m_psiElement;
-        }
-
-        @Override
-        public @Nullable String getName() {
-            return m_name;
-        }
-
-        @Override
-        public String getType() {
-            return m_type;
-        }
-
-        @Override
-        public boolean isMandatory() {
-            return m_mandatory;
-        }
-
-        @Override
-        public @NotNull String toString() {
-            return m_name + ":" + m_type;
-        }
-    }
-
-    @NotNull
-    public static TagProperty createProp(String name, String type) {
-        return new TagPropertyImpl(name, type);
+    public static @NotNull ComponentPropertyAdapter createProp(String name, String type) {
+        return new ComponentPropertyAdapter(name, type);
     }
 
     @Nullable
@@ -142,8 +71,8 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
 
     @NotNull
     @Override
-    public List<TagProperty> getUnifiedPropertyList() {
-        final List<TagProperty> result = new ArrayList<>();
+    public List<ComponentPropertyAdapter> getUnifiedPropertyList() {
+        final List<ComponentPropertyAdapter> result = new ArrayList<>();
 
         Project project = getProject();
         PsiFinder psiFinder = PsiFinder.getInstance(project);
@@ -166,7 +95,7 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
                             PsiRecord record = PsiTreeUtil.getStubChildOfType(binding, PsiRecord.class);
                             if (record != null) {
                                 for (PsiRecordField field : record.getFields()) {
-                                    result.add(new TagPropertyImpl(field, ORUtil.prevAnnotations(field)));
+                                    result.add(new ComponentPropertyAdapter(field, ORUtil.prevAnnotations(field)));
                                 }
                             }
                         }
@@ -188,14 +117,14 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
                                 if (function != null) {
                                     function.getParameters().stream()
                                             .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
-                                            .forEach(p -> result.add(new TagPropertyImpl(p)));
+                                            .forEach(p -> result.add(new ComponentPropertyAdapter(p)));
                                 }
                             } else {
                                 PsiSignature signature = ((PsiExternal) expression).getSignature();
                                 if (signature != null) {
                                     signature.getItems().stream()
                                             .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
-                                            .forEach(p -> result.add(new TagPropertyImpl(p)));
+                                            .forEach(p -> result.add(new ComponentPropertyAdapter(p)));
                                 }
                             }
                         }

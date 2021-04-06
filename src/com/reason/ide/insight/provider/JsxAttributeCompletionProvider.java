@@ -28,7 +28,7 @@ public class JsxAttributeCompletionProvider {
 
         PsiTagStart tag = PsiTreeUtil.getParentOfType(element, PsiTagStart.class);
         if (tag != null) {
-            List<PsiTagStart.TagProperty> attributes = tag.getUnifiedPropertyList();
+            List<ComponentPropertyAdapter> attributes = tag.getUnifiedPropertyList();
 
             if (tag.getNameIdentifier() instanceof PsiUpperSymbol) {
                 // Additional attributes for UpperSymbol => only key and ref
@@ -47,7 +47,7 @@ public class JsxAttributeCompletionProvider {
             LOG.debug("used names", usedNames);
 
             // Now populate the dialog
-            for (PsiTagStart.TagProperty attribute : attributes) {
+            for (ComponentPropertyAdapter attribute : attributes) {
                 String attributeName = attribute.getName();
                 if (attributeName != null && !usedNames.contains(attributeName)) {
                     boolean mandatory = attribute.isMandatory();
