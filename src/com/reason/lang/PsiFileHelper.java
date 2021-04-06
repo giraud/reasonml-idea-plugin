@@ -34,13 +34,7 @@ public class PsiFileHelper {
         return result;
     }
 
-    private static void processSiblingExpressions(
-            @Nullable PsiFinder psiFinder,
-            @NotNull QNameFinder qnameFinder,
-            @Nullable PsiElement element,
-            @NotNull ExpressionScope eScope,
-            @NotNull List<PsiNamedElement> result,
-            @Nullable ExpressionFilter filter) {
+    private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @NotNull QNameFinder qnameFinder, @Nullable PsiElement element, @NotNull ExpressionScope eScope, @NotNull List<PsiNamedElement> result, @Nullable ExpressionFilter filter) {
         while (element != null) {
             if (element instanceof PsiInclude && psiFinder != null) {
                 // Recursively include everything from referenced module
@@ -49,19 +43,16 @@ public class PsiFileHelper {
 
                 PsiModule includedModule = null;
 
-                String includeName = include.getQualifiedName();
+                String includedPath = include.getPath();
                 for (String path : qnameFinder.extractPotentialPaths(include)) {
-                    Set<PsiModule> modulesFromQn =
-                            psiFinder.findModulesFromQn(
-                                    path + "." + includeName, true, interfaceOrImplementation, scope);
+                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(path + "." + includedPath, true, interfaceOrImplementation, scope);
                     if (!modulesFromQn.isEmpty()) {
                         includedModule = modulesFromQn.iterator().next();
                         break;
                     }
                 }
                 if (includedModule == null) {
-                    Set<PsiModule> modulesFromQn =
-                            psiFinder.findModulesFromQn(includeName, true, interfaceOrImplementation, scope);
+                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(includedPath, true, interfaceOrImplementation, scope);
                     if (!modulesFromQn.isEmpty()) {
                         includedModule = modulesFromQn.iterator().next();
                     }

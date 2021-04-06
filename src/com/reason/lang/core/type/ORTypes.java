@@ -136,6 +136,7 @@ public abstract class ORTypes {
   public ORTokenElementType LAZY;
   public ORTokenElementType LET;
   public ORTokenElementType L_AND;
+  public ORTokenElementType OP_STRUCT_DIFF;
   public ORTokenElementType L_OR;
   public ORTokenElementType MODULE;
   public ORTokenElementType MUTABLE;

@@ -1,5 +1,7 @@
 package com.reason.lang.core.psi;
 
-public interface PsiOpen extends PsiQualifiedElement, PsiStructuredElement {
-  boolean useFunctor();
+public interface PsiOpen extends PsiStructuredElement {
+    String getPath();
+
+    boolean useFunctor();
 }

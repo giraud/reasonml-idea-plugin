@@ -1,10 +1,7 @@
 package com.reason.lang.napkin;
 
-import com.reason.lang.core.stub.RescriptStubBasedElementTypes;
-import com.reason.lang.core.type.ORCompositeElementType;
-import com.reason.lang.core.type.ORCompositeType;
-import com.reason.lang.core.type.ORTokenElementType;
-import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.core.stub.*;
+import com.reason.lang.core.type.*;
 
 public class ResTypes extends ORTypes {
     public static final ResTypes INSTANCE = new ResTypes();
@@ -212,6 +209,7 @@ public class ResTypes extends ORTypes {
         STAR = new ORTokenElementType("STAR", ResLanguage.INSTANCE);
         STARDOT = new ORTokenElementType("STARDOT", ResLanguage.INSTANCE);
         STRUCT = new ORTokenElementType("STRUCT", ResLanguage.INSTANCE);
+        OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", ResLanguage.INSTANCE);
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", ResLanguage.INSTANCE);
         TAG_NAME = new ORTokenElementType("TAG_NAME", ResLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", ResLanguage.INSTANCE);
