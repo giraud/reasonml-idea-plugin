@@ -15,7 +15,8 @@ Please note that **rescript development is paused** until issues in rescript too
 are solved.
 
 ## Unreleased
-
+ 
+- :bug: [#315](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/315) ![r] insertion handler for JSX doesn't detect close tag
 - :nail_care: order jsx attributes, mandatory first
 
 # 0.98.3 - 2021/04/06
