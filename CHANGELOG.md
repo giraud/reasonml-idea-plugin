@@ -16,10 +16,12 @@ are solved.
 
 ## Unreleased
 
+# 0.98.3 - 2021/04/06
+
 - :bug: [#314](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/314) missing item in structure panel (structural diff operator)
 - :bug: [#313](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/313) alphabetize opened/included modules in the structure panel
 
-# 0.98.2 - 2021/03/30
+0.98.2
 
 - :bug: [#312](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/312) ![o] switch with optional is not parsed correctly
 - :bug: [#311](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/311) ![o] Missing icon in mli file
