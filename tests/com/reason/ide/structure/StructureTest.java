@@ -82,8 +82,21 @@ public class StructureTest extends ORBasePlatformTestCase {
     assertEmpty(model.getRoot().getChildren());
   }
 
-  private void assertPresentation(
-      String name, String location, @Nullable Icon icon, ItemPresentation pres) {
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/190
+  // nested functions
+  public void test_OCL_GH_190() {
+    FileBase e = configureCode("A.ml", "let fn a b = let open Pp in let fn1 = 1 in let fn2 = 2");
+    StructureViewModel model = new ORStructureViewModel(e);
+
+    TreeElement fn = model.getRoot().getChildren()[0];
+    assertPresentation("fn", null, ORIcons.FUNCTION, fn.getPresentation());
+    TreeElement fn1 = fn.getChildren()[0];
+    assertPresentation("fn1", null, ORIcons.LET, fn1.getPresentation());
+    TreeElement fn2 = fn.getChildren()[1];
+    assertPresentation("fn2", null, ORIcons.LET, fn2.getPresentation());
+  }
+
+  private void assertPresentation(String name, String location, @Nullable Icon icon, ItemPresentation pres) {
     assertEquals("Incorrect name", name, pres.getPresentableText());
     assertEquals("Incorrect location", location, pres.getLocationString());
     assertEquals("Incorrect icon", icon, pres.getIcon(false));

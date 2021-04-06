@@ -21,21 +21,27 @@ import java.util.*;
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     @NotNull private final PsiElement m_element;
     @Nullable private final PsiElement m_viewElement;
+    private final int m_level;
     private final boolean m_navigateToViewElement;
 
-    StructureViewElement(@NotNull PsiElement element) {
-        this(null, element, false);
+    StructureViewElement(@NotNull PsiElement element, int level) {
+        this(null, element, false, level);
     }
 
-    private StructureViewElement(@Nullable PsiElement viewElement, @NotNull PsiElement element, boolean navigateToViewElement) {
+    private StructureViewElement(@Nullable PsiElement viewElement, @NotNull PsiElement element, boolean navigateToViewElement, int level) {
         m_viewElement = viewElement;
         m_element = element;
         m_navigateToViewElement = navigateToViewElement;
+        m_level = level;
     }
 
     @Override
     public @NotNull Object getValue() {
         return m_viewElement == null ? m_element : m_viewElement;
+    }
+
+    int getLevel() {
+        return m_level;
     }
 
     @Override
@@ -132,7 +138,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         if (m_element instanceof FileBase || m_element instanceof DuneFile) {
             treeElements = new ArrayList<>();
-            m_element.acceptChildren(new ElementVisitor(treeElements));
+            m_element.acceptChildren(new ElementVisitor(treeElements, m_level));
             if (!treeElements.isEmpty()) {
                 return treeElements.toArray(new TreeElement[0]);
             }
@@ -150,6 +156,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             treeElements = buildYaccTrailerStructure((OclYaccTrailer) m_element);
         } else if (m_element instanceof PsiStanza) {
             treeElements = buildStanzaStructure((PsiStanza) m_element);
+        } else if (m_element instanceof PsiLet) {
+            treeElements = buildLetStructure((PsiLet) m_element);
         }
 
         if (treeElements != null && !treeElements.isEmpty()) {
@@ -169,7 +177,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         }
 
         if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements));
+            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
         }
 
         // Process body if there is a signature
@@ -188,7 +196,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         PsiElement binding = functor.getBinding();
         if (binding != null) {
-            binding.acceptChildren(new ElementVisitor(treeElements));
+            binding.acceptChildren(new ElementVisitor(treeElements, m_level));
         }
 
         return treeElements;
@@ -201,7 +209,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         if (binding != null) {
             PsiRecord record = ORUtil.findImmediateFirstChildOfClass(binding, PsiRecord.class);
             if (record != null) {
-                binding.acceptChildren(new ElementVisitor(treeElements));
+                binding.acceptChildren(new ElementVisitor(treeElements, m_level));
             }
         }
 
@@ -213,7 +221,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         PsiElement rootElement = classElement.getClassBody();
         if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements));
+            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
         }
 
         return treeElements;
@@ -225,7 +233,19 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         PsiElement rootElement =
                 ORUtil.findImmediateFirstChildOfClass(stanzaElement, PsiDuneFields.class);
         if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements));
+            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
+        }
+
+        return treeElements;
+    }
+
+    private @Nullable List<TreeElement> buildLetStructure(PsiLet let) {
+        List<TreeElement> treeElements = null;
+
+        PsiElement rootElement = let.getBinding();
+        if (rootElement != null && let.isFunction()) {
+            treeElements = new ArrayList<>();
+            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
         }
 
         return treeElements;
@@ -237,7 +257,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         PsiElement rootElement =
                 ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
         if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements));
+            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
         }
 
         return treeElements;
@@ -249,7 +269,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         PsiElement rootElement =
                 ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
         if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements));
+            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
         }
 
         return treeElements;
@@ -257,9 +277,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
     static class ElementVisitor extends PsiElementVisitor {
         private final List<TreeElement> m_treeElements;
+        private final int m_elementLevel;
 
-        ElementVisitor(List<TreeElement> elements) {
+        ElementVisitor(List<TreeElement> elements, int elementLevel) {
             m_treeElements = elements;
+            m_elementLevel = elementLevel;
         }
 
         @Override
@@ -272,17 +294,32 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                             // it's a tuple! add each element of the tuple separately.
                             for (PsiElement child : let.getScopeChildren()) {
                                 if (child instanceof PsiLowerIdentifier) {
-                                    m_treeElements.add(new StructureViewElement(child, element, true));
+                                    m_treeElements.add(new StructureViewElement(child, element, true, m_elementLevel));
                                 }
                             }
                             return;
                         }
                     }
-                    m_treeElements.add(new StructureViewElement(element));
+                    m_treeElements.add(new StructureViewElement(element, m_elementLevel));
                 }
             } else if (element instanceof PsiRecord) {
                 for (PsiRecordField field : ((PsiRecord) element).getFields()) {
-                    m_treeElements.add(new StructureViewElement(field));
+                    m_treeElements.add(new StructureViewElement(field, m_elementLevel));
+                }
+            } else if (element instanceof PsiScopedExpr && m_elementLevel < 2) {
+                List<PsiStructuredElement> children = ORUtil.findImmediateChildrenOfClass(element, PsiStructuredElement.class);
+                for (PsiStructuredElement child : children) {
+                    if (child.canBeDisplayed()) {
+                        m_treeElements.add(new StructureViewElement(child, m_elementLevel));
+                    }
+                }
+            } else if (element instanceof PsiFunction && m_elementLevel < 2) {
+                PsiFunctionBody body = ((PsiFunction) element).getBody();
+                List<PsiStructuredElement> children = ORUtil.findImmediateChildrenOfClass(body, PsiStructuredElement.class);
+                for (PsiStructuredElement child : children) {
+                    if (child.canBeDisplayed()) {
+                        m_treeElements.add(new StructureViewElement(child, m_elementLevel + 1));
+                    }
                 }
             }
         }
@@ -319,11 +356,10 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             };
         }
 
-        @NotNull
         @Override
-        public TreeElement[] getChildren() {
+        public @NotNull TreeElement[] getChildren() {
             List<TreeElement> treeElements = new ArrayList<>();
-            m_rootElement.acceptChildren(new ElementVisitor(treeElements));
+            m_rootElement.acceptChildren(new ElementVisitor(treeElements, 1));
             return treeElements.toArray(new TreeElement[0]);
         }
 
