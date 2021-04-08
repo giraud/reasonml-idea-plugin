@@ -48,9 +48,13 @@ public class PsiOpenImpl extends CompositeTypePsiElement<ORTypes> implements Psi
         return new GoToSymbolProvider.BaseNavigationItem(this, getPath(), ORIcons.OPEN);
     }
 
-    @Nullable
     @Override
-    public String toString() {
+    public boolean canBeDisplayed() {
+        return !(getParent() instanceof PsiFunctionBody);
+    }
+
+    @Override
+    public @Nullable String toString() {
         return "Open " + getPath();
     }
 }

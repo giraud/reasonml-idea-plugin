@@ -49,11 +49,10 @@ allprojects {
             untilBuild = pluginUntilBuild
             changeNotes """
                 <ul>
-                    <li>#314 - missing item in structure panel (structural diff operator)</li>
-                    <li>#313 - alphabetize opened/included modules in the structure panel</li>
-                    <li>#312 - switch with optional is not parsed correctly</li>
-                    <li>#311 - Missing icon in mli file</li>
-                    <li>#310 - Missing types in structure panel after class definition</li>
+                    <li>#315 - insertion handler for JSX doesn't detect close tag</li>
+                    <li>#190 - show nested function definitions in structure panel</li>
+                    <li>fix incorrect identification of optional parameter</li>
+                    <li>order jsx attributes, mandatory first</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

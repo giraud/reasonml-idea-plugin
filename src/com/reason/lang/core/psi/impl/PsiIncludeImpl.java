@@ -39,6 +39,11 @@ public class PsiIncludeImpl extends CompositeTypePsiElement<ORTypes> implements 
     }
 
     @Override
+    public boolean canBeDisplayed() {
+        return !(getParent() instanceof PsiFunctionBody);
+    }
+
+    @Override
     public @NotNull String toString() {
         return "PsiInclude " + getPath();
     }

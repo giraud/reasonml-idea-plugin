@@ -33,6 +33,7 @@ public class JsxNameCompletionProvider {
 
         Collection<PsiModule> modules = PsiFinder.getInstance(project).findComponents(scope);
         LOG.debug(" -> Modules found", modules);
+
         for (PsiModule module : modules) {
             String moduleName = module.getModuleName();
             if (moduleName != null) {
@@ -59,10 +60,24 @@ public class JsxNameCompletionProvider {
             context.setAddCompletionChar(false);
         }
 
-        Editor editor = context.getEditor();
-        EditorModificationUtil.insertStringAtCaret(editor, " ></" + tagName + ">");
-        editor.getCaretModel().moveToOffset(editor.getCaretModel().getOffset() - 4 - tagName.length());
+        boolean closeTag = false;
+        CharSequence chars = context.getDocument().getCharsSequence();
 
-        AutoPopupController.getInstance(project).autoPopupMemberLookup(editor, null);
+        int tagPrefixOffset = context.getStartOffset() - 2;
+        if (tagPrefixOffset >= 0) {
+            CharSequence tagPrefix = chars.subSequence(tagPrefixOffset, context.getStartOffset());
+            closeTag = "</".contentEquals(tagPrefix);
+        }
+
+        Editor editor = context.getEditor();
+        if (closeTag) {
+            if (chars.charAt(context.getTailOffset()) != '>') {
+                EditorModificationUtil.insertStringAtCaret(editor, ">");
+            }
+        } else {
+            EditorModificationUtil.insertStringAtCaret(editor, " ></" + tagName + ">");
+            editor.getCaretModel().moveToOffset(editor.getCaretModel().getOffset() - 4 - tagName.length());
+            AutoPopupController.getInstance(project).autoPopupMemberLookup(editor, null);
+        }
     }
 }

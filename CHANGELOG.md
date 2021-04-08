@@ -16,6 +16,15 @@ are solved.
 
 ## Unreleased
 
+# 0.99 - 2021/04/08
+
+Version 0.99 supports the 2021.1 release.
+ 
+- :bug: [#315](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/315) ![r] insertion handler for JSX doesn't detect close tag
+- :bug: [#190](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/190) show nested function definitions in structure panel
+- :bug: fix incorrect identification of optional parameter
+- :nail_care: ![r] order jsx attributes, mandatory first
+
 # 0.98.3 - 2021/04/06
 
 - :bug: [#314](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/314) missing item in structure panel (structural diff operator)
