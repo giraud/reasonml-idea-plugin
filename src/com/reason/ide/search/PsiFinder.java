@@ -18,7 +18,7 @@ import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.napkin.*;
+import com.reason.lang.rescript.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
 import gnu.trove.*;

@@ -6,7 +6,7 @@ import com.intellij.psi.impl.*;
 import com.intellij.psi.util.*;
 import com.intellij.testFramework.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.napkin.*;
+import com.reason.lang.rescript.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;

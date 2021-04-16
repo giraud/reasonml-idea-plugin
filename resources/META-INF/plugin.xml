@@ -76,10 +76,10 @@
                   implementationClass="com.reason.ide.files.RmlInterfaceFileType"/>
         <fileType extensions="re" name="REASON" fieldName="INSTANCE" language="Reason"
                   implementationClass="com.reason.ide.files.RmlFileType"/>
-        <!-- Bs/Napkin -->
-        <fileType extensions="resi" name="RESCRIPT_INTF" fieldName="INSTANCE" language="NapkinScript"
+        <!-- Rescript -->
+        <fileType extensions="resi" name="RESCRIPT_INTF" fieldName="INSTANCE" language="Rescript"
                   implementationClass="com.reason.ide.files.ResInterfaceFileType"/>
-        <fileType extensions="res" name="RESCRIPT" fieldName="INSTANCE" language="NapkinScript"
+        <fileType extensions="res" name="RESCRIPT" fieldName="INSTANCE" language="Rescript"
                   implementationClass="com.reason.ide.files.ResFileType"/>
         <!-- OCaml -->
         <fileType extensions="mli" name="OCAML_INTF" fieldName="INSTANCE" language="OCaml"
@@ -133,11 +133,11 @@
         <lang.syntaxHighlighterFactory language="Reason"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
         <!-- Rescript -->
-        <stubElementTypeHolder externalIdPrefix="NapkinScript."
+        <stubElementTypeHolder externalIdPrefix="Rescript."
                                class="com.reason.lang.core.stub.RescriptStubBasedElementTypes"/>
-        <lang.ast.factory language="NapkinScript" implementationClass="com.reason.lang.napkin.ResASTFactory"/>
-        <lang.parserDefinition language="NapkinScript" implementationClass="com.reason.lang.napkin.ResParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="NapkinScript"
+        <lang.ast.factory language="Rescript" implementationClass="com.reason.lang.rescript.ResASTFactory"/>
+        <lang.parserDefinition language="Rescript" implementationClass="com.reason.lang.rescript.ResParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Rescript"
                                        implementationClass="com.reason.ide.highlight.ResSyntaxHighlighterFactory"/>
         <!-- OCaml -->
         <stubElementTypeHolder externalIdPrefix="OCaml." class="com.reason.lang.core.stub.OclStubBasedElementTypes"/>
@@ -172,7 +172,7 @@
 
         <lang.psiStructureViewFactory language="Reason"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
-        <lang.psiStructureViewFactory language="NapkinScript"
+        <lang.psiStructureViewFactory language="Rescript"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
         <lang.psiStructureViewFactory language="OCaml"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
@@ -188,7 +188,7 @@
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
 
         <lang.foldingBuilder language="Reason" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
-        <lang.foldingBuilder language="NapkinScript" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
+        <lang.foldingBuilder language="Rescript" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
         <lang.foldingBuilder language="OCaml" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
         <lang.foldingBuilder language="OCamlP4" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
         <lang.foldingBuilder language="Mlg" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
@@ -197,7 +197,7 @@
         <lang.foldingBuilder language="Dune" implementationClass="com.reason.ide.folding.DuneFoldingBuilder"/>
 
         <lang.commenter language="Reason" implementationClass="com.reason.ide.comment.RmlCommenter"/>
-        <lang.commenter language="NapkinScript" implementationClass="com.reason.ide.comment.RmlCommenter"/>
+        <lang.commenter language="Rescript" implementationClass="com.reason.ide.comment.RmlCommenter"/>
         <lang.commenter language="OCaml" implementationClass="com.reason.ide.comment.OclCommenter"/>
         <lang.commenter language="OCamlP4" implementationClass="com.reason.ide.comment.OclCommenter"/>
         <lang.commenter language="Mlg" implementationClass="com.reason.ide.comment.OclCommenter"/>
@@ -206,7 +206,7 @@
         <lang.commenter language="Dune" implementationClass="com.reason.ide.comment.DuneCommenter"/>
 
         <lang.braceMatcher language="Reason" implementationClass="com.reason.ide.match.RmlPairedBraceMatcher"/>
-        <lang.braceMatcher language="NapkinScript" implementationClass="com.reason.ide.match.ResPairedBraceMatcher"/>
+        <lang.braceMatcher language="Rescript" implementationClass="com.reason.ide.match.ResPairedBraceMatcher"/>
         <lang.braceMatcher language="OCaml" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="OCamlP4" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="Mlg" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
@@ -220,7 +220,7 @@
 
         <lang.documentationProvider language="Reason"
                                     implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
-        <lang.documentationProvider language="NapkinScript"
+        <lang.documentationProvider language="Rescript"
                                     implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
         <lang.documentationProvider language="OCaml" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
         <lang.documentationProvider language="OCamlP4"
@@ -265,7 +265,7 @@
         <projectService serviceImplementation="com.reason.lang.core.psi.reference.ORElementResolver"/>
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
-        <lang.findUsagesProvider language="NapkinScript"
+        <lang.findUsagesProvider language="Rescript"
                                  implementationClass="com.reason.ide.search.ResFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCamlP4" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
@@ -337,7 +337,7 @@
                                  implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
         <lang.refactoringSupport language="Reason"
                                  implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
-        <lang.refactoringSupport language="NapkinScript"
+        <lang.refactoringSupport language="Rescript"
                                  implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
 
         <iconProvider implementation="com.reason.ide.IconProvider"/>
@@ -346,12 +346,12 @@
         <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>
 
         <annotator language="Reason" implementationClass="com.reason.ide.highlight.RmlSyntaxAnnotator"/>
-        <annotator language="NapkinScript" implementationClass="com.reason.ide.highlight.ResSyntaxAnnotator"/>
+        <annotator language="Rescript" implementationClass="com.reason.ide.highlight.ResSyntaxAnnotator"/>
         <annotator language="OCaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
         <annotator language="Dune" implementationClass="com.reason.ide.highlight.DuneSyntaxAnnotator"/>
 
         <externalAnnotator language="Reason" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
-        <externalAnnotator language="NapkinScript" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
+        <externalAnnotator language="Rescript" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
         <externalAnnotator language="OCaml" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
         <problemFileHighlightFilter implementation="com.reason.ide.annotations.ErrorFileHighlighter"/>
 
@@ -359,9 +359,9 @@
                                 implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>
         <completion.contributor language="Reason"
                                 implementationClass="com.reason.ide.insight.RmlKeywordCompletionContributor"/>
-        <completion.contributor language="NapkinScript"
+        <completion.contributor language="Rescript"
                                 implementationClass="com.reason.ide.insight.ResCompletionContributor"/>
-        <completion.contributor language="NapkinScript"
+        <completion.contributor language="Rescript"
                                 implementationClass="com.reason.ide.insight.ResKeywordCompletionContributor"/>
         <completion.contributor language="OCaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
         <completion.contributor language="OCaml"

@@ -1,4 +1,4 @@
-package com.reason.lang.reason;
+package com.reason.lang.rescript;
 
 import com.intellij.lang.*;
 import com.intellij.lexer.*;
@@ -9,10 +9,10 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.stub.type.*;
 import org.jetbrains.annotations.*;
 
-public class RmlParserDefinition implements ParserDefinition {
+public class ResParserDefinition implements ParserDefinition {
     @Override
     public @NotNull Lexer createLexer(Project project) {
-        return new RmlLexer();
+        return new ResLexer();
     }
 
     public @NotNull TokenSet getWhitespaceTokens() {
@@ -20,26 +20,26 @@ public class RmlParserDefinition implements ParserDefinition {
     }
 
     public @NotNull TokenSet getCommentTokens() {
-        return TokenSet.create(RmlTypes.INSTANCE.MULTI_COMMENT, RmlTypes.INSTANCE.SINGLE_COMMENT);
+        return TokenSet.create(ResTypes.INSTANCE.MULTI_COMMENT, ResTypes.INSTANCE.SINGLE_COMMENT);
     }
 
     public @NotNull TokenSet getStringLiteralElements() {
-        return TokenSet.create(RmlTypes.INSTANCE.STRING_VALUE);
+        return TokenSet.create(ResTypes.INSTANCE.STRING_VALUE);
     }
 
     public @NotNull PsiParser createParser(Project project) {
-        return new RmlParser();
+        return new ResParser();
     }
 
     @Override
     public @NotNull IFileElementType getFileNodeType() {
-        return RmlFileStubElementType.INSTANCE;
+        return ResFileStubElementType.INSTANCE;
     }
 
     public @NotNull PsiFile createFile(@NotNull FileViewProvider viewProvider) {
-        return viewProvider.getFileType() instanceof RmlInterfaceFileType
-                ? new RmlInterfaceFile(viewProvider)
-                : new RmlFile(viewProvider);
+        return viewProvider.getFileType() instanceof ResInterfaceFileType
+                ? new ResInterfaceFile(viewProvider)
+                : new ResFile(viewProvider);
     }
 
     public @NotNull SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
@@ -53,6 +53,6 @@ public class RmlParserDefinition implements ParserDefinition {
             return ((ORStubElementType) node.getElementType()).createPsi(node);
         }
 
-        throw new IllegalArgumentException("Not a ReasonML node: " + node + " (" + type + ", " + type.getLanguage() + ")");
+        throw new IllegalArgumentException("Not a Rescript node: " + node + " (" + type + ", " + type.getLanguage() + ")");
     }
 }

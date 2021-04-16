@@ -4,7 +4,7 @@ import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.napkin.*;
+import com.reason.lang.rescript.*;
 
 import java.util.*;
 

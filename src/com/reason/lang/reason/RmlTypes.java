@@ -4,7 +4,6 @@ import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 
 public class RmlTypes extends ORTypes {
-
     public static final RmlTypes INSTANCE = new RmlTypes();
 
     private RmlTypes() {
