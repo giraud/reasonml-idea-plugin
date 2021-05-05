@@ -16,15 +16,13 @@ import java.util.regex.*;
 import java.util.stream.*;
 
 public class RmlQNameFinder extends BaseQNameFinder {
-
     public static final QNameFinder INSTANCE = new RmlQNameFinder();
 
     private RmlQNameFinder() {
     }
 
     // Find the expression paths
-    @NotNull
-    public Set<String> extractPotentialPaths(@Nullable PsiElement element) {
+    public @NotNull Set<String> extractPotentialPaths(@Nullable PsiElement element) {
         Set<String> qualifiedNames = new ArrayListSet<>();
         if (element == null) {
             return qualifiedNames;

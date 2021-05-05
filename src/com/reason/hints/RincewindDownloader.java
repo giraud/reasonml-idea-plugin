@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class RincewindDownloader extends Task.Backgroundable {
 
   private static final double TOTAL_BYTES = 10_000_000.0;
-  private static final String DOWNLOAD_URL = "https://dl.bintray.com/giraud/ocaml/";
+  private static final String DOWNLOAD_URL = "https://rincewind.jfrog.io/artifactory/ocaml/";
   private static final Log LOG = Log.create("hints");
 
   @NotNull private final VirtualFile m_sourceFile;

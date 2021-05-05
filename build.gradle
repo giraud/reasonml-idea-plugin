@@ -49,10 +49,8 @@ allprojects {
             untilBuild = pluginUntilBuild
             changeNotes """
                 <ul>
-                    <li>#315 - insertion handler for JSX doesn't detect close tag</li>
-                    <li>#190 - show nested function definitions in structure panel</li>
-                    <li>fix incorrect identification of optional parameter</li>
-                    <li>order jsx attributes, mandatory first</li>
+                    <li>move to jfrog, bintray is no more available</li> 
+                    <li>#317 - Belt.Array incorrectly resolved</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
