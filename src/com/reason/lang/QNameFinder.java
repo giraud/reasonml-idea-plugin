@@ -1,12 +1,10 @@
 package com.reason.lang;
 
-import com.intellij.psi.PsiElement;
-import java.util.*;
-
+import com.intellij.psi.*;
 import org.jetbrains.annotations.*;
 
-public interface QNameFinder {
+import java.util.*;
 
-  @NotNull
-  Set<String> extractPotentialPaths(@Nullable PsiElement element);
+public interface QNameFinder {
+    @NotNull Set<String> extractPotentialPaths(@Nullable PsiElement element);
 }
