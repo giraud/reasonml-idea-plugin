@@ -16,6 +16,11 @@ are solved.
 
 ## Unreleased
 
+## 0.100 - 2021/05/05
+
+- :house: move to jfrog, bintray is no more available 
+- :bug: [#317](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/317) Belt.Array incorrectly resolved
+
 # 0.99 - 2021/04/08
 
 Version 0.99 supports the 2021.1 release.
