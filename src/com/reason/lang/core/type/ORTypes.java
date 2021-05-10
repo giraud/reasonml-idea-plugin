@@ -15,6 +15,8 @@ public abstract class ORTypes {
   public ORCompositeType C_FUNCTOR_PARAM;
   public ORCompositeType C_RECORD_FIELD;
   public ORCompositeType C_VARIANT_DECLARATION;
+  public ORCompositeType C_INCLUDE;
+  public ORCompositeType C_OPEN;
 
   // Composite element types
 
@@ -45,8 +47,6 @@ public abstract class ORTypes {
   public ORCompositeType C_LOWER_IDENTIFIER;
   public ORCompositeType C_UPPER_IDENTIFIER;
   public ORCompositeType C_LOCAL_OPEN;
-  public ORCompositeType C_OPEN;
-  public ORCompositeType C_INCLUDE;
   public ORCompositeType C_LET_ATTR;
   public ORCompositeType C_LET_BINDING;
   public ORCompositeType C_LOWER_SYMBOL;
@@ -205,7 +205,6 @@ public abstract class ORTypes {
   public ORTokenElementType VARIANT_NAME;
   public ORTokenElementType PIPE;
   public ORTokenElementType PIPE_FORWARD;
-  public ORTokenElementType PIPE_FIRST;
   public ORTokenElementType PLUS;
   public ORTokenElementType PERCENT;
   public ORTokenElementType PLUSDOT;

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public interface PsiLet extends PsiVar, PsiSignatureElement, PsiInferredType, PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
+public interface PsiLet extends PsiVar, PsiSignatureElement, PsiInferredType, PsiQualifiedPathElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
     @Nullable
     PsiLetBinding getBinding();
 
@@ -28,10 +28,7 @@ public interface PsiLet extends PsiVar, PsiSignatureElement, PsiInferredType, Ps
     @NotNull
     Collection<PsiElement> getScopeChildren();
 
-    @NotNull
-    String getPath();
-
-    boolean isDeconsruction();
+    boolean isDeconstruction();
 
     @NotNull
     List<PsiElement> getDeconstructedElements();

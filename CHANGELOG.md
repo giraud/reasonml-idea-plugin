@@ -16,6 +16,9 @@ are solved.
 
 ## Unreleased
 
+- :bug: [#303](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/303) Incorrect resolution for record field
+- :house: Reference resolution algorithm has been totally redesigned
+
 ## 0.100 - 2021/05/05
 
 - :house: move to jfrog, bintray is no more available 

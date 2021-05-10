@@ -6,6 +6,7 @@ import com.intellij.psi.stubs.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
+import com.reason.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
@@ -21,14 +22,13 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
         super(types, node);
     }
 
-    public PsiParameterImpl(
-            @NotNull ORTypes types, @NotNull PsiParameterStub stub, @NotNull IStubElementType nodeType) {
+    public PsiParameterImpl(@NotNull ORTypes types, @NotNull PsiParameterStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
 
-    @Nullable
-    public PsiElement getNameIdentifier() {
+    //region PsiNamedElement
+    public @Nullable PsiElement getNameIdentifier() {
         PsiElement parent = getParent();
         PsiElement grandParent = parent == null ? null : parent.getParent();
         if (parent instanceof PsiFunctionCallParams || grandParent instanceof PsiFunctorCall) {
@@ -48,6 +48,11 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
 
     @Override
     public @Nullable String getName() {
+        PsiParameterStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getName();
+        }
+
         PsiElement identifier = getNameIdentifier();
         if (identifier != null) {
             return identifier.getText();
@@ -63,7 +68,7 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
             int i = 0;
             for (PsiParameter parameter : parameters) {
                 if (parameter == this) {
-                    PsiElement prevSibling = /*grandParent instanceof PsiFunctorCall ? null : */ parent.getPrevSibling();
+                    PsiElement prevSibling = ORUtil.prevSibling(parent);
                     return (prevSibling == null ? "" : prevSibling.getText()) + "[" + i + "]";
                 }
                 i++;
@@ -77,27 +82,19 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
     public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
     }
+    //endregion
 
+    //region PsiQualifiedName
     @Override
-    public @Nullable PsiSignature getSignature() {
-        return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
-    }
+    public @Nullable String[] getPath() {
+        PsiParameterStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
 
-    @Override
-    public @Nullable PsiDefaultValue getDefaultValue() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiDefaultValue.class);
-    }
-
-    @Override
-    public boolean isOptional() {
-        return getDefaultValue() != null;
-    }
-
-    @Override
-    public @NotNull String getPath() {
-        PsiQualifiedElement qualifiedParent = PsiTreeUtil.getParentOfType(this, PsiQualifiedElement.class);
-        String parentQName = qualifiedParent == null ? null : qualifiedParent.getQualifiedName();
-        return parentQName == null ? "" : parentQName;
+        PsiQualifiedNamedElement qualifiedParent = PsiTreeUtil.getParentOfType(this, PsiQualifiedNamedElement.class);
+        String qName = qualifiedParent == null ? null : qualifiedParent.getQualifiedName();
+        return qName == null ? null : qName.split("\\.");
     }
 
     @Override
@@ -112,8 +109,24 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
         boolean isCall = parent instanceof PsiFunctionCallParams || grandParent instanceof PsiFunctorCall;
 
         String name = getName();
-        String path = getPath();
-        return path + (isCall ? "." + name : "[" + name + "]");
+        String[] path = getPath();
+        return Joiner.join(".", path) + (isCall ? "." + name : "[" + name + "]");
+    }
+    //endregion
+
+    @Override
+    public @Nullable PsiSignature getSignature() {
+        return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
+    }
+
+    @Override
+    public @Nullable PsiDefaultValue getDefaultValue() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiDefaultValue.class);
+    }
+
+    @Override
+    public boolean isOptional() {
+        return getDefaultValue() != null;
     }
 
     @Override

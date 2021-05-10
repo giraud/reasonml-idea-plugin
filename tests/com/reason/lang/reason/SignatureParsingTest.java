@@ -75,11 +75,7 @@ public class SignatureParsingTest extends RmlParsingTestCase {
     }
 
     public void test_jsObject() {
-        PsiType psiType =
-                first(
-                        typeExpressions(
-                                parseCode(
-                                        "type props = { [@bs.optional] dangerouslySetInnerHTML: {. \"__html\": string} };")));
+        PsiType psiType = first(typeExpressions(parseCode("type props = { [@bs.optional] dangerouslySetInnerHTML: {. \"__html\": string} };")));
 
         PsiRecord record = (PsiRecord) psiType.getBinding().getFirstChild();
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
@@ -89,10 +85,7 @@ public class SignatureParsingTest extends RmlParsingTestCase {
     }
 
     public void test_externalFun() {
-        PsiExternal e =
-                first(
-                        externalExpressions(
-                                parseCode("external refToJsObj : reactRef => Js.t({..}) = \"%identity\";")));
+        PsiExternal e = first(externalExpressions(parseCode("external refToJsObj : reactRef => Js.t({..}) = \"%identity\";")));
 
         PsiSignature signature = e.getSignature();
         assertSize(2, ORUtil.findImmediateChildrenOfClass(e.getSignature(), PsiSignatureItem.class));

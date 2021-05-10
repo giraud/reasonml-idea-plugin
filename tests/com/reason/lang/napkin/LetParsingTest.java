@@ -149,7 +149,7 @@ public class LetParsingTest extends NsParsingTestCase {
     public void test_deconstruction() {
         PsiLet e = first(letExpressions(parseCode("let (a, b) = x")));
 
-        assertTrue(e.isDeconsruction());
+        assertTrue(e.isDeconstruction());
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
@@ -184,7 +184,6 @@ public class LetParsingTest extends NsParsingTestCase {
     // assertEquals("try", e.getName());
     // }
 
-    // zzz DEPRECATED ?
     // public void testIssue105() {
     //    FileBase file = parseCode("let string = \"x\"");
     //    PsiLet e = first(letExpressions(file));

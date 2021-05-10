@@ -1,26 +1,26 @@
 package com.reason.ide.search.index;
 
+import com.intellij.openapi.project.*;
+import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.stub.type.*;
 import org.jetbrains.annotations.*;
 
+import java.util.*;
+
 public class ModuleIndex extends StringStubIndexExtension<PsiModule> {
-    private static final int VERSION = 17;
-    private static final ModuleIndex INSTANCE = new ModuleIndex();
-
-    @NotNull
-    public static ModuleIndex getInstance() {
-        return INSTANCE;
-    }
-
     @Override
     public int getVersion() {
-        return super.getVersion() + VERSION;
+        return super.getVersion() + PsiModuleStubElementType.VERSION;
     }
 
-    @NotNull
     @Override
-    public StubIndexKey<String, PsiModule> getKey() {
+    public @NotNull StubIndexKey<String, PsiModule> getKey() {
         return IndexKeys.MODULES;
+    }
+
+    public static @NotNull Collection<PsiModule> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.MODULES, key, project, scope, PsiModule.class);
     }
 }

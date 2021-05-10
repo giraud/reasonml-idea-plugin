@@ -1,24 +1,16 @@
 package com.reason.ide.search;
 
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.indexing.FileBasedIndex;
-import com.intellij.util.indexing.ID;
-import com.reason.Joiner;
-import com.reason.Log;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.search.index.FileModuleIndex;
-import com.reason.ide.search.index.ModuleIndex;
-import com.reason.ide.search.index.NamespaceIndex;
-import com.reason.lang.core.psi.PsiModule;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.search.*;
+import com.intellij.util.indexing.*;
+import com.reason.*;
+import com.reason.ide.files.*;
+import com.reason.ide.search.index.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.*;
 
 public class FileModuleIndexService {
     private static final Log LOG = Log.create("index.fileservice");
@@ -56,7 +48,7 @@ public class FileModuleIndexService {
         LOG.debug("all keys (" + allKeys.size() + "): " + Joiner.join(", ", allKeys));
         for (String key : allKeys) {
             if (!"Pervasives".equals(key)) {
-                Collection<PsiModule> psiModules = ModuleIndex.getInstance().get(key, project, scope);
+                Collection<PsiModule> psiModules = ModuleIndex.getElements(key, project, null);
                 for (PsiModule psiModule : psiModules) {
                     result.add((FileBase) psiModule.getContainingFile());
                 }

@@ -1,20 +1,17 @@
 package com.reason.lang.core.stub.type;
 
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.StubBuilder;
+import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
-import com.intellij.psi.tree.IStubFileElementType;
-import com.reason.ide.files.RmlFile;
-import com.reason.ide.files.RmlInterfaceFile;
-import com.reason.lang.core.stub.RmlFileStub;
-import com.reason.lang.reason.RmlLanguage;
+import com.intellij.psi.tree.*;
+import com.reason.ide.files.*;
+import com.reason.lang.core.stub.*;
+import com.reason.lang.reason.*;
+import org.jetbrains.annotations.*;
 
-import java.io.IOException;
-
-import org.jetbrains.annotations.NotNull;
+import java.io.*;
 
 public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
-    private static final int VERSION = 6;
+    private static final int VERSION = 7;
     public static final IStubFileElementType<RmlFileStub> INSTANCE = new RmlFileStubElementType();
 
     private RmlFileStubElementType() {
@@ -42,15 +39,13 @@ public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
     }
 
     @Override
-    public void serialize(@NotNull RmlFileStub stub, @NotNull StubOutputStream dataStream)
-            throws IOException {
+    public void serialize(@NotNull RmlFileStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeBoolean(stub.isComponent());
     }
 
     @NotNull
     @Override
-    public RmlFileStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub)
-            throws IOException {
+    public RmlFileStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
         return new RmlFileStub(null, dataStream.readBoolean());
     }
 

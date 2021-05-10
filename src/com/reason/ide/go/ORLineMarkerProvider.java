@@ -78,7 +78,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         }
     }
 
-    @SafeVarargs private final <T extends PsiQualifiedElement> void extractRelatedExpressions(
+    @SafeVarargs private final <T extends PsiQualifiedNamedElement> void extractRelatedExpressions(
             @Nullable PsiElement element,
             @Nullable String qname,
             @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result,

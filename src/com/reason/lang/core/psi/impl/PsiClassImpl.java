@@ -1,116 +1,105 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.CompositeTypePsiElement;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
-import com.reason.lang.core.type.ORTypes;
-import icons.ORIcons;
-import java.util.Collection;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.reason.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.PsiClass;
+import com.reason.lang.core.type.*;
+import icons.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.*;
 
 public class PsiClassImpl extends CompositeTypePsiElement<ORTypes> implements PsiClass {
+    // region Constructors
+    protected PsiClassImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
+    }
+    // endregion
 
-  // region Constructors
-  protected PsiClassImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
-    super(types, elementType);
-  }
-  // endregion
+    // region PsiNamedElement
+    public @Nullable PsiElement getNameIdentifier() {
+        return findChildByClass(PsiLowerIdentifier.class);
+    }
 
-  // region NamedElement
-  @Nullable
-  public PsiElement getNameIdentifier() {
-    return findChildByClass(PsiLowerIdentifier.class);
-  }
+    @Override
+    public @Nullable String getName() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null ? "" : nameIdentifier.getText();
+    }
 
-  @Nullable
-  @Override
-  public String getName() {
-    PsiElement nameIdentifier = getNameIdentifier();
-    return nameIdentifier == null ? "" : nameIdentifier.getText();
-  }
+    @Override
+    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return this;
+    }
+    // endregion
 
-  @NotNull
-  @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-    return this;
-  }
-  // endregion
 
-  @NotNull
-  @Override
-  public String getPath() {
-    return ORUtil.getQualifiedPath(this);
-  }
+    //region PsiQualifiedName
+    @Override
+    public @Nullable String[] getPath() { // zzz stub
+        return ORUtil.getQualifiedPath(this);
+    }
 
-  @NotNull
-  @Override
-  public String getQualifiedName() {
-    String name = getName();
-    return name == null ? "" : name;
-  }
+    @Override
+    public @NotNull String getQualifiedName() {
+        String[] path = getPath();
+        String name = getName();
+        return name == null ? "" : Joiner.join(".", path) + "." + name;
+    }
+    //endregion
 
-  @Nullable
-  @Override
-  public PsiElement getClassBody() {
-    return PsiTreeUtil.findChildOfType(this, PsiObject.class);
-  }
+    @Override
+    public @Nullable PsiElement getClassBody() {
+        return PsiTreeUtil.findChildOfType(this, PsiObject.class);
+    }
 
-  @NotNull
-  @Override
-  public Collection<PsiClassField> getFields() {
-    return PsiTreeUtil.findChildrenOfType(getClassBody(), PsiClassField.class);
-  }
+    @Override
+    public @NotNull Collection<PsiClassField> getFields() {
+        return PsiTreeUtil.findChildrenOfType(getClassBody(), PsiClassField.class);
+    }
 
-  @NotNull
-  @Override
-  public Collection<PsiClassMethod> getMethods() {
-    return PsiTreeUtil.findChildrenOfType(getClassBody(), PsiClassMethod.class);
-  }
+    @Override
+    public @NotNull Collection<PsiClassMethod> getMethods() {
+        return PsiTreeUtil.findChildrenOfType(getClassBody(), PsiClassMethod.class);
+    }
 
-  @NotNull
-  @Override
-  public Collection<PsiClassParameters> getParameters() {
-    return PsiTreeUtil.findChildrenOfType(this, PsiClassParameters.class);
-  }
+    @Override
+    public @NotNull Collection<PsiClassParameters> getParameters() {
+        return PsiTreeUtil.findChildrenOfType(this, PsiClassParameters.class);
+    }
 
-  @Nullable
-  @Override
-  public PsiClassConstructor getConstructor() {
-    return findChildByClass(PsiClassConstructor.class);
-  }
+    @Override
+    public @Nullable PsiClassConstructor getConstructor() {
+        return findChildByClass(PsiClassConstructor.class);
+    }
 
-  public ItemPresentation getPresentation() {
-    return new ItemPresentation() {
-      @Nullable
-      @Override
-      public String getPresentableText() {
-        return getName();
-      }
+    public ItemPresentation getPresentation() {
+        return new ItemPresentation() {
+            @Override
+            public @Nullable String getPresentableText() {
+                return getName();
+            }
 
-      @Nullable
-      @Override
-      public String getLocationString() {
-        return null;
-      }
+            @Override
+            public @Nullable String getLocationString() {
+                return null;
+            }
 
-      @NotNull
-      @Override
-      public Icon getIcon(boolean unused) {
-        return ORIcons.CLASS;
-      }
-    };
-  }
+            @Override
+            public @NotNull Icon getIcon(boolean unused) {
+                return ORIcons.CLASS;
+            }
+        };
+    }
 
-  @Nullable
-  @Override
-  public String toString() {
-    return "Class " + getQualifiedName();
-  }
+    @Override
+    public @Nullable String toString() {
+        return "Class " + getQualifiedName();
+    }
 }

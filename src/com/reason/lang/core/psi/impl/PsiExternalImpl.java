@@ -37,30 +37,13 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
         return findChildByClass(PsiLowerIdentifier.class);
     }
 
-    @NotNull
-    @Override
-    public String getPath() {
-        PsiExternalStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.getPath();
-        }
-
-        return ORUtil.getQualifiedPath(this);
-    }
-
-    @NotNull
-    @Override
-    public String getQualifiedName() {
-        PsiExternalStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.getQualifiedName();
-        }
-
-        return ORUtil.getQualifiedName(this);
-    }
-
     @Override
     public String getName() {
+        PsiExternalStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getName();
+        }
+
         PsiElement nameIdentifier = getNameIdentifier();
         if (nameIdentifier == null) {
             return "unknown";
@@ -69,20 +52,40 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
         return nameIdentifier.getText();
     }
 
-    @NotNull
     @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
     }
     // endregion
+
+    //region PsiQualifiedName
+    @Override
+    public @NotNull String[] getPath() {
+        PsiExternalStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
+        return ORUtil.getQualifiedPath(this);
+    }
+
+    @Override
+    public @NotNull String getQualifiedName() {
+        PsiExternalStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+
+        return ORUtil.getQualifiedName(this);
+    }
+    //endregion
 
     @Override
     public @Nullable PsiSignature getSignature() {
         return findChildByClass(PsiSignature.class);
     }
 
-    @NotNull
-    private String getRealName() {
+    private @NotNull String getRealName() {
         PsiElement name = findChildByType(m_types.STRING_VALUE);
         return name == null ? "" : name.getText();
     }
@@ -114,9 +117,8 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
     @Override
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
-            @Nullable
             @Override
-            public String getPresentableText() {
+            public @Nullable String getPresentableText() {
                 String aliasName = getName();
 
                 String realName = getRealName();
@@ -143,9 +145,8 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
         };
     }
 
-    @Nullable
     @Override
-    public String toString() {
+    public @Nullable String toString() {
         return "external " + getQualifiedName();
     }
 }

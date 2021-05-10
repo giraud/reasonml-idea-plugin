@@ -144,7 +144,7 @@ public class LetParsingTest extends OclParsingTestCase {
     public void test_deconstruction() {
         PsiLet e = first(letExpressions(parseCode("let (a, b) = x")));
 
-        assertTrue(e.isDeconsruction());
+        assertTrue(e.isDeconstruction());
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());

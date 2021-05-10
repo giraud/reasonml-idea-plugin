@@ -1,40 +1,39 @@
 package com.reason.lang.core.stub;
 
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.NamedStubBase;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
-import com.reason.lang.core.psi.PsiVal;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.stubs.*;
+import com.intellij.util.io.*;
+import com.reason.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 public class PsiValStub extends NamedStubBase<PsiVal> {
-  private final String m_path;
-  private final @NotNull String m_qname;
-  private final boolean m_isFunction;
+    private final String[] myPath;
+    private final @NotNull String myQname;
+    private final boolean myIsFunction;
 
-  public PsiValStub(StubElement parent, @NotNull IStubElementType elementType, String name, String path, boolean isFunction) {
-    super(parent, elementType, name);
-    m_path = path;
-    m_qname = path + "." + name;
-    m_isFunction = isFunction;
-  }
+    public PsiValStub(StubElement parent, @NotNull IStubElementType elementType, String name, String[] path, boolean isFunction) {
+        super(parent, elementType, name);
+        myPath = path;
+        myQname = Joiner.join(".", path) + "." + name;
+        myIsFunction = isFunction;
+    }
 
-  public PsiValStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String path, boolean isFunction) {
-    super(parent, elementType, name);
-    m_path = path;
-    m_qname = path + "." + name;
-    m_isFunction = isFunction;
-  }
+    public PsiValStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String[] path, boolean isFunction) {
+        super(parent, elementType, name);
+        myPath = path;
+        myQname = Joiner.join(".", path) + "." + name;
+        myIsFunction = isFunction;
+    }
 
-  public String getPath() {
-    return m_path;
-  }
+    public String[] getPath() {
+        return myPath;
+    }
 
-  public @NotNull String getQualifiedName() {
-    return m_qname;
-  }
+    public @NotNull String getQualifiedName() {
+        return myQname;
+    }
 
-  public boolean isFunction() {
-    return m_isFunction;
-  }
+    public boolean isFunction() {
+        return myIsFunction;
+    }
 }

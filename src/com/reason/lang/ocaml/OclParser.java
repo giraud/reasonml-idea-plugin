@@ -814,8 +814,7 @@ public class OclParser extends CommonParser<OclTypes> {
             state.mark(m_types.C_FUN_PARAM);
         }
 
-        state
-                .markScope(m_types.C_RECORD_EXPR, m_types.LBRACE)
+        state.markScope(m_types.C_RECORD_EXPR, m_types.LBRACE)
                 .advance()
                 .mark(m_types.C_RECORD_FIELD);
     }
@@ -887,6 +886,8 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.is(m_types.C_CLASS_DECLARATION)) {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else if (state.is(m_types.C_DECONSTRUCTION)) {
+            state.wrapWith(m_types.C_LOWER_IDENTIFIER);
+        } else if (state.is(m_types.C_RECORD_FIELD)) {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else if (state.is(m_types.C_MACRO_NAME)) {
             // [@ |>x.y<| ... ]
