@@ -16,6 +16,8 @@ are solved.
 
 ## Unreleased
 
+- :house: [#328](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/328) Update Rescript parser to latest syntax
+
 ## 0.101 - 2021/05/27
 
 - :bug: [#303](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/303) Incorrect resolution for record field

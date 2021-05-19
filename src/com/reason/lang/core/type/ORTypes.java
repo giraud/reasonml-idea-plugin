@@ -44,12 +44,12 @@ public abstract class ORTypes {
   public ORCompositeType C_FUNCTOR_RESULT;
   public ORCompositeType C_IF;
   public ORCompositeType C_IF_THEN_SCOPE;
-  public ORCompositeType C_LOWER_IDENTIFIER;
-  public ORCompositeType C_UPPER_IDENTIFIER;
-  public ORCompositeType C_LOCAL_OPEN;
   public ORCompositeType C_LET_ATTR;
   public ORCompositeType C_LET_BINDING;
+  public ORCompositeType C_LOCAL_OPEN;
   public ORCompositeType C_LOWER_SYMBOL;
+  public ORCompositeType C_LOWER_IDENTIFIER;
+  public ORCompositeType C_LOWER_BOUND_CONSTRAINT;
   public ORCompositeType C_TYPE_VARIABLE;
   public ORCompositeType C_MACRO_EXPR;
   public ORCompositeType C_MACRO_NAME;
@@ -66,7 +66,6 @@ public abstract class ORTypes {
   public ORCompositeType C_PARAMETERS;
   public ORCompositeType C_PATTERN_MATCH_BODY;
   public ORCompositeType C_PATTERN_MATCH_EXPR;
-  public ORCompositeType C_RAW;
   public ORCompositeType C_SIG_EXPR;
   public ORCompositeType C_SIG_ITEM;
   public ORCompositeType C_TAG;
@@ -92,6 +91,8 @@ public abstract class ORTypes {
   public ORCompositeType C_TYPE_BINDING;
   public ORCompositeType C_DUMMY;
   public ORCompositeType C_UPPER_SYMBOL;
+  public ORCompositeType C_UPPER_IDENTIFIER;
+  public ORCompositeType C_UPPER_BOUND_CONSTRAINT;
   public ORCompositeType C_VARIANT;
   public ORCompositeType C_VARIANT_CONSTRUCTOR;
   public ORCompositeType C_WHILE;
@@ -184,6 +185,7 @@ public abstract class ORTypes {
   public ORTokenElementType DOTDOTDOT;
   public ORTokenElementType NOT_EQ;
   public ORTokenElementType NOT_EQEQ;
+  public ORTokenElementType EOL;
   public ORTokenElementType EQ;
   public ORTokenElementType EQEQ;
   public ORTokenElementType EQEQEQ;

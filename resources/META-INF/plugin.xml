@@ -363,7 +363,8 @@
                                 implementationClass="com.reason.ide.insight.ResCompletionContributor"/>
         <completion.contributor language="Rescript"
                                 implementationClass="com.reason.ide.insight.ResKeywordCompletionContributor"/>
-        <completion.contributor language="OCaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
+        <completion.contributor language="OCaml"
+                                implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
         <completion.contributor language="OCaml"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
         <completion.contributor language="Mll"

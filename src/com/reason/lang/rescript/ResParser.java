@@ -1,6 +1,7 @@
 package com.reason.lang.rescript;
 
 import com.intellij.lang.*;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.*;
 import org.jetbrains.annotations.*;
@@ -51,7 +52,22 @@ public class ResParser extends CommonParser<ResTypes> {
                     state.popEnd().advance().mark(m_types.C_INTERPOLATION_PART);
                 }
             } else {
-                if (tokenType == m_types.SEMI) {
+                // EOL is a statement separator
+                if (tokenType == m_types.EOL) {
+                    // We identify it at the lexer level, because We try to detect current construction that can't have
+                    // EOL in it ; but we don't want to have it in the parsed tree, we change it to a whitespace
+                    builder.remapCurrentToken(TokenType.WHITE_SPACE);
+
+                    if (state.is(m_types.C_FUNCTOR_CALL/*PsiOpen is potential functor call*/) && state.isPrevious(m_types.C_OPEN)) {
+                        state.popEnd().popEnd();
+                    } else if (state.isPrevious(m_types.C_ANNOTATION)) {
+                        // inside an annotation
+                        state.popEnd().popEnd();
+                    } else if (state.is(m_types.C_LET_BINDING)) {
+                        // simple let with no scope
+                        state.popEnd().popEnd();
+                    }
+                } else if (tokenType == m_types.SEMI) {
                     parseSemi(state);
                 } else if (tokenType == m_types.EQ) {
                     parseEq(state);
@@ -83,8 +99,6 @@ public class ResParser extends CommonParser<ResTypes> {
                     parsePercent(state);
                 } else if (tokenType == m_types.COLON) {
                     parseColon(state);
-                } else if (tokenType == m_types.RAW) {
-                    parseRaw(state);
                 } else if (tokenType == m_types.STRING_VALUE) {
                     parseStringValue(state);
                 } else if (tokenType == m_types.PIPE) {
@@ -202,11 +216,13 @@ public class ResParser extends CommonParser<ResTypes> {
         }
     }
 
+    /*
     private void parseRaw(@NotNull ParserState state) {
         if (state.is(m_types.C_MACRO_EXPR)) {
             state.mark(m_types.C_MACRO_NAME);
         }
     }
+    */
 
     private void parseIf(@NotNull ParserState state) {
         state.mark(m_types.C_IF).advance().mark(m_types.C_BINARY_CONDITION);
@@ -257,7 +273,7 @@ public class ResParser extends CommonParser<ResTypes> {
             state.updatePreviousComposite(m_types.C_FUN_EXPR);
         }
 
-        state.advance().mark(m_types.C_NAMED_PARAM);
+        state.mark(m_types.C_NAMED_PARAM);
     }
 
     private void parseAssert(@NotNull ParserState state) {
@@ -270,9 +286,12 @@ public class ResParser extends CommonParser<ResTypes> {
             // module M = (X) : ( S with ... |>and<| ... ) = ...
             state.popEnd();
         } else {
-            state.popEndUntilStart();
-            ParserScope latestScope = state.getLatestScope();
-            state.popEnd().advance();
+            ParserScope latestScope = state.getLatestCompletedScope();
+            if (latestScope == null) {
+                state.popEndUntilStart();
+                latestScope = state.getLatestScope();
+                state.popEnd().advance();
+            }
 
             if (latestScope != null) {
                 if (isTypeResolution(latestScope)) {
@@ -287,37 +306,15 @@ public class ResParser extends CommonParser<ResTypes> {
     }
 
     private void parseComma(@NotNull ParserState state) {
-        // Intermediate structures
-        boolean isIntermediateState =
-                state.is(m_types.C_FUN_BODY)
-                        || (state.is(m_types.C_BINARY_CONDITION) && !state.hasScopeToken())
-                        || state.is(m_types.C_TERNARY)
-                        || state.is(m_types.C_NAMED_PARAM)
-                        || state.is(m_types.C_SIG_ITEM);
-        while (isIntermediateState) {
-            if (state.is(m_types.C_FUN_BODY)) {
-                // a function is part of something else, close it first
-                state.popEnd().popEnd();
-            } else if (state.is(m_types.C_BINARY_CONDITION) && !state.hasScopeToken()) {
-                state.popEnd();
-            } else if (state.is(m_types.C_TERNARY) || state.is(m_types.C_NAMED_PARAM)) {
-                state.popEnd();
-            } else if (state.is(m_types.C_SIG_ITEM)) {
-                state.popEnd();
-                if (!state.isCurrentResolution(signatureScope)) {
-                    state.popEnd();
-                }
+        ParserScope latestScope = state.popEndUntilScope();
+
+        if (latestScope.isCompositeType(m_types.C_SIG_ITEM)) {
+            state.advance();
+            IElementType nextToken = state.getTokenType();
+            if (nextToken != m_types.RPAREN) {
+                state.mark(m_types.C_SIG_ITEM);
             }
-
-            isIntermediateState =
-                    state.is(m_types.C_FUN_BODY)
-                            || (state.is(m_types.C_BINARY_CONDITION) && !state.hasScopeToken())
-                            || state.is(m_types.C_TERNARY)
-                            || state.is(m_types.C_NAMED_PARAM)
-                            || state.is(m_types.C_SIG_ITEM);
-        }
-
-        if (state.is(m_types.C_RECORD_FIELD) || state.is(m_types.C_MIXIN_FIELD)) {
+        } else if (state.is(m_types.C_RECORD_FIELD) || state.is(m_types.C_MIXIN_FIELD)) {
             state.popEnd().advance();
             IElementType nextToken = state.getTokenType();
             if (nextToken != m_types.RBRACE) {
@@ -332,8 +329,7 @@ public class ResParser extends CommonParser<ResTypes> {
             }
         } else if (state.isCurrentResolution(signatureScope)) {
             state.advance().mark(m_types.C_SIG_ITEM);
-        } else if (state.is(m_types.C_FUN_PARAM)) {
-            state.popEnd();
+        } else if (state.is(m_types.C_FUN_CALL_PARAMS) || state.is(m_types.C_FUN_PARAMS)) {
             state.advance();
             IElementType nextTokenType = state.getTokenType();
             if (nextTokenType != m_types.RPAREN) {
@@ -368,7 +364,7 @@ public class ResParser extends CommonParser<ResTypes> {
             state.advance().mark(m_types.C_PATTERN_MATCH_EXPR);
         } else if (state.is(m_types.C_TRY_HANDLERS)) {
             // Start of a try handler ::  try (...) { |>|<| ... }
-            state.advance().mark(m_types.C_TRY_HANDLER);
+            state.mark(m_types.C_TRY_HANDLER);
         } else {
             if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
                 // pattern grouping ::  | X |>|<| Y => ...
@@ -450,7 +446,12 @@ public class ResParser extends CommonParser<ResTypes> {
     }
 
     private void parsePercent(@NotNull ParserState state) {
-        state.mark(m_types.C_MACRO_EXPR);
+        // |>%<| raw ...
+        state.mark(m_types.C_MACRO_EXPR).mark(m_types.C_MACRO_NAME).advance();
+        if (state.getTokenType() == m_types.PERCENT) {
+            // %|>%<| raw ...
+            state.advance();
+        }
     }
 
     private void parseColon(@NotNull ParserState state) {
@@ -460,7 +461,7 @@ public class ResParser extends CommonParser<ResTypes> {
             if (startScope != null) {
                 startScope.rollbackTo();
                 state.pop();
-                state.mark(m_types.C_RECORD_EXPR)
+                state.markScope(m_types.C_RECORD_EXPR, m_types.LBRACE)
                         .advance()
                         .mark(m_types.C_RECORD_FIELD);
             }
@@ -469,10 +470,16 @@ public class ResParser extends CommonParser<ResTypes> {
 
         if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
             // external x |> :<| ...
-            state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
+            state.advance()
+                    .mark(m_types.C_SIG_EXPR)
+                    .markOptionalParenDummyScope(m_types)
+                    .mark(m_types.C_SIG_ITEM);
         } else if (state.is(m_types.C_LET_DECLARATION)) {
             // let x |> :<| ...
-            state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
+            state.advance()
+                    .mark(m_types.C_SIG_EXPR)
+                    .markOptionalParenDummyScope(m_types)
+                    .mark(m_types.C_SIG_ITEM);
         } else if (state.is(m_types.C_MODULE_DECLARATION)) {
             // module M |> :<| ...
             state.advance()
@@ -496,9 +503,7 @@ public class ResParser extends CommonParser<ResTypes> {
         } else if (state.is(m_types.C_FUN_PARAM)) {
             state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
         } else if (state.is(m_types.C_NAMED_PARAM)) {
-            state
-                    .popEnd()
-                    .advance()
+            state.advance()
                     .mark(m_types.C_SIG_EXPR)
                     .mark(m_types.C_SIG_ITEM);
         }
@@ -510,7 +515,7 @@ public class ResParser extends CommonParser<ResTypes> {
     }
 
     private void parseLt(@NotNull ParserState state) {
-        if (state.is(m_types.C_OPTION)) {
+        if (state.is(m_types.C_OPTION) || state.is(m_types.C_SIG_ITEM)) {
             state.markScope(m_types.C_SCOPED_EXPR, m_types.LT);
         } else if (state.is(m_types.C_TYPE_DECLARATION)) {
             // type parameters ::  type t |> < <| 'a >
@@ -518,9 +523,7 @@ public class ResParser extends CommonParser<ResTypes> {
         } else if (!(state.is(m_types.C_SIG_ITEM) || state.is(m_types.C_TYPE_BINDING))) {
             // Can be a symbol or a JSX tag
             IElementType nextTokenType = state.rawLookup(1);
-            if (nextTokenType == m_types.LIDENT
-                    || nextTokenType == m_types.UIDENT
-                    || nextTokenType == m_types.OPTION) {
+            if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT || nextTokenType == m_types.OPTION) {
                 // Note that option is a ReasonML keyword but also a JSX keyword !
                 // Surely a tag
                 state
@@ -529,8 +532,7 @@ public class ResParser extends CommonParser<ResTypes> {
                         .markScope(m_types.C_TAG_START, m_types.TAG_LT)
                         .advance()
                         .remapCurrentToken(m_types.TAG_NAME)
-                        .wrapWith(
-                                nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
+                        .wrapWith(nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
             } else if (nextTokenType == m_types.GT) {
                 // a React fragment start
                 state
@@ -561,10 +563,14 @@ public class ResParser extends CommonParser<ResTypes> {
             state.remapCurrentToken(m_types.TAG_GT).advance().popEnd().popEnd();
         } else if (state.is(m_types.C_PARAMETERS)) {
             state.advance().popEnd();
-        }
-        // option < ... |> > <| ...
-        else if (state.is(m_types.C_SCOPED_EXPR) && state.isPrevious(m_types.C_OPTION)) {
-            state.advance().popEnd().popEnd();
+        } else if (state.is(m_types.C_SCOPED_EXPR)) {
+            if (state.isPrevious(m_types.C_OPTION)) {
+                // option < ... |> > <| ...
+                state.advance().popEnd().popEnd();
+            } else if (state.isPrevious(m_types.C_SIG_ITEM)) {
+                // : ... < ... |> ><| ...
+                state.advance().popEnd();
+            }
         }
     }
 
@@ -583,23 +589,21 @@ public class ResParser extends CommonParser<ResTypes> {
 
     private void parseLtSlash(@NotNull ParserState state) {
         IElementType nextTokenType = state.rawLookup(1);
-        if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT) {
+        // Note that option is a ReasonML keyword but also a JSX keyword !
+        if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT || nextTokenType == m_types.OPTION) {
             // A closing tag
             if (state.is(m_types.C_TAG_BODY)) {
                 state.popEnd();
             }
 
-            state
-                    .remapCurrentToken(m_types.TAG_LT)
+            state.remapCurrentToken(m_types.TAG_LT_SLASH)
                     .mark(m_types.C_TAG_CLOSE)
                     .advance()
                     .remapCurrentToken(m_types.TAG_NAME)
-                    .wrapWith(
-                            nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
+                    .wrapWith(nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
         } else if (nextTokenType == m_types.GT) {
             // a React fragment end
-            state
-                    .remapCurrentToken(m_types.TAG_LT_SLASH)
+            state.remapCurrentToken(m_types.TAG_LT_SLASH)
                     .mark(m_types.C_TAG_CLOSE)
                     .advance()
                     .remapCurrentToken(m_types.TAG_GT)
@@ -609,13 +613,12 @@ public class ResParser extends CommonParser<ResTypes> {
     }
 
     private void parseLIdent(@NotNull ParserState state) {
-        if (state.is(m_types.C_MACRO_NAME)) {
-            // Must stop annotation if no dot/@ before
-            if (state.previousElementType1 != m_types.DOT
-                    && state.previousElementType1 != m_types.ARROBASE) {
-                state.popEnd().popEnd();
-            }
-        }
+        //if (state.is(m_types.C_MACRO_NAME)) {
+        // Must stop annotation if no dot/@ before
+        //if (state.previousElementType1 != m_types.DOT && state.previousElementType1 != m_types.ARROBASE) {
+        //    state.popEnd().popEnd();
+        //}
+        //}
 
         // external |>x<| ...
         if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
@@ -628,6 +631,13 @@ public class ResParser extends CommonParser<ResTypes> {
         // type |>x<| ...
         else if (state.is(m_types.C_TYPE_DECLARATION)) {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
+        }
+        // @ |>x<| ...
+        else if (state.is(m_types.C_MACRO_NAME)) {
+            IElementType nextElementType = state.rawLookup(1);
+            if (nextElementType == TokenType.WHITE_SPACE) {
+                state.advance().popEnd().popEnd();
+            }
         }
         // not an identifier
         else {
@@ -662,8 +672,7 @@ public class ResParser extends CommonParser<ResTypes> {
                 }
             }
 
-            if (state.is(m_types.C_DECONSTRUCTION)
-                    || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS))) {
+            if (state.is(m_types.C_DECONSTRUCTION) || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS)) || state.is(m_types.C_NAMED_PARAM)) {
                 state.wrapWith(m_types.C_LOWER_IDENTIFIER);
             } else if (!state.is(m_types.C_TAG_PROPERTY)) {
                 state.wrapWith(m_types.C_LOWER_SYMBOL);
@@ -672,12 +681,24 @@ public class ResParser extends CommonParser<ResTypes> {
     }
 
     private void parseLBracket(@NotNull ParserState state) {
+        // Local open  ::  M.|> [ <| ... ]
         if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
-            // Local open
-            // M.|>[<| ... ]
             state.markScope(m_types.C_LOCAL_OPEN, m_types.LBRACKET);
         } else {
-            state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET);
+            IElementType nextType = state.rawLookup(1);
+
+            // Lower bound type constraint  ::  |> [ <| > ... ]
+            if (nextType == m_types.GT) {
+                state.markScope(m_types.C_LOWER_BOUND_CONSTRAINT, m_types.LBRACKET).advance();
+            }
+            // Upper bound type constraint  ::  |> [ <| < ... ]
+            else if (nextType == m_types.LT) {
+                state.markScope(m_types.C_UPPER_BOUND_CONSTRAINT, m_types.LBRACKET).advance();
+            }
+            // Generic scope
+            else {
+                state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET);
+            }
         }
     }
 
@@ -713,10 +734,10 @@ public class ResParser extends CommonParser<ResTypes> {
                         .resolution(field);
             }
         } else if (state.is(m_types.C_TYPE_BINDING)) {
-            boolean isJsObject = state.lookAhead(1) == m_types.DOT;
+            boolean isJsObject = state.lookAhead(1) == m_types.STRING_VALUE;
             state.markScope(isJsObject ? m_types.C_JS_OBJECT : m_types.C_RECORD_EXPR, m_types.LBRACE);
             if (isJsObject) {
-                state.advance().advance().mark(m_types.C_OBJECT_FIELD).resolution(field);
+                state.advance().mark(m_types.C_OBJECT_FIELD).resolution(field);
             }
         } else if (state.is(m_types.C_MODULE_TYPE)) {
             // module M : |>{<| ...
@@ -770,8 +791,7 @@ public class ResParser extends CommonParser<ResTypes> {
     }
 
     private void parseRBrace(@NotNull ParserState state) {
-        ParserScope scope =
-                state.popEndUntilOneOfElementType(m_types.LBRACE, m_types.RECORD, m_types.SWITCH);
+        ParserScope scope = state.popEndUntilOneOfElementType(m_types.LBRACE, m_types.RECORD, m_types.SWITCH);
         state.advance();
         if (scope != null) {
             state.popEnd();
@@ -781,6 +801,12 @@ public class ResParser extends CommonParser<ResTypes> {
             state.popEnd();
         } else if (state.is(m_types.C_TAG_PROPERTY)) {
             state.popEnd();
+        } else if (scope != null && scope.isCompositeType(m_types.C_RECORD_EXPR) && state.is(m_types.C_TYPE_BINDING)) {
+            // Record type, end the type itself
+            state.popEndUntil(m_types.C_TYPE_DECLARATION).popEndComplete();
+        } else if (state.isPrevious(m_types.C_MODULE_DECLARATION)) {  // missing module binding?
+            // end module
+            state.popEnd().popEndComplete();
         }
     }
 
@@ -803,7 +829,9 @@ public class ResParser extends CommonParser<ResTypes> {
             }
         } else if (state.is(m_types.C_MACRO_NAME)) {
             // %raw |>(<| ...
-            state.popEnd().markScope(m_types.C_MACRO_RAW_BODY, m_types.LPAREN);
+            state.popEnd()
+                    .markOptionalParenDummyScope(m_types)
+                    .mark(m_types.C_MACRO_RAW_BODY);
         } else if (state.isCurrentResolution(moduleBinding)
                 && state.previousElementType1 != m_types.UIDENT) {
             // This is a functor ::  module M = |>(<| ... )
@@ -858,14 +886,26 @@ public class ResParser extends CommonParser<ResTypes> {
         } else {
             IElementType nextTokenType = state.lookAhead(1);
 
-            if (nextTokenType == m_types.DOT || nextTokenType == m_types.TILDE) {
-                // A function
-                // |>(<| .  OR  |>(<| ~
-                state.mark(m_types.C_FUN_EXPR).markScope(m_types.C_FUN_PARAMS, m_types.LPAREN).advance();
-                if (nextTokenType == m_types.DOT) {
-                    state.advance();
+            if (!state.in(m_types.C_SIG_ITEM)) {
+                if (nextTokenType == m_types.DOT || nextTokenType == m_types.TILDE) {
+                    // A function
+                    // |>(<| .  OR  |>(<| ~
+                    state.mark(m_types.C_FUN_EXPR).markScope(m_types.C_FUN_PARAMS, m_types.LPAREN).advance();
+                    if (nextTokenType == m_types.DOT) {
+                        state.advance();
+                    }
+                    state.mark(m_types.C_FUN_PARAM);
+                } else if (nextTokenType == m_types.RPAREN) {
+                    IElementType nexNextTokenType = state.lookAhead(2);
+                    if (nexNextTokenType == m_types.ARROW) {
+                        // Function with unit parameter ::  |>(<| ) => ...
+                        state.mark(m_types.C_FUN_EXPR).mark(m_types.C_FUN_PARAMS).advance().advance().popEnd();
+                    } else {
+                        state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
+                    }
+                } else {
+                    state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
                 }
-                state.mark(m_types.C_FUN_PARAM);
             } else {
                 state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
             }
@@ -873,55 +913,59 @@ public class ResParser extends CommonParser<ResTypes> {
     }
 
     private void parseRParen(@NotNull ParserState state) {
-        ParserScope startScope = state.popEndUntilOneOfElementType(m_types.LPAREN);
-        if (startScope == null) {
-            return;
-        }
-
-        if (startScope.isResolution(genericExpression)) {
+        ParserScope lparenScope = state.peekUntilScopeToken(m_types.LPAREN);
+        if (lparenScope != null && lparenScope.isResolution(genericExpression)) {
             IElementType aheadType = state.lookAhead(1);
-            if (aheadType == m_types.ARROW) {
+            if (aheadType == m_types.ARROW && !state.in(m_types.C_SIG_ITEM)) {
                 // if current resolution is UNKNOWN and next item is an arrow, it means we are processing a
                 // function definition,
                 // we must rollback to the start of the scope and start the parsing again, but this time
                 // with exact information!
-                startScope.rollbackTo();
-                state.pop();
-                state
-                        .mark(m_types.C_FUN_EXPR)
-                        .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
-                        .advance()
-                        .mark(m_types.C_FUN_PARAM);
-                return;
+                ParserScope startScope = state.popEndUntilOneOfElementType(m_types.LPAREN);
+                if (startScope != null) {
+                    startScope.rollbackTo();
+                    state.pop();
+                    state
+                            .mark(m_types.C_FUN_EXPR)
+                            .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
+                            .advance()
+                            .mark(m_types.C_FUN_PARAM);
+                    return;
+                }
             }
         }
 
+        lparenScope = state.popEndUntilOneOfElementType(m_types.LPAREN);
         state.advance();
         IElementType nextTokenType = state.getTokenType();
 
-        if (nextTokenType == m_types.QUESTION_MARK && !state.isPrevious(m_types.C_TERNARY)) {
-            // ( ... |>)<| ? ...
-            state
-                    .precedeScope(m_types.C_TERNARY)
-                    .updateCurrentCompositeElementType(m_types.C_BINARY_CONDITION);
-        }
+        if (lparenScope != null) {
+            if (nextTokenType == m_types.QUESTION_MARK && !state.isPrevious(m_types.C_TERNARY)) {
+                // ( ... |>)<| ? ...
+                state
+                        .precedeScope(m_types.C_TERNARY)
+                        .updateCurrentCompositeElementType(m_types.C_BINARY_CONDITION);
+            }
 
-        state.popEnd();
+            state.popEnd();
 
-        if (state.is(m_types.C_VARIANT_DECLARATION)) {
-            state.popEndUntil(m_types.C_TYPE_BINDING);
-        } else if (state.is(m_types.C_ANNOTATION)) {
-            state.popEnd();
-        } else if (state.is(m_types.C_TAG_PROP_VALUE) && !state.hasScopeToken()) {
-            state.popEnd().popEnd();
-        } else if (state.is(m_types.C_TAG_PROPERTY)) {
-            state.popEnd();
+            if (state.is(m_types.C_VARIANT_DECLARATION)) {
+                state.popEndUntil(m_types.C_TYPE_BINDING);
+            } else if (state.is(m_types.C_ANNOTATION)) {
+                state.popEnd();
+            } else if (state.is(m_types.C_TAG_PROP_VALUE) && !state.hasScopeToken()) {
+                state.popEnd().popEnd();
+            } else if (state.is(m_types.C_TAG_PROPERTY)) {
+                state.popEnd();
+            } else if (nextTokenType == m_types.ARROW && (lparenScope.isCompositeType(m_types.C_SIG_ITEM) || (lparenScope.isCompositeType(m_types.C_DUMMY) && state.is(m_types.C_SIG_EXPR)))) {
+                state.advance().mark(m_types.C_SIG_ITEM);
+            }
         }
     }
 
     private void parseEq(@NotNull ParserState state) {
         // Intermediate constructions
-        if (state.is(m_types.C_SIG_ITEM)) {
+        if (state.in(m_types.C_SIG_EXPR)) {
             state.popEndUntil(m_types.C_SIG_EXPR).popEnd();
         }
 
@@ -931,11 +975,15 @@ public class ResParser extends CommonParser<ResTypes> {
         } else if (state.is(m_types.C_LET_DECLARATION)) {
             // let x  |> = <| ...
             state.advance().mark(m_types.C_LET_BINDING);
-        } else if (state.is(m_types.C_MODULE_DECLARATION)) {
-            // module M |> = <| ...
-            state.advance().mark(m_types.C_DUMMY /*C_DUMMY*/).dummy().resolution(moduleBinding);
         } else if (state.is(m_types.C_TAG_PROPERTY)) {
             state.advance().mark(m_types.C_TAG_PROP_VALUE);
+        } else if (state.is(m_types.C_MODULE_DECLARATION)) {
+            // module M |> = <| ...
+            state.advance().mark(m_types.C_DUMMY).dummy().resolution(moduleBinding);
+        }
+        // ~x |> =<| ...
+        else if (state.is(m_types.C_NAMED_PARAM)) {
+            state.advance().mark(m_types.C_DEFAULT_VALUE);
         }
     }
 
@@ -1064,9 +1112,9 @@ public class ResParser extends CommonParser<ResTypes> {
             state.advance().mark(m_types.C_SIG_ITEM);
         } else if (state.is(m_types.C_SIG_ITEM)) {
             state.popEnd();
-            if (!state.isCurrentResolution(signatureScope)) {
-                state.popEndUntil(m_types.C_SIG_EXPR);
-            }
+            //if (!state.isCurrentResolution(signatureScope)) {
+            //    state.popEndUntil(m_types.C_SIG_EXPR);
+            //}
             state.advance().mark(m_types.C_SIG_ITEM);
         } else if (state.is(m_types.C_FUNCTOR_DECLARATION)
                 || state.isCurrentResolution(functorNamedEqColon)

@@ -6,7 +6,7 @@ import com.reason.ide.*;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-public class Jsx3NameCompletionTest extends ORBasePlatformTestCase {
+public class Jsx3NameCompletionRMLTest extends ORBasePlatformTestCase {
 
   public void test_outside_components() {
     configureCode("DialogHeader.re", "[@react.component] let make = () => { <div/> };");

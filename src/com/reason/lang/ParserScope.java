@@ -1,11 +1,9 @@
 package com.reason.lang;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.type.ORCompositeType;
-import com.reason.lang.core.type.ORTokenElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
 public class ParserScope {
 
@@ -32,33 +30,25 @@ public class ParserScope {
         m_scopeTokenElementType = scopeTokenElementType;
     }
 
-    @NotNull
-    public static ParserScope mark(
-            @NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType) {
+    public static @NotNull ParserScope mark(@NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType) {
         return new ParserScope(builder, builder.mark(), compositeElementType, null);
     }
 
-    @NotNull
-    public static ParserScope markScope(
-            @NotNull PsiBuilder builder,
-            @NotNull ORCompositeType compositeElementType,
-            @NotNull ORTokenElementType scopeTokenElementType) {
+    public static @NotNull ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
         return new ParserScope(builder, builder.mark(), compositeElementType, scopeTokenElementType);
     }
 
-    public static ParserScope precedeScope(ParserScope scope, ORCompositeType compositeType) {
+    public static @NotNull ParserScope precedeScope(@NotNull ParserScope scope, @NotNull ORCompositeType compositeType) {
         PsiBuilder.Marker precede = scope.m_mark.precede();
         return new ParserScope(scope.m_builder, precede, compositeType, null);
     }
 
-    public static ParserScope precedeMark(
-            PsiBuilder builder, PsiBuilder.Marker mark, ORCompositeType compositeType) {
+    public static @NotNull ParserScope precedeMark(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull ORCompositeType compositeType) {
         PsiBuilder.Marker precede = mark.precede();
         return new ParserScope(builder, precede, compositeType, null);
     }
 
-    @NotNull
-    static ParserScope markRoot(@NotNull PsiBuilder builder) {
+    static @NotNull ParserScope markRoot(@NotNull PsiBuilder builder) {
         return new ParserScope(builder, builder.mark(), null, null);
     }
 

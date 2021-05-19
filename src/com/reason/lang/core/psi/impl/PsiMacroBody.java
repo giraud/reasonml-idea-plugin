@@ -10,9 +10,8 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiRawBody extends CompositeTypePsiElement<ORTypes> implements PsiLanguageInjectionHost {
-
-    protected PsiRawBody(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class PsiMacroBody extends CompositeTypePsiElement<ORTypes> implements PsiLanguageInjectionHost {
+    protected PsiMacroBody(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 
@@ -42,7 +41,7 @@ public class PsiRawBody extends CompositeTypePsiElement<ORTypes> implements PsiL
 
     public @NotNull TextRange getMacroTextRange() {
         IElementType elementType = getNode().getFirstChildNode().getElementType();
-        if (elementType == m_types.STRING_VALUE) {
+        if (elementType == m_types.STRING_VALUE || elementType == m_types.ML_STRING_VALUE) {
             int max = getTextLength() - 1;
             if (1 < max) {
                 return new TextRange(1, max);
@@ -55,5 +54,10 @@ public class PsiRawBody extends CompositeTypePsiElement<ORTypes> implements PsiL
         }
 
         return getTextRange();
+    }
+
+    @Override
+    public String toString() {
+        return "PsiMacroBody";
     }
 }

@@ -8,24 +8,24 @@ import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends RmlParsingTestCase {
-    public void test_abstractType() {
+    public void test_abstract_type() {
         PsiType e = first(typeExpressions(parseCode("type t;")));
         assertEquals("t", e.getName());
         assertTrue(e.isAbstract());
     }
 
-    public void test_RecursiveType() {
+    public void test_recursive_type() {
         PsiType e = first(typeExpressions(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));")));
         assertEquals("tree", e.getName());
         assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
     }
 
-    public void test_TypeBindingWithVariant() {
+    public void test_type_binding_with_variant() {
         PsiType e = first(typeExpressions(parseCode("type t = | Tick;")));
         assertNotNull(e.getBinding());
     }
 
-    public void test_TypeBindingWithRecord() {
+    public void test_type_binding_with_record() {
         PsiType e = first(typeExpressions(parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n};")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
@@ -33,7 +33,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
         assertEquals(2, fields.size());
     }
 
-    public void test_TypeSpecialProps() {
+    public void test_type_special_props() {
         PsiType e = first(typeExpressions(
                 parseCode(
                         "type props = { "
@@ -46,7 +46,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
         assertEquals(3, fields.size());
     }
 
-    public void test_bindingWithRecordAs() {
+    public void test_binding_with_record_as() {
         PsiType e = first(typeExpressions(parseCode("type branch_info('branch_type) = { kind: [> | `Master] as 'branch_type, pos: id, };")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();

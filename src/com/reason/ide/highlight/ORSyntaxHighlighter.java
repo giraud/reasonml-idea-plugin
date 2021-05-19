@@ -226,6 +226,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     ResTypes.INSTANCE.RIGHT_ARROW,
                     ResTypes.INSTANCE.COLON_EQ,
                     ResTypes.INSTANCE.COLON_GT,
+                    ResTypes.INSTANCE.LT,
                     ResTypes.INSTANCE.GT,
                     ResTypes.INSTANCE.GT_BRACE,
                     ResTypes.INSTANCE.GT_BRACKET,

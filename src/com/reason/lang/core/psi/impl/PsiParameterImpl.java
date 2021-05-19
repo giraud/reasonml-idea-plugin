@@ -43,6 +43,10 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
             identifier = nextElementType == m_types.LPAREN ? nextSibling.getNextSibling() : nextSibling;
         }
 
+        if (identifier instanceof PsiNamedParam) {
+            return ORUtil.findImmediateFirstChildOfClass(identifier, PsiLowerIdentifier.class);
+        }
+
         return identifier;
     }
 
@@ -121,7 +125,11 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
 
     @Override
     public @Nullable PsiDefaultValue getDefaultValue() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiDefaultValue.class);
+        PsiElement firstChild = getFirstChild();
+        if (firstChild instanceof PsiNamedParam) {
+            return ORUtil.findImmediateFirstChildOfClass(firstChild, PsiDefaultValue.class);
+        }
+        return null;
     }
 
     @Override

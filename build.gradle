@@ -47,8 +47,7 @@ allprojects {
             untilBuild = pluginUntilBuild
             changeNotes """
                 <ul>
-                    <li>#303 - Incorrect resolution for record field</li>
-                    <li>Reference resolution algorithm has been totally redesigned</li>
+                    <li>#328 - Update Rescript parser to latest syntax</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

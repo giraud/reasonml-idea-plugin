@@ -5,7 +5,7 @@ import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
 
 @SuppressWarnings("ConstantConditions")
-public class ExpandLocalOpenIntentionTest extends ORBasePlatformTestCase {
+public class ExpandLocalOpenIntentionRMLTest extends ORBasePlatformTestCase {
 
   public void testBasic() {
     myFixture.configureByText(RmlFileType.INSTANCE, "let x = Js.Promise.(<caret>Api.all());");

@@ -4,7 +4,7 @@ import com.intellij.codeInsight.intention.*;
 import com.reason.ide.*;
 
 @SuppressWarnings("ConstantConditions")
-public class FunctionBracesIntentionTest extends ORBasePlatformTestCase {
+public class FunctionBracesIntentionRMLTest extends ORBasePlatformTestCase {
     public static final String ADD_BRACES = "Add braces to blockless function";
 
     public void testBasic() {

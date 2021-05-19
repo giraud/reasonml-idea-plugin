@@ -1,13 +1,12 @@
 package com.reason.lang.rescript;
 
-import com.reason.lang.core.psi.impl.PsiAssert;
+import com.reason.lang.core.psi.impl.*;
 
+@SuppressWarnings("ConstantConditions")
 public class AssertParsingTest extends ResParsingTestCase {
+    public void test_basic() {
+        PsiAssert e = firstOfType(parseCode("assert (i < Array.length(t))"), PsiAssert.class);
 
-  public void testBasic() {
-    PsiAssert assertExp = firstOfType(parseCode("assert (i < Array.length(t))"), PsiAssert.class);
-
-    assertNotNull(assertExp);
-    assertNotNull(assertExp.getAssertion());
-  }
+        assertEquals("(i < Array.length(t))", e.getAssertion().getText());
+    }
 }

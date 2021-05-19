@@ -2,48 +2,48 @@ package com.reason.lang.rescript;
 
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.reason.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ExternalParsingTest extends ResParsingTestCase {
-
     public void test_signature() {
-        PsiExternal e = firstOfType(parseCode("external e : string => string"), PsiExternal.class);
+        PsiExternal e = externalExpression(parseCode("external props : string => string = \"\""), "props");
 
-        assertEquals("e", e.getName());
+        PsiSignature signature = e.getSignature();
+        assertEquals("string => string", signature.getText());
         assertTrue(e.isFunction());
-        assertEquals("string => string", e.getSignature().getText());
     }
 
-    public void test_with_string() {
-        PsiExternal e = firstOfType(parseCode("external e: ReasonReact.reactClass = \"FormattedMessage\""), PsiExternal.class);
+    public void test_withString() {
+        PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"FormattedMessage\""), PsiExternal.class);
 
-        assertEquals("ReasonReact.reactClass", e.getSignature().getText());
+        assertEquals("ReasonReact.reactClass", e.getSignature().asText(myLanguage));
         assertFalse(e.isFunction());
         assertEquals("FormattedMessage", e.getExternalName());
     }
 
-    public void test_empty_string() {
+    public void test_withEmptyString() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"\""), PsiExternal.class);
 
-        assertEquals("ReasonReact.reactClass", e.getSignature().getText());
+        assertEquals("ReasonReact.reactClass", e.getSignature().asText(myLanguage));
         assertFalse(e.isFunction());
         assertEquals("", e.getExternalName());
     }
 
-    public void test_array() {
-        PsiExternal e = firstOfType(parseCode("external myArray : array<reactElement> => reactElement = \"%identity\""), PsiExternal.class);
-
-        assertEquals("myArray", e.getName());
-        assertEquals("array<reactElement> => reactElement", e.getSignature().getText());
-        assertEquals("%identity", e.getExternalName());
-    }
-
-    public void test_string_identifier() {
-        PsiExternal e = firstOfType(parseCode("external string : string => reactElement = \"%identity\""), PsiExternal.class);
+    public void test_string() {
+        PsiExternal e = firstOfType(parseCode("external string: string => reactElement = \"%identity\""), PsiExternal.class);
 
         assertEquals("string", e.getName());
         assertInstanceOf(((PsiExternalImpl) e).getNameIdentifier(), PsiLowerIdentifier.class);
         assertEquals("string => reactElement", e.getSignature().getText());
+        assertEquals("%identity", e.getExternalName());
+    }
+
+    public void test_array() {
+        PsiExternal e = firstOfType(parseCode("external array: array<reactElement> => reactElement = \"%identity\""), PsiExternal.class);
+
+        assertEquals("array", e.getName());
+        assertEquals("array<reactElement> => reactElement", e.getSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
 }

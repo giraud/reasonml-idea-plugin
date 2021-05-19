@@ -1,26 +1,21 @@
 package com.reason.ide.insight;
 
-import static com.intellij.patterns.PlatformPatterns.psiElement;
+import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.lookup.*;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.intellij.util.*;
+import com.reason.*;
+import com.reason.ide.files.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
-import com.intellij.codeInsight.completion.AddSpaceInsertHandler;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ProcessingContext;
-import com.reason.Log;
-import com.reason.ide.files.FileBase;
-import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
+import static com.intellij.patterns.PlatformPatterns.*;
 
 abstract class KeywordCompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor implements DumbAware {
+    private static final Log LOG = Log.create("insight.keyword");
 
-    static final Log LOG = Log.create("insight.keyword");
     protected static final InsertHandler<LookupElement> INSERT_SPACE = new AddSpaceInsertHandler(false);
 
     KeywordCompletionContributor(@NotNull ORTypes types) {

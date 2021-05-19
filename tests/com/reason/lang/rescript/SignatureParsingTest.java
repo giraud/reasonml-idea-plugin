@@ -1,56 +1,69 @@
 package com.reason.lang.rescript;
 
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+
+import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class SignatureParsingTest extends ResParsingTestCase {
-    public void test_mandatoryVal() {
-        PsiLet let = first(letExpressions(parseCode("let x:int = 1")));
+    public void test_let() {
+        PsiLet let = first(letExpressions(parseCode("let x: int = 1")));
 
         PsiSignature signature = let.getSignature();
         assertEquals("int", signature.asText(myLanguage));
         assertFalse(signature.getItems().get(0).isOptional());
     }
-    /*
+
     public void test_trimming() {
-        PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string =>\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  )\n")));
+        PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string =>\n  componentSpec<\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  >\n")));
 
         PsiSignature signature = let.getSignature();
-        assertEquals("string => componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asString(myLanguage));
+        assertEquals("string => componentSpec<stateless, stateless, noRetainedProps, noRetainedProps, actionless>", signature.asText(myLanguage));
     }
 
-    public void test_named_param() {
+    public void test_parsing_named_params() {
         PsiLet let = first(letExpressions(parseCode("let padding: (~v:length, ~h:length) => rule")));
 
         PsiSignature signature = let.getSignature();
-        List<PsiSignatureItem> items = new ArrayList<>(PsiTreeUtil.findChildrenOfType(signature, PsiSignatureItem.class));
-        assertEquals(5, items.size());
-        assertEquals("(~v:length, ~h:length) => rule", signature.getText());
+        assertEquals(3, signature.getItems().size());
+        assertEquals("(~v:length, ~h:length) => rule", signature.asText(myLanguage));
+        assertFalse(signature.getItems().get(0).isOptional());
+        assertEquals("v", signature.getItems().get(0).getNamedParam().getName());
+        assertFalse(signature.getItems().get(1).isOptional());
+        assertEquals("h", signature.getItems().get(1).getNamedParam().getName());
     }
 
-    public void test_optionalFun() {
+    public void test_optional_fun() {
         PsiLet let = first(letExpressions(parseCode("let x:int => option<string> => string = (a,b) => c")));
 
         List<PsiSignatureItem> items = let.getSignature().getItems();
-        assertTrue(items.get(0).isOptional());
+        assertEquals("int", items.get(0).getText());
+        assertFalse(items.get(0).isOptional());
+        assertEquals("option<string>", items.get(1).getText());
         assertFalse(items.get(1).isOptional());
+        assertEquals("string", items.get(2).getText());
+        assertSize(3, items);
     }
 
-    public void test_optionalFunParameters() {
-        PsiLet let = first(letExpressions(parseCode("let x = (a:int, b:option<string>, c:bool=false, d:float=?) => 3")));
+    public void test_optional_fun_parameters() {
+        PsiLet let = first(letExpressions(parseCode("let x = (a:int, b:option<string>, ~c:bool=false, ~d:float=?) => 3")));
 
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
 
-        assertTrue(parameters.get(0).getSignature().getItems().get(0).isOptional());
+        assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
         assertFalse(parameters.get(1).getSignature().getItems().get(0).isOptional());
-        //        assertFalse(parameters.get(2).getSignature().asHMSignature().isMandatory(0));
-        assertEquals("bool", parameters.get(2).getSignature().asString(myLanguage));
-        //        assertFalse(parameters.get(3).getSignature().asHMSignature().isMandatory(0));
-        assertEquals("float", parameters.get(3).getSignature().asString(myLanguage));
+        assertEquals("bool", parameters.get(2).getSignature().asText(myLanguage));
+        assertTrue(parameters.get(2).isOptional());
+        assertEquals("false", parameters.get(2).getDefaultValue().getText());
+        assertEquals("float", parameters.get(3).getSignature().asText(myLanguage));
+        assertTrue(parameters.get(3).isOptional());
+        assertEquals("?", parameters.get(3).getDefaultValue().getText());
     }
 
-    public void test_unitFunParameter() {
+    public void test_unit_fun_parameter() {
         PsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
@@ -60,55 +73,57 @@ public class SignatureParsingTest extends ResParsingTestCase {
     }
 
     public void test_jsObject() {
-        PsiType psiType = first(typeExpressions(parseCode("type props = { @bs.optional dangerouslySetInnerHTML: {. \"__html\": string} }")));
+        PsiType psiType = first(typeExpressions(parseCode("type props = {@optional dangerouslySetInnerHTML: {\"__html\": string}}")));
 
         PsiRecord record = (PsiRecord) psiType.getBinding().getFirstChild();
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
 
         assertEquals(1, fields.size());
-        assertEquals("{. \"__html\": string}", fields.get(0).getSignature().getText());
+        assertEquals("{\"__html\": string}", fields.get(0).getSignature().asText(myLanguage));
     }
 
-    public void test_externalFun() {
-        PsiExternal e = first(externalExpressions(parseCode("external refToJsObj : reactRef => {..} = \"%identity\"")));
+    public void test_external_fun() {
+        PsiExternal e = first(externalExpressions(parseCode("external refToJsObj: reactRef => {..} = \"%identity\";")));
 
         PsiSignature signature = e.getSignature();
         assertSize(2, ORUtil.findImmediateChildrenOfClass(e.getSignature(), PsiSignatureItem.class));
-        assertEquals("reactRef => {..}", signature.asString(myLanguage));
+        assertEquals("reactRef => {..}", signature.asText(myLanguage));
     }
 
-    public void test_externalFun2() {
-        PsiExternal e = first(externalExpressions(parseCode("external requestAnimationFrame: (unit => unit) => animationFrameID = \"\"")));
+    public void test_external_fun_2() {
+        PsiExternal e = first(externalExpressions(parseCode("external requestAnimationFrame: (unit => string) => animationFrameID = \"\"")));
 
         PsiSignature signature = e.getSignature();
-        Collection<PsiSignatureItem> signatureItems = PsiTreeUtil.findChildrenOfType(e.getSignature(), PsiSignatureItem.class);
+        List<PsiSignatureItem> signatureItems = signature.getItems();
+        assertEquals("unit", signatureItems.get(0).getText());
+        assertEquals("string", signatureItems.get(1).getText());
+        assertEquals("animationFrameID", signatureItems.get(2).getText());
         assertSize(3, signatureItems);
-        Iterator<PsiSignatureItem> itSig = signatureItems.iterator();
-        assertEquals("unit", itSig.next().getText());
-        assertEquals("unit", itSig.next().getText());
-        assertEquals("animationFrameID", itSig.next().getText());
     }
 
     public void test_option() {
-        PsiExternal e = first(externalExpressions(parseCode("external e : option<show> = \"\"")));
+        PsiExternal e = first(externalExpressions(parseCode("external e: option<show> = \"\"")));
 
         PsiSignatureItem sigItem = ORUtil.findImmediateChildrenOfClass(e.getSignature(), PsiSignatureItem.class).iterator().next();
         assertEquals("option<show>", sigItem.asText(myLanguage));
     }
 
-    // public void test_defaultOptional() {
-    //    PsiLet let = first(letExpressions(parseCode("let createAction: (string, payload, ~meta:
-    // 'meta=?, unit) => opaqueFsa")));
-    //    PsiSignature signature = let.getSignature();
-    //    assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
-    // signature.asString(myLanguage));
-    // }
-
-    public void test_GH_275b() {
-        PsiSwitch e = firstOfType(parseCode("switch (a, b) { | (Some(a'), Some(b')) => let _ = { switch (x) { | None => None } } }"), PsiSwitch.class);
-
-        assertEquals("switch (a, b) { | (Some(a'), Some(b')) => let _ = { switch (x) { | None => None } } }", e.getText());
-        assertEquals("let _ = { switch (x) { | None => None } }", e.getPatterns().get(0).getBody().getText());
+    public void test_default_optional() {
+        PsiLet let = first(letExpressions(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa")));
+        PsiSignature signature = let.getSignature();
+        // assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
+        // signature.asString(myLanguage));
     }
-    */
+
+    // TODO later
+    //public void test_react() {
+    //    PsiExternal e = first(externalExpressions(parseCode("external useState: (@uncurry (unit => 'state)) => ('state, (. 'state => 'state) => unit) = \"useState\"")));
+
+    //assertEquals("useState", e.getExternalName());
+    //assertEquals("(@uncurry (unit => 'state)) => ('state, (. 'state => 'state) => unit)", e.getSignature().getText());
+    //assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunction.class));
+    //List<PsiSignatureItem> signatureItems = e.getSignature().getItems();
+    //assertEquals("@uncurry (unit => 'state)", signatureItems.get(0).getText());
+    // ? assertEquals("('state, (. 'state => 'state) => unit)", signatureItems.get(1).getText());
+    //}
 }

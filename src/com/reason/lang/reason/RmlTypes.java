@@ -43,6 +43,7 @@ public class RmlTypes extends ORTypes {
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", RmlLanguage.INSTANCE);
         C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", RmlLanguage.INSTANCE);
         C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", RmlLanguage.INSTANCE);
+        C_LOWER_BOUND_CONSTRAINT = new ORCompositeElementType("C_LOWER_BOUND_CONSTRAINT", RmlLanguage.INSTANCE);
         C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", RmlLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", RmlLanguage.INSTANCE);
@@ -76,7 +77,6 @@ public class RmlTypes extends ORTypes {
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", RmlLanguage.INSTANCE);
         C_RECORD_EXPR = new ORCompositeElementType("C_RECORD_EXPR", RmlLanguage.INSTANCE);
-        C_RAW = new ORCompositeElementType("C_RAW", RmlLanguage.INSTANCE);
         C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", RmlLanguage.INSTANCE);
         C_SIG_ITEM = new ORCompositeElementType("C_SIG_ITEM", RmlLanguage.INSTANCE);
         C_SCOPED_EXPR = new ORCompositeElementType("C_SCOPED_EXPR", RmlLanguage.INSTANCE);
@@ -95,6 +95,7 @@ public class RmlTypes extends ORTypes {
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", RmlLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", RmlLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", RmlLanguage.INSTANCE);
+        C_UPPER_BOUND_CONSTRAINT = new ORCompositeElementType("C_UPPER_BOUND_CONSTRAINT", RmlLanguage.INSTANCE);
         C_DUMMY = new ORCompositeElementType("C_DUMMY", RmlLanguage.INSTANCE);
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", RmlLanguage.INSTANCE);
         C_VARIANT = new ORCompositeElementType("C_VARIANT", RmlLanguage.INSTANCE);
