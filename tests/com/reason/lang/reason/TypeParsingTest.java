@@ -96,4 +96,15 @@ public class TypeParsingTest extends RmlParsingTestCase {
 
         assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/326
+    public void test_GH_326() {
+        PsiType e = firstOfType(parseCode("type t = { buffer: GText.buffer, mutable breakpoints: list(breakpoint) }"), PsiType.class);
+
+        PsiRecord r = (PsiRecord) e.getBinding().getFirstChild();
+        List<PsiRecordField> f = r.getFields();
+        assertSize(2, f);
+        assertEquals("buffer", f.get(0).getName());
+        assertEquals("breakpoints", f.get(1).getName());
+    }
 }

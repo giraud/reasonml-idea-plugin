@@ -672,7 +672,8 @@ public class ResParser extends CommonParser<ResTypes> {
                 }
             }
 
-            if (state.is(m_types.C_DECONSTRUCTION) || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS)) || state.is(m_types.C_NAMED_PARAM)) {
+            if (state.is(m_types.C_DECONSTRUCTION) || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS))
+                    || state.is(m_types.C_NAMED_PARAM) || state.is(m_types.C_RECORD_FIELD)) {
                 state.wrapWith(m_types.C_LOWER_IDENTIFIER);
             } else if (!state.is(m_types.C_TAG_PROPERTY)) {
                 state.wrapWith(m_types.C_LOWER_SYMBOL);

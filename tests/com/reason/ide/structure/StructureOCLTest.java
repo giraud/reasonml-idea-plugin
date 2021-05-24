@@ -29,7 +29,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
     }
 
     public void test_type_record() {
-        FileBase a = configureCode("A.ml", "type x = { a: int; b: string list }");
+        FileBase a = configureCode("A.ml", "type x = { a: int; mutable b: string list }");
         StructureViewModel model = new ORStructureViewModel(a);
 
         TreeElement e = model.getRoot().getChildren()[0];

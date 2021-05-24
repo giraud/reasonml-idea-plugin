@@ -47,6 +47,7 @@ allprojects {
             untilBuild = pluginUntilBuild
             changeNotes """
                 <ul>
+                    <li>#326 - Structure panel shows "mutable" for mutable record fields rather than the field name</li>
                     <li>#328 - Update Rescript parser to latest syntax</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
