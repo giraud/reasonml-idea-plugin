@@ -1,56 +1,85 @@
 package com.reason.lang.core.stub;
 
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.NamedStubBase;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
-import com.reason.lang.core.psi.PsiModule;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.stubs.*;
+import com.intellij.util.io.*;
+import com.reason.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 public class PsiModuleStub extends NamedStubBase<PsiModule> {
-    private final @NotNull String m_path;
-    private final @NotNull String m_qname;
-    private final String m_alias;
-    private final boolean m_isComponent;
-    private final boolean m_isInterface;
+    private final @Nullable String[] myPath;
+    private final @Nullable String[] myQualifiedNameAsPath;
+    private final @NotNull String myQname;
+    private final String myAlias;
+    private final boolean myIsComponent;
+    private final boolean myIsInterface;
+    private final boolean myIsTopLevel;
+    private final boolean myIsModuleType;
+    private final boolean myIsFunctorCall;
 
-    public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String path, String alias, boolean isComponent, boolean isInterface) {
+    public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable String name,
+                         @Nullable String[] path, @Nullable String[] qNamePath, String namespace, String alias, boolean isComponent,
+                         boolean isInterface, boolean isTopLevel, boolean isModuleType, boolean isFunctorCall) {
         super(parent, elementType, name);
-        m_path = path;
-        m_qname = path.length() == 0 ? "" + name : path + "." + name;
-        m_alias = alias;
-        m_isComponent = isComponent;
-        m_isInterface = isInterface;
+        myPath = path;
+        myQualifiedNameAsPath = qNamePath;
+        myQname = namespace == null ? path != null && path.length > 0 ? Joiner.join(".", path) + "." + name : "" + name : namespace;
+        myAlias = alias;
+        myIsComponent = isComponent;
+        myIsInterface = isInterface;
+        myIsTopLevel = isTopLevel;
+        myIsModuleType = isModuleType;
+        myIsFunctorCall = isFunctorCall;
     }
 
-    public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @NotNull String path, String alias, boolean isComponent, boolean isInterface) {
+    public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name,
+                         @Nullable String[] path, @Nullable String[] qNamePath, String namespace, String alias, boolean isComponent,
+                         boolean isInterface, boolean isTopLevel, boolean isModuleType, boolean isFunctorCall) {
         super(parent, elementType, name);
-        m_path = path;
-        m_qname = path.length() == 0 ? "" + name : path + "." + name;
-        m_alias = alias;
-        m_isComponent = isComponent;
-        m_isInterface = isInterface;
+        myPath = path;
+        myQualifiedNameAsPath = qNamePath;
+        myQname = namespace == null ? path != null && path.length > 0 ? Joiner.join(".", path) + "." + name : "" + name : namespace;
+        myAlias = alias;
+        myIsComponent = isComponent;
+        myIsInterface = isInterface;
+        myIsTopLevel = isTopLevel;
+        myIsModuleType = isModuleType;
+        myIsFunctorCall = isFunctorCall;
     }
 
-    public @NotNull String getPath() {
-        return m_path;
+    public @Nullable String[] getPath() {
+        return myPath;
     }
 
-    @NotNull
-    public String getQualifiedName() {
-        return m_qname;
+    public @NotNull String getQualifiedName() {
+        return myQname;
     }
 
     public String getAlias() {
-        return m_alias;
+        return myAlias;
     }
 
     public boolean isComponent() {
-        return m_isComponent;
+        return myIsComponent;
     }
 
     public boolean isInterface() {
-        return m_isInterface;
+        return myIsInterface;
+    }
+
+    public boolean isTopLevel() {
+        return myIsTopLevel;
+    }
+
+    public boolean isModuleType() {
+        return myIsModuleType;
+    }
+
+    public boolean isFunctorCall() {
+        return myIsFunctorCall;
+    }
+
+    public @Nullable String[] getQualifiedNameAsPath() {
+        return myQualifiedNameAsPath;
     }
 }

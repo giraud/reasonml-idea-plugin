@@ -22,6 +22,8 @@ public class OclTypes extends ORTypes {
         C_FUNCTOR_PARAM = (ORCompositeType) OclStubBasedElementTypes.C_FUNCTOR_PARAM;
         C_RECORD_FIELD = (ORCompositeType) OclStubBasedElementTypes.C_RECORD_FIELD;
         C_VARIANT_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_VARIANT_DECLARATION;
+        C_INCLUDE = (ORCompositeType) OclStubBasedElementTypes.C_INCLUDE;
+        C_OPEN = (ORCompositeType) OclStubBasedElementTypes.C_OPEN;
 
         // Composite element types
 
@@ -42,7 +44,6 @@ public class OclTypes extends ORTypes {
         C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", OclLanguage.INSTANCE);
         C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", OclLanguage.INSTANCE);
         C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", OclLanguage.INSTANCE);
-        C_INCLUDE = new ORCompositeElementType("C_INCLUDE", OclLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", OclLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", OclLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", OclLanguage.INSTANCE);
@@ -69,7 +70,6 @@ public class OclTypes extends ORTypes {
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", OclLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", OclLanguage.INSTANCE);
         C_OBJECT_FIELD = new ORCompositeElementType("C_OBJECT_FIELD", OclLanguage.INSTANCE);
-        C_OPEN = new ORCompositeElementType("C_OPEN", OclLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", OclLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", OclLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", OclLanguage.INSTANCE);
@@ -185,7 +185,6 @@ public class OclTypes extends ORTypes {
         VARIANT_NAME = new ORTokenElementType("VARIANT_NAME", OclLanguage.INSTANCE);
         PIPE = new ORTokenElementType("PIPE", OclLanguage.INSTANCE);
         PIPE_FORWARD = new ORTokenElementType("PIPE_FORWARD", OclLanguage.INSTANCE);
-        PIPE_FIRST = new ORTokenElementType("PIPE_FIRST", OclLanguage.INSTANCE);
         PLUS = new ORTokenElementType("PLUS", OclLanguage.INSTANCE);
         PERCENT = new ORTokenElementType("PERCENT", OclLanguage.INSTANCE);
         PLUSDOT = new ORTokenElementType("PLUSDOT", OclLanguage.INSTANCE);

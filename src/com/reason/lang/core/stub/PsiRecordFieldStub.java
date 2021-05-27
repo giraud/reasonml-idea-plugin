@@ -1,35 +1,32 @@
 package com.reason.lang.core.stub;
 
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.NamedStubBase;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
-import com.reason.lang.core.psi.PsiRecordField;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.stubs.*;
+import com.intellij.util.io.*;
+import com.reason.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 public class PsiRecordFieldStub extends NamedStubBase<PsiRecordField> {
-  private final String m_path;
-  private final @NotNull String m_qname;
+    private final String[] myPath;
+    private final @NotNull String myQname;
 
-  public PsiRecordFieldStub(
-      StubElement parent, @NotNull IStubElementType elementType, String name, String path) {
-    super(parent, elementType, name);
-    m_path = path;
-    m_qname = path + "." + name;
-  }
+    public PsiRecordFieldStub(StubElement parent, @NotNull IStubElementType elementType, String name, String[] path) {
+        super(parent, elementType, name);
+        myPath = path;
+        myQname = Joiner.join(".", path) + "." + name;
+    }
 
-  public PsiRecordFieldStub(
-      StubElement parent, @NotNull IStubElementType elementType, StringRef name, String path) {
-    super(parent, elementType, name);
-    m_path = path;
-    m_qname = path + "." + name;
-  }
+    public PsiRecordFieldStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String[] path) {
+        super(parent, elementType, name);
+        myPath = path;
+        myQname = Joiner.join(".", path) + "." + name;
+    }
 
-  public String getPath() {
-    return m_path;
-  }
+    public String[] getPath() {
+        return myPath;
+    }
 
-  public @NotNull String getQualifiedName() {
-    return m_qname;
-  }
+    public @NotNull String getQualifiedName() {
+        return myQname;
+    }
 }

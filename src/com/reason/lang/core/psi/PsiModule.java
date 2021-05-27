@@ -10,8 +10,7 @@ import java.util.*;
 /**
  * Common interface to file-based modules and inner modules
  */
-public interface PsiModule
-        extends PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement {
+public interface PsiModule extends PsiQualifiedPathElement, NavigatablePsiElement, PsiStructuredElement {
 
     boolean isInterface();
 
@@ -22,6 +21,9 @@ public interface PsiModule
 
     @Nullable
     String getModuleName();
+
+    @Nullable
+    String[] getQualifiedNameAsPath();
 
     @Nullable
     PsiFunctorCall getFunctorCall();

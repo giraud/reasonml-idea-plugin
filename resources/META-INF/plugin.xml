@@ -238,6 +238,8 @@
         <stubIndex implementation="com.reason.ide.search.index.ModuleComponentIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ModuleAliasedIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ModuleAliasesIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ValIndex"/>
@@ -252,12 +254,15 @@
         <stubIndex implementation="com.reason.ide.search.index.RecordFieldIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ParameterIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ParameterFqnIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.IncludeIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.OpenIndex"/>
 
         <fileBasedIndex implementation="com.reason.ide.search.index.FileModuleIndex"/>
         <fileBasedIndex implementation="com.reason.ide.search.index.NamespaceIndex"/>
         <applicationService serviceImplementation="com.reason.ide.search.FileModuleIndexService"/>
 
         <projectService serviceImplementation="com.reason.ide.search.PsiFinder"/>
+        <projectService serviceImplementation="com.reason.lang.core.psi.reference.ORElementResolver"/>
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.findUsagesProvider language="NapkinScript"

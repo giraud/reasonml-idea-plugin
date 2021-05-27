@@ -7,7 +7,6 @@ import com.intellij.openapi.module.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
-import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -160,7 +159,7 @@ public class Log {
         }
     }
 
-    public void debug(String comment, @NotNull PsiQualifiedElement element) {
+    public void debug(String comment, @NotNull PsiQualifiedNamedElement element) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(
                     comment
@@ -172,7 +171,7 @@ public class Log {
         }
     }
 
-    public void debug(String comment, @NotNull PsiQualifiedElement element, int position) {
+    public void debug(String comment, @NotNull PsiQualifiedNamedElement element, int position) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(
                     comment
@@ -220,15 +219,7 @@ public class Log {
 
     public void debug(String msg, PsiElement element) {
         if (m_log.isDebugEnabled()) {
-            m_log.debug(
-                    msg
-                            + SEP
-                            + " "
-                            + element
-                            + SEP
-                            + (element instanceof PsiNamedElement
-                            ? " [" + ((PsiNamedElement) element).getName() + "]"
-                            : ""));
+            m_log.debug(msg + SEP + element + (element instanceof PsiNamedElement ? ", name=[" + ((PsiNamedElement) element).getName() + "]" : ""));
         }
     }
 

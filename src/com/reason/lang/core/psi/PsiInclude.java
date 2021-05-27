@@ -1,7 +1,17 @@
 package com.reason.lang.core.psi;
 
-public interface PsiInclude extends PsiStructuredElement {
-    String getPath();
+import com.intellij.psi.*;
+import com.reason.lang.core.stub.*;
+import org.jetbrains.annotations.*;
+
+public interface PsiInclude extends PsiStructuredElement, StubBasedPsiElement<PsiIncludeStub> {
+    String[] getQualifiedPath();
+
+    @Nullable String[] getResolvedPath();
+
+    String getIncludePath();
+
+    @Nullable PsiModule getModule();
 
     boolean useFunctor();
 }

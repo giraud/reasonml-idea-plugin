@@ -29,59 +29,37 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
         super(types, node);
     }
 
-    public PsiFunctorImpl(
-            @NotNull ORTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
+    public PsiFunctorImpl(@NotNull ORTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
 
-    // region NamedElement
-    @Override
-    public @Nullable String getName() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? null : nameIdentifier.getText();
-    }
-
+    // region PsiNamedElement
     @Override
     public @Nullable PsiElement getNameIdentifier() {
         return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
     }
 
     @Override
-    public @Nullable PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return null;
+    public @Nullable String getName() {
+        PsiModuleStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getName();
+        }
+
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null ? null : nameIdentifier.getText();
+    }
+
+    @Override
+    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return this;
     }
     // endregion
 
+    //region PsiQualifiedName
     @Override
-    public boolean isInterface() {
-        return false;
-    }
-
-    @Override
-    public boolean isComponent() {
-        return false;
-    }
-
-    @Nullable
-    @Override
-    public String getAlias() {
-        return null;
-    }
-
-    @Override
-    public @NotNull String getModuleName() {
-        String name = getName();
-        return name == null ? "" : name;
-    }
-
-    @Override
-    public @Nullable PsiFunctorCall getFunctorCall() {
-        return null;
-    }
-
-    @Override
-    public @NotNull String getPath() {
+    public @Nullable String[] getPath() {
         PsiModuleStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();
@@ -98,6 +76,37 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
         }
 
         return ORUtil.getQualifiedName(this);
+    }
+    //endregion
+
+    @Override public @Nullable String[] getQualifiedNameAsPath() {
+        return ORUtil.getQualifiedNameAsPath(this);
+    }
+
+    @Override
+    public boolean isInterface() {
+        return false;
+    }
+
+    @Override
+    public boolean isComponent() {
+        return false;
+    }
+
+    @Override
+    public @Nullable String getAlias() {
+        return null;
+    }
+
+    @Override
+    public @NotNull String getModuleName() {
+        String name = getName();
+        return name == null ? "" : name;
+    }
+
+    @Override
+    public @Nullable PsiFunctorCall getFunctorCall() {
+        return null;
     }
 
     @Override

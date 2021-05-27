@@ -31,6 +31,53 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
     }
     // endregion
 
+    // region PsiNamedElement
+    public @Nullable PsiElement getNameIdentifier() {
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class);
+    }
+
+    @Override
+    public @Nullable String getName() {
+        PsiLetStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getName();
+        }
+
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE
+                ? null
+                : nameIdentifier.getText();
+    }
+
+    @Override
+    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return this;
+    }
+    // endregion
+
+    //region PsiQualifiedName
+    @Override
+    public @NotNull String[] getPath() {
+        PsiLetStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
+        return ORUtil.getQualifiedPath(this);
+    }
+
+    @Override
+    public @NotNull String getQualifiedName() {
+        PsiLetStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+
+        return ORUtil.getQualifiedName(this);
+    }
+    //endregion
+
+    // zzz not used ?
     private static @NotNull List<PsiObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
         List<PsiObjectField> fields = new ArrayList<>();
 
@@ -114,31 +161,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         return fields;
     }
 
-    // region PsiNamedElement
-    @Nullable
-    public PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class);
-    }
-
-    @Nullable
     @Override
-    public String getName() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE
-                ? null
-                : nameIdentifier.getText();
-    }
-    // endregion
-
-    @NotNull
-    @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return this;
-    }
-
-    @Override
-    @Nullable
-    public PsiLetBinding getBinding() {
+    public @Nullable PsiLetBinding getBinding() {
         return findChildByClass(PsiLetBinding.class);
     }
 
@@ -147,9 +171,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         return ORUtil.findImmediateFirstChildOfClass(this, PsiDeconstruction.class) != null;
     }
 
-    @NotNull
     @Override
-    public Collection<PsiElement> getScopeChildren() {
+    public @NotNull Collection<PsiElement> getScopeChildren() {
         Collection<PsiElement> result = new ArrayList<>();
 
         PsiElement scope = ORUtil.findImmediateFirstChildOfClass(this, PsiDeconstruction.class);
@@ -164,9 +187,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         return result;
     }
 
-    @Nullable
     @Override
-    public String getAlias() {
+    public @Nullable String getAlias() {
         PsiLetStub stub = getGreenStub();
         if (stub != null) {
             return stub.getAlias();
@@ -232,9 +254,9 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         return binding != null && binding.getFirstChild() instanceof PsiJsObject;
     }
 
-    @NotNull
+
     @Override
-    public Collection<PsiRecordField> getRecordFields() {
+    public @NotNull Collection<PsiRecordField> getRecordFields() {
         return PsiTreeUtil.findChildrenOfType(this, PsiRecordField.class);
     }
 
@@ -267,23 +289,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
     // endregion
 
     @Override
-    public @NotNull String getQualifiedName() {
-        PsiLetStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.getQualifiedName();
-        }
-
-        return ORUtil.getQualifiedName(this);
-    }
-
-    @NotNull
-    @Override
-    public String getPath() {
-        return ORUtil.getQualifiedPath(this); // stub + name using this
-    }
-
-    @Override
-    public boolean isDeconsruction() {
+    public boolean isDeconstruction() {
         PsiElement nameIdentifier = getNameIdentifier();
         return nameIdentifier instanceof PsiDeconstruction;
     }

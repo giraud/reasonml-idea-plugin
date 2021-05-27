@@ -1,13 +1,7 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import com.reason.lang.core.stub.PsiValStub;
+import com.intellij.psi.*;
+import com.reason.lang.core.stub.*;
 
-public interface PsiVal
-    extends PsiVar,
-        PsiQualifiedElement,
-        PsiSignatureElement,
-        NavigatablePsiElement,
-        PsiStructuredElement,
-        StubBasedPsiElement<PsiValStub> {}
+public interface PsiVal extends PsiVar, PsiQualifiedPathElement, PsiSignatureElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiValStub> {
+}

@@ -29,14 +29,42 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
     // endregion
 
     @Override
-    public @NotNull String getPath() {
+    public @NotNull String getModuleName() {
         PsiFile file = getContainingFile();
-        return file instanceof FileBase ? ((FileBase) file).getModuleName() : "";
+        assert file instanceof FileBase;
+        return ((FileBase) file).getModuleName();
     }
 
-    @NotNull
+    //region PsiNamedElement
     @Override
-    public String getQualifiedName() {
+    public @Nullable String getName() {
+        PsiModuleStub greenStub = getGreenStub();
+        if (greenStub != null) {
+            return greenStub.getName();
+        }
+
+        return getModuleName();
+    }
+
+    @Override
+    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        throw new RuntimeException("Not implemented, use FileBase");
+    }
+    //endregion
+
+    //region PsiQualifiedPath
+    @Override
+    public @Nullable String[] getPath() {
+        PsiModuleStub greenStub = getGreenStub();
+        if (greenStub != null) {
+            return greenStub.getPath();
+        }
+
+        return null;
+    }
+
+    @Override
+    public @NotNull String getQualifiedName() {
         PsiModuleStub greenStub = getGreenStub();
         if (greenStub != null) {
             String name = greenStub.getName();
@@ -45,6 +73,11 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
 
         // ?? Namespace ??
         return getModuleName();
+    }
+    //endregion
+
+    @Override public @Nullable String[] getQualifiedNameAsPath() {
+        return ORUtil.getQualifiedNameAsPath(this);
     }
 
     @Override
@@ -62,9 +95,8 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
         return ((FileBase) getContainingFile()).isInterface();
     }
 
-    @Nullable
     @Override
-    public PsiFunctorCall getFunctorCall() {
+    public @Nullable PsiFunctorCall getFunctorCall() {
         return null;
     }
 
@@ -76,29 +108,9 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
         return ((FileBase) getContainingFile()).isComponent();
     }
 
-    @Nullable
     @Override
-    public String getAlias() {
+    public @Nullable String getAlias() {
         return null;
-    }
-
-    @Override
-    @Nullable
-    public String getName() {
-        return getModuleName();
-    }
-
-    @NotNull
-    @Override
-    public String getModuleName() {
-        PsiFile file = getContainingFile();
-        assert file instanceof FileBase;
-        return ((FileBase) file).getModuleName();
-    }
-
-    @Override
-    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        throw new RuntimeException("Not implemented, use FileBase");
     }
 
     @Override
@@ -123,30 +135,27 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
         return null;
     }
 
-    @Nullable
     @Override
-    public PsiLet getLetExpression(@Nullable String name) {
+    public @Nullable PsiLet getLetExpression(@Nullable String name) {
         Collection<PsiLet> expressions = getExpressions(name, PsiLet.class);
         return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 
-    @Nullable
     @Override
-    public PsiVal getValExpression(@Nullable String name) {
+    public @Nullable PsiVal getValExpression(@Nullable String name) {
         Collection<PsiVal> expressions = getExpressions(name, PsiVal.class);
         return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 
-    @Nullable
+
     @Override
-    public PsiType getTypeExpression(@Nullable String name) {
+    public @Nullable PsiType getTypeExpression(@Nullable String name) {
         List<PsiType> expressions = getExpressions(name, PsiType.class);
         return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 
     @NotNull
-    private <T extends PsiNamedElement> List<T> getExpressions(
-            @Nullable String name, @NotNull Class<T> clazz) {
+    private <T extends PsiNamedElement> List<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
         List<T> result = new ArrayList<>();
 
         if (name != null) {
@@ -161,8 +170,7 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
         return result;
     }
 
-    @Nullable
-    public ItemPresentation getPresentation() {
+    public @Nullable ItemPresentation getPresentation() {
         // FileBase presentation should be used
         return null;
     }

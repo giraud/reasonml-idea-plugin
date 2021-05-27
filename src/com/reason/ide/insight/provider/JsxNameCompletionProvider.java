@@ -46,7 +46,7 @@ public class JsxNameCompletionProvider {
                                     .withTypeText(
                                             module instanceof PsiInnerModule
                                                     ? containingFile.getModuleName()
-                                                    : containingFile.shortLocation(project))
+                                                    : containingFile.shortLocation())
                                     .withInsertHandler(
                                             (context, item) -> insertTagNameHandler(project, context, moduleName)));
                 }

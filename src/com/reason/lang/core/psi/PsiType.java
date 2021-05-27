@@ -1,21 +1,21 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import com.reason.lang.core.stub.PsiTypeStub;
+import com.intellij.psi.*;
+import com.reason.lang.core.stub.*;
+import org.jetbrains.annotations.*;
+
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public interface PsiType extends PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiTypeStub> {
-  @Nullable
-  PsiElement getBinding();
+public interface PsiType extends PsiNameIdentifierOwner, PsiQualifiedPathElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiTypeStub> {
+    @Nullable
+    PsiElement getBinding();
 
-  @NotNull
-  Collection<PsiVariantDeclaration> getVariants();
+    @NotNull
+    Collection<PsiVariantDeclaration> getVariants();
 
-  boolean isJsObject();
+    boolean isJsObject();
 
-  boolean isAbstract();
+    boolean isRecord();
+
+    boolean isAbstract();
 }

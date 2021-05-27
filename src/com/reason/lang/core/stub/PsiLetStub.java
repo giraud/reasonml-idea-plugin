@@ -1,55 +1,55 @@
 package com.reason.lang.core.stub;
 
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.NamedStubBase;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
-import com.reason.lang.core.psi.PsiLet;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.stubs.*;
+import com.intellij.util.io.*;
+import com.reason.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class PsiLetStub extends NamedStubBase<PsiLet> {
-  private final String m_qname;
-  private final String m_alias;
-  private final boolean m_isFunction;
-  private final List<String> m_deconstructionNames;
+    private final String[] myPath;
+    private final String myQname;
+    private final String myAlias;
+    private final boolean myIsFunction;
+    private final List<String> myDeconstructionNames;
 
-  public PsiLetStub(
-      StubElement parent,
-      @NotNull IStubElementType elementType,
-      String name,
-      String qname,
-      String alias,
-      boolean isFunction,
-      List<String> deconstructionNames) {
-    super(parent, elementType, name);
-    m_qname = qname;
-    m_alias = alias;
-    m_isFunction = isFunction;
-    m_deconstructionNames = deconstructionNames;
-  }
+    public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, String name, String[] path, String alias, boolean isFunction, List<String> deconstructionNames) {
+        super(parent, elementType, name);
+        myPath = path;
+        myQname = Joiner.join(".", path) + "." + name;
+        myAlias = alias;
+        myIsFunction = isFunction;
+        myDeconstructionNames = deconstructionNames;
+    }
 
-  public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname, String alias, boolean isFunction, List<String> deconstructionNames) {
-    super(parent, elementType, name);
-    m_qname = qname;
-    m_alias = alias;
-    m_isFunction = isFunction;
-    m_deconstructionNames = deconstructionNames;
-  }
+    public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String[] path, String alias, boolean isFunction, List<String> deconstructionNames) {
+        super(parent, elementType, name);
+        myPath = path;
+        myQname = Joiner.join(".", path) + "." + name;
+        myAlias = alias;
+        myIsFunction = isFunction;
+        myDeconstructionNames = deconstructionNames;
+    }
 
-  public String getQualifiedName() {
-    return m_qname;
-  }
+    public String[] getPath() {
+        return myPath;
+    }
 
-  public String getAlias() {
-    return m_alias;
-  }
+    public String getQualifiedName() {
+        return myQname;
+    }
 
-  public boolean isFunction() {
-    return m_isFunction;
-  }
+    public String getAlias() {
+        return myAlias;
+    }
 
-  public List<String> getDeconstructionNames() {
-    return m_deconstructionNames;
-  }
+    public boolean isFunction() {
+        return myIsFunction;
+    }
+
+    public List<String> getDeconstructionNames() {
+        return myDeconstructionNames;
+    }
 }

@@ -120,12 +120,6 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_IF) {
             return new PsiIfStatement(m_types, type);
         }
-        if (type == m_types.C_OPEN) {
-            return new PsiOpenImpl(m_types, type);
-        }
-        if (type == m_types.C_INCLUDE) {
-            return new PsiIncludeImpl(m_types, type);
-        }
         if (type == m_types.C_OBJECT) {
             return new PsiObject(type);
         }
