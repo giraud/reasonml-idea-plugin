@@ -22,6 +22,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class ORDocumentationProvider implements DocumentationProvider {
+    private static final Log LOG = Log.create("doc");
 
     @Override
     public @Nullable String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
@@ -86,16 +87,16 @@ public class ORDocumentationProvider implements DocumentationProvider {
         return null;
     }
 
-    @Nullable
     @Override
-    public String getQuickNavigateInfo(
-            @NotNull PsiElement resolvedIdentifier, @NotNull PsiElement originalElement) {
+    public @Nullable String getQuickNavigateInfo(@NotNull PsiElement resolvedIdentifier, @NotNull PsiElement originalElement) {
         String quickDoc = null;
 
         if (resolvedIdentifier instanceof ORFakeResolvedElement) {
             // A fake element, used to query inferred types
             quickDoc = "Show usages of fake element '" + resolvedIdentifier.getText() + "'";
         } else if (resolvedIdentifier instanceof FileBase) {
+            LOG.debug("Quickdoc of topModule", resolvedIdentifier);
+
             FileBase resolvedFile = (FileBase) resolvedIdentifier;
             String relative_path = Platform.getRelativePathToModule(resolvedFile);
             quickDoc =
@@ -107,19 +108,17 @@ public class ORDocumentationProvider implements DocumentationProvider {
                             + resolvedFile.getModuleName()
                             + DocFormatter.NAME_END;
         } else {
-            PsiElement resolvedElement =
-                    (resolvedIdentifier instanceof PsiLowerIdentifier
-                            || resolvedIdentifier instanceof PsiUpperIdentifier)
-                            ? resolvedIdentifier.getParent()
-                            : resolvedIdentifier;
+            PsiElement resolvedElement = (resolvedIdentifier instanceof PsiLowerIdentifier
+                    || resolvedIdentifier instanceof PsiUpperIdentifier)
+                    ? resolvedIdentifier.getParent()
+                    : resolvedIdentifier;
 
             if (resolvedElement instanceof PsiType) {
                 PsiType type = (PsiType) resolvedElement;
-                String path = ORUtil.getQualifiedPath(type);
-                String typeBinding =
-                        type.isAbstract()
-                                ? "This is an abstract type"
-                                : DocFormatter.escapeCodeForHtml(type.getBinding());
+                String[] path = ORUtil.getQualifiedPath(type);
+                String typeBinding = type.isAbstract()
+                        ? "This is an abstract type"
+                        : DocFormatter.escapeCodeForHtml(type.getBinding());
                 return createQuickDocTemplate(path, "type", resolvedIdentifier.getText(), typeBinding);
             }
 
@@ -127,8 +126,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
                 PsiSignature signature = ((PsiSignatureElement) resolvedElement).getSignature();
                 if (signature != null) {
                     String sig = DocFormatter.escapeCodeForHtml(signature.asText(originalElement.getLanguage()));
-                    if (resolvedElement instanceof PsiQualifiedElement) {
-                        PsiQualifiedElement qualifiedElement = (PsiQualifiedElement) resolvedElement;
+                    if (resolvedElement instanceof PsiQualifiedPathElement) {
+                        PsiQualifiedPathElement qualifiedElement = (PsiQualifiedPathElement) resolvedElement;
                         String elementType = PsiTypeElementProvider.getType(resolvedIdentifier);
                         return createQuickDocTemplate(qualifiedElement.getPath(), elementType, qualifiedElement.getName(), sig);
                     }
@@ -137,22 +136,19 @@ public class ORDocumentationProvider implements DocumentationProvider {
             }
 
             // No signature found, but resolved
-            if (resolvedElement instanceof PsiQualifiedElement) {
+            if (resolvedElement instanceof PsiQualifiedNamedElement) {
+                LOG.debug("Quickdoc resolved to ", resolvedElement);
+
                 String elementType = PsiTypeElementProvider.getType(resolvedIdentifier);
-                String desc = ((PsiQualifiedElement) resolvedElement).getName();
-                String path = ORUtil.getQualifiedPath((PsiQualifiedElement) resolvedElement);
+                String desc = ((PsiQualifiedNamedElement) resolvedElement).getName();
+                String[] path = ORUtil.getQualifiedPath(resolvedElement);
 
                 PsiFile psiFile = originalElement.getContainingFile();
-                String inferredType =
-                        getInferredSignature(originalElement, psiFile, originalElement.getLanguage());
+                String inferredType = getInferredSignature(originalElement, psiFile, originalElement.getLanguage());
 
                 if (inferredType == null) {
                     // Can't find type in the usage, try to get type from the definition
-                    inferredType =
-                            getInferredSignature(
-                                    resolvedIdentifier,
-                                    resolvedElement.getContainingFile(),
-                                    resolvedElement.getLanguage());
+                    inferredType = getInferredSignature(resolvedIdentifier, resolvedElement.getContainingFile(), resolvedElement.getLanguage());
                 }
 
                 String sig = inferredType == null ? null : DocFormatter.escapeCodeForHtml(inferredType);
@@ -160,16 +156,14 @@ public class ORDocumentationProvider implements DocumentationProvider {
                     sig = "type " + ((PsiType) resolvedElement.getParent().getParent()).getName();
                 }
 
-                return createQuickDocTemplate(
-                        path, elementType, desc, resolvedElement instanceof PsiModule ? null : sig);
+                return createQuickDocTemplate(path, elementType, desc, resolvedElement instanceof PsiModule ? null : sig);
             }
         }
 
         return quickDoc;
     }
 
-    @Nullable
-    private PsiElement findAboveComment(@Nullable PsiElement element) {
+    private @Nullable PsiElement findAboveComment(@Nullable PsiElement element) {
         if (element == null) {
             return null;
         }
@@ -200,13 +194,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
         return null;
     }
 
-    @Nullable
     @Override
-    public PsiElement getCustomDocumentationElement(
-            @NotNull Editor editor,
-            @NotNull PsiFile file,
-            @Nullable PsiElement contextElement,
-            int targetOffset) {
+    public @Nullable PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement, int targetOffset) {
         // When quick doc inside empty parenthesis, we want to display the function doc (github #155)
         // functionName(<caret>) ==> functionName<caret>()
         if (contextElement != null
@@ -254,8 +243,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
     }
 
     @NotNull
-    private String createQuickDocTemplate(@NotNull String qPath, @Nullable String type, @Nullable String name, @Nullable String signature) {
-        return qPath
+    private String createQuickDocTemplate(@Nullable String[] path, @Nullable String type, @Nullable String name, @Nullable String signature) {
+        return Joiner.join(".", path)
                 + "<br/>"
                 + (type == null ? "" : type)
                 + (" <b>" + name + "</b>")

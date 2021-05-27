@@ -1,25 +1,36 @@
 package com.reason.lang.core.psi.impl;
 
+import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
-import com.intellij.psi.tree.*;
+import com.intellij.psi.stubs.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.xml.model.gotosymbol.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import icons.*;
 import org.jetbrains.annotations.*;
 
-public class PsiOpenImpl extends CompositeTypePsiElement<ORTypes> implements PsiOpen {
+public class PsiOpenImpl extends PsiTokenStub<ORTypes, PsiOpen, PsiOpenStub> implements PsiOpen {
     // region Constructors
-    protected PsiOpenImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
-        super(types, elementType);
+    public PsiOpenImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+        super(types, node);
+    }
+
+    public PsiOpenImpl(@NotNull ORTypes types, @NotNull PsiOpenStub stub, @NotNull IStubElementType nodeType) {
+        super(types, stub, nodeType);
     }
     // endregion
 
     @NotNull
     public String getPath() {
+        PsiOpenStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getOpenPath();
+        }
+
         // Skip `let` and `open`
         PsiElement firstChild = getFirstChild();
         if (firstChild != null && firstChild.getNode().getElementType() == m_types.LET) { // `let open` in OCaml
@@ -44,13 +55,13 @@ public class PsiOpenImpl extends CompositeTypePsiElement<ORTypes> implements Psi
     }
 
     @Override
-    public ItemPresentation getPresentation() {
-        return new GoToSymbolProvider.BaseNavigationItem(this, getPath(), ORIcons.OPEN);
+    public boolean canBeDisplayed() {
+        return !(getParent() instanceof PsiFunctionBody);
     }
 
     @Override
-    public boolean canBeDisplayed() {
-        return !(getParent() instanceof PsiFunctionBody);
+    public ItemPresentation getPresentation() {
+        return new GoToSymbolProvider.BaseNavigationItem(this, getPath(), ORIcons.OPEN);
     }
 
     @Override

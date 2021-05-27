@@ -72,7 +72,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         if (element instanceof PsiNamedElement) {
             name = ((PsiNamedElement) element).getName();
         } else if (element instanceof PsiInclude) {
-            name = ((PsiInclude) element).getPath();
+            name = ((PsiInclude) element).getIncludePath();
         } else if (element instanceof PsiOpen) {
             name = ((PsiOpen) element).getPath();
         }

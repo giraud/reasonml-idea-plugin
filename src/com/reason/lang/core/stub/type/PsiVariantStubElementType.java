@@ -14,15 +14,15 @@ import com.reason.lang.core.type.ORTypesUtil;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiVariantStubElementType
-    extends ORStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> {
+public class PsiVariantStubElementType extends ORStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> {
+  public static final int VERSION = 5;
 
   public PsiVariantStubElementType(Language language) {
     super("C_VARIANT_DECLARATION", language);
   }
 
   @NotNull
-  public PsiVariantDeclaration createPsi(@NotNull final PsiVariantDeclarationStub stub) {
+  public PsiVariantDeclaration createPsi(@NotNull PsiVariantDeclarationStub stub) {
     return new PsiVariantDeclaration(ORTypesUtil.getInstance(getLanguage()), stub, this);
   }
 
@@ -32,29 +32,24 @@ public class PsiVariantStubElementType
   }
 
   @NotNull
-  public PsiVariantDeclarationStub createStub(
-      @NotNull final PsiVariantDeclaration psi, final StubElement parentStub) {
+  public PsiVariantDeclarationStub createStub(@NotNull PsiVariantDeclaration psi, StubElement parentStub) {
     return new PsiVariantDeclarationStub(parentStub, this, psi.getName(), psi.getPath());
   }
 
-  public void serialize(
-      @NotNull final PsiVariantDeclarationStub stub, @NotNull final StubOutputStream dataStream)
-      throws IOException {
+  public void serialize(@NotNull final PsiVariantDeclarationStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
     dataStream.writeName(stub.getName());
-    dataStream.writeUTFFast(stub.getPath());
+    SerializerUtil.writePath(dataStream, stub.getPath());
   }
 
   @NotNull
-  public PsiVariantDeclarationStub deserialize(
-      @NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
+  public PsiVariantDeclarationStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
     StringRef moduleName = dataStream.readName();
-    String path = dataStream.readUTFFast();
+    String[] path = SerializerUtil.readPath(dataStream);
 
     return new PsiVariantDeclarationStub(parentStub, this, moduleName, path);
   }
 
-  public void indexStub(
-      @NotNull final PsiVariantDeclarationStub stub, @NotNull final IndexSink sink) {
+  public void indexStub(@NotNull final PsiVariantDeclarationStub stub, @NotNull final IndexSink sink) {
     String name = stub.getName();
     if (name != null) {
       sink.occurrence(IndexKeys.VARIANTS, name);

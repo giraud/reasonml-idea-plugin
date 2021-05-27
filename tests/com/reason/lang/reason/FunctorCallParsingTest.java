@@ -9,28 +9,29 @@ import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctorCallParsingTest extends RmlParsingTestCase {
-  public void test_instanciation() {
-    PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(
-        parseCode("module Printing = Make({ let encode = encode_record; });")));
+    public void test_instanciation() {
+        PsiInnerModule e = (PsiInnerModule) first(moduleExpressions(parseCode("module Printing = Make({ let encode = encode_record; });")));
 
-    assertNull(module.getBody());
-    PsiFunctorCall call = PsiTreeUtil.findChildOfType(module, PsiFunctorCall.class);
-    assertNotNull(call);
-    assertEquals("Make({ let encode = encode_record; })", call.getText());
-    PsiLet let = PsiTreeUtil.findChildOfType(module, PsiLet.class);
-    assertEquals("Dummy.Printing.Make[0].encode", let.getQualifiedName());
-  }
+        assertTrue(e.isFunctorCall());
+        assertNull(e.getBody());
+        PsiFunctorCall call = PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class);
+        assertNotNull(call);
+        assertEquals("Make({ let encode = encode_record; })", call.getText());
+        PsiLet let = PsiTreeUtil.findChildOfType(e, PsiLet.class);
+        assertEquals("Dummy.Printing.Make[0].encode", let.getQualifiedName());
+    }
 
-  public void test_chaining() {
-    PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash);\ntype infos;");
-    List<PsiNamedElement> expressions = new ArrayList<>(expressions(file));
+    public void test_chaining() {
+        PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash);\ntype infos;");
+        List<PsiNamedElement> es = new ArrayList<>(expressions(file));
 
-    assertEquals(2, expressions.size());
+        assertEquals(2, es.size());
 
-    PsiInnerModule module = (PsiInnerModule) expressions.get(0);
-    assertNull(module.getBody());
-    PsiFunctorCall call = PsiTreeUtil.findChildOfType(module, PsiFunctorCall.class);
-    assertNotNull(call);
-    assertEquals("Hashtbl.Make(KeyHash)", call.getText());
-  }
+        PsiInnerModule module = (PsiInnerModule) es.get(0);
+        assertTrue(module.isFunctorCall());
+        assertNull(module.getBody());
+        PsiFunctorCall call = PsiTreeUtil.findChildOfType(module, PsiFunctorCall.class);
+        assertNotNull(call);
+        assertEquals("Hashtbl.Make(KeyHash)", call.getText());
+    }
 }

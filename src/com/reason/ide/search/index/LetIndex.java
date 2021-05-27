@@ -1,20 +1,26 @@
 package com.reason.ide.search.index;
 
+import com.intellij.openapi.project.*;
+import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.stub.type.*;
 import org.jetbrains.annotations.*;
 
-public class LetIndex extends StringStubIndexExtension<PsiLet> {
-    private static final int VERSION = 10;
+import java.util.*;
 
+public class LetIndex extends StringStubIndexExtension<PsiLet> {
     @Override
     public int getVersion() {
-        return super.getVersion() + VERSION;
+        return super.getVersion() + PsiLetStubElementType.VERSION;
     }
 
-    @NotNull
     @Override
-    public StubIndexKey<String, PsiLet> getKey() {
+    public @NotNull StubIndexKey<String, PsiLet> getKey() {
         return IndexKeys.LETS;
+    }
+
+    public static @NotNull Collection<PsiLet> getElements(String key, Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.LETS, key, project, scope, PsiLet.class);
     }
 }

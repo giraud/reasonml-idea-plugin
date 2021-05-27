@@ -91,7 +91,7 @@ public class OclQNameFinder extends BaseQNameFinder {
                 resolvedQualifiedNames.addAll(extendPathWith(filePath, openName, resolvedQualifiedNames));
                 resolvedQualifiedNames.add(openName + resolvedPathExtension);
             } else if (item instanceof PsiOpen || item instanceof PsiInclude) {
-                String openName = item instanceof PsiOpen ? ((PsiOpen) item).getPath() : ((PsiInclude) item).getPath();
+                String openName = item instanceof PsiOpen ? ((PsiOpen) item).getPath() : ((PsiInclude) item).getIncludePath();
                 String moduleName = ((FileBase) sourceElement.getContainingFile()).getModuleName();
                 // Add open value to all previous elements
                 qualifiedNames.addAll(extendPathWith(filePath, openName, qualifiedNames));

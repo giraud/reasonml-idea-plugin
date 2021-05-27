@@ -43,7 +43,7 @@ public class PsiFileHelper {
 
                 PsiModule includedModule = null;
 
-                String includedPath = include.getPath();
+                String includedPath = include.getIncludePath();
                 for (String path : qnameFinder.extractPotentialPaths(include)) {
                     Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(path + "." + includedPath, true, interfaceOrImplementation, scope);
                     if (!modulesFromQn.isEmpty()) {

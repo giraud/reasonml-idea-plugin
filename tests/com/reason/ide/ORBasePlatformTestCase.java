@@ -1,25 +1,19 @@
 package com.reason.ide;
 
-import com.intellij.lang.Language;
-import com.intellij.lang.LanguageDocumentation;
-import com.intellij.lang.documentation.DocumentationProvider;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.CharsetToolkit;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.DebugUtil;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
-import com.reason.ide.files.FileBase;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
-import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
+import com.intellij.lang.*;
+import com.intellij.lang.documentation.*;
+import com.intellij.openapi.util.io.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.*;
+import com.intellij.testFramework.fixtures.*;
+import com.reason.ide.files.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
-
-import org.jetbrains.annotations.NotNull;
 
 public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
 
@@ -33,7 +27,7 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
         return (FileBase) file;
     }
 
-    protected PsiElement getNameIdentifier(PsiQualifiedElement e) {
+    protected PsiElement getNameIdentifier(PsiQualifiedNamedElement e) {
         return ORUtil.findImmediateFirstChildOfAnyClass(e, PsiUpperIdentifier.class, PsiLowerIdentifier.class);
     }
 

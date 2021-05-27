@@ -14,7 +14,7 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDeclaration, PsiVariantDeclarationStub> implements PsiQualifiedElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
+public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDeclaration, PsiVariantDeclarationStub> implements PsiQualifiedPathElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
     // region Constructors
     public PsiVariantDeclaration(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
@@ -25,8 +25,14 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
     }
     // endregion
 
+    //region PsiNamedElement
     @Override
     public String getName() {
+        PsiVariantDeclarationStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getName();
+        }
+
         PsiElement nameIdentifier = getFirstChild();
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
@@ -35,16 +41,11 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
     public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
     }
+    //endregion
 
+    //region PsiQualifiedName
     @Override
-    public @NotNull PsiElement getNavigationElement() {
-        PsiUpperIdentifier id = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
-        return id == null ? this : id;
-    }
-
-    @NotNull
-    @Override
-    public String getPath() {
+    public @NotNull String[] getPath() {
         PsiVariantDeclarationStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();
@@ -53,15 +54,21 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
         return ORUtil.getQualifiedPath(this);
     }
 
-    @NotNull
     @Override
-    public String getQualifiedName() {
+    public @NotNull String getQualifiedName() {
         PsiVariantDeclarationStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();
         }
 
         return ORUtil.getQualifiedName(this);
+    }
+    //endregion
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiUpperIdentifier id = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
+        return id == null ? this : id;
     }
 
     @Nullable

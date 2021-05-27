@@ -725,12 +725,8 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
                         .remapCurrentToken(m_types.PROPERTY_NAME)
                         .mark(m_types.C_TAG_PROPERTY)
                         .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace(state));
-            } else if (state.isCurrentResolution(recordBinding)) {
-                state.mark(m_types.C_RECORD_FIELD);
             } else if (state.isCurrentResolution(jsObjectBinding)) {
                 state.mark(m_types.C_OBJECT_FIELD);
-            } else if (state.is(m_types.C_RECORD_EXPR)) {
-                state.mark(m_types.C_RECORD_FIELD);
             } else {
                 IElementType nextElementType = state.lookAhead(1);
 
@@ -740,13 +736,19 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
                 } else if (nextElementType == m_types.QUESTION_MARK && !state.in(m_types.C_TAG_START)) {
                     // a ternary ::  |>x<| ? ...
                     state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
+                } else if (state.is(m_types.C_RECORD_EXPR)) {
+                    state.mark(m_types.C_RECORD_FIELD).wrapWith(m_types.C_LOWER_IDENTIFIER);
+                } else if (state.isCurrentResolution(recordBinding)) {
+                    state.mark(m_types.C_RECORD_FIELD).wrapWith(m_types.C_LOWER_IDENTIFIER);
+                } else if (state.is(m_types.C_RECORD_FIELD)) {
+                    state.wrapWith(m_types.C_LOWER_IDENTIFIER);
                 }
             }
 
             if (state.is(m_types.C_DECONSTRUCTION)
                     || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS))) {
                 state.wrapWith(m_types.C_LOWER_IDENTIFIER);
-            } else if (!state.is(m_types.C_TAG_PROPERTY)) {
+            } else if (!state.is(m_types.C_RECORD_FIELD) && !state.is(m_types.C_TAG_PROPERTY)) {
                 state.wrapWith(m_types.C_LOWER_SYMBOL);
             }
         }

@@ -5,6 +5,7 @@ import com.intellij.openapi.util.io.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
+import com.reason.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.*;
@@ -43,7 +44,11 @@ public class ORUtil {
     public static PsiElement prevSibling(@NotNull PsiElement element) {
         // previous sibling without considering whitespace
         PsiElement prevSibling = element.getPrevSibling();
-        while (prevSibling != null && prevSibling.getNode().getElementType() == TokenType.WHITE_SPACE) {
+        while (prevSibling != null) {
+            ASTNode prevNode = prevSibling.getNode();
+            if (prevNode == null || prevNode.getElementType() != TokenType.WHITE_SPACE) {
+                break;
+            }
             prevSibling = prevSibling.getPrevSibling();
         }
         return prevSibling;
@@ -278,19 +283,16 @@ public class ORUtil {
         return null;
     }
 
-    @NotNull
-    public static String getQualifiedPath(@NotNull PsiNamedElement element) {
+    public static @Nullable String[] getQualifiedPath(@NotNull PsiElement element) {
         String path = "";
 
         PsiElement parent = element.getParent();
         while (parent != null) {
-            if (parent instanceof PsiQualifiedElement) {
-                if (parent instanceof PsiNameIdentifierOwner
-                        && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
-                    return ((PsiQualifiedElement) parent).getPath();
+            if (parent instanceof PsiQualifiedPathElement) {
+                if (parent instanceof PsiNameIdentifierOwner && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
+                    return ((PsiQualifiedPathElement) parent).getPath();
                 }
-                return ((PsiQualifiedElement) parent).getQualifiedName()
-                        + (path.isEmpty() ? "" : "." + path);
+                return (((PsiQualifiedNamedElement) parent).getQualifiedName() + (path.isEmpty() ? "" : "." + path)).split("\\.");
             } else {
                 if (parent instanceof PsiNameIdentifierOwner) {
                     String parentName = ((PsiNamedElement) parent).getName();
@@ -304,16 +306,16 @@ public class ORUtil {
 
         try {
             PsiFile containingFile = element.getContainingFile(); // Fail in 2019.2... ?
-            return ((FileBase) containingFile).getModuleName() + (path.isEmpty() ? "" : "." + path);
+            return (((FileBase) containingFile).getModuleName() + (path.isEmpty() ? "" : "." + path)).split("\\.");
         } catch (PsiInvalidElementAccessException e) {
-            return path;
+            return path.split("\\.");
         }
     }
 
     @NotNull
     public static String getQualifiedName(@NotNull PsiNamedElement element) {
         String name = element.getName();
-        String qualifiedPath = getQualifiedPath(element);
+        String qualifiedPath = Joiner.join(".", getQualifiedPath(element));
         return name == null ? qualifiedPath + ".UNKNOWN" : qualifiedPath + "." + name;
     }
 
@@ -331,16 +333,11 @@ public class ORUtil {
         PsiElement currentElement = rootElement;
         ORTypes types = getTypes(language);
         StringBuilder aliasName = new StringBuilder();
-        IElementType elementType =
-                currentElement == null ? null : currentElement.getNode().getElementType();
+        IElementType elementType = currentElement == null ? null : currentElement.getNode().getElementType();
         while (elementType != null && elementType != types.SEMI) {
-            if (elementType != TokenType.WHITE_SPACE
-                    && elementType != types.C_UPPER_SYMBOL
-                    && elementType != types.DOT) {
+            if (elementType != TokenType.WHITE_SPACE && elementType != types.C_UPPER_SYMBOL && elementType != types.DOT) {
                 // if last term is lower symbol, and we accept lower symbol, then it's an alias
-                if (elementType != types.C_LOWER_SYMBOL
-                        || currentElement.getNextSibling() != null
-                        || !lowerAccepted) {
+                if (elementType != types.C_LOWER_SYMBOL || currentElement.getNextSibling() != null || !lowerAccepted) {
                     isALias = false;
                     break;
                 }
@@ -355,5 +352,22 @@ public class ORUtil {
         }
 
         return isALias ? aliasName.toString() : null;
+    }
+
+    public static String[] getQualifiedNameAsPath(PsiQualifiedPathElement element) {
+        String[] path = element.getPath();
+        if (path == null) {
+            return null;
+        }
+
+        String name = element.getName();
+        if (name == null) {
+            return path;
+        }
+
+        String[] qpath = new String[path.length + 1];
+        System.arraycopy(path, 0, qpath, 0, path.length);
+        qpath[qpath.length - 1] = name;
+        return qpath;
     }
 }

@@ -10,8 +10,7 @@ public class ResTypes extends ORTypes {
         // Stub element types
 
         C_FAKE_MODULE = (ORCompositeType) RescriptStubBasedElementTypes.C_FAKE_MODULE;
-        C_EXCEPTION_DECLARATION =
-                (ORCompositeType) RescriptStubBasedElementTypes.C_EXCEPTION_DECLARATION;
+        C_EXCEPTION_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_EXCEPTION_DECLARATION;
         C_TYPE_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_TYPE_DECLARATION;
         C_EXTERNAL_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_EXTERNAL_DECLARATION;
         C_LET_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_LET_DECLARATION;
@@ -22,6 +21,8 @@ public class ResTypes extends ORTypes {
         C_FUNCTOR_PARAM = (ORCompositeType) RescriptStubBasedElementTypes.C_FUNCTOR_PARAM;
         C_RECORD_FIELD = (ORCompositeType) RescriptStubBasedElementTypes.C_RECORD_FIELD;
         C_VARIANT_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_VARIANT_DECLARATION;
+        C_INCLUDE = (ORCompositeType) RescriptStubBasedElementTypes.C_INCLUDE;
+        C_OPEN = (ORCompositeType) RescriptStubBasedElementTypes.C_OPEN;
 
         // Composite element types
 
@@ -52,7 +53,6 @@ public class ResTypes extends ORTypes {
         C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", ResLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", ResLanguage.INSTANCE);
         C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", ResLanguage.INSTANCE);
-        C_INCLUDE = new ORCompositeElementType("C_INCLUDE", ResLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", ResLanguage.INSTANCE);
         C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", ResLanguage.INSTANCE);
         C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", ResLanguage.INSTANCE);
@@ -71,7 +71,6 @@ public class ResTypes extends ORTypes {
         C_OBJECT = new ORCompositeElementType("C_OBJECT", ResLanguage.INSTANCE);
         C_OBJECT_FIELD = new ORCompositeElementType("C_OBJECT_FIELD", ResLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", ResLanguage.INSTANCE);
-        C_OPEN = new ORCompositeElementType("C_OPEN", ResLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", ResLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", ResLanguage.INSTANCE);
         C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", ResLanguage.INSTANCE);
@@ -183,7 +182,6 @@ public class ResTypes extends ORTypes {
         VARIANT_NAME = new ORTokenElementType("VARIANT_NAME", ResLanguage.INSTANCE);
         PIPE = new ORTokenElementType("PIPE", ResLanguage.INSTANCE);
         PIPE_FORWARD = new ORTokenElementType("PIPE_FORWARD", ResLanguage.INSTANCE);
-        PIPE_FIRST = new ORTokenElementType("PIPE_FIRST", ResLanguage.INSTANCE);
         PLUS = new ORTokenElementType("PLUS", ResLanguage.INSTANCE);
         PERCENT = new ORTokenElementType("PERCENT", ResLanguage.INSTANCE);
         PLUSDOT = new ORTokenElementType("PLUSDOT", ResLanguage.INSTANCE);

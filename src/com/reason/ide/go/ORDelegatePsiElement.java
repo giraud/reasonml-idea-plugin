@@ -1,23 +1,18 @@
 package com.reason.ide.go;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.PsiElementBase;
-import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.intellij.lang.*;
+import com.intellij.openapi.util.*;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 public abstract class ORDelegatePsiElement extends PsiElementBase {
-    protected final @NotNull PsiQualifiedElement m_source;
+    protected final @NotNull PsiQualifiedPathElement m_source;
 
-    protected ORDelegatePsiElement(@NotNull PsiQualifiedElement source) {
+    protected ORDelegatePsiElement(@NotNull PsiQualifiedPathElement source) {
         m_source = source;
     }
 

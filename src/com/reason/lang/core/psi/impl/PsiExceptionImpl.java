@@ -1,20 +1,18 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiException;
-import com.reason.lang.core.stub.PsiExceptionStub;
-import com.reason.lang.core.type.ORTypes;
-import icons.ORIcons;
+import com.intellij.lang.*;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.psi.stubs.*;
+import com.intellij.util.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.stub.*;
+import com.reason.lang.core.type.*;
+import icons.*;
+import org.jetbrains.annotations.*;
 
 import javax.swing.*;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiException, PsiExceptionStub> implements PsiException {
     // region Constructors
@@ -27,19 +25,31 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiException, PsiExc
     }
     // endregion
 
+    //region PsiNamedElement
+    @Override public @Nullable PsiElement getNameIdentifier() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
+    }
+
     @Override
     public @Nullable String getName() {
-        PsiElement nameIdentifier = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
+        PsiExceptionStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getName();
+        }
+
+        PsiElement nameIdentifier = getNameIdentifier();
         return nameIdentifier == null ? null : nameIdentifier.getText();
     }
 
     @Override
     public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        throw new IncorrectOperationException("Not implemented");
+        return this;
     }
+    //endregion
 
+    //region PsiQualifiedPathName
     @Override
-    public @NotNull String getPath() {
+    public @Nullable String[] getPath() {
         PsiExceptionStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();
@@ -57,15 +67,17 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiException, PsiExc
 
         return ORUtil.getQualifiedName(this);
     }
+    //endregion
 
     @Override
     public @Nullable String getAlias() {
-        PsiElement eq = findChildByType(m_types.EQ);
-        if (eq != null) {
-            return ORUtil.computeAlias(eq.getNextSibling(), getLanguage(), false);
+        PsiExceptionStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
         }
 
-        return null;
+        PsiElement eq = findChildByType(m_types.EQ);
+        return eq == null ? null : ORUtil.computeAlias(eq.getNextSibling(), getLanguage(), false);
     }
 
     @Override
@@ -89,7 +101,7 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiException, PsiExc
     }
 
     @Override
-    public @Nullable String toString() {
+    public @NotNull String toString() {
         return "Exception " + getName();
     }
 }

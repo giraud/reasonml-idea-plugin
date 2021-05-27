@@ -1,28 +1,24 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiElement;
-import com.reason.lang.core.psi.impl.PsiClassConstructor;
-import com.reason.lang.core.psi.impl.PsiClassField;
-import com.reason.lang.core.psi.impl.PsiClassMethod;
-import com.reason.lang.core.psi.impl.PsiClassParameters;
+import com.intellij.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
+
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public interface PsiClass extends PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement {
-  @Nullable
-  PsiElement getClassBody();
+public interface PsiClass extends PsiQualifiedPathElement, NavigatablePsiElement, PsiStructuredElement {
+    @Nullable
+    PsiElement getClassBody();
 
-  @NotNull
-  Collection<PsiClassField> getFields();
+    @NotNull
+    Collection<PsiClassField> getFields();
 
-  @NotNull
-  Collection<PsiClassMethod> getMethods();
+    @NotNull
+    Collection<PsiClassMethod> getMethods();
 
-  @NotNull
-  Collection<PsiClassParameters> getParameters();
+    @NotNull
+    Collection<PsiClassParameters> getParameters();
 
-  @Nullable
-  PsiClassConstructor getConstructor();
+    @Nullable
+    PsiClassConstructor getConstructor();
 }

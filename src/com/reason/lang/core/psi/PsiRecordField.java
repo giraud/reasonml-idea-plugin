@@ -1,13 +1,7 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.StubBasedPsiElement;
-import com.reason.lang.core.stub.PsiRecordFieldStub;
+import com.intellij.psi.*;
+import com.reason.lang.core.stub.*;
 
-public interface PsiRecordField
-    extends PsiNameIdentifierOwner,
-        PsiQualifiedElement,
-        NavigatablePsiElement,
-        PsiSignatureElement,
-        StubBasedPsiElement<PsiRecordFieldStub> {}
+public interface PsiRecordField extends PsiNameIdentifierOwner, PsiQualifiedPathElement, NavigatablePsiElement, PsiSignatureElement, StubBasedPsiElement<PsiRecordFieldStub> {
+}
