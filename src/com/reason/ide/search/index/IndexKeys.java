@@ -14,6 +14,8 @@ public class IndexKeys {
     public static final StubIndexKey<String, PsiModule> MODULES_COMP = StubIndexKey.createIndexKey("reason.module.comp");
     public static final StubIndexKey<Integer, PsiModule> MODULES_COMP_FQN = StubIndexKey.createIndexKey("reason.module.comp.fqn");
     public static final StubIndexKey<String, PsiModule> MODULES = StubIndexKey.createIndexKey("reason.module");
+    public static final StubIndexKey<String, PsiModule> MODULES_ALIASED = StubIndexKey.createIndexKey("reason.module.aliased");
+    public static final StubIndexKey<String, PsiModule> MODULES_ALIASES = StubIndexKey.createIndexKey("reason.module.aliases");
     public static final StubIndexKey<Integer, PsiModule> MODULES_FQN = StubIndexKey.createIndexKey("reason.module.fqn");
     public static final StubIndexKey<String, PsiVariantDeclaration> VARIANTS = StubIndexKey.createIndexKey("reason.variant");
     public static final StubIndexKey<Integer, PsiVariantDeclaration> VARIANTS_FQN = StubIndexKey.createIndexKey("reason.variant.fqn");
@@ -29,6 +31,8 @@ public class IndexKeys {
     public static final StubIndexKey<Integer, PsiException> EXCEPTIONS_FQN = StubIndexKey.createIndexKey("reason.exception.fqn");
     public static final StubIndexKey<String, PsiParameter> PARAMETERS = StubIndexKey.createIndexKey("reason.parameter");
     public static final StubIndexKey<Integer, PsiParameter> PARAMETERS_FQN = StubIndexKey.createIndexKey("reason.parameter.fqn");
+    public static final StubIndexKey<String, PsiInclude> INCLUDES = StubIndexKey.createIndexKey("reason.include");
+    public static final StubIndexKey<String, PsiOpen> OPENS = StubIndexKey.createIndexKey("reason.open");
 
     private IndexKeys() {
     }

@@ -1,20 +1,18 @@
 package com.reason.lang.core.stub.type;
 
-import com.intellij.lang.Language;
-import com.intellij.psi.stubs.IndexSink;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.io.StringRef;
-import com.reason.ide.search.index.IndexKeys;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.stub.PsiModuleStub;
+import com.intellij.lang.*;
+import com.intellij.psi.stubs.*;
+import com.intellij.util.io.*;
+import com.reason.ide.search.index.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.stub.*;
+import org.jetbrains.annotations.*;
 
-import java.io.IOException;
-
-import org.jetbrains.annotations.NotNull;
+import java.io.*;
 
 public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModuleStub, PsiModule> {
+    public static final int VERSION = 22;
 
     public PsiModuleStubElementType(@NotNull String name, Language language) {
         super(name, language);
@@ -22,23 +20,25 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
 
     @NotNull
     public PsiModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
-        return new PsiModuleStub(
-                parentStub,
-                this,
-                psi.getName(),
-                psi.getPath(),
-                psi.getAlias(),
-                psi.isComponent(),
-                psi.isInterface());
+        boolean isModuleType = false;
+        boolean isFunctorCall = false;
+        if (psi instanceof PsiInnerModule) {
+            isModuleType = ((PsiInnerModule) psi).isModuleType();
+            isFunctorCall = ((PsiInnerModule) psi).isFunctorCall();
+        }
+
+        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getPath(), psi.getQualifiedNameAsPath(), null, psi.getAlias(), psi.isComponent(), psi.isInterface(), psi instanceof PsiFakeModule, isModuleType, isFunctorCall);
     }
 
-    public void serialize(
-            @NotNull final PsiModuleStub stub, @NotNull final StubOutputStream dataStream)
-            throws IOException {
+    public void serialize(@NotNull final PsiModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
-        dataStream.writeUTFFast(stub.getPath());
+        SerializerUtil.writePath(dataStream, stub.getPath());
+        SerializerUtil.writePath(dataStream, stub.getQualifiedNameAsPath());
         dataStream.writeBoolean(stub.isComponent());
         dataStream.writeBoolean(stub.isInterface());
+        dataStream.writeBoolean(stub.isTopLevel());
+        dataStream.writeBoolean(stub.isModuleType());
+        dataStream.writeBoolean(stub.isFunctorCall());
 
         String alias = stub.getAlias();
         dataStream.writeBoolean(alias != null);
@@ -47,13 +47,15 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
         }
     }
 
-    @NotNull
-    public PsiModuleStub deserialize(
-            @NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
+    public @NotNull PsiModuleStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
         StringRef moduleName = dataStream.readName();
-        String path = dataStream.readUTFFast();
+        String[] path = SerializerUtil.readPath(dataStream);
+        String[] qNamePath = SerializerUtil.readPath(dataStream);
         boolean isComponent = dataStream.readBoolean();
         boolean isInterface = dataStream.readBoolean();
+        boolean isTopLevel = dataStream.readBoolean();
+        boolean isModuleType = dataStream.readBoolean();
+        boolean isFunctorCall = dataStream.readBoolean();
 
         String alias = null;
         boolean isAlias = dataStream.readBoolean();
@@ -61,15 +63,25 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
             alias = dataStream.readUTFFast();
         }
 
-        return new PsiModuleStub(parentStub, this, moduleName, path, alias, isComponent, isInterface);
+        return new PsiModuleStub(parentStub, this, moduleName, path, qNamePath, null, alias, isComponent, isInterface, isTopLevel, isModuleType, isFunctorCall);
     }
 
     public void indexStub(@NotNull final PsiModuleStub stub, @NotNull final IndexSink sink) {
         String name = stub.getName();
         if (name != null) {
             sink.occurrence(IndexKeys.MODULES, name);
+            if (stub.isTopLevel()) {
+                sink.occurrence(IndexKeys.MODULES_TOP_LEVEL, name);
+            }
             if (stub.isComponent()) {
                 sink.occurrence(IndexKeys.MODULES_COMP, name);
+            }
+            String alias = stub.getAlias();
+            if (alias != null) {
+                int pos = alias.indexOf(".");
+                String topName = pos < 0 ? alias : alias.substring(0, pos);
+                sink.occurrence(IndexKeys.MODULES_ALIASED, topName);
+                sink.occurrence(IndexKeys.MODULES_ALIASES, stub.getQualifiedName());
             }
         }
 

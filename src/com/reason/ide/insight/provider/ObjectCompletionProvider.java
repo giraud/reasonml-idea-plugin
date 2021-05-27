@@ -168,7 +168,7 @@ public class ObjectCompletionProvider {
             GlobalSearchScope scope = GlobalSearchScope.allScope(let.getProject());
             String signatureName = "." + letSignature.getText();
             for (String path : paths) {
-                PsiType type = psiFinder.findTypeFromQn(path + signatureName, scope);
+                PsiType type = psiFinder.findTypeFromQn(path + signatureName);
                 if (type != null) {
                     LOG.debug("  -> Found", type);
                     return type;

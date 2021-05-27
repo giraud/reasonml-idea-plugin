@@ -13,7 +13,7 @@ import java.io.*;
 import org.jetbrains.annotations.NotNull;
 
 public class NsFileStubElementType extends IStubFileElementType<NsFileStub> {
-    private static final int VERSION = 4;
+    private static final int VERSION = 7;
     public static final IStubFileElementType<NsFileStub> INSTANCE = new NsFileStubElementType();
 
     private NsFileStubElementType() {

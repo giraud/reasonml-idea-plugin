@@ -13,13 +13,14 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiParameterStubElementType extends ORStubElementType<PsiParameterStub, PsiParameter> {
+    public static final int VERSION = 4;
 
     public PsiParameterStubElementType(@NotNull String name, @NotNull Language language) {
         super(name, language);
     }
 
     @NotNull
-    public PsiParameterImpl createPsi(@NotNull final PsiParameterStub stub) {
+    public PsiParameterImpl createPsi(@NotNull PsiParameterStub stub) {
         return new PsiParameterImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
@@ -29,24 +30,25 @@ public class PsiParameterStubElementType extends ORStubElementType<PsiParameterS
     }
 
     @NotNull
-    public PsiParameterStub createStub(@NotNull final PsiParameter psi, final StubElement parentStub) {
-        return new PsiParameterStub(parentStub, this, psi.getName(), psi.getQualifiedName());
+    public PsiParameterStub createStub(@NotNull PsiParameter psi, StubElement parentStub) {
+        return new PsiParameterStub(parentStub, this, psi.getName(), psi.getPath(), psi.getQualifiedName());
     }
 
-    public void serialize(@NotNull final PsiParameterStub stub, @NotNull final StubOutputStream dataStream)
-            throws IOException {
+    public void serialize(@NotNull PsiParameterStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
+        SerializerUtil.writePath(dataStream, stub.getPath());
         dataStream.writeUTFFast(stub.getQualifiedName());
     }
 
     @NotNull
-    public PsiParameterStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
+    public PsiParameterStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
+        String[] path = SerializerUtil.readPath(dataStream);
         String qname = dataStream.readUTFFast();
-        return new PsiParameterStub(parentStub, this, name, qname);
+        return new PsiParameterStub(parentStub, this, name, path, qname);
     }
 
-    public void indexStub(@NotNull final PsiParameterStub stub, @NotNull final IndexSink sink) {
+    public void indexStub(@NotNull PsiParameterStub stub, @NotNull IndexSink sink) {
         String name = stub.getName();
         if (name != null) {
             sink.occurrence(IndexKeys.PARAMETERS, name);

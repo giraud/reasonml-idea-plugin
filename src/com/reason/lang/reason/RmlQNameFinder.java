@@ -97,7 +97,7 @@ public class RmlQNameFinder extends BaseQNameFinder {
                 resolvedQualifiedNames.add(openName + resolvedPathExtension);
                 resolvedQualifiedNames.add(moduleName + "." + openName + resolvedPathExtension);
             } else if (item instanceof PsiOpen || item instanceof PsiInclude) {
-                String openName = item instanceof PsiOpen ? ((PsiOpen) item).getPath() : ((PsiInclude) item).getPath();
+                String openName = item instanceof PsiOpen ? ((PsiOpen) item).getPath() : ((PsiInclude) item).getIncludePath();
                 // Add open value to all previous elements
                 qualifiedNames.addAll(extendPathWith(filePath, openName, qualifiedNames));
                 qualifiedNames.add(openName + pathExtension);
@@ -116,7 +116,7 @@ public class RmlQNameFinder extends BaseQNameFinder {
                     resolvedQualifiedNames.add(letQName + resolvedPathExtension);
                 }
             } else if (item instanceof PsiFunction) {
-                PsiQualifiedElement parent = PsiTreeUtil.getParentOfType(item, PsiQualifiedElement.class);
+                PsiQualifiedNamedElement parent = PsiTreeUtil.getParentOfType(item, PsiQualifiedNamedElement.class);
                 if (parent != null) {
                     String parentQName = parent.getQualifiedName();
                     // Register all parameters of function

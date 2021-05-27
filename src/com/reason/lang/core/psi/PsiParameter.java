@@ -4,7 +4,7 @@ import com.intellij.psi.*;
 import com.reason.lang.core.stub.*;
 import org.jetbrains.annotations.*;
 
-public interface PsiParameter extends PsiNameIdentifierOwner, PsiQualifiedElement, PsiSignatureElement, StubBasedPsiElement<PsiParameterStub> {
+public interface PsiParameter extends PsiNameIdentifierOwner, PsiQualifiedPathElement, PsiSignatureElement, StubBasedPsiElement<PsiParameterStub> {
     @Nullable
     PsiDefaultValue getDefaultValue();
 

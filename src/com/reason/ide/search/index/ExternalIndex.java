@@ -1,20 +1,26 @@
 package com.reason.ide.search.index;
 
+import com.intellij.openapi.project.*;
+import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.stub.type.*;
 import org.jetbrains.annotations.*;
 
-public class ExternalIndex extends StringStubIndexExtension<PsiExternal> {
-    private static final int VERSION = 7;
+import java.util.*;
 
+public class ExternalIndex extends StringStubIndexExtension<PsiExternal> {
     @Override
     public int getVersion() {
-        return super.getVersion() + VERSION;
+        return super.getVersion() + PsiExternalStubElementType.VERSION;
     }
 
-    @NotNull
     @Override
-    public StubIndexKey<String, PsiExternal> getKey() {
+    public @NotNull StubIndexKey<String, PsiExternal> getKey() {
         return IndexKeys.EXTERNALS;
+    }
+
+    public static @NotNull Collection<PsiExternal> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.EXTERNALS, key, project, scope, PsiExternal.class);
     }
 }

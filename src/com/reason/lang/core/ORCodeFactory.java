@@ -19,8 +19,7 @@ public class ORCodeFactory {
   private ORCodeFactory() {}
 
   @Nullable
-  public static PsiUpperIdentifier createModuleName(
-      @NotNull Project project, @NotNull String name) {
+  public static PsiUpperIdentifier createModuleName(@NotNull Project project, @NotNull String name) {
     FileBase file = createFileFromText(project, RmlLanguage.INSTANCE, "module " + name + " = {};");
     PsiInnerModule module = ORUtil.findImmediateFirstChildOfClass(file, PsiInnerModule.class);
     return ORUtil.findImmediateFirstChildOfClass(module, PsiUpperIdentifier.class);

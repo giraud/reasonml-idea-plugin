@@ -5,13 +5,10 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
-import com.intellij.psi.util.*;
 import com.intellij.util.*;
-import com.intellij.util.containers.*;
 import com.reason.*;
 import com.reason.ide.files.*;
-import com.reason.ide.search.*;
-import com.reason.lang.*;
+import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -20,57 +17,129 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-import static com.reason.lang.core.ORFileType.*;
-
 public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUpperSymbol> {
     private static final Log LOG = Log.create("ref.upper");
+    private static final Log LOG_PERF = Log.create("ref.perf.upper");
 
-    private final @Nullable String m_referenceName;
-    private final @NotNull ORTypes m_types;
+    private final @Nullable String myReferenceName;
+    private final @NotNull ORTypes myTypes;
 
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
         super(element, TextRange.create(0, element.getTextLength()));
-        m_referenceName = element.getText();
-        m_types = types;
+        myReferenceName = element.getText();
+        myTypes = types;
     }
 
     @Override
     public @NotNull ResolveResult[] multiResolve(boolean incompleteCode) {
-        if (m_referenceName == null) {
+        if (myReferenceName == null) {
             return ResolveResult.EMPTY_ARRAY;
         }
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        PsiUpperIdentifier parent = PsiTreeUtil.getParentOfType(myElement, PsiUpperIdentifier.class);
-        if (parent != null && parent.getNameIdentifier() == myElement) {
+        if (myElement instanceof PsiUpperIdentifier) {
             return ResolveResult.EMPTY_ARRAY;
         }
 
-        LOG.debug("Find reference for upper symbol", m_referenceName);
+        long startAll = System.currentTimeMillis();
 
-        // Find potential paths of current element
-        List<PsiQualifiedElement> referencedElements = new ArrayList<>(resolveElementsFromPaths());
-        if (referencedElements.isEmpty()) {
-            LOG.debug(" -> No resolved elements found from paths");
-        } else {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("  => found", Joiner.join(", ", referencedElements, item -> item.getQualifiedName() + " [" + Platform.getRelativePathToModule(item.getContainingFile()) + "]"));
-            }
+        LOG.debug("Find reference for upper symbol", myReferenceName);
 
-            ResolveResult[] resolveResults = new ResolveResult[referencedElements.size()];
+        // Gather instructions from element up to the file root
+        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, myTypes);
+        instructions.addLast(myElement);
 
-            int i = 0;
-            for (PsiQualifiedElement referencedElement : referencedElements) {
-                // A fake module resolve to its file
-                resolveResults[i] = new UpperResolveResult(referencedElement instanceof PsiFakeModule ? (FileBase) referencedElement.getContainingFile() : referencedElement);
-                i++;
-            }
-
-            return resolveResults;
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("  Instructions", Joiner.join(" -> ", instructions));
         }
 
-        return ResolveResult.EMPTY_ARRAY;
+        long endInstructions = System.currentTimeMillis();
+
+        // Resolve aliases in the stack of instructions, this time from file down to element
+        Deque<CodeInstruction> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, myElement.getProject());
+
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("  Resolved instructions: " + Joiner.join(" -> ", resolvedInstructions));
+        }
+
+        long endResolvedInstructions = System.currentTimeMillis();
+
+        // Find all elements by name and create a list of paths
+        Project project = myElement.getProject();
+        //Module module = Platform.getModule(project, myElement.getContainingFile().getVirtualFile());
+        //GlobalSearchScope scope = module == null ? GlobalSearchScope.projectScope(project) : GlobalSearchScope.moduleScope(module);
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+
+        Collection<PsiModule> modules = ModuleIndex.getElements(myReferenceName, project, scope);
+        Collection<PsiVariantDeclaration> variants = VariantIndex.getElements(myReferenceName, project, scope);
+        Collection<PsiException> exceptions = ExceptionIndex.getElements(myReferenceName, project, scope);
+
+        long endIndexes = System.currentTimeMillis();
+
+        ORElementResolver.Resolutions resolutions = project.getService(ORElementResolver.class).getComputation();
+        resolutions.add(modules, true);
+        resolutions.add(variants, false);
+        resolutions.add(exceptions, false);
+
+        //if (LOG.isTraceEnabled()) {
+        //    LOG.trace("  Resolutions", resolutions.myResolutions.values());
+        //}
+
+        long endAddResolutions = System.currentTimeMillis();
+
+        resolutions.addIncludesEquivalence();
+
+        long endAddIncludes = System.currentTimeMillis();
+
+        // Now that everything is resolved, we can use the stack of instructions to add weight to the paths
+
+        for (CodeInstruction instruction : resolvedInstructions) {
+            if (instruction.mySource instanceof FileBase) {
+                resolutions.udpateTerminalWeight(((FileBase) instruction.mySource).getModuleName());
+            } else if (instruction.myValues != null) {
+                for (String value : instruction.myValues) {
+                    resolutions.updateWeight(value, instruction.myAlternateValues);
+                }
+            }
+        }
+
+        long endUpdateResolutions = System.currentTimeMillis();
+
+        resolutions.removeIncomplete();
+        Collection<PsiQualifiedPathElement> sortedResult = resolutions.resolvedElements();
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("  => found", Joiner.join(", ", sortedResult,
+                    element -> element.getQualifiedName()
+                            + " [" + Platform.getRelativePathToModule(element.getContainingFile()) + "]"));
+        }
+
+        long endSort = System.currentTimeMillis();
+
+        ResolveResult[] resolveResults = new ResolveResult[sortedResult.size()];
+
+        int i = 0;
+        PsiElement parent = myElement.getParent();
+        for (PsiElement element : sortedResult) {
+            resolveResults[i] = new UpperResolveResult(element, parent);
+            i++;
+        }
+
+        long endAll = System.currentTimeMillis();
+        if (LOG_PERF.isDebugEnabled()) {
+            LOG_PERF.debug("Resolution of " + myReferenceName + " in " + (endAll - startAll) + "ms => " +
+                    " in: " + (endInstructions - startAll) + "ms," +
+                    " rI: " + (endResolvedInstructions - endInstructions) + "ms," +
+                    " id: " + (endIndexes - endResolvedInstructions) + "ms, " +
+                    " aR: " + (endAddResolutions - endIndexes) + "ms," +
+                    " aI: " + (endAddIncludes - endAddResolutions) + "ms," +
+                    " uR: " + (endUpdateResolutions - endAddIncludes) + "ms," +
+                    " sort: " + (endSort - endUpdateResolutions) + "ms"
+            );
+        }
+
+        return resolveResults;
     }
 
     @Override
@@ -97,66 +166,23 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         return myElement;
     }
 
-    private @NotNull Set<PsiQualifiedElement> resolveElementsFromPaths() {
-        Project project = myElement.getProject();
-        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        PsiFinder psiFinder = PsiFinder.getInstance(project);
-
-        QNameFinder qnameFinder = PsiFinder.getQNameFinder(myElement.getLanguage());
-        Set<String> paths = qnameFinder.extractPotentialPaths(myElement);
-        if (LOG.isTraceEnabled()) {
-            LOG.trace(" -> Paths before resolution: " + Joiner.join(", ", paths));
-        }
-
-        Set<PsiQualifiedElement> resolvedElements = new ArrayListSet<>();
-        for (String path : paths) {
-            String qn = path + "." + m_referenceName;
-
-            PsiQualifiedElement variant = psiFinder.findVariant(qn, scope);
-            if (variant != null) {
-                resolvedElements.add(variant);
-            } else {
-                // Trying to resolve variant from the name,
-                // Variant might be locally open with module name only - and not including type name... qn can't be used
-                Collection<PsiVariantDeclaration> variants = psiFinder.findVariantByName(path, m_referenceName, scope);
-                if (!variants.isEmpty()) {
-                    resolvedElements.addAll(variants);
-                } else {
-                    PsiQualifiedElement exception = psiFinder.findException(qn, both, scope);
-                    if (exception != null) {
-                        resolvedElements.add(exception);
-                    } else {
-                        // Don't resolve local module aliases to their real reference: this is needed for refactoring
-                        Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(qn, false, both, scope);
-                        if (!modulesFromQn.isEmpty()) {
-                            resolvedElements.addAll(modulesFromQn);
-                        }
-                    }
-                }
-            }
-        }
-
-        PsiElement prevSibling = myElement.getPrevSibling();
-        if (prevSibling == null || prevSibling.getNode().getElementType() != m_types.DOT) {
-            Set<PsiModule> modulesReference = psiFinder.findModulesFromQn(m_referenceName, true, both, scope);
-            if (modulesReference.isEmpty()) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace(" -> No module found for qn " + m_referenceName);
-                }
-            } else {
-                resolvedElements.addAll(modulesReference);
-            }
-        }
-
-        return resolvedElements;
-    }
-
     private static class UpperResolveResult implements ResolveResult {
         private final PsiElement m_referencedIdentifier;
 
-        public UpperResolveResult(PsiQualifiedElement referencedElement) {
-            PsiUpperIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiUpperIdentifier.class);
-            m_referencedIdentifier = identifier == null ? referencedElement : identifier;
+        public UpperResolveResult(@NotNull PsiElement referencedElement, @Nullable PsiElement sourceParent) {
+            if (referencedElement instanceof PsiModule && ((PsiModule) referencedElement).isComponent() && sourceParent instanceof PsiTagStart) {
+                PsiElement make = ((PsiModule) referencedElement).getLetExpression("make");
+                PsiLowerIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(make, PsiLowerIdentifier.class);
+                m_referencedIdentifier = identifier == null ? referencedElement : identifier;
+            } else if (referencedElement instanceof PsiFakeModule) {
+                // A fake module resolve to its file
+                m_referencedIdentifier = referencedElement.getContainingFile();
+            } else if (referencedElement instanceof PsiNameIdentifierOwner) {
+                m_referencedIdentifier = ((PsiNameIdentifierOwner) referencedElement).getNameIdentifier();
+            } else {
+                PsiUpperIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiUpperIdentifier.class);
+                m_referencedIdentifier = identifier == null ? referencedElement : identifier;
+            }
         }
 
         @Override

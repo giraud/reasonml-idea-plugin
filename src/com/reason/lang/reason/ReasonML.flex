@@ -194,7 +194,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "->"  { return types.RIGHT_ARROW; }
     "<-"  { return types.LEFT_ARROW; }
     "|>"  { return types.PIPE_FORWARD; }
-    "|."  { return types.PIPE_FIRST; }
     "</"  { return types.TAG_LT_SLASH; }
     "/>"  { return types.TAG_AUTO_CLOSE; }
     "[|"  { return types.LARRAY; }

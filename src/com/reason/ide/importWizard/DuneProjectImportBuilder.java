@@ -1,39 +1,26 @@
 package com.reason.ide.importWizard;
 
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.module.ModifiableModuleModel;
+import com.intellij.openapi.application.*;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkTypeId;
-import com.intellij.openapi.roots.ContentEntry;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ex.ProjectRootManagerEx;
-import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.packaging.artifacts.ModifiableArtifactModel;
-import com.intellij.projectImport.ProjectImportBuilder;
-import com.reason.module.OCamlModuleType;
-import com.reason.sdk.OCamlSdkType;
-import icons.ORIcons;
+import com.intellij.openapi.module.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.roots.*;
+import com.intellij.openapi.roots.ex.*;
+import com.intellij.openapi.roots.ui.configuration.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.packaging.artifacts.*;
+import com.intellij.projectImport.*;
+import com.reason.module.*;
+import com.reason.sdk.*;
+import icons.*;
+import org.jetbrains.annotations.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.*;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.io.*;
+import java.nio.file.*;
+import java.nio.file.attribute.*;
+import java.util.*;
 
 public class DuneProjectImportBuilder extends ProjectImportBuilder<Module> {
 
@@ -76,11 +63,7 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder<Module> {
 
     @Nullable
     @Override
-    public List<Module> commit(
-            @NotNull Project project,
-            @Nullable ModifiableModuleModel moduleModel,
-            ModulesProvider modulesProvider,
-            ModifiableArtifactModel artifactModel) {
+    public List<Module> commit(@NotNull Project project, @Nullable ModifiableModuleModel moduleModel, ModulesProvider modulesProvider, ModifiableArtifactModel artifactModel) {
         List<Module> createdModules = new ArrayList<>();
 
         String ideaModuleDirPath = project.getBasePath();
@@ -115,8 +98,7 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder<Module> {
                                 @Override
                                 public @NotNull FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
                                     if ("dune".equals(path.getFileName().toString())) {
-                                        VirtualFile file =
-                                                LocalFileSystem.getInstance().findFileByPath(path.toString());
+                                        VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path.toString());
                                         VirtualFile dir = file == null ? null : file.getParent();
                                         if (dir != null) {
                                             content.addSourceFolder(dir, false);

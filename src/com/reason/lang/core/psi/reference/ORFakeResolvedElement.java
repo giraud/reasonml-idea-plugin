@@ -1,39 +1,34 @@
 package com.reason.lang.core.psi.reference;
 
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.FakePsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.*;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.*;
+import org.jetbrains.annotations.*;
 
 public class ORFakeResolvedElement extends FakePsiElement {
+    private final @NotNull PsiElement mySourceElement;
 
-  private final @NotNull PsiElement m_sourceElement;
+    public ORFakeResolvedElement(@NotNull PsiElement element) {
+        mySourceElement = element;
+    }
 
-  public ORFakeResolvedElement(@NotNull PsiElement element) {
-    m_sourceElement = element;
-  }
+    @Override
+    public @NotNull PsiElement getOriginalElement() {
+        return mySourceElement;
+    }
 
-  @Override
-  public @NotNull PsiElement getOriginalElement() {
-    return m_sourceElement;
-  }
+    @Override
+    public @Nullable PsiElement getParent() {
+        return mySourceElement.getParent();
+    }
 
-  @Nullable
-  @Override
-  public PsiElement getParent() {
-    return m_sourceElement.getParent();
-  }
+    @Override
+    public @Nullable String getText() {
+        return mySourceElement.getText();
+    }
 
-  @Nullable
-  @Override
-  public String getText() {
-    return m_sourceElement.getText();
-  }
-
-  @NotNull
-  @Override
-  public TextRange getTextRangeInParent() {
-    return TextRange.EMPTY_RANGE;
-  }
+    @Override
+    public @NotNull TextRange getTextRangeInParent() {
+        return TextRange.EMPTY_RANGE;
+    }
 }

@@ -26,6 +26,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.HashSet;
 import java.util.*;
+import java.util.regex.*;
 import java.util.stream.*;
 
 import static com.intellij.psi.search.GlobalSearchScope.*;
@@ -35,6 +36,60 @@ import static java.util.Collections.*;
 public final class PsiFinder {
 
     private static final Log LOG = Log.create("finder");
+
+    public @Nullable PsiQualifiedPathElement findModuleBack(@Nullable PsiElement root, @Nullable String path) {
+        if (root != null && path != null) {
+            PsiElement prev = ORUtil.prevSibling(root);
+            PsiElement item = prev == null ? root.getParent() : prev;
+            while (item != null) {
+                if (item instanceof PsiInnerModule) {
+                    PsiInnerModule module = (PsiInnerModule) item;
+                    String name = module.getModuleName();
+                    String alias = module.getAlias();
+                    if (alias != null) {
+                        // This is a local module alias, we'll need to replace it in final paths
+                        Pattern compile = Pattern.compile("(\\.?)(" + name + ")(\\.?)");
+                        String replace = "$1" + alias + "$3";
+                        path = compile.matcher(path).replaceFirst(replace);
+                    } else if (path.equals(name)) {
+                        return module;
+                    } else if (name != null && path.startsWith(name)) {
+                        // Follow module from top to bottom to find real module
+                        path = path.substring(name.length() + 1);
+                        return findModuleForward(module.getBody(), path);
+                    }
+                }
+                prev = ORUtil.prevSibling(item);
+                item = prev == null ? item.getParent() : prev;
+            }
+        }
+
+        return null;
+    }
+
+    private @Nullable PsiQualifiedPathElement findModuleForward(@Nullable PsiElement root, @Nullable String path) {
+        if (root != null && path != null) {
+            PsiElement next = ORUtil.nextSibling(root);
+            PsiElement item = next == null ? root.getFirstChild() : next;
+            while (item != null) {
+                if (item instanceof PsiInnerModule) {
+                    PsiInnerModule module = (PsiInnerModule) item;
+                    String name = module.getModuleName();
+                    if (path.equals(name)) {
+                        return module;
+                    } else if (name != null && path.startsWith(name)) {
+                        // Go deeper
+                        path = path.substring(name.length() + 1);
+                        return findModuleForward(module.getBody(), path);
+                    }
+                }
+                next = ORUtil.nextSibling(item);
+                item = next == null ? item.getFirstChild() : next;
+            }
+        }
+
+        return null;
+    }
 
     @FunctionalInterface
     public interface ModuleFilter<T extends PsiModule> {
@@ -130,14 +185,13 @@ public final class PsiFinder {
 
     public @NotNull Set<PsiModule> findModulesbyName(@NotNull String name, @NotNull ORFileType fileType, ModuleFilter<PsiModule> filter, @NotNull GlobalSearchScope scope) {
         Set<PsiModule> result = new HashSet<>();
-        ModuleIndex moduleIndex = ModuleIndex.getInstance();
 
-        moduleIndex.processAllKeys(
+        StubIndex.getInstance().processAllKeys(IndexKeys.MODULES,
                 m_project,
                 CommonProcessors.processAll(
                         moduleName -> {
                             if (name.equals(moduleName)) {
-                                Collection<PsiModule> modules = moduleIndex.get(moduleName, m_project, scope);
+                                Collection<PsiModule> modules = ModuleIndex.getElements(moduleName, m_project, null);
                                 PartitionedModules partitionedModules =
                                         new PartitionedModules(m_project, modules, filter);
 
@@ -172,7 +226,7 @@ public final class PsiFinder {
     }
 
     public @Nullable PsiModule findComponentFromQName(@Nullable String fqn, @NotNull GlobalSearchScope scope) {
-        Collection<PsiModule> modules = fqn == null ? emptyList() : ModuleComponentFqnIndex.getInstance().get(fqn.hashCode(), m_project, scope);
+        Collection<PsiModule> modules = fqn == null ? emptyList() : ModuleComponentFqnIndex.getElements(fqn, m_project);
         if (!modules.isEmpty()) {
             PsiModule module = modules.iterator().next();
             return ServiceManager.getService(m_project, BsCompiler.class)
@@ -194,13 +248,12 @@ public final class PsiFinder {
 
         BsCompiler bucklescript = ServiceManager.getService(m_project, BsCompiler.class);
 
-        ModuleComponentIndex componentIndex = ModuleComponentIndex.getInstance();
-        ModuleIndex moduleIndex = ModuleIndex.getInstance();
-        componentIndex.processAllKeys(
+        StubIndex.getInstance().processAllKeys(
+                IndexKeys.MODULES_COMP,
                 project,
                 CommonProcessors.processAll(
                         moduleName -> {
-                            for (PsiModule module : moduleIndex.get(moduleName, project, scope)) {
+                            for (PsiModule module : ModuleIndex.getElements(moduleName, project, null)) {
                                 FileBase file = (FileBase) module.getContainingFile();
                                 if (!module.isInterface() && bucklescript.isDependency(file.getVirtualFile())) {
                                     result.add(module);
@@ -248,13 +301,8 @@ public final class PsiFinder {
     }
 
     @NotNull
-    private <T extends PsiQualifiedElement> Set<T> findLowerSymbols(
-            @NotNull String debugName,
-            @NotNull String name,
-            @NotNull ORFileType fileType,
-            @NotNull StubIndexKey<String, T> indexKey,
-            @NotNull Class<T> clazz,
-            @NotNull GlobalSearchScope scope) {
+    private <T extends PsiQualifiedNamedElement> Set<T> findLowerSymbols(@NotNull String debugName, @NotNull String name, @NotNull ORFileType fileType, @NotNull StubIndexKey<String, T> indexKey, @NotNull Class<T> clazz,
+                                                                         @NotNull GlobalSearchScope scope) {
         Map<String /*qn*/, T> implNames = new THashMap<>();
         Map<String /*qn*/, T> intfNames = new THashMap<>();
 
@@ -319,23 +367,13 @@ public final class PsiFinder {
         return result;
     }
 
-    @Nullable
-    public PsiVariantDeclaration findVariant(@Nullable String qname, @NotNull GlobalSearchScope scope) {
-        if (qname == null) {
-            return null;
-        }
-
-        Collection<PsiVariantDeclaration> variants = VariantFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
-        return variants.isEmpty() ? null : variants.iterator().next();
-    }
-
     @NotNull
     public Collection<PsiVariantDeclaration> findVariantByName(@Nullable String path, @Nullable String name, @NotNull GlobalSearchScope scope) {
         if (name == null) {
             return emptyList();
         }
 
-        Collection<PsiVariantDeclaration> variants = VariantIndex.getInstance().get(name, m_project, scope);
+        Collection<PsiVariantDeclaration> variants = VariantIndex.getElements(name, m_project, null);
         if (!variants.isEmpty() && path != null) {
             // Keep variants that have correct path
             return variants
@@ -347,15 +385,12 @@ public final class PsiFinder {
         return variants;
     }
 
-    @Nullable
-    public PsiException findException(
-            @Nullable String qname, ORFileType fileType, @NotNull GlobalSearchScope scope) {
+    public @Nullable PsiException findException(@Nullable String qname, ORFileType fileType, @NotNull GlobalSearchScope scope) {
         if (qname == null) {
             return null;
         }
 
-        Collection<PsiException> items =
-                ExceptionFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
+        Collection<PsiException> items = ExceptionFqnIndex.getElements(qname, m_project);
         if (items.isEmpty()) {
             return null;
         }
@@ -380,17 +415,12 @@ public final class PsiFinder {
         return null;
     }
 
-    @NotNull
-    public Set<PsiFakeModule> findTopModules(
-            boolean excludeNamespaces, @NotNull GlobalSearchScope scope) {
+    public @NotNull Set<PsiFakeModule> findTopModules(boolean excludeNamespaces, @NotNull GlobalSearchScope scope) {
         Set<PsiFakeModule> result = new HashSet<>();
 
-        ModuleTopLevelIndex index = ModuleTopLevelIndex.getInstance();
-
-        index.processAllKeys(
-                m_project,
+        StubIndex.getInstance().processAllKeys(IndexKeys.MODULES_TOP_LEVEL, m_project,
                 name -> {
-                    Collection<PsiFakeModule> collection = index.get(name, m_project, scope);
+                    Collection<PsiFakeModule> collection = ModuleTopLevelIndex.getElements(name, m_project);
                     for (PsiFakeModule psiFakeModule : collection) {
                         if (!(excludeNamespaces && psiFakeModule.hasNamespace())) {
                             result.add(psiFakeModule);
@@ -411,13 +441,11 @@ public final class PsiFinder {
 
         Set<PsiModule> result = new HashSet<>();
 
-        Collection<PsiModule> psiModules =
-                ModuleFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
+        Collection<PsiModule> psiModules = ModuleFqnIndex.getElements(qname, m_project);
         for (PsiModule module : psiModules) {
             String alias = module.getAlias();
             if (alias != null) {
-                Collection<PsiModule> aliasModules =
-                        ModuleFqnIndex.getInstance().get(alias.hashCode(), m_project, scope);
+                Collection<PsiModule> aliasModules = ModuleFqnIndex.getElements(alias, m_project);
                 if (!aliasModules.isEmpty()) {
                     for (PsiModule aliasModule : aliasModules) {
                         Set<PsiModule> nextModuleAlias = findModuleAlias(aliasModule.getQualifiedName(), scope);
@@ -443,7 +471,7 @@ public final class PsiFinder {
         Set<PsiModule> result = new HashSet<>();
 
         // Try qn directly
-        Collection<PsiModule> modules = ModuleFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
+        Collection<PsiModule> modules = ModuleFqnIndex.getElements(qname, m_project);
 
         if (modules.isEmpty()) {
             // Qn not working, maybe because of aliases... try to navigate to each module
@@ -523,8 +551,7 @@ public final class PsiFinder {
         }
 
         // Try qn directly
-        Collection<PsiParameter> parameters =
-                ParameterFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
+        Collection<PsiParameter> parameters = ParameterFqnIndex.getElements(qname, m_project);
         if (!parameters.isEmpty()) {
             return parameters.iterator().next();
         }
@@ -541,7 +568,7 @@ public final class PsiFinder {
         GlobalSearchScope scope = allScope(m_project);
 
         // Try qn directly
-        Collection<PsiLet> lets = LetFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
+        Collection<PsiLet> lets = LetFqnIndex.getElements(qname.hashCode(), m_project);
         if (!lets.isEmpty()) {
             return lets.iterator().next();
         }
@@ -592,7 +619,7 @@ public final class PsiFinder {
         GlobalSearchScope scope = allScope(m_project);
 
         // Try qn directly
-        Collection<PsiVal> vals = ValFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
+        Collection<PsiVal> vals = ValFqnIndex.getElements(qname.hashCode(), m_project);
         if (!vals.isEmpty()) {
             return vals.iterator().next();
         }
@@ -641,8 +668,7 @@ public final class PsiFinder {
         GlobalSearchScope scope = allScope(m_project);
 
         // Try qn directly
-        Collection<PsiParameter> parameters =
-                ParameterFqnIndex.getInstance().get(qName.hashCode(), m_project, scope);
+        Collection<PsiParameter> parameters = ParameterFqnIndex.getElements(qName, m_project);
         if (!parameters.isEmpty()) {
             if (parameters.size() == 1) {
                 return parameters.iterator().next();
@@ -652,10 +678,10 @@ public final class PsiFinder {
         return null;
     }
 
-    public @Nullable PsiType findTypeFromQn(@Nullable String qName, @NotNull GlobalSearchScope scope) {
+    public @Nullable PsiType findTypeFromQn(@Nullable String qName) {
         if (qName != null) {
             // Try qn directly
-            Collection<PsiType> types = TypeFqnIndex.getInstance().get(qName.hashCode(), m_project, scope);
+            Collection<PsiType> types = TypeFqnIndex.getElements(qName.hashCode(), m_project);
             if (!types.isEmpty()) {
                 return types.iterator().next();
             }

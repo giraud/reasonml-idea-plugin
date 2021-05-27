@@ -112,7 +112,7 @@ public class FreeExpressionCompletionProvider {
               || item instanceof PsiExternal
               || item instanceof PsiException
               || item instanceof PsiVal) {
-        if (item instanceof PsiLet && ((PsiLet) item).isDeconsruction()) {
+        if (item instanceof PsiLet && ((PsiLet) item).isDeconstruction()) {
           for (PsiElement deconstructedElement : ((PsiLet) item).getDeconstructedElements()) {
             resultSet.addElement(
                 LookupElementBuilder.create(deconstructedElement.getText())

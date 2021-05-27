@@ -31,60 +31,81 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiType, PsiTypeStub> imp
     // endregion
 
     // region PsiNamedElement
-    @NotNull
     @Override
-    public String getName() {
+    public @Nullable PsiElement getNameIdentifier() {
+        return findChildByClass(PsiLowerIdentifier.class);
+    }
+
+    @Override
+    public @Nullable String getName() {
         PsiTypeStub stub = getGreenStub();
         if (stub != null) {
-            String name = stub.getName();
-            return name == null ? "" : name;
+            return stub.getName();
         }
 
-        PsiElement constrName = findChildByClass(PsiLowerIdentifier.class);
-        if (constrName == null) {
-            return "";
-        }
+        PsiElement constrName = getNameIdentifier();
+        return constrName == null ? "" : constrName.getText();
 
-    /* zzz
-    PsiParameters parameters = findChildByClass(PsiParameters.class);
-
-    StringBuilder nameBuilder = new StringBuilder();
-    boolean first = true;
-
-    PsiElement element = constrName.getFirstChild();
-    while (element != null) {
-        if (element instanceof PsiLowerIdentifier) {
-            if (!first) {
-                nameBuilder.append(" ");
-            }
-            nameBuilder.append(element.getText());
-            first = false;
-        }
-        element = element.getNextSibling();
     }
 
-    return nameBuilder.toString();
-
-     */
-        return constrName.getText();
-    }
-
-    @NotNull
     @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        throw new IncorrectOperationException("use lower identifier");
+    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return this;
     }
     // endregion
 
+    //region PsiQualifiedPathName
+    @Override
+    public @Nullable String[] getPath() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
+        return ORUtil.getQualifiedPath(this);
+    }
+
+    @Override
+    public @NotNull String getQualifiedName() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+
+        return ORUtil.getQualifiedName(this);
+    }
+    //endregion
+
     @Override
     public boolean isAbstract() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isAbstract();
+        }
+
         return getBinding() == null;
     }
 
     @Override
     public boolean isJsObject() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isJsObject();
+        }
+
         PsiTypeBinding binding = getBinding();
         return binding != null && binding.getFirstChild() instanceof PsiJsObject;
+    }
+
+    @Override
+    public boolean isRecord() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isRecord();
+        }
+
+        PsiTypeBinding binding = getBinding();
+        return binding != null && binding.getFirstChild() instanceof PsiRecord;
     }
 
     @Override
@@ -101,28 +122,6 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiType, PsiTypeStub> imp
         return emptyList();
     }
 
-    @NotNull
-    @Override
-    public String getPath() {
-        PsiTypeStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.getPath();
-        }
-
-        return ORUtil.getQualifiedPath(this);
-    }
-
-    @NotNull
-    @Override
-    public String getQualifiedName() {
-        PsiTypeStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.getQualifiedName();
-        }
-
-        return ORUtil.getQualifiedName(this);
-    }
-
     @Override
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
@@ -131,9 +130,8 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiType, PsiTypeStub> imp
                 return getName();
             }
 
-            @Nullable
             @Override
-            public String getLocationString() {
+            public @Nullable String getLocationString() {
                 return null;
             }
 
@@ -144,9 +142,8 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiType, PsiTypeStub> imp
         };
     }
 
-    @Nullable
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Type " + getQualifiedName();
     }
 }
