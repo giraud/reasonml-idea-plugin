@@ -451,7 +451,7 @@ public class ParserState {
 
     public @Nullable ParserScope findScopeContext(@NotNull ORTypes types) {
         int level = 1;
-        ParserScope parserScope = m_composites.get(level);
+        ParserScope parserScope = m_composites.size() < 2 ? null : m_composites.get(level);
         while (parserScope != null && parserScope.isCompositeType(types.C_DUMMY)) {
             level++;
             parserScope = m_composites.get(level);
@@ -460,7 +460,7 @@ public class ParserState {
         return parserScope;
     }
 
-    public ParserState updatePreviousComposite(ORCompositeType composite) {
+    public @NotNull ParserState updatePreviousComposite(@NotNull ORCompositeType composite) {
         if (m_composites.size() > 1) {
             m_composites.get(1).updateCompositeElementType(composite);
         }
