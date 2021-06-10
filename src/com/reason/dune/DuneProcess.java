@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.*;
 
 public final class DuneProcess implements CompilerProcess {
     public static final String CONFIGURE_DUNE_SDK = "<html>"
-            + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
+            + "When using a dune config file, you need to create an OCaml SDK and associate it with the project.\n"
             + "see <a href=\"https://reasonml-editor.github.io/reasonml-idea-plugin/docs/build-tools/dune\">github</a>."
             + "</html>";
 
