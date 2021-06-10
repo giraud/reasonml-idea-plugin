@@ -288,19 +288,11 @@
          | Compiler
          -->
 
-        <projectService serviceImplementation="com.reason.ORCompilerManager"/>
-
-        <!-- BuckleScript Compiler -->
-
-        <projectService serviceImplementation="com.reason.bs.BsProcess"/>
-        <projectService serviceImplementation="com.reason.bs.BscProcess"/>
-        <projectService serviceInterface="com.reason.bs.BsCompiler"
-                        serviceImplementation="com.reason.bs.BsCompilerImpl"/>
-
-        <!-- Esy Compiler -->
-
-        <projectService serviceImplementation="com.reason.esy.EsyCompiler"/>
-        <projectService serviceImplementation="com.reason.esy.EsyProcess"/>
+        <projectService serviceImplementation="com.reason.comp.ORCompilerManager"/>
+        <projectService serviceInterface="com.reason.comp.bs.BsCompiler"
+                        serviceImplementation="com.reason.comp.bs.BsCompilerImpl"/>
+        <projectService serviceImplementation="com.reason.comp.rescript.ResCompiler"/>
+        <projectService serviceImplementation="com.reason.comp.esy.EsyCompiler"/>
 
         <!--
          | Insight
@@ -319,8 +311,9 @@
          | Others
          -->
 
-        <projectService serviceImplementation="com.reason.bs.RefmtProcess"/>
-        <projectService serviceImplementation="com.reason.dune.OcamlFormatProcess"/>
+        <projectService serviceImplementation="com.reason.comp.bs.BsFormatProcess"/>
+        <projectService serviceImplementation="com.reason.comp.rescript.ResFormatProcess"/>
+        <projectService serviceImplementation="com.reason.comp.dune.OcamlFormatProcess"/>
         <postFormatProcessor implementation="com.reason.ide.format.ORPostFormatProcessor"/>
 
         <projectService serviceImplementation="com.reason.ide.console.ORToolWindowManager"/>
@@ -350,9 +343,9 @@
         <annotator language="OCaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
         <annotator language="Dune" implementationClass="com.reason.ide.highlight.DuneSyntaxAnnotator"/>
 
-        <externalAnnotator language="Reason" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
-        <externalAnnotator language="Rescript" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
-        <externalAnnotator language="OCaml" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
+        <externalAnnotator language="Reason" implementationClass="com.reason.ide.annotations.BsErrorAnnotator"/>
+        <externalAnnotator language="Rescript" implementationClass="com.reason.ide.annotations.ResErrorAnnotator"/>
+        <externalAnnotator language="OCaml" implementationClass="com.reason.ide.annotations.BsErrorAnnotator"/>
         <problemFileHighlightFilter implementation="com.reason.ide.annotations.ErrorFileHighlighter"/>
 
         <completion.contributor language="Reason"
@@ -375,7 +368,7 @@
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compiler server -->
         <compileServer.plugin classpath="jps-plugin.jar"/>
 
-        <languageInjector implementation="com.reason.ide.JsInjector"/>
+        <languageInjector implementation="com.reason.ide.js.JsInjector"/>
         <lang.elementManipulator forClass="com.reason.lang.core.psi.PsiLiteralExpression"
                                  implementationClass="com.reason.lang.core.LiteralStringManipulator"/>
 
@@ -411,7 +404,7 @@
          -->
 
         <toolWindow id="BuckleScript:" anchor="bottom" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
-        <toolWindow id="Esy:" anchor="bottom" factoryClass="com.reason.ide.console.EsyToolWindowFactory"/>
+        <toolWindow id="Rescript:" anchor="bottom" factoryClass="com.reason.ide.console.RescriptToolWindowFactory"/>
 
         <codeInsight.parameterInfo language="Reason"
                                    implementationClass="com.reason.ide.hints.ORParameterInfoHandlerWithTabActionSupport"/>

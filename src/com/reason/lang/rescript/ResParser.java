@@ -40,16 +40,22 @@ public class ResParser extends CommonParser<ResTypes> {
             if (state.is(m_types.C_INTERPOLATION_EXPR)
                     || state.is(m_types.C_INTERPOLATION_PART)
                     || state.is(m_types.C_INTERPOLATION_REF)) {
-                if (tokenType == m_types.ML_STRING_VALUE /*!*/) {
+                if (tokenType == m_types.JS_STRING_OPEN) {
                     state.popEndUntil(m_types.C_INTERPOLATION_EXPR).advance().popEnd();
-                } else if (tokenType == m_types.DOLLAR && state.is(m_types.C_INTERPOLATION_PART)) {
-                    state.popEnd().advance();
+                } else if (tokenType == m_types.DOLLAR) {
+                    if (state.is(m_types.C_INTERPOLATION_PART)) {
+                        state.popEnd();
+                    }
+                    state.advance();
                     IElementType nextElement = state.getTokenType();
                     if (nextElement == m_types.LBRACE) {
                         state.advance().markScope(m_types.C_INTERPOLATION_REF, m_types.LBRACE);
                     }
                 } else if (state.is(m_types.C_INTERPOLATION_REF) && tokenType == m_types.RBRACE) {
-                    state.popEnd().advance().mark(m_types.C_INTERPOLATION_PART);
+                    state.popEnd().advance();
+                    if (state.getTokenType() != m_types.JS_STRING_OPEN) {
+                        state.mark(m_types.C_INTERPOLATION_PART);
+                    }
                 }
             } else {
                 // EOL is a statement separator
@@ -394,11 +400,12 @@ public class ResParser extends CommonParser<ResTypes> {
     }
 
     private void parseTemplateStringOpen(@NotNull ParserState state) {
-        // |>j`<| ...
-        state
-                .markScope(m_types.C_INTERPOLATION_EXPR, m_types.JS_STRING_OPEN)
-                .advance()
-                .mark(m_types.C_INTERPOLATION_PART);
+        // |>`<| ...
+        state.markScope(m_types.C_INTERPOLATION_EXPR, m_types.JS_STRING_OPEN)
+                .advance();
+        if (state.getTokenType() != m_types.DOLLAR) {
+            state.mark(m_types.C_INTERPOLATION_PART);
+        }
     }
 
     private void parseLet(@NotNull ParserState state) {

@@ -35,10 +35,20 @@ public class TypeParsingTest extends OclParsingTestCase {
         assertNotNull(first(findChildrenOfType(first(typeExpressions(file)), PsiTypeBinding.class)));
     }
 
-    public void test_bindingWithObject() {
-        PsiType e = first(typeExpressions(parseCode("type t = <count: int>")));
+    public void test_closed_object() {
+        PsiType e = first(typeExpressions(parseCode("type t = <count: int>\n type x")));
 
-        assertInstanceOf(e.getBinding().getFirstChild(), PsiObject.class);
+        PsiElement b = e.getBinding();
+        assertEquals("<count: int>", b.getText());
+        assertInstanceOf(b.getFirstChild(), PsiObject.class);
+    }
+
+    public void test_open_object() {
+        PsiType e = first(typeExpressions(parseCode("type 'a t = < .. > as 'a\n type x")));
+
+        PsiElement b = e.getBinding();
+        assertEquals("< .. > as 'a", b.getText());
+        assertInstanceOf(b.getFirstChild(), PsiObject.class);
     }
 
     public void test_bindingWithRecordAs() {

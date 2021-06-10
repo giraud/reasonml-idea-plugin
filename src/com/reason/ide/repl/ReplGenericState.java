@@ -16,7 +16,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.OCamlExecutable;
-import com.reason.dune.OpamEnv;
+import com.reason.comp.dune.OpamEnv;
 import com.reason.ide.ORProjectManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

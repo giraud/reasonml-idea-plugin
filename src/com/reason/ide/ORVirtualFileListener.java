@@ -2,20 +2,21 @@ package com.reason.ide;
 
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.components.*;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.vfs.newvfs.events.*;
 import com.reason.*;
-import com.reason.bs.*;
-import com.reason.esy.*;
+import com.reason.comp.bs.*;
+import com.reason.comp.esy.*;
 import com.reason.hints.*;
 import com.reason.ide.console.*;
 import com.reason.ide.files.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
+
+import static com.reason.comp.ORConstants.*;
 
 /**
  * Listener that detects all modifications on files.
@@ -60,9 +61,15 @@ class ORVirtualFileListener implements AsyncFileListener {
             if (modifiedFile == null) {
                 return;
             }
-            if (BsConfigJson.isBsConfigJson(modifiedFile) || EsyPackageJson.isEsyPackageJson(modifiedFile)) {
+
+            String fileName = modifiedFile.getName();
+            boolean potentialToolWindowUpdate = NODE_MODULES.equals(fileName) || RESCRIPT_DIR.equals(fileName) || BS_DIR.equals(fileName)
+                    || BsConfigJson.isBsConfigJson(modifiedFile) || EsyPackageJson.isEsyPackageJson(modifiedFile);
+
+            if (potentialToolWindowUpdate) {
+                LOG.info("Update tool windows visibility");
                 for (Project project : ProjectManager.getInstance().getOpenProjects()) {
-                    ORToolWindowManager toolWindowManager = ServiceManager.getService(project, ORToolWindowManager.class);
+                    ORToolWindowManager toolWindowManager = project.getService(ORToolWindowManager.class);
                     ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
                 }
             }

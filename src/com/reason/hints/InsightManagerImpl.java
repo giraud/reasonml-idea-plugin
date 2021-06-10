@@ -4,32 +4,35 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
+import com.reason.comp.Compiler;
 import com.reason.*;
-import com.reason.bs.*;
+import com.reason.comp.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
+import java.util.regex.*;
 
 import static com.reason.Platform.*;
 
 public class InsightManagerImpl implements InsightManager {
     private static final Log LOG = Log.create("hints");
+    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
 
     final @NotNull AtomicBoolean isDownloading = new AtomicBoolean(false);
-    private final @NotNull Project m_project;
+    private final @NotNull Project myProject;
 
-    private InsightManagerImpl(@NotNull Project project) {
-        m_project = project;
+    InsightManagerImpl(@NotNull Project project) {
+        myProject = project;
     }
 
     @Override
     public void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile) {
         File rincewind = getRincewindFile(sourceFile);
         if (rincewind == null || !rincewind.exists()) {
-            ProgressManager.getInstance().run(new RincewindDownloader(m_project, sourceFile));
+            ProgressManager.getInstance().run(new RincewindDownloader(myProject, sourceFile));
         }
     }
 
@@ -37,7 +40,7 @@ public class InsightManagerImpl implements InsightManager {
     public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
         File rincewindFile = getRincewindFile(sourceFile);
         if (rincewindFile != null) {
-            ServiceManager.getService(m_project, RincewindProcess.class).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
+            ServiceManager.getService(myProject, RincewindProcess.class).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
         }
     }
 
@@ -47,7 +50,7 @@ public class InsightManagerImpl implements InsightManager {
         File rincewindFile = getRincewindFileExcludingVersion(cmtFile, "0.4");
         return rincewindFile == null
                 ? Collections.emptyList()
-                : ServiceManager.getService(m_project, RincewindProcess.class).dumpMeta(rincewindFile.getPath(), cmtFile);
+                : ServiceManager.getService(myProject, RincewindProcess.class).dumpMeta(rincewindFile.getPath(), cmtFile);
     }
 
     @Override
@@ -55,7 +58,7 @@ public class InsightManagerImpl implements InsightManager {
         File rincewindFile = getRincewindFile(cmtFile);
         return rincewindFile == null
                 ? "<unknown/>"
-                : ServiceManager.getService(m_project, RincewindProcess.class).dumpTree(cmtFile, rincewindFile.getPath());
+                : ServiceManager.getService(myProject, RincewindProcess.class).dumpTree(cmtFile, rincewindFile.getPath());
     }
 
     @Override
@@ -63,7 +66,7 @@ public class InsightManagerImpl implements InsightManager {
         File rincewindFile = getRincewindFile(cmtFile);
         return rincewindFile == null
                 ? Collections.emptyList()
-                : ServiceManager.getService(m_project, RincewindProcess.class).dumpTypes(rincewindFile.getPath(), cmtFile);
+                : ServiceManager.getService(myProject, RincewindProcess.class).dumpTypes(rincewindFile.getPath(), cmtFile);
     }
 
     @Override
@@ -94,12 +97,28 @@ public class InsightManagerImpl implements InsightManager {
     }
 
     public @Nullable String getRincewindFilenameExcludingVersion(@NotNull VirtualFile sourceFile, @NotNull String excludedVersion) {
-        String ocamlVersion =
-                ServiceManager.getService(m_project, BsProcess.class).getOCamlVersion(sourceFile);
+        ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
+        Compiler compiler = compilerManager.getCompiler(sourceFile);
+        String fullVersion = compiler == null ? null : compiler.getFullVersion(sourceFile);
+        String ocamlVersion = ocamlVersionExtractor(fullVersion);
         String rincewindVersion = getRincewindVersion(ocamlVersion);
 
         if (ocamlVersion != null && !rincewindVersion.equals(excludedVersion)) {
             return "rincewind_" + getOsPrefix() + ocamlVersion + "-" + rincewindVersion + ".exe";
+        }
+
+        return null;
+    }
+
+    static @Nullable String ocamlVersionExtractor(@Nullable String fullVersion) {
+        if (fullVersion != null) {
+            Matcher matcher = BS_VERSION_REGEXP.matcher(fullVersion);
+            if (matcher.matches()) {
+                return matcher.group(1);
+            }
+            if (fullVersion.startsWith("ReScript")) {
+                return "4.06.1";
+            }
         }
 
         return null;

@@ -93,6 +93,8 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseAnd(state);
             } else if (tokenType == m_types.DOT) {
                 parseDot(state);
+            } else if (tokenType == m_types.DOTDOT) {
+                parseDotDot(state);
             } else if (tokenType == m_types.FUNCTION) {
                 // function is a shortcut for a pattern match
                 parseFunction(state);
@@ -243,7 +245,14 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseGt(@NotNull ParserState state) {
-        if (state.isPrevious(m_types.C_OBJECT)) {
+        if (state.is(m_types.C_OBJECT)) {
+            state.advance();
+            if (state.getTokenType() == m_types.AS) {
+                // type t = < .. > |>as<| ..
+                state.advance().advance().popEnd();
+            }
+        }
+        else if (state.isPrevious(m_types.C_OBJECT)) {
             // < ... |> > <| ..
             if (state.isCurrentResolution(objectFieldNamed)) {
                 state.popEnd();
@@ -348,22 +357,10 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private @Nullable ParserScope endUntilStartExpression(@NotNull ParserState state) {
-        // Remove intermediate constructions until a start expression
-        state.popEndUntilStart();
-        ParserScope latestScope = state.getLatestScope();
-        state.popEnd();
-
-        // Remove nested let
-        while (state.is(m_types.C_LET_BINDING) || state.is(m_types.C_PATTERN_MATCH_BODY) || state.is(m_types.C_FUN_BODY)) {
-            state.popEndUntilStart();
-            latestScope = state.getLatestScope();
-            state.popEnd();
+    private void parseDotDot(@NotNull ParserState state) {
+        if (state.is(m_types.C_OBJECT_FIELD)) {
+            state.advance().popEnd();
         }
-
-        state.advance();
-
-        return latestScope;
     }
 
     private void parsePipe(@NotNull ParserState state) {
