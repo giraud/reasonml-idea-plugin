@@ -16,8 +16,11 @@ are solved.
 
 ## Unreleased
 
-- :bug: [#326](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/326) Structure panel shows "mutable" for mutable record fields rather than the field name
+## 0.102 - 2021/06/28
+
 - :house: [#328](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/328) Update Rescript parser to latest syntax
+- :bug: [#326](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/326) Structure panel shows "mutable" for mutable record fields rather than the field name
+- :bug: [#318](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/318) Rescript integration
 
 ## 0.101 - 2021/05/27
 
