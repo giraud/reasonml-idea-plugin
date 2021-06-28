@@ -1,13 +1,12 @@
 package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.lang.napkin.ResLanguage;
+import com.reason.lang.rescript.ResLanguage;
 import icons.ORIcons;
 
 import javax.swing.*;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ResInterfaceFileType extends LanguageFileType {
     public static final ResInterfaceFileType INSTANCE = new ResInterfaceFileType();

@@ -29,7 +29,7 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, Ps
     // region PsiNamedElement
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return getFirstChild();
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiLowerIdentifier.class);
     }
 
     @Override

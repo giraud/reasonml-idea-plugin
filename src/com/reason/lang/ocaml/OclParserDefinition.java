@@ -77,6 +77,6 @@ public class OclParserDefinition implements ParserDefinition {
     }
 
     throw new IllegalArgumentException(
-        "Not an OCaml node: " + node + " (" + type + ", " + type.getLanguage() + ")");
+        "Not an OCaml node: " + node + " (" + type + ", " + type.getLanguage() + "): " + node.getText());
   }
 }

@@ -3,7 +3,7 @@ package com.reason.lang.core.stub;
 import com.intellij.psi.stubs.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.type.*;
-import com.reason.lang.napkin.*;
+import com.reason.lang.rescript.*;
 
 public interface RescriptStubBasedElementTypes {
     IStubElementType<PsiModuleStub, PsiModule> C_FAKE_MODULE = new PsiFakeModuleStubElementType(ResLanguage.INSTANCE);

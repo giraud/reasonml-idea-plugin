@@ -161,7 +161,7 @@
                     </constraints>
                     <properties>
                       <font size="12"/>
-                      <text value="You must create a dune facet to associate an OCaml SDK to a module"/>
+                      <text value="You must create a dune facet to associate an OCaml SDK to a module"/>
                     </properties>
                   </component>
                   <vspacer id="1973e">

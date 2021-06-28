@@ -1,8 +1,8 @@
 package com.reason.lang.core.type;
 
 import com.intellij.lang.Language;
-import com.reason.lang.napkin.ResLanguage;
-import com.reason.lang.napkin.ResTypes;
+import com.reason.lang.rescript.ResLanguage;
+import com.reason.lang.rescript.ResTypes;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlTypes;

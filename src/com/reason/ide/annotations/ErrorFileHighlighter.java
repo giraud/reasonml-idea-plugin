@@ -10,6 +10,6 @@ public class ErrorFileHighlighter implements Condition<VirtualFile> {
   @Override
   public boolean value(@NotNull VirtualFile file) {
     FileType fileType = file.getFileType();
-    return FileHelper.isOCaml(fileType) || FileHelper.isReason(fileType);
+    return FileHelper.isOCaml(fileType) || FileHelper.isReason(fileType) || FileHelper.isRescript(fileType);
   }
 }

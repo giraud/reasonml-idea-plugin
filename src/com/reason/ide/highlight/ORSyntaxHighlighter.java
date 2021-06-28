@@ -10,8 +10,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.napkin.ResLexer;
-import com.reason.lang.napkin.ResTypes;
+import com.reason.lang.rescript.ResLexer;
+import com.reason.lang.rescript.ResTypes;
 import com.reason.lang.ocaml.OclLexer;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLexer;
@@ -226,6 +226,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     ResTypes.INSTANCE.RIGHT_ARROW,
                     ResTypes.INSTANCE.COLON_EQ,
                     ResTypes.INSTANCE.COLON_GT,
+                    ResTypes.INSTANCE.LT,
                     ResTypes.INSTANCE.GT,
                     ResTypes.INSTANCE.GT_BRACE,
                     ResTypes.INSTANCE.GT_BRACKET,

@@ -3,7 +3,7 @@ package com.reason.ide.highlight;
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.lang.napkin.ResTypes;
+import com.reason.lang.rescript.ResTypes;
 import org.jetbrains.annotations.*;
 
 public class ResSyntaxHighlighterFactory extends SyntaxHighlighterFactory {

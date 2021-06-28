@@ -20,7 +20,7 @@ public class ParserState {
     public final PsiBuilder m_builder;
     private final ParserScope m_rootComposite;
     private ParserScope m_currentScope;
-    // private ParserScope m_latestScope; //in queue or already popped
+    private ParserScope m_latestCompleted;
     public PsiBuilder.Marker m_latestMark;
     public boolean dontMove = false;
 
@@ -90,8 +90,26 @@ public class ParserState {
     }
 
     @Nullable
-    public ParserScope getLatestScope() {
+    public ParserScope peekUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
+        if (!m_composites.isEmpty()) {
+            for (ParserScope scope : m_composites) {
+                if (scope != null && scope.getScopeTokenElementType() == scopeElementType) {
+                    return scope;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public @Nullable ParserScope getLatestScope() {
         return m_composites.isEmpty() ? null : m_composites.peek();
+    }
+
+    public @Nullable ParserScope getLatestCompletedScope() {
+        ParserScope completed = m_latestCompleted;
+        m_latestCompleted = null;
+        return completed == null ? null : completed;
     }
 
     public boolean is(ORCompositeType composite) {
@@ -245,13 +263,17 @@ public class ParserState {
         return scope;
     }
 
-    @NotNull
-    public ParserState popEnd() {
+    public @NotNull ParserState popEnd() {
         ParserScope scope = pop();
         if (scope != null) {
             scope.end();
         }
         return this;
+    }
+
+    public @NotNull ParserState popEndComplete() {
+        m_latestCompleted = getLatestScope();
+        return popEnd();
     }
 
     public @NotNull ParserState popCancel() {
@@ -427,7 +449,18 @@ public class ParserState {
         return false;
     }
 
-    public ParserState updatePreviousComposite(ORCompositeType composite) {
+    public @Nullable ParserScope findScopeContext(@NotNull ORTypes types) {
+        int level = 1;
+        ParserScope parserScope = m_composites.size() < 2 ? null : m_composites.get(level);
+        while (parserScope != null && parserScope.isCompositeType(types.C_DUMMY)) {
+            level++;
+            parserScope = m_composites.get(level);
+        }
+
+        return parserScope;
+    }
+
+    public @NotNull ParserState updatePreviousComposite(@NotNull ORCompositeType composite) {
         if (m_composites.size() > 1) {
             m_composites.get(1).updateCompositeElementType(composite);
         }

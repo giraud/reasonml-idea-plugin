@@ -8,8 +8,8 @@
         <orderRootType implementation="com.reason.OCamlSourcesOrderRootType"/>
         <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="com.reason.OCamlSourcesOrderRootTypeUIFactory"/>
 
-        <projectService serviceImplementation="com.reason.dune.OpamProcess"/>
-        <projectService serviceImplementation="com.reason.dune.OpamEnv"/>
+        <projectService serviceImplementation="com.reason.comp.dune.OpamProcess"/>
+        <projectService serviceImplementation="com.reason.comp.dune.OpamEnv"/>
 
         <!--
          | External system integration (the import from model...)
@@ -36,8 +36,7 @@
 
         <!-- Dune -->
 
-        <projectService serviceImplementation="com.reason.dune.DuneCompiler"/>
-        <projectService serviceImplementation="com.reason.dune.DuneProcess"/>
+        <projectService serviceImplementation="com.reason.comp.dune.DuneCompiler"/>
 
         <!-- Gutter icons -->
 
@@ -51,6 +50,7 @@
          -->
 
         <toolWindow id="Dune:" anchor="bottom" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
+        <toolWindow id="Esy:" anchor="bottom" factoryClass="com.reason.ide.console.EsyToolWindowFactory"/>
 
     </extensions>
 </idea-plugin>

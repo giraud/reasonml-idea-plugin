@@ -1,54 +1,69 @@
 package com.reason.ide.console;
 
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindow;
-import com.reason.Compiler;
-import com.reason.CompilerType;
-import com.reason.ORCompilerManager;
-import com.reason.ide.ORProjectManager;
-import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.execution.ui.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.ui.*;
+import com.intellij.openapi.wm.*;
+import com.intellij.ui.content.*;
+import com.reason.comp.Compiler;
+import com.reason.comp.*;
+import com.reason.ide.*;
+import org.jetbrains.annotations.*;
+
+import javax.swing.*;
 
 public class ORToolWindowManager {
+    private final @NotNull Project myProject;
 
-  private final @NotNull Project m_project;
-
-  private final @NotNull ORToolWindowProvider m_toolWindowProvider;
-
-  private ORToolWindowManager(@NotNull Project project) {
-    m_project = project;
-    m_toolWindowProvider = ORToolWindowProvider.getInstance(project);
-  }
-
-  public void showHideToolWindows() {
-    ToolWindow bsToolWindow = m_toolWindowProvider.getBsToolWindow();
-    if (bsToolWindow != null) {
-      bsToolWindow.setAvailable(shouldShowBsToolWindow(m_project), null);
+    private ORToolWindowManager(@NotNull Project project) {
+        myProject = project;
     }
 
-    ToolWindow duneToolWindow = m_toolWindowProvider.getDuneToolWindow();
-    if (duneToolWindow != null) {
-      duneToolWindow.setAvailable(shouldShowDuneToolWindow(m_project), null);
+    public @Nullable ConsoleView getConsoleView(@NotNull String id) {
+        ToolWindow toolWindow = ToolWindowManager.getInstance(myProject).getToolWindow(id);
+        Content windowContent = toolWindow == null ? null : toolWindow.getContentManager().getContent(0);
+        JComponent component = windowContent == null ? null : windowContent.getComponent();
+        JComponent panel = (component instanceof SimpleToolWindowPanel) ? ((SimpleToolWindowPanel) component).getComponent() : null;
+
+        return panel == null ? null : (ConsoleView) panel.getComponent(0);
     }
 
-    ToolWindow esyToolWindow = m_toolWindowProvider.getEsyToolWindow();
-    if (esyToolWindow != null) {
-      esyToolWindow.setAvailable(shouldShowEsyToolWindow(m_project), null);
+    public void showHideToolWindows() {
+        setToolWindowAvailable(RescriptToolWindowFactory.ID, shouldShowRescriptToolWindow(myProject));
+        setToolWindowAvailable(BsToolWindowFactory.ID, shouldShowBsToolWindow(myProject));
+        setToolWindowAvailable(DuneToolWindowFactory.ID, shouldShowDuneToolWindow(myProject));
+        setToolWindowAvailable(EsyToolWindowFactory.ID, shouldShowEsyToolWindow(myProject));
     }
-  }
 
-  private static boolean shouldShowBsToolWindow(@NotNull Project project) {
-    return ORProjectManager.isBsProject(project);
-  }
+    private void setToolWindowAvailable(@NotNull String id, @Nullable Compiler compiler) {
+        ToolWindow toolWindow = ToolWindowManager.getInstance(myProject).getToolWindow(id);
+        if (toolWindow != null) {
+            toolWindow.setAvailable(compiler != null, () -> {
+                ConsoleView consoleView = getConsoleView(id);
+                if (consoleView != null && compiler != null) {
+                    consoleView.print("Detected compiler: " + compiler.getFullVersion(null) + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                }
+            });
+        }
+    }
 
-  private static boolean shouldShowDuneToolWindow(@NotNull Project project) {
-    ORCompilerManager compilerManager = ServiceManager.getService(project, ORCompilerManager.class);
-    Optional<Compiler> duneCompiler = compilerManager.getCompiler(CompilerType.DUNE);
-    return ORProjectManager.isDuneProject(project) && duneCompiler.isPresent();
-  }
+    private static @Nullable Compiler shouldShowBsToolWindow(@NotNull Project project) {
+        Compiler compiler = project.getService(ORCompilerManager.class).getCompiler(CompilerType.BS);
+        return compiler != null && compiler.isAvailable(project) ? compiler : null;
+    }
 
-  private static boolean shouldShowEsyToolWindow(@NotNull Project project) {
-    return ORProjectManager.isEsyProject(project);
-  }
+    private static @Nullable Compiler shouldShowRescriptToolWindow(@NotNull Project project) {
+        Compiler compiler = project.getService(ORCompilerManager.class).getCompiler(CompilerType.RESCRIPT);
+        return compiler != null && compiler.isAvailable(project) ? compiler : null;
+    }
+
+    private static @Nullable Compiler shouldShowDuneToolWindow(@NotNull Project project) {
+        Compiler compiler = project.getService(ORCompilerManager.class).getCompiler(CompilerType.DUNE);
+        return ORProjectManager.isDuneProject(project) && compiler != null && compiler.isAvailable(project) ? compiler : null;
+    }
+
+    private static @Nullable Compiler shouldShowEsyToolWindow(@NotNull Project project) {
+        Compiler compiler = project.getService(ORCompilerManager.class).getCompiler(CompilerType.ESY);
+        return compiler != null && ORProjectManager.isEsyProject(project) ? compiler : null;
+    }
 }

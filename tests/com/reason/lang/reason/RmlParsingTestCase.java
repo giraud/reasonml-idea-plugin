@@ -6,7 +6,7 @@ import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.stub.RmlStubBasedElementTypes;
 import com.reason.lang.core.type.ORTypes;
 
-public abstract class RmlParsingTestCase extends BaseParsingTestCase {
+abstract class RmlParsingTestCase extends BaseParsingTestCase {
   public ORTypes m_types = RmlTypes.INSTANCE;
 
   public RmlParsingTestCase() {

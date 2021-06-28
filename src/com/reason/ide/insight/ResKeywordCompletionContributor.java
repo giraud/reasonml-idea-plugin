@@ -5,7 +5,7 @@ import static com.reason.ide.insight.CompletionUtils.KEYWORD_PRIORITY;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.reason.lang.napkin.ResTypes;
+import com.reason.lang.rescript.ResTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class ResKeywordCompletionContributor extends KeywordCompletionContributor {
