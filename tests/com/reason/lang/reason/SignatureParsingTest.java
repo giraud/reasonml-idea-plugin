@@ -9,7 +9,6 @@ import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class SignatureParsingTest extends RmlParsingTestCase {
-
     public void test_let() {
         PsiLet let = first(letExpressions(parseCode("let x:int = 1")));
 
@@ -65,7 +64,7 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         assertEquals("?", parameters.get(3).getDefaultValue().getText());
     }
 
-    public void test_unitFunParameter() {
+    public void test_unit_fun_parameter() {
         PsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
@@ -84,7 +83,7 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         assertEquals("{. \"__html\": string}", fields.get(0).getSignature().asText(myLanguage));
     }
 
-    public void test_externalFun() {
+    public void test_external_fun() {
         PsiExternal e = first(externalExpressions(parseCode("external refToJsObj : reactRef => Js.t({..}) = \"%identity\";")));
 
         PsiSignature signature = e.getSignature();
@@ -113,12 +112,8 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         assertEquals("option(show)", sigItem.asText(myLanguage));
     }
 
-    public void test_defaultOptional() {
-        PsiLet let =
-                first(
-                        letExpressions(
-                                parseCode(
-                                        "let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa;")));
+    public void test_default_optional() {
+        PsiLet let = first(letExpressions(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa;")));
         PsiSignature signature = let.getSignature();
         // assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
         // signature.asString(myLanguage));

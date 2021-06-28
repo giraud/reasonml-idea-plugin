@@ -100,7 +100,7 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new PsiAnnotationImpl(m_types, type);
         }
         if (type == m_types.C_MACRO_RAW_BODY) {
-            return new PsiRawBody(m_types, type);
+            return new PsiMacroBody(m_types, type);
         }
         if (type == m_types.C_FUNCTOR_CALL) {
             return new PsiFunctorCall(m_types, type);
@@ -159,6 +159,9 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_LET_ATTR) {
             return new PsiLetAttribute(type);
         }
+        if (type == m_types.C_LOWER_BOUND_CONSTRAINT) {
+            return new PsiTypeConstraint(m_types, type);
+        }
         if (type == m_types.C_MACRO_EXPR) {
             return new PsiMacro(type);
         }
@@ -173,9 +176,6 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         }
         if (type == m_types.C_ML_INTERPOLATOR) {
             return new PsiMultiLineInterpolator(type);
-        }
-        if (type == m_types.C_RAW) {
-            return new PsiRaw(type);
         }
         if (type == m_types.C_DIRECTIVE) {
             return new PsiDirective(type);
@@ -207,6 +207,9 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         }
         if (type == m_types.C_UPPER_IDENTIFIER) {
             return new PsiUpperIdentifier(m_types, type);
+        }
+        if (type == m_types.C_UPPER_BOUND_CONSTRAINT) {
+            return new PsiTypeConstraint(m_types, type);
         }
         if (type == m_types.C_UPPER_SYMBOL) {
             return new PsiUpperSymbolImpl(m_types, type);

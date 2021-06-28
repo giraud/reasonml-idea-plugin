@@ -1,6 +1,6 @@
 package com.reason.ide.files;
 
-import static com.reason.esy.EsyConstants.ESY_CONFIG_FILENAME;
+import static com.reason.comp.esy.EsyConstants.ESY_CONFIG_FILENAME;
 
 import com.intellij.json.JsonFileType;
 import com.intellij.openapi.fileTypes.FileType;

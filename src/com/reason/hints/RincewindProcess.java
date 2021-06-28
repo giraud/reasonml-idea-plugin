@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.*;
-import com.reason.bs.*;
+import com.reason.comp.bs.*;
 import com.reason.ide.hints.*;
 import org.jetbrains.annotations.*;
 
@@ -16,16 +16,16 @@ import java.util.*;
 public class RincewindProcess {
     private static final Log LOG = Log.create("hints.rincewind");
 
-    private final @NotNull Project m_project;
+    private final @NotNull Project myProject;
 
     RincewindProcess(@NotNull Project project) {
-        m_project = project;
+        myProject = project;
     }
 
     public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
         LOG.debug("Looking for types for file", sourceFile);
 
-        Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(m_project, sourceFile);
+        Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(myProject, sourceFile);
         if (!contentRoot.isPresent()) {
             return;
         }
@@ -41,8 +41,7 @@ public class RincewindProcess {
         try {
             rincewind = processBuilder.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(rincewind.getInputStream()));
-            BufferedReader errReader =
-                    new BufferedReader(new InputStreamReader(rincewind.getErrorStream()));
+            BufferedReader errReader = new BufferedReader(new InputStreamReader(rincewind.getErrorStream()));
 
             // System.out.println("---");
             Streams.waitUntilReady(reader, errReader);
@@ -62,7 +61,7 @@ public class RincewindProcess {
                             int locPos = line.indexOf("|", entryPos + 1);
                             String[] loc = line.substring(entryPos + 1, locPos).split(",");
                             types.add(
-                                    m_project,
+                                    myProject,
                                     entry,
                                     decodePosition(loc[0]),
                                     decodePosition(loc[1]),
@@ -114,7 +113,7 @@ public class RincewindProcess {
     }
 
     public void dumper(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile, @NotNull String arg, @NotNull DumpVisitor visitor) {
-        Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(m_project, cmtFile);
+        Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(myProject, cmtFile);
         if (contentRoot.isPresent()) {
             Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 

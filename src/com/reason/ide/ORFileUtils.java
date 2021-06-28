@@ -4,8 +4,6 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import org.jetbrains.annotations.*;
 
-import java.util.*;
-
 public class ORFileUtils {
     private ORFileUtils() {
     }
@@ -19,28 +17,32 @@ public class ORFileUtils {
      * @param start   starting directory (or file) to begin searching for `target`
      * @return found target file
      */
-    public static Optional<VirtualFile> findAncestor(@NotNull Project project, @NotNull String target, @NotNull VirtualFile start) {
+    public static @Nullable VirtualFile findAncestor(@NotNull Project project, @NotNull String target, @NotNull VirtualFile start) {
         // start must be a directory, should only happen on first iteration
         if (!start.isDirectory()) {
+            if (target.equals(start.getName())) {
+                return start;
+            }
+
             start = start.getParent();
             // parent is null, done
             if (start == null) {
-                return Optional.empty();
+                return null;
             }
         }
         // target found, done
         VirtualFile foundTarget = start.findChild(target);
         if (foundTarget != null) {
-            return Optional.of(foundTarget);
+            return foundTarget;
         }
         // just checked project root, done
         if (start.getPath().equals(project.getBasePath())) {
-            return Optional.empty();
+            return null;
         }
         // parent is null, we're done
         VirtualFile parent = start.getParent();
         if (parent == null) {
-            return Optional.empty();
+            return null;
         }
         return findAncestor(project, target, parent);
     }

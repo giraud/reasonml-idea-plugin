@@ -20,6 +20,7 @@ public class ORIcons {
     // TOOL WINDOW
 
     public static final Icon BUCKLESCRIPT_TOOL = getIcon("/icons/bucklescriptTool.svg");
+    public static final Icon RESCRIPT_TOOL = getIcon("/icons/rescriptTool.svg");
     public static final Icon DUNE_TOOL = getIcon("/icons/duneTool.svg");
     public static final Icon ESY_TOOL = getIcon("/icons/esyTool.svg");
 
@@ -81,6 +82,8 @@ public class ORIcons {
 
     public static final Icon OVERLAY_MANDATORY = AllIcons.Ide.ErrorPoint;
     public static final Icon OVERLAY_EXECUTE = AllIcons.Nodes.RunnableMark;
+
+    public static final Icon RESET = getIcon("/icons/reset.svg");
 
     // REPL
 

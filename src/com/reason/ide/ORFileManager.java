@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.StringUtil;
-import com.reason.bs.BsCompiler;
+import com.reason.comp.bs.BsCompiler;
 
 import java.nio.file.Path;
 

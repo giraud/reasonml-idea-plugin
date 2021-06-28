@@ -118,7 +118,7 @@ public class ORReferenceAnalyzer {
                     // -> A.B   or   |> A.B
                     // we are no more in a path, skip path
                     prevItem = prevItem.getPrevSibling();
-                    prevType = prevItem.getNode().getElementType();
+                    prevType = prevItem == null ? null : prevItem.getNode().getElementType();
                     while (prevType != null && (prevType == types.DOT || prevType == types.C_UPPER_SYMBOL || prevType == types.C_VARIANT || prevType == types.C_LOWER_SYMBOL)) {
                         prevItem = prevItem.getPrevSibling();
                         prevType = prevItem == null ? null : prevItem.getNode().getElementType();
@@ -157,7 +157,7 @@ public class ORReferenceAnalyzer {
                 String name = element.getText();
 
                 // Try to resolve the local aliases and deconstruct result path
-               String[] path = withResolution ?
+                String[] path = withResolution ?
                         resolvedInstructions.stream()
                                 .map(codeInstruction -> codeInstruction.mySource instanceof ORLocalAlias ? (ORLocalAlias) codeInstruction.mySource : null)
                                 .filter(item -> item != null && item.isModuleName(name))

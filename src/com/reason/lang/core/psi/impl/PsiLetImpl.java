@@ -9,6 +9,7 @@ import com.intellij.util.*;
 import com.reason.ide.search.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiLiteralExpression;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.reason.*;
@@ -33,7 +34,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class, PsiLiteralExpression.class/*rescript custom operator*/);
     }
 
     @Override

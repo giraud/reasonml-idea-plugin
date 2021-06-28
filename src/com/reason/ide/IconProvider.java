@@ -2,7 +2,7 @@ package com.reason.ide;
 
 import com.intellij.json.psi.*;
 import com.intellij.psi.*;
-import com.reason.esy.*;
+import com.reason.comp.esy.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.lang.core.psi.PsiType;

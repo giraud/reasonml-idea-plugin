@@ -11,8 +11,9 @@ import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.*;
 import com.intellij.psi.impl.source.codeStyle.*;
 import com.reason.*;
-import com.reason.bs.*;
-import com.reason.dune.*;
+import com.reason.comp.bs.*;
+import com.reason.comp.dune.*;
+import com.reason.comp.rescript.*;
 import com.reason.ide.files.*;
 import com.reason.ide.settings.*;
 import com.reason.lang.core.*;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.*;
 
 /*
  java invocation:
-      CodeStyleManager codeStyleManager = ServiceManager.getService(project, CodeStyleManager.class);
+      CodeStyleManager codeStyleManager = project.getService(CodeStyleManager.class);
       PsiElement reformat = codeStyleManager.reformat(file);
  */
 
@@ -82,7 +83,7 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
             return new RmlFormatProcessor(file);
         }
         if (FileHelper.isRescript(fileType)) {
-            return new RsProcessor();
+            return new ResFormatProcessor(file);
         }
         if (FileHelper.isOCaml(fileType)) {
             return new OclFormatProcessor(file);
@@ -105,23 +106,31 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
         public @Nullable String apply(@NotNull String textToFormat) {
             if (ORSettings.getInstance(m_project).isBsEnabled() && m_file.exists()) {
                 LOG.trace("Apply ReasonML formatter, is interface", m_isInterface);
-                RefmtProcess process = RefmtProcess.getInstance(m_project);
+                BsFormatProcess process = BsFormatProcess.getInstance(m_project);
                 return process.convert(m_file, m_isInterface, "re", "re", textToFormat);
             }
             return null;
         }
     }
 
-    static class RsProcessor implements FormatterProcessor {
-        RsProcessor() {
+    static class ResFormatProcessor implements FormatterProcessor {
+        private final Project m_project;
+        private final VirtualFile m_file;
+        private final boolean m_isInterface;
+
+        ResFormatProcessor(@NotNull PsiFile file) {
+            m_project = file.getProject();
+            m_file = file.getVirtualFile();
+            m_isInterface = FileHelper.isInterface(file.getFileType());
         }
 
         @Override
         public @Nullable String apply(@NotNull String textToFormat) {
-            // Too many constraints on the Rescript tooling for now.
-            // see https://github.com/rescript-lang/rescript-compiler/issues/4838
-            // and https://github.com/rescript-lang/rescript-compiler/issues/4846
-            // Dev on Rescript is paused.
+            if (m_file.exists()) {
+                LOG.trace("Apply Rescript formatter, is interface", m_isInterface);
+                ResFormatProcess process = m_project.getService(ResFormatProcess.class);
+                return process.format(m_file, m_isInterface, textToFormat);
+            }
             return null;
         }
     }
@@ -136,11 +145,10 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
         }
 
         @Override
-        public @Nullable
-        String apply(@NotNull String textToFormat) {
+        public @Nullable String apply(@NotNull String textToFormat) {
             if (m_file.exists()) {
                 LOG.trace("Apply OCaml formatter");
-                OcamlFormatProcess process = OcamlFormatProcess.getInstance(m_project);
+                OcamlFormatProcess process = m_project.getService(OcamlFormatProcess.class);
                 return process == null ? null : process.format(m_file, textToFormat);
             }
             return null;

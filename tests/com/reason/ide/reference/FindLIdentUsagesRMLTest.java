@@ -34,6 +34,4 @@ public class FindLIdentUsagesRMLTest extends ORBasePlatformTestCase {
         assertEquals("t", usageInfo.getElement().getParent().getText());
         assertEquals("A.B.toString", ((PsiQualifiedPathElement) usageInfo.getElement().getParent().getParent().getParent()).getQualifiedName());
     }
-
-
 }

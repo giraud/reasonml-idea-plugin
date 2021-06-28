@@ -1,7 +1,6 @@
 package com.reason.ide;
 
 import com.intellij.psi.search.*;
-import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.lang.core.psi.*;
@@ -16,51 +15,6 @@ import static com.reason.lang.core.psi.ExpressionScope.*;
 
 @SuppressWarnings("ConstantConditions")
 public class PsiFinderTest extends ORBasePlatformTestCase {
-
-    public void test_findModuleBack_simple() {
-        FileBase a = configureCode("A.re", "module B = {}; include B;");
-        PsiInclude e = PsiTreeUtil.getChildOfType(a, PsiInclude.class);
-
-        PsiQualifiedPathElement module = PsiFinder.getInstance(getProject()).findModuleBack(e, e.getIncludePath());
-
-        assertEquals("A.B", module.getQualifiedName());
-    }
-
-    public void test_findModuleBack_multi() {
-        FileBase a = configureCode("A.re", "module B = { module C = { module D = {}; }; }; include B.C.D;");
-        PsiInclude e = PsiTreeUtil.getChildOfType(a, PsiInclude.class);
-
-        PsiQualifiedPathElement module = PsiFinder.getInstance(getProject()).findModuleBack(e, e.getIncludePath());
-
-        assertEquals("A.B.C.D", module.getQualifiedName());
-    }
-
-    public void test_findModuleBack_alias() {
-        FileBase a = configureCode("A.re", "module B = {}; module C = B; include C;");
-        PsiInclude e = PsiTreeUtil.getChildOfType(a, PsiInclude.class);
-
-        PsiQualifiedPathElement module = PsiFinder.getInstance(getProject()).findModuleBack(e, e.getIncludePath());
-
-        assertEquals("A.B", module.getQualifiedName());
-    }
-
-    public void test_findModuleBack_alias_multi() {
-        FileBase a = configureCode("A.re", "module B = { module C = {}; }; module D = B.C; include D;");
-        PsiInclude e = PsiTreeUtil.getChildOfType(a, PsiInclude.class);
-
-        PsiQualifiedPathElement module = PsiFinder.getInstance(getProject()).findModuleBack(e, e.getIncludePath());
-
-        assertEquals("A.B.C", module.getQualifiedName());
-    }
-
-    public void test_findModuleBack_alias_include_multi() {
-        FileBase a = configureCode("A.re", "module B = { module C = { type t; }; }; module D = B; include D.C;");
-        PsiInclude e = PsiTreeUtil.getChildOfType(a, PsiInclude.class);
-
-        PsiQualifiedPathElement module = PsiFinder.getInstance(getProject()).findModuleBack(e, e.getIncludePath());
-
-        assertEquals("A.B.C", module.getQualifiedName());
-    }
 
     public void testModuleLet() {
         myFixture.configureByText("ReasonReact.rei", "module Router: { type api;  };");
@@ -156,14 +110,15 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         myFixture.configureByText("Belt.ml", "module Option = Belt_Option;");
 
         PsiFinder psiFinder = PsiFinder.getInstance(getProject());
-        List<PsiModule> moduleAliases = new ArrayList<>(psiFinder.findModuleAlias("Belt.Option", allScope(getProject())));
+        List<PsiModule> moduleAliases =
+                new ArrayList<>(psiFinder.findModuleAlias("Belt.Option", allScope(getProject())));
 
         assertSize(2, moduleAliases);
         assertInstanceOf(moduleAliases.get(0), PsiFakeModule.class);
         assertInstanceOf(moduleAliases.get(1), PsiFakeModule.class);
     }
 
-    public void test_Ns_letDeconstruction() {
+    public void test_Res_letDeconstruction() {
         configureCode("A.res", "let x = something;");
         configureCode("B.res", "let (x, y) = other;");
 

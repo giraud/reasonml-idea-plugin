@@ -4,8 +4,8 @@ import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.napkin.ResLexer;
-import com.reason.lang.napkin.ResTypes;
+import com.reason.lang.rescript.ResLexer;
+import com.reason.lang.rescript.ResTypes;
 import org.jetbrains.annotations.Nullable;
 
 public class ResFindUsagesProvider extends ORFindUsagesProvider {
