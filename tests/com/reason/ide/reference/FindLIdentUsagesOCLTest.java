@@ -2,7 +2,6 @@ package com.reason.ide.reference;
 
 import com.intellij.usageView.*;
 import com.reason.ide.*;
-import com.reason.lang.core.psi.*;
 
 import java.util.*;
 

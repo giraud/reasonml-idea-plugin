@@ -19,7 +19,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("value", function.getBody().getText());
     }
 
-    public void test_braceFunction() {
+    public void test_brace_function() {
         PsiLet e = first(letExpressions(parseCode("let x = (x, y) => { x + y; }")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
@@ -35,7 +35,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertSize(2, e.getFunction().getParameters());
     }
 
-    public void test_parenlessFunction() {
+    public void test_parenless_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = x => x + 10;")));
 
         assertTrue(e.isFunction());
@@ -46,7 +46,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertNotNull(function.getBody());
     }
 
-    public void test_dotFunction() {
+    public void test_dot_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = (. x) => x;")));
 
         assertTrue(e.isFunction());
@@ -57,45 +57,34 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("x", function.getBody().getText());
     }
 
-    public void test_innerFunction() {
-        PsiLet e =
-                first(
-                        letExpressions(
-                                parseCode(
-                                        "let _ = error => Belt.Array.mapU(errors, (. error) => error##message);")));
+    public void test_inner_function() {
+        PsiLet e = first(letExpressions(parseCode("let _ = error => Belt.Array.mapU(errors, (. error) => error##message);")));
 
         PsiFunction functionOuter = (PsiFunction) e.getBinding().getFirstChild();
-        assertEquals(
-                "Belt.Array.mapU(errors, (. error) => error##message)", functionOuter.getBody().getText());
+        assertEquals("Belt.Array.mapU(errors, (. error) => error##message)", functionOuter.getBody().getText());
 
         PsiFunction functionInner = PsiTreeUtil.findChildOfType(functionOuter, PsiFunction.class);
         assertEquals("error##message", functionInner.getBody().getText());
     }
 
-    public void test_innerFunctionBraces() {
-        PsiLet e =
-                first(
-                        letExpressions(
-                                parseCode(
-                                        "let _ = error => { Belt.Array.mapU(errors, (. error) => error##message); };")));
+    public void test_inner_function_braces() {
+        PsiLet e = first(letExpressions(parseCode("let _ = error => { Belt.Array.mapU(errors, (. error) => error##message); };")));
 
         PsiFunction functionOuter = (PsiFunction) e.getBinding().getFirstChild();
-        assertEquals(
-                "{ Belt.Array.mapU(errors, (. error) => error##message); }",
-                functionOuter.getBody().getText());
+        assertEquals("{ Belt.Array.mapU(errors, (. error) => error##message); }", functionOuter.getBody().getText());
 
         PsiFunction functionInner = PsiTreeUtil.findChildOfType(functionOuter, PsiFunction.class);
         assertEquals("error##message", functionInner.getBody().getText());
     }
 
-    public void test_innerFunctionNoParens() {
+    public void test_inner_function_no_parens() {
         PsiLet e = first(letExpressions(parseCode("let _ = funcall(result => 2);")));
 
         PsiFunction functionInner = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
         assertEquals("2", functionInner.getBody().getText());
     }
 
-    public void test_parameterAnonFunction() {
+    public void test_parameter_anon_function() {
         FileBase e = parseCode("describe('a', () => test('b', () => true));");
 
         List<PsiFunction> funcs = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiFunction.class));
@@ -104,12 +93,8 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("() => true", funcs.get(1).getText());
     }
 
-    public void test_parametersNamedSymbols() {
-        PsiLet e =
-                first(
-                        letExpressions(
-                                parseCode(
-                                        "let make = (~id:string, ~values: option(Js.t('a)), children) => null;")));
+    public void test_parameters_named_symbols() {
+        PsiLet e = first(letExpressions(parseCode("let make = (~id:string, ~values: option(Js.t('a)), children) => null;")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
@@ -120,18 +105,15 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("children", parameters.get(2).getName());
     }
 
-    public void test_parametersNamedSymbols2() {
-        PsiLet e =
-                first(
-                        letExpressions(
-                                parseCode(
-                                        "let make = (~text, ~id=?, ~values=?, ~className=\"\", ~tag=\"span\", ~transform=\"unset\", ~marginLeft=\"0\", ~onClick=?, ~onKeyPress=?, _children, ) => {}")));
+    public void test_parameters_named_symbols2() {
+        PsiLet e = first(letExpressions(parseCode(
+                "let make = (~text, ~id=?, ~values=?, ~className=\"\", ~tag=\"span\", ~transform=\"unset\", ~marginLeft=\"0\", ~onClick=?, ~onKeyPress=?, _children, ) => {}")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
         assertSize(10, function.getParameters());
     }
 
-    public void test_parenFunction() {
+    public void test_paren_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = (x,y) => x + y;")));
 
         assertTrue(e.isFunction());
@@ -143,7 +125,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("x + y", function.getBody().getText());
     }
 
-    public void test_unitFunction() {
+    public void test_unit_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = () => 1;")));
 
         assertTrue(e.isFunction());
@@ -153,7 +135,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("1", function.getBody().getText());
     }
 
-    public void test_parametersLIdent() {
+    public void test_parameters_LIdent() {
         PsiLet e = first(letExpressions(parseCode("let make = (id, values, children) => null;")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
@@ -165,7 +147,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("children", parameters.get(2).getName());
     }
 
-    public void test_recordFunction() {
+    public void test_record_function() {
         PsiLet e = first(letExpressions(parseCode("let make = (children) => { ...component, render: self => <div/>, }")));
         PsiFunctionBody body = e.getFunction().getBody();
         PsiFunction innerFunction = PsiTreeUtil.findChildOfType(body, PsiFunction.class);

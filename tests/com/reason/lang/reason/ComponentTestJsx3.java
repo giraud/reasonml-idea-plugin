@@ -6,6 +6,7 @@ import com.reason.lang.core.psi.*;
 import java.util.*;
 import java.util.stream.*;
 
+@SuppressWarnings("ConstantConditions")
 public class ComponentTestJsx3 extends RmlParsingTestCase {
     public void test_file_component() {
         FileBase e = parseCode("[@react.component]\nlet make = () => { <div/> };");

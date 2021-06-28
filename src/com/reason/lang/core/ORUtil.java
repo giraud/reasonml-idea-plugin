@@ -10,7 +10,7 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
-import com.reason.lang.napkin.*;
+import com.reason.lang.rescript.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;

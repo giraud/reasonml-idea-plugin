@@ -3,7 +3,7 @@ package com.reason.ide.match;
 import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
-import com.reason.lang.napkin.*;
+import com.reason.lang.rescript.*;
 import org.jetbrains.annotations.*;
 
 public class ResPairedBraceMatcher implements PairedBraceMatcher {

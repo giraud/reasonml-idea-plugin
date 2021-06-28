@@ -1,42 +1,51 @@
 package com.reason.ide.console;
 
-import com.reason.CompilerType;
-import org.jetbrains.annotations.NotNull;
+import com.reason.comp.*;
+import org.jetbrains.annotations.*;
 
 public interface CliType {
+    @NotNull
+    CompilerType getCompilerType();
 
-  @NotNull
-  CompilerType getCompilerType();
+    enum Bs implements CliType {
+        MAKE,
+        CLEAN_MAKE;
 
-  enum Bs implements CliType {
-    MAKE,
-    CLEAN_MAKE;
-
-    @Override
-    public @NotNull CompilerType getCompilerType() {
-      return CompilerType.BS;
+        @Override
+        public @NotNull CompilerType getCompilerType() {
+            return CompilerType.BS;
+        }
     }
-  }
 
-  enum Dune implements CliType {
-    BUILD,
-    CLEAN,
-    INSTALL;
+    enum Rescript implements CliType {
+        MAKE,
+        CLEAN;
 
-    @Override
-    public @NotNull CompilerType getCompilerType() {
-      return CompilerType.DUNE;
+        @Override
+        public @NotNull CompilerType getCompilerType() {
+            return CompilerType.RESCRIPT;
+        }
     }
-  }
 
-  enum Esy implements CliType {
-    INSTALL,
-    BUILD,
-    SHELL;
+    enum Dune implements CliType {
+        BUILD,
+        CLEAN,
+        INSTALL;
 
-    @Override
-    public @NotNull CompilerType getCompilerType() {
-      return CompilerType.ESY;
+        @Override
+        public @NotNull CompilerType getCompilerType() {
+            return CompilerType.DUNE;
+        }
     }
-  }
+
+    enum Esy implements CliType {
+        INSTALL,
+        BUILD,
+        SHELL;
+
+        @Override
+        public @NotNull CompilerType getCompilerType() {
+            return CompilerType.ESY;
+        }
+    }
 }

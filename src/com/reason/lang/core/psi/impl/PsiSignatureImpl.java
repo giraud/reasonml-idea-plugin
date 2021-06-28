@@ -7,6 +7,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.reason.*;
+import com.reason.lang.rescript.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -35,7 +36,7 @@ public class PsiSignatureImpl extends CompositeTypePsiElement<ORTypes> implement
         StringBuilder sb = new StringBuilder();
 
         boolean isFunction = 1 < items.size();
-        boolean reason = lang == RmlLanguage.INSTANCE;
+        boolean reason = lang == RmlLanguage.INSTANCE || lang == ResLanguage.INSTANCE;
         String inputSeparator = reason ? ", " : OCAML_SEPARATOR;
 
         List<String> conversions = items.stream().map(item -> item.asText(lang)).collect(Collectors.toList());
@@ -53,8 +54,14 @@ public class PsiSignatureImpl extends CompositeTypePsiElement<ORTypes> implement
         }
         sb.append(result);
 
-        return sb.toString()
-                .replaceAll("\\s+", " ")
+        String text = sb.toString().replaceAll("\\s+", " ");
+        if (lang == ResLanguage.INSTANCE) {
+            text = text
+                    .replaceAll("< ", "<")
+                    .replaceAll(", >", ">");
+        }
+
+        return text
                 .replaceAll("\\( ", "\\(")
                 .replaceAll(", \\)", "\\)");
     }
@@ -66,6 +73,6 @@ public class PsiSignatureImpl extends CompositeTypePsiElement<ORTypes> implement
 
     @Override
     public @NotNull String toString() {
-        return "Signature";
+        return "PsiSignature";
     }
 }

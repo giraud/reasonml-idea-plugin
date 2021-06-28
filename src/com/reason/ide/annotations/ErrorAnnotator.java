@@ -12,7 +12,8 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.problems.*;
 import com.intellij.psi.*;
 import com.reason.*;
-import com.reason.bs.*;
+import com.reason.comp.*;
+import com.reason.comp.bs.*;
 import com.reason.hints.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
@@ -23,10 +24,16 @@ import java.util.*;
 import java.util.stream.*;
 
 import static com.reason.ide.annotations.ErrorAnnotator.*;
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 
-public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationResult> implements DumbAware {
-    private static final Log LOG = Log.create("annotator");
+abstract class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationResult> implements DumbAware {
+    protected static final Log LOG = Log.create("annotator");
+
+    abstract @Nullable VirtualFile getContentRoot(Project project, VirtualFile sourceFile);
+
+    abstract Ninja readNinja(@NotNull Project project, @NotNull VirtualFile contentRoot);
+
+    abstract List<OutputInfo> compile(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull ArrayList<String> arguments, @NotNull VirtualFile workDir);
 
     @Override
     public @Nullable InitialInfo collectInformation(@NotNull PsiFile psiFile, @NotNull Editor editor, boolean hasErrors) {
@@ -37,11 +44,10 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
 
         Project project = psiFile.getProject();
         VirtualFile sourceFile = psiFile.getVirtualFile();
-
-        VirtualFile contentRoot = BsPlatform.findContentRoot(project, sourceFile).orElse(null);
+        VirtualFile contentRoot = getContentRoot(project, sourceFile);
 
         // Read bsConfig to get the compilation directives
-        VirtualFile bsConfigFile = contentRoot == null ? null : contentRoot.findFileByRelativePath(BsConfigJsonFileType.FILENAME);
+        VirtualFile bsConfigFile = contentRoot == null ? null : contentRoot.findFileByRelativePath(ORConstants.BS_CONFIG_FILENAME);
         BsConfig config = bsConfigFile == null ? null : BsConfigReader.read(bsConfigFile);
         if (config == null) {
             LOG.info("No bsconfig.json found for content root: " + contentRoot);
@@ -54,7 +60,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
             return null;
         }
 
-        Ninja ninja = ServiceManager.getService(project, BsCompiler.class).readNinjaBuild(contentRoot);
+        Ninja ninja = readNinja(project, contentRoot);
 
         if (ninja.isRescriptFormat()) {
             List<String> args = isDevSource(sourceFile, contentRoot, config) ? ninja.getArgsDev() : ninja.getArgs();
@@ -121,16 +127,6 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
         }
     }
 
-    private boolean isDevSource(@NotNull VirtualFile sourceFile, @NotNull VirtualFile contentRoot, @NotNull BsConfig config) {
-        for (String devSource : config.getDevSources()) {
-            VirtualFile devFile = contentRoot.findFileByRelativePath(devSource);
-            if (devFile != null && FileUtil.isAncestor(devFile.getPath(), sourceFile.getPath(), true)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public @Nullable AnnotationResult doAnnotate(@NotNull InitialInfo initialInfo) {
         long compilationStartTime = System.currentTimeMillis();
@@ -142,10 +138,9 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
         if (initialInfo.oldFormat) {
             assert initialInfo.tempFile != null;
 
-            BscProcess bscProcess = BscProcess.getInstance(project);
             BscProcessListener bscListener = new BscProcessListener();
 
-            Integer exitCode = bscProcess.run(sourceFile, initialInfo.libRoot, initialInfo.arguments, bscListener);
+            Integer exitCode = new BscProcess(project).run(sourceFile, initialInfo.libRoot, initialInfo.arguments, bscListener);
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Compilation done in " + (System.currentTimeMillis() - compilationStartTime) + "ms");
             }
@@ -182,7 +177,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
             LOG.trace("Wrote contents to temporary file", sourceTempFile);
 
             VirtualFile contentRoot = initialInfo.libRoot.getParent().getParent();
-            VirtualFile bsConfigFile = contentRoot.findFileByRelativePath(BsConfigJsonFileType.FILENAME);
+            VirtualFile bsConfigFile = contentRoot.findFileByRelativePath(ORConstants.BS_CONFIG_FILENAME);
             BsConfig config = bsConfigFile == null ? null : BsConfigReader.read(bsConfigFile);
             if (config == null) {
                 LOG.info("No bsconfig.json found for content root: " + contentRoot);
@@ -202,8 +197,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
             arguments.add(cmtFile.getPath());
             arguments.add(sourceTempFile.getPath());
 
-            BscProcess bscProcess = BscProcess.getInstance(project);
-            List<OutputInfo> info = bscProcess.exec(sourceFile, initialInfo.libRoot, arguments);
+            List<OutputInfo> info = compile(project, sourceFile, arguments, initialInfo.libRoot);
             LOG.debug("Found info", info);
 
             if (LOG.isTraceEnabled()) {
@@ -258,6 +252,16 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
             problemSolver.reportProblems(sourceFile, problems);
         }
 
+    }
+
+    private boolean isDevSource(@NotNull VirtualFile sourceFile, @NotNull VirtualFile contentRoot, @NotNull BsConfig config) {
+        for (String devSource : config.getDevSources()) {
+            VirtualFile devFile = contentRoot.findFileByRelativePath(devSource);
+            if (devFile != null && FileUtil.isAncestor(devFile.getPath(), sourceFile.getPath(), true)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void updateCodeLens(@NotNull Project project, @NotNull Language lang, @NotNull VirtualFile sourceFile, @NotNull File cmtFile) {

@@ -2,7 +2,7 @@ package com.reason.ide.handlers;
 
 import com.intellij.codeInsight.editorActions.SimpleTokenSetQuoteHandler;
 import com.intellij.psi.TokenType;
-import com.reason.lang.napkin.ResTypes;
+import com.reason.lang.rescript.ResTypes;
 
 public class ResQuoteHandler extends SimpleTokenSetQuoteHandler {
     public ResQuoteHandler() {

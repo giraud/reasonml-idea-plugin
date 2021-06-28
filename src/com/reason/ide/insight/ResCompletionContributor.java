@@ -8,8 +8,8 @@ import com.reason.ide.insight.provider.JsxNameCompletionProvider;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.napkin.ResQNameFinder;
-import com.reason.lang.napkin.ResTypes;
+import com.reason.lang.rescript.ResQNameFinder;
+import com.reason.lang.rescript.ResTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class ResCompletionContributor extends ORCompletionContributor {
