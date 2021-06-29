@@ -1,13 +1,12 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.CompositeTypePsiElement;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.intellij.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiAnnotation;
-import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
 public class PsiAnnotationImpl extends CompositeTypePsiElement<ORTypes> implements PsiAnnotation {
     protected PsiAnnotationImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
@@ -23,6 +22,15 @@ public class PsiAnnotationImpl extends CompositeTypePsiElement<ORTypes> implemen
     public @Nullable String getName() {
         PsiElement identifier = getNameIdentifier();
         return identifier == null ? null : identifier.getText();
+    }
+
+    @Override
+    public @Nullable PsiElement getValue() {
+        PsiScopedExpr expr = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
+        if (expr != null) {
+            return ORUtil.nextSibling(expr.getFirstChild());
+        }
+        return null;
     }
 
     @Override

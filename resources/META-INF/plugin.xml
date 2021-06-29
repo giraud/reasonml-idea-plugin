@@ -406,8 +406,12 @@
         <toolWindow id="BuckleScript:" anchor="bottom" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
         <toolWindow id="Rescript:" anchor="bottom" factoryClass="com.reason.ide.console.RescriptToolWindowFactory"/>
 
+        <!-- <codeInsight.typeInfo language="Reason" implementationClass="com.reason.ide.hints.RmlTypeProvider"/> ctrl-shift-p -->
         <codeInsight.parameterInfo language="Reason"
-                                   implementationClass="com.reason.ide.hints.ORParameterInfoHandlerWithTabActionSupport"/>
+                                   implementationClass="com.reason.ide.hints.RmlParameterInfoHandler"/>
+        <codeInsight.parameterInfo language="Rescript"
+                                   implementationClass="com.reason.ide.hints.ResParameterInfoHandler"/>
+
         <consoleFilterProvider implementation="com.reason.ide.console.BsConsoleFilterProvider"/>
         <editorFactoryListener implementation="com.reason.ide.OREditorFactoryListener"/>
 

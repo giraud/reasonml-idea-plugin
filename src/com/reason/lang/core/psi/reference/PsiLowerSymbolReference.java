@@ -19,17 +19,12 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowerSymbol> {
+public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymbol> {
     private static final Log LOG = Log.create("ref.lower");
     private static final Log LOG_PERF = Log.create("ref.perf.lower");
 
-    private final @Nullable String myReferenceName;
-    private final @NotNull ORTypes myTypes;
-
     public PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull ORTypes types) {
-        super(element, TextRange.create(0, element.getTextLength()));
-        myReferenceName = element.getText();
-        myTypes = types;
+        super(element, types);
     }
 
     @Override
@@ -155,12 +150,6 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
         }
 
         return resolveResults;
-    }
-
-    @Override
-    public @Nullable PsiElement resolve() {
-        ResolveResult[] resolveResults = multiResolve(false);
-        return 0 < resolveResults.length ? resolveResults[0].getElement() : null;
     }
 
     @Override

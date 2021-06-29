@@ -278,7 +278,7 @@ public class Log {
 
     public void trace(String msg, Language t) {
         if (m_log.isTraceEnabled()) {
-            m_log.debug(msg + SEP + t);
+            m_log.trace(msg + SEP + t);
         }
     }
 
@@ -295,8 +295,20 @@ public class Log {
     }
 
     public void trace(@NotNull String comment, @Nullable PsiFile t) {
-        if (m_log.isDebugEnabled()) {
-            debug(comment, t == null ? null : t.getVirtualFile());
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(comment + SEP + (t == null ? "<NULL>" : t.getVirtualFile()));
+        }
+    }
+
+    public void trace(@NotNull String comment, @NotNull PsiQualifiedNamedElement element) {
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(comment + SEP + element.getQualifiedName() + " (" + element.getContainingFile().getVirtualFile().getPath() + ")");
+        }
+    }
+
+    public void trace(@NotNull String msg, @NotNull PsiElement element) {
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(msg + SEP + element + (element instanceof PsiNamedElement ? ", name=[" + ((PsiNamedElement) element).getName() + "]" : ""));
         }
     }
 
