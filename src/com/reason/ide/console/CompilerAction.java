@@ -10,13 +10,12 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-abstract class CompilerAction extends DumbAwareAction {
-
-    CompilerAction(@NotNull String text, @NotNull String description, @NotNull Icon icon) {
+public abstract class CompilerAction extends DumbAwareAction {
+    protected CompilerAction(@NotNull String text, @NotNull String description, @NotNull Icon icon) {
         super(text, description, icon);
     }
 
-    void doAction(@NotNull Project project, @NotNull CliType cliType) {
+    protected void doAction(@NotNull Project project, @NotNull CliType cliType) {
         Editor editor = getActiveEditor(project);
         if (editor == null) {
             compileDirectory(project, cliType);

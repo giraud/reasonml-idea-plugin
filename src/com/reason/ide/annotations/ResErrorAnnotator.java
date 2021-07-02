@@ -17,7 +17,7 @@ import static com.reason.Platform.*;
 import static com.reason.comp.ORConstants.*;
 import static java.util.Collections.*;
 
-public class ResErrorAnnotator extends ErrorAnnotator {
+public class ResErrorAnnotator extends ORErrorAnnotator {
     @Override
     @Nullable VirtualFile getContentRoot(Project project, VirtualFile sourceFile) {
         VirtualFile bsConfig = ORFileUtils.findAncestor(project, BS_CONFIG_FILENAME, sourceFile);
@@ -33,8 +33,11 @@ public class ResErrorAnnotator extends ErrorAnnotator {
     @NotNull List<OutputInfo> compile(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull ArrayList<String> arguments, @NotNull VirtualFile workDir) {
         VirtualFile bsc = ResPlatform.findBscExecutable(project, sourceFile);
         if (bsc == null) {
-            LOG.warn("Unable to find bsc.exe for " + sourceFile);
-            return emptyList();
+            bsc = BsPlatform.findBscExecutable(project, sourceFile); // a res file inside a reasonml project ?
+            if (bsc == null) {
+                LOG.warn("Unable to find bsc.exe for " + sourceFile);
+                return emptyList();
+            }
         }
 
         List<String> command = new ArrayList<>();

@@ -1,29 +1,28 @@
 package com.reason.ide.console;
 
-import com.intellij.execution.ui.ConsoleView;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.DumbAwareAction;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.execution.ui.*;
+import com.intellij.icons.*;
+import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.project.*;
+import org.jetbrains.annotations.*;
 
-class ClearLogAction extends DumbAwareAction {
-  private final ConsoleView m_console;
+public class ClearLogAction extends DumbAwareAction {
+    private final ConsoleView myConsoleView;
 
-  ClearLogAction(ConsoleView console) {
-    super("Clear All", "Clear the contents of the logs", AllIcons.Actions.GC);
-    m_console = console;
-  }
+    public ClearLogAction(ConsoleView consoleView) {
+        super("Clear All", "Clear the contents of the logs", AllIcons.Actions.GC);
+        myConsoleView = consoleView;
+    }
 
-  @Override
-  public void update(@NotNull AnActionEvent e) {
-    Editor editor = e.getData(CommonDataKeys.EDITOR);
-    e.getPresentation().setEnabled(editor != null && editor.getDocument().getTextLength() > 0);
-  }
+    @Override
+    public void update(@NotNull AnActionEvent e) {
+        Editor editor = e.getData(CommonDataKeys.EDITOR);
+        e.getPresentation().setEnabled(editor != null && editor.getDocument().getTextLength() > 0);
+    }
 
-  @Override
-  public void actionPerformed(@NotNull AnActionEvent e) {
-    m_console.clear();
-  }
+    @Override
+    public void actionPerformed(@NotNull AnActionEvent e) {
+        myConsoleView.clear();
+    }
 }

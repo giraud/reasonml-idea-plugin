@@ -9,6 +9,7 @@ import com.reason.*;
 import com.reason.comp.Compiler;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
+import com.reason.ide.console.esy.*;
 import org.jetbrains.annotations.*;
 
 import java.util.concurrent.atomic.*;

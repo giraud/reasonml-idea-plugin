@@ -8,7 +8,6 @@ import com.reason.comp.bs.*;
 import com.reason.comp.dune.*;
 import com.reason.comp.esy.*;
 import com.reason.comp.rescript.*;
-import com.reason.ide.console.*;
 import com.reason.ide.files.*;
 import org.jetbrains.annotations.*;
 
