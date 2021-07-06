@@ -7,9 +7,9 @@ import com.intellij.execution.process.*;
 import com.intellij.notification.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
+import com.reason.comp.*;
 import com.reason.*;
-import com.reason.ide.console.*;
+import com.reason.comp.Compiler;
 import org.jetbrains.annotations.*;
 
 import java.io.*;

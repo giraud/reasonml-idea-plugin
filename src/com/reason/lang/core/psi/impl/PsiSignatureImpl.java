@@ -33,28 +33,35 @@ public class PsiSignatureImpl extends CompositeTypePsiElement<ORTypes> implement
             return "";
         }
 
-        StringBuilder sb = new StringBuilder();
 
         boolean isFunction = 1 < items.size();
         boolean reason = lang == RmlLanguage.INSTANCE || lang == ResLanguage.INSTANCE;
-        String inputSeparator = reason ? ", " : OCAML_SEPARATOR;
 
-        List<String> conversions = items.stream().map(item -> item.asText(lang)).collect(Collectors.toList());
-        String result = conversions.remove(items.size() - 1);
+        String signatureText;
+        if (lang.equals(getLanguage())) {
+            signatureText = getText();
+        } else {
+            StringBuilder sb = new StringBuilder();
+            String inputSeparator = reason ? ", " : OCAML_SEPARATOR;
 
-        if (isFunction) {
-            if (reason && 1 < conversions.size()) {
-                sb.append("(");
+            List<String> conversions = items.stream().map(item -> item.asText(lang)).collect(Collectors.toList());
+            String result = conversions.remove(items.size() - 1);
+
+            if (isFunction) {
+                if (reason && 1 < conversions.size()) {
+                    sb.append("(");
+                }
+                sb.append(Joiner.join(inputSeparator, conversions));
+                if (reason && 1 < conversions.size()) {
+                    sb.append(")");
+                }
+                sb.append(reason ? REASON_SEPARATOR : OCAML_SEPARATOR);
             }
-            sb.append(Joiner.join(inputSeparator, conversions));
-            if (reason && 1 < conversions.size()) {
-                sb.append(")");
-            }
-            sb.append(reason ? REASON_SEPARATOR : OCAML_SEPARATOR);
+            sb.append(result);
+            signatureText = sb.toString();
         }
-        sb.append(result);
 
-        String text = sb.toString().replaceAll("\\s+", " ");
+        String text = signatureText.replaceAll("\\s+", " ");
         if (lang == ResLanguage.INSTANCE) {
             text = text
                     .replaceAll("< ", "<")
@@ -62,8 +69,8 @@ public class PsiSignatureImpl extends CompositeTypePsiElement<ORTypes> implement
         }
 
         return text
-                .replaceAll("\\( ", "\\(")
-                .replaceAll(", \\)", "\\)");
+                .replaceAll("\\( ", "(")
+                .replaceAll(", \\)", ")");
     }
 
     @Override

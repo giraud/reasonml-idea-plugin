@@ -1,6 +1,5 @@
-package com.reason.ide.console;
+package com.reason.ide.console.dune;
 
-import com.intellij.execution.impl.*;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.editor.actions.*;
 import com.intellij.openapi.project.*;
@@ -8,14 +7,14 @@ import com.intellij.openapi.ui.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.wm.*;
 import com.intellij.ui.content.*;
+import com.reason.ide.console.*;
 import icons.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class RescriptToolWindowFactory extends ORToolWindowFactory {
-    private static final String TITLE = "Rescript";
-    public static final String ID = TITLE + ":";
+public class DuneToolWindowFactory extends ORToolWindowFactory {
+    public static final String ID = "Dune:";
 
     @Override
     public @NotNull String getId() {
@@ -24,7 +23,7 @@ public class RescriptToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public @NotNull Icon getIcon() {
-        return ORIcons.RESCRIPT_TOOL;
+        return ORIcons.DUNE_TOOL;
     }
 
     @Nls
@@ -35,14 +34,14 @@ public class RescriptToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public @NotNull String getStripeTitle() {
-        return TITLE;
+        return "Dune";
     }
 
     @Override
     public void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow window) {
         SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true);
 
-        ConsoleViewImpl console = new ConsoleViewImpl(project, true);
+        DuneConsoleView console = new DuneConsoleView(project);
         panel.setContent(console.getComponent());
 
         ActionToolbar toolbar = createToolbar(console);
@@ -55,12 +54,14 @@ public class RescriptToolWindowFactory extends ORToolWindowFactory {
         Disposer.register(window.getDisposable(), console);
     }
 
-    private @NotNull ActionToolbar createToolbar(@NotNull ConsoleViewImpl console) {
+    @NotNull
+    private ActionToolbar createToolbar(@NotNull DuneConsoleView console) {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
         group.add(new ClearLogAction(console));
-        group.add(new RescriptBuildAction());
-        group.add(new RescriptResetAction());
+        group.add(new DuneCleanAction());
+        group.add(new DuneBuildAction());
+        //group.add(new DuneInstallAction());
 
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
         toolbar.setTargetComponent(console.getComponent());

@@ -13,26 +13,26 @@
     <actions>
         <!-- CONSOLE ACTIONS - BUCKLESCRIPT -->
         <!--suppress PluginXmlCapitalization -->
-        <action id="bs.actions.make" class="com.reason.ide.console.BsMakeAction" text="Bsb -make"/>
+        <action id="bs.actions.make" class="com.reason.ide.console.bs.BsMakeAction" text="Bsb -make"/>
         <!--suppress PluginXmlCapitalization -->
-        <action id="bs.actions.makeWorld" class="com.reason.ide.console.BsMakeWorldAction"
+        <action id="bs.actions.makeWorld" class="com.reason.ide.console.bs.BsMakeWorldAction"
                 text="Bsb -clean-world -make-world"/>
 
         <!-- CONSOLE ACTIONS - DUNE -->
         <!--suppress PluginXmlCapitalization -->
-        <action id="dune.actions.build" class="com.reason.ide.console.DuneBuildAction" text="Dune build"/>
+        <action id="dune.actions.build" class="com.reason.ide.console.dune.DuneBuildAction" text="Dune build"/>
         <!--suppress PluginXmlCapitalization -->
-        <action id="dune.actions.clean" class="com.reason.ide.console.DuneCleanAction" text="Dune clean"/>
+        <action id="dune.actions.clean" class="com.reason.ide.console.dune.DuneCleanAction" text="Dune clean"/>
         <!--suppress PluginXmlCapitalization -->
-        <action id="dune.actions.install" class="com.reason.ide.console.DuneInstallAction" text="Dune install"/>
+        <action id="dune.actions.install" class="com.reason.ide.console.dune.DuneInstallAction" text="Dune install"/>
 
         <!-- CONSOLE ACTIONS - ESY -->
         <!--suppress PluginXmlCapitalization -->
-        <action id="esy.actions.build" class="com.reason.ide.console.EsyBuildAction" text="Esy build"/>
+        <action id="esy.actions.build" class="com.reason.ide.console.esy.EsyBuildAction" text="Esy build"/>
         <!--suppress PluginXmlCapitalization -->
-        <action id="esy.actions.install" class="com.reason.ide.console.EsyInstallAction" text="Esy install"/>
+        <action id="esy.actions.install" class="com.reason.ide.console.esy.EsyInstallAction" text="Esy install"/>
         <!--suppress PluginXmlCapitalization -->
-        <action id="esy.actions.shell" class="com.reason.ide.console.EsyShellAction" text="Esy shell"/>
+        <action id="esy.actions.shell" class="com.reason.ide.console.esy.EsyShellAction" text="Esy shell"/>
 
         <!--suppress PluginXmlCapitalization -->
         <action id="reason.actions.convert" class="com.reason.ide.actions.ConvertAction"
@@ -403,12 +403,16 @@
          | UI
          -->
 
-        <toolWindow id="BuckleScript:" anchor="bottom" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
-        <toolWindow id="Rescript:" anchor="bottom" factoryClass="com.reason.ide.console.RescriptToolWindowFactory"/>
+        <toolWindow id="BuckleScript:" anchor="bottom" factoryClass="com.reason.ide.console.bs.BsToolWindowFactory"/>
+        <toolWindow id="Rescript:" anchor="bottom" factoryClass="com.reason.ide.console.rescript.RescriptToolWindowFactory"/>
 
+        <!-- <codeInsight.typeInfo language="Reason" implementationClass="com.reason.ide.hints.RmlTypeProvider"/> ctrl-shift-p -->
         <codeInsight.parameterInfo language="Reason"
-                                   implementationClass="com.reason.ide.hints.ORParameterInfoHandlerWithTabActionSupport"/>
-        <consoleFilterProvider implementation="com.reason.ide.console.BsConsoleFilterProvider"/>
+                                   implementationClass="com.reason.ide.hints.RmlParameterInfoHandler"/>
+        <codeInsight.parameterInfo language="Rescript"
+                                   implementationClass="com.reason.ide.hints.ResParameterInfoHandler"/>
+
+        <consoleFilterProvider implementation="com.reason.ide.console.ORConsoleFilterProvider"/>
         <editorFactoryListener implementation="com.reason.ide.OREditorFactoryListener"/>
 
     </extensions>

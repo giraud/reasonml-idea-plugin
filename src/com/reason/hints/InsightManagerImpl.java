@@ -4,8 +4,8 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.*;
+import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import org.jetbrains.annotations.*;
 
@@ -40,7 +40,7 @@ public class InsightManagerImpl implements InsightManager {
     public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
         File rincewindFile = getRincewindFile(sourceFile);
         if (rincewindFile != null) {
-            ServiceManager.getService(myProject, RincewindProcess.class).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
+            myProject.getService(RincewindProcess.class).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
         }
     }
 

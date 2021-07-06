@@ -37,4 +37,11 @@ public class AnnotationParsingTest extends ResParsingTestCase {
         assertEquals("@optional", a.getName());
         assertEquals("fn", r.getFields().get(0).getName());
     }
+
+    public void test_doc() {
+        PsiAnnotation e = firstOfType(parseCode("@ocaml.doc(\n \"something\" \n )"), PsiAnnotation.class);
+
+        assertEquals("@ocaml.doc", e.getName());
+        assertEquals("\"something\"", e.getValue().getText());
+    }
 }

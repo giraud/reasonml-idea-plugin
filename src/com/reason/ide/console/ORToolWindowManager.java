@@ -8,6 +8,10 @@ import com.intellij.ui.content.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.ide.*;
+import com.reason.ide.console.bs.*;
+import com.reason.ide.console.dune.*;
+import com.reason.ide.console.esy.*;
+import com.reason.ide.console.rescript.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

@@ -1,7 +1,6 @@
 package com.reason.comp.dune;
 
 import com.intellij.execution.process.*;
-import com.intellij.execution.ui.*;
 import com.intellij.facet.*;
 import com.intellij.openapi.module.*;
 import com.intellij.openapi.module.Module;
@@ -13,6 +12,7 @@ import com.reason.comp.Compiler;
 import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
+import com.reason.ide.console.dune.*;
 import com.reason.ide.facet.*;
 import org.jetbrains.annotations.*;
 
@@ -72,8 +72,8 @@ public class DuneCompiler implements Compiler {
         }
 
         if (myProcessStarted.compareAndSet(false, true)) {
-            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject).orElse(null) : file;
-            ConsoleView console = myProject.getService(ORToolWindowManager.class).getConsoleView(DuneToolWindowFactory.ID);
+            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstDuneConfigFile(myProject) : file;
+            DuneConsoleView console = (DuneConsoleView) myProject.getService(ORToolWindowManager.class).getConsoleView(DuneToolWindowFactory.ID);
             DuneProcess process = new DuneProcess(myProject);
             ProcessHandler processHandler = sourceFile == null ? null : process.create(sourceFile, cliType, myConfigurationWarning, onProcessTerminated);
             if (processHandler != null && console != null) {

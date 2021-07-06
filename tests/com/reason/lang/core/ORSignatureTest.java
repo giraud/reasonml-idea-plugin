@@ -20,7 +20,7 @@ public class ORSignatureTest extends LightJavaCodeInsightTestCase {
     public void testReasonSingleFun() {
         PsiSignature sig = makeSignature(RML, "unit=>unit");
 
-        assertEquals("unit => unit", sig.asText(RML));
+        assertEquals("unit=>unit", sig.asText(RML));
         assertEquals("unit -> unit", sig.asText(OCL));
     }
 
@@ -28,7 +28,7 @@ public class ORSignatureTest extends LightJavaCodeInsightTestCase {
         PsiSignature sig = makeSignature(OCL, "unit->unit");
 
         assertEquals("unit => unit", sig.asText(RML));
-        assertEquals("unit -> unit", sig.asText(OCL));
+        assertEquals("unit->unit", sig.asText(OCL));
     }
 
     public void testReasonSingle() {
@@ -48,7 +48,7 @@ public class ORSignatureTest extends LightJavaCodeInsightTestCase {
     public void testReasonMultiFun() {
         PsiSignature sig = makeSignature(RML, "unit => string => float => unit");
 
-        assertEquals("(unit, string, float) => unit", sig.asText(RML));
+        assertEquals("unit => string => float => unit", sig.asText(RML));
         assertEquals("unit -> string -> float -> unit", sig.asText(OCL));
     }
 

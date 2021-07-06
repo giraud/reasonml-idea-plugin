@@ -11,6 +11,7 @@ import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
 import com.reason.ide.search.*;
 import com.reason.lang.core.*;
+import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -78,6 +79,12 @@ public class ORDocumentationProvider implements DocumentationProvider {
             // Else try to find a comment just above
             PsiElement aboveComment = findAboveComment(element);
             if (aboveComment != null) {
+                if (aboveComment instanceof PsiAnnotation) {
+                    PsiElement value = ((PsiAnnotation) aboveComment).getValue();
+                    String text = value == null ? null : value.getText();
+                    return text == null ? null : text.substring(1, text.length() - 1);
+                }
+
                 return isSpecialComment(aboveComment)
                         ? DocFormatter.format(element.getContainingFile(), element, aboveComment.getText())
                         : aboveComment.getText();
@@ -102,7 +109,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
             quickDoc =
                     "<div style='white-space:nowrap;font-style:italic'>"
                             + relative_path
-                            + "&nbsp;</div>"
+                            + "</div>"
                             + "Module "
                             + DocFormatter.NAME_START
                             + resolvedFile.getModuleName()
@@ -112,6 +119,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
                     || resolvedIdentifier instanceof PsiUpperIdentifier)
                     ? resolvedIdentifier.getParent()
                     : resolvedIdentifier;
+            LOG.trace("Resolved element", resolvedElement);
 
             if (resolvedElement instanceof PsiType) {
                 PsiType type = (PsiType) resolvedElement;
@@ -170,7 +178,10 @@ public class ORDocumentationProvider implements DocumentationProvider {
 
         PsiElement prevSibling = element.getPrevSibling();
         PsiElement prevPrevSibling = prevSibling == null ? null : prevSibling.getPrevSibling();
-        if (prevPrevSibling instanceof PsiComment
+
+        boolean isCommentLike = prevPrevSibling instanceof PsiComment || (prevPrevSibling instanceof PsiAnnotation && "@ocaml.doc".equals(((PsiAnnotation) prevPrevSibling).getName()));
+
+        if (isCommentLike
                 && prevSibling instanceof PsiWhiteSpace
                 && prevSibling.getText().replaceAll("[ \t]", "").length() == 1) {
             return prevPrevSibling;

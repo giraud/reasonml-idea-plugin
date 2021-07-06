@@ -6,8 +6,7 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-abstract class ORToolWindowFactory implements ToolWindowFactory, DumbAware {
-
+public abstract class ORToolWindowFactory implements ToolWindowFactory, DumbAware {
     /* id provided in plugin.xml. this is displayed in the UI */
     public abstract String getId();
 
@@ -26,8 +25,7 @@ abstract class ORToolWindowFactory implements ToolWindowFactory, DumbAware {
     }
 
     @Override
-    public abstract void createToolWindowContent(
-            @NotNull final Project project, @NotNull ToolWindow window);
+    public abstract void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow window);
 
     @Override
     public void init(@NotNull ToolWindow window) {
