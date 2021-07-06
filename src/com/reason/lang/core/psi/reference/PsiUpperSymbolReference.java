@@ -2,7 +2,6 @@ package com.reason.lang.core.psi.reference;
 
 import com.intellij.lang.*;
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
@@ -17,17 +16,12 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUpperSymbol> {
+public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymbol> {
     private static final Log LOG = Log.create("ref.upper");
     private static final Log LOG_PERF = Log.create("ref.perf.upper");
 
-    private final @Nullable String myReferenceName;
-    private final @NotNull ORTypes myTypes;
-
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
-        super(element, TextRange.create(0, element.getTextLength()));
-        myReferenceName = element.getText();
-        myTypes = types;
+        super(element, types);
     }
 
     @Override
@@ -142,11 +136,6 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         return resolveResults;
     }
 
-    @Override
-    public @Nullable PsiElement resolve() {
-        ResolveResult[] resolveResults = multiResolve(false);
-        return 0 < resolveResults.length ? resolveResults[0].getElement() : null;
-    }
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {

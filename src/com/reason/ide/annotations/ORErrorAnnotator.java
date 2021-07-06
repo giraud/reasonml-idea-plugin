@@ -23,10 +23,10 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.*;
 
-import static com.reason.ide.annotations.ErrorAnnotator.*;
+import static com.reason.ide.annotations.ORErrorAnnotator.*;
 import static java.util.Collections.*;
 
-abstract class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationResult> implements DumbAware {
+abstract class ORErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationResult> implements DumbAware {
     protected static final Log LOG = Log.create("annotator");
 
     abstract @Nullable VirtualFile getContentRoot(Project project, VirtualFile sourceFile);

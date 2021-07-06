@@ -49,8 +49,8 @@
          | UI
          -->
 
-        <toolWindow id="Dune:" anchor="bottom" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
-        <toolWindow id="Esy:" anchor="bottom" factoryClass="com.reason.ide.console.EsyToolWindowFactory"/>
+        <toolWindow id="Dune:" anchor="bottom" factoryClass="com.reason.ide.console.dune.DuneToolWindowFactory"/>
+        <toolWindow id="Esy:" anchor="bottom" factoryClass="com.reason.ide.console.esy.EsyToolWindowFactory"/>
 
     </extensions>
 </idea-plugin>

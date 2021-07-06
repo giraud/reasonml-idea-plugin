@@ -14,6 +14,7 @@ import com.reason.comp.bs.*;
 import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
+import com.reason.ide.console.rescript.*;
 import com.reason.ide.settings.*;
 import org.jetbrains.annotations.*;
 
@@ -21,7 +22,7 @@ import java.io.*;
 import java.util.concurrent.atomic.*;
 
 import static com.reason.comp.ORConstants.*;
-import static com.reason.ide.console.CliType.Rescript.*;
+import static com.reason.comp.CliType.Rescript.*;
 
 public class ResCompiler implements Compiler {
     private static final Log LOG = Log.create("compiler.rescript");

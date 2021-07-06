@@ -1,8 +1,9 @@
-package com.reason.ide.console;
+package com.reason.ide.console.rescript;
 
-import com.intellij.icons.*;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.*;
+import com.reason.comp.*;
+import com.reason.ide.console.*;
 import icons.*;
 import org.jetbrains.annotations.*;
 

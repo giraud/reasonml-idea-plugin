@@ -1,8 +1,10 @@
-package com.reason.ide.console;
+package com.reason.ide.console.esy;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.reason.comp.*;
+import com.reason.ide.console.*;
 import org.jetbrains.annotations.NotNull;
 
 public class EsyBuildAction extends CompilerAction {

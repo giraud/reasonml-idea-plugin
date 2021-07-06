@@ -35,11 +35,8 @@ public class SignatureParsingTest extends OclParsingTestCase {
     }
 
     public void test_trimming() {
-        PsiLet let =
-                first(
-                        letExpressions(
-                                parseCode(
-                                        "let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
+        PsiLet let = first(letExpressions(
+                                parseCode("let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  )\n")));
 
         PsiSignature signature = let.getSignature();
         assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asText(myLanguage));

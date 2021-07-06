@@ -1,5 +1,6 @@
-package com.reason.ide.console;
+package com.reason.ide.console.rescript;
 
+import com.intellij.execution.impl.*;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.editor.actions.*;
 import com.intellij.openapi.project.*;
@@ -7,13 +8,15 @@ import com.intellij.openapi.ui.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.wm.*;
 import com.intellij.ui.content.*;
+import com.reason.ide.console.*;
 import icons.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class BsToolWindowFactory extends ORToolWindowFactory {
-    public static final String ID = "BuckleScript:";
+public class RescriptToolWindowFactory extends ORToolWindowFactory {
+    private static final String TITLE = "Rescript";
+    public static final String ID = TITLE + ":";
 
     @Override
     public @NotNull String getId() {
@@ -22,7 +25,7 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public @NotNull Icon getIcon() {
-        return ORIcons.BUCKLESCRIPT_TOOL;
+        return ORIcons.RESCRIPT_TOOL;
     }
 
     @Nls
@@ -33,14 +36,14 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public @NotNull String getStripeTitle() {
-        return "BuckleScript";
+        return TITLE;
     }
 
     @Override
     public void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow window) {
         SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true);
 
-        BsConsole console = new BsConsole(project);
+        RescriptConsoleView console = new RescriptConsoleView(project);
         panel.setContent(console.getComponent());
 
         ActionToolbar toolbar = createToolbar(console);
@@ -53,12 +56,12 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
         Disposer.register(window.getDisposable(), console);
     }
 
-    private @NotNull ActionToolbar createToolbar(@NotNull BsConsole console) {
+    private @NotNull ActionToolbar createToolbar(@NotNull RescriptConsoleView console) {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
         group.add(new ClearLogAction(console));
-        group.add(new BsMakeAction());
-        group.add(new BsMakeWorldAction());
+        group.add(new RescriptBuildAction());
+        group.add(new RescriptResetAction());
 
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
         toolbar.setTargetComponent(console.getComponent());

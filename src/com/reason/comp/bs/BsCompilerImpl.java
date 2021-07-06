@@ -12,6 +12,7 @@ import com.reason.comp.*;
 import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
+import com.reason.ide.console.bs.*;
 import com.reason.ide.settings.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.coverage.gnu.trove.*;

@@ -16,7 +16,12 @@ are solved.
 
 ## Unreleased
 
-## 0.102 - 2021/06/28
+## 0.102.1 - 2021/07/06
+
+- :bug: [#333](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/333) CLion crash, remove dependency to java only class
+- :bug: [#157](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/157) Update parameter info handler, only show known types
+
+0.102
 
 - :house: [#328](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/328) Update Rescript parser to latest syntax
 - :bug: [#326](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/326) Structure panel shows "mutable" for mutable record fields rather than the field name

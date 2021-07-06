@@ -107,8 +107,6 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
                                                 EMPTY_ARRAY,
                                                 EMPTY_STRING_ARRAY);
                                         WriteCommandAction.runWriteCommandAction(project, (Runnable) jsLibraryManager::commitChanges);
-                                    } else {
-                                        System.out.println("removed " + pointers[0]);
                                     }
                                 }
                             }

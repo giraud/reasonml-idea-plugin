@@ -1,6 +1,5 @@
-package com.reason.ide.console;
+package com.reason.comp;
 
-import com.reason.comp.*;
 import org.jetbrains.annotations.*;
 
 public interface CliType {

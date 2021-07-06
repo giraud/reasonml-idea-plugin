@@ -2,7 +2,6 @@ package com.reason.comp;
 
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.ide.console.*;
 import org.jetbrains.annotations.*;
 
 public interface Compiler {

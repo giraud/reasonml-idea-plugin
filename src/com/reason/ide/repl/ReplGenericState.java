@@ -1,27 +1,19 @@
 package com.reason.ide.repl;
 
-import com.intellij.execution.DefaultExecutionResult;
-import com.intellij.execution.ExecutionException;
-import com.intellij.execution.ExecutionResult;
-import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.configurations.RunProfileState;
-import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.process.ProcessHandler;
-import com.intellij.execution.process.ProcessTerminatedListener;
-import com.intellij.execution.runners.ExecutionEnvironment;
-import com.intellij.execution.runners.ProgramRunner;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.OCamlExecutable;
-import com.reason.comp.dune.OpamEnv;
-import com.reason.ide.ORProjectManager;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.execution.*;
+import com.intellij.execution.configurations.*;
+import com.intellij.execution.process.*;
+import com.intellij.execution.runners.*;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.vfs.*;
+import com.reason.*;
+import com.reason.comp.dune.*;
+import com.reason.ide.*;
+import org.jetbrains.annotations.*;
 
-import java.util.Map;
+import java.util.*;
 
 public class ReplGenericState implements RunProfileState {
     private final ExecutionEnvironment m_environment;
@@ -53,7 +45,8 @@ public class ReplGenericState implements RunProfileState {
             return null;
         }
 
-        VirtualFile baseRoot = ORProjectManager.findFirstDuneContentRoot(project).orElse(homeDirectory);
+        VirtualFile duneContentRoot = ORProjectManager.findFirstDuneContentRoot(project);
+        VirtualFile baseRoot = duneContentRoot == null ? homeDirectory : duneContentRoot;
         Map<String, String> env = ServiceManager.getService(project, OpamEnv.class).getEnv(odk);
 
         GeneralCommandLine cli = new GeneralCommandLine("ocaml");

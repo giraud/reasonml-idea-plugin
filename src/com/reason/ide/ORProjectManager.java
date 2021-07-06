@@ -44,7 +44,7 @@ public class ORProjectManager {
     }
 
     public static @NotNull Optional<VirtualFile> findFirstBsConfigurationFile(@NotNull Project project) {
-        return findFirst(findBsConfigurationFiles(project));
+        return findFirstO(findBsConfigurationFiles(project));
     }
 
     public static LinkedHashSet<VirtualFile> findBsConfigurationFiles(@NotNull Project project) {
@@ -54,7 +54,7 @@ public class ORProjectManager {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public static LinkedHashSet<VirtualFile> findDuneConfigurationFiles(@NotNull Project project) {
+    public static HashSet<VirtualFile> findDuneConfigurationFiles(@NotNull Project project) {
         return findFilesInProject(DuneFileType.getDefaultFilenames(), project)
                 .stream()
                 .sorted(FILE_DEPTH_COMPARATOR)
@@ -101,23 +101,32 @@ public class ORProjectManager {
     }
 
     public static @NotNull Optional<VirtualFile> findFirstBsContentRoot(@NotNull Project project) {
-        return findFirst(findBsContentRoots(project));
+        return findFirstO(findBsContentRoots(project));
     }
 
-    public static @NotNull Optional<VirtualFile> findFirstDuneContentRoot(@NotNull Project project) {
+    public static @Nullable VirtualFile findFirstDuneContentRoot(@NotNull Project project) {
         return findFirst(findDuneContentRoots(project));
     }
 
-    public static @NotNull Optional<VirtualFile> findFirstEsyContentRoot(@NotNull Project project) {
-        return findFirst(findEsyContentRoots(project));
+    public static @Nullable VirtualFile findFirstDuneConfigFile(@NotNull Project project) {
+        return findFirst(findDuneConfigurationFiles(project));
     }
 
-    private static <T> @NotNull Optional<T> findFirst(@NotNull Set<T> virtualFiles) {
+    public static @NotNull Optional<VirtualFile> findFirstEsyContentRoot(@NotNull Project project) {
+        return findFirstO(findEsyContentRoots(project));
+    }
+
+    private static <T> @NotNull Optional<T> findFirstO(@NotNull Set<T> virtualFiles) {
         Iterator<T> iterator = virtualFiles.iterator();
         return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
     }
 
-    private static LinkedHashSet<VirtualFile> mapToParents(@NotNull Project project, @NotNull Function<Project, LinkedHashSet<VirtualFile>> findConfigurationFiles) {
+    private static <T> @NotNull T findFirst(@NotNull Set<T> virtualFiles) {
+        Iterator<T> iterator = virtualFiles.iterator();
+        return iterator.hasNext() ? iterator.next() : null;
+    }
+
+    private static LinkedHashSet<VirtualFile> mapToParents(@NotNull Project project, @NotNull Function<Project, HashSet<VirtualFile>> findConfigurationFiles) {
         return findConfigurationFiles
                 .apply(project)
                 .stream()

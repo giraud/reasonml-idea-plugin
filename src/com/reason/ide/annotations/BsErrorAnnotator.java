@@ -7,7 +7,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class BsErrorAnnotator extends ErrorAnnotator {
+public class BsErrorAnnotator extends ORErrorAnnotator {
     @Override
     @Nullable VirtualFile getContentRoot(Project project, VirtualFile sourceFile) {
         return BsPlatform.findContentRoot(project, sourceFile).orElse(null);
