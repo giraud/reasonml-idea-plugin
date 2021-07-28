@@ -1,6 +1,5 @@
 package com.reason.comp;
 
-import com.google.common.annotations.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;

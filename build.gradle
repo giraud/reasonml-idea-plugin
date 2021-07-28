@@ -1,6 +1,8 @@
+// TODO ? https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
+
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.7.3'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.1.4'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 allprojects {
@@ -9,16 +11,11 @@ allprojects {
     }
 
     apply plugin: 'java'
-    apply plugin: 'org.jetbrains.intellij'
-
     group 'com.reason'
     version = pluginVersion + '-' + platformVersion
     sourceCompatibility = '11.0.10'
-
-    compileJava.options.encoding = 'UTF-8'
-
-    dependencies {
-        testImplementation 'junit:junit:4.12'
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
     }
 
     sourceSets {
@@ -31,21 +28,33 @@ allprojects {
         }
     }
 
+    apply plugin: 'org.jetbrains.intellij'
     intellij {
-        pluginName = pluginName
-        type = platformType
         version = platformVersion
+        type = platformType
         plugins = [
                 'java',
                 'JavaScriptLanguage',
-                'com.jetbrains.hackathon.indices.viewer:' + indicesVersion,
-                'PsiViewer:' + psiVersion
+//                ('com.jetbrains.hackathon.indices.viewer:' + indicesVersion),
+//                ('PsiViewer:' + psiVersion)
         ]
+    }
+}
 
-        patchPluginXml {
-            sinceBuild = pluginSinceBuild
-            untilBuild = pluginUntilBuild
-            changeNotes """
+project('jps-plugin') {
+    jar.archiveFileName = "jps-plugin.jar"
+    patchPluginXml.enabled = false
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    implementation project(':jps-plugin')
+}
+
+patchPluginXml {
+    sinceBuild = pluginSinceBuild
+    untilBuild = pluginUntilBuild
+    changeNotes.set("""
                 <ul>
                     <li>#333 - CLion crash, remove dependency to java only class</li>
                     <li>#328 - Update Rescript parser to latest syntax</li>
@@ -56,24 +65,13 @@ allprojects {
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
                 <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
-            """
-        }
-    }
-
-    runIde {
-        systemProperty 'idea.is.internal', true
-    }
-
-    verifyPlugin {
-        pluginDirectory 'resources'
-    }
+            """)
 }
 
-project(':jps-plugin') {
-    jar.archiveFileName = "jps-plugin.jar"
-    patchPluginXml.enabled = false
+runIde {
+    systemProperty 'idea.is.internal', true
 }
 
-dependencies {
-    implementation project(':jps-plugin')
+runPluginVerifier {
+    ideVersions.set([platformVersion])
 }
