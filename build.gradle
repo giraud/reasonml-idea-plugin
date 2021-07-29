@@ -54,10 +54,9 @@ intellij {
     }
 }
 
-// > 2020.3
-//runPluginVerifier {
-//    ideVersions = [platformVersion]
-//}
+runPluginVerifier {
+    ideVersions = [platformVersion]
+}
 
 runIde {
     systemProperty 'idea.is.internal', true
