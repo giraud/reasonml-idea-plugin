@@ -1,15 +1,14 @@
 package com.reason.comp;
 
-import com.google.common.annotations.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
 import com.reason.ide.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
-import static com.reason.Platform.*;
 import static com.reason.comp.ORConstants.*;
+import static jpsplugin.com.reason.Platform.*;
 
 public class ORPlatform {
     private static final Log LOG = Log.create("platform");

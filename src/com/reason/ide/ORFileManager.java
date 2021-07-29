@@ -7,9 +7,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.reason.Joiner;
-import com.reason.Log;
-import com.reason.StringUtil;
+import jpsplugin.com.reason.Joiner;
+import jpsplugin.com.reason.Log;
+import jpsplugin.com.reason.StringUtil;
 import com.reason.comp.bs.BsCompiler;
 
 import java.nio.file.Path;

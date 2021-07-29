@@ -2,12 +2,12 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.psi.tree.*;
-import com.reason.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.reason.*;
 import com.reason.lang.rescript.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

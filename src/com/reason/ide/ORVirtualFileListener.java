@@ -7,12 +7,12 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.vfs.newvfs.events.*;
-import com.reason.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.esy.*;
 import com.reason.hints.*;
 import com.reason.ide.console.*;
 import com.reason.ide.files.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

@@ -7,7 +7,7 @@ import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.util.Condition;
-import com.reason.sdk.OCamlSdkType;
+import jpsplugin.com.reason.sdk.OCamlSdkType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

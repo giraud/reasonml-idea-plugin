@@ -1,11 +1,11 @@
 package com.reason.lang.core;
 
 import com.intellij.psi.util.*;
-import com.reason.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import jpsplugin.com.reason.*;
 
 public class ORUtilTest extends ORBasePlatformTestCase {
 

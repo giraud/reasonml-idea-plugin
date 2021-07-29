@@ -8,7 +8,7 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.text.CaseInsensitiveStringHashingStrategy;
-import com.reason.Log;
+import jpsplugin.com.reason.Log;
 import gnu.trove.THashSet;
 import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;

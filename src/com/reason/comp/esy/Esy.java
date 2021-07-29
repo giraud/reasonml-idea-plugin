@@ -2,7 +2,7 @@ package com.reason.comp.esy;
 
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.Platform;
+import jpsplugin.com.reason.Platform;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;

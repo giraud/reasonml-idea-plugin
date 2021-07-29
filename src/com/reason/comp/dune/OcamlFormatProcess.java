@@ -4,14 +4,14 @@ import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
-import static com.reason.Platform.*;
+import static jpsplugin.com.reason.Platform.*;
 
 public class OcamlFormatProcess {
     private static final Log LOG = Log.create("ocamlformat.process");

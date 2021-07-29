@@ -7,13 +7,13 @@ import com.intellij.notification.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
 import com.reason.comp.*;
 import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.bs.*;
 import com.reason.ide.settings.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.coverage.gnu.trove.*;
 

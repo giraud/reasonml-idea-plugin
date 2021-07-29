@@ -3,17 +3,17 @@ package com.reason.ide.annotations;
 import com.intellij.execution.process.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.rescript.*;
 import com.reason.ide.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
 import java.util.*;
 import java.util.stream.*;
 
-import static com.reason.Platform.*;
+import static jpsplugin.com.reason.Platform.*;
 import static com.reason.comp.ORConstants.*;
 import static java.util.Collections.*;
 

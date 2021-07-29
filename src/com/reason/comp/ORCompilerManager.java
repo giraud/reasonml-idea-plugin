@@ -3,12 +3,12 @@ package com.reason.comp;
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.dune.*;
 import com.reason.comp.esy.*;
 import com.reason.comp.rescript.*;
 import com.reason.ide.files.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.lang.*;

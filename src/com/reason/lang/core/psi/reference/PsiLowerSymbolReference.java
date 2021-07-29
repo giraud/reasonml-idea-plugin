@@ -2,11 +2,9 @@ package com.reason.lang.core.psi.reference;
 
 import com.intellij.lang.*;
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
-import com.reason.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
@@ -15,6 +13,7 @@ import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

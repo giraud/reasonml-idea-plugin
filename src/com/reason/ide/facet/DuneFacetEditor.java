@@ -3,7 +3,6 @@ package com.reason.ide.facet;
 import com.intellij.facet.ui.*;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.components.*;
-import com.intellij.openapi.module.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.*;
@@ -14,7 +13,7 @@ import com.intellij.openapi.util.*;
 import com.intellij.util.ui.*;
 import com.reason.comp.dune.*;
 import com.reason.ide.console.*;
-import com.reason.sdk.*;
+import jpsplugin.com.reason.sdk.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

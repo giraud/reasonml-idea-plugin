@@ -4,10 +4,10 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.indexing.*;
-import com.reason.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.psi.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

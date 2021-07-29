@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PsiIconUtil;
-import com.reason.Log;
+import jpsplugin.com.reason.Log;
 import com.reason.ide.IconProvider;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;

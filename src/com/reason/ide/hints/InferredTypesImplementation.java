@@ -6,10 +6,10 @@ import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.containers.Stack;
-import com.reason.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.ocaml.*;
 import gnu.trove.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
