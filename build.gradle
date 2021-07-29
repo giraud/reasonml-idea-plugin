@@ -1,38 +1,34 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.7.3'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.1.4'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
     mavenCentral()
 }
 
-apply plugin: 'java'
-apply plugin: 'org.jetbrains.intellij'
-
-group 'com.reason'
-version = pluginVersion + '-' + platformVersion
-sourceCompatibility = '11.0'
-
-compileJava.options.encoding = 'UTF-8'
-
 dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+apply plugin: 'java'
+apply plugin: 'org.jetbrains.intellij'
+
+group = pluginGroup
+version = pluginVersion + '-' + platformVersion
+
+sourceCompatibility = '11.0'
+compileJava.options.encoding = 'UTF-8'
+
 sourceSets {
-    main {
-        java.srcDirs 'src'
-        resources.srcDirs 'resources'
-    }
-    test {
-        java.srcDirs 'tests'
-    }
+    main.java.srcDirs = ['src']
+    main.resources.srcDirs = ['resources']
+    test.java.srcDirs = ['tests']
 }
 
 intellij {
-    type = platformType
     version = platformVersion
+    type = platformType
     plugins = [
             'java',
             'JavaScriptLanguage',
@@ -43,7 +39,7 @@ intellij {
     patchPluginXml {
         sinceBuild = pluginSinceBuild
         untilBuild = pluginUntilBuild
-        changeNotes """
+        changeNotes = """
                 <ul>
                     <li>#333 - CLion crash, remove dependency to java only class</li>
                     <li>#328 - Update Rescript parser to latest syntax</li>
@@ -54,16 +50,18 @@ intellij {
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
                 <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
-            """
+            """.stripIndent()
     }
 }
 
+// > 2020.3
+//runPluginVerifier {
+//    ideVersions = [platformVersion]
+//}
+
 runIde {
     systemProperty 'idea.is.internal', true
-}
-
-verifyPlugin {
-    pluginDirectory 'resources'
+    jvmArgs '-Xmx2G'
 }
 
 /*
