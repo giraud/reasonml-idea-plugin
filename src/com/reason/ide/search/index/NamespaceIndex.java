@@ -4,12 +4,12 @@ import com.intellij.json.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.util.indexing.*;
 import com.intellij.util.io.*;
-import com.reason.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

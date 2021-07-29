@@ -5,11 +5,11 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
-import com.reason.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.type.*;
 import icons.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

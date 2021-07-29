@@ -1,5 +1,6 @@
 package com.reason.sdk;
 
+import jpsplugin.com.reason.sdk.*;
 import junit.framework.TestCase;
 
 public class OCamlSdkTypeTest extends TestCase {

@@ -2,9 +2,9 @@ package com.reason.lang.core.psi.reference;
 
 import com.intellij.psi.*;
 import com.intellij.util.*;
-import com.reason.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

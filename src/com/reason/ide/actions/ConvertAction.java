@@ -22,7 +22,7 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.reason.ORNotification;
+import jpsplugin.com.reason.ORNotification;
 import com.reason.comp.bs.BsCompiler;
 import com.reason.ide.files.FileHelper;
 

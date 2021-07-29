@@ -9,9 +9,9 @@ import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.vfs.pointers.*;
 import com.intellij.webcore.libraries.*;
-import com.reason.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

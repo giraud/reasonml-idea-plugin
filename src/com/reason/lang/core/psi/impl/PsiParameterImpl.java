@@ -6,12 +6,12 @@ import com.intellij.psi.stubs.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
-import com.reason.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

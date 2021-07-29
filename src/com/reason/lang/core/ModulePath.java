@@ -2,7 +2,7 @@ package com.reason.lang.core;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.reason.Joiner;
+import jpsplugin.com.reason.Joiner;
 import com.reason.ide.files.FileBase;
 import java.util.Arrays;
 import java.util.List;

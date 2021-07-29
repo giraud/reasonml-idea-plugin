@@ -2,11 +2,11 @@ package com.reason.comp.bs;
 
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.esy.*;
 import com.reason.ide.*;
 import com.reason.ide.settings.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

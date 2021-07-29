@@ -6,10 +6,10 @@ import com.intellij.openapi.editor.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.intellij.ui.*;
-import com.reason.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import icons.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

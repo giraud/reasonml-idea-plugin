@@ -4,9 +4,9 @@ import com.intellij.codeInsight.lookup.*;
 import com.intellij.lang.parameterInfo.*;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
-import com.reason.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 public abstract class ORParameterInfoHandler implements ParameterInfoHandler<PsiFunctionCallParams, RmlParameterInfoHandler.ArgumentsDescription> {

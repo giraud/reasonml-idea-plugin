@@ -1,6 +1,6 @@
 package com.reason.comp.bs;
 
-import static com.reason.StringUtil.toFirstUpper;
+import static jpsplugin.com.reason.StringUtil.toFirstUpper;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.FileUtil;
+import jpsplugin.com.reason.FileUtil;
 import gnu.trove.THashSet;
 import java.util.*;
 import java.util.regex.*;

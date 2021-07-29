@@ -7,6 +7,7 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.*;
 import com.reason.ide.annotations.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -15,7 +16,7 @@ import java.time.temporal.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.reason.Platform.*;
+import static jpsplugin.com.reason.Platform.*;
 import static java.util.Collections.*;
 
 public class BscProcess {

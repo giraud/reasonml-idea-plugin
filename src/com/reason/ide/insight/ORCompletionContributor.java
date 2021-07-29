@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.reason.Log;
+import jpsplugin.com.reason.Log;
 import com.reason.ide.insight.provider.DotExpressionCompletionProvider;
 import com.reason.ide.insight.provider.FreeExpressionCompletionProvider;
 import com.reason.ide.insight.provider.ModuleCompletionProvider;

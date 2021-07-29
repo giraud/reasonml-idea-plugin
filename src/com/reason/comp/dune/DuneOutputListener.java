@@ -7,9 +7,9 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
-import com.reason.*;
 import com.reason.ide.annotations.*;
 import com.reason.ide.hints.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

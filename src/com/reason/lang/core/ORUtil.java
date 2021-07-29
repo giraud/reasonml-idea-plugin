@@ -5,7 +5,6 @@ import com.intellij.openapi.util.io.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
-import com.reason.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.*;
@@ -13,6 +12,7 @@ import com.reason.lang.core.type.*;
 import com.reason.lang.rescript.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

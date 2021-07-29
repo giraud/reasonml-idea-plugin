@@ -3,7 +3,7 @@ package com.reason.comp.bs;
 import static com.reason.comp.bs.BsLineProcessor.BuildStatus.*;
 import static java.lang.Integer.parseInt;
 
-import com.reason.Log;
+import jpsplugin.com.reason.Log;
 import com.reason.ide.annotations.OutputInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

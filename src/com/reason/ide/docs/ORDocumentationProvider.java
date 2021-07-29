@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
 import com.reason.ide.search.*;
@@ -18,6 +17,7 @@ import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

@@ -6,7 +6,7 @@ import static com.reason.lang.odoc.ODocMarkup.CODE_START;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.Stack;
-import com.reason.Log;
+import jpsplugin.com.reason.Log;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 

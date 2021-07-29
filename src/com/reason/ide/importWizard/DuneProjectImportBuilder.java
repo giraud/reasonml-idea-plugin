@@ -11,9 +11,9 @@ import com.intellij.openapi.roots.ui.configuration.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.packaging.artifacts.*;
 import com.intellij.projectImport.*;
-import com.reason.module.*;
-import com.reason.sdk.*;
 import icons.*;
+import jpsplugin.com.reason.module.*;
+import jpsplugin.com.reason.sdk.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

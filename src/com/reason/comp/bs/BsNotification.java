@@ -4,7 +4,7 @@ import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENE
 import static com.intellij.notification.NotificationType.ERROR;
 
 import com.intellij.notification.Notifications;
-import com.reason.ORNotification;
+import jpsplugin.com.reason.ORNotification;
 import org.jetbrains.annotations.Nls;
 
 public class BsNotification {

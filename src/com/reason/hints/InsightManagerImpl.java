@@ -4,9 +4,9 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.concurrent.atomic.*;
 import java.util.regex.*;
 
-import static com.reason.Platform.*;
+import static jpsplugin.com.reason.Platform.*;
 
 public class InsightManagerImpl implements InsightManager {
     private static final Log LOG = Log.create("hints");
