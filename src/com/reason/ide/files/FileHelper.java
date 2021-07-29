@@ -3,7 +3,7 @@ package com.reason.ide.files;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.PsiFile;
-import com.reason.Platform;
+import jpsplugin.com.reason.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

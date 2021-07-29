@@ -7,10 +7,10 @@ import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
-import com.reason.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;

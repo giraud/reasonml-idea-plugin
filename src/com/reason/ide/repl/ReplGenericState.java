@@ -8,9 +8,9 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
 import com.reason.comp.dune.*;
 import com.reason.ide.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

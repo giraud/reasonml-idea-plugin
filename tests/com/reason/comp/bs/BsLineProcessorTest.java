@@ -3,7 +3,7 @@ package com.reason.comp.bs;
 import static com.intellij.testFramework.UsefulTestCase.assertSize;
 import static org.junit.Assert.*;
 
-import com.reason.Log;
+import jpsplugin.com.reason.Log;
 import com.reason.ide.annotations.OutputInfo;
 import org.junit.Test;
 

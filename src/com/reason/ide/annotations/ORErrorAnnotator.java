@@ -11,12 +11,12 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.*;
 import com.intellij.problems.*;
 import com.intellij.psi.*;
-import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.hints.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;

@@ -24,10 +24,10 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileSystem;
-import com.reason.Log;
-import com.reason.OCamlSourcesOrderRootType;
-import com.reason.sdk.OCamlSdkType;
-import com.reason.sdk.SdkDownloader;
+import jpsplugin.com.reason.Log;
+import jpsplugin.com.reason.OCamlSourcesOrderRootType;
+import jpsplugin.com.reason.sdk.OCamlSdkType;
+import jpsplugin.com.reason.sdk.SdkDownloader;
 
 import java.io.File;
 import java.io.IOException;

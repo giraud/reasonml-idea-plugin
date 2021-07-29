@@ -1,12 +1,12 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <sdkType implementation="com.reason.sdk.OCamlSdkType"/>
+        <sdkType implementation="jpsplugin.com.reason.sdk.OCamlSdkType"/>
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
-        <moduleConfigurationEditorProvider implementation="com.reason.module.OCamlDefaultModuleEditorsProvider"/>
-        <projectStructure.sourceRootEditHandler implementation="com.reason.module.OCamlBinaryRootEditHandler"/>
+        <moduleConfigurationEditorProvider implementation="jpsplugin.com.reason.module.OCamlDefaultModuleEditorsProvider"/>
+        <projectStructure.sourceRootEditHandler implementation="jpsplugin.com.reason.module.OCamlBinaryRootEditHandler"/>
 
-        <orderRootType implementation="com.reason.OCamlSourcesOrderRootType"/>
-        <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="com.reason.OCamlSourcesOrderRootTypeUIFactory"/>
+        <orderRootType implementation="jpsplugin.com.reason.OCamlSourcesOrderRootType"/>
+        <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="jpsplugin.com.reason.OCamlSourcesOrderRootTypeUIFactory"/>
 
         <projectService serviceImplementation="com.reason.comp.dune.OpamProcess"/>
         <projectService serviceImplementation="com.reason.comp.dune.OpamEnv"/>
@@ -28,8 +28,8 @@
          | OCaml module builder
          -->
 
-        <moduleType id="ocamlModuleType" implementationClass="com.reason.module.OCamlModuleType"/>
-        <moduleBuilder builderClass="com.reason.module.OCamlModuleBuilder"/>
+        <moduleType id="ocamlModuleType" implementationClass="jpsplugin.com.reason.module.OCamlModuleType"/>
+        <moduleBuilder builderClass="jpsplugin.com.reason.module.OCamlModuleBuilder"/>
 
         <facetType implementation="com.reason.ide.facet.DuneFacetType"/>
         <framework.detector implementation="com.reason.ide.facet.DuneFrameworkDetector"/>

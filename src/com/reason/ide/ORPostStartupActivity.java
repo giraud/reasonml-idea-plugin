@@ -5,10 +5,10 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.*;
 import com.intellij.openapi.startup.*;
-import com.reason.*;
 import com.reason.comp.dune.*;
 import com.reason.ide.console.*;
-import com.reason.sdk.*;
+import jpsplugin.com.reason.*;
+import jpsplugin.com.reason.sdk.*;
 import org.jetbrains.annotations.*;
 
 /**

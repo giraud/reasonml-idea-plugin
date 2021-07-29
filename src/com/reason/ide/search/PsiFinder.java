@@ -8,7 +8,6 @@ import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.*;
 import com.intellij.util.containers.*;
-import com.reason.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
@@ -22,6 +21,7 @@ import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
 import com.reason.lang.rescript.*;
 import gnu.trove.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.HashSet;

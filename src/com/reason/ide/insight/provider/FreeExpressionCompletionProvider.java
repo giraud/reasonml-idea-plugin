@@ -8,7 +8,6 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
-import com.reason.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
@@ -19,6 +18,7 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.signature.*;
 import icons.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

@@ -4,7 +4,7 @@ import com.intellij.facet.FacetManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.Platform;
+import jpsplugin.com.reason.Platform;
 import com.reason.ide.facet.DuneFacet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

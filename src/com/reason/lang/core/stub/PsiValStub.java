@@ -2,8 +2,8 @@ package com.reason.lang.core.stub;
 
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.*;
-import com.reason.*;
 import com.reason.lang.core.psi.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 public class PsiValStub extends NamedStubBase<PsiVal> {

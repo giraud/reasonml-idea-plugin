@@ -4,14 +4,14 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.ex.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
 import com.reason.comp.rescript.*;
 import com.reason.ide.settings.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-import static com.reason.Platform.*;
+import static jpsplugin.com.reason.Platform.*;
 
 public class BsFormatProcess {
 

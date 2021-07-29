@@ -5,11 +5,11 @@ import com.intellij.execution.ui.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
-import com.reason.*;
 import com.reason.comp.Compiler;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.esy.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.concurrent.atomic.*;

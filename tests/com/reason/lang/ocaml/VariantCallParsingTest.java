@@ -2,7 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.Joiner;
+import jpsplugin.com.reason.Joiner;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;

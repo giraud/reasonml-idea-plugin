@@ -7,13 +7,13 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
-import com.reason.*;
 import com.reason.comp.Compiler;
 import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.dune.*;
 import com.reason.ide.facet.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.concurrent.atomic.*;

@@ -5,56 +5,43 @@ plugins {
     id 'org.jetbrains.intellij' version '1.1.4'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
-allprojects {
-    repositories {
-        mavenCentral()
-    }
-
-    apply plugin: 'java'
-    group 'com.reason'
-    version = pluginVersion + '-' + platformVersion
-    sourceCompatibility = '11.0.10'
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
-
-    sourceSets {
-        main {
-            java.srcDirs 'src'
-            resources.srcDirs 'resources'
-        }
-        test {
-            java.srcDirs 'tests'
-        }
-    }
-
-    apply plugin: 'org.jetbrains.intellij'
-    intellij {
-        version = platformVersion
-        type = platformType
-        plugins = [
-                'java',
-                'JavaScriptLanguage',
-//                ('com.jetbrains.hackathon.indices.viewer:' + indicesVersion),
-//                ('PsiViewer:' + psiVersion)
-        ]
-    }
-}
-
-project('jps-plugin') {
-    jar.archiveFileName = "jps-plugin.jar"
-    patchPluginXml.enabled = false
+repositories {
+    mavenCentral()
 }
 
 dependencies {
     testImplementation 'junit:junit:4.12'
-    implementation project(':jps-plugin')
 }
 
-patchPluginXml {
-    sinceBuild = pluginSinceBuild
-    untilBuild = pluginUntilBuild
-    changeNotes.set("""
+apply plugin: 'java'
+apply plugin: 'org.jetbrains.intellij'
+
+group = pluginGroup
+version = pluginVersion + '-' + platformVersion
+
+sourceCompatibility = '11.0'
+compileJava.options.encoding = 'UTF-8'
+
+sourceSets {
+    main.java.srcDirs = ['src']
+    main.resources.srcDirs = ['resources']
+    test.java.srcDirs = ['tests']
+}
+
+intellij {
+    version = platformVersion
+    type = platformType
+    plugins = [
+            'java',
+            'JavaScriptLanguage',
+            'com.jetbrains.hackathon.indices.viewer:' + indicesVersion,
+            'PsiViewer:' + psiVersion
+    ]
+
+    patchPluginXml {
+        sinceBuild = pluginSinceBuild
+        untilBuild = pluginUntilBuild
+        changeNotes = """
                 <ul>
                     <li>#333 - CLion crash, remove dependency to java only class</li>
                     <li>#328 - Update Rescript parser to latest syntax</li>
@@ -65,13 +52,26 @@ patchPluginXml {
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
                 <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
-            """)
+            """.stripIndent()
+    }
+}
+
+runPluginVerifier {
+    ideVersions = [platformVersion]
 }
 
 runIde {
     systemProperty 'idea.is.internal', true
+    jvmArgs '-Xmx2G'
 }
 
-runPluginVerifier {
-    ideVersions.set([platformVersion])
+/*
+project(':jps-plugin') {
+    jar.archiveFileName = "jps-plugin.jar"
+    patchPluginXml.enabled = false
 }
+
+dependencies {
+    implementation project(':jps-plugin')
+}
+*/

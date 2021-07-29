@@ -3,12 +3,12 @@ package com.reason.comp.rescript;
 import com.intellij.openapi.editor.ex.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-import static com.reason.Platform.*;
+import static jpsplugin.com.reason.Platform.*;
 
 public class ResFormatProcess {
     private static final Log LOG = Log.create("format.rescript");

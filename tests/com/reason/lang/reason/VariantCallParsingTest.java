@@ -2,10 +2,10 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import jpsplugin.com.reason.*;
 
 import java.util.*;
 import java.util.stream.*;

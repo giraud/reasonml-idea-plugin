@@ -2,8 +2,8 @@ package com.reason.ide.annotations;
 
 import com.intellij.openapi.util.Pair;
 import com.intellij.util.containers.MultiMap;
-import com.reason.Joiner;
-import com.reason.Log;
+import jpsplugin.com.reason.Joiner;
+import jpsplugin.com.reason.Log;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.jetbrains.annotations.NotNull;

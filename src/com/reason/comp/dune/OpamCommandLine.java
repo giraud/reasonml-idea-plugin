@@ -2,15 +2,14 @@ package com.reason.comp.dune;
 
 import com.intellij.execution.configurations.*;
 import com.intellij.openapi.components.*;
-import com.intellij.openapi.module.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.util.containers.*;
-import com.reason.*;
 import com.reason.ide.facet.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

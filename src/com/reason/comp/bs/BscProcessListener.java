@@ -3,7 +3,7 @@ package com.reason.comp.bs;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.util.Key;
-import com.reason.Log;
+import jpsplugin.com.reason.Log;
 import com.reason.ide.annotations.OutputInfo;
 import org.jetbrains.annotations.NotNull;
 

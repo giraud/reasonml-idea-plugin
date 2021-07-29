@@ -11,8 +11,8 @@ import com.intellij.openapi.roots.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
-import com.reason.*;
 import com.reason.ide.settings.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 /**

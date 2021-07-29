@@ -7,13 +7,13 @@ import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.*;
 import com.intellij.util.indexing.*;
-import com.reason.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import icons.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

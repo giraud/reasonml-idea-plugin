@@ -8,7 +8,6 @@ import com.intellij.execution.ui.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.Compiler;
-import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.hints.*;
@@ -16,6 +15,7 @@ import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.rescript.*;
 import com.reason.ide.settings.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;

@@ -6,9 +6,9 @@ import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.util.*;
-import com.reason.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.type.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import static com.intellij.patterns.PlatformPatterns.*;

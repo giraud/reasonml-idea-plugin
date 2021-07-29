@@ -8,7 +8,7 @@ import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.*;
 import com.intellij.util.messages.*;
 import com.reason.comp.dune.*;
-import com.reason.sdk.*;
+import jpsplugin.com.reason.sdk.*;
 import org.jetbrains.annotations.*;
 
 import static com.intellij.ProjectTopics.*;

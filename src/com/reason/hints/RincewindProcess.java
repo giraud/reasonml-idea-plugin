@@ -4,9 +4,9 @@ import com.intellij.notification.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.hints.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;

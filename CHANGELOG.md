@@ -450,7 +450,7 @@ many versions active. Older version of the plugin will be frozen and won't get a
 - :rocket: You can use 'Go to class' to find OCaml/ReasonMl modules
 - :bug: [#78](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/78) ![o] Let symbol missing in structure panel
 - :bug: [#82](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/82) Exception for GoTo/Declaration of a function parameter
-- :bug: [#87](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/87) NullPointerException at com.reason.Platform.findBaseRootFromFile
+- :bug: [#87](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/87) NullPointerException at jpsplugin.com.reason.Platform.findBaseRootFromFile
 
 ## 0.59 - 2018/07/19
 
