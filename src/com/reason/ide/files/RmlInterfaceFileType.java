@@ -1,46 +1,46 @@
 package com.reason.ide.files;
 
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.lang.reason.RmlLanguage;
-import icons.ORIcons;
+import com.intellij.openapi.fileTypes.*;
+import com.reason.lang.reason.*;
+import icons.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class RmlInterfaceFileType extends LanguageFileType {
-  public static final RmlInterfaceFileType INSTANCE = new RmlInterfaceFileType();
+    public static final RmlInterfaceFileType INSTANCE = new RmlInterfaceFileType();
 
-  private RmlInterfaceFileType() {
-    super(RmlLanguage.INSTANCE);
-  }
+    private RmlInterfaceFileType() {
+        super(RmlLanguage.INSTANCE);
+    }
 
-  @NotNull
-  @Override
-  public String getName() {
-    return "REASON_INTF";
-  }
+    @Override
+    public @NotNull String getName() {
+        return "REASON_INTF";
+    }
 
-  @NotNull
-  @Override
-  public String getDescription() {
-    return "Reason language interface file";
-  }
+    @Override
+    public @NotNull @Nls String getDisplayName() {
+        return "Reason interface";
+    }
 
-  @NotNull
-  @Override
-  public String getDefaultExtension() {
-    return "rei";
-  }
+    @Override
+    public @NotNull String getDescription() {
+        return "Reason language interface file";
+    }
 
-  @Nullable
-  @Override
-  public Icon getIcon() {
-    return ORIcons.RML_INTERFACE_FILE;
-  }
+    @Override
+    public @NotNull String getDefaultExtension() {
+        return "rei";
+    }
 
-  @NotNull
-  @Override
-  public String toString() {
-    return getName();
-  }
+    @Override
+    public @Nullable Icon getIcon() {
+        return ORIcons.RML_INTERFACE_FILE;
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return getName();
+    }
 }

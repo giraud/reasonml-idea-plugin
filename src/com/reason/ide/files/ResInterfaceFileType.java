@@ -6,7 +6,7 @@ import icons.ORIcons;
 
 import javax.swing.*;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 public class ResInterfaceFileType extends LanguageFileType {
     public static final ResInterfaceFileType INSTANCE = new ResInterfaceFileType();
@@ -18,6 +18,11 @@ public class ResInterfaceFileType extends LanguageFileType {
     @Override
     public @NotNull String getName() {
         return "RESCRIPT_INTF";
+    }
+
+    @Override
+    public @NotNull @Nls String getDisplayName() {
+        return "Rescript interface";
     }
 
     @Override

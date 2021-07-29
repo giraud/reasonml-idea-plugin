@@ -13,7 +13,7 @@ allprojects {
 
     group 'com.reason'
     version = pluginVersion + '-' + platformVersion
-    sourceCompatibility = '11.0.9'
+    sourceCompatibility = '11.0'
 
     compileJava.options.encoding = 'UTF-8'
 
@@ -32,7 +32,6 @@ allprojects {
     }
 
     intellij {
-        pluginName = pluginName
         type = platformType
         version = platformVersion
         plugins = [
