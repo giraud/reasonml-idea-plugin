@@ -13,7 +13,7 @@ allprojects {
 
     group 'com.reason'
     version = pluginVersion + '-' + platformVersion
-    sourceCompatibility = '1.8'
+    sourceCompatibility = '11.0.9'
 
     compileJava.options.encoding = 'UTF-8'
 

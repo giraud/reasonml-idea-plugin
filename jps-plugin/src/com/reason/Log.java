@@ -3,7 +3,7 @@ package com.reason;
 import com.intellij.execution.process.*;
 import com.intellij.lang.*;
 import com.intellij.openapi.diagnostic.*;
-import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
