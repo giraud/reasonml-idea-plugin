@@ -1,21 +1,24 @@
 package jpsplugin.com.reason;
 
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.PersistentOrderRootType;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.roots.*;
+import org.jetbrains.annotations.*;
 
 public class OCamlSourcesOrderRootType extends PersistentOrderRootType {
-  public OCamlSourcesOrderRootType() {
-    super("OCAML_SOURCES", "OCamlSourcePath", null, null);
-  }
+    private static OCamlSourcesOrderRootType INSTANCE;
 
-  @NotNull
-  public static OrderRootType getInstance() {
-    return getOrderRootType(OCamlSourcesOrderRootType.class);
-  }
+    public OCamlSourcesOrderRootType() {
+        super("OCAML_SOURCES", "OCamlSourcePath", null, null);
+    }
 
-  @Override
-  public boolean skipWriteIfEmpty() {
-    return true;
-  }
+    public static @NotNull OrderRootType getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new OCamlSourcesOrderRootType();
+        }
+        return INSTANCE;
+    }
+
+    @Override
+    public boolean skipWriteIfEmpty() {
+        return true;
+    }
 }

@@ -1,24 +1,19 @@
 package jpsplugin.com.reason.sdk;
 
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.application.*;
+import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.ArrayUtil;
-import icons.ORIcons;
+import com.intellij.openapi.roots.*;
+import com.intellij.openapi.vfs.*;
+import icons.*;
 import jpsplugin.com.reason.*;
-import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jdom.*;
+import org.jetbrains.annotations.*;
 
 import javax.swing.*;
-import java.io.File;
-import java.util.Comparator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
 
 public class OCamlSdkType extends SdkType {
 
@@ -98,7 +93,7 @@ public class OCamlSdkType extends SdkType {
             VirtualFile[] ocamlSources = odk.getRootProvider().getFiles(OCamlSourcesOrderRootType.getInstance());
             VirtualFile[] javaSources = odk.getRootProvider().getFiles(OrderRootType.SOURCES);
 
-            if (!ArrayUtil.equals(ocamlSources, javaSources, SAME_FILE)) {
+            if (!Arrays.equals(ocamlSources, javaSources, SAME_FILE)) {
                 SdkModificator sdkModificator = odk.getSdkModificator();
 
                 sdkModificator.removeRoots(OrderRootType.SOURCES);

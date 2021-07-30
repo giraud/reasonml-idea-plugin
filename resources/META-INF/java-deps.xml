@@ -5,7 +5,6 @@
         <moduleConfigurationEditorProvider implementation="jpsplugin.com.reason.module.OCamlDefaultModuleEditorsProvider"/>
         <projectStructure.sourceRootEditHandler implementation="jpsplugin.com.reason.module.OCamlBinaryRootEditHandler"/>
 
-        <orderRootType implementation="jpsplugin.com.reason.OCamlSourcesOrderRootType"/>
         <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="jpsplugin.com.reason.OCamlSourcesOrderRootTypeUIFactory"/>
 
         <projectService serviceImplementation="com.reason.comp.dune.OpamProcess"/>

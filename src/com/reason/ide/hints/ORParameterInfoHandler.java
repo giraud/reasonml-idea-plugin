@@ -1,6 +1,5 @@
 package com.reason.ide.hints;
 
-import com.intellij.codeInsight.lookup.*;
 import com.intellij.lang.parameterInfo.*;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
@@ -21,16 +20,6 @@ public abstract class ORParameterInfoHandler implements ParameterInfoHandler<Psi
     @Nullable abstract RmlParameterInfoHandler.ArgumentsDescription[] calculateParameterInfo(PsiFunctionCallParams paramsOwner);
 
     @Nullable abstract PsiFunctionCallParams findFunctionParams(@NotNull PsiFile file, int offset);
-
-    @Override
-    public boolean couldShowInLookup() {
-        return true;
-    }
-
-    @Override
-    public @Nullable Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context) {
-        return null;
-    }
 
     @Override
     public @Nullable PsiFunctionCallParams findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {

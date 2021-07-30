@@ -71,8 +71,7 @@ public class ReformatOnSave {
                                             //noinspection DialogTitleCapitalization
                                             CommandProcessor.getInstance().executeCommand(project, () -> {
                                                         LOG.debug(" -> Applying text formatting");
-                                                        document.setText(newText);
-                                                        newFile.putUserData(UndoConstants.FORCE_RECORD_UNDO, null);
+                                                        UndoUtil.forceUndoIn(virtualFile, () -> document.setText(newText));
                                                     },
                                                     "or.reformat",
                                                     "CodeFormatGroup",

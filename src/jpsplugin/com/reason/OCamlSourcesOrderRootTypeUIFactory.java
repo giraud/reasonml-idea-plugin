@@ -1,33 +1,24 @@
 package jpsplugin.com.reason;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypeManager;
-import com.intellij.openapi.progress.ProcessCanceledException;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.project.ProjectBundle;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.ui.SdkPathEditor;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.libraries.LibraryRootType;
-import com.intellij.openapi.roots.libraries.ui.DetectedLibraryRoot;
-import com.intellij.openapi.roots.libraries.ui.LibraryRootsDetector;
-import com.intellij.openapi.roots.libraries.ui.OrderRoot;
-import com.intellij.openapi.roots.libraries.ui.impl.RootDetectionUtil;
-import com.intellij.openapi.roots.ui.OrderRootTypeUIFactory;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileVisitor;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.icons.*;
+import com.intellij.openapi.fileChooser.*;
+import com.intellij.openapi.fileTypes.*;
+import com.intellij.openapi.progress.*;
+import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.projectRoots.ui.*;
+import com.intellij.openapi.roots.*;
+import com.intellij.openapi.roots.libraries.*;
+import com.intellij.openapi.roots.libraries.ui.*;
+import com.intellij.openapi.roots.libraries.ui.impl.*;
+import com.intellij.openapi.roots.ui.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.util.containers.*;
+import org.jetbrains.annotations.*;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
 import javax.swing.*;
-
-import org.jetbrains.annotations.NotNull;
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactory {
     @Override
@@ -44,12 +35,12 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
 
     @Override
     public @NotNull String getNodeText() {
-        return ProjectBundle.message("library.sources.node");
+        return "Sources";
     }
 
     private static class SourcesPathEditor extends SdkPathEditor {
         SourcesPathEditor(@NotNull FileChooserDescriptor descriptor) {
-            super(ProjectBundle.message("sdk.configure.sourcepath.tab"), OCamlSourcesOrderRootType.getInstance(), descriptor);
+            super("Sourcepath", OCamlSourcesOrderRootType.getInstance(), descriptor);
         }
 
         @Override

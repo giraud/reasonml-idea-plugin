@@ -110,11 +110,11 @@ public abstract class OCamlExecutable {
             }
 
             // '\\wsl$\_ubuntu\home\_user\file.txt' -> '/home/user/file.txt'
-            File uncRoot = m_distribution.getUNCRoot();
-            if (FileUtil.isAncestor(uncRoot, path.toFile(), false)) {
+            Path uncRootPath = m_distribution.getUNCRootPath();
+            if (FileUtil.isAncestor(uncRootPath.toFile(), path.toFile(), false)) {
                 return StringUtil.trimStart(
                         FileUtil.toSystemIndependentName(path.toString()),
-                        FileUtil.toSystemIndependentName(uncRoot.getPath()));
+                        FileUtil.toSystemIndependentName(uncRootPath.toString()));
             }
 
             return path.toString();
@@ -127,7 +127,11 @@ public abstract class OCamlExecutable {
             String exe = commandLine.getExePath();
             commandLine.setExePath(pathToBinary == null ? exe : convertPath(new File(pathToBinary + "/" + exe).toPath()));
 
-            return m_distribution.patchCommandLine(commandLine, project, null, false);
+            try {
+                return m_distribution.patchCommandLine(commandLine, project, new WSLCommandLineOptions());
+            } catch (ExecutionException e) {
+                throw new IllegalStateException("Cannot patch command line for WSL", e);
+            }
         }
 
         @Override

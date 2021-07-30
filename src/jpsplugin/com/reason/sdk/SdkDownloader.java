@@ -11,12 +11,13 @@ import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
+import java.util.function.*;
 import java.util.zip.*;
 
 import static com.intellij.notification.NotificationType.*;
 
 public class SdkDownloader {
-    private static final Condition<String> KEEP_OCAML_SOURCES = s ->
+    private static final Predicate<String> KEEP_OCAML_SOURCES = s ->
             s.endsWith(".ml") || s.endsWith(".mli") || s.endsWith(".ml4") || s.endsWith(".mll") || s.endsWith(".mly");
 
     private final @NotNull String m_sdk;

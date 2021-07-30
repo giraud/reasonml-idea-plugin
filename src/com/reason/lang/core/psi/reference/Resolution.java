@@ -1,7 +1,6 @@
 package com.reason.lang.core.psi.reference;
 
 import com.intellij.psi.*;
-import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import jpsplugin.com.reason.*;
@@ -185,7 +184,7 @@ class Resolution implements Comparable<Resolution> {
             if (myPath == null) {
                 return otherPath == null;
             }
-            return otherPath != null && ArrayUtil.equals(myPath, otherPath, String::compareTo);
+            return otherPath != null && Arrays.equals(myPath, otherPath, String::compareTo);
         }
 
         if (otherPath == null) {
