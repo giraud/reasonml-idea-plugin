@@ -131,7 +131,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
                 String name = element.getText();
 
                 if (name != null) {
-                    Collection<PsiLet> lets = PsiFinder.getInstance(element.getProject()).findLets(name, ORFileType.interfaceOrImplementation);
+                    Collection<PsiLet> lets = element.getProject().getService(PsiFinder.class).findLets(name, ORFileType.interfaceOrImplementation);
                     if (!lets.isEmpty()) {
                         PsiLet let = lets.iterator().next();
                         if (let == null) {

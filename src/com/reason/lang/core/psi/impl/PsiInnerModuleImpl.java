@@ -142,7 +142,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     public @NotNull Collection<PsiNamedElement> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
         Collection<PsiNamedElement> result = emptyList();
 
-        PsiFinder psiFinder = PsiFinder.getInstance(getProject());
+        PsiFinder psiFinder = getProject().getService(PsiFinder.class);
 
         String alias = getAlias();
         if (alias != null) {

@@ -36,7 +36,7 @@ public class ModuleCompletionProvider {
 
     Project project = element.getProject();
     GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-    PsiFinder psiFinder = PsiFinder.getInstance(project);
+      PsiFinder psiFinder = project.getService(PsiFinder.class);
 
     // Compute module path (all module names before the last dot)
     ModulePath modulePath = computePathFromPsi(types, element);

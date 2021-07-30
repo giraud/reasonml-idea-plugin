@@ -3,7 +3,6 @@ package com.reason.ide.annotations;
 import com.intellij.lang.*;
 import com.intellij.lang.annotation.*;
 import com.intellij.openapi.application.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.editor.impl.*;
 import com.intellij.openapi.project.*;
@@ -265,7 +264,7 @@ abstract class ORErrorAnnotator extends ExternalAnnotator<InitialInfo, Annotatio
     }
 
     private void updateCodeLens(@NotNull Project project, @NotNull Language lang, @NotNull VirtualFile sourceFile, @NotNull File cmtFile) {
-        InsightManager insightManager = ServiceManager.getService(project, InsightManager.class);
+        InsightManager insightManager = project.getService(InsightManager.class);
         if (insightManager != null && !FileHelper.isInterface(sourceFile.getFileType())) {
             insightManager.queryTypes(sourceFile, cmtFile.toPath(), types -> {
                 LOG.debug("Updating signatures in user data cache for file", sourceFile);

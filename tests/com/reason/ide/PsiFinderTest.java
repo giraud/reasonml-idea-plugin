@@ -23,19 +23,19 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         GlobalSearchScope scope = allScope(getProject());
         List<PsiModule> modulesA =
                 new ArrayList<>(
-                        PsiFinder.getInstance(getProject())
+                        getProject().getService(PsiFinder.class)
                                 .findModulesbyName("Router", interfaceOnly, null, scope));
         List<PsiModule> modulesB =
                 new ArrayList<>(
-                        PsiFinder.getInstance(getProject())
+                        getProject().getService(PsiFinder.class)
                                 .findModulesbyName("Router", implementationOnly, null, scope));
         List<PsiModule> modulesC =
                 new ArrayList<>(
-                        PsiFinder.getInstance(getProject())
+                        getProject().getService(PsiFinder.class)
                                 .findModulesbyName("Router", interfaceOrImplementation, null, scope));
         List<PsiModule> modulesD =
                 new ArrayList<>(
-                        PsiFinder.getInstance(getProject()).findModulesbyName("Router", both, null, scope));
+                        getProject().getService(PsiFinder.class).findModulesbyName("Router", both, null, scope));
 
         assertSize(1, modulesA);
         assertEquals(
@@ -58,9 +58,9 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         FileBase implOnly =
                 (FileBase) myFixture.configureByText("B.re", "module Router: { let x = 1; };");
 
-        FileBase implRelated = PsiFinder.getInstance(getProject()).findRelatedFile(intf);
-        FileBase intfRelated = PsiFinder.getInstance(getProject()).findRelatedFile(impl);
-        FileBase onlyRelated = PsiFinder.getInstance(getProject()).findRelatedFile(implOnly);
+        FileBase implRelated = getProject().getService(PsiFinder.class).findRelatedFile(intf);
+        FileBase intfRelated = getProject().getService(PsiFinder.class).findRelatedFile(impl);
+        FileBase onlyRelated = getProject().getService(PsiFinder.class).findRelatedFile(implOnly);
 
         assertEquals("A.re", implRelated.getName());
         assertEquals("A.rei", intfRelated.getName());
@@ -73,11 +73,11 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
 
         List<PsiModule> fileModules =
                 new ArrayList<>(
-                        PsiFinder.getInstance(getProject())
+                        getProject().getService(PsiFinder.class)
                                 .findModulesFromQn("A", true, both, allScope(getProject())));
         List<PsiModule> innerModules =
                 new ArrayList<>(
-                        PsiFinder.getInstance(getProject())
+                        getProject().getService(PsiFinder.class)
                                 .findModulesFromQn("A.A", true, both, allScope(getProject())));
 
         assertSize(2, fileModules);
@@ -93,7 +93,7 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         myFixture.configureByText("A.rei", "exception Ex;");
         myFixture.configureByText("A.re", "exception Ex;");
 
-        PsiFinder psiFinder = PsiFinder.getInstance(getProject());
+        PsiFinder psiFinder = getProject().getService(PsiFinder.class);
         PsiException intf1 = psiFinder.findException("A.Ex", interfaceOnly, allScope(getProject()));
         PsiException intf2 =
                 psiFinder.findException("A.Ex", interfaceOrImplementation, allScope(getProject()));
@@ -109,7 +109,7 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         myFixture.configureByText("Belt_Option.ml", "type t;");
         myFixture.configureByText("Belt.ml", "module Option = Belt_Option;");
 
-        PsiFinder psiFinder = PsiFinder.getInstance(getProject());
+        PsiFinder psiFinder = getProject().getService(PsiFinder.class);
         List<PsiModule> moduleAliases =
                 new ArrayList<>(psiFinder.findModuleAlias("Belt.Option", allScope(getProject())));
 
@@ -122,7 +122,7 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         configureCode("A.res", "let x = something;");
         configureCode("B.res", "let (x, y) = other;");
 
-        Set<PsiLet> lets = PsiFinder.getInstance(getProject()).findLets("x", both);
+        Set<PsiLet> lets = getProject().getService(PsiFinder.class).findLets("x", both);
 
         assertSize(2, lets);
     }
@@ -131,7 +131,7 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         configureCode("A.re", "let x = something;");
         configureCode("B.re", "let (x, y) = other;");
 
-        Set<PsiLet> lets = PsiFinder.getInstance(getProject()).findLets("x", both);
+        Set<PsiLet> lets = getProject().getService(PsiFinder.class).findLets("x", both);
 
         assertSize(2, lets);
     }
@@ -140,7 +140,7 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         configureCode("A.ml", "let x = something");
         configureCode("B.ml", "let (x, y) = other");
 
-        Set<PsiLet> lets = PsiFinder.getInstance(getProject()).findLets("x", both);
+        Set<PsiLet> lets = getProject().getService(PsiFinder.class).findLets("x", both);
 
         assertSize(2, lets);
     }

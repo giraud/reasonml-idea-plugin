@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.command.*;
 import com.intellij.openapi.command.undo.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.fileTypes.*;
@@ -34,7 +33,7 @@ public class ConvertAction extends AnAction {
     }
 
     protected void apply(@NotNull Project project, @NotNull PsiFile file, boolean isNewFile) {
-        BsCompiler bucklescript = ServiceManager.getService(project, BsCompiler.class);
+        BsCompiler bucklescript = project.getService(BsCompiler.class);
         FileType fileType = file.getFileType();
 
         final Document document = PsiDocumentManager.getInstance(project).getDocument(file);

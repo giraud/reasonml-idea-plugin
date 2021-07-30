@@ -1,17 +1,12 @@
 package jpsplugin.com.reason;
 
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationListener;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
-import icons.ORIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.notification.*;
+import icons.*;
+import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-import static com.intellij.notification.NotificationType.ERROR;
-import static com.intellij.notification.NotificationType.INFORMATION;
+import static com.intellij.notification.NotificationType.*;
 
 public class ORNotification extends Notification {
 
@@ -21,8 +16,7 @@ public class ORNotification extends Notification {
         Notifications.Bus.notify(new ORNotification(title, subtitle, content, ERROR, listener));
     }
 
-    public static void notifyInfo(@Nullable String title, @Nullable String subtitle, @Nullable String content,
-            @Nullable NotificationListener listener) {
+    public static void notifyInfo(@Nullable String title, @Nullable String subtitle, @Nullable String content, @Nullable NotificationListener listener) {
         Notifications.Bus.notify(new ORNotification(title, subtitle, content, INFORMATION, listener));
     }
 

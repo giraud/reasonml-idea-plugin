@@ -37,7 +37,7 @@ public class FreeExpressionCompletionProvider {
     Project project = element.getProject();
     FileBase containingFile = (FileBase) element.getContainingFile();
     GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-    PsiFinder psiFinder = PsiFinder.getInstance(project);
+      PsiFinder psiFinder = project.getService(PsiFinder.class);
     FileModuleIndexService fileIndex = FileModuleIndexService.getService();
 
     // Add virtual namespaces

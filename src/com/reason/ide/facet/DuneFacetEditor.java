@@ -2,7 +2,6 @@ package com.reason.ide.facet;
 
 import com.intellij.facet.ui.*;
 import com.intellij.openapi.application.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.*;
@@ -118,7 +117,7 @@ class DuneFacetEditor extends FacetEditorTab {
 
     private void listLibraries(@Nullable Sdk odk) {
         if (odk != null) {
-            ServiceManager.getService(m_editorContext.getProject(), OpamProcess.class)
+            m_editorContext.getProject().getService(OpamProcess.class)
                     .list(odk, libs -> {
                         m_env.clear();
                         if (libs != null) {
@@ -169,7 +168,7 @@ class DuneFacetEditor extends FacetEditorTab {
         // @TODO see https://github.com/reasonml-editor/reasonml-idea-plugin/issues/243
         // show tool window if dune is now configured
         // should use a listener instead as this doesn't trigger when the facet is removed
-        ORToolWindowManager toolWindowManager = ServiceManager.getService(m_editorContext.getProject(), ORToolWindowManager.class);
+        ORToolWindowManager toolWindowManager = m_editorContext.getProject().getService(ORToolWindowManager.class);
         ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
     }
 }

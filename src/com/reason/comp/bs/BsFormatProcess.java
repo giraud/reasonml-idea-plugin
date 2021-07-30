@@ -1,6 +1,5 @@
 package com.reason.comp.bs;
 
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.ex.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
@@ -14,14 +13,9 @@ import java.io.*;
 import static jpsplugin.com.reason.Platform.*;
 
 public class BsFormatProcess {
-
     private static final Log LOG = Log.create("format.refmt");
 
     private final Project m_project;
-
-    public static @NotNull BsFormatProcess getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, BsFormatProcess.class);
-    }
 
     public BsFormatProcess(@NotNull Project project) {
         m_project = project;
@@ -38,7 +32,7 @@ public class BsFormatProcess {
             }
         }
 
-        String columnsWidth = ORSettings.getInstance(m_project).getFormatColumnWidth();
+        String columnsWidth = m_project.getService(ORSettings.class).getFormatColumnWidth();
         ProcessBuilder processBuilder =
                 new ProcessBuilder(refmtDir.getPath(), "-i", Boolean.toString(isInterface), "--parse=" + fromFormat, "-p", toFormat, "-w", columnsWidth);
         if (LOG.isDebugEnabled()) {

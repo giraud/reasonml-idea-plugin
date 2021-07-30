@@ -1,6 +1,5 @@
 package com.reason.ide;
 
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.*;
@@ -27,14 +26,14 @@ public class ORPostStartupActivity implements StartupActivity, DumbAware {
         DumbService.getInstance(project).smartInvokeLater(() -> {
             ProjectSdksModel model = new ProjectSdksModel();
             model.reset(project);
-            OpamEnv opamEnv = ServiceManager.getService(project, OpamEnv.class);
+            OpamEnv opamEnv = project.getService(OpamEnv.class);
             for (Sdk sdk : model.getSdks()) {
                 if (sdk.getSdkType() instanceof OCamlSdkType) {
                     opamEnv.computeEnv(sdk, data -> LOG.debug("Computed opam env for " + sdk));
                 }
             }
 
-            ServiceManager.getService(project, ORToolWindowManager.class).showHideToolWindows();
+            project.getService(ORToolWindowManager.class).showHideToolWindows();
         });
     }
 }

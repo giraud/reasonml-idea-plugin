@@ -3,7 +3,6 @@ package com.reason.comp.dune;
 import com.intellij.codeInsight.daemon.*;
 import com.intellij.execution.process.*;
 import com.intellij.openapi.application.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
@@ -32,7 +31,7 @@ public class DuneOutputListener implements ProcessListener {
     @Override
     public void startNotified(@NotNull ProcessEvent event) {
         myOutputInfo.clear();
-        ServiceManager.getService(myProject, ErrorsManager.class).clearErrors();
+        myProject.getService(ErrorsManager.class).clearErrors();
     }
 
     @Override
@@ -43,7 +42,7 @@ public class DuneOutputListener implements ProcessListener {
     public void processTerminated(@NotNull ProcessEvent event) {
         if (!myOutputInfo.isEmpty() && !myProject.isDisposed()) {
             LOG.debug("Update errors manager with output results");
-            ServiceManager.getService(myProject, ErrorsManager.class).addAllInfo(myOutputInfo);
+            myProject.getService(ErrorsManager.class).addAllInfo(myOutputInfo);
         }
 
         reset();

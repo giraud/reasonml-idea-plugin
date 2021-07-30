@@ -57,7 +57,7 @@ public class GotoTestDataAction extends AnAction {
             VirtualFile relatedFile;
 
             GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
-            PsiFinder psiFinder = PsiFinder.getInstance(project);
+            PsiFinder psiFinder = project.getService(PsiFinder.class);
             PsiModule relatedModule;
 
             String[] tokens = splitModuleName(((FileBase) file).getModuleName());

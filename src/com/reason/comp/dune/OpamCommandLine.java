@@ -1,7 +1,6 @@
 package com.reason.comp.dune;
 
 import com.intellij.execution.configurations.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
@@ -59,7 +58,7 @@ abstract class OpamCommandLine {
                 cli.setWorkDirectory(contentRoots[0].getPath());
                 cli.setRedirectErrorStream(m_redirectErrorStream);
 
-                Map<String, String> env = ServiceManager.getService(m_project, OpamEnv.class).getEnv(odk);
+                Map<String, String> env = m_project.getService(OpamEnv.class).getEnv(odk);
                 if (env != null) {
                     for (Map.Entry<String, String> entry : env.entrySet()) {
                         cli.withEnvironment(entry.getKey(), entry.getValue());

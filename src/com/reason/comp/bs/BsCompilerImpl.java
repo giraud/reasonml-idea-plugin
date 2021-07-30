@@ -77,7 +77,7 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
-        if (!isDisabled() && ORSettings.getInstance(myProject).isBsEnabled()) {
+        if (!isDisabled() && myProject.getService(ORSettings.class).isBsEnabled()) {
             VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject).get() : file;
             Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfig(myProject, sourceFile);
             if (!bsConfigFile.isPresent()) {
@@ -136,7 +136,7 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public @Nullable String convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
-        BsFormatProcess refmt = BsFormatProcess.getInstance(myProject);
+        BsFormatProcess refmt = myProject.getService(BsFormatProcess.class);
         String oldText = document.getText();
         String newText = refmt.convert(virtualFile, isInterface, fromFormat, toFormat, oldText);
         // additional protection

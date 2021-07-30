@@ -1,13 +1,10 @@
 package com.reason.comp.dune;
 
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.projectRoots.*;
+import org.jetbrains.annotations.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class OpamEnv {
     private final Project m_project;
@@ -27,7 +24,7 @@ public class OpamEnv {
     }
 
     public void computeEnv(@NotNull Sdk odk, @Nullable EnvTerminated onEnvTerminated) {
-        ServiceManager.getService(m_project, OpamProcess.class).env(odk, data -> {
+        m_project.getService(OpamProcess.class).env(odk, data -> {
             m_envs.put(odk.getVersionString(), data);
             if (onEnvTerminated != null) {
                 onEnvTerminated.run(data);

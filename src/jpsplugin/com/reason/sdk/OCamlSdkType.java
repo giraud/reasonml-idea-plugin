@@ -48,12 +48,6 @@ public class OCamlSdkType extends SdkType {
         return ORIcons.OCL_SDK;
     }
 
-    @NotNull
-    @Override
-    public Icon getIconForAddAction() {
-        return ORIcons.OCL_SDK;
-    }
-
     @Nullable
     @Override
     public String suggestHomePath() {

@@ -94,7 +94,7 @@ public class ORProjectManager {
     public static @NotNull Set<VirtualFile> findFilesInProject(@NotNull String filename, @NotNull Project project) {
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         if (ApplicationManager.getApplication().isReadAccessAllowed()) {
-            Collection<VirtualFile> virtualFilesByName = FilenameIndex.getVirtualFilesByName(project, filename, scope);
+            Collection<VirtualFile> virtualFilesByName = FilenameIndex.getVirtualFilesByName(filename, scope);
             return new HashSet<>(virtualFilesByName);
         }
         return Collections.emptySet();

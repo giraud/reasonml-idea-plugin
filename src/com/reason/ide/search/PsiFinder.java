@@ -1,7 +1,6 @@
 package com.reason.ide.search;
 
 import com.intellij.lang.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
@@ -34,8 +33,8 @@ import static com.reason.lang.core.ORFileType.*;
 import static java.util.Collections.*;
 
 public final class PsiFinder {
-
     private static final Log LOG = Log.create("finder");
+    private final @NotNull Project m_project;
 
     public @Nullable PsiQualifiedPathElement findModuleBack(@Nullable PsiElement root, @Nullable String path) {
         if (root != null && path != null) {
@@ -96,12 +95,6 @@ public final class PsiFinder {
         boolean accepts(T module);
     }
 
-    @NotNull
-    private final Project m_project;
-
-    public static PsiFinder getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, PsiFinder.class);
-    }
 
     public PsiFinder(@NotNull Project project) {
         m_project = project;
@@ -145,7 +138,7 @@ public final class PsiFinder {
 
         PartitionedModules(@NotNull Project project, @Nullable Collection<PsiModule> modules, @Nullable ModuleFilter<PsiModule> filter) {
             if (modules != null) {
-                BsCompiler bucklescript = ServiceManager.getService(project, BsCompiler.class);
+                BsCompiler bucklescript = project.getService(BsCompiler.class);
 
                 for (PsiModule module : modules) {
                     FileBase file = (FileBase) module.getContainingFile();
@@ -229,7 +222,7 @@ public final class PsiFinder {
         Collection<PsiModule> modules = fqn == null ? emptyList() : ModuleComponentFqnIndex.getElements(fqn, m_project);
         if (!modules.isEmpty()) {
             PsiModule module = modules.iterator().next();
-            return ServiceManager.getService(m_project, BsCompiler.class)
+            return m_project.getService(BsCompiler.class)
                     .isDependency(module.getContainingFile().getVirtualFile())
                     ? module
                     : null;
@@ -246,7 +239,7 @@ public final class PsiFinder {
 
         Set<PsiModule> result = new HashSet<>();
 
-        BsCompiler bucklescript = ServiceManager.getService(m_project, BsCompiler.class);
+        BsCompiler bucklescript = m_project.getService(BsCompiler.class);
 
         StubIndex.getInstance().processAllKeys(
                 IndexKeys.MODULES_COMP,

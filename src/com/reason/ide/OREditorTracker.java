@@ -30,7 +30,7 @@ public final class OREditorTracker implements Disposable {
             // we also register document listeners to detect changes
             @Override
             public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-                InsightManager insightManager = ServiceManager.getService(project, InsightManager.class);
+                InsightManager insightManager = project.getService(InsightManager.class);
                 if (insightManager != null) {
                     insightManager.downloadRincewindIfNeeded(file);
                 }

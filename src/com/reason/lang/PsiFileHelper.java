@@ -25,7 +25,7 @@ public class PsiFileHelper {
         ArrayList<PsiNamedElement> result = new ArrayList<>();
 
         if (file != null) {
-            PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
+            PsiFinder psiFinder = file.getProject().getService(PsiFinder.class);
             QNameFinder qnameFinder = PsiFinder.getQNameFinder(file.getLanguage());
             processSiblingExpressions(
                     psiFinder, qnameFinder, file.getFirstChild(), eScope, result, filter);

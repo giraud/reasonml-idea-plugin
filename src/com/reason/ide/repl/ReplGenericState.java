@@ -4,7 +4,6 @@ import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
 import com.intellij.execution.runners.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.vfs.*;
@@ -47,7 +46,7 @@ public class ReplGenericState implements RunProfileState {
 
         VirtualFile duneContentRoot = ORProjectManager.findFirstDuneContentRoot(project);
         VirtualFile baseRoot = duneContentRoot == null ? homeDirectory : duneContentRoot;
-        Map<String, String> env = ServiceManager.getService(project, OpamEnv.class).getEnv(odk);
+        Map<String, String> env = project.getService(OpamEnv.class).getEnv(odk);
 
         GeneralCommandLine cli = new GeneralCommandLine("ocaml");
         cli.setWorkDirectory(baseRoot.getPath());

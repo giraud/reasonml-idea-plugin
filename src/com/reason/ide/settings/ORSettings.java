@@ -24,10 +24,6 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
   // Esy
   private String m_esyExecutable = "";
 
-  public static ORSettings getInstance(@NotNull Project project) {
-    return ServiceManager.getService(project, ORSettings.class);
-  }
-
   private ORSettings(@NotNull Project project) {
     m_project = project;
   }

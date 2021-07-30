@@ -120,7 +120,7 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
             result = new ArrayList<>();
 
             String name = functorResult.getText();
-            PsiFinder psiFinder = PsiFinder.getInstance(getProject());
+            PsiFinder psiFinder = getProject().getService(PsiFinder.class);
             QNameFinder qnameFinder = PsiFinder.getQNameFinder(getLanguage());
             GlobalSearchScope searchScope = GlobalSearchScope.allScope(getProject());
 

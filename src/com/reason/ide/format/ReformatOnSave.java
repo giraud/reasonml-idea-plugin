@@ -28,7 +28,7 @@ public class ReformatOnSave {
     private static final Log LOG = Log.create("format.auto");
 
     public static void apply(@NotNull Project project, @NotNull Document document) {
-        ORSettings settings = ORSettings.getInstance(project);
+        ORSettings settings = project.getService(ORSettings.class);
         if (settings.isFormatOnSaveEnabled()) {
             PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
             if (psiFile != null && psiFile.isWritable()) {

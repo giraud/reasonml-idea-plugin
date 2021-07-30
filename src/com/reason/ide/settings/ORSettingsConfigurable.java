@@ -58,7 +58,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
   @Nullable
   @Override
   public JComponent createComponent() {
-    m_settings = ORSettings.getInstance(m_project);
+      m_settings = m_project.getService(ORSettings.class);
     createGeneralTab();
     createBsTab();
     createDuneTab();

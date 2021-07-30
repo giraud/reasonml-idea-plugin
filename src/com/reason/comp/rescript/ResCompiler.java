@@ -61,7 +61,7 @@ public class ResCompiler implements Compiler {
 
     @Override
     public void run(@Nullable VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
-        if (!isDisabled() && ORSettings.getInstance(myProject).isBsEnabled()) {
+        if (!isDisabled() && myProject.getService(ORSettings.class).isBsEnabled()) {
             // ResPlatform.findRescriptExe
             VirtualFile bsConfig = sourceFile == null ? ResPlatform.findConfigFile(myProject) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, sourceFile);
             if (bsConfig == null) {
