@@ -54,7 +54,7 @@ intellij {
     }
 }
 
-// > 2020.3
+// > 2020.3 ?
 //runPluginVerifier {
 //    ideVersions = [platformVersion]
 //}
