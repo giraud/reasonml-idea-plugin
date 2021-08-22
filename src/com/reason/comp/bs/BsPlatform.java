@@ -56,7 +56,7 @@ public class BsPlatform {
     }
 
     public static Optional<VirtualFile> findEsyExecutable(@NotNull Project project) {
-        String esyExecutable = ORSettings.getInstance(project).getEsyExecutable();
+        String esyExecutable = project.getService(ORSettings.class).getEsyExecutable();
         if (esyExecutable.isEmpty()) {
             return Esy.findEsyExecutable();
         }

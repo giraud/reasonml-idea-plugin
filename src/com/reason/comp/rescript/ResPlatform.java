@@ -9,9 +9,12 @@ import org.jetbrains.annotations.*;
 import static com.reason.comp.ORConstants.*;
 
 public class ResPlatform {
+    private ResPlatform() {
+    }
+
     static @Nullable VirtualFile findConfigFile(Project project) {
-        VirtualFile rootDir = ORProjectManager.findFirstBsContentRoot(project).orElse(null);
-        return rootDir == null ? null : rootDir.findFileByRelativePath(BS_CONFIG_FILENAME);
+        VirtualFile contentRoot = ORProjectManager.findFirstBsContentRoot(project);
+        return contentRoot == null ? null : contentRoot.findFileByRelativePath(BS_CONFIG_FILENAME);
     }
 
     public static @Nullable VirtualFile findBinaryPathForConfigFile(@NotNull Project project, @NotNull VirtualFile configFile) {

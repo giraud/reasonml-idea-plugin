@@ -44,7 +44,7 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public @NotNull String getFullVersion(@Nullable VirtualFile file) {
-        VirtualFile root = file == null ? ORProjectManager.findFirstBsContentRoot(myProject).orElse(null) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, file);
+        VirtualFile root = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, file);
         if (root != null) {
             return new BsProcess(myProject).getFullVersion(root);
         }
@@ -77,10 +77,10 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
-        if (!isDisabled() && ORSettings.getInstance(myProject).isBsEnabled()) {
-            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject).get() : file;
-            Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfig(myProject, sourceFile);
-            if (!bsConfigFile.isPresent()) {
+        if (!isDisabled() && myProject.getService(ORSettings.class).isBsEnabled()) {
+            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : file;
+            Optional<VirtualFile> bsConfigFile = sourceFile == null ? Optional.empty() : BsPlatform.findBsConfig(myProject, sourceFile);
+            if (bsConfigFile.isEmpty()) {
                 return;
             }
             getOrRefreshBsConfig(bsConfigFile.get());

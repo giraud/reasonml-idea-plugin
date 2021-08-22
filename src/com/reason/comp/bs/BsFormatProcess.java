@@ -38,7 +38,7 @@ public class BsFormatProcess {
             }
         }
 
-        String columnsWidth = ORSettings.getInstance(m_project).getFormatColumnWidth();
+        String columnsWidth = m_project.getService(ORSettings.class).getFormatColumnWidth();
         ProcessBuilder processBuilder =
                 new ProcessBuilder(refmtDir.getPath(), "-i", Boolean.toString(isInterface), "--parse=" + fromFormat, "-p", toFormat, "-w", columnsWidth);
         if (LOG.isDebugEnabled()) {

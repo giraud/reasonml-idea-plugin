@@ -100,8 +100,8 @@ public class ORProjectManager {
         return Collections.emptySet();
     }
 
-    public static @NotNull Optional<VirtualFile> findFirstBsContentRoot(@NotNull Project project) {
-        return findFirstO(findBsContentRoots(project));
+    public static @Nullable VirtualFile findFirstBsContentRoot(@NotNull Project project) {
+        return findFirst(findBsContentRoots(project));
     }
 
     public static @Nullable VirtualFile findFirstDuneContentRoot(@NotNull Project project) {
@@ -121,7 +121,7 @@ public class ORProjectManager {
         return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
     }
 
-    private static <T> @NotNull T findFirst(@NotNull Set<T> virtualFiles) {
+    private static <T> @Nullable T findFirst(@NotNull Set<T> virtualFiles) {
         Iterator<T> iterator = virtualFiles.iterator();
         return iterator.hasNext() ? iterator.next() : null;
     }

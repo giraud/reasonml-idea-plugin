@@ -104,7 +104,7 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
 
         @Override
         public @Nullable String apply(@NotNull String textToFormat) {
-            if (ORSettings.getInstance(m_project).isBsEnabled() && m_file.exists()) {
+            if (m_project.getService(ORSettings.class).isBsEnabled() && m_file.exists()) {
                 LOG.trace("Apply ReasonML formatter, is interface", m_isInterface);
                 BsFormatProcess process = BsFormatProcess.getInstance(m_project);
                 return process.convert(m_file, m_isInterface, "re", "re", textToFormat);

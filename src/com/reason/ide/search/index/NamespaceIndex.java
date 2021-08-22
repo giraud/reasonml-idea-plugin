@@ -55,9 +55,8 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
             } else {
                 BsConfig configFile = BsConfigReader.read(dataFile);
                 if (configFile.hasNamespace()) {
-                    Optional<VirtualFile> baseRoot =
-                            ORProjectManager.findFirstBsContentRoot(inputData.getProject());
-                    if (baseRoot.isPresent()) {
+                    VirtualFile contentRoot = ORProjectManager.findFirstBsContentRoot(inputData.getProject());
+                    if (contentRoot != null) {
                         String namespace = configFile.getNamespace();
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Indexing " + dataFile + " with namespace " + namespace);

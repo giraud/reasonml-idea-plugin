@@ -21,8 +21,8 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 import java.util.concurrent.atomic.*;
 
-import static com.reason.comp.ORConstants.*;
 import static com.reason.comp.CliType.Rescript.*;
+import static com.reason.comp.ORConstants.*;
 
 public class ResCompiler implements Compiler {
     private static final Log LOG = Log.create("compiler.rescript");
@@ -61,7 +61,8 @@ public class ResCompiler implements Compiler {
 
     @Override
     public void run(@Nullable VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
-        if (!isDisabled() && ORSettings.getInstance(myProject).isBsEnabled()) {
+        ORSettings settings = myProject.getService(ORSettings.class);
+        if (!isDisabled() && settings.isBsEnabled()) {
             // ResPlatform.findRescriptExe
             VirtualFile bsConfig = sourceFile == null ? ResPlatform.findConfigFile(myProject) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, sourceFile);
             if (bsConfig == null) {
@@ -79,8 +80,11 @@ public class ResCompiler implements Compiler {
 
                     cli.withWorkDirectory(bsConfig.getParent().getPath());
                     cli.withEnvironment("NINJA_ANSI_FORCED", "1");
+                    if (!settings.isUseSuperErrors()) {
+                        cli.withEnvironment("BS_VSCODE", "1");
+                    }
 
-                    ResProcessHandler processHandler = new ResProcessHandler(cli);  // m_processHandler = new KillableColoredProcessHandler(cli);
+                    ResProcessHandler processHandler = new ResProcessHandler(cli);
                     if (myProcessStarted.compareAndSet(false, true)) {
                         processHandler.addProcessListener(new ProcessFinishedListener(System.currentTimeMillis()));
                         processHandler.addProcessListener(new ProcessAdapter() {
