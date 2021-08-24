@@ -16,6 +16,8 @@ are solved.
 
 ## Unreleased
 
+- :bug: ![o] [#340](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/340) Items missing in structure panel after let ending with match (incorrect object parsing)
+
 ## 0.102.1 - 2021/07/06
 
 - :bug: [#333](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/333) CLion crash, remove dependency to java only class
