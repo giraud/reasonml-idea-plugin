@@ -11,8 +11,6 @@ import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.psi.ocamlyacc.*;
-import com.reason.lang.ocamlyacc.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
@@ -150,10 +148,6 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             treeElements = buildTypeStructure((PsiType) m_element);
         } else if (m_element instanceof PsiClass) {
             treeElements = buildClassStructure((PsiClass) m_element);
-        } else if (m_element instanceof OclYaccHeader) {
-            treeElements = buildYaccHeaderStructure((OclYaccHeader) m_element);
-        } else if (m_element instanceof OclYaccTrailer) {
-            treeElements = buildYaccTrailerStructure((OclYaccTrailer) m_element);
         } else if (m_element instanceof PsiStanza) {
             treeElements = buildStanzaStructure((PsiStanza) m_element);
         } else if (m_element instanceof PsiLet) {
@@ -245,30 +239,6 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         PsiElement rootElement = let.getBinding();
         if (rootElement != null && let.isFunction()) {
             treeElements = new ArrayList<>();
-            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
-        }
-
-        return treeElements;
-    }
-
-    private @NotNull List<TreeElement> buildYaccHeaderStructure(@NotNull OclYaccHeader root) {
-        List<TreeElement> treeElements = new ArrayList<>();
-
-        PsiElement rootElement =
-                ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
-        if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
-        }
-
-        return treeElements;
-    }
-
-    private @NotNull List<TreeElement> buildYaccTrailerStructure(@NotNull OclYaccTrailer root) {
-        List<TreeElement> treeElements = new ArrayList<>();
-
-        PsiElement rootElement =
-                ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
-        if (rootElement != null) {
             rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
         }
 

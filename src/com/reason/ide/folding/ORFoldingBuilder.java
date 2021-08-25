@@ -21,61 +21,54 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class ORFoldingBuilder extends FoldingBuilderEx {
-    @NotNull
     @Override
-    public FoldingDescriptor[] buildFoldRegions(
-            @NotNull PsiElement root, @NotNull Document document, boolean quick) {
+    public @NotNull FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
         ORTypes types = ORUtil.getTypes(root.getLanguage());
 
-        PsiTreeUtil.processElements(
-                root,
-                element -> {
-                    if (element instanceof PsiLet) {
-                        foldLet(descriptors, (PsiLet) element);
-                    } else if (element instanceof PsiType) {
-                        foldType(descriptors, (PsiType) element);
-                    } else if (element instanceof PsiInnerModule) {
-                        foldModule(descriptors, (PsiInnerModule) element);
-                    } else if (element instanceof PsiFunction) {
-                        foldFunction(descriptors, (PsiFunction) element);
-                    } else if (element instanceof PsiFunctor) {
-                        foldFunctor(descriptors, (PsiFunctor) element);
-                    } else if (element instanceof PsiTag) {
-                        foldTag(descriptors, (PsiTag) element);
-                    } else if (element instanceof PsiPatternMatch) {
-                        foldPatternMatch(descriptors, (PsiPatternMatch) element);
-                    } else if (element instanceof PsiSwitch) {
-                        foldSwitch(descriptors, (PsiSwitch) element);
-                    } else if (element instanceof OclYaccHeader) {
-                        foldHeader(descriptors, (OclYaccHeader) element);
-                    } else if (element instanceof OclYaccRule) {
-                        foldRule(descriptors, (OclYaccRule) element);
-                    } else if (types.MULTI_COMMENT == element.getNode().getElementType()) {
-                        FoldingDescriptor fold = fold(element);
-                        if (fold != null) {
-                            descriptors.add(fold);
-                        }
-                    }
+        PsiTreeUtil.processElements(root, element -> {
+            if (element instanceof PsiLet) {
+                foldLet(descriptors, (PsiLet) element);
+            } else if (element instanceof PsiType) {
+                foldType(descriptors, (PsiType) element);
+            } else if (element instanceof PsiInnerModule) {
+                foldModule(descriptors, (PsiInnerModule) element);
+            } else if (element instanceof PsiFunction) {
+                foldFunction(descriptors, (PsiFunction) element);
+            } else if (element instanceof PsiFunctor) {
+                foldFunctor(descriptors, (PsiFunctor) element);
+            } else if (element instanceof PsiTag) {
+                foldTag(descriptors, (PsiTag) element);
+            } else if (element instanceof PsiPatternMatch) {
+                foldPatternMatch(descriptors, (PsiPatternMatch) element);
+            } else if (element instanceof PsiSwitch) {
+                foldSwitch(descriptors, (PsiSwitch) element);
+            } else if (element instanceof OclYaccHeader) {
+                foldHeader(descriptors, (OclYaccHeader) element);
+            } else if (element instanceof OclYaccRule) {
+                foldRule(descriptors, (OclYaccRule) element);
+            } else if (types.MULTI_COMMENT == element.getNode().getElementType()) {
+                FoldingDescriptor fold = fold(element);
+                if (fold != null) {
+                    descriptors.add(fold);
+                }
+            }
 
-                    return true;
-                });
+            return true;
+        });
 
         return descriptors.toArray(new FoldingDescriptor[0]);
     }
 
-    private void foldLet(
-            @NotNull List<FoldingDescriptor> descriptors, @NotNull PsiLet letExpression) {
+    private void foldLet(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiLet letExpression) {
         FoldingDescriptor fold = fold(letExpression.getBinding());
         if (fold != null) {
             descriptors.add(fold);
         }
     }
 
-    private void foldType(
-            @NotNull List<FoldingDescriptor> descriptors, @NotNull PsiType typeExpression) {
-        PsiElement constrName =
-                ORUtil.findImmediateFirstChildOfClass(typeExpression, PsiLowerIdentifier.class);
+    private void foldType(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiType typeExpression) {
+        PsiElement constrName = ORUtil.findImmediateFirstChildOfClass(typeExpression, PsiLowerIdentifier.class);
         if (constrName != null) {
             PsiElement binding = typeExpression.getBinding();
             if (binding != null && binding.getTextLength() > 5) {
@@ -84,8 +77,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldModule(
-            @NotNull List<FoldingDescriptor> descriptors, @NotNull PsiInnerModule module) {
+    private void foldModule(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiInnerModule module) {
         FoldingDescriptor foldSignature = fold(module.getModuleType());
         if (foldSignature != null) {
             descriptors.add(foldSignature);
@@ -97,8 +89,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldFunction(
-            @NotNull List<FoldingDescriptor> descriptors, @NotNull PsiFunction func) {
+    private void foldFunction(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiFunction func) {
         FoldingDescriptor foldBinding = fold(func.getBody());
         if (foldBinding != null) {
             descriptors.add(foldBinding);
@@ -135,16 +126,14 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldPatternMatch(
-            @NotNull List<FoldingDescriptor> descriptors, @NotNull PsiPatternMatch element) {
+    private void foldPatternMatch(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiPatternMatch element) {
         FoldingDescriptor fold = fold(element.getBody());
         if (fold != null) {
             descriptors.add(fold);
         }
     }
 
-    private void foldHeader(
-            @NotNull List<FoldingDescriptor> descriptors, @NotNull OclYaccHeader root) {
+    private void foldHeader(@NotNull List<FoldingDescriptor> descriptors, @NotNull OclYaccHeader root) {
         FoldingDescriptor fold =
                 fold(ORUtil.findImmediateFirstChildOfType(root, OclYaccLazyTypes.OCAML_LAZY_NODE));
         if (fold != null) {
@@ -153,8 +142,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
     }
 
     private void foldRule(@NotNull List<FoldingDescriptor> descriptors, @NotNull OclYaccRule root) {
-        FoldingDescriptor fold =
-                fold(ORUtil.findImmediateFirstChildOfClass(root, OclYaccRuleBody.class));
+        FoldingDescriptor fold = fold(ORUtil.findImmediateFirstChildOfClass(root, OclYaccRuleBody.class));
         if (fold != null) {
             descriptors.add(fold);
         }

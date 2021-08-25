@@ -17,6 +17,7 @@ are solved.
 ## Unreleased
 
 - :bug: ![o] [#340](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/340) Items missing in structure panel after let ending with match (incorrect object parsing)
+- :bug: ![o] [#329](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/329) IllegalArgumentException: Not an OCaml node: Element(OCAML_LAZY_NODE)
 
 ## 0.102.1 - 2021/07/06
 

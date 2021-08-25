@@ -1,71 +1,55 @@
 package com.reason.lang.ocamlyacc;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.lang.ParserDefinition;
-import com.intellij.lang.PsiParser;
-import com.intellij.lexer.Lexer;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IFileElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.reason.ide.files.MlyFile;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.*;
+import com.intellij.lexer.*;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.reason.ide.files.*;
+import org.jetbrains.annotations.*;
 
 public class OclYaccParserDefinition implements ParserDefinition {
-  private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-  private static final TokenSet COMMENTS = TokenSet.create(OclYaccTypes.COMMENT);
+    private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
+    private static final TokenSet COMMENTS = TokenSet.create(OclYaccTypes.INSTANCE.COMMENT);
 
-  private static final IFileElementType FILE =
-      new IFileElementType(Language.findInstance(OclYaccLanguage.class));
+    private static final IFileElementType FILE = new IFileElementType(Language.findInstance(OclYaccLanguage.class));
 
-  @NotNull
-  @Override
-  public Lexer createLexer(Project project) {
-    return new OclYaccLexer();
-  }
+    @Override
+    public @NotNull Lexer createLexer(Project project) {
+        return new OclYaccLexer();
+    }
 
-  @NotNull
-  public TokenSet getWhitespaceTokens() {
-    return WHITE_SPACES;
-  }
+    public @NotNull TokenSet getWhitespaceTokens() {
+        return WHITE_SPACES;
+    }
 
-  @NotNull
-  public TokenSet getCommentTokens() {
-    return COMMENTS;
-  }
+    public @NotNull TokenSet getCommentTokens() {
+        return COMMENTS;
+    }
 
-  @NotNull
-  public TokenSet getStringLiteralElements() {
-    return TokenSet.EMPTY;
-  }
+    public @NotNull TokenSet getStringLiteralElements() {
+        return TokenSet.EMPTY;
+    }
 
-  @NotNull
-  public PsiParser createParser(Project project) {
-    return new OclYaccParser();
-  }
+    public @NotNull PsiParser createParser(Project project) {
+        return new OclYaccParser();
+    }
 
-  @NotNull
-  @Override
-  public IFileElementType getFileNodeType() {
-    return FILE;
-  }
+    @Override
+    public @NotNull IFileElementType getFileNodeType() {
+        return FILE;
+    }
 
-  @NotNull
-  public PsiFile createFile(@NotNull FileViewProvider viewProvider) {
-    return new MlyFile(viewProvider);
-  }
+    public @NotNull PsiFile createFile(@NotNull FileViewProvider viewProvider) {
+        return new MlyFile(viewProvider);
+    }
 
-  @NotNull
-  public SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
-    return SpaceRequirements.MAY;
-  }
+    public @NotNull SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
+        return SpaceRequirements.MAY;
+    }
 
-  @NotNull
-  public PsiElement createElement(@NotNull ASTNode node) {
-    return OclYaccTypes.Factory.createElement(node);
-  }
+    @NotNull
+    public PsiElement createElement(@NotNull ASTNode node) {
+        return OclYaccAstFactory.createElement(node);
+    }
 }
