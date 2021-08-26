@@ -16,11 +16,13 @@ are solved.
 
 ## Unreleased
 
+## 0.102.2 - 2021/08/26
+
 - :bug: ![o] [#340](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/340) Items missing in structure panel after let ending with match (incorrect object parsing)
 - :bug: ![o] [#329](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/329) IllegalArgumentException: Not an OCaml node: Element(OCAML_LAZY_NODE)
 - :house: remove jps-plugin.jar reference in plugin.xml
 
-## 0.102.1 - 2021/07/06
+0.102.1
 
 - :bug: [#333](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/333) CLion crash, remove dependency to java only class
 - :bug: [#157](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/157) Update parameter info handler, only show known types
