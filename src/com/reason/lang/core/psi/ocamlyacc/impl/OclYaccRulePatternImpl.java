@@ -1,12 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package com.reason.lang.core.psi.ocamlyacc.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.reason.lang.core.psi.ocamlyacc.OclYaccRulePattern;
-import com.reason.lang.core.psi.ocamlyacc.OclYaccVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.util.PsiTreeUtil;
+import static com.reason.lang.ocamlyacc.OclYaccTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.reason.lang.core.psi.ocamlyacc.*;
+import com.reason.lang.ocamlyacc.OclYaccPsiImplUtil;
 
 public class OclYaccRulePatternImpl extends ASTWrapperPsiElement implements OclYaccRulePattern {
 
@@ -19,7 +23,8 @@ public class OclYaccRulePatternImpl extends ASTWrapperPsiElement implements OclY
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof OclYaccVisitor) accept((OclYaccVisitor) visitor);
+    if (visitor instanceof OclYaccVisitor) accept((OclYaccVisitor)visitor);
     else super.accept(visitor);
   }
+
 }

@@ -365,9 +365,6 @@
         <completion.contributor language="Mly"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
-        <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compiler server -->
-        <compileServer.plugin classpath="jps-plugin.jar"/>
-
         <languageInjector implementation="com.reason.ide.js.JsInjector"/>
         <lang.elementManipulator forClass="com.reason.lang.core.psi.PsiLiteralExpression"
                                  implementationClass="com.reason.lang.core.LiteralStringManipulator"/>
