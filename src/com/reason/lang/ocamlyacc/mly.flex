@@ -59,57 +59,58 @@ IDENT=[A-Za-z_0-9]
 <INITIAL> {
     {WHITE_SPACE}  { return WHITE_SPACE; }
 
-    "%{"           { yybegin(IN_HEADER); tokenStart(); return OclYaccTypes.HEADER_START; }
-    "%}"           { return OclYaccTypes.HEADER_STOP; }
-    "{"            { yybegin(IN_SEMANTIC_ACTION); braceDepth = 1; tokenStart(); return OclYaccTypes.LBRACE; }
-    "}"            { return OclYaccTypes.RBRACE; }
+    "%{"           { yybegin(IN_HEADER); tokenStart(); return OclYaccTypes.INSTANCE.HEADER_START; }
+    "%}"           { return OclYaccTypes.INSTANCE.HEADER_STOP; }
+    "{"            { yybegin(IN_SEMANTIC_ACTION); braceDepth = 1; tokenStart(); return OclYaccTypes.INSTANCE.LBRACE; }
+    "}"            { return OclYaccTypes.INSTANCE.RBRACE; }
 
-    "%%"           { if (rulesDone) { yybegin(IN_TRAILER); } rulesDone = true; return OclYaccTypes.SECTION_SEPARATOR; }
+    "%%"           { if (rulesDone) { yybegin(IN_TRAILER); } rulesDone = true; return OclYaccTypes.INSTANCE.SECTION_SEPARATOR; }
 
-    "%token"       {return OclYaccTypes.TOKEN; }
-    "%start"       {return OclYaccTypes.START; }
-    "%type"        {return OclYaccTypes.TYPE; }
-    "%left"        {return OclYaccTypes.LEFT; }
-    "%right"       {return OclYaccTypes.RIGHT; }
+    "%token"       {return OclYaccTypes.INSTANCE.TOKEN; }
+    "%start"       {return OclYaccTypes.INSTANCE.START; }
+    "%type"        {return OclYaccTypes.INSTANCE.TYPE; }
+    "%left"        {return OclYaccTypes.INSTANCE.LEFT; }
+    "%right"       {return OclYaccTypes.INSTANCE.RIGHT; }
 
-    "."            { return OclYaccTypes.DOT; }
-    ":"            { return OclYaccTypes.COLON; }
-    ";"            { return OclYaccTypes.SEMI; }
-    "|"            { return OclYaccTypes.PIPE; }
-    "<"            { return OclYaccTypes.LT; }
-    ">"            { return OclYaccTypes.GT; }
+    "."            { return OclYaccTypes.INSTANCE.DOT; }
+    ":"            { return OclYaccTypes.INSTANCE.COLON; }
+    ";"            { return OclYaccTypes.INSTANCE.SEMI; }
+    "|"            { return OclYaccTypes.INSTANCE.PIPE; }
+    "<"            { return OclYaccTypes.INSTANCE.LT; }
+    ">"            { return OclYaccTypes.INSTANCE.GT; }
 
     "/*"           { yybegin(IN_COMMENT); tokenStart(); }
+    "(*"           { yybegin(IN_COMMENT); tokenStart(); }
 
-    {IDENT}+       { return OclYaccTypes.IDENT; }
-    /*[^\ \t\f]     { return OclYaccTypes.ATOM; }*/
+    {IDENT}+       { return OclYaccTypes.INSTANCE.IDENT; }
+    /*[^\ \t\f]     { return OclYaccTypes.INSTANCE.ATOM; }*/
 }
 
 <IN_HEADER> {
-    "%}"      { yypushback(2); tokenEnd(); yybegin(INITIAL); return OclYaccTypes.OCAML_LAZY_NODE; }
+    "%}"      { yypushback(2); tokenEnd(); yybegin(INITIAL); return OclYaccTypes.INSTANCE.OCAML_LAZY_NODE; }
     .         { }
     {NEWLINE} { }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.OCAML_LAZY_NODE; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.OCAML_LAZY_NODE; }
 }
 
 <IN_SEMANTIC_ACTION> {
     "{"       { braceDepth += 1; }
-    "}"       { braceDepth -= 1; if(braceDepth == 0) { yypushback(1); tokenEnd(); yybegin(INITIAL); return OclYaccTypes.OCAML_LAZY_NODE; } }
+    "}"       { braceDepth -= 1; if(braceDepth == 0) { yypushback(1); tokenEnd(); yybegin(INITIAL); return OclYaccTypes.INSTANCE.OCAML_LAZY_NODE; } }
     .         { }
     {NEWLINE} { }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.OCAML_LAZY_NODE; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.OCAML_LAZY_NODE; }
 }
 
 <IN_COMMENT> {
     .         { }
-    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.COMMENT; }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.COMMENT; }
+    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.COMMENT; }
 }
 
 <IN_TRAILER> {
     .         { }
     {NEWLINE} { }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.OCAML_LAZY_NODE; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.OCAML_LAZY_NODE; }
 }
 
 [^] { return BAD_CHARACTER; }

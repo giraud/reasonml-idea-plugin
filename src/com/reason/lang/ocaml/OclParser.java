@@ -236,7 +236,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLt(@NotNull ParserState state) {
-        if (!state.is(m_types.C_BINARY_CONDITION)) {
+        if (state.is(m_types.C_SIG_ITEM) || state.is(m_types.C_TYPE_BINDING) || state.is(m_types.C_OBJECT_FIELD)) {
             // |> < <| .. > ..
             state.markScope(m_types.C_OBJECT, m_types.LT)
                     .advance()
@@ -251,8 +251,7 @@ public class OclParser extends CommonParser<OclTypes> {
                 // type t = < .. > |>as<| ..
                 state.advance().advance().popEnd();
             }
-        }
-        else if (state.isPrevious(m_types.C_OBJECT)) {
+        } else if (state.isPrevious(m_types.C_OBJECT)) {
             // < ... |> > <| ..
             if (state.isCurrentResolution(objectFieldNamed)) {
                 state.popEnd();
@@ -555,8 +554,7 @@ public class OclParser extends CommonParser<OclTypes> {
             } else if (scope.isCompositeType(m_types.C_OBJECT)) {
                 // Close a class
                 state.popEnd();
-            }
-            else if (scope.isCompositeType(m_types.C_OBJECT)) {
+            } else if (scope.isCompositeType(m_types.C_OBJECT)) {
                 // Close a class
                 state.popEnd();
             }

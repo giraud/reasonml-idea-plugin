@@ -1,10 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package com.reason.lang.core.psi.ocamlyacc;
 
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiStructuredElement;
-import org.jetbrains.annotations.NotNull;
 
 public class OclYaccVisitor extends PsiElementVisitor {
 
@@ -39,4 +39,5 @@ public class OclYaccVisitor extends PsiElementVisitor {
   public void visitPsiElement(@NotNull PsiElement o) {
     visitElement(o);
   }
+
 }

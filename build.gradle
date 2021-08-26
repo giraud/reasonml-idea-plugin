@@ -43,11 +43,9 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#333 - CLion crash, remove dependency to java only class</li>
-                    <li>#328 - Update Rescript parser to latest syntax</li>
-                    <li>#326 - Structure panel shows "mutable" for mutable record fields rather than the field name</li>
-                    <li>#318 - Rescript integration</li>
-                    <li>#157 - Update parameter info handler, only show known types</li>
+                    <li>#340 - Items missing in structure panel after let ending with match (incorrect object parsing)</li>
+                    <li>#329 - IllegalArgumentException: Not an OCaml node: Element(OCAML_LAZY_NODE)</li>
+                    <li>remove jps-plugin.jar reference in plugin.xml</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

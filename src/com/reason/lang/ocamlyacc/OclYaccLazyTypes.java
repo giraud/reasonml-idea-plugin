@@ -1,17 +1,15 @@
 package com.reason.lang.ocamlyacc;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.ILazyParseableElementType;
-import com.reason.lang.ocaml.OclLanguage;
-import com.reason.lang.ocaml.OclParser;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.ocaml.*;
+import org.jetbrains.annotations.*;
 
 public interface OclYaccLazyTypes {
-  ILazyParseableElementType OCAML_LAZY_NODE =
-      new ILazyParseableElementType("OCAML_LAZY_NODE", OclLanguage.INSTANCE) {
+    ILazyParseableElementType OCAML_LAZY_NODE = new ILazyParseableElementType("OCAML_LAZY_NODE", OclLanguage.INSTANCE) {
         @Override
         public ASTNode parseContents(@NotNull ASTNode chameleon) {
-          return OclParser.parseOcamlNode(this, chameleon);
+            return OclParser.parseOcamlNode(this, chameleon);
         }
-      };
+    };
 }

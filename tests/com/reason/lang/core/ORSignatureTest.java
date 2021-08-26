@@ -6,9 +6,9 @@ import com.intellij.psi.impl.*;
 import com.intellij.psi.util.*;
 import com.intellij.testFramework.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.rescript.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
+import com.reason.lang.rescript.*;
 import org.jetbrains.annotations.*;
 
 public class ORSignatureTest extends LightJavaCodeInsightTestCase {
@@ -82,11 +82,9 @@ public class ORSignatureTest extends LightJavaCodeInsightTestCase {
     }
 
     public void testOcamJsJsObject() {
-        PsiSignature sig =
-                makeSignature(OCL, "string -> < a : string; b : < b1 : string; b2 : string > Js.t > Js.t");
+        PsiSignature sig = makeSignature(OCL, "string -> < a : string; b : < b1 : string; b2 : string > Js.t > Js.t");
 
-        assertEquals(
-                "string -> < a : string; b : < b1 : string; b2 : string > Js.t > Js.t", sig.asText(OCL));
+        assertEquals("string -> < a : string; b : < b1 : string; b2 : string > Js.t > Js.t", sig.asText(OCL));
         assertEquals("string => {. a:string, b:{. b1:string, b2:string } }", sig.asText(RML));
     }
 

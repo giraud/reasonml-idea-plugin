@@ -1,41 +1,36 @@
 package com.reason.ide.files;
 
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.lang.ocamlyacc.OclYaccLanguage;
-import icons.ORIcons;
+import com.intellij.openapi.fileTypes.*;
+import com.reason.lang.ocamlyacc.*;
+import icons.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class MlyFileType extends LanguageFileType {
-  public static final MlyFileType INSTANCE = new MlyFileType();
-  static final String EXTENSION = "mly";
+    public static final MlyFileType INSTANCE = new MlyFileType();
 
-  private MlyFileType() {
-    super(OclYaccLanguage.INSTANCE);
-  }
+    private MlyFileType() {
+        super(OclYaccLanguage.INSTANCE);
+    }
 
-  @NotNull
-  @Override
-  public String getName() {
-    return "MlY";
-  }
+    @Override
+    public @NotNull String getName() {
+        return "MlY";
+    }
 
-  @NotNull
-  @Override
-  public String getDescription() {
-    return "OCaml yacc parser";
-  }
+    @Override
+    public @NotNull String getDescription() {
+        return "OCaml yacc parser";
+    }
 
-  @NotNull
-  @Override
-  public String getDefaultExtension() {
-    return EXTENSION;
-  }
+    @Override
+    public @NotNull String getDefaultExtension() {
+        return "mly";
+    }
 
-  @Nullable
-  @Override
-  public Icon getIcon() {
-    return ORIcons.OCL_GREEN_FILE;
-  }
+    @Override
+    public @Nullable Icon getIcon() {
+        return ORIcons.OCL_GREEN_FILE;
+    }
 }
