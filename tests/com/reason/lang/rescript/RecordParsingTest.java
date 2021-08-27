@@ -35,6 +35,20 @@ public class RecordParsingTest extends ResParsingTestCase {
         assertNull(fields.get(2).getSignature());
     }
 
+    public void test_usage_deep() {
+        PsiLet e = first(letExpressions(parseCode("let r = { a: { b: { c: 3 } } }")));
+        PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
+
+        List<PsiRecordField> fields = new ArrayList<>(record.getFields());
+        assertSize(1, fields);
+        assertEquals("a", fields.get(0).getName());
+
+        List<PsiRecordField> allFields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(record, PsiRecordField.class));
+        assertEquals("a", allFields.get(0).getName());
+        assertEquals("b", allFields.get(1).getName());
+        assertEquals("c", allFields.get(2).getName());
+    }
+
     public void test_mixin() {
         PsiLet let = first(letExpressions(parseCode("let x = {...component, otherField: 1}")));
 

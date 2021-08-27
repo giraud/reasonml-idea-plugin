@@ -7,15 +7,18 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
-import com.reason.ide.files.*;
-import com.reason.ide.search.*;
+import com.intellij.psi.util.*;
+import com.reason.ide.search.index.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.reference.*;
+import com.reason.lang.core.type.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-import static com.intellij.psi.search.GlobalSearchScope.*;
 import static com.intellij.util.PsiIconUtil.*;
 
 public class JsxNameCompletionProvider {
@@ -24,34 +27,73 @@ public class JsxNameCompletionProvider {
     private JsxNameCompletionProvider() {
     }
 
-    public static void addCompletions(@NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull ORTypes types, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
         LOG.debug("JSX name expression completion");
 
-        FileBase originalFile = (FileBase) element.getContainingFile();
-        Project project = originalFile.getProject();
-        GlobalSearchScope scope = allScope(project);
+        Collection<PsiNamedElement> expressions = new ArrayList<>();
+        Project project = element.getProject();
+        PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(element);
 
-        Collection<PsiModule> modules = project.getService(PsiFinder.class).findComponents(scope);
-        LOG.debug(" -> Modules found", modules);
+        if (prevLeaf != null && prevLeaf.getNode().getElementType() == types.DOT) {
+            // Inner component completion
+            PsiElement previousElement = prevLeaf.getPrevSibling();
+            if (previousElement instanceof PsiUpperSymbol) {
+                PsiUpperSymbolReference reference = (PsiUpperSymbolReference) previousElement.getReference();
+                PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
+                LOG.debug(" -> resolved to", resolvedElement);
 
-        for (PsiModule module : modules) {
-            String moduleName = module.getModuleName();
-            if (moduleName != null) {
-                FileBase containingFile = module instanceof FileBase ? (FileBase) module : (FileBase) module.getContainingFile();
-                // if component is the file, don't add it to the completion result
-                if (!module.getQualifiedName().equals(originalFile.getModuleName())) {
-                    resultSet.addElement(
-                            LookupElementBuilder.create(moduleName)
-                                    .withIcon(getProvidersIcon(module, 0))
-                                    .withTypeText(
-                                            module instanceof PsiInnerModule
-                                                    ? containingFile.getModuleName()
-                                                    : containingFile.shortLocation())
-                                    .withInsertHandler(
-                                            (context, item) -> insertTagNameHandler(project, context, moduleName)));
+                // A component is resolved to the make function
+                if (resolvedElement instanceof PsiLowerIdentifier) {
+                    PsiElement resolvedModule = PsiTreeUtil.getStubOrPsiParentOfType(resolvedElement, PsiModule.class);
+                    if (resolvedModule == null) {
+                        resolvedModule = resolvedElement.getContainingFile();
+                    }
+
+                    for (PsiModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(resolvedModule, PsiModule.class)) {
+                        if (module.isComponent() && !(module instanceof PsiFakeModule)) {
+                            expressions.add(module);
+                        }
+                    }
                 }
             }
+        } else {
+            // List inner components above
+            List<PsiModule> localModules = ORUtil.findPreviousSiblingsOrParentOfClass(element, PsiModule.class);
+            for (PsiModule localModule : localModules) {
+                if (localModule.isComponent() && !localModule.isInterface()) {
+                    expressions.add(localModule);
+                }
+            }
+
+            // List all top level components
+            final PsiModule currentModule = getParentModule(element);
+            GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+            ModuleComponentIndex.processItems(project, scope, componentModule -> {
+                if (componentModule instanceof PsiFakeModule && !componentModule.equals(currentModule)) {
+                    expressions.add(componentModule);
+                }
+            });
         }
+
+        for (PsiNamedElement expression : expressions) {
+            String componentName = expression.getName();
+            if (componentName != null) {
+                resultSet.addElement(LookupElementBuilder.create(componentName)
+                        .withIcon(getProvidersIcon(expression, 0))
+                        .withInsertHandler((context, item) -> insertTagNameHandler(project, context, componentName)));
+            }
+        }
+    }
+
+    private static @Nullable PsiModule getParentModule(@NotNull PsiElement element) {
+        PsiModule parentModule = PsiTreeUtil.getStubOrPsiParentOfType(element, PsiModule.class);
+        if (parentModule == null) {
+            PsiElement lastElement = element.getContainingFile().getLastChild();
+            if (lastElement instanceof PsiFakeModule) {
+                parentModule = (PsiModule) lastElement;
+            }
+        }
+        return parentModule;
     }
 
     private static void insertTagNameHandler(@NotNull Project project, @NotNull InsertionContext context, @NotNull String tagName) {

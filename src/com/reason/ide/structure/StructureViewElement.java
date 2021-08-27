@@ -133,7 +133,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     }
 
     @Override
-    public @NotNull TreeElement[] getChildren() {
+    public TreeElement @NotNull [] getChildren() {
         List<TreeElement> treeElements = null;
 
         if (m_element instanceof FileBase || m_element instanceof DuneFile) {
@@ -190,7 +190,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     private @NotNull List<TreeElement> buildFunctorStructure(@NotNull PsiFunctor functor) {
         List<TreeElement> treeElements = new ArrayList<>();
 
-        PsiElement binding = functor.getBinding();
+        PsiElement binding = functor.getBody();
         if (binding != null) {
             binding.acceptChildren(new ElementVisitor(treeElements, m_level));
         }
@@ -329,7 +329,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         }
 
         @Override
-        public @NotNull TreeElement[] getChildren() {
+        public TreeElement @NotNull [] getChildren() {
             List<TreeElement> treeElements = new ArrayList<>();
             m_rootElement.acceptChildren(new ElementVisitor(treeElements, 1));
             return treeElements.toArray(new TreeElement[0]);

@@ -22,6 +22,7 @@ public class OclTypes extends ORTypes {
         C_FUNCTOR_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_FUNCTOR_DECLARATION;
         C_FUNCTOR_PARAM = (ORCompositeType) OclStubBasedElementTypes.C_FUNCTOR_PARAM;
         C_RECORD_FIELD = (ORCompositeType) OclStubBasedElementTypes.C_RECORD_FIELD;
+        C_OBJECT_FIELD = (ORCompositeType) OclStubBasedElementTypes.C_OBJECT_FIELD;
         C_VARIANT_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_VARIANT_DECLARATION;
         C_INCLUDE = (ORCompositeType) OclStubBasedElementTypes.C_INCLUDE;
         C_OPEN = (ORCompositeType) OclStubBasedElementTypes.C_OPEN;
@@ -70,7 +71,6 @@ public class OclTypes extends ORTypes {
         C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", OclLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", OclLanguage.INSTANCE);
-        C_OBJECT_FIELD = new ORCompositeElementType("C_OBJECT_FIELD", OclLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", OclLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", OclLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", OclLanguage.INSTANCE);

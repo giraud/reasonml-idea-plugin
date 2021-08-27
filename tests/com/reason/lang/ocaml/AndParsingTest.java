@@ -3,6 +3,7 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.*;
+import com.reason.ide.files.*;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiSwitch;
@@ -53,7 +54,7 @@ public class AndParsingTest extends OclParsingTestCase {
 
     // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/272
     public void test_GH_pattern_unit_chaining() {
-        PsiFile file = parseCode("let x = match xx with | Y -> let fn y = 1 in () and z = 1 ");
+        FileBase file = parseCode("let x = match xx with | Y -> let fn y = 1 in () and z = 1 ");
         List<PsiLet> exps = letExpressions(file);
 
         assertEquals(2, exps.size());

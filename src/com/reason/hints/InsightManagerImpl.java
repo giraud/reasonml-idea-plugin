@@ -29,7 +29,13 @@ public class InsightManagerImpl implements InsightManager {
 
     @Override
     public void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile) {
-        String rincewindName = ReadAction.compute(() -> getRincewindFilename(sourceFile.getParent(), ""));
+        VirtualFile parentFile = sourceFile.getParent();
+        if (parentFile == null) {
+            LOG.debug("Can't get parent file", sourceFile);
+            return;
+        }
+
+        String rincewindName = ReadAction.compute(() -> getRincewindFilename(parentFile, ""));
         if (rincewindName == null) {
             LOG.debug("No rincewind version found, abort downloading");
             return;

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModuleStub, PsiModule> {
-    public static final int VERSION = 22;
+    public static final int VERSION = 23;
 
     public PsiModuleStubElementType(@NotNull String name, Language language) {
         super(name, language);
@@ -20,14 +20,12 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
 
     @NotNull
     public PsiModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
-        boolean isModuleType = false;
         boolean isFunctorCall = false;
         if (psi instanceof PsiInnerModule) {
-            isModuleType = ((PsiInnerModule) psi).isModuleType();
             isFunctorCall = ((PsiInnerModule) psi).isFunctorCall();
         }
 
-        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getPath(), psi.getQualifiedNameAsPath(), null, psi.getAlias(), psi.isComponent(), psi.isInterface(), psi instanceof PsiFakeModule, isModuleType, isFunctorCall);
+        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getPath(), psi.getQualifiedNameAsPath(), null, psi.getAlias(), psi.isComponent(), psi.isInterface(), psi instanceof PsiFakeModule, isFunctorCall);
     }
 
     public void serialize(@NotNull final PsiModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
@@ -37,7 +35,6 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
         dataStream.writeBoolean(stub.isComponent());
         dataStream.writeBoolean(stub.isInterface());
         dataStream.writeBoolean(stub.isTopLevel());
-        dataStream.writeBoolean(stub.isModuleType());
         dataStream.writeBoolean(stub.isFunctorCall());
 
         String alias = stub.getAlias();
@@ -54,7 +51,6 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
         boolean isComponent = dataStream.readBoolean();
         boolean isInterface = dataStream.readBoolean();
         boolean isTopLevel = dataStream.readBoolean();
-        boolean isModuleType = dataStream.readBoolean();
         boolean isFunctorCall = dataStream.readBoolean();
 
         String alias = null;
@@ -63,7 +59,7 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
             alias = dataStream.readUTFFast();
         }
 
-        return new PsiModuleStub(parentStub, this, moduleName, path, qNamePath, null, alias, isComponent, isInterface, isTopLevel, isModuleType, isFunctorCall);
+        return new PsiModuleStub(parentStub, this, moduleName, path, qNamePath, null, alias, isComponent, isInterface, isTopLevel, isFunctorCall);
     }
 
     public void indexStub(@NotNull final PsiModuleStub stub, @NotNull final IndexSink sink) {

@@ -2,6 +2,7 @@ package com.reason.lang.core.stub;
 
 import com.intellij.psi.stubs.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.stub.type.*;
 import com.reason.lang.reason.*;
 
@@ -17,6 +18,7 @@ public interface RmlStubBasedElementTypes {
     IStubElementType<PsiLetStub, PsiLet> C_LET_DECLARATION = new PsiLetStubElementType(RmlLanguage.INSTANCE);
     IStubElementType<PsiValStub, PsiVal> C_VAL_DECLARATION = new PsiValStubElementType(RmlLanguage.INSTANCE);
     IStubElementType<PsiRecordFieldStub, PsiRecordField> C_RECORD_FIELD = new PsiRecordFieldStubElementType(RmlLanguage.INSTANCE);
+    IStubElementType<PsiObjectFieldStub, PsiObjectField> C_OBJECT_FIELD = new PsiObjectFieldStubElementType(RmlLanguage.INSTANCE);
     IStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> C_VARIANT_DECLARATION = new PsiVariantStubElementType(RmlLanguage.INSTANCE);
 
     IStubElementType<PsiIncludeStub, PsiInclude> C_INCLUDE = new PsiIncludeStubElementType(RmlLanguage.INSTANCE);

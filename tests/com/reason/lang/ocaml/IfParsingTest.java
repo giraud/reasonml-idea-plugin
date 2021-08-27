@@ -2,6 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.files.*;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.impl.PsiIfStatement;
@@ -37,7 +38,7 @@ public class IfParsingTest extends OclParsingTestCase {
   }
 
   public void test_with_in() {
-    PsiFile file = parseCode("let _ =  if x then let init = y in let data = z");
+    FileBase file = parseCode("let _ =  if x then let init = y in let data = z");
 
     assertEquals(1, letExpressions(file).size());
     assertNotNull(firstOfType(file, PsiIfStatement.class));

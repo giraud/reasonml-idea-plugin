@@ -1,105 +1,146 @@
 package com.reason.ide.insight.provider;
 
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
+import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.lookup.*;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.reason.ide.files.*;
+import com.reason.ide.search.*;
+import com.reason.ide.search.index.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.reference.*;
+import icons.*;
+import jpsplugin.com.reason.*;
+import org.jetbrains.annotations.*;
 
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.PsiIconUtil;
-import jpsplugin.com.reason.Log;
-import com.reason.ide.IconProvider;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.files.FileHelper;
-import com.reason.ide.search.FileModuleIndexService;
-import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.ModulePath;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.impl.PsiFakeModule;
-import com.reason.lang.core.type.ORTypes;
-import icons.ORIcons;
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ModuleCompletionProvider {
-  private static final Log LOG = Log.create("insight.module");
+    private static final Log LOG = Log.create("insight.module");
 
-  public static void addCompletions(
-      @NotNull ORTypes types, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
-    LOG.debug("MODULE expression completion");
-
-    Project project = element.getProject();
-    GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-    PsiFinder psiFinder = project.getService(PsiFinder.class);
-
-    // Compute module path (all module names before the last dot)
-    ModulePath modulePath = computePathFromPsi(types, element);
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("  module path", modulePath.toString());
+    private ModuleCompletionProvider() {
     }
 
-    if (modulePath.isEmpty()) {
-      // First module to complete, use the list of files
-      Set<PsiFakeModule> topModules = psiFinder.findTopModules(true, scope);
-      for (PsiFakeModule topModule : topModules) {
-        FileBase topFile = (FileBase) topModule.getContainingFile();
-        if (!topFile.equals(element.getContainingFile())) {
-          resultSet.addElement(
-              LookupElementBuilder.create(topModule.getModuleName())
-                  .withTypeText(FileHelper.shortLocation(topFile))
-                  .withIcon(IconProvider.getFileModuleIcon(topFile)));
-        }
-      }
+    public static void addCompletions(@NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
+        LOG.debug("MODULE expression completion");
 
-      // Add virtual namespaces
-      Collection<String> namespaces = FileModuleIndexService.getService().getNamespaces(project);
-      LOG.debug("  namespaces", namespaces);
+        Project project = element.getProject();
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+        PsiElement dotLeaf = PsiTreeUtil.prevVisibleLeaf(element);
+        PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
 
-      for (String namespace : namespaces) {
-        resultSet.addElement(
-            LookupElementBuilder.create(namespace)
-                .withTypeText("Generated namespace")
-                .withIcon(ORIcons.VIRTUAL_NAMESPACE));
-      }
-    } else {
-      Set<PsiModule> modulesFromQn =
-          psiFinder.findModulesFromQn(
-              modulePath.toString(), true, interfaceOrImplementation, scope);
-      PsiModule foundModule = modulesFromQn.isEmpty() ? null : modulesFromQn.iterator().next();
-      if (foundModule != null) {
-        LOG.debug("  Found module", foundModule);
-        for (PsiModule module : foundModule.getModules()) {
-          resultSet.addElement(
-              LookupElementBuilder.create(module)
-                  .withIcon(PsiIconUtil.getProvidersIcon(module, 0)));
+        final Collection<PsiElement> expressions = new ArrayList<>();
+
+        if (previousElement instanceof PsiUpperSymbol) {
+            LOG.debug(" -> upper symbol", previousElement);
+
+            PsiUpperSymbolReference reference = (PsiUpperSymbolReference) previousElement.getReference();
+            PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
+            LOG.debug(" -> resolved to", resolvedElement);
+
+            if (resolvedElement instanceof PsiUpperIdentifier) {
+                PsiElement resolvedParent = resolvedElement.getParent();
+                if (resolvedParent instanceof PsiModule) {
+                    expressions.addAll(getInnerModules((PsiModule) resolvedParent));
+                }
+            } else if (resolvedElement instanceof FileBase) {
+                expressions.addAll(getFileModules((FileBase) resolvedElement));
+            }
+        } else {
+            // empty path
+
+            // First module to complete, use the list of files
+            ModuleTopLevelIndex.processModules(project, scope, fakeModule -> {
+                FileBase topFile = (FileBase) fakeModule.getContainingFile();
+                if (!topFile.equals(element.getContainingFile())) {
+                    expressions.add(topFile);
+                }
+            });
+
+            // Add virtual namespaces
+            Collection<String> namespaces = FileModuleIndexService.getService().getNamespaces(project);
+            LOG.debug("  namespaces", namespaces);
+
+            for (String namespace : namespaces) {
+                resultSet.addElement(
+                        LookupElementBuilder.create(namespace)
+                                .withTypeText("Generated namespace")
+                                .withIcon(ORIcons.VIRTUAL_NAMESPACE));
+            }
         }
-      }
+
+        if (expressions.isEmpty()) {
+            LOG.trace(" -> no expressions found");
+        } else {
+            LOG.trace(" -> expressions", expressions);
+            for (PsiElement expression : expressions) {
+                if (expression instanceof FileBase) {
+                    FileBase topFile = (FileBase) expression;
+                    resultSet.addElement(LookupElementBuilder.
+                            create(topFile.getModuleName())
+                            .withTypeText(FileHelper.shortLocation(topFile))
+                            .withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+                } else if (expression instanceof PsiNamedElement && !(expression instanceof PsiFakeModule)) {
+                    String name = ((PsiNamedElement) expression).getName();
+                    resultSet.addElement(LookupElementBuilder.
+                            create(name == null ? "unknown" : name)
+                            .withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+                }
+            }
+        }
     }
-  }
 
-  @NotNull
-  private static ModulePath computePathFromPsi(
-      @NotNull ORTypes types, @Nullable PsiElement cursorElement) {
-    List<PsiUpperSymbol> moduleNames = new ArrayList<>();
-    PsiElement previousLeaf = cursorElement == null ? null : PsiTreeUtil.prevLeaf(cursorElement);
-    if (previousLeaf != null) {
-      IElementType previousElementType = previousLeaf.getNode().getElementType();
-      while (previousElementType == types.DOT || previousElementType == types.UIDENT) {
-        if (previousElementType == types.UIDENT) {
-          assert previousLeaf != null;
-          moduleNames.add((PsiUpperSymbol) ((LeafPsiElement) previousLeaf.getNode()).getParent());
+    private static @NotNull Collection<? extends PsiModule> getModules(@Nullable PsiElement element) {
+        if (element instanceof PsiModule) {
+            return getInnerModules((PsiModule) element);
         }
-        previousLeaf = previousLeaf == null ? null : PsiTreeUtil.prevLeaf(previousLeaf);
-        previousElementType = previousLeaf == null ? null : previousLeaf.getNode().getElementType();
-      }
+        if (element instanceof FileBase) {
+            return getFileModules((FileBase) element);
+        }
+        return Collections.emptyList();
     }
-    Collections.reverse(moduleNames);
-    return new ModulePath(moduleNames);
-  }
+
+    private static @NotNull Collection<PsiModule> getInnerModules(@NotNull PsiModule module) {
+        List<PsiModule> result = new ArrayList<>();
+
+        if (module.getAlias() != null) {
+            PsiElement resolvedAlias = ORUtil.resolveModuleSymbol(module.getAliasSymbol());
+            result.addAll(getModules(resolvedAlias));
+        } else {
+            PsiElement content = ORUtil.getModuleContent(module);
+
+            List<PsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(content, PsiInclude.class);
+            for (PsiInclude include : includes) {
+                PsiElement includedModule = ORUtil.resolveModuleSymbol(include.getModuleReference());
+                if (includedModule != null) {
+                    result.addAll(getModules(includedModule));
+                }
+            }
+
+            result.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(content, PsiModule.class));
+        }
+
+        return result;
+    }
+
+    private static @NotNull List<PsiModule> getFileModules(@NotNull FileBase element) {
+        List<PsiModule> result = new ArrayList<>();
+
+        List<PsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiInclude.class);
+        for (PsiInclude include : includes) {
+            PsiElement includedModule = ORUtil.resolveModuleSymbol(include.getModuleReference());
+            if (includedModule != null) {
+                result.addAll(getModules(includedModule));
+            }
+        }
+
+        result.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiModule.class));
+
+        return result;
+    }
 }

@@ -1,32 +1,23 @@
 package com.reason.ide.insight;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
-import jpsplugin.com.reason.Log;
-import com.reason.ide.insight.provider.DotExpressionCompletionProvider;
-import com.reason.ide.insight.provider.FreeExpressionCompletionProvider;
-import com.reason.ide.insight.provider.ModuleCompletionProvider;
-import com.reason.ide.insight.provider.ObjectCompletionProvider;
-import com.reason.lang.QNameFinder;
-import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiOpen;
-import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.completion.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.reason.ide.insight.provider.*;
+import com.reason.lang.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.type.*;
+import jpsplugin.com.reason.*;
+import org.jetbrains.annotations.*;
 
 abstract class ORCompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
     static final Log LOG = Log.create("insight");
 
     ORCompletionContributor(@NotNull ORTypes types, @NotNull QNameFinder qnameFinder) {
-        extend(
-                CompletionType.BASIC,
-                com.intellij.patterns.PlatformPatterns.psiElement(),
+        extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(),
                 new CompletionProvider<CompletionParameters>() {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
@@ -60,7 +51,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                         // Just after an open/include keyword
                         if (prevNodeType == types.OPEN || prevNodeType == types.INCLUDE) {
                             LOG.debug("the previous keyword is OPEN/INCLUDE");
-                            ModuleCompletionProvider.addCompletions(types, element, result);
+                            ModuleCompletionProvider.addCompletions(element, result);
                             return;
                         }
                         if (parent instanceof PsiOpen
@@ -68,7 +59,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                                 || grandParent instanceof PsiOpen
                                 || grandParent instanceof PsiInclude) {
                             LOG.debug("Inside OPEN/INCLUDE");
-                            ModuleCompletionProvider.addCompletions(types, element, result);
+                            ModuleCompletionProvider.addCompletions(element, result);
                             return;
                         }
 
@@ -79,19 +70,35 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                             PsiElement prevPrevLeaf = prevLeaf.getPrevSibling();
                             if (prevPrevLeaf != null && prevPrevLeaf.getNode().getElementType() != types.LPAREN) {
                                 LOG.debug("the previous element is DOT");
-                                DotExpressionCompletionProvider.addCompletions(qnameFinder, element, result);
+
+                                if (parent instanceof PsiTagStart) {
+                                    LOG.debug("Inside a Tag start");
+                                    JsxNameCompletionProvider.addCompletions(types, element, result);
+                                    return;
+                                }
+
+                                DotExpressionCompletionProvider.addCompletions(element, result);
                                 return;
                             }
                         }
 
                         if (prevNodeType == types.SHARPSHARP) {
                             LOG.debug("the previous element is SHARPSHARP");
-                            ObjectCompletionProvider.addCompletions(types, element, result);
+                            ObjectCompletionProvider.addCompletions(element, result);
                             return;
                         }
 
-                        // Specific completion contributors
-                        if (addSpecificCompletions(types, element, parent, grandParent, result)) {
+                        // Jsx
+                        //IElementType elementType = element.getNode().getElementType();
+                        if (element instanceof PsiLeafTagName) {
+                            LOG.debug("Previous element type is TAG_NAME");
+                            JsxNameCompletionProvider.addCompletions(types, element, result);
+                            return;
+                        }
+
+                        if (parent instanceof PsiTagProperty /*inside the prop name*/ || parent instanceof PsiTagStart || grandParent instanceof PsiTagStart) {
+                            LOG.debug("Inside a Tag start");
+                            JsxAttributeCompletionProvider.addCompletions(element, result);
                             return;
                         }
 
@@ -100,6 +107,4 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                     }
                 });
     }
-
-    protected abstract boolean addSpecificCompletions(ORTypes types, PsiElement element, PsiElement parent, PsiElement grandParent, CompletionResultSet result);
 }

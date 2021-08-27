@@ -254,6 +254,7 @@
         <stubIndex implementation="com.reason.ide.search.index.ExceptionIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExceptionFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.RecordFieldIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ObjectFieldIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ParameterIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ParameterFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.IncludeIndex"/>

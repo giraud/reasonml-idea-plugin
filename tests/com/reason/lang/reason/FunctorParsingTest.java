@@ -13,7 +13,7 @@ public class FunctorParsingTest extends RmlParsingTestCase {
         PsiNamedElement e = first(expressions(parseCode("module Make = (M: Def): S => {}")));
 
         PsiFunctor f = (PsiFunctor) e;
-        assertEquals("{}", f.getBinding().getText());
+        assertEquals("{}", f.getBody().getText());
         assertEquals("S", f.getReturnType().getText());
     }
 
@@ -30,7 +30,7 @@ public class FunctorParsingTest extends RmlParsingTestCase {
         assertEquals(2, constraints.size());
         assertEquals("type t('a) = M.t('a)", constraints.get(0).getText());
         assertEquals("type b = M.b", constraints.get(1).getText());
-        assertEquals("{}", f.getBinding().getText());
+        assertEquals("{}", f.getBody().getText());
     }
 
     public void test_signature() {
@@ -51,6 +51,6 @@ public class FunctorParsingTest extends RmlParsingTestCase {
         Collection<PsiParameter> parameters = functor.getParameters();
         assertSize(1, parameters);
         assertEquals("M", first(parameters).getName());
-        assertNotNull(functor.getBinding());
+        assertNotNull(functor.getBody());
     }
 }

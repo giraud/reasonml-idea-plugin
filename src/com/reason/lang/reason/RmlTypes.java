@@ -21,6 +21,7 @@ public class RmlTypes extends ORTypes {
         C_FUNCTOR_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_FUNCTOR_DECLARATION;
         C_FUNCTOR_PARAM = (ORCompositeType) RmlStubBasedElementTypes.C_FUNCTOR_PARAM;
         C_RECORD_FIELD = (ORCompositeType) RmlStubBasedElementTypes.C_RECORD_FIELD;
+        C_OBJECT_FIELD = (ORCompositeType) RmlStubBasedElementTypes.C_OBJECT_FIELD;
         C_VARIANT_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_VARIANT_DECLARATION;
         C_INCLUDE = (ORCompositeType) RmlStubBasedElementTypes.C_INCLUDE;
         C_OPEN = (ORCompositeType) RmlStubBasedElementTypes.C_OPEN;
@@ -71,7 +72,6 @@ public class RmlTypes extends ORTypes {
         C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", RmlLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", RmlLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", RmlLanguage.INSTANCE);
-        C_OBJECT_FIELD = new ORCompositeElementType("C_OBJECT_FIELD", RmlLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", RmlLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", RmlLanguage.INSTANCE);

@@ -36,7 +36,7 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(completions, "key", "ref", "name", "onClose");
     }
 
-    public void test_shouldDisplayPropertiesAfterPropName() {
+    public void test_props_after_name() {
         myFixture.configureByFiles("pervasives.ml");
         configureCode("Component.re", "[@react.component] let make = (~name, ~onClose) => <div/>;");
         configureCode("A.re", "let _ = <Component o<caret> >");
@@ -70,6 +70,20 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         List<String> completions = myFixture.getLookupElementStrings();
         assertSize(3, completions);
         assertContainsElements(completions, "key", "ref", "name");
+    }
+
+    public void test_interface_local() {
+        myFixture.configureByFiles("pervasives.ml");
+        configureCode("A.re",
+                "module type CompType = { [@react.component] let make : (~name:string, ~enabled:bool) => <div/>; };\n" +
+                        "module rec Comp:CompType = { [@react.component] let make = (~name, ~enabled) => <div/>; let y = 1; };\n" +
+                        "[@react.component] let make = () => <Comp <caret> />;");
+
+        myFixture.completeBasic();
+
+        List<String> completions = myFixture.getLookupElementStrings();
+        assertContainsElements(completions, "key", "ref", "name", "enabled");
+        assertSize(4, completions);
     }
 
 }

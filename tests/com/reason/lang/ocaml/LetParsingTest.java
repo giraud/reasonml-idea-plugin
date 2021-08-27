@@ -13,7 +13,7 @@ import static com.reason.lang.core.ExpressionFilterConstants.*;
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends OclParsingTestCase {
     public void test_constant() {
-        PsiFile file = parseCode("let x = 1 let y = 2");
+        FileBase file = parseCode("let x = 1 let y = 2");
         List<PsiLet> lets = new ArrayList<>(letExpressions(file));
 
         assertEquals(2, lets.size());
@@ -75,7 +75,7 @@ public class LetParsingTest extends OclParsingTestCase {
     }
 
     public void test_inDoLoop() {
-        PsiFile file = parseCode("let x l = for i = 0 to l - 1 do let x = 1 done");
+        FileBase file = parseCode("let x l = for i = 0 to l - 1 do let x = 1 done");
         PsiLet let = first(letExpressions(file));
 
         assertTrue(let.isFunction());
@@ -83,7 +83,7 @@ public class LetParsingTest extends OclParsingTestCase {
     }
 
     public void test_withSemiSeparator() {
-        PsiFile file = parseCode("let rec read_num = Printf.printf; let l = 1");
+        FileBase file = parseCode("let rec read_num = Printf.printf; let l = 1");
         Collection<PsiLet> lets = letExpressions(file);
 
         assertEquals(1, lets.size());
@@ -104,7 +104,7 @@ public class LetParsingTest extends OclParsingTestCase {
     }
 
     public void test_chaining() {
-        PsiFile file = parseCode("let visit_vo f = let segments = [| a; b; |] in let repr = x");
+        FileBase file = parseCode("let visit_vo f = let segments = [| a; b; |] in let repr = x");
         Collection<PsiLet> lets = letExpressions(file);
 
         assertEquals(1, lets.size());

@@ -13,8 +13,9 @@ public abstract class ORTypes {
   public ORCompositeType C_INCLUDE;
   public ORCompositeType C_LET_DECLARATION;
   public ORCompositeType C_MODULE_DECLARATION;
-  public ORCompositeType C_RECORD_FIELD;
+  public ORCompositeType C_OBJECT_FIELD;
   public ORCompositeType C_OPEN;
+  public ORCompositeType C_RECORD_FIELD;
   public ORCompositeType C_TYPE_DECLARATION;
   public ORCompositeType C_VAL_DECLARATION;
   public ORCompositeType C_VARIANT_DECLARATION;
@@ -61,7 +62,6 @@ public abstract class ORTypes {
   public ORCompositeType C_ML_INTERPOLATOR;
   public ORCompositeType C_NAMED_PARAM;
   public ORCompositeType C_OBJECT;
-  public ORCompositeType C_OBJECT_FIELD;
   public ORCompositeType C_OPTION;
   public ORCompositeType C_PARAMETERS;
   public ORCompositeType C_PATTERN_MATCH_BODY;

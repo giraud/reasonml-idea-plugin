@@ -791,11 +791,12 @@ public class ResParser extends CommonParser<ResTypes> {
                         .mark(m_types.C_MIXIN_FIELD);
             } else if (state.is(m_types.C_FUN_BODY) && !state.hasScopeToken()) {
                 state.updateScopeToken(m_types.LBRACE);
+            } else if (state.is(m_types.C_RECORD_FIELD)) {
+                state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(maybeRecord);
             } else {
                 state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE);
             }
         }
-
     }
 
     private void parseRBrace(@NotNull ParserState state) {
@@ -977,16 +978,25 @@ public class ResParser extends CommonParser<ResTypes> {
             state.popEndUntil(m_types.C_SIG_EXPR).popEnd();
         }
 
+        // type t |> = <| ...
         if (state.is(m_types.C_TYPE_DECLARATION)) {
-            // type t |> = <| ...
             state.advance().mark(m_types.C_TYPE_BINDING);
-        } else if (state.is(m_types.C_LET_DECLARATION)) {
-            // let x  |> = <| ...
+        }
+        // let x  |> = <| ...
+        else if (state.is(m_types.C_LET_DECLARATION)) {
             state.advance().mark(m_types.C_LET_BINDING);
-        } else if (state.is(m_types.C_TAG_PROPERTY)) {
+        }
+        //
+        else if (state.is(m_types.C_TAG_PROPERTY)) {
             state.advance().mark(m_types.C_TAG_PROP_VALUE);
-        } else if (state.is(m_types.C_MODULE_DECLARATION)) {
-            // module M |> = <| ...
+        }
+        // module M |> = <| ...
+        else if (state.is(m_types.C_MODULE_DECLARATION)) {
+            state.advance().mark(m_types.C_DUMMY).dummy().resolution(moduleBinding);
+        }
+        // module M : T |> =<| ...
+        else if (state.is(m_types.C_MODULE_TYPE)) {
+            state.popEnd();
             state.advance().mark(m_types.C_DUMMY).dummy().resolution(moduleBinding);
         }
         // ~x |> =<| ...
@@ -1052,7 +1062,10 @@ public class ResParser extends CommonParser<ResTypes> {
         } else {
             IElementType nextElementType = state.lookAhead(1);
 
-            if (state.is(m_types.C_TYPE_BINDING)
+            if (state.is(m_types.C_MODULE_TYPE)) {
+                // a module with a signature type ::  module M : |>T<| ...
+                state.mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
+            } else if (state.is(m_types.C_TYPE_BINDING)
                     && (nextElementType == m_types.PIPE || nextElementType == m_types.LPAREN)) {
                 // We are declaring a variant without a pipe before
                 // type t = |>X<| | ...

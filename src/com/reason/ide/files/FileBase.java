@@ -43,25 +43,22 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedPathEl
         return ModuleHelper.isComponent(this);
     }
 
-    @Override
-    public PsiElement getNavigationElement() {
-    /* ClassCastException ??
-    if (isComponent()) {
-        PsiLet make = getLetExpression("make");
-        if (make != null) {
-            return make;
+    public PsiElement getComponentNavigationElement() {
+        if (isComponent()) {
+            List<PsiLet> lets = PsiTreeUtil.getStubChildrenOfTypeAsList(this, PsiLet.class);
+            for (PsiLet let : lets) {
+                if ("make".equals(let.getName())) {
+                    return let;
+                }
+            }
+            List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(this, PsiExternal.class);
+            for (PsiExternal external : externals) {
+                if ("make".equals(external.getName())) {
+                    return external;
+                }
+            }
         }
-    }
-    */
-        return super.getNavigationElement();
-    }
-
-    public @NotNull String shortLocation() {
-        return FileHelper.shortLocation(this);
-    }
-
-    public @NotNull Collection<PsiNamedElement> getExpressions(@Nullable String name) {
-        return PsiFileHelper.getExpressions(this, name);
+        return null;
     }
 
     @SafeVarargs

@@ -6,10 +6,10 @@ import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
-import com.reason.ide.search.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiLiteralExpression;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.reason.*;
@@ -78,90 +78,6 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
     }
     //endregion
 
-    // zzz not used ?
-    private static @NotNull List<PsiObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
-        List<PsiObjectField> fields = new ArrayList<>();
-
-        PsiElement prevParent = null;
-        boolean isAdding = false;
-
-        // depth first elements
-        Collection<PsiElement> elements = PsiTreeUtil.findChildrenOfAnyType(parent, PsiObjectField.class, PsiLowerSymbol.class);
-        for (PsiElement element : elements) {
-            if (visited.containsKey(element)) {
-                continue;
-            }
-            visited.put(element, true);
-
-            // { "fieldName": currentLet } - element is "fieldName"
-            if (element instanceof PsiObjectField && element.getParent() instanceof PsiJsObject) {
-                String name = ((PsiObjectField) element).getName();
-                if (prevParent == null) {
-                    prevParent = element.getParent().getParent();
-                }
-
-                if (offset >= path.size()) {
-                    if (Objects.equals(element.getParent().getParent(), prevParent)) {
-                        isAdding = true;
-                        fields.add((PsiObjectField) element);
-                    } else if (isAdding) {
-                        isAdding = false;
-                        offset = offset > 0 ? offset - 1 : 0;
-                    } else {
-                        int prev = offset > 0 ? offset - 1 : 0;
-                        String lookingFor = path.get(prev);
-                        if (name != null && name.equals(lookingFor)) {
-                            prevParent = element;
-                        }
-                    }
-                } else {
-                    String lookingFor = path.get(offset);
-                    if (name != null && name.equals(lookingFor)) {
-                        prevParent = element;
-                        offset = offset + 1;
-                    }
-                }
-            }
-            // { "fieldName": currentLet } - element is currentLet
-            else if (element instanceof PsiLowerSymbol) {
-                if (path.isEmpty()) {
-                    continue;
-                }
-
-                String name = element.getText();
-
-                if (name != null) {
-                    Collection<PsiLet> lets = element.getProject().getService(PsiFinder.class).findLets(name, ORFileType.interfaceOrImplementation);
-                    if (!lets.isEmpty()) {
-                        PsiLet let = lets.iterator().next();
-                        if (let == null) {
-                            continue;
-                        }
-                        if (let == parent) {
-                            continue;
-                        }
-
-                        int prev = offset > 0 ? offset - 1 : 0;
-                        String lookingFor = path.get(prev);
-
-                        // fieldName that is referencing current let { "fieldName": currentLet };
-                        PsiElement elementParent = element.getParent();
-                        if (elementParent instanceof PsiObjectField) {
-                            PsiElement elementGrandParent = elementParent.getParent();
-                            if (elementGrandParent instanceof PsiJsObject) {
-                                String fieldName = ((PsiObjectField) element.getParent()).getName();
-                                if (fieldName != null && fieldName.equals(lookingFor)) {
-                                    fields.addAll(getJsObjectFields(let, visited, path, offset));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return fields;
-    }
-
     @Override
     public @Nullable PsiLetBinding getBinding() {
         return findChildByClass(PsiLetBinding.class);
@@ -201,6 +117,14 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         }
 
         return null;
+    }
+
+    @Override
+    public @Nullable PsiElement resolveAlias() {
+        PsiElement binding = getBinding();
+        PsiLowerSymbol lSymbol = binding == null ? null : ORUtil.findImmediateLastChildOfClass(binding, PsiLowerSymbol.class);
+        PsiLowerSymbolReference lReference = lSymbol == null ? null : (PsiLowerSymbolReference) lSymbol.getReference();
+        return lReference == null ? null : lReference.resolveInterface();
     }
 
     @Override
@@ -254,7 +178,6 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         PsiLetBinding binding = getBinding();
         return binding != null && binding.getFirstChild() instanceof PsiJsObject;
     }
-
 
     @Override
     public @NotNull Collection<PsiRecordField> getRecordFields() {

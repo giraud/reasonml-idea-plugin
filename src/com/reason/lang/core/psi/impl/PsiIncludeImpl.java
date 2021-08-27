@@ -4,7 +4,6 @@ import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
-import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.xml.model.gotosymbol.*;
 import com.reason.ide.search.*;
@@ -65,26 +64,22 @@ public class PsiIncludeImpl extends PsiTokenStub<ORTypes, PsiInclude, PsiInclude
         return path == null ? null : path.split("\\.");
     }
 
-    @Nullable private PsiUpperSymbol getLatestUpperSymbol(PsiElement root) {
+    // deprecate ?
+    @Override
+    public @Nullable PsiUpperSymbol getModuleReference() {
         // Latest element in path
-        PsiElement sibling = ORUtil.nextSibling(root);
-        PsiUpperSymbol last = sibling instanceof PsiUpperSymbol ? (PsiUpperSymbol) sibling : null;
-        while (sibling != null) {
-            IElementType elementType = sibling.getNode().getElementType();
-            if (elementType == m_types.DOT || elementType == m_types.C_UPPER_SYMBOL) {
-                sibling = sibling.getNextSibling();
-                if (sibling instanceof PsiUpperSymbol) {
-                    last = (PsiUpperSymbol) sibling;
-                }
-            } else {
-                sibling = null;
-            }
-        }
-        return last;
+        return ORUtil.findImmediateLastChildOfClass(this, PsiUpperSymbol.class);
     }
 
-    @Override public @Nullable PsiModule getModule() {
-        return null;  // TODO implement method
+    @Override
+    public @Nullable PsiElement resolveModule() {
+        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+        if (firstChild instanceof PsiFunctorCall) {
+            return ((PsiFunctorCall) firstChild).resolveFunctor();
+        } else if (firstChild instanceof PsiUpperSymbol) {
+            return ORUtil.resolveModuleSymbol((PsiUpperSymbol) firstChild);
+        }
+        return null;
     }
 
     @Override
