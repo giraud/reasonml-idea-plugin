@@ -14,8 +14,11 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-// @ProjectComponent
 public class ORReferenceAnalyzer {
+    private static final String[] EMPTY_ARRAY = new String[0];
+
+    private ORReferenceAnalyzer() {
+    }
 
     static class ORUpperSymbolWithResolution extends ORFakeResolvedElement {
         public ORUpperSymbolWithResolution(PsiElement element) {
@@ -191,7 +194,8 @@ public class ORReferenceAnalyzer {
                                     peek = resolvedInstructions.pop();
                                 }
                                 // and replace them with new path
-                                String[] aliasPath = elements.iterator().next().getAlias().split("\\.");
+                                String elementAlias = elements.iterator().next().getAlias();
+                                String[] aliasPath = elementAlias == null ? EMPTY_ARRAY : elementAlias.split("\\.");
                                 for (String p : aliasPath) {
                                     resolvedInstructions.push(new CodeInstruction(new ORUpperResolvedSymbol(element), p));
                                 }
@@ -221,9 +225,11 @@ public class ORReferenceAnalyzer {
                         resolvedInstructions.push(new CodeInstruction(local, (String) null));
                     } else {
                         int pos = alias.indexOf(".");
-                        String newAlias = ((ORLocalAlias) localAlias.mySource).myResolvedAlias + alias.substring(pos);
-                        PsiElement local = new ORLocalAlias(psiElement, newAlias);
-                        resolvedInstructions.push(new CodeInstruction(local, (String) null));
+                        if (0 <= pos) {
+                            String newAlias = ((ORLocalAlias) localAlias.mySource).myResolvedAlias + alias.substring(pos);
+                            PsiElement local = new ORLocalAlias(psiElement, newAlias);
+                            resolvedInstructions.push(new CodeInstruction(local, (String) null));
+                        }
                     }
                 }
             } else if (psiElement instanceof PsiOpen) {
