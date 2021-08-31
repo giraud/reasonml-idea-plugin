@@ -2,12 +2,12 @@ package com.reason.comp.dune;
 
 import com.intellij.execution.process.*;
 import com.intellij.facet.*;
-import com.intellij.openapi.module.*;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.*;
 import com.reason.comp.Compiler;
+import com.reason.comp.*;
 import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
@@ -77,7 +77,7 @@ public class DuneCompiler implements Compiler {
             DuneProcess process = new DuneProcess(myProject);
             ProcessHandler processHandler = sourceFile == null ? null : process.create(sourceFile, cliType, myConfigurationWarning, onProcessTerminated);
             if (processHandler != null && console != null) {
-                processHandler.addProcessListener(new DuneOutputListener(myProject));
+                processHandler.addProcessListener(new CompilerOutputListener(myProject, new DuneOutputAnalyzer()));
                 processHandler.addProcessListener(new ProcessFinishedListener());
                 processHandler.addProcessListener(new ProcessAdapter() {
                     @Override public void processTerminated(@NotNull ProcessEvent event) {

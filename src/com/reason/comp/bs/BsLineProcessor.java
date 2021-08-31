@@ -1,17 +1,14 @@
 package com.reason.comp.bs;
 
+import com.reason.ide.annotations.*;
+import jpsplugin.com.reason.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
+import java.util.regex.*;
+
 import static com.reason.comp.bs.BsLineProcessor.BuildStatus.*;
-import static java.lang.Integer.parseInt;
-
-import jpsplugin.com.reason.Log;
-import com.reason.ide.annotations.OutputInfo;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static java.lang.Integer.*;
 
 /**
  * Line processor is a state machine.
@@ -203,6 +200,7 @@ public class BsLineProcessor {
     private @NotNull OutputInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @Nullable String lineEnd, @Nullable String colEnd) {
         OutputInfo info = new OutputInfo();
         info.path = path;
+        info.isError = true;
         info.lineStart = parseInt(lineStart);
         info.colStart = parseInt(colStart);
         info.lineEnd = lineEnd == null ? info.lineStart : parseInt(lineEnd);
@@ -214,6 +212,7 @@ public class BsLineProcessor {
     private @NotNull OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, @NotNull String colEnd) {
         OutputInfo info = new OutputInfo();
         info.path = path;
+        info.isError = true;
         info.lineStart = parseInt(line);
         info.colStart = parseInt(colStart);
         info.lineEnd = info.lineStart;
