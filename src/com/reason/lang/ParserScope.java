@@ -88,12 +88,12 @@ public class ParserScope {
         }
     }
 
-    public ParserScope complete() {
+    public @NotNull ParserScope complete() {
         m_isComplete = true;
         return this;
     }
 
-    public ParserScope optional() {
+    public @NotNull ParserScope optional() {
         m_isComplete = false;
         return this;
     }

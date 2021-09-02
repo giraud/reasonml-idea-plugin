@@ -12,7 +12,7 @@ public class ResPlatform {
     private ResPlatform() {
     }
 
-    static @Nullable VirtualFile findConfigFile(Project project) {
+    static @Nullable VirtualFile findConfigFile(@NotNull Project project) {
         VirtualFile contentRoot = ORProjectManager.findFirstBsContentRoot(project);
         return contentRoot == null ? null : contentRoot.findFileByRelativePath(BS_CONFIG_FILENAME);
     }

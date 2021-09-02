@@ -20,7 +20,7 @@ public class ParameterIndex extends StringStubIndexExtension<PsiParameter> {
         return IndexKeys.PARAMETERS;
     }
 
-    public static @NotNull Collection<PsiParameter> getElements(String key, Project project, @Nullable GlobalSearchScope scope) {
+    public static @NotNull Collection<PsiParameter> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
         return StubIndex.getElements(IndexKeys.PARAMETERS, key, project, scope, PsiParameter.class);
     }
 }

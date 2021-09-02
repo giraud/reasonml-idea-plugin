@@ -21,7 +21,7 @@ public class ORReferenceAnalyzer {
     }
 
     static class ORUpperSymbolWithResolution extends ORFakeResolvedElement {
-        public ORUpperSymbolWithResolution(PsiElement element) {
+        public ORUpperSymbolWithResolution(@NotNull PsiElement element) {
             super(element);
         }
 
@@ -31,7 +31,7 @@ public class ORReferenceAnalyzer {
     }
 
     static class ORUpperResolvedSymbol extends ORFakeResolvedElement {
-        public ORUpperResolvedSymbol(PsiElement element) {
+        public ORUpperResolvedSymbol(@NotNull PsiElement element) {
             super(element);
         }
 
@@ -52,7 +52,8 @@ public class ORReferenceAnalyzer {
             return name.equals(((PsiModule) getOriginalElement()).getModuleName());
         }
 
-        @Override public String toString() {
+        @Override
+        public @NotNull String toString() {
             return ((PsiModule) getOriginalElement()).getModuleName() + " =~ " + myResolvedAlias;
         }
     }

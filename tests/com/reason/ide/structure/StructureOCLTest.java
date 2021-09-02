@@ -95,7 +95,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertPresentation("fn2", null, ORIcons.LET, fn2.getPresentation());
     }
 
-    private void assertPresentation(String name, String location, @Nullable Icon icon, ItemPresentation pres) {
+    private void assertPresentation(String name, String location, @Nullable Icon icon, @NotNull ItemPresentation pres) {
         assertEquals("Incorrect name", name, pres.getPresentableText());
         assertEquals("Incorrect location", location, pres.getLocationString());
         assertEquals("Incorrect icon", icon, pres.getIcon(false));

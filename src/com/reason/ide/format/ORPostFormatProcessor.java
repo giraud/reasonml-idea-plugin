@@ -77,7 +77,7 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
         return rangeToReformat;
     }
 
-    public static @Nullable FormatterProcessor getFormatterProcessor(PsiFile file) {
+    public static @Nullable FormatterProcessor getFormatterProcessor(@NotNull PsiFile file) {
         FileType fileType = file.getFileType();
         if (FileHelper.isReason(fileType)) {
             return new RmlFormatProcessor(file);

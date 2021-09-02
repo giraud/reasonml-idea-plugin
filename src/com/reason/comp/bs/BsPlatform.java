@@ -63,7 +63,7 @@ public class BsPlatform {
         return Optional.ofNullable(LocalFileSystem.getInstance().findFileByPath(esyExecutable));
     }
 
-    public static VirtualFile findRefmtExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+    public static @Nullable VirtualFile findRefmtExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         VirtualFile bsPlatformDir = findBsConfig(project, sourceFile)
                 .flatMap(bsConfig -> Optional.ofNullable(ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSC_EXE_NAME)))
                 .orElse(null);

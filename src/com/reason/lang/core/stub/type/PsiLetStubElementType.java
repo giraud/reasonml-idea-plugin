@@ -27,7 +27,7 @@ public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet>
     }
 
     @Override
-    public @NotNull PsiElement createPsi(ASTNode node) {
+    public @NotNull PsiElement createPsi(@NotNull ASTNode node) {
         return new PsiLetImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 

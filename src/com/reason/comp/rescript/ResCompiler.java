@@ -111,7 +111,7 @@ public class ResCompiler implements Compiler {
         }
     }
 
-    private GeneralCommandLine getCommandLine(@NotNull String binPath, @NotNull CliType.Rescript cliType) {
+    private @NotNull GeneralCommandLine getCommandLine(@NotNull String binPath, @NotNull CliType.Rescript cliType) {
         switch (cliType) {
             case MAKE:
                 return new GeneralCommandLine(binPath, "build");

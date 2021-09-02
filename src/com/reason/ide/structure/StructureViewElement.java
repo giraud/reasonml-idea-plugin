@@ -233,7 +233,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return treeElements;
     }
 
-    private @Nullable List<TreeElement> buildLetStructure(PsiLet let) {
+    private @Nullable List<TreeElement> buildLetStructure(@NotNull PsiLet let) {
         List<TreeElement> treeElements = null;
 
         PsiElement rootElement = let.getBinding();

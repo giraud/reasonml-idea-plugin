@@ -20,13 +20,13 @@ import static jpsplugin.com.reason.Platform.*;
 
 public class ResErrorAnnotator extends ORErrorAnnotator {
     @Override
-    @Nullable VirtualFile getContentRoot(Project project, VirtualFile sourceFile) {
+    @Nullable VirtualFile getContentRoot(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         VirtualFile bsConfig = ORFileUtils.findAncestor(project, BS_CONFIG_FILENAME, sourceFile);
         return bsConfig == null ? null : bsConfig.getParent();
     }
 
     @Override
-    Ninja readNinja(@NotNull Project project, @NotNull VirtualFile contentRoot) {
+    @NotNull Ninja readNinja(@NotNull Project project, @NotNull VirtualFile contentRoot) {
         return project.getService(ResCompiler.class).readNinjaBuild(contentRoot);
     }
 
@@ -54,7 +54,7 @@ public class ResErrorAnnotator extends ORErrorAnnotator {
 
         String[] environment = null;
         //if (!settings.isUseSuperErrors()) {
-            environment = new String[]{"BS_VSCODE=1"};
+        environment = new String[]{"BS_VSCODE=1"};
         //}
 
         try (InputStream errorStream = Runtime.getRuntime().exec(command.toArray(new String[0]), environment, new File(workDir.getPath())).getErrorStream()) {

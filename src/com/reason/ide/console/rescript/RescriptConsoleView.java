@@ -10,7 +10,7 @@ public class RescriptConsoleView extends ConsoleViewImpl {
         super(project, true);
     }
 
-    public Filter[] getFilters() {
+    public @NotNull Filter[] getFilters() {
         return new Filter[]{new RescriptOCamlConsoleFilter(getProject())};
     }
 }

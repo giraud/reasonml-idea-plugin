@@ -9,12 +9,12 @@ import java.util.*;
 
 public class BsErrorAnnotator extends ORErrorAnnotator {
     @Override
-    @Nullable VirtualFile getContentRoot(Project project, VirtualFile sourceFile) {
+    @Nullable VirtualFile getContentRoot(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         return BsPlatform.findContentRoot(project, sourceFile).orElse(null);
     }
 
     @Override
-    Ninja readNinja(@NotNull Project project, @NotNull VirtualFile contentRoot) {
+    @NotNull Ninja readNinja(@NotNull Project project, @NotNull VirtualFile contentRoot) {
         return project.getService(BsCompiler.class).readNinjaBuild(contentRoot);
     }
 

@@ -11,7 +11,6 @@ import com.reason.ide.files.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
-import java.lang.*;
 import java.util.*;
 
 public class ORCompilerManager {

@@ -9,9 +9,9 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
-import com.reason.lang.rescript.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
+import com.reason.lang.rescript.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -354,7 +354,7 @@ public class ORUtil {
         return isALias ? aliasName.toString() : null;
     }
 
-    public static String[] getQualifiedNameAsPath(PsiQualifiedPathElement element) {
+    public static @Nullable String[] getQualifiedNameAsPath(@NotNull PsiQualifiedPathElement element) {
         String[] path = element.getPath();
         if (path == null) {
             return null;

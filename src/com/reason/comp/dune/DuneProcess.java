@@ -5,8 +5,8 @@ import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.*;
 import com.reason.comp.Compiler;
+import com.reason.comp.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -78,7 +78,7 @@ public final class DuneProcess {
             return m_parameters;
         }
 
-        DuneCommandLine addParameters(CliType.Dune cliType) {
+        @NotNull DuneCommandLine addParameters(@NotNull CliType.Dune cliType) {
             switch (cliType) {
                 case CLEAN:
                     m_parameters.add("clean");

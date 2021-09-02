@@ -13,11 +13,11 @@ public class AutoDeletingTempFile implements AutoCloseable {
         myFile = FileUtilRt.createTempFile(prefix, extension, true);
     }
 
-    public String getPath() {
+    public @NotNull String getPath() {
         return myFile.getPath();
     }
 
-    public void write(String text) throws IOException {
+    public void write(@NotNull String text) throws IOException {
         FileUtil.writeToFile(myFile, text.getBytes());
     }
 

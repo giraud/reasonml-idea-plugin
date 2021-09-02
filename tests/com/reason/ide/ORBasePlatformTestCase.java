@@ -27,11 +27,11 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
         return (FileBase) file;
     }
 
-    protected PsiElement getNameIdentifier(PsiQualifiedNamedElement e) {
+    protected @Nullable PsiElement getNameIdentifier(@NotNull PsiQualifiedNamedElement e) {
         return ORUtil.findImmediateFirstChildOfAnyClass(e, PsiUpperIdentifier.class, PsiLowerIdentifier.class);
     }
 
-    protected PsiElement getFromCaret(PsiFile f) {
+    protected @Nullable PsiElement getFromCaret(@NotNull PsiFile f) {
         return f.findElementAt(myFixture.getCaretOffset() - 1);
     }
 
@@ -39,29 +39,29 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
         return value.replaceAll("'", "\"").replaceAll("@", "\n");
     }
 
-    protected String loadFile(@NotNull String filename) throws IOException {
+    protected @NotNull String loadFile(@NotNull String filename) throws IOException {
         return FileUtil.loadFile(new File(getTestDataPath(), filename), CharsetToolkit.UTF8, true).trim();
     }
 
-    protected String getQuickDoc(FileBase file, Language lang) {
+    protected @Nullable String getQuickDoc(@NotNull FileBase file, @NotNull Language lang) {
         DocumentationProvider docProvider = LanguageDocumentation.INSTANCE.forLanguage(lang);
         PsiElement resolvedElement = myFixture.getElementAtCaret();
         PsiElement element = file.findElementAt(myFixture.getCaretOffset() - 1);
         return docProvider.getQuickNavigateInfo(resolvedElement, element);
     }
 
-    protected String getDocForElement(FileBase file, Language lang, PsiElement resolvedElement) {
+    protected @Nullable String getDocForElement(@NotNull FileBase file, @NotNull Language lang, PsiElement resolvedElement) {
         DocumentationProvider docProvider = LanguageDocumentation.INSTANCE.forLanguage(lang);
         PsiElement element = file.findElementAt(myFixture.getCaretOffset() - 1);
         return docProvider.generateDoc(resolvedElement, element);
     }
 
-    protected String getDoc(FileBase file, Language lang) {
+    protected @Nullable String getDoc(@NotNull FileBase file, @NotNull Language lang) {
         PsiElement resolvedElement = myFixture.getElementAtCaret();
         return getDocForElement(file, lang, resolvedElement);
     }
 
-    protected Set<String> makePaths(String... values) {
+    protected @NotNull Set<String> makePaths(String... values) {
         Set<String> paths = new HashSet<>();
         Collections.addAll(paths, values);
         return paths;

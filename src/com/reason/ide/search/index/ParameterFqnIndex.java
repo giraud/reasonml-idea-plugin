@@ -19,7 +19,7 @@ public class ParameterFqnIndex extends IntStubIndexExtension<PsiParameter> {
         return IndexKeys.PARAMETERS_FQN;
     }
 
-    public static @NotNull Collection<PsiParameter> getElements(String key, Project project) {
+    public static @NotNull Collection<PsiParameter> getElements(@NotNull String key, @NotNull Project project) {
         return StubIndex.getElements(IndexKeys.PARAMETERS_FQN, key.hashCode(), project, null, PsiParameter.class);
     }
 }

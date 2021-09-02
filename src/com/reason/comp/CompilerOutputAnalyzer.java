@@ -10,7 +10,7 @@ public interface CompilerOutputAnalyzer {
     Pattern FILE_LOCATION = Pattern.compile("File \"(.+)\", line (\\d+), characters (\\d+)-(\\d+):");
     Pattern SYNTAX_LOCATION = Pattern.compile("(.+):(\\d+):(\\d+)(?:-(\\d+))?");
 
-    List<OutputInfo> getOutputInfo();
+    @NotNull List<OutputInfo> getOutputInfo();
 
     void onTextAvailable(@NotNull String line);
 }

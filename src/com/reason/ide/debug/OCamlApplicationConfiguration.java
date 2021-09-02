@@ -17,7 +17,7 @@ public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCam
     }
 
     @Override
-    public Collection<Module> getValidModules() {
+    public @Nullable Collection<Module> getValidModules() {
         return null;
     }
 
@@ -25,7 +25,7 @@ public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCam
     public @NotNull SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
         return new CompositeSettingsEditor<RunConfiguration>() {
             @Override
-            public CompositeSettingsBuilder<RunConfiguration> getBuilder() {
+            public @Nullable CompositeSettingsBuilder<RunConfiguration> getBuilder() {
                 return null;
             }
         };

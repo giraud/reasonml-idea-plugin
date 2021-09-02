@@ -5,12 +5,13 @@ import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.psi.ocamlyacc.impl.*;
+import org.jetbrains.annotations.*;
 
 class OclYaccAstFactory {
     private OclYaccAstFactory() {
     }
 
-    public static PsiElement createElement(ASTNode node) {
+    public static @NotNull PsiElement createElement(@NotNull ASTNode node) {
         IElementType type = node.getElementType();
         if (type == OclYaccTypes.INSTANCE.DECLARATION) {
             return new OclYaccDeclarationImpl(node);

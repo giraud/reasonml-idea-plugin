@@ -20,7 +20,7 @@ public class LetIndex extends StringStubIndexExtension<PsiLet> {
         return IndexKeys.LETS;
     }
 
-    public static @NotNull Collection<PsiLet> getElements(String key, Project project, @Nullable GlobalSearchScope scope) {
+    public static @NotNull Collection<PsiLet> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
         return StubIndex.getElements(IndexKeys.LETS, key, project, scope, PsiLet.class);
     }
 }

@@ -19,7 +19,7 @@ public class ExceptionFqnIndex extends IntStubIndexExtension<PsiException> {
         return IndexKeys.EXCEPTIONS_FQN;
     }
 
-    public static @NotNull Collection<PsiException> getElements(String key, Project project) {
+    public static @NotNull Collection<PsiException> getElements(@NotNull String key, @NotNull Project project) {
         return StubIndex.getElements(IndexKeys.EXCEPTIONS_FQN, key.hashCode(), project, null, PsiException.class);
     }
 }

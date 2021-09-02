@@ -5,12 +5,12 @@ import com.intellij.psi.tree.*;
 import org.jetbrains.annotations.*;
 
 public class PsiLeafTagName extends LeafPsiElement {
-  public PsiLeafTagName(@NotNull IElementType type, CharSequence text) {
-    super(type, text);
-  }
+    public PsiLeafTagName(@NotNull IElementType type, CharSequence text) {
+        super(type, text);
+    }
 
-  @Override
-  public String toString() {
-    return "TagName:" + getText();
-  }
+    @Override
+    public @NotNull String toString() {
+        return "TagName:" + getText();
+    }
 }

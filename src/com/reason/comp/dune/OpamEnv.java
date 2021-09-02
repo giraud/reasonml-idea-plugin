@@ -1,13 +1,11 @@
 package com.reason.comp.dune;
 
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.projectRoots.*;
+import org.jetbrains.annotations.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class OpamEnv {
     private final Project m_project;

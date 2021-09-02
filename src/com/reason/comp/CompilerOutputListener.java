@@ -16,7 +16,7 @@ import java.util.*;
 public class CompilerOutputListener implements ProcessListener {
     private static final Log LOG = Log.create("output");
 
-    private final @NotNull Project myProject;
+    private final Project myProject;
     private final CompilerOutputAnalyzer myOutputAnalyzer;
 
     public CompilerOutputListener(@NotNull Project project, @NotNull CompilerOutputAnalyzer outputAnalyzer) {

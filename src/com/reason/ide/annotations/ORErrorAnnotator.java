@@ -33,7 +33,7 @@ abstract class ORErrorAnnotator extends ExternalAnnotator<InitialInfo, Annotatio
 
     abstract Ninja readNinja(@NotNull Project project, @NotNull VirtualFile contentRoot);
 
-    abstract List<OutputInfo> compile(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull ArrayList<String> arguments, @NotNull VirtualFile workDir);
+    abstract @NotNull List<OutputInfo> compile(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull ArrayList<String> arguments, @NotNull VirtualFile workDir);
 
     @Override
     public @Nullable InitialInfo collectInformation(@NotNull PsiFile psiFile, @NotNull Editor editor, boolean hasErrors) {

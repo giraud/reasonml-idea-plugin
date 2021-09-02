@@ -37,7 +37,7 @@ public class PsiLetStub extends NamedStubBase<PsiLet> {
         return myPath;
     }
 
-    public String getQualifiedName() {
+    public @NotNull String getQualifiedName() {
         return myQname;
     }
 

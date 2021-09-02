@@ -98,7 +98,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
                 .get();
     }
 
-    protected PsiElement firstElement(@NotNull PsiFile fileModule) {
+    protected @Nullable PsiElement firstElement(@NotNull PsiFile fileModule) {
         return ORUtil.findImmediateFirstChildWithoutClass(fileModule, PsiFakeModule.class);
     }
 
