@@ -7,7 +7,7 @@ import com.intellij.psi.*;
 import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiClass;
+import com.reason.lang.core.psi.PsiKlass;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -146,8 +146,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             treeElements = buildFunctorStructure((PsiFunctor) m_element);
         } else if (m_element instanceof PsiType) {
             treeElements = buildTypeStructure((PsiType) m_element);
-        } else if (m_element instanceof PsiClass) {
-            treeElements = buildClassStructure((PsiClass) m_element);
+        } else if (m_element instanceof PsiKlass) {
+            treeElements = buildClassStructure((PsiKlass) m_element);
         } else if (m_element instanceof PsiStanza) {
             treeElements = buildStanzaStructure((PsiStanza) m_element);
         } else if (m_element instanceof PsiLet) {
@@ -210,7 +210,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return treeElements;
     }
 
-    private @NotNull List<TreeElement> buildClassStructure(@NotNull PsiClass classElement) {
+    private @NotNull List<TreeElement> buildClassStructure(@NotNull PsiKlass classElement) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement rootElement = classElement.getClassBody();

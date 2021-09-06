@@ -114,9 +114,6 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_ASSERT_STMT) {
             return new PsiAssert(type);
         }
-        if (type == m_types.C_CLASS_DECLARATION) {
-            return new PsiClassImpl(m_types, type);
-        }
         if (type == m_types.C_IF) {
             return new PsiIfStatement(m_types, type);
         }

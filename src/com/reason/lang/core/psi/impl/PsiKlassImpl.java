@@ -1,12 +1,14 @@
 package com.reason.lang.core.psi.impl;
 
+import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
-import com.intellij.psi.tree.*;
+import com.intellij.psi.stubs.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiClass;
+import com.reason.lang.core.psi.PsiKlass;
+import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import icons.*;
 import jpsplugin.com.reason.*;
@@ -15,10 +17,14 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-public class PsiClassImpl extends CompositeTypePsiElement<ORTypes> implements PsiClass {
+public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> implements PsiKlass {
     // region Constructors
-    protected PsiClassImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
-        super(types, elementType);
+    public PsiKlassImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+        super(types, node);
+    }
+
+    public PsiKlassImpl(@NotNull ORTypes types, @NotNull PsiKlassStub stub, @NotNull IStubElementType nodeType) {
+        super(types, stub, nodeType);
     }
     // endregion
 

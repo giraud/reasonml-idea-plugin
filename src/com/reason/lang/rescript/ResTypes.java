@@ -9,6 +9,7 @@ public class ResTypes extends ORTypes {
     private ResTypes() {
         // Stub element types
 
+        C_CLASS_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_CLASS_DECLARATION;
         C_FAKE_MODULE = (ORCompositeType) RescriptStubBasedElementTypes.C_FAKE_MODULE;
         C_EXCEPTION_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_EXCEPTION_DECLARATION;
         C_TYPE_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_TYPE_DECLARATION;
@@ -30,7 +31,6 @@ public class ResTypes extends ORTypes {
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", ResLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", ResLanguage.INSTANCE);
         C_BINARY_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", ResLanguage.INSTANCE);
-        C_CLASS_DECLARATION = new ORCompositeElementType("C_CLASS_DECLARATION", ResLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", ResLanguage.INSTANCE);
         C_CLASS_PARAMS = new ORCompositeElementType("C_CLASS_PARAMS", ResLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", ResLanguage.INSTANCE);

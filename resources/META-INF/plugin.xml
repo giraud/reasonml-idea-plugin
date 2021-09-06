@@ -240,6 +240,7 @@
         <stubIndex implementation="com.reason.ide.search.index.ModuleIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleAliasedIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleAliasesIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.KlassFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ValIndex"/>
@@ -247,6 +248,7 @@
         <stubIndex implementation="com.reason.ide.search.index.TypeIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.TypeFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExternalIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ExternalFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExceptionIndex"/>
@@ -424,6 +426,16 @@
 
         <consoleFilterProvider implementation="com.reason.ide.console.ORConsoleFilterProvider"/>
         <editorFactoryListener implementation="com.reason.ide.OREditorFactoryListener"/>
+
+
+        <!-- Gutter icons -->
+
+        <codeInsight.lineMarkerProvider language="OCaml"
+                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="Reason"
+                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="Rescript"
+                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
 
     </extensions>
 

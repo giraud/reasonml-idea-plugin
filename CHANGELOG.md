@@ -14,7 +14,11 @@
 
 - :rocket: [#344](https://github.com/giraud/reasonml-idea-plugin/pull/343) Enabling spellchecker [@QuentinRa](https://github.com/QuentinRa)
 - :rocket: ![o] [#343](https://github.com/giraud/reasonml-idea-plugin/pull/343) Adding live templates for OCaml by [@QuentinRa](https://github.com/QuentinRa)
+- :bug: ![o] [#322](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/322) Class types in .mli files should link to the corresponding definition in the .ml file
 - :house: update github workflow to use Java 11
+- :house: add qualified name index for classes
+- :house: add line markers for rescript
+- :house: enable line markers in every IDE
 
 ## 0.102.2 - 2021/08/26
 
@@ -43,7 +47,7 @@
 - :house: move to jfrog, bintray is no more available 
 - :bug: [#317](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/317) Belt.Array incorrectly resolved
 
-## 0.99 - 2021/04/08
+# 0.99 - 2021/04/08
 
 Version 0.99 supports the 2021.1 release.
  
@@ -52,7 +56,7 @@ Version 0.99 supports the 2021.1 release.
 - :bug: fix incorrect identification of optional parameter
 - :nail_care: ![r] order jsx attributes, mandatory first
 
-## 0.98.3 - 2021/04/06
+# 0.98.3 - 2021/04/06
 
 - :bug: [#314](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/314) missing item in structure panel (structural diff operator)
 - :bug: [#313](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/313) alphabetize opened/included modules in the structure panel
@@ -74,7 +78,7 @@ Version 0.99 supports the 2021.1 release.
 - :bug: [#309](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/309) incorrectly parse infix operators
 - :bug: [#261](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/261) warning configuration in bsconfig.json is not being applied
 
-## 0.97 - 2021/02/04
+# 0.97 - 2021/02/04
 
 - :bug: [#304](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/304) ![r] Properties in component using external are not found
 - :bug: Keep caret at position when reformat

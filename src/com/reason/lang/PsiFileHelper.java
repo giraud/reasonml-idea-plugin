@@ -5,7 +5,7 @@ import com.intellij.psi.search.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.search.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiClass;
+import com.reason.lang.core.psi.PsiKlass;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -118,8 +118,8 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static List<PsiClass> getClassExpressions(@Nullable PsiFile file) {
-        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiClass.class);
+    public static List<PsiKlass> getClassExpressions(@Nullable PsiFile file) {
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiKlass.class);
     }
 
     @NotNull

@@ -10,6 +10,7 @@ public interface RescriptStubBasedElementTypes {
     IStubElementType<PsiModuleStub, PsiModule> C_FUNCTOR_DECLARATION = new PsiFunctorModuleStubElementType(ResLanguage.INSTANCE);
     IStubElementType<PsiModuleStub, PsiModule> C_MODULE_DECLARATION = new PsiInnerModuleStubElementType(ResLanguage.INSTANCE);
 
+    IStubElementType<PsiKlassStub, PsiKlass> C_CLASS_DECLARATION = new PsiKlassStubElementType(ResLanguage.INSTANCE);
     IStubElementType<PsiExceptionStub, PsiException> C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType(ResLanguage.INSTANCE);
     IStubElementType<PsiTypeStub, PsiType> C_TYPE_DECLARATION = new PsiTypeStubElementType(ResLanguage.INSTANCE);
     IStubElementType<PsiExternalStub, PsiExternal> C_EXTERNAL_DECLARATION = new PsiExternalStubElementType(ResLanguage.INSTANCE);

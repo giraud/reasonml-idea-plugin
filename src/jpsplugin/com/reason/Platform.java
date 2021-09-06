@@ -133,4 +133,11 @@ public class Platform {
         return psiFile == null ? null : ModuleUtil.findModuleForFile(psiFile);
     }
 
+    public static boolean isSourceFile(@NotNull PsiFile psiFile) {
+        Module module = ModuleUtil.findModuleForFile(psiFile);
+        ModuleRootManager rootManager = module == null ? null : ModuleRootManager.getInstance(module);
+        ModuleFileIndex fileIndex = rootManager == null ? null : rootManager.getFileIndex();
+
+        return fileIndex != null && fileIndex.isInSourceContent(psiFile.getVirtualFile());
+    }
 }
