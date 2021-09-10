@@ -2,5 +2,5 @@
 
 Contributions are welcome and encouraged.
 
-Please see the [How to Contribute](https://reasonml-editor.github.io/reasonml-idea-plugin/docs/contributing/how-to-contribute) page to get started.
+Please see the [How to Contribute](https://giraud.github.io/reasonml-idea-plugin/docs/contributing/) page to get started.
 
