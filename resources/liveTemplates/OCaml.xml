@@ -123,13 +123,6 @@
       <option name="OCAML" value="true" />
     </context>
   </template>
-  <template name="doc" value="(** [$exp$] $code$ *)" description="Document" toReformat="false" toShortenFQNames="true">
-    <variable name="exp" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
-    <context>
-      <option name="OCAML" value="true" />
-    </context>
-  </template>
   <template name="for" value="for $i$ = $startval$ to $endval$ do&#10;&#9;$code$&#10;done" description="for loop" toReformat="false" toShortenFQNames="true">
     <variable name="i" expression="" defaultValue="&quot;i&quot;" alwaysStopAt="true" />
     <variable name="startval" expression="" defaultValue="&quot;starval&quot;" alwaysStopAt="true" />
