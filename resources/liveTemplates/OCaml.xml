@@ -32,14 +32,14 @@
       <option name="OCAML" value="true" />
     </context>
   </template>
-  <template name="module sig" value="module $Name$ : sig&#10;&#9;$code$&#10;end" description="module signature" toReformat="false" toShortenFQNames="true">
+  <template name="msig" value="module $Name$ : sig&#10;&#9;$code$&#10;end" description="module signature" toReformat="false" toShortenFQNames="true">
     <variable name="Name" expression="" defaultValue="&quot;Name&quot;" alwaysStopAt="true" />
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="OCAML" value="true" />
     </context>
   </template>
-  <template name="module struct" value="module $Name$ = struct&#10;&#9;$code$&#10;end" description="module struct" toReformat="false" toShortenFQNames="true">
+  <template name="mstruct" value="module $Name$ = struct&#10;&#9;$code$&#10;end" description="module struct" toReformat="false" toShortenFQNames="true">
     <variable name="Name" expression="" defaultValue="&quot;Name&quot;" alwaysStopAt="true" />
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
