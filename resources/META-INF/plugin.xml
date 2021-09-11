@@ -376,6 +376,9 @@
         <liveTemplateContext implementation="com.reason.ide.template.RmlContextType$Generic"/>
         <defaultLiveTemplates file="liveTemplates/Reason.xml"/>
 
+        <liveTemplateContext implementation="com.reason.ide.template.OCamlContentType"/>
+        <defaultLiveTemplates file="liveTemplates/OCaml.xml"/>
+
         <!--
          | Intentions
          -->
