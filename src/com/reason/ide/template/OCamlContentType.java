@@ -15,6 +15,7 @@ public class OCamlContentType extends TemplateContextType {
 
     @Override
     public boolean isInContext(@NotNull TemplateActionContext templateActionContext) {
-        return templateActionContext.getFile().getName().endsWith(".ml");
+        final String name = templateActionContext.getFile().getName();
+        return name.endsWith(".ml") || name.endsWith(".mli");
     }
 }
