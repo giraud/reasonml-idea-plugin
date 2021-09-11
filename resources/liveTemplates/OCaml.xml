@@ -19,8 +19,11 @@
       <option name="OCAML" value="true" />
     </context>
   </template>
-  <template name="thread" value="ignore (Thread.create (fun () -&gt; &#10;    $code$&#10;  ) ())" description="untitled" toReformat="false" toShortenFQNames="true">
+  <template name="thread" value="ignore (Thread.create (fun () -&gt; &#10;    $code$&#10;  ) ())" description="create thread" toReformat="false" toShortenFQNames="true">
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="OCAML" value="true" />
+    </context>
   </template>
   <template name="mtype" value="module type $Name$ = sig&#10;&#9;$code$&#10;end" description="module type" toReformat="false" toShortenFQNames="true">
     <variable name="Name" expression="" defaultValue="&quot;Name&quot;" alwaysStopAt="true" />
@@ -87,13 +90,6 @@
     <variable name="expr1" expression="" defaultValue="&quot;expr1&quot;" alwaysStopAt="true" />
     <variable name="patt2" expression="" defaultValue="&quot;patt2&quot;" alwaysStopAt="true" />
     <variable name="expr2" expression="" defaultValue="&quot;expr2&quot;" alwaysStopAt="true" />
-    <context>
-      <option name="OCAML" value="true" />
-    </context>
-  </template>
-  <template name="~f" value="~f:(fun $p$} -&gt; $body$)" description="function label" toReformat="false" toShortenFQNames="true">
-    <variable name="p" expression="" defaultValue="&quot;()&quot;" alwaysStopAt="true" />
-    <variable name="body" expression="" defaultValue="&quot;body&quot;" alwaysStopAt="true" />
     <context>
       <option name="OCAML" value="true" />
     </context>
