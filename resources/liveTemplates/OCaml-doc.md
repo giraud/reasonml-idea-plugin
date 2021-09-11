@@ -70,7 +70,7 @@ match value with
 - `method`
 
 ```ocaml
-method  = 
+method name = 
 ```
 
 - `msig`
@@ -126,10 +126,4 @@ type name = expr
 while condition do
 	
 done
-```
-
-- `|`
-
-```ocaml
-| pattern -> 
 ```

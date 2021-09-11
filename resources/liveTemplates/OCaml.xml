@@ -47,14 +47,7 @@
     </context>
   </template>
   <template name="method" value="method $name$ = $code$" description="method" toReformat="false" toShortenFQNames="true">
-    <variable name="name" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
-    <context>
-      <option name="OCAML" value="true" />
-    </context>
-  </template>
-  <template name="|" value="| $pattern$ -&gt; $code$" description="match pattern" toReformat="false" toShortenFQNames="true">
-    <variable name="pattern" expression="" defaultValue="&quot;pattern&quot;" alwaysStopAt="true" />
+    <variable name="name" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true" />
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="OCAML" value="true" />
