@@ -33,11 +33,6 @@ module.exports = {
           position: 'left',
         },
         {
-          to: 'blog',
-          label: 'Latest Updates',
-          position: 'left'
-        },
-        {
           href: 'https://github.com/reasonml-editor/reasonml-idea-plugin',
           label: 'GitHub',
           position: 'right',
