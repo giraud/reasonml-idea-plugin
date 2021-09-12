@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[11],{65:function(a){a.exports=JSON.parse('{"allTagsPath":"/reasonml-idea-plugin/blog/tags","slug":"docusaurus","name":"docusaurus","count":1,"permalink":"/reasonml-idea-plugin/blog/tags/docusaurus"}')}}]);
