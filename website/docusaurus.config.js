@@ -76,19 +76,6 @@ module.exports = {
             },
           ],
         },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: 'blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/reasonml-editor/reasonml-idea-plugin',
-            },
-          ],
-        },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Reason IDEA Plugin`,
     },
@@ -104,11 +91,6 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl:
-            'https://github.com/reasonml-editor/reasonml-idea-plugin/edit/master/website/',
-        },
-        blog: {
-          showReadingTime: true,
           editUrl:
             'https://github.com/reasonml-editor/reasonml-idea-plugin/edit/master/website/',
         },
