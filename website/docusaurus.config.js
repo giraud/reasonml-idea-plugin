@@ -76,6 +76,15 @@ module.exports = {
             },
           ],
         },
+        {
+          title: 'More',
+          items: [
+            {
+              label: 'GitHub',
+              href: 'https://github.com/reasonml-editor/reasonml-idea-plugin',
+            },
+          ],
+        },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Reason IDEA Plugin`,
     },
