@@ -21,7 +21,7 @@ abstract class OpamCommandLine {
     private static final Log LOG = Log.create("opam");
     public static final String CONFIGURE_DUNE_SDK = "<html>"
             + "When using a dune config file, you need to create an OCaml SDK and associate it with the project.\n"
-            + "see <a href=\"https://reasonml-editor.github.io/reasonml-idea-plugin/docs/build-tools/dune\">github</a>."
+            + "see <a href=\"https://giraud.github.io/reasonml-idea-plugin/docs/language-support/ocaml\">github</a>."
             + "</html>";
 
     private final Project m_project;
