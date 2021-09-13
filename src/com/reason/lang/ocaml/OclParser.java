@@ -203,9 +203,9 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseComma(@NotNull ParserState state) {
         if (state.isPrevious(m_types.C_LET_DECLARATION)) {
-            // It must be a deconstruction :: let (a |>,<| b) ...  OR  let a |>,<| b ...
+            // It must be a deconstruction ::  let (a |>,<| b)
+            // We need to do it again because lower symbols must be wrapped with identifiers
             if (state.isCurrentResolution(genericExpression)) {
-                // We need to do it again because lower symbols must be wrapped with identifiers
                 ParserScope scope = state.pop();
                 if (scope != null) {
                     scope.rollbackTo();
@@ -213,6 +213,16 @@ public class OclParser extends CommonParser<OclTypes> {
                             .markScope(m_types.C_DECONSTRUCTION, m_types.LPAREN)
                             .advance();
                 }
+            }
+        } else if (state.is(m_types.C_LET_DECLARATION)) {
+            // It must be a deconstruction ::  let a |>,<| b ...
+            // We need to do it again because lower symbols must be wrapped with identifiers
+            ParserScope scope = state.pop();
+            if (scope != null) {
+                scope.rollbackTo();
+                state.mark(m_types.C_LET_DECLARATION)
+                        .advance()
+                        .markScope(m_types.C_DECONSTRUCTION, m_types.LPAREN);
             }
         }
     }
@@ -673,10 +683,7 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.is(m_types.C_SIG_ITEM) || state.is(m_types.C_FUN_PARAMS)) {
             state.popEnd();
         }
-        if (state.is(m_types.C_FUNCTOR_RESULT)) {
-            state.popEnd();
-        }
-        if (state.is(m_types.C_SIG_EXPR)) {
+        if (state.is(m_types.C_FUNCTOR_RESULT) || state.is(m_types.C_SIG_EXPR) || state.is(m_types.C_DECONSTRUCTION)) {
             state.popEnd();
         }
 

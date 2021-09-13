@@ -20,6 +20,16 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertEquals("x", pres.getPresentableText());
     }
 
+    public void test_deconstruction() {
+        FileBase a = configureCode("A.ml", "let (a, b) = x");
+        StructureViewModel model = new ORStructureViewModel(a);
+
+        TreeElement[] children = model.getRoot().getChildren();
+        assertSize(2, children);
+        assertPresentation("a", "", ORIcons.LET, children[0].getPresentation());
+        assertPresentation("b", "", ORIcons.LET, children[1].getPresentation());
+    }
+
     public void test_val() {
         FileBase a = configureCode("A.mli", "val x: int");
         StructureViewModel model = new ORStructureViewModel(a);

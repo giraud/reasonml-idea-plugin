@@ -7,7 +7,6 @@ import com.intellij.psi.*;
 import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiKlass;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -90,6 +89,9 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                 @Nullable
                 @Override
                 public String getLocationString() {
+                    if (m_element instanceof PsiLet && ((PsiLet) m_element).isDeconstruction()) {
+                        return "";
+                    }
                     return m_element instanceof PsiNamedElement
                             ? ((PsiNamedElement) m_element).getName()
                             : "";

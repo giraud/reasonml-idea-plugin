@@ -109,7 +109,7 @@ public class ParserState {
     public @Nullable ParserScope getLatestCompletedScope() {
         ParserScope completed = m_latestCompleted;
         m_latestCompleted = null;
-        return completed == null ? null : completed;
+        return completed;
     }
 
     public boolean is(ORCompositeType composite) {

@@ -7,6 +7,7 @@ import com.intellij.psi.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -30,12 +31,21 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
         PsiElement parent = element.getParent();
+        if (parent instanceof PsiDeconstruction) {
+            parent = parent.getParent();
+        }
+
         FileBase containingFile = (FileBase) element.getContainingFile();
         boolean isInterface = containingFile.isInterface();
 
         if (element instanceof PsiLowerIdentifier) {
             if (parent instanceof PsiLet) {
-                String qName = ((PsiLetImpl) parent).getQualifiedName();
+                String qNameLet = ((PsiLetImpl) parent).getQualifiedName();
+                if (((PsiLet) parent).isDeconstruction()) {
+                    qNameLet = Joiner.join(".", ORUtil.getQualifiedPath(parent)) + "." + element.getText();
+                }
+                final String qName = qNameLet;
+
                 Collection<PsiVal> vals = ValFqnIndex.getElements(qName.hashCode(), element.getProject());
                 vals.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
@@ -145,7 +155,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 "</body></html>";
 
         return NavigationGutterIconBuilder.create(
-                isInterface ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
+                        isInterface ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
                 .setTooltipText(tooltip)
                 .setAlignment(GutterIconRenderer.Alignment.RIGHT)
                 .setTargets(Collections.singleton(relatedElement))

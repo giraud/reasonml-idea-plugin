@@ -14,6 +14,7 @@
 
 - :rocket: [#344](https://github.com/giraud/reasonml-idea-plugin/pull/343) Enabling spellchecker [@QuentinRa](https://github.com/QuentinRa)
 - :rocket: ![o] [#343](https://github.com/giraud/reasonml-idea-plugin/pull/343) Adding live templates for OCaml by [@QuentinRa](https://github.com/QuentinRa)
+- :bug: ![o] [#325](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/325) Structure panel missing "pp_misc" for "let misc, pp_misc = ...". Gutter icon missing for pp_misc in mli file
 - :bug: ![o] [#322](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/322) Class types in .mli files should link to the corresponding definition in the .ml file
 - :house: update github workflow to use Java 11
 - :house: add qualified name index for classes

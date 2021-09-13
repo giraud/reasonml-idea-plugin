@@ -15,7 +15,7 @@ import java.io.*;
 import java.util.*;
 
 public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet> {
-    public static final int VERSION = 12;
+    public static final int VERSION = 13;
 
     public PsiLetStubElementType(@Nullable Language language) {
         super("C_LET_DECLARATION", language);
@@ -91,19 +91,25 @@ public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet>
     public void indexStub(@NotNull PsiLetStub stub, @NotNull IndexSink sink) {
         List<String> deconstructionNames = stub.getDeconstructionNames();
         if (deconstructionNames.isEmpty()) {
+            // Normal let
+
             String name = stub.getName();
             if (name != null) {
                 sink.occurrence(IndexKeys.LETS, name);
             }
+
+            String fqn = stub.getQualifiedName();
+            sink.occurrence(IndexKeys.LETS_FQN, fqn.hashCode());
         } else {
+            // Deconstruction
+
             for (String name : deconstructionNames) {
                 sink.occurrence(IndexKeys.LETS, name);
             }
-        }
 
-        String fqn = stub.getQualifiedName();
-        if (fqn != null) {
-            sink.occurrence(IndexKeys.LETS_FQN, fqn.hashCode());
+            for (String fqn : stub.getQualifiedNames()) {
+                sink.occurrence(IndexKeys.LETS_FQN, fqn.hashCode());
+            }
         }
     }
 
