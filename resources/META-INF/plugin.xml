@@ -378,6 +378,9 @@
         <liveTemplateContext implementation="com.reason.ide.template.RmlContextType$Generic"/>
         <defaultLiveTemplates file="liveTemplates/Reason.xml"/>
 
+        <liveTemplateContext implementation="com.reason.ide.template.ResContextType$Generic"/>
+        <defaultLiveTemplates file="liveTemplates/Rescript.xml"/>
+
         <liveTemplateContext implementation="com.reason.ide.template.OCamlContentType"/>
         <liveTemplateContext implementation="com.reason.ide.template.OCamlContentType$OCamlExpressionTemplates"/>
         <liveTemplateContext implementation="com.reason.ide.template.OCamlContentType$OCamlCommentTemplates"/>
