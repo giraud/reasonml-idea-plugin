@@ -2,9 +2,9 @@ package com.reason.ide.template;
 
 import com.intellij.codeInsight.template.*;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiUtilCore;
-import com.reason.lang.ocaml.OclLanguage;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.util.*;
+import com.reason.lang.ocaml.*;
+import org.jetbrains.annotations.*;
 
 /**
  * Every "*.ml" kind of file is considered to be a part of the OCaml context
