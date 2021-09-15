@@ -47,7 +47,7 @@ are solved.
 - :house: move to jfrog, bintray is no more available 
 - :bug: [#317](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/317) Belt.Array incorrectly resolved
 
-# 0.99 - 2021/04/08
+## 0.99 - 2021/04/08
 
 Version 0.99 supports the 2021.1 release.
  
@@ -56,7 +56,7 @@ Version 0.99 supports the 2021.1 release.
 - :bug: fix incorrect identification of optional parameter
 - :nail_care: ![r] order jsx attributes, mandatory first
 
-# 0.98.3 - 2021/04/06
+## 0.98.3 - 2021/04/06
 
 - :bug: [#314](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/314) missing item in structure panel (structural diff operator)
 - :bug: [#313](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/313) alphabetize opened/included modules in the structure panel
@@ -78,7 +78,7 @@ Version 0.99 supports the 2021.1 release.
 - :bug: [#309](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/309) incorrectly parse infix operators
 - :bug: [#261](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/261) warning configuration in bsconfig.json is not being applied
 
-# 0.97 - 2021/02/04
+## 0.97 - 2021/02/04
 
 - :bug: [#304](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/304) ![r] Properties in component using external are not found
 - :bug: Keep caret at position when reformat
