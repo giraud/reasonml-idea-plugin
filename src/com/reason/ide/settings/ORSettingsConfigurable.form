@@ -129,7 +129,7 @@
                         </constraints>
                         <properties>
                           <labelFor value="42670"/>
-                          <text value="If you didn't set OCaml SDK, you may set OCaml version here to enable Type inference"/>
+                          <text value="If you aren't using a build tool, you may set the version of OCaml here to enable Type inference"/>
                         </properties>
                       </component>
                       <component id="42670" class="javax.swing.JComboBox" binding="f_setOCamlFallBack">
