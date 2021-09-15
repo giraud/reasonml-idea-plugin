@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
+import com.reason.ide.settings.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -105,6 +106,13 @@ public class InsightManagerImpl implements InsightManager {
 
         if (ocamlVersion != null && !rincewindVersion.equals(excludedVersion)) {
             return "rincewind_" + getOsPrefix() + ocamlVersion + "-" + rincewindVersion + ".exe";
+        } else if (ocamlVersion == null){
+            ORSettings settings = myProject.getService(ORSettings.class);
+            ocamlVersion = settings.getOcamlFallback();
+            if (ocamlVersion != null){
+                rincewindVersion = getRincewindVersion(ocamlVersion);
+                return "rincewind_" + getOsPrefix() + ocamlVersion + "-" + rincewindVersion + ".exe";
+            }
         }
 
         return null;

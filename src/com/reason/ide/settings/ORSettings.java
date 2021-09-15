@@ -9,6 +9,9 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     private static final boolean IS_FORMAT_ON_SAVE_DEFAULT = true;
     private static final String FORMAT_WIDTH_COLUMNS_DEFAULT = "80";
     private static final boolean IS_BS_ENABLED_DEFAULT = true;
+    private static final String[] RINCEWIND_SUPPORTED_VERSIONS = new String[]{
+            "", "4.06.1", "4.07.1", "4.08.1", "4.09.1", "4.10.0"
+    };
 
     private final @NotNull Project m_project;
 
@@ -16,6 +19,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     private boolean m_isFormatOnSaveEnabled = IS_FORMAT_ON_SAVE_DEFAULT;
     private @Nullable String m_formatColumnWidth;
     private boolean myUseSuperErrors = false;
+    private String myOcamlFallback = "";
 
     // BuckleScript
     private boolean m_isBsEnabled = IS_BS_ENABLED_DEFAULT;
@@ -38,6 +42,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         state.isBsEnabled = m_isBsEnabled;
         state.bsPlatformLocation = m_bsPlatformLocation;
         state.esyExecutable = m_esyExecutable;
+        state.myOcamlFallback = myOcamlFallback;
         return state;
     }
 
@@ -49,6 +54,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         m_isBsEnabled = state.isBsEnabled;
         m_bsPlatformLocation = state.bsPlatformLocation;
         m_esyExecutable = state.esyExecutable;
+        myOcamlFallback = state.myOcamlFallback;
     }
 
     public @NotNull Project getProject() {
@@ -86,6 +92,18 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         myUseSuperErrors = useSuperErrors;
     }
 
+    public String getOcamlFallback() {
+        return myOcamlFallback.equals("") ? null : myOcamlFallback;
+    }
+
+    public void setOcamlFallback(String ocamlFallback) {
+        myOcamlFallback = ocamlFallback;
+    }
+
+    public String[] getOcamlFallbacks() {
+        return RINCEWIND_SUPPORTED_VERSIONS;
+    }
+
     public boolean isBsEnabled() {
         return m_isBsEnabled;
     }
@@ -115,6 +133,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         // General
         public boolean isFormatOnSaveEnabled = IS_FORMAT_ON_SAVE_DEFAULT;
         public @Nullable String formatColumnWidth;
+        public String myOcamlFallback;
         public boolean isUseSuperErrors = false;
         // BuckleScript
         public boolean isBsEnabled = IS_BS_ENABLED_DEFAULT;

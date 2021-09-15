@@ -26,7 +26,7 @@ public class RincewindProcess {
         LOG.debug("Looking for types for file", sourceFile);
 
         Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(myProject, sourceFile);
-        if (!contentRoot.isPresent()) {
+        if (contentRoot.isEmpty()) {
             return;
         }
 

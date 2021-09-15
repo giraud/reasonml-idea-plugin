@@ -25,6 +25,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     private JTextField f_generalFormatWidthColumns;
     private JCheckBox f_generalIsFormatOnSave;
     private JCheckBox myUseSuperErrorsCheckBox;
+    private JComboBox<String> f_setOCamlFallBack;
 
     // BuckleScript
     private JCheckBox f_bsIsEnabled;
@@ -73,6 +74,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         m_settings.setFormatOnSaveEnabled(f_generalIsFormatOnSave.isSelected());
         m_settings.setFormatColumnWidth(sanitizeInput(f_generalFormatWidthColumns));
         m_settings.setUseSuperErrors(myUseSuperErrorsCheckBox.isSelected());
+        m_settings.setOcamlFallback((String) f_setOCamlFallBack.getSelectedItem());
         // BuckleScript
         m_settings.setBsEnabled(f_bsIsEnabled.isSelected());
         m_settings.setBsPlatformLocation(sanitizeInput(f_bsPlatformLocation));
@@ -92,12 +94,17 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
                 !f_bsPlatformLocation.getText().equals(m_settings.getBsPlatformLocation());
         boolean isEsyExecutableModified =
                 !f_esyExecutable.getText().equals(m_settings.getEsyExecutable());
+
+        String selectedItem = (String) f_setOCamlFallBack.getSelectedItem();
+        boolean isOCamlFallbackModified =
+                selectedItem != null && !selectedItem.equals(m_settings.getOcamlFallback());
         return isFormatOnSaveModified
                 || isFormatWidthColumnsModified
                 || isUseSuperErrorModified
                 || isBsEnabledModified
                 || isBsPlatformLocationModified
-                || isEsyExecutableModified;
+                || isEsyExecutableModified
+                || isOCamlFallbackModified;
     }
 
     @Override
@@ -106,6 +113,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         f_generalIsFormatOnSave.setSelected(m_settings.isFormatOnSaveEnabled());
         f_generalFormatWidthColumns.setText(m_settings.getFormatColumnWidth());
         myUseSuperErrorsCheckBox.setSelected(m_settings.isUseSuperErrors());
+        f_setOCamlFallBack.setSelectedItem(m_settings.getOcamlFallback());
         // BuckleScript
         f_bsIsEnabled.setSelected(m_settings.isBsEnabled());
         f_bsPlatformLocation.setText(m_settings.getBsPlatformLocation());
@@ -114,6 +122,10 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     }
 
     private void createGeneralTab() {
+        for (String ocamlVersion:m_settings.getOcamlFallbacks()) {
+            f_setOCamlFallBack.addItem(ocamlVersion);
+        }
+        f_setOCamlFallBack.setSelectedIndex(0);
     }
 
     private void createBsTab() {
