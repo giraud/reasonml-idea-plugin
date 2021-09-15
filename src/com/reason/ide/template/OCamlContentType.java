@@ -27,9 +27,9 @@ public class OCamlContentType extends TemplateContextType {
     }
 
     // Code-only
-    private static final class OCamlCodeTemplates extends ScopeTemplates {
-        public OCamlCodeTemplates() {
-            super("Code", false);
+    private static final class OCamlExpressionTemplates extends ScopeTemplates {
+        public OCamlExpressionTemplates() {
+            super("Expression", false);
         }
     }
     // Comments only
@@ -40,11 +40,16 @@ public class OCamlContentType extends TemplateContextType {
     }
 
     private static class ScopeTemplates extends OCamlContentType {
-        private final boolean comments;
+        private final boolean myOnComment;
 
-        protected ScopeTemplates(String name, boolean comments) {
+        /**
+         * @param name name of the scope, capitalized
+         * @param onComment if true, then "isContext" is checking that we are inside a Comment,
+         *                 otherwise, "isContext" is checking that we aren't inside a Comment
+         */
+        protected ScopeTemplates(String name, boolean onComment) {
             super(name);
-            this.comments = comments;
+            myOnComment = onComment;
         }
 
         @Override
@@ -60,7 +65,7 @@ public class OCamlContentType extends TemplateContextType {
             }
 
             PsiElement element = file.findElementAt(offset);
-            return this.comments == (element instanceof PsiComment);
+            return myOnComment == (element instanceof PsiComment);
         }
     }
 }
