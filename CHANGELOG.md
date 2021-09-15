@@ -10,10 +10,6 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-Please note that **rescript development is paused** until issues in rescript tooling like 
-[#4846](https://github.com/rescript-lang/rescript-compiler/issues/4846) and [#22](https://github.com/rescript-lang/rescript-vscode/issues/22)
-are solved.
-
 ## Unreleased
 
 - :rocket: [#344](https://github.com/giraud/reasonml-idea-plugin/pull/343) Enabling spellchecker [@QuentinRa](https://github.com/QuentinRa)
