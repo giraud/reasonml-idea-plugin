@@ -265,7 +265,7 @@ abstract class ORErrorAnnotator extends ExternalAnnotator<InitialInfo, Annotatio
     }
 
     private void updateCodeLens(@NotNull Project project, @NotNull Language lang, @NotNull VirtualFile sourceFile, @NotNull File cmtFile) {
-        InsightManager insightManager = ServiceManager.getService(project, InsightManager.class);
+        InsightManager insightManager = project.getService(InsightManager.class);
         if (insightManager != null && !FileHelper.isInterface(sourceFile.getFileType())) {
             insightManager.queryTypes(sourceFile, cmtFile.toPath(), types -> {
                 LOG.debug("Updating signatures in user data cache for file", sourceFile);

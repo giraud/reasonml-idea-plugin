@@ -46,7 +46,7 @@ public class DotExpressionCompletionProvider {
             String upperName = previousElement.getText();
             if (upperName != null) {
                 LOG.debug(" -> symbol", upperName);
-                PsiFinder psiFinder = PsiFinder.getInstance(project);
+                PsiFinder psiFinder = project.getService(PsiFinder.class);
                 GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
                 // Find potential module paths, and filter the result
@@ -131,7 +131,7 @@ public class DotExpressionCompletionProvider {
             String lowerName = previousElement.getText();
             if (lowerName != null) {
                 LOG.debug("  symbol", lowerName);
-                PsiFinder psiFinder = PsiFinder.getInstance(project);
+                PsiFinder psiFinder = project.getService(PsiFinder.class);
 
                 // try let
                 Collection<PsiLet> lets = psiFinder.findLets(lowerName, interfaceOrImplementation);

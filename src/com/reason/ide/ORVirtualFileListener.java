@@ -84,7 +84,7 @@ class ORVirtualFileListener implements AsyncFileListener {
             } else if (FileHelper.isNinja(file)) {
                 LOG.debug("Refresh ninja build", file);
                 for (Project project : ProjectManager.getInstance().getOpenProjects()) {
-                    ServiceManager.getService(project, BsCompiler.class).refreshNinjaBuild();
+                    project.getService(BsCompiler.class).refreshNinjaBuild();
                 }
             }
 
@@ -95,7 +95,7 @@ class ORVirtualFileListener implements AsyncFileListener {
             for (Project project : ProjectManager.getInstance().getOpenProjects()) {
                 Module module = ModuleUtil.findModuleForFile(bsConfigFile, project);
                 if (module != null) {
-                    ServiceManager.getService(project, InsightManager.class).downloadRincewindIfNeeded(bsConfigFile);
+                    project.getService(InsightManager.class).downloadRincewindIfNeeded(bsConfigFile);
                 }
             }
         }

@@ -18,7 +18,7 @@ public class ORProjectRootListener implements Disposable {
     private final @NotNull MessageBusConnection m_messageBusConnection;
 
     public static void ensureSubscribed(@NotNull Project project) {
-        ServiceManager.getService(project, ORProjectRootListener.class);
+        project.getService(ORProjectRootListener.class);
     }
 
     private ORProjectRootListener(@NotNull Project project) {
@@ -32,7 +32,7 @@ public class ORProjectRootListener implements Disposable {
                                 // Event fired each time a SDK is updated
                                 ProjectSdksModel model = new ProjectSdksModel();
                                 model.reset(project);
-                                OpamEnv opamEnv = ServiceManager.getService(project, OpamEnv.class);
+                                OpamEnv opamEnv = project.getService(OpamEnv.class);
                                 for (Sdk sdk : model.getSdks()) {
                                     if (sdk.getSdkType() instanceof OCamlSdkType) {
                                         opamEnv.computeEnv(sdk, null);

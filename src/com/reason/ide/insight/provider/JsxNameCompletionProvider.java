@@ -31,7 +31,7 @@ public class JsxNameCompletionProvider {
         Project project = originalFile.getProject();
         GlobalSearchScope scope = allScope(project);
 
-        Collection<PsiModule> modules = PsiFinder.getInstance(project).findComponents(scope);
+        Collection<PsiModule> modules = project.getService(PsiFinder.class).findComponents(scope);
         LOG.debug(" -> Modules found", modules);
 
         for (PsiModule module : modules) {

@@ -75,7 +75,7 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
         final List<ComponentPropertyAdapter> result = new ArrayList<>();
 
         Project project = getProject();
-        PsiFinder psiFinder = PsiFinder.getInstance(project);
+        PsiFinder psiFinder = project.getService(PsiFinder.class);
         GlobalSearchScope scope = allScope(project);
 
         // find tag 'make' expression

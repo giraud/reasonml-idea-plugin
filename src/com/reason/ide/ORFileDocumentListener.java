@@ -17,7 +17,7 @@ public class ORFileDocumentListener implements Disposable {
   private final @NotNull MessageBusConnection m_messageBusConnection;
 
   public static void ensureSubscribed(@NotNull Project project) {
-    ServiceManager.getService(project, ORFileDocumentListener.class);
+      project.getService(ORFileDocumentListener.class);
   }
 
   private ORFileDocumentListener(@NotNull Project project) {

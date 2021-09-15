@@ -25,7 +25,7 @@ public class OpamEnv {
     }
 
     public void computeEnv(@NotNull Sdk odk, @Nullable EnvTerminated onEnvTerminated) {
-        ServiceManager.getService(m_project, OpamProcess.class).env(odk, data -> {
+        m_project.getService(OpamProcess.class).env(odk, data -> {
             m_envs.put(odk.getVersionString(), data);
             if (onEnvTerminated != null) {
                 onEnvTerminated.run(data);

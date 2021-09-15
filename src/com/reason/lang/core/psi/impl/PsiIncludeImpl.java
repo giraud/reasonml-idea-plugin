@@ -58,7 +58,7 @@ public class PsiIncludeImpl extends PsiTokenStub<ORTypes, PsiInclude, PsiInclude
 
         // Iterate over previous elements, can't use references here because it needs to work during indexing
         String includePath = getIncludePath();
-        PsiFinder psiFinder = PsiFinder.getInstance(getProject());
+        PsiFinder psiFinder = getProject().getService(PsiFinder.class);
         PsiQualifiedPathElement resolvedElement = psiFinder.findModuleBack(this, includePath);
 
         String path = resolvedElement == null ? includePath : resolvedElement.getQualifiedName();

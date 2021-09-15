@@ -50,7 +50,7 @@ public class InsightManagerImpl implements InsightManager {
         File rincewindFile = getRincewindFileExcludingVersion(cmtFile, "0.4");
         return rincewindFile == null
                 ? Collections.emptyList()
-                : ServiceManager.getService(myProject, RincewindProcess.class).dumpMeta(rincewindFile.getPath(), cmtFile);
+                : myProject.getService(RincewindProcess.class).dumpMeta(rincewindFile.getPath(), cmtFile);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class InsightManagerImpl implements InsightManager {
         File rincewindFile = getRincewindFile(cmtFile);
         return rincewindFile == null
                 ? "<unknown/>"
-                : ServiceManager.getService(myProject, RincewindProcess.class).dumpTree(cmtFile, rincewindFile.getPath());
+                : myProject.getService(RincewindProcess.class).dumpTree(cmtFile, rincewindFile.getPath());
     }
 
     @Override
@@ -66,7 +66,7 @@ public class InsightManagerImpl implements InsightManager {
         File rincewindFile = getRincewindFile(cmtFile);
         return rincewindFile == null
                 ? Collections.emptyList()
-                : ServiceManager.getService(myProject, RincewindProcess.class).dumpTypes(rincewindFile.getPath(), cmtFile);
+                : myProject.getService(RincewindProcess.class).dumpTypes(rincewindFile.getPath(), cmtFile);
     }
 
     @Override

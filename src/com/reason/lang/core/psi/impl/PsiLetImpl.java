@@ -8,8 +8,8 @@ import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.search.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.PsiLiteralExpression;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.reason.*;
@@ -131,7 +131,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
                 String name = element.getText();
 
                 if (name != null) {
-                    Collection<PsiLet> lets = PsiFinder.getInstance(element.getProject()).findLets(name, ORFileType.interfaceOrImplementation);
+                    Collection<PsiLet> lets = element.getProject().getService(PsiFinder.class).findLets(name, ORFileType.interfaceOrImplementation);
                     if (!lets.isEmpty()) {
                         PsiLet let = lets.iterator().next();
                         if (let == null) {

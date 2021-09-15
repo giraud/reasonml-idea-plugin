@@ -19,10 +19,6 @@ public class BsFormatProcess {
 
     private final Project m_project;
 
-    public static @NotNull BsFormatProcess getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, BsFormatProcess.class);
-    }
-
     public BsFormatProcess(@NotNull Project project) {
         m_project = project;
     }

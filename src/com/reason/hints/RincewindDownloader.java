@@ -1,7 +1,6 @@
 package com.reason.hints;
 
 import com.intellij.openapi.application.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
@@ -35,7 +34,7 @@ public class RincewindDownloader extends Task.Backgroundable {
             return;
         }
 
-        InsightManagerImpl insightManager = (InsightManagerImpl) ServiceManager.getService(myProject, InsightManager.class);
+        InsightManagerImpl insightManager = (InsightManagerImpl) myProject.getService(InsightManager.class);
         if (!insightManager.isDownloading.compareAndSet(false, true)) {
             // We are already in the process of downloading
             LOG.debug("Already downloading, abort");

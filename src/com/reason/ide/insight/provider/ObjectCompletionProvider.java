@@ -34,7 +34,7 @@ public class ObjectCompletionProvider {
         Project project = element.getProject();
 
         QNameFinder qnameFinder = PsiFinder.getQNameFinder(element.getLanguage());
-        PsiFinder psiFinder = PsiFinder.getInstance(project);
+        PsiFinder psiFinder = project.getService(PsiFinder.class);
 
         Pair<PsiElement, List<String>> deepPath = extractDeepJsPath(types, element);
         List<String> jsPath = deepPath.second;
