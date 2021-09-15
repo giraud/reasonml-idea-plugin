@@ -1,11 +1,10 @@
 package com.reason.ide.template;
 
-import com.intellij.codeInsight.template.TemplateActionContext;
-import com.intellij.codeInsight.template.TemplateContextType;
+import com.intellij.codeInsight.template.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.ocaml.*;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 /**
  * Every "*.ml" kind of file is considered to be a part of the OCaml context
@@ -17,11 +16,10 @@ public class OCamlContentType extends TemplateContextType {
     }
 
     protected OCamlContentType(String name) {
-        super("OCAML."+name, name, OCamlContentType.class);
+        super("OCAML." + name, name, OCamlContentType.class);
     }
 
-    @Override
-    public boolean isInContext(@NotNull TemplateActionContext templateActionContext) {
+    @Override public boolean isInContext(@NotNull TemplateActionContext templateActionContext) {
         final String name = templateActionContext.getFile().getName();
         return name.endsWith(".ml") || name.endsWith(".mli");
     }
@@ -32,6 +30,7 @@ public class OCamlContentType extends TemplateContextType {
             super("Expression", false);
         }
     }
+
     // Comments only
     private static final class OCamlCommentTemplates extends ScopeTemplates {
         public OCamlCommentTemplates() {
@@ -43,18 +42,19 @@ public class OCamlContentType extends TemplateContextType {
         private final boolean myOnComment;
 
         /**
-         * @param name name of the scope, capitalized
+         * @param name      name of the scope, capitalized
          * @param onComment if true, then "isContext" is checking that we are inside a Comment,
-         *                 otherwise, "isContext" is checking that we aren't inside a Comment
+         *                  otherwise, "isContext" is checking that we aren't inside a Comment
          */
         protected ScopeTemplates(String name, boolean onComment) {
             super(name);
             myOnComment = onComment;
         }
 
-        @Override
-        public boolean isInContext(@NotNull TemplateActionContext templateActionContext) {
-            if(!super.isInContext(templateActionContext)) return false;
+        @Override public boolean isInContext(@NotNull TemplateActionContext templateActionContext) {
+            if (!super.isInContext(templateActionContext)) {
+                return false;
+            }
 
             // RmlContextType - copy of the 6 following lines
             // with RmlLanguage => OclLanguage
