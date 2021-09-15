@@ -24,13 +24,14 @@ public class RescriptOutputAnalyzer extends ORCompilerOutputAnalyzer {
 
     @Override
     public void onTextAvailable(@NotNull String line) {
-        if (line.startsWith("File") && myCurrentState == OutputState.unknown) {
+        if (line.startsWith("File") && (myCurrentState == OutputState.unknown || myCurrentState == OutputState.errorMessage)) {
             myCurrentInfo = extractExtendedFilePositions(LOG, line);
             myCurrentState = OutputState.fileLocation;
-        } else if (line.startsWith("Error:") && myCurrentState == OutputState.fileLocation) {
+        } else if (line.startsWith("Error") && myCurrentState == OutputState.fileLocation) {
             if (myCurrentInfo != null) {
-                myCurrentInfo.isError = true;
-                myCurrentInfo.message = line.substring(7).trim();
+                myCurrentInfo.isError = line.startsWith("Error:"); // else Error (warning xx):
+                int pos = line.indexOf(':');
+                myCurrentInfo.message = pos > 0 ? line.substring(pos + 1).trim() : "";
             }
             myCurrentState = OutputState.errorMessage;
         } else if (line.startsWith("  Syntax error") && myCurrentState == OutputState.unknown) {

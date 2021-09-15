@@ -41,7 +41,6 @@ public class ResErrorAnnotator extends ORErrorAnnotator {
             }
         }
 
-        ORSettings settings = project.getService(ORSettings.class);
 
         List<String> command = new ArrayList<>();
         command.add(bsc.getPath());
@@ -52,10 +51,9 @@ public class ResErrorAnnotator extends ORErrorAnnotator {
             LOG.trace("  work dir", workDir);
         }
 
-        String[] environment = null;
+        //ORSettings settings = project.getService(ORSettings.class);
         //if (!settings.isUseSuperErrors()) {
-        environment = new String[]{"BS_VSCODE=1"};
-        //}
+        String[] environment = new String[]{"BS_VSCODE=1"};
 
         try (InputStream errorStream = Runtime.getRuntime().exec(command.toArray(new String[0]), environment, new File(workDir.getPath())).getErrorStream()) {
             //BsLineProcessor bsLineProcessor = new BsLineProcessor(LOG);

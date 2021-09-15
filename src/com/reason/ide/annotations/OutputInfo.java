@@ -18,6 +18,6 @@ public class OutputInfo {
                 + (isError ? "ERR" : "WARN") + " -> "
                 + lineStart + ":" + colStart + "-"
                 + lineEnd + ":" + colEnd
-                + (message.isEmpty() ? "" : " / " + message);
+                + (message.isEmpty() ? " «empty message»" : " / " + message);
     }
 }

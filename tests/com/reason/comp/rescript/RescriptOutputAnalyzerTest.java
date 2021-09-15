@@ -118,6 +118,45 @@ FAILED: cannot make progress due to previous errors.                          * 
         assertEquals(10, outputInfo.colEnd);
     }
 
+/*
+File "C:\bla\bla\src\InputTest.res", line 2, characters 5-9:          unknown -> fileLocation
+Error (warning 32): unused value make.                                fileLocation -> errorMessage(warning)
+File "C:\bla\bla\src\InputTest.res", line 8, characters 13-17:        errorMessage -> fileLocation
+Error (warning 27): unused variable sss.                              fileLocation -> errorMessage(warning)
+*/
+public void test_error_04() {
+    String[] lines = new String[]{
+            "File \"C:\\bla\\bla\\src\\InputTest.res\", line 2, characters 5-9:", //
+            "Error (warning 32): unused value make.", //
+            "File \"C:\\bla\\bla\\src\\InputTest.res\", line 8, characters 13-17:", //
+            "Error (warning 27): unused variable xxx.", //
+    };
+
+    RescriptOutputAnalyzer analyzer = new RescriptOutputAnalyzer();
+
+    for (String line : lines) {
+        analyzer.onTextAvailable(line);
+    }
+
+    assertSize(2, analyzer.getOutputInfo());
+
+    OutputInfo outputInfo = analyzer.getOutputInfo().get(0);
+    assertFalse(outputInfo.isError);
+    assertEquals("unused value make.", outputInfo.message);
+    assertEquals(2, outputInfo.lineStart);
+    assertEquals(2, outputInfo.lineEnd);
+    assertEquals(5, outputInfo.colStart);
+    assertEquals(9, outputInfo.colEnd);
+
+    outputInfo = analyzer.getOutputInfo().get(1);
+    assertFalse(outputInfo.isError);
+    assertEquals("unused variable xxx.", outputInfo.message);
+    assertEquals(8, outputInfo.lineStart);
+    assertEquals(8, outputInfo.lineEnd);
+    assertEquals(13, outputInfo.colStart);
+    assertEquals(17, outputInfo.colEnd);
+}
+
     // ---- SUPER ERRORS
 
 /*
