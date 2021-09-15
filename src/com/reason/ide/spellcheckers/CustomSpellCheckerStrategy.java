@@ -2,6 +2,7 @@ package com.reason.ide.spellcheckers;
 
 import com.intellij.lang.injection.*;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.source.tree.*;
 import com.intellij.spellchecker.tokenizer.*;
 import com.reason.lang.core.psi.PsiLiteralExpression;
 import com.reason.lang.core.psi.impl.*;
@@ -17,6 +18,10 @@ public class CustomSpellCheckerStrategy extends SpellcheckingStrategy {
 
     @Override public @NotNull Tokenizer<?> getTokenizer(PsiElement element) {
         if (element instanceof PsiWhiteSpace) { // skip whitespace
+            return EMPTY_TOKENIZER;
+        }
+        // optimization
+        if (element.getClass() == LeafPsiElement.class) {
             return EMPTY_TOKENIZER;
         }
         // skip other languages
@@ -35,13 +40,13 @@ public class CustomSpellCheckerStrategy extends SpellcheckingStrategy {
         // named elements
         if (element instanceof PsiNameIdentifierOwner) {
             // not allowed
-            if (element instanceof PsiAnnotationImpl) {
+            if (element instanceof PsiAnnotationImpl || element instanceof PsiMacroName) {
                 return EMPTY_TOKENIZER;
             }
             return PsiIdentifierOwnerTokenizer.INSTANCE;
         }
         // Type (type name = TypeBinding)
-        if (element instanceof PsiTypeBinding) {
+        if (element instanceof PsiTypeBinding || element instanceof PsiLowerSymbolImpl) {
             return TEXT_TOKENIZER;
         }
         return EMPTY_TOKENIZER; // skip everything else
