@@ -45,8 +45,8 @@ public class CustomSpellCheckerStrategy extends SpellcheckingStrategy {
             }
             return PsiIdentifierOwnerTokenizer.INSTANCE;
         }
-        // Type (type name = TypeBinding)
-        if (element instanceof PsiTypeBinding || element instanceof PsiLowerSymbolImpl) {
+        // ... = PsiLowerSymbolImpl
+        if (element instanceof PsiLowerSymbolImpl) {
             return TEXT_TOKENIZER;
         }
         return EMPTY_TOKENIZER; // skip everything else
