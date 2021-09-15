@@ -41,9 +41,8 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#340 - Items missing in structure panel after let ending with match (incorrect object parsing)</li>
-                    <li>#329 - IllegalArgumentException: Not an OCaml node: Element(OCAML_LAZY_NODE)</li>
-                    <li>remove jps-plugin.jar reference in plugin.xml</li>
+                    <li>#344 - Enabling spellchecker</li>
+                    <li>#343 - Adding live templates for OCaml</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

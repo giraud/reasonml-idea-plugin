@@ -398,6 +398,7 @@
 
         <spellchecker.support language="OCaml" implementationClass="com.intellij.spellchecker.tokenizer.SpellcheckingStrategy"/>
         <spellchecker.support language="Reason" implementationClass="com.intellij.spellchecker.tokenizer.SpellcheckingStrategy"/>
+        <spellchecker.support language="Rescript" implementationClass="com.intellij.spellchecker.tokenizer.SpellcheckingStrategy"/>
 
         <!--
          | Debug

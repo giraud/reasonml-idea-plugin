@@ -16,6 +16,10 @@ are solved.
 
 ## Unreleased
 
+- :rocket: [#344](https://github.com/giraud/reasonml-idea-plugin/pull/343) Enabling spellchecker [@QuentinRa](https://github.com/QuentinRa)
+- :rocket: ![o] [#343](https://github.com/giraud/reasonml-idea-plugin/pull/343) Adding live templates for OCaml by [@QuentinRa](https://github.com/QuentinRa)
+- :house: update github workflow to use Java 11
+
 ## 0.102.2 - 2021/08/26
 
 - :bug: ![o] [#340](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/340) Items missing in structure panel after let ending with match (incorrect object parsing)
