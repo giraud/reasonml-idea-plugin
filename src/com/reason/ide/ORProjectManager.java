@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-import static com.reason.comp.dune.Dune.*;
+import static com.reason.comp.dune.DunePlatform.*;
 
 /**
  * Identifies and retrieves modules by project type (Bs, Esy, Dune).
@@ -29,10 +29,6 @@ public class ORProjectManager {
     private static final Comparator<VirtualFile> FILE_DEPTH_COMPARATOR = Comparator.comparingInt(ORProjectManager::fileSeparatorCount);
 
     private ORProjectManager() {
-    }
-
-    public static boolean isBsProject(@NotNull Project project) {
-        return !findBsConfigurationFiles(project).isEmpty();
     }
 
     public static boolean isDuneProject(@NotNull Project project) {

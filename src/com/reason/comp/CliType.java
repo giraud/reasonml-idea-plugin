@@ -29,7 +29,8 @@ public interface CliType {
     enum Dune implements CliType {
         BUILD,
         CLEAN,
-        INSTALL;
+        INSTALL,
+        VERSION;
 
         @Override
         public @NotNull CompilerType getCompilerType() {

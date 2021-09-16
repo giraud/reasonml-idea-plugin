@@ -19,7 +19,7 @@ import static jpsplugin.com.reason.Platform.*;
 
 public class InsightManagerImpl implements InsightManager {
     private static final Log LOG = Log.create("hints");
-    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
+    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).*\\)");
 
     final @NotNull AtomicBoolean isDownloading = new AtomicBoolean(false);
     private final @NotNull Project myProject;

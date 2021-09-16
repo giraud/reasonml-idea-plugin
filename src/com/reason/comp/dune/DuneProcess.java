@@ -80,6 +80,8 @@ public final class DuneProcess {
 
         @NotNull DuneCommandLine addParameters(@NotNull CliType.Dune cliType) {
             switch (cliType) {
+                case VERSION:
+                    m_parameters.add("--version");
                 case CLEAN:
                     m_parameters.add("clean");
                     break;

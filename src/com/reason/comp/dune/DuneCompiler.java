@@ -1,10 +1,8 @@
 package com.reason.comp.dune;
 
 import com.intellij.execution.process.*;
-import com.intellij.facet.*;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.*;
 import com.intellij.openapi.project.*;
+import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
@@ -31,19 +29,38 @@ public class DuneCompiler implements Compiler {
 
     @Override
     public @NotNull String getFullVersion(@Nullable VirtualFile file) {
-        return "unknown";
+        /* Dune version, but we don't care in fact. We are interested in OCaml version.
+        GeneralCommandLine cli = new DuneProcess.DuneCommandLine(myProject, "dune")
+                .addParameters(CliType.Dune.VERSION)
+                .create(file, myConfigurationWarning);
+
+        try (InputStream inputStream = Runtime.getRuntime().exec(cli.getCommandLineString(), new String[]{}, cli.getWorkDirectory()).getInputStream()) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            return reader.readLine();
+        } catch (IOException e) {
+            return "error: " + e.getMessage();
+        }
+        */
+        String version = "unknown ";
+
+        DuneFacet duneFacet = DunePlatform.getFacet(myProject, file);
+        if (duneFacet == null) {
+            return version + "(dune facet not found)";
+        } else {
+            Sdk odk = duneFacet.getODK();
+            SdkTypeId sdkType = odk == null ? null : odk.getSdkType();
+            if (sdkType == null) {
+                return version + "(SDK not found)";
+            }
+            version = sdkType.getVersionString(odk);
+        }
+
+        return "Dune ( OCaml:" + version + " )";
     }
 
     @Override
     public boolean isConfigured(@NotNull Project project) {
-        Module[] modules = ModuleManager.getInstance(project).getModules();
-        for (Module module : modules) {
-            DuneFacet duneFacet = FacetManager.getInstance(module).getFacetByType(DuneFacet.ID);
-            if (duneFacet != null) {
-                return true;
-            }
-        }
-        return false;
+        return DunePlatform.getFacet(project) != null;
     }
 
     @Override

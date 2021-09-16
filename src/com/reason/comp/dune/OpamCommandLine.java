@@ -1,7 +1,6 @@
 package com.reason.comp.dune;
 
 import com.intellij.execution.configurations.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
@@ -24,14 +23,14 @@ abstract class OpamCommandLine {
             + "see <a href=\"https://giraud.github.io/reasonml-idea-plugin/docs/language-support/ocaml\">github</a>."
             + "</html>";
 
-    private final Project m_project;
-    private final String m_binary;
-    private final boolean m_redirectErrorStream;
+    private final Project myProject;
+    private final String myBinary;
+    private final boolean myRedirectErrorStream;
 
     OpamCommandLine(@NotNull Project project, @NotNull String binary, boolean redirectErrorStream) {
-        m_project = project;
-        m_binary = binary;
-        m_redirectErrorStream = redirectErrorStream;
+        myProject = project;
+        myBinary = binary;
+        myRedirectErrorStream = redirectErrorStream;
     }
 
     OpamCommandLine(@NotNull Project project, @NotNull String binary) {
@@ -41,7 +40,7 @@ abstract class OpamCommandLine {
     protected abstract @NotNull List<String> getParameters();
 
     @Nullable GeneralCommandLine create(@NotNull VirtualFile source, @NotNull AtomicBoolean configurationWarning) {
-        DuneFacet duneFacet = Dune.getFacet(m_project, source);
+        DuneFacet duneFacet = DunePlatform.getFacet(myProject, source);
         Sdk odk = duneFacet == null ? null : duneFacet.getODK();
         VirtualFile homeDirectory = odk == null ? null : odk.getHomeDirectory();
         if (homeDirectory == null) {
@@ -55,11 +54,11 @@ abstract class OpamCommandLine {
             Module module = duneFacet.getModule();
             VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
             if (contentRoots.length > 0) {
-                GeneralCommandLine cli = new GeneralCommandLine(ContainerUtil.prepend(getParameters(), m_binary));
+                GeneralCommandLine cli = new GeneralCommandLine(ContainerUtil.prepend(getParameters(), myBinary));
                 cli.setWorkDirectory(contentRoots[0].getPath());
-                cli.setRedirectErrorStream(m_redirectErrorStream);
+                cli.setRedirectErrorStream(myRedirectErrorStream);
 
-                Map<String, String> env = m_project.getService(OpamEnv.class).getEnv(odk);
+                Map<String, String> env = myProject.getService(OpamEnv.class).getEnv(odk);
                 if (env != null) {
                     for (Map.Entry<String, String> entry : env.entrySet()) {
                         cli.withEnvironment(entry.getKey(), entry.getValue());
@@ -67,7 +66,7 @@ abstract class OpamCommandLine {
                 }
 
                 OCamlExecutable executable = OCamlExecutable.getExecutable(odk);
-                return executable.patchCommandLine(cli, binPath, false, m_project);
+                return executable.patchCommandLine(cli, binPath, false, myProject);
             } else {
                 LOG.debug("Content roots", contentRoots);
                 LOG.debug("Binary directory", binPath);
