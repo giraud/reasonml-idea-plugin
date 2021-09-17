@@ -345,9 +345,9 @@
         <annotator language="OCaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
         <annotator language="Dune" implementationClass="com.reason.ide.highlight.DuneSyntaxAnnotator"/>
 
-        <externalAnnotator language="Reason" implementationClass="com.reason.ide.annotations.BsErrorAnnotator"/>
-        <externalAnnotator language="Rescript" implementationClass="com.reason.ide.annotations.ResErrorAnnotator"/>
-        <externalAnnotator language="OCaml" implementationClass="com.reason.ide.annotations.BsErrorAnnotator"/>
+        <externalAnnotator language="Reason" implementationClass="com.reason.ide.annotations.ORErrorAnnotator"/>
+        <externalAnnotator language="Rescript" implementationClass="com.reason.ide.annotations.ORErrorAnnotator"/>
+        <externalAnnotator language="OCaml" implementationClass="com.reason.ide.annotations.ORErrorAnnotator"/>
         <problemFileHighlightFilter implementation="com.reason.ide.annotations.ErrorFileHighlighter"/>
 
         <completion.contributor language="Reason"

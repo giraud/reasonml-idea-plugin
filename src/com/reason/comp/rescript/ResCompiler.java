@@ -26,11 +26,17 @@ import static com.reason.comp.ORConstants.*;
 
 public class ResCompiler implements Compiler {
     private static final Log LOG = Log.create("compiler.rescript");
-    private final @NotNull Project myProject;
+
+    private final Project myProject;
     private final AtomicBoolean myProcessStarted = new AtomicBoolean(false);
 
     private ResCompiler(@NotNull Project project) {
         myProject = project;
+    }
+
+    @Override
+    public @NotNull CompilerType getType() {
+        return CompilerType.RESCRIPT;
     }
 
     @Override

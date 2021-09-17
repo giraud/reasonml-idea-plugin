@@ -13,6 +13,7 @@ public class RescriptOutputAnalyzer extends ORCompilerOutputAnalyzer {
         //
         fileLocation,
         errorMessage,
+        warningMessage,
         //
         syntaxError,
         syntaxErrorLocation,
@@ -24,7 +25,7 @@ public class RescriptOutputAnalyzer extends ORCompilerOutputAnalyzer {
 
     @Override
     public void onTextAvailable(@NotNull String line) {
-        if (line.startsWith("File") && (myCurrentState == OutputState.unknown || myCurrentState == OutputState.errorMessage)) {
+        if (line.startsWith("File") && (myCurrentState == OutputState.unknown || myCurrentState == OutputState.errorMessage || myCurrentState == OutputState.warningMessage)) {
             myCurrentInfo = extractExtendedFilePositions(LOG, line);
             myCurrentState = OutputState.fileLocation;
         } else if (line.startsWith("Error") && myCurrentState == OutputState.fileLocation) {
@@ -34,6 +35,13 @@ public class RescriptOutputAnalyzer extends ORCompilerOutputAnalyzer {
                 myCurrentInfo.message = pos > 0 ? line.substring(pos + 1).trim() : "";
             }
             myCurrentState = OutputState.errorMessage;
+        }  else if (line.startsWith("Warning") && myCurrentState == OutputState.fileLocation) {
+            if (myCurrentInfo != null) {
+                myCurrentInfo.isError = false;
+                int pos = line.indexOf(':');
+                myCurrentInfo.message = pos > 0 ? line.substring(pos + 1).trim() : "";
+            }
+            myCurrentState = OutputState.warningMessage;
         } else if (line.startsWith("  Syntax error") && myCurrentState == OutputState.unknown) {
             myCurrentState = OutputState.syntaxError;
         } else if (myCurrentState == OutputState.syntaxError) {

@@ -13,6 +13,9 @@ import static jpsplugin.com.reason.Platform.*;
 public class ORPlatform {
     private static final Log LOG = Log.create("platform");
 
+    private ORPlatform() {
+    }
+
     public static @Nullable VirtualFile findCompilerPathInNodeModules(@NotNull Project project, @NotNull VirtualFile configFile, @NotNull String dirName, @NotNull String binName) {
         VirtualFile parentDir = configFile.getParent();
         VirtualFile nodeModules = parentDir == null ? null : parentDir.findFileByRelativePath(NODE_MODULES);

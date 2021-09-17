@@ -4,18 +4,18 @@ import com.reason.ide.*;
 import com.reason.ide.annotations.*;
 
 public class RescriptOutputAnalyzerTest extends ORBasePlatformTestCase {
-/*
-FAILED: src/InputTest.ast
+    /*
+    FAILED: src/InputTest.ast
 
-  Syntax error!                                   unknown -> syntaxError
-  C:\bla\bla\src\InputTest.res:1:11-12            syntaxError -> syntaxErrorLocation
-                                                  syntaxErrorLocation -> syntaxErrorSourceCode
-  1 │ let x = 1 +                                 -
-                                                  syntaxErrorSourceCode -> syntaxErrorMessage
-  Did you forget to write an expression here?     -
+      Syntax error!                                   unknown -> syntaxError
+      C:\bla\bla\src\InputTest.res:1:11-12            syntaxError -> syntaxErrorLocation
+                                                      syntaxErrorLocation -> syntaxErrorSourceCode
+      1 │ let x = 1 +                                 -
+                                                      syntaxErrorSourceCode -> syntaxErrorMessage
+      Did you forget to write an expression here?     -
 
-FAILED: cannot make progress due to previous errors.
-*/
+    FAILED: cannot make progress due to previous errors.
+    */
     public void test_error_01() {
         String[] lines = new String[]{
                 "FAILED: src/InputTest.ast", //
@@ -118,44 +118,83 @@ FAILED: cannot make progress due to previous errors.                          * 
         assertEquals(10, outputInfo.colEnd);
     }
 
-/*
-File "C:\bla\bla\src\InputTest.res", line 2, characters 5-9:          unknown -> fileLocation
-Error (warning 32): unused value make.                                fileLocation -> errorMessage(warning)
-File "C:\bla\bla\src\InputTest.res", line 8, characters 13-17:        errorMessage -> fileLocation
-Error (warning 27): unused variable sss.                              fileLocation -> errorMessage(warning)
-*/
-public void test_error_04() {
-    String[] lines = new String[]{
-            "File \"C:\\bla\\bla\\src\\InputTest.res\", line 2, characters 5-9:", //
-            "Error (warning 32): unused value make.", //
-            "File \"C:\\bla\\bla\\src\\InputTest.res\", line 8, characters 13-17:", //
-            "Error (warning 27): unused variable xxx.", //
-    };
+    /*
+    File "C:\bla\bla\src\InputTest.res", line 2, characters 5-9:          unknown -> fileLocation
+    Error (warning 32): unused value make.                                fileLocation -> errorMessage(warning)
+    File "C:\bla\bla\src\InputTest.res", line 8, characters 13-17:        errorMessage -> fileLocation
+    Error (warning 27): unused variable sss.                              fileLocation -> errorMessage(warning)
+    */
+    public void test_error_04() {
+        String[] lines = new String[]{
+                "File \"C:\\bla\\bla\\src\\InputTest.res\", line 2, characters 5-9:", //
+                "Error (warning 32): unused value make.", //
+                "File \"C:\\bla\\bla\\src\\InputTest.res\", line 8, characters 13-17:", //
+                "Error (warning 27): unused variable xxx.", //
+        };
 
-    RescriptOutputAnalyzer analyzer = new RescriptOutputAnalyzer();
+        RescriptOutputAnalyzer analyzer = new RescriptOutputAnalyzer();
 
-    for (String line : lines) {
-        analyzer.onTextAvailable(line);
+        for (String line : lines) {
+            analyzer.onTextAvailable(line);
+        }
+
+        assertSize(2, analyzer.getOutputInfo());
+
+        OutputInfo outputInfo = analyzer.getOutputInfo().get(0);
+        assertFalse(outputInfo.isError);
+        assertEquals("unused value make.", outputInfo.message);
+        assertEquals(2, outputInfo.lineStart);
+        assertEquals(2, outputInfo.lineEnd);
+        assertEquals(5, outputInfo.colStart);
+        assertEquals(9, outputInfo.colEnd);
+
+        outputInfo = analyzer.getOutputInfo().get(1);
+        assertFalse(outputInfo.isError);
+        assertEquals("unused variable xxx.", outputInfo.message);
+        assertEquals(8, outputInfo.lineStart);
+        assertEquals(8, outputInfo.lineEnd);
+        assertEquals(13, outputInfo.colStart);
+        assertEquals(17, outputInfo.colEnd);
     }
 
-    assertSize(2, analyzer.getOutputInfo());
+    /*
+    File "C:\bla\bla\src\InputTest.res", line 185, characters 8-17:       unknown -> fileLocation
+    Warning 27: unused variable onCreated.                                fileLocation -> warningMessage
+    File "C:\bla\bla\src\InputTest.res", line 186, characters 8-18:       errorMessage -> fileLocation
+    Warning 27: unused variable onCanceled.                               fileLocation -> warningMessage
+    */
+    public void test_error_05() {
+        String[] lines = new String[]{
+                "File \"C:\\bla\\bla\\src\\InputTest.res\", line 185, characters 8-17:", //
+                "Warning 27: unused variable onCreated.", //
+                "File \"C:\\bla\\bla\\src\\InputTest.res\", line 186, characters 8-18:", //
+                "Warning 27: unused variable onCanceled.", //
+        };
 
-    OutputInfo outputInfo = analyzer.getOutputInfo().get(0);
-    assertFalse(outputInfo.isError);
-    assertEquals("unused value make.", outputInfo.message);
-    assertEquals(2, outputInfo.lineStart);
-    assertEquals(2, outputInfo.lineEnd);
-    assertEquals(5, outputInfo.colStart);
-    assertEquals(9, outputInfo.colEnd);
+        RescriptOutputAnalyzer analyzer = new RescriptOutputAnalyzer();
 
-    outputInfo = analyzer.getOutputInfo().get(1);
-    assertFalse(outputInfo.isError);
-    assertEquals("unused variable xxx.", outputInfo.message);
-    assertEquals(8, outputInfo.lineStart);
-    assertEquals(8, outputInfo.lineEnd);
-    assertEquals(13, outputInfo.colStart);
-    assertEquals(17, outputInfo.colEnd);
-}
+        for (String line : lines) {
+            analyzer.onTextAvailable(line);
+        }
+
+        assertSize(2, analyzer.getOutputInfo());
+
+        OutputInfo outputInfo = analyzer.getOutputInfo().get(0);
+        assertFalse(outputInfo.isError);
+        assertEquals("unused variable onCreated.", outputInfo.message);
+        assertEquals(185, outputInfo.lineStart);
+        assertEquals(185, outputInfo.lineEnd);
+        assertEquals(8, outputInfo.colStart);
+        assertEquals(17, outputInfo.colEnd);
+
+        outputInfo = analyzer.getOutputInfo().get(1);
+        assertFalse(outputInfo.isError);
+        assertEquals("unused variable onCanceled.", outputInfo.message);
+        assertEquals(186, outputInfo.lineStart);
+        assertEquals(186, outputInfo.lineEnd);
+        assertEquals(8, outputInfo.colStart);
+        assertEquals(18, outputInfo.colEnd);
+    }
 
     // ---- SUPER ERRORS
 

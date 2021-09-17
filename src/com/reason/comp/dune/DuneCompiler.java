@@ -28,6 +28,11 @@ public class DuneCompiler implements Compiler {
     }
 
     @Override
+    public @NotNull CompilerType getType() {
+        return CompilerType.DUNE;
+    }
+
+    @Override
     public @NotNull String getFullVersion(@Nullable VirtualFile file) {
         /* Dune version, but we don't care in fact. We are interested in OCaml version.
         GeneralCommandLine cli = new DuneProcess.DuneCommandLine(myProject, "dune")

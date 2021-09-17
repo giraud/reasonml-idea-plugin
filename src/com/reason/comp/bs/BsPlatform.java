@@ -85,4 +85,10 @@ public class BsPlatform {
 
         return binaryInBsPlatform;
     }
+
+    public static @Nullable BsConfig readConfig(@NotNull VirtualFile contentRoot) {
+        // Read bsConfig to get the compilation directives
+        VirtualFile bsConfigFile = contentRoot.findChild(BS_CONFIG_FILENAME);
+        return bsConfigFile == null ? null : BsConfigReader.read(bsConfigFile);
+    }
 }

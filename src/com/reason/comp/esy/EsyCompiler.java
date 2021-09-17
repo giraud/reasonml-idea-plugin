@@ -25,6 +25,11 @@ public class EsyCompiler implements Compiler {
     }
 
     @Override
+    public @NotNull CompilerType getType() {
+        return CompilerType.ESY;
+    }
+
+    @Override
     public @NotNull String getFullVersion(@Nullable VirtualFile file) {
         return "unknown";
     }

@@ -4,7 +4,6 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -98,7 +97,7 @@ public class InsightManagerImpl implements InsightManager {
 
     public @Nullable String getRincewindFilenameExcludingVersion(@NotNull VirtualFile sourceFile, @NotNull String excludedVersion) {
         ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
-        Compiler compiler = compilerManager.getCompiler(sourceFile);
+        ORResolvedCompiler compiler = compilerManager.getCompiler(sourceFile);
         String fullVersion = compiler == null ? null : compiler.getFullVersion(sourceFile);
         String ocamlVersion = ocamlVersionExtractor(fullVersion);
         String rincewindVersion = getRincewindVersion(ocamlVersion);

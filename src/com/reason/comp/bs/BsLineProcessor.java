@@ -1,5 +1,6 @@
 package com.reason.comp.bs;
 
+import com.reason.comp.*;
 import com.reason.ide.annotations.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -13,14 +14,15 @@ import static java.lang.Integer.*;
 /**
  * Line processor is a state machine.
  */
-public class BsLineProcessor {
+public class BsLineProcessor implements CompilerOutputAnalyzer {
     private static final Pattern FILE_LOCATION = Pattern.compile("File \"(.+)\", line (\\d+), characters (\\d+)-(\\d+):\n?");
     private static final Pattern POSITIONS = Pattern.compile("[\\s:]\\d+:\\d+(-\\d+(:\\d+)?)?$");
 
     private final Log m_log;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
-    public @NotNull List<OutputInfo> getInfo() {
+    @Override
+    public @NotNull List<OutputInfo> getOutputInfo() {
         return m_bsbInfo;
     }
 
@@ -47,7 +49,8 @@ public class BsLineProcessor {
         m_log = log;
     }
 
-    public void onRawTextAvailable(@NotNull String text) {
+    @Override
+    public void onTextAvailable(@NotNull String text) {
         String trimmedText = text.trim();
         if (m_log.isTraceEnabled()) {
             m_log.trace(trimmedText);
