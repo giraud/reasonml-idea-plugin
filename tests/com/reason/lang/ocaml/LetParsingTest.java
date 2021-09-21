@@ -153,21 +153,17 @@ public class LetParsingTest extends OclParsingTestCase {
         assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
     }
 
-  /*
     public void test_deconstruction_parenless() {
-      PsiLet e = first(letExpressions(parseCode("let a, b = x in ignore a")));
+        PsiLet e = first(letExpressions(parseCode("let a, b = x")));
 
-      assertTrue(e.isDeconsruction());
-      assertFalse(e.isFunction());
-      assertEquals("x", e.getBinding().getText());
-      List<PsiElement> names = e.getDeconstructedElements();
-      assertSize(2, names);
-      assertEquals("a", names.get(0).getText());
-      assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
-      assertEquals("b", names.get(1).getText());
-      assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+        assertTrue(e.isDeconstruction());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(2, names);
+        assertEquals("a", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
+        assertEquals("b", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
     }
-  */
 
     public void test_List() {
         PsiLet e = first(letExpressions(parseCode("let tokens = [ \"bullet\"; \"string\"; \"unicode_id_part\"; ]")));

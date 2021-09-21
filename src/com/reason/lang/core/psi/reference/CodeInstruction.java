@@ -35,7 +35,7 @@ class CodeInstruction {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "[" + mySource.getClass().getSimpleName() + ":" + Joiner.join("/", myValues) +
                 (myAlternateValues == null ? "" : " (" + Joiner.join(", ", myAlternateValues) + ")")
                 + "]";

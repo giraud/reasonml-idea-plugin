@@ -33,11 +33,6 @@ module.exports = {
           position: 'left',
         },
         {
-          to: 'blog',
-          label: 'Latest Updates',
-          position: 'left'
-        },
-        {
           href: 'https://github.com/reasonml-editor/reasonml-idea-plugin',
           label: 'GitHub',
           position: 'right',
@@ -85,10 +80,6 @@ module.exports = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: 'blog',
-            },
-            {
               label: 'GitHub',
               href: 'https://github.com/reasonml-editor/reasonml-idea-plugin',
             },
@@ -109,11 +100,6 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl:
-            'https://github.com/reasonml-editor/reasonml-idea-plugin/edit/master/website/',
-        },
-        blog: {
-          showReadingTime: true,
           editUrl:
             'https://github.com/reasonml-editor/reasonml-idea-plugin/edit/master/website/',
         },

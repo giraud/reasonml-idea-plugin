@@ -20,12 +20,12 @@ public class PsiOpenStubElementType extends ORStubElementType<PsiOpenStub, PsiOp
     }
 
     @Override
-    public PsiOpen createPsi(@NotNull PsiOpenStub stub) {
+    public @NotNull PsiOpen createPsi(@NotNull PsiOpenStub stub) {
         return new PsiOpenImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
     @Override
-    public @NotNull PsiElement createPsi(ASTNode node) {
+    public @NotNull PsiElement createPsi(@NotNull ASTNode node) {
         return new PsiOpenImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 

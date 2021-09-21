@@ -18,11 +18,7 @@ public class ParserScope {
     private boolean m_isStart = false;
     public PsiBuilder.Marker m_mark;
 
-    private ParserScope(
-            @NotNull PsiBuilder builder,
-            @NotNull PsiBuilder.Marker mark,
-            ORCompositeType compositeElementType,
-            ORTokenElementType scopeTokenElementType) {
+    private ParserScope(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @Nullable ORCompositeType compositeElementType, @Nullable ORTokenElementType scopeTokenElementType) {
         m_builder = builder;
         m_mark = mark;
         m_offset = builder.getCurrentOffset();
@@ -88,12 +84,12 @@ public class ParserScope {
         }
     }
 
-    public ParserScope complete() {
+    public @NotNull ParserScope complete() {
         m_isComplete = true;
         return this;
     }
 
-    public ParserScope optional() {
+    public @NotNull ParserScope optional() {
         m_isComplete = false;
         return this;
     }
@@ -166,6 +162,13 @@ public class ParserScope {
         if (m_mark != null) {
             m_mark.rollbackTo();
         }
+    }
+
+    public @Nullable PsiBuilder.Marker precede() {
+        if (m_mark != null) {
+            return m_mark.precede();
+        }
+        return null;
     }
 
     public boolean isCompositeType(ORCompositeType elementType) {

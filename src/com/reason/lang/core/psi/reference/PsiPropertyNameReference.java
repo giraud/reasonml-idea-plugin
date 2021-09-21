@@ -98,7 +98,7 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<PsiLea
     public static class JsxTagResolveResult implements ResolveResult {
         private @Nullable PsiElement myReferencedIdentifier = null;
 
-        public JsxTagResolveResult(@NotNull PsiElement referencedElement, String propertyName) {
+        public JsxTagResolveResult(@NotNull PsiElement referencedElement, @NotNull String propertyName) {
             if (referencedElement instanceof PsiLet) {
                 PsiFunction function = ((PsiLet) referencedElement).getFunction();
                 if (function != null) {

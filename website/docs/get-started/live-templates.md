@@ -7,34 +7,134 @@ slug: /get-started/live-templates
 
 List of templates that may help development.
 
-abbrevation: `jsp`, description: `create a jsProps in wrapReasonForJs`
-```
-~$NAME$=jsProps##$NAME$,$END$
+from version: 0.103
+
+# OCaml
+
+**Scope**: `*.ml` and `*.mli`.
+
+- `begin`
+
+```ocaml
+begin
+
+end
 ```
 
-abbreviation: `style`, description: `create a style module`
-```
-module Styles = {
-    open Css;
-    let $VAR$ = style([
-        $END$
-    ]);
-};
+- `class`
+
+```ocaml
+class name =
+	object (self)
+		contents
+	end
 ```
 
-abbreviation: `comp`, description: `create a reason component`
-```
-let component = ReasonReact.statelessComponent("$NAME$");
+- `for`
 
-let make = (~$PROP$, _children) => {...component, render: _self => <div />};
-$END$
-/*
- JS interop
- expose an helper for js - can be deleted when no more used by javascript code
- */
-let jsComponent =
-  ReasonReact.wrapReasonForJs(~component, jsProps =>
-    make(~$PROP$=jsProps##$PROP$, [||])
-  );
+```ocaml
+for i = starval to endval do
+	code
+done
 ```
 
+- `fun`
+
+```ocaml
+(fun () -> body)
+```
+
+- `func`
+
+```ocaml
+(function
+| patt1 -> expr1
+| patt2 -> expr2)
+```
+
+- `if`
+
+```ocaml
+if (cond) then expr else expr2
+```
+
+- `let`
+
+```ocaml
+let var(s) = expr
+```
+
+- `lin`
+
+```ocaml
+let var(s) = expr in expr2
+```
+
+- `match`
+
+```ocaml
+match value with
+| patt -> expr
+| _ -> expr2
+```
+
+- `method`
+
+```ocaml
+method name = 
+```
+
+- `msig`
+
+```ocaml
+module Name : sig
+	
+end
+```
+
+- `mstruct`
+
+```ocaml
+module Name = struct
+	
+end
+```
+
+- `mtype`
+
+```ocaml
+module type Name = sig
+	
+end
+```
+
+- `thread`
+
+```ocaml
+ignore (Thread.create (fun () -> 
+    
+  ) ())
+```
+
+- `try`
+
+```ocaml
+try
+	
+with
+    | _ -> failwith "Unknown"
+```
+
+- `type`
+
+```ocaml
+type name = expr
+```
+
+- `while`
+
+```ocaml
+while condition do
+	
+done
+```

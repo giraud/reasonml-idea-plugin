@@ -34,7 +34,7 @@ public class ConvertAction extends AnAction {
     }
 
     protected void apply(@NotNull Project project, @NotNull PsiFile file, boolean isNewFile) {
-        BsCompiler bucklescript = ServiceManager.getService(project, BsCompiler.class);
+        BsCompiler bucklescript = project.getService(BsCompiler.class);
         FileType fileType = file.getFileType();
 
         final Document document = PsiDocumentManager.getInstance(project).getDocument(file);

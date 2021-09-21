@@ -33,7 +33,7 @@ public class PsiModuleStub extends NamedStubBase<PsiModule> {
     }
 
     public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name,
-                         @Nullable String[] path, @Nullable String[] qNamePath, String namespace, String alias, boolean isComponent,
+                         @Nullable String[] path, @Nullable String[] qNamePath, @Nullable String namespace, String alias, boolean isComponent,
                          boolean isInterface, boolean isTopLevel, boolean isModuleType, boolean isFunctorCall) {
         super(parent, elementType, name);
         myPath = path;

@@ -57,7 +57,7 @@ public class PsiMacroBody extends CompositeTypePsiElement<ORTypes> implements Ps
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "PsiMacroBody";
     }
 }

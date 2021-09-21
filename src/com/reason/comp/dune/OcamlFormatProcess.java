@@ -79,7 +79,7 @@ public class OcamlFormatProcess {
             super(project, binary, false);
         }
 
-        OCamlFormatCommandLine addParameters(@NotNull VirtualFile file) {
+        @NotNull OCamlFormatCommandLine addParameters(@NotNull VirtualFile file) {
             m_parameters.add("-"); // use stdin
             m_parameters.add("--name");
             m_parameters.add(file.getName());

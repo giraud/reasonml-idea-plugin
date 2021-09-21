@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
+import com.reason.comp.rescript.*;
 import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
@@ -25,16 +26,21 @@ import static com.reason.comp.ORConstants.*;
 public class BsCompilerImpl implements BsCompiler {
     private static final Log LOG = Log.create("compiler.bs");
 
-    private final @NotNull Project myProject;
+    private final Project myProject;
     private final Map<String, BsConfig> m_configs = new THashMap<>();
     private final AtomicBoolean m_refreshNinjaIsNeeded = new AtomicBoolean(true);
     private final AtomicBoolean myProcessStarted = new AtomicBoolean(false);
 
-    private @Nullable Boolean m_disabled = null; // Never call directly, use isDisabled()
-    private @NotNull Ninja m_ninja = new Ninja(null);
+    private Boolean m_disabled = null; // Never call directly, use isDisabled()
+    private Ninja m_ninja = new Ninja(null);
 
     private BsCompilerImpl(@NotNull Project project) {
         myProject = project;
+    }
+
+    @Override
+    public @NotNull CompilerType getType() {
+        return CompilerType.BS;
     }
 
     @Override
@@ -44,7 +50,7 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public @NotNull String getFullVersion(@Nullable VirtualFile file) {
-        VirtualFile root = file == null ? ORProjectManager.findFirstBsContentRoot(myProject).orElse(null) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, file);
+        VirtualFile root = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, file);
         if (root != null) {
             return new BsProcess(myProject).getFullVersion(root);
         }
@@ -77,10 +83,10 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
-        if (!isDisabled() && ORSettings.getInstance(myProject).isBsEnabled()) {
-            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject).get() : file;
-            Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfig(myProject, sourceFile);
-            if (!bsConfigFile.isPresent()) {
+        if (!isDisabled() && myProject.getService(ORSettings.class).isBsEnabled()) {
+            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : file;
+            Optional<VirtualFile> bsConfigFile = sourceFile == null ? Optional.empty() : BsPlatform.findBsConfig(myProject, sourceFile);
+            if (bsConfigFile.isEmpty()) {
                 return;
             }
             getOrRefreshBsConfig(bsConfigFile.get());
@@ -119,9 +125,10 @@ public class BsCompilerImpl implements BsCompiler {
     @Override
     public boolean isAvailable(@NotNull Project project) {
         VirtualFile bsConfig = ORProjectManager.findFirstBsConfigurationFile(project).orElse(null);
-        VirtualFile bsbBin = bsConfig == null ? null : ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSB_EXE_NAME);
+        VirtualFile bsbBin = bsConfig == null ? null : BsPlatform.findBinaryPathForConfigFile(project, bsConfig);
+        VirtualFile resBin = bsConfig == null ? null : ResPlatform.findBinaryPathForConfigFile(project, bsConfig);
 
-        return bsbBin != null;
+        return bsbBin != null && resBin == null;
     }
 
     @Override
@@ -136,7 +143,7 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public @Nullable String convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
-        BsFormatProcess refmt = BsFormatProcess.getInstance(myProject);
+        BsFormatProcess refmt = myProject.getService(BsFormatProcess.class);
         String oldText = document.getText();
         String newText = refmt.convert(virtualFile, isInterface, fromFormat, toFormat, oldText);
         // additional protection

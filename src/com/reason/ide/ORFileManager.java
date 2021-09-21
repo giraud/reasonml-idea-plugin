@@ -50,7 +50,7 @@ public class ORFileManager {
 
     public static @NotNull String toRelativeSourceName(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull Path relativePath) {
         String sourcePath = relativePath.toString();
-        String namespace = ServiceManager.getService(project, BsCompiler.class).getNamespace(sourceFile);
+        String namespace = project.getService(BsCompiler.class).getNamespace(sourceFile);
         if (!namespace.isEmpty()) {
             sourcePath = sourcePath.replace("-" + StringUtil.toFirstUpper(namespace), "");
         }

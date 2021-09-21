@@ -3,6 +3,7 @@ package com.reason.comp;
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
+import com.reason.comp.Compiler.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.dune.*;
 import com.reason.comp.esy.*;
@@ -11,12 +12,12 @@ import com.reason.ide.files.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
-import java.lang.*;
 import java.util.*;
+
+import static com.reason.comp.ORConstants.*;
 
 public class ORCompilerManager {
     private static final Log LOG = Log.create("manager.compiler");
-
     private final @NotNull Project myProject;
 
     public ORCompilerManager(@NotNull Project project) {
@@ -32,26 +33,26 @@ public class ORCompilerManager {
         return compiler != null && compiler.isConfigured(myProject) ? compiler : null;
     }
 
-    public @Nullable Compiler getCompiler(@NotNull VirtualFile editorFile) {
+    public @Nullable ORResolvedCompiler<?> getCompiler(@NotNull VirtualFile editorFile) {
         FileType fileType = editorFile.getFileType();
         return FileHelper.isCompilable(fileType) ? traverseAncestorsForCompiler(editorFile.getParent(), new HashMap<>()) : null;
     }
 
-    private @Nullable Compiler traverseAncestorsForCompiler(@Nullable VirtualFile currentDir, @NotNull Map<String, VirtualFile> visited) {
+    private @Nullable ORResolvedCompiler<?> traverseAncestorsForCompiler(@Nullable VirtualFile currentDir, @NotNull Map<String, VirtualFile> visited) {
         // hit filesystem root, give up
         if (currentDir == null) {
             return null;
         }
+
         // we've already visited this directory, must have hit a symlink
         if (visited.get(currentDir.getPath()) != null) {
             return null;
         }
         visited.put(currentDir.getPath(), currentDir);
-        // look for a compiler configuration file
 
+        // look for a compiler configuration file in the current directory
         CompilerVisitor compilerVisitor = new CompilerVisitor();
         VfsUtil.visitChildrenRecursively(currentDir, compilerVisitor);
-
         if (compilerVisitor.myCompiler != null) {
             return compilerVisitor.myCompiler;
         }
@@ -60,6 +61,7 @@ public class ORCompilerManager {
         if (currentDir.getPath().equals(myProject.getBasePath())) {
             return null;
         }
+
         // move up a directory and try again
         return traverseAncestorsForCompiler(currentDir.getParent(), visited);
     }
@@ -82,7 +84,7 @@ public class ORCompilerManager {
     }
 
     private class CompilerVisitor extends VirtualFileVisitor<VirtualFile> {
-        Compiler myCompiler = null;
+        ORResolvedCompiler<?> myCompiler = null;
 
         CompilerVisitor() {
             super(SKIP_ROOT, NO_FOLLOW_SYMLINKS, ONE_LEVEL_DEEP);
@@ -90,24 +92,30 @@ public class ORCompilerManager {
 
         @Override
         public boolean visitFile(@NotNull VirtualFile file) {
-            if (myCompiler != null) {
+            if (myCompiler != null || file.isDirectory()) {
                 return false;
             }
 
             if (EsyPackageJson.isEsyPackageJson(file)) {
-                myCompiler = getCompiler(CompilerType.ESY);
+                Compiler compiler = getCompiler(CompilerType.ESY);
+                myCompiler = compiler == null ? null : new ORResolvedCompiler<>(compiler, file, null);
             } else if (DuneFileType.isDuneFile(file)) {
                 // will be empty if dune isn't configured, might be an esy project
-                myCompiler = getCompiler(CompilerType.DUNE);
+                Compiler compiler = getCompiler(CompilerType.DUNE);
+                myCompiler = compiler == null ? null : new ORResolvedCompiler<>(compiler, file, null);
             } else if (BsConfigJsonFileType.isBsConfigFile(file)) {
                 // could be a rescript or a bucklescript installation
                 Compiler rescript = getCompiler(CompilerType.RESCRIPT);
-                if (rescript != null && ResPlatform.findBinaryPathForConfigFile(myProject, file) != null) {
-                    myCompiler = rescript;
+                VirtualFile binDir = ResPlatform.findBinaryPathForConfigFile(myProject, file);
+                VirtualFile binFile = binDir == null ? null : ORPlatform.findBinary(binDir, BSC_EXE_NAME);
+                if (rescript instanceof ResCompiler && binFile != null) {
+                    myCompiler = new ResResolvedCompiler((ResCompiler) rescript, file, binFile);
                 } else {
                     Compiler bucklescript = getCompiler(CompilerType.BS);
-                    if (bucklescript != null && BsPlatform.findBinaryPathForConfigFile(myProject, file) != null) {
-                        myCompiler = bucklescript;
+                    binDir = BsPlatform.findBinaryPathForConfigFile(myProject, file);
+                    binFile = binDir == null ? null : ORPlatform.findBinary(binDir, BSC_EXE_NAME);
+                    if (bucklescript instanceof BsCompiler && binFile != null) {
+                        myCompiler = new BsResolvedCompiler((BsCompiler) bucklescript, file, binFile);
                     }
                 }
             }

@@ -19,7 +19,7 @@ public class PsiLiteralExpression extends LeafPsiElement implements PsiLanguageI
     }
 
     @Override
-    public PsiLiteralExpression updateText(@NotNull String text) {
+    public @NotNull PsiLiteralExpression updateText(@NotNull String text) {
         ASTNode valueNode = getNode().getFirstChildNode();
         assert valueNode instanceof LeafElement;
         ((LeafElement) valueNode).replaceWithText(text);
@@ -32,7 +32,7 @@ public class PsiLiteralExpression extends LeafPsiElement implements PsiLanguageI
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "PsiLiteralExpression:" + getText();
     }
 
@@ -41,7 +41,7 @@ public class PsiLiteralExpression extends LeafPsiElement implements PsiLanguageI
     public static class StringLiteralEscaper<T extends PsiLanguageInjectionHost> extends LiteralTextEscaper<T> {
         private int[] outSourceOffsets;
 
-        public StringLiteralEscaper(T host) {
+        public StringLiteralEscaper(@NotNull T host) {
             super(host);
         }
 
@@ -55,9 +55,9 @@ public class PsiLiteralExpression extends LeafPsiElement implements PsiLanguageI
         @Override
         public int getOffsetInHost(int offsetInDecoded, @NotNull final TextRange rangeInsideHost) {
             int result = offsetInDecoded < outSourceOffsets.length ? outSourceOffsets[offsetInDecoded] : -1;
-          if (result == -1) {
-            return -1;
-          }
+            if (result == -1) {
+                return -1;
+            }
             return Math.min(result, rangeInsideHost.getLength()) + rangeInsideHost.getStartOffset();
         }
 

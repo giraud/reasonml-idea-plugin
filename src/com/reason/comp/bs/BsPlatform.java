@@ -56,14 +56,14 @@ public class BsPlatform {
     }
 
     public static Optional<VirtualFile> findEsyExecutable(@NotNull Project project) {
-        String esyExecutable = ORSettings.getInstance(project).getEsyExecutable();
+        String esyExecutable = project.getService(ORSettings.class).getEsyExecutable();
         if (esyExecutable.isEmpty()) {
             return Esy.findEsyExecutable();
         }
         return Optional.ofNullable(LocalFileSystem.getInstance().findFileByPath(esyExecutable));
     }
 
-    public static VirtualFile findRefmtExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+    public static @Nullable VirtualFile findRefmtExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         VirtualFile bsPlatformDir = findBsConfig(project, sourceFile)
                 .flatMap(bsConfig -> Optional.ofNullable(ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSC_EXE_NAME)))
                 .orElse(null);
@@ -84,5 +84,11 @@ public class BsPlatform {
         }
 
         return binaryInBsPlatform;
+    }
+
+    public static @Nullable BsConfig readConfig(@NotNull VirtualFile contentRoot) {
+        // Read bsConfig to get the compilation directives
+        VirtualFile bsConfigFile = contentRoot.findChild(BS_CONFIG_FILENAME);
+        return bsConfigFile == null ? null : BsConfigReader.read(bsConfigFile);
     }
 }

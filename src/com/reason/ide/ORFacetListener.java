@@ -15,7 +15,7 @@ public class ORFacetListener implements ProjectWideFacetListener<Facet> {
     private final @NotNull Project m_project;
 
     public static void ensureSubscribed(@NotNull Project project) {
-        ServiceManager.getService(project, ORFacetListener.class);
+        project.getService(ORFacetListener.class);
     }
 
     private ORFacetListener(@NotNull Project project) {
@@ -52,7 +52,7 @@ public class ORFacetListener implements ProjectWideFacetListener<Facet> {
 
     private static void showHideDuneToolWindow(@NotNull Project project, Facet facet) {
         if (facet instanceof DuneFacet) {
-            ORToolWindowManager toolWindowManager = ServiceManager.getService(project, ORToolWindowManager.class);
+            ORToolWindowManager toolWindowManager = project.getService(ORToolWindowManager.class);
             ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
         }
     }

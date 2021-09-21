@@ -39,7 +39,7 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
   public JComponent getComponent() {
     m_rootTabbedPane = new JBTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
-    InsightManager insightManager = ServiceManager.getService(m_project, InsightManager.class);
+    InsightManager insightManager = m_project.getService(InsightManager.class);
     List<String> meta = insightManager.dumpMeta(m_file);
     String xmlSource = insightManager.dumpTree(m_file);
     List<String> types = insightManager.dumpInferredTypes(m_file);

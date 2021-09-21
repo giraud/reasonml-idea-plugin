@@ -53,7 +53,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
                 String alias = ((PsiLet) element).getAlias();
                 if (alias != null) {
                     Project project = element.getProject();
-                    PsiFinder psiFinder = PsiFinder.getInstance(project);
+                    PsiFinder psiFinder = project.getService(PsiFinder.class);
                     PsiVal valFromAlias = psiFinder.findValFromQn(alias);
                     if (valFromAlias == null) {
                         PsiLet letFromAlias = psiFinder.findLetFromQn(alias);

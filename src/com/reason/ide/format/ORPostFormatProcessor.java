@@ -77,7 +77,7 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
         return rangeToReformat;
     }
 
-    public static @Nullable FormatterProcessor getFormatterProcessor(PsiFile file) {
+    public static @Nullable FormatterProcessor getFormatterProcessor(@NotNull PsiFile file) {
         FileType fileType = file.getFileType();
         if (FileHelper.isReason(fileType)) {
             return new RmlFormatProcessor(file);
@@ -104,9 +104,9 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
 
         @Override
         public @Nullable String apply(@NotNull String textToFormat) {
-            if (ORSettings.getInstance(m_project).isBsEnabled() && m_file.exists()) {
+            if (m_project.getService(ORSettings.class).isBsEnabled() && m_file.exists()) {
                 LOG.trace("Apply ReasonML formatter, is interface", m_isInterface);
-                BsFormatProcess process = BsFormatProcess.getInstance(m_project);
+                BsFormatProcess process = m_project.getService(BsFormatProcess.class);
                 return process.convert(m_file, m_isInterface, "re", "re", textToFormat);
             }
             return null;

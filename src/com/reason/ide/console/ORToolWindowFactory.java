@@ -8,13 +8,13 @@ import javax.swing.*;
 
 public abstract class ORToolWindowFactory implements ToolWindowFactory, DumbAware {
     /* id provided in plugin.xml. this is displayed in the UI */
-    public abstract String getId();
+    public abstract @NotNull String getId();
 
-    public abstract Icon getIcon();
+    public abstract @NotNull Icon getIcon();
 
-    public abstract String getTitle();
+    public abstract @NotNull String getTitle();
 
-    public abstract String getStripeTitle();
+    public abstract @NotNull String getStripeTitle();
 
     /**
      * Initially hide all tool windows until indexing has completed. See {@link com.reason.ide.ORPostStartupActivity}

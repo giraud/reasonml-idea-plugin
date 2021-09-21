@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.1.4'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.1.6'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 apply plugin: 'java'
@@ -41,9 +41,13 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#340 - Items missing in structure panel after let ending with match (incorrect object parsing)</li>
-                    <li>#329 - IllegalArgumentException: Not an OCaml node: Element(OCAML_LAZY_NODE)</li>
-                    <li>remove jps-plugin.jar reference in plugin.xml</li>
+                    <li>#344 - Enabling spellchecker</li>
+                    <li>#343 - Adding live templates for OCaml</li>
+                    <li>#325 - Structure panel missing "pp_misc" for "let misc, pp_misc = ...". Gutter icon missing for pp_misc in mli file</li>
+                    <li>#322 - Class types in .mli files should link to the corresponding definition in the .ml file</li>
+                    <li>#351 - Error annotator use detected compiler, not file language</li>
+                    <li>Add line markers for rescript</li>
+                    <li>Enable line markers in every IDE</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

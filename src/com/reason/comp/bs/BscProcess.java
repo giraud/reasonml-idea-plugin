@@ -62,41 +62,4 @@ public class BscProcess {
         bscProcessHandler.waitFor(TIMEOUT.toMillis());
         return bscProcessHandler.getExitCode();
     }
-
-    public @NotNull List<OutputInfo> exec(@NotNull VirtualFile sourceFile, @NotNull VirtualFile workDir, @NotNull List<String> arguments) {
-        VirtualFile bscPath = BsPlatform.findBscExecutable(myProject, sourceFile);
-        if (bscPath == null) {
-            LOG.warn("Unable to find bsc.exe for " + sourceFile);
-            return emptyList();
-        }
-
-        List<String> command = new ArrayList<>();
-        command.add(bscPath.getPath());
-        command.addAll(arguments);
-
-        if (LOG.isTraceEnabled()) {
-            LOG.trace(bscPath.getPath() + " " + Joiner.join(" ", arguments));
-            LOG.trace("  work dir", workDir);
-        }
-
-        try {
-            BsLineProcessor lineProcessor = new BsLineProcessor(LOG);
-            AnsiEscapeDecoder m_ansiEscapeDecoder = new AnsiEscapeDecoder();
-
-            Process exec = Runtime.getRuntime().exec(command.toArray(new String[0]), null, new File(workDir.getPath()));
-            exec.waitFor(500, TimeUnit.MILLISECONDS);
-            BufferedReader errReader = new BufferedReader(new InputStreamReader(exec.getErrorStream(), UTF8));
-            errReader.lines().forEach(text -> {
-                StringBuilder sb = new StringBuilder();
-                m_ansiEscapeDecoder.escapeText(text, ProcessOutputType.STDERR, (chunk, attributes) -> sb.append(chunk));
-                lineProcessor.onRawTextAvailable(sb.toString());
-            });
-
-            return lineProcessor.getInfo();
-        } catch (InterruptedException | IOException e) {
-            LOG.warn(e);
-        }
-
-        return emptyList();
-    }
 }

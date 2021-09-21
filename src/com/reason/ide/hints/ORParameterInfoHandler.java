@@ -82,7 +82,7 @@ public abstract class ORParameterInfoHandler implements ParameterInfoHandler<Psi
         PsiSignature signature;
         String[] arguments; // ?
 
-        public ArgumentsDescription(PsiQualifiedNamedElement resolvedElement, PsiSignature signature) {
+        public ArgumentsDescription(PsiQualifiedNamedElement resolvedElement, @NotNull PsiSignature signature) {
             this.resolvedElement = resolvedElement;
             this.signature = signature;
             this.arguments = signature.getItems().stream().map(PsiElement::getText).toArray(String[]::new);
@@ -92,7 +92,7 @@ public abstract class ORParameterInfoHandler implements ParameterInfoHandler<Psi
             return signature.getText();
         }
 
-        TextRange getRange(int index) {
+        @NotNull TextRange getRange(int index) {
             if (index < 0 || index >= arguments.length) {
                 return TextRange.EMPTY_RANGE;
             }

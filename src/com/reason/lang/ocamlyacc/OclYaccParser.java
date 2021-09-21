@@ -4,6 +4,7 @@ package com.reason.lang.ocamlyacc;
 import com.intellij.lang.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.*;
+import org.jetbrains.annotations.*;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 
@@ -12,7 +13,7 @@ public class OclYaccParser extends CommonParser<OclYaccTypes> {
         super(OclYaccTypes.INSTANCE);
     }
 
-    @Override protected void parseFile(PsiBuilder builder, ParserState parserState) {
+    @Override protected void parseFile(@NotNull PsiBuilder builder, ParserState parserState) {
         IElementType tokenType;
         int c = current_position_(builder);
         while (true) {
