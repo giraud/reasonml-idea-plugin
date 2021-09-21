@@ -2,6 +2,7 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.navigation.*;
+import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
@@ -120,9 +121,10 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
             result = new ArrayList<>();
 
             String name = functorResult.getText();
-            PsiFinder psiFinder = getProject().getService(PsiFinder.class);
+            Project project = getProject();
+            PsiFinder psiFinder = project.getService(PsiFinder.class);
             QNameFinder qnameFinder = PsiFinder.getQNameFinder(getLanguage());
-            GlobalSearchScope searchScope = GlobalSearchScope.allScope(getProject());
+            GlobalSearchScope searchScope = GlobalSearchScope.allScope(project);
 
             Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorResult);
             for (String potentialPath : potentialPaths) {

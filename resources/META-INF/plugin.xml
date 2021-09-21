@@ -240,6 +240,7 @@
         <stubIndex implementation="com.reason.ide.search.index.ModuleIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleAliasedIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleAliasesIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.KlassFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ValIndex"/>
@@ -247,6 +248,7 @@
         <stubIndex implementation="com.reason.ide.search.index.TypeIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.TypeFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExternalIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ExternalFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExceptionIndex"/>
@@ -343,9 +345,9 @@
         <annotator language="OCaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
         <annotator language="Dune" implementationClass="com.reason.ide.highlight.DuneSyntaxAnnotator"/>
 
-        <externalAnnotator language="Reason" implementationClass="com.reason.ide.annotations.BsErrorAnnotator"/>
-        <externalAnnotator language="Rescript" implementationClass="com.reason.ide.annotations.ResErrorAnnotator"/>
-        <externalAnnotator language="OCaml" implementationClass="com.reason.ide.annotations.BsErrorAnnotator"/>
+        <externalAnnotator language="Reason" implementationClass="com.reason.ide.annotations.ORErrorAnnotator"/>
+        <externalAnnotator language="Rescript" implementationClass="com.reason.ide.annotations.ORErrorAnnotator"/>
+        <externalAnnotator language="OCaml" implementationClass="com.reason.ide.annotations.ORErrorAnnotator"/>
         <problemFileHighlightFilter implementation="com.reason.ide.annotations.ErrorFileHighlighter"/>
 
         <completion.contributor language="Reason"
@@ -376,6 +378,14 @@
         <liveTemplateContext implementation="com.reason.ide.template.RmlContextType$Generic"/>
         <defaultLiveTemplates file="liveTemplates/Reason.xml"/>
 
+        <liveTemplateContext implementation="com.reason.ide.template.ResContextType$Generic"/>
+        <defaultLiveTemplates file="liveTemplates/Rescript.xml"/>
+
+        <liveTemplateContext implementation="com.reason.ide.template.OCamlContentType"/>
+        <liveTemplateContext implementation="com.reason.ide.template.OCamlContentType$OCamlExpressionTemplates"/>
+        <liveTemplateContext implementation="com.reason.ide.template.OCamlContentType$OCamlCommentTemplates"/>
+        <defaultLiveTemplates file="liveTemplates/OCaml.xml"/>
+
         <!--
          | Intentions
          -->
@@ -388,6 +398,14 @@
             <className>com.reason.ide.intentions.ExpandLocalOpenIntention</className>
             <category>Reason</category>
         </intentionAction>
+
+        <!--
+         | Spellchecker
+         -->
+
+        <spellchecker.support language="OCaml" implementationClass="com.reason.ide.spellcheckers.OCamlSpellCheckerStrategy"/>
+        <spellchecker.support language="Reason" implementationClass="com.reason.ide.spellcheckers.ReasonSpellCheckerStrategy"/>
+        <spellchecker.support language="Rescript" implementationClass="com.reason.ide.spellcheckers.CustomSpellCheckerStrategy"/>
 
         <!--
          | Debug
@@ -411,6 +429,16 @@
 
         <consoleFilterProvider implementation="com.reason.ide.console.ORConsoleFilterProvider"/>
         <editorFactoryListener implementation="com.reason.ide.OREditorFactoryListener"/>
+
+
+        <!-- Gutter icons -->
+
+        <codeInsight.lineMarkerProvider language="OCaml"
+                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="Reason"
+                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="Rescript"
+                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
 
     </extensions>
 

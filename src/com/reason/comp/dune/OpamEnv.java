@@ -1,5 +1,6 @@
 package com.reason.comp.dune;
 
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
 import org.jetbrains.annotations.*;

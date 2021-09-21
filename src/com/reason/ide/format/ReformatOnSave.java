@@ -27,6 +27,9 @@ public class ReformatOnSave {
     private static final Key<Integer> REFORMAT_COUNT = new Key<>("ReasonML.format.count");
     private static final Log LOG = Log.create("format.auto");
 
+    private ReformatOnSave() {
+    }
+
     public static void apply(@NotNull Project project, @NotNull Document document) {
         ORSettings settings = project.getService(ORSettings.class);
         if (settings.isFormatOnSaveEnabled()) {

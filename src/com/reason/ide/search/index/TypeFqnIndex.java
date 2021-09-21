@@ -19,7 +19,7 @@ public class TypeFqnIndex extends IntStubIndexExtension<PsiType> {
         return IndexKeys.TYPES_FQN;
     }
 
-    public static @NotNull Collection<PsiType> getElements(int key, Project project) {
+    public static @NotNull Collection<PsiType> getElements(int key, @NotNull Project project) {
         return StubIndex.getElements(IndexKeys.TYPES_FQN, key, project, null, PsiType.class);
     }
 }

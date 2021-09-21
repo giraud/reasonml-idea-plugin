@@ -7,6 +7,9 @@ import java.io.*;
 import org.jetbrains.annotations.NotNull;
 
 public class FileUtil {
+    private FileUtil() {
+    }
+
     public static String readFileContent(@NotNull VirtualFile file) {
         try {
             return Streams.inputToString(file.getInputStream());

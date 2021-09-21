@@ -22,32 +22,21 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
 
         GlobalSearchScope scope = allScope(getProject());
         List<PsiModule> modulesA =
-                new ArrayList<>(
-                        getProject().getService(PsiFinder.class)
-                                .findModulesbyName("Router", interfaceOnly, null, scope));
+                new ArrayList<>(getProject().getService(PsiFinder.class).findModulesbyName("Router", interfaceOnly, null, scope));
         List<PsiModule> modulesB =
-                new ArrayList<>(
-                        getProject().getService(PsiFinder.class)
-                                .findModulesbyName("Router", implementationOnly, null, scope));
+                new ArrayList<>(getProject().getService(PsiFinder.class).findModulesbyName("Router", implementationOnly, null, scope));
         List<PsiModule> modulesC =
-                new ArrayList<>(
-                        getProject().getService(PsiFinder.class)
-                                .findModulesbyName("Router", interfaceOrImplementation, null, scope));
+                new ArrayList<>(getProject().getService(PsiFinder.class).findModulesbyName("Router", interfaceOrImplementation, null, scope));
         List<PsiModule> modulesD =
-                new ArrayList<>(
-                        getProject().getService(PsiFinder.class).findModulesbyName("Router", both, null, scope));
-
+                new ArrayList<>(getProject().getService(PsiFinder.class).findModulesbyName("Router", both, null, scope));
         assertSize(1, modulesA);
-        assertEquals(
-                "type api", modulesA.get(0).getExpressions(all, NO_FILTER).iterator().next().getText());
+        assertEquals("type api", modulesA.get(0).getExpressions(all, NO_FILTER).iterator().next().getText());
 
         assertSize(1, modulesB);
-        assertEquals(
-                "type impl", modulesB.get(0).getExpressions(all, NO_FILTER).iterator().next().getText());
+        assertEquals("type impl", modulesB.get(0).getExpressions(all, NO_FILTER).iterator().next().getText());
 
         assertSize(1, modulesC);
-        assertEquals(
-                "type api", modulesC.get(0).getExpressions(all, NO_FILTER).iterator().next().getText());
+        assertEquals("type api", modulesC.get(0).getExpressions(all, NO_FILTER).iterator().next().getText());
 
         assertSize(2, modulesD);
     }

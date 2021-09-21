@@ -1,29 +1,28 @@
 package com.reason.comp.bs;
 
+import com.reason.comp.*;
+import com.reason.ide.annotations.*;
+import jpsplugin.com.reason.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
+import java.util.regex.*;
+
 import static com.reason.comp.bs.BsLineProcessor.BuildStatus.*;
-import static java.lang.Integer.parseInt;
-
-import jpsplugin.com.reason.Log;
-import com.reason.ide.annotations.OutputInfo;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static java.lang.Integer.*;
 
 /**
  * Line processor is a state machine.
  */
-public class BsLineProcessor {
+public class BsLineProcessor implements CompilerOutputAnalyzer {
     private static final Pattern FILE_LOCATION = Pattern.compile("File \"(.+)\", line (\\d+), characters (\\d+)-(\\d+):\n?");
     private static final Pattern POSITIONS = Pattern.compile("[\\s:]\\d+:\\d+(-\\d+(:\\d+)?)?$");
 
     private final Log m_log;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
-    public @NotNull List<OutputInfo> getInfo() {
+    @Override
+    public @NotNull List<OutputInfo> getOutputInfo() {
         return m_bsbInfo;
     }
 
@@ -50,7 +49,8 @@ public class BsLineProcessor {
         m_log = log;
     }
 
-    public void onRawTextAvailable(@NotNull String text) {
+    @Override
+    public void onTextAvailable(@NotNull String text) {
         String trimmedText = text.trim();
         if (m_log.isTraceEnabled()) {
             m_log.trace(trimmedText);
@@ -203,6 +203,7 @@ public class BsLineProcessor {
     private @NotNull OutputInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @Nullable String lineEnd, @Nullable String colEnd) {
         OutputInfo info = new OutputInfo();
         info.path = path;
+        info.isError = true;
         info.lineStart = parseInt(lineStart);
         info.colStart = parseInt(colStart);
         info.lineEnd = lineEnd == null ? info.lineStart : parseInt(lineEnd);
@@ -214,6 +215,7 @@ public class BsLineProcessor {
     private @NotNull OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, @NotNull String colEnd) {
         OutputInfo info = new OutputInfo();
         info.path = path;
+        info.isError = true;
         info.lineStart = parseInt(line);
         info.colStart = parseInt(colStart);
         info.lineEnd = info.lineStart;

@@ -33,10 +33,10 @@ public class BsLineProcessorTest {
         BsLineProcessor outputListener = new BsLineProcessor(Log.create("test"));
 
         for (String line : output) {
-            outputListener.onRawTextAvailable(line);
+            outputListener.onTextAvailable(line);
         }
 
-        List<OutputInfo> allErrors = outputListener.getInfo();
+        List<OutputInfo> allErrors = outputListener.getOutputInfo();
         assertSize(1, allErrors);
 
         OutputInfo info = allErrors.get(0);
@@ -68,10 +68,10 @@ public class BsLineProcessorTest {
         BsLineProcessor outputListener = new BsLineProcessor(Log.create("test"));
 
         for (String line : output) {
-            outputListener.onRawTextAvailable(line);
+            outputListener.onTextAvailable(line);
         }
 
-        List<OutputInfo> allErrors = outputListener.getInfo();
+        List<OutputInfo> allErrors = outputListener.getOutputInfo();
         assertSize(1, allErrors);
 
         OutputInfo info = allErrors.get(0);
@@ -109,10 +109,10 @@ public class BsLineProcessorTest {
         BsLineProcessor outputListener = new BsLineProcessor(Log.create("test"));
 
         for (String line : output) {
-            outputListener.onRawTextAvailable(line);
+            outputListener.onTextAvailable(line);
         }
 
-        List<OutputInfo> allErrors = outputListener.getInfo();
+        List<OutputInfo> allErrors = outputListener.getOutputInfo();
         assertSize(1, allErrors);
 
         OutputInfo info = allErrors.get(0);
@@ -151,10 +151,10 @@ public class BsLineProcessorTest {
         BsLineProcessor outputListener = new BsLineProcessor(Log.create("test"));
 
         for (String line : output) {
-            outputListener.onRawTextAvailable(line);
+            outputListener.onTextAvailable(line);
         }
 
-        List<OutputInfo> allErrors = outputListener.getInfo();
+        List<OutputInfo> allErrors = outputListener.getOutputInfo();
         assertSize(1, allErrors);
 
         OutputInfo info = allErrors.get(0);
@@ -198,12 +198,12 @@ public class BsLineProcessorTest {
 
         long start = System.nanoTime();
         for (String line : output) {
-            outputListener.onRawTextAvailable(line);
+            outputListener.onTextAvailable(line);
         }
         long end = System.nanoTime();
 
         System.out.println("process in " + (end - start) + "ns");
-        List<OutputInfo> allErrors = outputListener.getInfo();
+        List<OutputInfo> allErrors = outputListener.getOutputInfo();
         assertSize(1, allErrors);
 
         OutputInfo info = allErrors.get(0);
@@ -238,10 +238,10 @@ public class BsLineProcessorTest {
         BsLineProcessor outputListener = new BsLineProcessor(Log.create("test"));
 
         for (String line : output) {
-            outputListener.onRawTextAvailable(line);
+            outputListener.onTextAvailable(line);
         }
 
-        List<OutputInfo> allErrors = outputListener.getInfo();
+        List<OutputInfo> allErrors = outputListener.getOutputInfo();
         assertSize(1, allErrors);
 
         OutputInfo info = allErrors.get(0);
@@ -269,10 +269,10 @@ public class BsLineProcessorTest {
         BsLineProcessor outputListener = new BsLineProcessor(Log.create("test"));
 
         for (String line : output) {
-            outputListener.onRawTextAvailable(line);
+            outputListener.onTextAvailable(line);
         }
 
-        List<OutputInfo> allErrors = outputListener.getInfo();
+        List<OutputInfo> allErrors = outputListener.getOutputInfo();
         assertSize(1, allErrors);
 
         OutputInfo info = allErrors.get(0);

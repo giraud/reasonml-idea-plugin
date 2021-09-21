@@ -20,7 +20,7 @@ public class ValIndex extends StringStubIndexExtension<PsiVal> {
         return IndexKeys.VALS;
     }
 
-    public static @NotNull Collection<PsiVal> getElements(String key, Project project, @Nullable GlobalSearchScope scope) {
+    public static @NotNull Collection<PsiVal> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
         return StubIndex.getElements(IndexKeys.VALS, key, project, scope, PsiVal.class);
     }
 }

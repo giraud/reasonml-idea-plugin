@@ -19,6 +19,7 @@ public class ModuleComponentFqnIndex extends IntStubIndexExtension<PsiModule> {
         return IndexKeys.MODULES_COMP_FQN;
     }
 
-    public static @NotNull Collection<PsiModule> getElements(String key, Project project) {
+    public static @NotNull Collection<PsiModule> getElements(@NotNull String key, @NotNull Project project) {
         return StubIndex.getElements(IndexKeys.MODULES_COMP_FQN, key.hashCode(), project, null, PsiModule.class);
-    }}
+    }
+}

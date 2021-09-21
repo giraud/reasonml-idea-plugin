@@ -21,11 +21,11 @@ public class VariantFqnIndex extends IntStubIndexExtension<PsiVariantDeclaration
         return IndexKeys.VARIANTS_FQN;
     }
 
-    public static @NotNull Collection<PsiVariantDeclaration> getElements(String key, Project project) {
+    public static @NotNull Collection<PsiVariantDeclaration> getElements(@NotNull String key, @NotNull Project project) {
         return StubIndex.getElements(IndexKeys.VARIANTS_FQN, key.hashCode(), project, null, PsiVariantDeclaration.class);
     }
 
-    public static PsiVariantDeclaration getElement(@Nullable String qname, @NotNull Project m_project) {
+    public static @Nullable PsiVariantDeclaration getElement(@Nullable String qname, @NotNull Project m_project) {
         Collection<PsiVariantDeclaration> variants = qname == null ? emptyList() : VariantFqnIndex.getElements(qname, m_project);
         return variants.isEmpty() ? null : variants.iterator().next();
     }

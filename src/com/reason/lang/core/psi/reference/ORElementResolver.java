@@ -78,7 +78,7 @@ public class ORElementResolver implements Disposable {
 
     }
 
-    Resolutions getComputation() {
+    @NotNull Resolutions getComputation() {
         return new ResolutionsImpl();
     }
 
@@ -101,7 +101,7 @@ public class ORElementResolver implements Disposable {
 
         void removeIncomplete();
 
-        Collection<PsiQualifiedPathElement> resolvedElements();
+        @NotNull Collection<PsiQualifiedPathElement> resolvedElements();
     }
 
     /*
@@ -243,7 +243,7 @@ public class ORElementResolver implements Disposable {
             }
         }
 
-        private void findResolutionEquivalence(String path, Resolution resolution, Map<String, Set<String[]>> cachedIncludes, List<Resolution> result, int guard) {
+        private void findResolutionEquivalence(String path, @NotNull Resolution resolution, @NotNull Map<String, Set<String[]>> cachedIncludes, @NotNull List<Resolution> result, int guard) {
             Set<String[]> includeDeps = cachedIncludes.get(path);
             if (includeDeps != null) {
                 //    A.B.C.t
@@ -277,7 +277,7 @@ public class ORElementResolver implements Disposable {
             }
         }
 
-        public void updateWeight(@Nullable String value, Set<String> alternateNames) {
+        public void updateWeight(@Nullable String value, @Nullable Set<String> alternateNames) {
             Map<Integer, Integer> newWeights = new HashMap<>();
 
             for (Map<String, com.reason.lang.core.psi.reference.Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
@@ -337,7 +337,7 @@ public class ORElementResolver implements Disposable {
         }
 
         // all resolutions must be complete
-        public void removeIfNotFound(String value, @Nullable Set<String> alternateNames) {
+        public void removeIfNotFound(@NotNull String value, @Nullable Set<String> alternateNames) {
             for (Map<String, com.reason.lang.core.psi.reference.Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
                 topModuleEntry.values().removeIf(resolution -> {
                     String currentName = resolution.getCurrentName();
@@ -352,7 +352,7 @@ public class ORElementResolver implements Disposable {
             }
         }
 
-        public Collection<PsiQualifiedPathElement> resolvedElements() {
+        public @NotNull Collection<PsiQualifiedPathElement> resolvedElements() {
             List<com.reason.lang.core.psi.reference.Resolution> allResolutions = new ArrayList<>();
 
             // flatten elements

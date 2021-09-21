@@ -109,7 +109,7 @@ public class ParserState {
     public @Nullable ParserScope getLatestCompletedScope() {
         ParserScope completed = m_latestCompleted;
         m_latestCompleted = null;
-        return completed == null ? null : completed;
+        return completed;
     }
 
     public boolean is(ORCompositeType composite) {
@@ -414,7 +414,7 @@ public class ParserState {
         return this;
     }
 
-    public ParserState setWhitespaceSkippedCallback(@Nullable WhitespaceSkippedCallback callback) {
+    public @NotNull ParserState setWhitespaceSkippedCallback(@Nullable WhitespaceSkippedCallback callback) {
         m_builder.setWhitespaceSkippedCallback(callback);
         return this;
     }
@@ -475,14 +475,14 @@ public class ParserState {
         return m_currentScope.isOptional();
     }
 
-    public ParserState markOptionalParenDummyScope(@NotNull ORTypes types, @NotNull ORCompositeType scopeType) {
+    public @NotNull ParserState markOptionalParenDummyScope(@NotNull ORTypes types, @NotNull ORCompositeType scopeType) {
         if (getTokenType() == types.LPAREN) {
             markScope(scopeType, types.LPAREN).dummy().advance();
         }
         return this;
     }
 
-    public ParserState markOptionalParenDummyScope(@NotNull ORTypes types) {
+    public @NotNull ParserState markOptionalParenDummyScope(@NotNull ORTypes types) {
         return markOptionalParenDummyScope(types, types.C_DUMMY);
     }
 }

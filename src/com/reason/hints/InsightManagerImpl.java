@@ -3,7 +3,6 @@ package com.reason.hints;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -18,7 +17,7 @@ import static jpsplugin.com.reason.Platform.*;
 
 public class InsightManagerImpl implements InsightManager {
     private static final Log LOG = Log.create("hints");
-    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
+    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).*\\)");
 
     final @NotNull AtomicBoolean isDownloading = new AtomicBoolean(false);
     private final @NotNull Project myProject;
@@ -97,7 +96,7 @@ public class InsightManagerImpl implements InsightManager {
 
     public @Nullable String getRincewindFilenameExcludingVersion(@NotNull VirtualFile sourceFile, @NotNull String excludedVersion) {
         ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
-        Compiler compiler = compilerManager.getCompiler(sourceFile);
+        ORResolvedCompiler compiler = compilerManager.getCompiler(sourceFile);
         String fullVersion = compiler == null ? null : compiler.getFullVersion(sourceFile);
         String ocamlVersion = ocamlVersionExtractor(fullVersion);
         String rincewindVersion = getRincewindVersion(ocamlVersion);

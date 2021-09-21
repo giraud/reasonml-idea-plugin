@@ -3,6 +3,7 @@ package com.reason.lang.core.psi.reference;
 import com.intellij.testFramework.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 public class ResolutionTest extends LightPlatformTestCase {
     public void test_path_traversal() {
@@ -57,7 +58,7 @@ public class ResolutionTest extends LightPlatformTestCase {
     }
 
     @SuppressWarnings("ConstantConditions")
-    private PsiType crateLowerElement() {
+    private @NotNull PsiType crateLowerElement() {
         return (PsiType) ORCodeFactory.createTypeName(getProject(), "t").getParent();
     }
 }

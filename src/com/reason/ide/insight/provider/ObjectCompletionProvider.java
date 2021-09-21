@@ -81,7 +81,7 @@ public class ObjectCompletionProvider {
     }
 
     public static @NotNull Collection<PsiObjectField> getJsObjectFieldsForPath(@Nullable PsiJsObject root, @NotNull List<String> path,
-                                                                               @NotNull PsiFinder psiFinder, QNameFinder qnameFinder) {
+                                                                               @NotNull PsiFinder psiFinder, @NotNull QNameFinder qnameFinder) {
         if (root != null) {
             PsiJsObject currentJsObject = root;
             int found = 0;

@@ -39,7 +39,7 @@ public class PsiMacro extends CompositePsiElement {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "PsiMacro";
     }
 }

@@ -23,13 +23,13 @@ class Resolution implements Comparable<Resolution> {
         myElements.add(element);
     }
 
-    public Resolution(String[] path, List<PsiQualifiedPathElement> elements) {
+    public Resolution(@Nullable String[] path, @NotNull List<PsiQualifiedPathElement> elements) {
         myPath = path;
         myLevel = path == null ? -1 : myPath.length - 1;
         myElements.addAll(elements);
     }
 
-    public static Resolution createAlternate(Resolution resolution, String[] alternatePath) {
+    public static @NotNull Resolution createAlternate(@NotNull Resolution resolution, String @NotNull [] alternatePath) {
         Resolution result = new Resolution(resolution.myPath, resolution.myElements);
         int newPathLength = alternatePath.length + resolution.myPath.length;
         result.myAlternatePath = alternatePath;
@@ -96,7 +96,7 @@ class Resolution implements Comparable<Resolution> {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         StringBuilder sb = new StringBuilder();
         if (myPath != null) {
             for (int i = 0; i < myPath.length; i++) {
@@ -124,7 +124,7 @@ class Resolution implements Comparable<Resolution> {
         return myIsComplete;
     }
 
-    public String joinPath() {
+    public @NotNull String joinPath() {
         if (myAlternatePath == null) {
             return Joiner.join(".", myPath);
         }
@@ -206,7 +206,7 @@ class Resolution implements Comparable<Resolution> {
         return true;
     }
 
-    public String[] augmentPath(String[] path) {
+    public @NotNull String[] augmentPath(@NotNull String[] path) {
         if (myAlternatePath == null && myPath.length == 1) {
             return path;
         }

@@ -19,7 +19,7 @@ public class ModuleTopLevelIndex extends StringStubIndexExtension<PsiFakeModule>
         return IndexKeys.MODULES_TOP_LEVEL;
     }
 
-    public static @NotNull Collection<PsiFakeModule> getElements(String key, Project project) {
+    public static @NotNull Collection<PsiFakeModule> getElements(@NotNull String key, @NotNull Project project) {
         return StubIndex.getElements(IndexKeys.MODULES_TOP_LEVEL, key, project, null, PsiFakeModule.class);
     }
 }

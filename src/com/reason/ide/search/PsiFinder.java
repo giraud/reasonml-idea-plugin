@@ -33,8 +33,8 @@ import static com.reason.lang.core.ORFileType.*;
 import static java.util.Collections.*;
 
 public final class PsiFinder {
+
     private static final Log LOG = Log.create("finder");
-    private final @NotNull Project m_project;
 
     public @Nullable PsiQualifiedPathElement findModuleBack(@Nullable PsiElement root, @Nullable String path) {
         if (root != null && path != null) {
@@ -95,6 +95,8 @@ public final class PsiFinder {
         boolean accepts(T module);
     }
 
+    @NotNull
+    private final Project m_project;
 
     public PsiFinder(@NotNull Project project) {
         m_project = project;

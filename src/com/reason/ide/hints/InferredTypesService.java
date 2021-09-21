@@ -45,11 +45,9 @@ public class InferredTypesService {
 
                             if (!DumbService.isDumb(project)) {
                                 LOG.debug("Reading types from file", psiFile);
-                                PsiFile cmtFile =
-                                        findCmtFileFromSource(project, sourceFile.getNameWithoutExtension());
+                                PsiFile cmtFile = findCmtFileFromSource(project, sourceFile.getNameWithoutExtension());
                                 if (cmtFile != null) {
-                                    Path cmtPath =
-                                            FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
+                                    Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
                                     insightManager.queryTypes(sourceFile, cmtPath,
                                             types -> application.runReadAction(() -> annotatePsiFile(project, psiFile.getLanguage(), sourceFile, types)));
                                 }

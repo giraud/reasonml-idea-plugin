@@ -1,0 +1,20 @@
+Plain (no super-errors)
+-----------------------
+
+!!
+FAILED: src/InputTest.ast
+
+  Syntax error!
+  C:\bla\bla\src\InputTest.res:1:11-12
+
+  1 │ let x = 1 +
+
+  Did you forget to write an expression here?
+
+FAILED: cannot make progress due to previous errors.
+
+!!
+File "C:\bla\bla\src\InputTest.res", line 1, characters 9-10:                 unknown -> errorLocation
+Error: This expression has type int but an expression was expected of type    errorLocation -> error
+         float
+FAILED: cannot make progress due to previous errors.                          * -> unknown

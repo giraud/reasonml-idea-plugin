@@ -17,4 +17,9 @@ public class InsightManagerImplTest {
     public void test_rescript() {
         assertEquals("4.06.1", ocamlVersionExtractor("ReScript 9.1.4"));
     }
+
+    @Test
+    public void test_dune() {
+        assertEquals("4.07.1", ocamlVersionExtractor("Dune ( OCaml:4.07.1 )"));
+    }
 }

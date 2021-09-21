@@ -39,7 +39,7 @@ public class BscProcessListener implements ProcessListener {
             String textWithoutAnsiColors = text.replaceAll("\u001B\\[[;\\d]*m", "");
             m_builder.append(textWithoutAnsiColors);
             if (text.endsWith("\n")) {
-                m_lineProcessor.onRawTextAvailable(m_builder.toString());
+                m_lineProcessor.onTextAvailable(m_builder.toString());
                 if (LOG.isTraceEnabled()) {
                     LOG.trace(m_builder.toString().replace("\n", ""));
                 }
@@ -49,6 +49,6 @@ public class BscProcessListener implements ProcessListener {
     }
 
     public @NotNull List<OutputInfo> getInfo() {
-        return m_lineProcessor.getInfo();
+        return m_lineProcessor.getOutputInfo();
     }
 }

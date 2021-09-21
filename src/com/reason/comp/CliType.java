@@ -1,10 +1,10 @@
 package com.reason.comp;
 
+import com.reason.comp.Compiler.*;
 import org.jetbrains.annotations.*;
 
 public interface CliType {
-    @NotNull
-    CompilerType getCompilerType();
+    @NotNull CompilerType getCompilerType();
 
     enum Bs implements CliType {
         MAKE,
@@ -29,7 +29,8 @@ public interface CliType {
     enum Dune implements CliType {
         BUILD,
         CLEAN,
-        INSTALL;
+        INSTALL,
+        VERSION;
 
         @Override
         public @NotNull CompilerType getCompilerType() {

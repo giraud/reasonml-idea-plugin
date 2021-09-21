@@ -1,18 +1,17 @@
 package com.reason.ide.repl;
 
-import com.intellij.openapi.options.SettingsEditor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkTypeId;
-import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
-import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
-import com.intellij.openapi.util.Condition;
-import jpsplugin.com.reason.sdk.OCamlSdkType;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.options.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.roots.ui.configuration.*;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.*;
+import com.intellij.openapi.util.*;
+import jpsplugin.com.reason.sdk.*;
+import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.getSdkFilter;
+import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.*;
 
 public class ReplRunSettingsEditor extends SettingsEditor<ReplRunConfiguration> {
     private final Project m_project;

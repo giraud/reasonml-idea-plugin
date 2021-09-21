@@ -37,13 +37,6 @@
 
         <projectService serviceImplementation="com.reason.comp.dune.DuneCompiler"/>
 
-        <!-- Gutter icons -->
-
-        <codeInsight.lineMarkerProvider language="Reason"
-                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="OCaml"
-                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
-
         <!--
          | UI
          -->

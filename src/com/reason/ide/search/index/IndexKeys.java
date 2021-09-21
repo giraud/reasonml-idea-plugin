@@ -17,6 +17,7 @@ public class IndexKeys {
     public static final StubIndexKey<String, PsiModule> MODULES_ALIASED = StubIndexKey.createIndexKey("reason.module.aliased");
     public static final StubIndexKey<String, PsiModule> MODULES_ALIASES = StubIndexKey.createIndexKey("reason.module.aliases");
     public static final StubIndexKey<Integer, PsiModule> MODULES_FQN = StubIndexKey.createIndexKey("reason.module.fqn");
+    public static final StubIndexKey<Integer, PsiKlass> CLASSES_FQN = StubIndexKey.createIndexKey("reason.class.fqn");
     public static final StubIndexKey<String, PsiVariantDeclaration> VARIANTS = StubIndexKey.createIndexKey("reason.variant");
     public static final StubIndexKey<Integer, PsiVariantDeclaration> VARIANTS_FQN = StubIndexKey.createIndexKey("reason.variant.fqn");
     public static final StubIndexKey<String, PsiLet> LETS = StubIndexKey.createIndexKey("reason.let");
@@ -24,6 +25,7 @@ public class IndexKeys {
     public static final StubIndexKey<String, PsiVal> VALS = StubIndexKey.createIndexKey("reason.val");
     public static final StubIndexKey<Integer, PsiVal> VALS_FQN = StubIndexKey.createIndexKey("reason.val.fqn");
     public static final StubIndexKey<String, PsiExternal> EXTERNALS = StubIndexKey.createIndexKey("reason.external");
+    public static final StubIndexKey<Integer, PsiExternal> EXTERNALS_FQN = StubIndexKey.createIndexKey("reason.external.fqn");
     public static final StubIndexKey<String, PsiType> TYPES = StubIndexKey.createIndexKey("reason.type");
     public static final StubIndexKey<Integer, PsiType> TYPES_FQN = StubIndexKey.createIndexKey("reason.type.fqn");
     public static final StubIndexKey<String, PsiRecordField> RECORD_FIELDS = StubIndexKey.createIndexKey("reason.record_field");

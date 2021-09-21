@@ -50,9 +50,9 @@ public abstract class OCamlExecutable {
 
     abstract String getPathSeparator();
 
-    abstract String getPathVariable();
+    abstract @NotNull String getPathVariable();
 
-    public abstract String convertPath(Path file);
+    public abstract @Nullable String convertPath(Path file);
 
     public abstract @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine,
                                                                  String pathToBinary, boolean login,
@@ -92,17 +92,17 @@ public abstract class OCamlExecutable {
         }
 
         @Override
-        public String getPathSeparator() {
+        public @NotNull String getPathSeparator() {
             return ":";
         }
 
         @Override
-        public String getPathVariable() {
+        public @NotNull String getPathVariable() {
             return "$PATH";
         }
 
         @Override
-        public String convertPath(Path path) {
+        public @Nullable String convertPath(@NotNull Path path) {
             // 'C:\Users\file.txt' -> '/mnt/c/Users/file.txt'
             String wslPath = m_distribution.getWslPath(path.toString());
             if (wslPath != null) {
@@ -135,7 +135,7 @@ public abstract class OCamlExecutable {
         }
 
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return m_distribution.getPresentableName();
         }
     }
@@ -153,18 +153,17 @@ public abstract class OCamlExecutable {
         }
 
         @Override
-        String getPathVariable() {
+        @NotNull String getPathVariable() {
             return Platform.isWindows() ? "%PATH%" : "$PATH";
         }
 
         @Override
-        public String convertPath(Path file) {
+        public String convertPath(@NotNull Path file) {
             return file.toString();
         }
 
         @Override
-        @NotNull
-        public GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine, String pathToBinary, boolean login, @NotNull Project project) {
+        public @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine, @Nullable String pathToBinary, boolean login, @NotNull Project project) {
             OCamlSdkAdditionalData odkData = (OCamlSdkAdditionalData) m_odk.getSdkAdditionalData();
             boolean isCygwin = odkData != null && odkData.isCygwin();
 
@@ -213,20 +212,19 @@ public abstract class OCamlExecutable {
         }
 
         @Override
-        String getPathVariable() {
+        @NotNull String getPathVariable() {
             return Platform.isWindows() ? "%PATH%" : "$PATH";
         }
 
         @Override
-        public String convertPath(Path path) {
+        public String convertPath(@NotNull Path path) {
             return path.toString();
         }
 
         @Override
-        @NotNull
-        public GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine,
-                                                   String pathToBinary, boolean login,
-                                                   @NotNull Project project) {
+        public @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine,
+                                                            String pathToBinary, boolean login,
+                                                            @NotNull Project project) {
             throw new RuntimeException("Unknown WSL distribution");
         }
 

@@ -2,6 +2,7 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.navigation.*;
+import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
@@ -142,14 +143,15 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     public @NotNull Collection<PsiNamedElement> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
         Collection<PsiNamedElement> result = emptyList();
 
-        PsiFinder psiFinder = getProject().getService(PsiFinder.class);
+        Project project = getProject();
+        PsiFinder psiFinder = project.getService(PsiFinder.class);
 
         String alias = getAlias();
         if (alias != null) {
             // Open alias and getExpressions on alias
             Set<PsiModule> modulesByName =
                     psiFinder.findModulesbyName(
-                            alias, interfaceOrImplementation, null, GlobalSearchScope.allScope(getProject()));
+                            alias, interfaceOrImplementation, null, GlobalSearchScope.allScope(project));
             if (!modulesByName.isEmpty()) {
                 PsiModule moduleAlias = modulesByName.iterator().next();
                 if (moduleAlias != null) {
@@ -175,7 +177,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
                                             potentialPath + "." + functorCall.getFunctorName(),
                                             true,
                                             interfaceOrImplementation,
-                                            GlobalSearchScope.allScope(getProject()));
+                                            GlobalSearchScope.allScope(project));
                             for (PsiModule module : modules) {
                                 result.addAll(module.getExpressions(eScope, filter));
                             }
@@ -186,7 +188,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
                                         functorCall.getFunctorName(),
                                         true,
                                         interfaceOrImplementation,
-                                        GlobalSearchScope.allScope(getProject()));
+                                        GlobalSearchScope.allScope(project));
                         for (PsiModule module : modules) {
                             result.addAll(module.getExpressions(eScope, filter));
                         }
@@ -401,7 +403,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Module " + getQualifiedName();
     }
 }

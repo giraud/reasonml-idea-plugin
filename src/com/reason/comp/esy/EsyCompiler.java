@@ -4,8 +4,8 @@ import com.intellij.execution.process.*;
 import com.intellij.execution.ui.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.*;
 import com.reason.comp.Compiler;
+import com.reason.comp.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.esy.*;
@@ -22,6 +22,11 @@ public class EsyCompiler implements Compiler {
 
     EsyCompiler(@NotNull Project project) {
         myProject = project;
+    }
+
+    @Override
+    public @NotNull CompilerType getType() {
+        return CompilerType.ESY;
     }
 
     @Override
@@ -47,7 +52,7 @@ public class EsyCompiler implements Compiler {
         }
 
         if (myProcessStarted.compareAndSet(false, true)) {
-            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject).orElse(null) : file;
+            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : file;
             ConsoleView console = myProject.getService(ORToolWindowManager.class).getConsoleView(EsyToolWindowFactory.ID);
 
             if (sourceFile != null && console != null) {

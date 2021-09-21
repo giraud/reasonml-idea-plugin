@@ -6,6 +6,7 @@ import com.intellij.openapi.ui.*;
 import com.intellij.openapi.wm.*;
 import com.intellij.ui.content.*;
 import com.reason.comp.Compiler;
+import com.reason.comp.Compiler.*;
 import com.reason.comp.*;
 import com.reason.ide.*;
 import com.reason.ide.console.bs.*;

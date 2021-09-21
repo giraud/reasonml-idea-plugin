@@ -12,7 +12,7 @@ Follow the steps below to get the plugin running locally for development.
 ### Prepare your Environment
 
 1. Install the [plugin prerequisites](http://www.jetbrains.org/intellij/sdk/docs/tutorials/custom_language_support/prerequisites.html), ensuring that the Plugin DevKit plugin is enabled and [PsiViewer](https://plugins.jetbrains.com/plugin/227-psiviewer) is installed and enabled.  
-2. Clone the project `git clone https://github.com/JetBrains/intellij-community.git`
+2. Clone the project `git clone https://github.com/giraud/reasonml-idea-plugin.git`
 3. Import the project into Intellij as a Gradle project. This should auto-configure everything else needed to run the plugin.
 4. If prompted, download the Intellij SDK source files. This is useful for debugging the Intellij platform code.
 
