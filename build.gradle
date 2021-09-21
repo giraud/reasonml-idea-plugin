@@ -45,6 +45,7 @@ intellij {
                     <li>#343 - Adding live templates for OCaml</li>
                     <li>#325 - Structure panel missing "pp_misc" for "let misc, pp_misc = ...". Gutter icon missing for pp_misc in mli file</li>
                     <li>#322 - Class types in .mli files should link to the corresponding definition in the .ml file</li>
+                    <li>#351 - Error annotator use detected compiler, not file language</li>
                     <li>Add line markers for rescript</li>
                     <li>Enable line markers in every IDE</li>
                 </ul>

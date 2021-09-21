@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+## 0.103 - 2021/09/21
+
 - :rocket: [#344](https://github.com/giraud/reasonml-idea-plugin/pull/344) Enabling spellchecker [@QuentinRa](https://github.com/QuentinRa)
 - :rocket: ![o] [#343](https://github.com/giraud/reasonml-idea-plugin/pull/343) Adding live templates for OCaml by [@QuentinRa](https://github.com/QuentinRa)
 - :bug: ![o] [#325](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/325) Structure panel missing "pp_misc" for "let misc, pp_misc = ...". Gutter icon missing for pp_misc in mli file
