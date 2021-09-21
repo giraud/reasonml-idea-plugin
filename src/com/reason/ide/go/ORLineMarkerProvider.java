@@ -21,11 +21,11 @@ import java.util.function.*;
 public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     private static final @NotNull Predicate<PsiElement> PSI_IMPL_PREDICATE = psiElement -> {
         FileBase psiFile = (FileBase) psiElement.getContainingFile();
-        return !psiFile.isInterface() && Platform.isSourceFile(psiFile);
+        return !psiFile.isInterface() /*&& Platform.isSourceFile(psiFile) --> Not working with webstorm for ex */;
     };
     private static final @NotNull Predicate<PsiElement> PSI_INTF_PREDICATE = psiElement -> {
         FileBase psiFile = (FileBase) psiElement.getContainingFile();
-        return psiFile.isInterface() && Platform.isSourceFile(psiFile);
+        return psiFile.isInterface() /*&& Platform.isSourceFile(psiFile) --> Not working with webstorm for ex */;
     };
 
     @Override
