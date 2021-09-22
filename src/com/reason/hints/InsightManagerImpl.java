@@ -1,6 +1,5 @@
 package com.reason.hints;
 
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
@@ -45,8 +44,7 @@ public class InsightManagerImpl implements InsightManager {
 
     @Override
     public @NotNull List<String> dumpMeta(@NotNull VirtualFile cmtFile) {
-
-        File rincewindFile = getRincewindFileExcludingVersion(cmtFile, "0.4");
+        File rincewindFile = getRincewindFileExcludingVersion(cmtFile.getParent(), "0.4");
         return rincewindFile == null
                 ? Collections.emptyList()
                 : myProject.getService(RincewindProcess.class).dumpMeta(rincewindFile.getPath(), cmtFile);
@@ -54,15 +52,15 @@ public class InsightManagerImpl implements InsightManager {
 
     @Override
     public @NotNull String dumpTree(@NotNull VirtualFile cmtFile) {
-        File rincewindFile = getRincewindFile(cmtFile);
+        File rincewindFile = getRincewindFileExcludingVersion(cmtFile.getParent(), "");
         return rincewindFile == null
-                ? "<unknown/>"
+                ? "<unknown>\n  <reason>rincewindFile not found</reason>\n  <file>" + cmtFile.getPath() + "</file>\n</unknow/>"
                 : myProject.getService(RincewindProcess.class).dumpTree(cmtFile, rincewindFile.getPath());
     }
 
     @Override
     public @NotNull List<String> dumpInferredTypes(@NotNull VirtualFile cmtFile) {
-        File rincewindFile = getRincewindFile(cmtFile);
+        File rincewindFile = getRincewindFileExcludingVersion(cmtFile.getParent(), "");
         return rincewindFile == null
                 ? Collections.emptyList()
                 : myProject.getService(RincewindProcess.class).dumpTypes(rincewindFile.getPath(), cmtFile);
@@ -97,7 +95,7 @@ public class InsightManagerImpl implements InsightManager {
 
     public @Nullable String getRincewindFilenameExcludingVersion(@NotNull VirtualFile sourceFile, @NotNull String excludedVersion) {
         ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
-        ORResolvedCompiler compiler = compilerManager.getCompiler(sourceFile);
+        ORResolvedCompiler<?> compiler = compilerManager.getCompiler(sourceFile);
         String fullVersion = compiler == null ? null : compiler.getFullVersion(sourceFile);
         String ocamlVersion = ocamlVersionExtractor(fullVersion);
         String rincewindVersion = getRincewindVersion(ocamlVersion);

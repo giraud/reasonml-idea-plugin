@@ -102,7 +102,7 @@ public class RincewindProcess {
     public @NotNull List<String> dumpMeta(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile) {
         LOG.debug("Dumping meta", cmtFile);
 
-        final List<String> dump = new ArrayList<>();
+        List<String> dump = new ArrayList<>();
         dumper(rincewindBinary, cmtFile, "-m", dump::add);
 
         return dump;
@@ -123,18 +123,15 @@ public class RincewindProcess {
             Process rincewind = null;
             try {
                 rincewind = processBuilder.start();
-                BufferedReader reader =
-                        new BufferedReader(new InputStreamReader(rincewind.getInputStream()));
-                BufferedReader errReader =
-                        new BufferedReader(new InputStreamReader(rincewind.getErrorStream()));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(rincewind.getInputStream()));
+                BufferedReader errReader = new BufferedReader(new InputStreamReader(rincewind.getErrorStream()));
 
                 Streams.waitUntilReady(reader, errReader);
 
                 if (errReader.ready()) {
                     StringBuilder msgBuffer = new StringBuilder();
                     errReader.lines().forEach(line -> msgBuffer.append(line).append("\n"));
-                    Notifications.Bus.notify(
-                            new ORNotification("Rincewind", msgBuffer.toString(), NotificationType.ERROR));
+                    Notifications.Bus.notify(new ORNotification("Rincewind", msgBuffer.toString(), NotificationType.ERROR));
                 } else {
                     reader.lines().forEach(line -> visitor.visitLine(line + "\n"));
                 }

@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: [#352](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/35) CMT viewer is broken
+
 ## 0.103 - 2021/09/21
 
 - :rocket: [#344](https://github.com/giraud/reasonml-idea-plugin/pull/344) Enabling spellchecker [@QuentinRa](https://github.com/QuentinRa)
