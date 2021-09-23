@@ -46,6 +46,9 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
                     if (state.is(m_types.C_INTERPOLATION_PART)) {
                         state.popEnd();
                         state.advance().mark(m_types.C_INTERPOLATION_REF);
+                    } else if (state.is(m_types.C_INTERPOLATION_EXPR)) {
+                        // first element
+                        state.advance().mark(m_types.C_INTERPOLATION_REF);
                     }
                 } else if (state.is(m_types.C_INTERPOLATION_REF)) {
                     state.advance().popEnd();

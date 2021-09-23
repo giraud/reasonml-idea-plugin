@@ -36,6 +36,7 @@ public class ORColorSettingsPage implements ColorSettingsPage {
                     new AttributesDescriptor("String", ORSyntaxHighlighter.STRING_),
                     new AttributesDescriptor("Type argument", ORSyntaxHighlighter.TYPE_ARGUMENT_),
                     new AttributesDescriptor("Variant name", ORSyntaxHighlighter.VARIANT_NAME_),
+                    new AttributesDescriptor("Interpolated ref", ORSyntaxHighlighter.INTERPOLATED_REF_),
             };
 
     @Override
@@ -67,8 +68,9 @@ public class ORColorSettingsPage implements ColorSettingsPage {
                 + "    | Some(value) => \"ok\";\n"
                 + "  let constant = \"My constant\";  <csCodeLens>string</csCodeLens>\n"
                 + "  let numericConstant = 123;  <csCodeLens>int</csCodeLens>\n"
+                + "  let interpolation = {j|$<csInterpolatedRef>var</csInterpolatedRef>|j};\n"
                 + "};\n\n"
-                + "React.createElement <csMarkupTag><div</csMarkupTag> <csMarkupAttribute>prop</csMarkupAttribute>=value<csMarkupTag>/></csMarkupTag> <csMarkupTag><Button></csMarkupTag> (ReasonReact.stringToElement(\"ok\") <csMarkupTag></Button></csMarkupTag>;";
+                + "[<csAnnotation>@react.component</csAnnotation>]\nlet make = () =>\n  <csMarkupTag><div</csMarkupTag> <csMarkupAttribute>prop</csMarkupAttribute>=value<csMarkupTag>></csMarkupTag>\n    <csMarkupTag><Button/></csMarkupTag>\n    (React.string(\"ok\") <csMarkupTag></Button></csMarkupTag>\n  <csMarkupTag></div></csMarkupTag>;";
     }
 
     private static final Map<String, TextAttributesKey> additionalTags = new HashMap<>();
@@ -80,6 +82,7 @@ public class ORColorSettingsPage implements ColorSettingsPage {
         additionalTags.put("csMarkupTag", ORSyntaxHighlighter.MARKUP_TAG_);
         additionalTags.put("csModuleName", ORSyntaxHighlighter.MODULE_NAME_);
         additionalTags.put("csVariantName", ORSyntaxHighlighter.VARIANT_NAME_);
+        additionalTags.put("csInterpolatedRef", ORSyntaxHighlighter.INTERPOLATED_REF_);
     }
 
     @Override
