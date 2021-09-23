@@ -12,7 +12,8 @@
 
 ## Unreleased
 
-- :bug: [#352](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/35) CMT viewer is broken
+- :bug: ![r] [#353](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/353) Interpolation incorrectly parsed
+- :bug: [#352](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/352) CMT viewer is broken
 
 ## 0.103 - 2021/09/21
 
