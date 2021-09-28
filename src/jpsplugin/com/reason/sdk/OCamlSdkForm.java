@@ -12,6 +12,7 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileSystem;
+import com.reason.ide.sdk.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -124,7 +125,7 @@ public class OCamlSdkForm {
             }
             c_version.setText("Current version is: " + m_data);
 
-            OCamlSdkType.reindexSourceRoots(m_odk);
+            // OCamlSdkType.reindexSourceRoots(m_odk);
         }
     }
 }
