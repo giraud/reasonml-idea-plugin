@@ -25,6 +25,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.reason.ide.sdk.*;
+import com.reason.ide.sdk.sources.*;
 import jpsplugin.com.reason.Log;
 import jpsplugin.com.reason.sdk.SdkDownloader;
 
@@ -63,12 +64,12 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
     }
 
     private void createUIComponents() {
-        //ProjectSdksModel model = new ProjectSdksModel();
-        //Project project = ProjectManager.getInstance().getDefaultProject();
-        //
-        //model.reset(project);
-        //Condition<SdkTypeId> filter = sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName());
-        //c_selExistingSdk = new JdkComboBox(project, model, filter, getSdkFilter(filter), filter, null);
+        ProjectSdksModel model = new ProjectSdksModel();
+        Project project = ProjectManager.getInstance().getDefaultProject();
+
+        model.reset(project);
+        Condition<SdkTypeId> filter = sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName());
+        c_selExistingSdk = new JdkComboBox(project, model, filter, getSdkFilter(filter), filter, null);
     }
 
     @Override
@@ -186,18 +187,17 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
     }
 
     private void addSdkSources(@NotNull SdkModificator odkModificator, @NotNull File targetSdkLocation) throws IOException {
-        //VirtualFileSystem fileSystem = LocalFileSystem.getInstance();
-        //
-        //Files.walkFileTree(targetSdkLocation.toPath(),
-        //        new SimpleFileVisitor<Path>() {
-        //            @Override
-        //            public @NotNull FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
-        //                VirtualFile file = fileSystem.findFileByPath(path.toString());
-        //                if (file != null) {
-        //                    odkModificator.addRoot(file, OCamlSourcesOrderRootType.getInstance());
-        //                }
-        //                return FileVisitResult.CONTINUE;
-        //            }
-        //        });
+        VirtualFileSystem fileSystem = LocalFileSystem.getInstance();
+
+        Files.walkFileTree(targetSdkLocation.toPath(),
+                new SimpleFileVisitor<>() {
+                    @Override
+                    public @NotNull FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
+                        VirtualFile file = fileSystem.findFileByPath(path.toString());
+                        if (file != null) {
+                            odkModificator.addRoot(file, OCamlSourcesOrderRootType.getInstance());
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }});
     }
 }
