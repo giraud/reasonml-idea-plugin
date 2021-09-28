@@ -1,5 +1,6 @@
 package com.reason.lang.core.psi.reference;
 
+import com.intellij.lang.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
@@ -68,10 +69,12 @@ public class ORReferenceAnalyzer {
                 // -> A.B   |> A.B
                 // we are no more in a path, skip path
                 prevItem = prevItem.getPrevSibling();
-                prevType = prevItem.getNode().getElementType();
+                ASTNode prevItemNode = prevItem == null ? null : prevItem.getNode();
+                prevType = prevItemNode == null ? null : prevItemNode.getElementType();
                 while (prevType != null && (prevType == types.DOT || prevType == types.C_UPPER_SYMBOL || prevType == types.C_VARIANT || prevType == types.C_LOWER_SYMBOL)) {
                     prevItem = prevItem.getPrevSibling();
-                    prevType = prevItem == null ? null : prevItem.getNode().getElementType();
+                    prevItemNode = prevItem == null ? null : prevItem.getNode();
+                    prevType = prevItemNode == null ? null : prevItemNode.getElementType();
                 }
 
                 // if LocalOpen found, it is still a path
