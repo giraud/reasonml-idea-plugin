@@ -48,6 +48,14 @@
         <action id="reason.actions.testData.Navigate" class="com.reason.ide.testAssistant.GotoTestDataAction"
                 text="Navigate to Testdata" use-shortcut-of="GotoTest">
         </action>
+        <!--
+        add the icon "select sdk" in the bar with "build", "run", ...
+         -->
+        <action id="ocaml.select.sdk" class="com.reason.ide.sdk.select.SelectSDKAction"
+                text="Select OCaml SDK" description="Set the project SDK for OCaml"
+                icon="AllIcons.General.AddJdk">
+            <add-to-group group-id="ToolbarRunGroup" anchor="first" />
+        </action>
     </actions>
 
     <!--
@@ -295,6 +303,12 @@
                         serviceImplementation="com.reason.comp.bs.BsCompilerImpl"/>
         <projectService serviceImplementation="com.reason.comp.rescript.ResCompiler"/>
         <projectService serviceImplementation="com.reason.comp.esy.EsyCompiler"/>
+
+        <sdkType implementation="com.reason.ide.sdk.OCamlSdkType"/>
+
+        <orderRootType implementation="com.reason.ide.sdk.sources.OCamlSourcesOrderRootType"
+                       id="OCAML_SOURCES"
+                       order="FIRST"/>
 
         <!--
          | Insight

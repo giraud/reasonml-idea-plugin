@@ -1,21 +1,23 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <sdkType implementation="jpsplugin.com.reason.sdk.OCamlSdkType"/>
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
         <moduleConfigurationEditorProvider implementation="jpsplugin.com.reason.module.OCamlDefaultModuleEditorsProvider"/>
         <projectStructure.sourceRootEditHandler implementation="jpsplugin.com.reason.module.OCamlBinaryRootEditHandler"/>
 
-        <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="jpsplugin.com.reason.OCamlSourcesOrderRootTypeUIFactory"/>
+        <OrderRootTypeUI key="OCAML_SOURCES"
+                         implementationClass="com.reason.ide.sdk.sources.OCamlSourcesOrderRootTypeUIFactory"/>
+
+        <projectSdkSetupValidator implementation="com.reason.ide.sdk.select.OCamlSDKValidator"/>
 
         <projectService serviceImplementation="com.reason.comp.dune.OpamProcess"/>
         <projectService serviceImplementation="com.reason.comp.dune.OpamEnv"/>
 
         <!--
          | External system integration (the import from model...)
+         | todo: disabled for now
          -->
-
-        <projectImportProvider implementation="com.reason.ide.importWizard.DuneProjectImportProvider"/>
-        <projectImportBuilder implementation="com.reason.ide.importWizard.DuneProjectImportBuilder"/>
+<!--        <projectImportProvider implementation="com.reason.ide.importWizard.DuneProjectImportProvider"/>-->
+<!--        <projectImportBuilder implementation="com.reason.ide.importWizard.DuneProjectImportBuilder"/>-->
 
         <!--
          | Listeners
