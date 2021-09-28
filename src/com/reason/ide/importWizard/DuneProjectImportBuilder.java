@@ -122,8 +122,7 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder<Module> {
 
                         assert m_sdk != null;
                         ProjectRootManagerEx.getInstanceEx(project).setProjectSdk(m_sdk);
-                        // todo: disabled
-                        // OCamlSdkType.reindexSourceRoots(m_sdk);
+                        OCamlSdkType.reindexSourceRoots(m_sdk);
                     });
         }
 

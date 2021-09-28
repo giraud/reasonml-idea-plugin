@@ -46,11 +46,11 @@ public class ORProjectRootListener implements Disposable {
                                 // for (Module module : moduleManager.getModules()) {
                                 //    moduleRootsOrDependenciesChanged(module);
                                 // }
-                                //todo: disabled
-                                //Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
-                                //if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdkType) {
-                                //    OCamlSdkType.reindexSourceRoots(projectSdk);
-                                //}
+                                // todo: is this still needed? if not, it should be removed
+                                Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
+                                if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdkType) {
+                                    OCamlSdkType.reindexSourceRoots(projectSdk);
+                                }
                             }
                         });
             }

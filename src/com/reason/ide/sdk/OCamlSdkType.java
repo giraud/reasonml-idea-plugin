@@ -127,6 +127,14 @@ public class OCamlSdkType extends SdkType /*download SDK => implements JavaSdkTy
         sdkModificator.commitChanges();
     }
 
+    // added back to prevent breaking things
+    @Deprecated
+    public static void reindexSourceRoots(Sdk projectSdk) {
+        if (projectSdk.getSdkType() instanceof OCamlSdkType) {
+            ((OCamlSdkType)projectSdk.getSdkType()).setupSdkPaths(projectSdk);
+        }
+    }
+
     /**
      * Update roots, when manually setting sources
      */
