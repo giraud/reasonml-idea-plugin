@@ -6,7 +6,7 @@ import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.roots.ui.configuration.*;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.*;
 import com.intellij.openapi.util.*;
-import jpsplugin.com.reason.sdk.*;
+import com.reason.ide.sdk.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

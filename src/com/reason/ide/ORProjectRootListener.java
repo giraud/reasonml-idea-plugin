@@ -8,6 +8,7 @@ import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.*;
 import com.intellij.util.messages.*;
 import com.reason.comp.dune.*;
+import com.reason.ide.sdk.*;
 import jpsplugin.com.reason.sdk.*;
 import org.jetbrains.annotations.*;
 
@@ -45,10 +46,11 @@ public class ORProjectRootListener implements Disposable {
                                 // for (Module module : moduleManager.getModules()) {
                                 //    moduleRootsOrDependenciesChanged(module);
                                 // }
-                                Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
-                                if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdkType) {
-                                    OCamlSdkType.reindexSourceRoots(projectSdk);
-                                }
+                                //todo: disabled
+                                //Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
+                                //if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdkType) {
+                                //    OCamlSdkType.reindexSourceRoots(projectSdk);
+                                //}
                             }
                         });
             }

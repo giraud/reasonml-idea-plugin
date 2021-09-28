@@ -164,33 +164,34 @@ public abstract class OCamlExecutable {
 
         @Override
         public @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine, @Nullable String pathToBinary, boolean login, @NotNull Project project) {
-            OCamlSdkAdditionalData odkData = (OCamlSdkAdditionalData) m_odk.getSdkAdditionalData();
-            boolean isCygwin = odkData != null && odkData.isCygwin();
-
-            ParametersList parametersList = commandLine.getParametersList();
-            List<String> realParamsList = parametersList.getList();
-
-            String extension = Platform.isWindows() && isCygwin ? Platform.WINDOWS_EXECUTABLE_SUFFIX : "";
-            String exe = commandLine.getExePath() + extension;
-            String exePath = pathToBinary == null ? exe : pathToBinary + "/" + exe;
-
-            if (isCygwin) {
-                LOG.debug("[" + m_id + "] Patching: " + commandLine.getCommandLineString());
-
-                commandLine.setExePath(odkData.getCygwinBash());
-                String bashParameters = StringUtil.join(ContainerUtil.prepend(realParamsList, exePath), CommandLineUtil::posixQuote, " ");
-
-                parametersList.clearAll();
-                if (login) {
-                    parametersList.add("--login");
-                }
-                parametersList.add("-c");
-                parametersList.add(bashParameters);
-            } else {
-                commandLine.setExePath(exePath);
-            }
-
-            LOG.debug("[" + m_id + "] " + "Patched as: " + commandLine.getCommandLineString());
+            // todo: ...
+            //OCamlSdkAdditionalData odkData = (OCamlSdkAdditionalData) m_odk.getSdkAdditionalData();
+            //boolean isCygwin = odkData != null && odkData.isCygwin();
+            //
+            //ParametersList parametersList = commandLine.getParametersList();
+            //List<String> realParamsList = parametersList.getList();
+            //
+            //String extension = Platform.isWindows() && isCygwin ? Platform.WINDOWS_EXECUTABLE_SUFFIX : "";
+            //String exe = commandLine.getExePath() + extension;
+            //String exePath = pathToBinary == null ? exe : pathToBinary + "/" + exe;
+            //
+            //if (isCygwin) {
+            //    LOG.debug("[" + m_id + "] Patching: " + commandLine.getCommandLineString());
+            //
+            //    commandLine.setExePath(odkData.getCygwinBash());
+            //    String bashParameters = StringUtil.join(ContainerUtil.prepend(realParamsList, exePath), CommandLineUtil::posixQuote, " ");
+            //
+            //    parametersList.clearAll();
+            //    if (login) {
+            //        parametersList.add("--login");
+            //    }
+            //    parametersList.add("-c");
+            //    parametersList.add(bashParameters);
+            //} else {
+            //    commandLine.setExePath(exePath);
+            //}
+            //
+            //LOG.debug("[" + m_id + "] " + "Patched as: " + commandLine.getCommandLineString());
 
             return commandLine;
         }

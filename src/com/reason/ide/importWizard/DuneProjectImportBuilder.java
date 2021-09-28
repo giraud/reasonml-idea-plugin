@@ -11,6 +11,7 @@ import com.intellij.openapi.roots.ui.configuration.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.packaging.artifacts.*;
 import com.intellij.projectImport.*;
+import com.reason.ide.sdk.*;
 import icons.*;
 import jpsplugin.com.reason.module.*;
 import jpsplugin.com.reason.sdk.*;
@@ -39,7 +40,7 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder<Module> {
 
     @Override
     public boolean isSuitableSdkType(SdkTypeId sdkType) {
-        return sdkType == OCamlSdkType.getInstance();
+        return sdkType.getName().equals(OCamlSdkType.ID);
     }
 
     @Nullable
@@ -121,7 +122,8 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder<Module> {
 
                         assert m_sdk != null;
                         ProjectRootManagerEx.getInstanceEx(project).setProjectSdk(m_sdk);
-                        OCamlSdkType.reindexSourceRoots(m_sdk);
+                        // todo: disabled
+                        // OCamlSdkType.reindexSourceRoots(m_sdk);
                     });
         }
 

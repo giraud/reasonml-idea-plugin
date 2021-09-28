@@ -3,7 +3,7 @@ package com.reason.ide.facet;
 import com.intellij.facet.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.*;
-import jpsplugin.com.reason.sdk.*;
+import com.reason.ide.sdk.*;
 import org.jetbrains.annotations.*;
 
 public class DuneFacet extends Facet<DuneFacetConfiguration> {

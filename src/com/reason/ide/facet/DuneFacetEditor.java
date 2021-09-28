@@ -12,7 +12,7 @@ import com.intellij.openapi.util.*;
 import com.intellij.util.ui.*;
 import com.reason.comp.dune.*;
 import com.reason.ide.console.*;
-import jpsplugin.com.reason.sdk.*;
+import com.reason.ide.sdk.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
