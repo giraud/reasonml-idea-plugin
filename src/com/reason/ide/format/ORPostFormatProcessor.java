@@ -5,6 +5,8 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.*;
+import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
@@ -13,7 +15,10 @@ import com.intellij.psi.impl.source.codeStyle.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.dune.*;
 import com.reason.comp.rescript.*;
+import com.reason.comp.vanilla.commands.*;
+import com.reason.comp.vanilla.tools.*;
 import com.reason.ide.files.*;
+import com.reason.ide.sdk.*;
 import com.reason.ide.settings.*;
 import com.reason.lang.core.*;
 import jpsplugin.com.reason.*;
@@ -148,6 +153,21 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
         public @Nullable String apply(@NotNull String textToFormat) {
             if (m_file.exists()) {
                 LOG.trace("Apply OCaml formatter");
+
+                // We can't use the usual formatter with "PortableOpam"
+                // because: the environment is different
+                // and, we simply want to run a command
+                Sdk projectSdk = ProjectRootManager.getInstance(m_project).getProjectSdk();
+                if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdkType) {
+                    String sdkHome = projectSdk.getHomePath();
+                    if (sdkHome != null) {
+                        if (OpamUtils.isOpamPath(sdkHome) ||
+                                PortableOpamUtils.isPortableOpam(sdkHome)) {
+                            return new OCamlFormatProcess(sdkHome, textToFormat, m_file.getName()).call();
+                        }
+                    }
+                }
+
                 OcamlFormatProcess process = m_project.getService(OcamlFormatProcess.class);
                 return process == null ? null : process.format(m_file, textToFormat);
             }
