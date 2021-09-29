@@ -6,13 +6,24 @@ import jpsplugin.com.reason.*;
 
 import java.util.*;
 
+/**
+ * in the folder {sdk_home}/bin,
+ * we got a lot of binaries (ex: ocaml, ocamlc, ...).
+ * This class is extended by each "process" which
+ * is corresponding to the execution of a binary.
+ */
 public abstract class VanillaProcess {
-    // COMMANDS
-    public static final String OCAML = "ocaml";
-    private static final Log LOG = Log.create("compiler.vanilla");
-    protected final boolean myRedirectOnErrors;
+    protected static final Log LOG = Log.create("compiler.vanilla");
+
+    // COMMANDS (a lot of classes may use the same command, with different arguments)
+    // and for different purposes
+    protected static final String OCAML = "ocaml";
+
     // Attributes
-    private final String mySdkHome;
+    /** value fro {sdk_home} **/
+    protected final String mySdkHome;
+    /** redirect errors on out **/
+    protected final boolean myRedirectOnErrors;
 
     public VanillaProcess(String sdkHome) {
         mySdkHome = sdkHome + "/bin/";
@@ -24,18 +35,20 @@ public abstract class VanillaProcess {
     /**
      * Get the arguments, the executable is included.
      * Ex: ["ocaml", "-version"]
-     * means the command
-     * /path/to/sdk/bin/ocaml -version
+     * which means the command
+     * {sdk_home}/bin/ocaml -version
      **/
     protected abstract ArrayList<String> getArguments();
 
     /**
-     * call command, return output
+     * call the command, returns the output as a String.
+     * You may only have to call {@link #run()} inside, and maybe parse the result.
      **/
     public abstract String call();
 
     // run GeneralCommandLine
 
+    /** create the process with {@link #makeProcess()} and return the result **/
     protected String run() {
         GeneralCommandLine cli = makeProcess();
 
@@ -43,6 +56,7 @@ public abstract class VanillaProcess {
         return ProcessUtils.parseOutputFromCommandLine(cli, LOG);
     }
 
+    /** create the process, but don't run it **/
     protected GeneralCommandLine makeProcess() {
         // make command
         ArrayList<String> args = getArguments();

@@ -14,10 +14,16 @@ import java.util.*;
  */
 public class OpamUtils {
 
+    /** true if it is an opam SDK **/
     public static boolean isOpam(@NotNull File sdkHome) {
-        return sdkHome.getPath().contains(".opam");
+        return isOpamPath(sdkHome.getPath());
+    }
+    public static boolean isOpamPath(@NotNull String sdkHomePath) {
+        return sdkHomePath.contains(".opam");
     }
 
+    /** the folder in which sources are stored for opam SDKs,
+     * @implNote we suppose that the sdk is an opam SDK */
     public static String getOpamSDKSourceFolder(@NotNull File sdkHome, @NotNull String version) {
         return new File(
                 sdkHome,
@@ -25,6 +31,7 @@ public class OpamUtils {
         ).getAbsolutePath();
     }
 
+    /** Check if we have sdk in the usual opam folder */
     public static void lookForSDK(HashSet<Path> roots) {
         File opamFolder = new File(FileUtil.expandUserHome("~/.opam/home/"));
         if (opamFolder.exists() && opamFolder.isDirectory()) {

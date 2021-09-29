@@ -26,14 +26,17 @@ public class PortableOpamUtils {
 
     // methods
 
+    /** check if this SDK home is a portable opam SDK **/
     public static boolean isPortableOpam(String sdkHome) {
         return SystemInfo.isWindows && sdkHome.contains(PORTABLE_OPAM_RELATIVE_PATH);
     }
 
+    /** The portable opam got a different command line **/
     public static GeneralCommandLine makeGeneralCommandLine(@NonNls @NotNull List<String> args) {
         return new CustomCommandLine(args);
     }
 
+    /** look if we got a portable opam **/
     public static void lookForSDK(HashSet<Path> roots) {
         File opamFolderWindows = new File(FileUtil.expandUserHome(PORTABLE_OPAM_PATH));
         if (opamFolderWindows.exists()) {
@@ -60,6 +63,8 @@ public class PortableOpamUtils {
             super.setupEnvironment(environment);
             // replace PATH, because we shouldn't use Windows commands
             // as they are not working with the portable opam
+            // ex: we got "tar" on Windows, in the PATH, but it doesn't work
+            // when the portable opam need "tar"
             environment.put("PATH", FileUtil.expandUserHome(OPAM_BIN_FOLDER));
         }
     }

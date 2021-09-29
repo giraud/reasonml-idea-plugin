@@ -37,7 +37,7 @@ public final class OCamlProcess extends VanillaProcess {
         return args;
     }
 
-    @Override public GeneralCommandLine makeProcess() {
+    @Override protected GeneralCommandLine makeProcess() {
         return super.makeProcess();
     }
 }
