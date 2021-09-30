@@ -1,5 +1,6 @@
 package com.reason.hints;
 
+import com.intellij.openapi.application.*;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
@@ -28,15 +29,22 @@ public class InsightManagerImpl implements InsightManager {
 
     @Override
     public void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile) {
-        File rincewind = getRincewindFile(sourceFile);
-        if (rincewind == null || !rincewind.exists()) {
-            ProgressManager.getInstance().run(new RincewindDownloader(myProject, sourceFile));
+        String rincewindName = ReadAction.compute(() -> getRincewindFilename(sourceFile.getParent(), ""));
+        if (rincewindName == null) {
+            LOG.debug("No rincewind version found, abort downloading");
+            return;
+        }
+
+        File targetFile = getRincewindTarget(rincewindName);
+        if (targetFile != null && !targetFile.exists()) {
+            ProgressManager.getInstance().run(new RincewindDownloader(myProject, targetFile));
         }
     }
 
     @Override
     public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
-        File rincewindFile = getRincewindFile(sourceFile);
+        String rincewindName = getRincewindFilename(sourceFile.getParent(), "");
+        File rincewindFile = rincewindName == null ? null : getRincewindTarget(rincewindName);
         if (rincewindFile != null) {
             myProject.getService(RincewindProcess.class).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
         }
@@ -44,7 +52,8 @@ public class InsightManagerImpl implements InsightManager {
 
     @Override
     public @NotNull List<String> dumpMeta(@NotNull VirtualFile cmtFile) {
-        File rincewindFile = getRincewindFileExcludingVersion(cmtFile.getParent(), "0.4");
+        String rincewindName = getRincewindFilename(cmtFile.getParent(), "0.4");
+        File rincewindFile = rincewindName == null ? null : getRincewindTarget(rincewindName);
         return rincewindFile == null
                 ? Collections.emptyList()
                 : myProject.getService(RincewindProcess.class).dumpMeta(rincewindFile.getPath(), cmtFile);
@@ -52,7 +61,8 @@ public class InsightManagerImpl implements InsightManager {
 
     @Override
     public @NotNull String dumpTree(@NotNull VirtualFile cmtFile) {
-        File rincewindFile = getRincewindFileExcludingVersion(cmtFile.getParent(), "");
+        String rincewindName = getRincewindFilename(cmtFile.getParent(), "");
+        File rincewindFile = rincewindName == null ? null : getRincewindTarget(rincewindName);
         return rincewindFile == null
                 ? "<unknown>\n  <reason>rincewindFile not found</reason>\n  <file>" + cmtFile.getPath() + "</file>\n</unknow/>"
                 : myProject.getService(RincewindProcess.class).dumpTree(cmtFile, rincewindFile.getPath());
@@ -60,26 +70,14 @@ public class InsightManagerImpl implements InsightManager {
 
     @Override
     public @NotNull List<String> dumpInferredTypes(@NotNull VirtualFile cmtFile) {
-        File rincewindFile = getRincewindFileExcludingVersion(cmtFile.getParent(), "");
+        String rincewindName = getRincewindFilename(cmtFile.getParent(), "");
+        File rincewindFile = rincewindName == null ? null : getRincewindTarget(rincewindName);
         return rincewindFile == null
                 ? Collections.emptyList()
                 : myProject.getService(RincewindProcess.class).dumpTypes(rincewindFile.getPath(), cmtFile);
     }
 
-    @Override
-    public @Nullable File getRincewindFile(@NotNull VirtualFile sourceFile) {
-        return getRincewindFileExcludingVersion(sourceFile, "");
-    }
-
-    public @Nullable File getRincewindFileExcludingVersion(@NotNull VirtualFile sourceFile, @NotNull String excludedVersion) {
-        String filename = getRincewindFilenameExcludingVersion(sourceFile, excludedVersion);
-        if (filename == null) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("No rincewind file found for " + sourceFile + " (excluded: " + excludedVersion + ")");
-            }
-            return null;
-        }
-
+    public @Nullable File getRincewindTarget(@NotNull String filename) {
         Path pluginLocation = Platform.getPluginLocation();
         String pluginPath = pluginLocation == null ? System.getProperty("java.io.tmpdir") : pluginLocation.toFile().getPath();
         if (LOG.isTraceEnabled()) {
@@ -88,12 +86,7 @@ public class InsightManagerImpl implements InsightManager {
         return new File(pluginPath, filename);
     }
 
-    @Override
-    public @Nullable String getRincewindFilename(@NotNull VirtualFile sourceFile) {
-        return getRincewindFilenameExcludingVersion(sourceFile, "");
-    }
-
-    public @Nullable String getRincewindFilenameExcludingVersion(@NotNull VirtualFile sourceFile, @NotNull String excludedVersion) {
+    public @Nullable String getRincewindFilename(@NotNull VirtualFile sourceFile, @NotNull String excludedVersion) {
         ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
         ORResolvedCompiler<?> compiler = compilerManager.getCompiler(sourceFile);
         String fullVersion = compiler == null ? null : compiler.getFullVersion(sourceFile);

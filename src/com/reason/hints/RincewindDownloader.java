@@ -20,11 +20,11 @@ public class RincewindDownloader extends Task.Backgroundable {
     private static final double TOTAL_BYTES = 10_000_000.0;
     private static final String DOWNLOAD_URL = "https://rincewind.jfrog.io/artifactory/ocaml/";
 
-    private final @NotNull VirtualFile m_sourceFile;
+    private final File myRincewindTarget;
 
-    RincewindDownloader(@Nullable Project project, @NotNull VirtualFile sourceFile) {
+    RincewindDownloader(@Nullable Project project, @NotNull File rincewindTarget) {
         super(project, "Downloading Rincewind binary");
-        m_sourceFile = sourceFile;
+        myRincewindTarget = rincewindTarget;
     }
 
     @Override
@@ -42,24 +42,12 @@ public class RincewindDownloader extends Task.Backgroundable {
         }
 
         try {
-            File targetFile = insightManager.getRincewindFile(m_sourceFile);
-            if (targetFile == null) {
-                LOG.debug("No target file, abort downloading", m_sourceFile);
-                return;
-            }
-
-            String rincewindFilename = insightManager.getRincewindFilename(m_sourceFile);
-            if (rincewindFilename == null) {
-                LOG.debug("No rincewind version found, abort downloading");
-                return;
-            }
-
-            LOG.info("Downloading " + targetFile.getName() + "...");
+            String rincewindFilename = myRincewindTarget.getName();
+            LOG.info("Downloading " + rincewindFilename + "...");
             indicator.setIndeterminate(false);
             indicator.setFraction(0.0);
 
-            boolean downloaded =
-                    WGet.apply(DOWNLOAD_URL + rincewindFilename, targetFile, indicator, TOTAL_BYTES);
+            boolean downloaded = WGet.apply(DOWNLOAD_URL + rincewindFilename, myRincewindTarget, indicator, TOTAL_BYTES);
             if (downloaded) {
                 Application application = ApplicationManager.getApplication();
                 application.executeOnPooledThread(
