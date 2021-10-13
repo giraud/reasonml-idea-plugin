@@ -404,9 +404,9 @@
          | Spellchecker
          -->
 
-        <spellchecker.support language="OCaml" implementationClass="com.reason.ide.spellcheckers.OCamlSpellCheckerStrategy"/>
-        <spellchecker.support language="Reason" implementationClass="com.reason.ide.spellcheckers.ReasonSpellCheckerStrategy"/>
-        <spellchecker.support language="Rescript" implementationClass="com.reason.ide.spellcheckers.CustomSpellCheckerStrategy"/>
+        <spellchecker.support language="OCaml" implementationClass="com.reason.ide.spellcheckers.OclSpellCheckerStrategy"/>
+        <spellchecker.support language="Reason" implementationClass="com.reason.ide.spellcheckers.RmlSpellCheckerStrategy"/>
+        <spellchecker.support language="Rescript" implementationClass="com.reason.ide.spellcheckers.ResSpellCheckerStrategy"/>
 
         <!--
          | Debug

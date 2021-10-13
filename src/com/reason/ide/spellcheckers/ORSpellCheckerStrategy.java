@@ -5,6 +5,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.*;
 import com.intellij.spellchecker.tokenizer.*;
 import com.reason.lang.core.psi.PsiLiteralExpression;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 
@@ -12,12 +13,11 @@ import org.jetbrains.annotations.*;
  * Handling the Generic SpellcheckingStrategy
  *
  * @see SpellcheckingStrategy
- * @see OCamlSpellCheckerStrategy
  */
-public class CustomSpellCheckerStrategy extends SpellcheckingStrategy {
-
-    @Override public @NotNull Tokenizer<?> getTokenizer(PsiElement element) {
-        if (element instanceof PsiWhiteSpace) { // skip whitespace
+public class ORSpellCheckerStrategy extends SpellcheckingStrategy {
+    @Override
+    public @NotNull Tokenizer<?> getTokenizer(@Nullable PsiElement element) {
+        if (element == null || element instanceof PsiWhiteSpace) { // skip whitespace
             return EMPTY_TOKENIZER;
         }
         // optimization
@@ -25,8 +25,7 @@ public class CustomSpellCheckerStrategy extends SpellcheckingStrategy {
             return EMPTY_TOKENIZER;
         }
         // skip other languages
-        if (element instanceof PsiLanguageInjectionHost &&
-                InjectedLanguageManager.getInstance(element.getProject()).getInjectedPsiFiles(element) != null) {
+        if (element instanceof PsiLanguageInjectionHost && InjectedLanguageManager.getInstance(element.getProject()).getInjectedPsiFiles(element) != null) {
             return EMPTY_TOKENIZER;
         }
         // handle comments
@@ -37,16 +36,8 @@ public class CustomSpellCheckerStrategy extends SpellcheckingStrategy {
         if (element instanceof PsiLiteralExpression) {
             return TEXT_TOKENIZER;
         }
-        // named elements
-        if (element instanceof PsiNameIdentifierOwner) {
-            // not allowed
-            if (element instanceof PsiAnnotationImpl || element instanceof PsiMacroName) {
-                return EMPTY_TOKENIZER;
-            }
-            return PsiIdentifierOwnerTokenizer.INSTANCE;
-        }
-        // ... = PsiLowerSymbolImpl
-        if (element instanceof PsiLowerSymbolImpl) {
+        // Named elements
+        if (element instanceof PsiUpperIdentifier || element instanceof PsiUpperSymbol || element instanceof PsiLowerIdentifier || element instanceof PsiLowerSymbolImpl) {
             return TEXT_TOKENIZER;
         }
         return EMPTY_TOKENIZER; // skip everything else
