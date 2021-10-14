@@ -6,17 +6,17 @@ import com.intellij.util.io.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
-public abstract class PsiFieldStub<T extends PsiNamedElement> extends NamedStubBase<T> {
+public abstract class PsiQualifiedNameStub<T extends PsiNamedElement> extends NamedStubBase<T> {
     private final String[] myPath;
     private final String myQname;
 
-    PsiFieldStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String[] path) {
+    PsiQualifiedNameStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String[] path) {
         super(parent, elementType, name);
         myPath = path;
         myQname = Joiner.join(".", path) + "." + name;
     }
 
-    PsiFieldStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @NotNull String[] path) {
+    PsiQualifiedNameStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @NotNull String[] path) {
         super(parent, elementType, name);
         myPath = path;
         myQname = Joiner.join(".", path) + "." + name;

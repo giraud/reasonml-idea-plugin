@@ -14,7 +14,7 @@ import java.io.*;
 public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModuleStub, PsiModule> {
     public static final int VERSION = 23;
 
-    public PsiModuleStubElementType(@NotNull String name, Language language) {
+    protected PsiModuleStubElementType(@NotNull String name, Language language) {
         super(name, language);
     }
 
