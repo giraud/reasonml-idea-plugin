@@ -18,7 +18,7 @@
 - :bug: [#354](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/354) Update spellCheck strategy
 - :bug: ![r] [#353](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/353) Interpolation incorrectly parsed
 - :bug: [#352](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/352) CMT viewer is broken
-- :bug: [#327](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/32V) Use resolver for completions
+- :bug: [#327](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/327) Use resolver for completions
 
 ## 0.103 - 2021/09/21
 
