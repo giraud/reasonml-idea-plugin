@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+## 0.104 - 2021/10/14
+
 - :bug: [#357](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/357) Read access is allowed from inside read-action
 - :bug: [#354](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/354) Update spellCheck strategy
 - :bug: ![r] [#353](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/353) Interpolation incorrectly parsed
