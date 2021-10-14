@@ -12,14 +12,14 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModuleStub, PsiModule> {
-    public static final int VERSION = 23;
+    public static final int VERSION = 24;
 
-    protected PsiModuleStubElementType(@NotNull String name, Language language) {
+    protected PsiModuleStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);
     }
 
     @NotNull
-    public PsiModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
+    public PsiModuleStub createStub(@NotNull PsiModule psi, StubElement parentStub) {
         boolean isFunctorCall = false;
         if (psi instanceof PsiInnerModule) {
             isFunctorCall = ((PsiInnerModule) psi).isFunctorCall();
@@ -28,7 +28,7 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
         return new PsiModuleStub(parentStub, this, psi.getName(), psi.getPath(), psi.getQualifiedNameAsPath(), null, psi.getAlias(), psi.isComponent(), psi.isInterface(), psi instanceof PsiFakeModule, isFunctorCall);
     }
 
-    public void serialize(@NotNull final PsiModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
+    public void serialize(@NotNull PsiModuleStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         SerializerUtil.writePath(dataStream, stub.getPath());
         SerializerUtil.writePath(dataStream, stub.getQualifiedNameAsPath());
@@ -44,7 +44,7 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
         }
     }
 
-    public @NotNull PsiModuleStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
+    public @NotNull PsiModuleStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
         StringRef moduleName = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
         String[] qNamePath = SerializerUtil.readPath(dataStream);
@@ -62,7 +62,7 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
         return new PsiModuleStub(parentStub, this, moduleName, path, qNamePath, null, alias, isComponent, isInterface, isTopLevel, isFunctorCall);
     }
 
-    public void indexStub(@NotNull final PsiModuleStub stub, @NotNull final IndexSink sink) {
+    public void indexStub(@NotNull PsiModuleStub stub, @NotNull IndexSink sink) {
         String name = stub.getName();
         if (name != null) {
             sink.occurrence(IndexKeys.MODULES, name);

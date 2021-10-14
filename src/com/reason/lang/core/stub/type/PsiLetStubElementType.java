@@ -15,7 +15,7 @@ import java.io.*;
 import java.util.*;
 
 public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet> {
-    public static final int VERSION = 13;
+    public static final int VERSION = 14;
 
     public PsiLetStubElementType(@Nullable Language language) {
         super("C_LET_DECLARATION", language);

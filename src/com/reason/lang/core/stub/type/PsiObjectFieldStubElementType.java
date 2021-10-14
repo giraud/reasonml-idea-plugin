@@ -12,7 +12,7 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiObjectFieldStubElementType extends ORStubElementType<PsiObjectFieldStub, PsiObjectField> {
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     public PsiObjectFieldStubElementType(@NotNull Language language) {
         super("C_OBJECT_FIELD", language);

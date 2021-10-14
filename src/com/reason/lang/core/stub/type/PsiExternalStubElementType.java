@@ -13,7 +13,7 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStub, PsiExternal> {
-    public static final int VERSION = 8;
+    public static final int VERSION = 9;
 
     public PsiExternalStubElementType(@Nullable Language language) {
         super("C_EXTERNAL_DECLARATION", language);
@@ -31,7 +31,8 @@ public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStu
 
     @NotNull
     public PsiExternalStub createStub(@NotNull PsiExternal psi, StubElement parentStub) {
-        return new PsiExternalStub(parentStub, this, psi.getName(), psi.getPath(), psi.isFunction());
+        String[] path = psi.getPath();
+        return new PsiExternalStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.isFunction());
     }
 
     public void serialize(@NotNull PsiExternalStub stub, @NotNull StubOutputStream dataStream) throws IOException {
