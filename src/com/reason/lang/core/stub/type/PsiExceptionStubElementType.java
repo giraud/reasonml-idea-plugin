@@ -13,7 +13,7 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiExceptionStubElementType extends ORStubElementType<PsiExceptionStub, PsiException> {
-    public static final int VERSION = 6;
+    public static final int VERSION = 7;
 
     public PsiExceptionStubElementType(Language language) {
         super("C_EXCEPTION_DECLARATION", language);
@@ -31,7 +31,8 @@ public class PsiExceptionStubElementType extends ORStubElementType<PsiExceptionS
 
     @NotNull
     public PsiExceptionStub createStub(@NotNull PsiException psi, StubElement parentStub) {
-        return new PsiExceptionStub(parentStub, this, psi.getName(), psi.getPath(), psi.getAlias());
+        String[] path = psi.getPath();
+        return new PsiExceptionStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.getAlias());
     }
 
     public void serialize(@NotNull PsiExceptionStub stub, @NotNull StubOutputStream dataStream) throws IOException {

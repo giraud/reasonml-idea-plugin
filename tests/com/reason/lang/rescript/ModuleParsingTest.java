@@ -3,9 +3,8 @@ package com.reason.lang.rescript;
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.PsiAnnotation;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.*;
 
 import java.util.*;
 
@@ -27,11 +26,18 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("Y", module.getAlias());
     }
 
+    public void test_aliasPath() {
+        PsiModule module = first(moduleExpressions(parseCode("module M = Y.Z")));
+
+        assertEquals("M", module.getName());
+        assertEquals("Y.Z", module.getAlias());
+    }
+
     public void test_module_type() {
         PsiInnerModule module = firstOfType(parseCode("module type RedFlagsSig = {}"), PsiInnerModule.class);
 
         assertEquals("RedFlagsSig", module.getName());
-        assertTrue(module.isModuleType());
+        assertTrue(module.isInterface());
     }
 
     public void test_module() {
@@ -53,9 +59,16 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertNull(module.getBody());
     }
 
+    public void test_interface_sig_body() {
+        PsiInnerModule e = firstOfType(parseCode("module M: MType = { type t = int }"), PsiInnerModule.class);
+
+        assertEquals("M", e.getName());
+        assertEquals("MType", e.getModuleType().getText());
+        assertEquals("{ type t = int }", e.getBody().getText());
+    }
+
     public void test_inline_interface_body() {
-        PsiInnerModule e =
-                firstOfType(parseCode("module M: { type t } = { type t = int }"), PsiInnerModule.class);
+        PsiInnerModule e = firstOfType(parseCode("module M: { type t } = { type t = int }"), PsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("{ type t }", e.getModuleType().getText());

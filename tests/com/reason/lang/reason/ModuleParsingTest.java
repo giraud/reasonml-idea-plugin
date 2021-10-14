@@ -18,17 +18,24 @@ public class ModuleParsingTest extends RmlParsingTestCase {
     }
 
     public void test_alias() {
-        PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module M = Y;")));
+        PsiModule module = first(moduleExpressions(parseCode("module M = Y;")));
 
         assertEquals("M", module.getName());
         assertEquals("Y", module.getAlias());
+    }
+
+    public void test_aliasPath() {
+        PsiModule module = first(moduleExpressions(parseCode("module M = Y.Z;")));
+
+        assertEquals("M", module.getName());
+        assertEquals("Y.Z", module.getAlias());
     }
 
     public void test_module_type() {
         PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module type RedFlagsSig = {};")));
 
         assertEquals("RedFlagsSig", module.getName());
-        assertTrue(module.isModuleType());
+        assertTrue(module.isInterface());
     }
 
     public void test_module() {
@@ -50,9 +57,16 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertNull(module.getBody());
     }
 
+    public void test_interface_sig_body() {
+        PsiInnerModule e = firstOfType(parseCode("module M: MType = { type t = int; };"), PsiInnerModule.class);
+
+        assertEquals("M", e.getName());
+        assertEquals("MType", e.getModuleType().getText());
+        assertEquals("{ type t = int; }", e.getBody().getText());
+    }
+
     public void test_inline_interface_body() {
-        PsiInnerModule e =
-                firstOfType(parseCode("module M: { type t; } = { type t = int; };"), PsiInnerModule.class);
+        PsiInnerModule e = firstOfType(parseCode("module M: { type t; } = { type t = int; };"), PsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("{ type t; }", e.getModuleType().getText());

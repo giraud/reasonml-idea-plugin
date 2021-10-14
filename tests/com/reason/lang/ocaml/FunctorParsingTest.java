@@ -16,7 +16,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) : S = struct end")));
 
         PsiFunctor f = (PsiFunctor) e;
-        assertEquals("struct end", f.getBinding().getText());
+        assertEquals("struct end", f.getBody().getText());
         assertEquals("S", f.getReturnType().getText());
         List<IElementType> uTypes =
                 PsiTreeUtil.findChildrenOfType(e, PsiUpperSymbol.class)
@@ -30,7 +30,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         PsiNamedElement e = first(expressions(parseCode("module Make (struct type t end) : S = struct end")));
 
         PsiFunctor f = (PsiFunctor) e;
-        assertEquals("struct end", f.getBinding().getText());
+        assertEquals("struct end", f.getBody().getText());
         assertEquals("S", f.getReturnType().getText());
         List<IElementType> uTypes =
                 PsiTreeUtil.findChildrenOfType(e, PsiUpperSymbol.class)
@@ -44,7 +44,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) = struct end")));
 
         PsiFunctor f = (PsiFunctor) e;
-        assertEquals("struct end", f.getBinding().getText());
+        assertEquals("struct end", f.getBody().getText());
     }
 
     public void test_withConstraints() {
@@ -63,7 +63,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertEquals(2, constraints.size());
         assertEquals("type +'a t = 'a M.t", constraints.get(0).getText());
         assertEquals("type b = M.b", constraints.get(1).getText());
-        assertEquals("struct end", f.getBinding().getText());
+        assertEquals("struct end", f.getBody().getText());
     }
 
     public void test_signature() {
@@ -87,7 +87,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         Collection<PsiParameter> parameters = functor.getParameters();
         assertSize(1, parameters);
         assertEquals("M", first(parameters).getName());
-        assertNotNull(functor.getBinding());
+        assertNotNull(functor.getBody());
     }
 
     public void test_functorInstanciation() {

@@ -1,27 +1,19 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.StubBasedPsiElement;
-import com.reason.lang.core.psi.impl.PsiConstraint;
-import com.reason.lang.core.psi.impl.PsiFunctorBinding;
-import com.reason.lang.core.stub.PsiModuleStub;
+import com.intellij.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.stub.*;
+import org.jetbrains.annotations.*;
+
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public interface PsiFunctor
-    extends PsiNameIdentifierOwner, PsiModule, StubBasedPsiElement<PsiModuleStub> {
+public interface PsiFunctor extends PsiNameIdentifierOwner, PsiModule, StubBasedPsiElement<PsiModuleStub> {
+    @NotNull
+    Collection<PsiParameter> getParameters();
 
-  @Nullable
-  PsiFunctorBinding getBinding();
+    @Nullable
+    PsiFunctorResult getReturnType();
 
-  @NotNull
-  Collection<PsiParameter> getParameters();
-
-  @Nullable
-  PsiElement getReturnType();
-
-  @NotNull
-  Collection<PsiConstraint> getConstraints();
+    @NotNull
+    Collection<PsiConstraint> getConstraints();
 }

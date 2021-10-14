@@ -2,16 +2,11 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.navigation.*;
-import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
-import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.*;
-import com.reason.ide.search.*;
-import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
@@ -21,7 +16,6 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-import static com.reason.lang.core.ORFileType.*;
 import static java.util.Collections.*;
 
 public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStub> implements PsiFunctor {
@@ -84,6 +78,10 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
         return ORUtil.getQualifiedNameAsPath(this);
     }
 
+    @Override public @Nullable PsiElement getComponentNavigationElement() {
+        return null;
+    }
+
     @Override
     public boolean isInterface() {
         return false;
@@ -97,6 +95,21 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     @Override
     public @Nullable String getAlias() {
         return null;
+    }
+
+    @Override
+    public @Nullable PsiUpperSymbol getAliasSymbol() {
+        return null;
+    }
+
+    @Override
+    public @Nullable PsiElement getModuleType() {
+        return null;
+    }
+
+    @Override
+    public @Nullable PsiElement getBody() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorBinding.class);
     }
 
     @Override
@@ -114,51 +127,51 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     public @NotNull Collection<PsiNamedElement> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
         Collection<PsiNamedElement> result = emptyList();
 
-        PsiElement returnType = getReturnType();
-        if (returnType instanceof PsiFunctorResult) {
-            // Resolve return type, and get expressions from there
-            PsiFunctorResult functorResult = (PsiFunctorResult) returnType;
-            result = new ArrayList<>();
-
-            String name = functorResult.getText();
-            Project project = getProject();
-            PsiFinder psiFinder = project.getService(PsiFinder.class);
-            QNameFinder qnameFinder = PsiFinder.getQNameFinder(getLanguage());
-            GlobalSearchScope searchScope = GlobalSearchScope.allScope(project);
-
-            Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorResult);
-            for (String potentialPath : potentialPaths) {
-                Set<PsiModule> modulesFromQn =
-                        psiFinder.findModulesFromQn(
-                                potentialPath + "." + name, true, interfaceOrImplementation, searchScope);
-                if (!modulesFromQn.isEmpty()) {
-                    PsiModule module = modulesFromQn.iterator().next();
-                    return module.getExpressions(eScope, filter);
-                }
-            }
-            // nothing found, try without path
-            Set<PsiModule> modulesFromQn =
-                    psiFinder.findModulesFromQn(name, true, interfaceOrImplementation, searchScope);
-            if (!modulesFromQn.isEmpty()) {
-                PsiModule module = modulesFromQn.iterator().next();
-                return module.getExpressions(eScope, filter);
-            }
-        } else {
-            // Get expressions from functor body
-            PsiElement body = getBinding();
-            if (body != null) {
-                result = new ArrayList<>();
-                PsiElement element = body.getFirstChild();
-                while (element != null) {
-                    if (element instanceof PsiNamedElement) {
-                        if (filter == null || filter.accept((PsiNamedElement) element)) {
-                            result.add((PsiNamedElement) element);
-                        }
-                    }
-                    element = element.getNextSibling();
-                }
-            }
-        }
+        //PsiElement returnType = getReturnType();
+        //if (returnType instanceof PsiFunctorResult) {
+        //    // Resolve return type, and get expressions from there
+        //    PsiFunctorResult functorResult = (PsiFunctorResult) returnType;
+        //    result = new ArrayList<>();
+        //
+        //    String name = functorResult.getText();
+        //    Project project = getProject();
+        //    PsiFinder psiFinder = project.getService(PsiFinder.class);
+        //    QNameFinder qnameFinder = PsiFinder.getQNameFinder(getLanguage());
+        //    GlobalSearchScope searchScope = GlobalSearchScope.allScope(project);
+        //
+        //    Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorResult);
+        //    for (String potentialPath : potentialPaths) {
+        //        Set<PsiModule> modulesFromQn =
+        //                psiFinder.findModulesFromQn(
+        //                        potentialPath + "." + name, true, interfaceOrImplementation);
+        //        if (!modulesFromQn.isEmpty()) {
+        //            PsiModule module = modulesFromQn.iterator().next();
+        //            return module.getExpressions(eScope, filter);
+        //        }
+        //    }
+        //    // nothing found, try without path
+        //    Set<PsiModule> modulesFromQn =
+        //            psiFinder.findModulesFromQn(name, true, interfaceOrImplementation);
+        //    if (!modulesFromQn.isEmpty()) {
+        //        PsiModule module = modulesFromQn.iterator().next();
+        //        return module.getExpressions(eScope, filter);
+        //    }
+        //} else {
+        //    // Get expressions from functor body
+        //    PsiElement body = getBinding();
+        //    if (body != null) {
+        //        result = new ArrayList<>();
+        //        PsiElement element = body.getFirstChild();
+        //        while (element != null) {
+        //            if (element instanceof PsiNamedElement) {
+        //                if (filter == null || filter.accept((PsiNamedElement) element)) {
+        //                    result.add((PsiNamedElement) element);
+        //                }
+        //            }
+        //            element = element.getNextSibling();
+        //        }
+        //    }
+        //}
 
         return result;
     }
@@ -174,14 +187,12 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     }
 
     @Override
-    public @Nullable PsiType getTypeExpression(@Nullable String name) {
+    public @Nullable PsiExternal getExternalExpression(@Nullable String name) {
         if (name != null) {
-            ExpressionFilter expressionFilter =
-                    element -> element instanceof PsiType && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions =
-                    getExpressions(ExpressionScope.all, expressionFilter);
+            ExpressionFilter expressionFilter = element -> element instanceof PsiExternal && name.equals(element.getName());
+            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
-                return (PsiType) expressions.iterator().next();
+                return (PsiExternal) expressions.iterator().next();
             }
         }
         return null;
@@ -190,10 +201,8 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     @Override
     public @Nullable PsiLet getLetExpression(@Nullable String name) {
         if (name != null) {
-            ExpressionFilter expressionFilter =
-                    element -> element instanceof PsiLet && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions =
-                    getExpressions(ExpressionScope.all, expressionFilter);
+            ExpressionFilter expressionFilter = element -> element instanceof PsiLet && name.equals(element.getName());
+            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
                 return (PsiLet) expressions.iterator().next();
             }
@@ -216,19 +225,13 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     }
 
     @Override
-    public @Nullable PsiFunctorBinding getBinding() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorBinding.class);
-    }
-
-
-    @Override
     public @NotNull Collection<PsiParameter> getParameters() {
         return ORUtil.findImmediateChildrenOfClass(
                 ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameter.class);
     }
 
     @Override
-    public @Nullable PsiElement getReturnType() {
+    public @Nullable PsiFunctorResult getReturnType() {
         return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorResult.class);
     }
 

@@ -1,6 +1,7 @@
 package com.reason.ide.search.index;
 
 import com.intellij.openapi.project.*;
+import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.type.*;
@@ -19,7 +20,7 @@ public class ExternalFqnIndex extends IntStubIndexExtension<PsiExternal> {
         return IndexKeys.EXTERNALS_FQN;
     }
 
-    public static @NotNull Collection<PsiExternal> getElements(int key, @NotNull Project project) {
-        return StubIndex.getElements(IndexKeys.EXTERNALS_FQN, key, project, null, PsiExternal.class);
+    public static @NotNull Collection<PsiExternal> getElements(int key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.EXTERNALS_FQN, key, project, scope, PsiExternal.class);
     }
 }

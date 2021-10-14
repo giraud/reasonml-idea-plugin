@@ -66,16 +66,16 @@ public class GotoTestDataAction extends AnAction {
                         psiFinder.findModulesbyName(
                                 tokens[0] + "_test",
                                 ORFileType.implementationOnly,
-                                module -> module instanceof FileBase,
-                                scope);
+                                module -> module instanceof FileBase
+                        );
                 relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
                 if (relatedModule == null) {
                     relatedModules =
                             psiFinder.findModulesbyName(
                                     tokens[0] + "_spec",
                                     ORFileType.implementationOnly,
-                                    module -> module instanceof FileBase,
-                                    scope);
+                                    module -> module instanceof FileBase
+                            );
                     relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
                 }
             } else {
@@ -83,8 +83,8 @@ public class GotoTestDataAction extends AnAction {
                         psiFinder.findModulesbyName(
                                 tokens[0],
                                 ORFileType.implementationOnly,
-                                module -> module instanceof FileBase,
-                                scope);
+                                module -> module instanceof FileBase
+                        );
                 relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
             }
 

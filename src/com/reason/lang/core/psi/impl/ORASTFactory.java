@@ -73,9 +73,6 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_JS_OBJECT) {
             return new PsiJsObject(type);
         }
-        if (type == m_types.C_OBJECT_FIELD) {
-            return new PsiObjectField(m_types, type);
-        }
         if (type == m_types.C_FUN_EXPR) {
             return new PsiFunctionImpl(m_types, type);
         }

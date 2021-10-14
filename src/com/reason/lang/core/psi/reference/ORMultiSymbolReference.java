@@ -10,7 +10,7 @@ public abstract class ORMultiSymbolReference<T extends PsiElement> extends PsiPo
     protected final @Nullable String myReferenceName;
     protected final @NotNull ORTypes myTypes;
 
-    public ORMultiSymbolReference(@NotNull T element, @NotNull ORTypes types) {
+    protected ORMultiSymbolReference(@NotNull T element, @NotNull ORTypes types) {
         super(element, TextRange.create(0, element.getTextLength()));
         myReferenceName = element.getText();
         myTypes = types;

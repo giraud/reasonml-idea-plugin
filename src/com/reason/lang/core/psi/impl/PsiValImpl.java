@@ -4,6 +4,7 @@ import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
+import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
@@ -13,6 +14,7 @@ import icons.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
+import java.util.*;
 
 public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implements PsiVal {
     // region Constructors
@@ -78,6 +80,11 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implem
 
         PsiSignature signature = getSignature();
         return signature != null && signature.isFunction();
+    }
+
+    @Override
+    public @NotNull Collection<PsiRecordField> getRecordFields() {
+        return PsiTreeUtil.findChildrenOfType(this, PsiRecordField.class);
     }
 
     @Override

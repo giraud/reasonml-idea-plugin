@@ -4,8 +4,16 @@ import com.intellij.psi.*;
 import com.reason.ide.*;
 
 public class ResolveJsxTagElementRMLTest extends ORBasePlatformTestCase {
-    public void test_basic() {
+    public void test_basic_let() {
         configureCode("X.re", "[@react.component] let make = (~value) => <div/>;");
+        configureCode("A.re", "<X<caret> ></X>;");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("X.make", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+    }
+
+    public void test_basic_external() {
+        configureCode("X.re", "[@react.component] external make : (~value:string) => React.element = \"Xx\";");
         configureCode("A.re", "<X<caret> ></X>;");
 
         PsiElement e = myFixture.getElementAtCaret();
@@ -20,8 +28,15 @@ public class ResolveJsxTagElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("X", ((PsiQualifiedNamedElement) e).getQualifiedName());
     }
 
-    public void test_nested() {
+    public void test_nested_let() {
         configureCode("A.re", "module X = { module Y = { [@react.component] let make = (~value) => <div/>; }; }; <X.Y<caret> ></X>;");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.X.Y.make", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+    }
+
+    public void test_nested_external() {
+        configureCode("A.re", "module X = { module Y = { [@react.component] external make : (~value:string) => React.element = \"XY\"; }; }; <X.Y<caret> ></X>;");
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.X.Y.make", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());

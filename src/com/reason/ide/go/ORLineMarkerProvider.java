@@ -3,9 +3,10 @@ package com.reason.ide.go;
 import com.intellij.codeInsight.daemon.*;
 import com.intellij.codeInsight.navigation.*;
 import com.intellij.openapi.editor.markup.*;
+import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
+import com.intellij.psi.search.*;
 import com.reason.ide.files.*;
-import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
@@ -35,6 +36,8 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             parent = parent.getParent();
         }
 
+        Project project = element.getProject();
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         FileBase containingFile = (FileBase) element.getContainingFile();
         boolean isInterface = containingFile.isInterface();
 
@@ -46,14 +49,14 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 }
                 final String qName = qNameLet;
 
-                Collection<PsiVal> vals = ValFqnIndex.getElements(qName.hashCode(), element.getProject());
+                Collection<PsiVal> vals = ValFqnIndex.getElements(qName.hashCode(), project, scope);
                 vals.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                         .findFirst()
                         .ifPresentOrElse(psiVal ->
                                         result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiVal.getContainingFile(), psiVal))
                                 , () -> {
-                                    Collection<PsiLet> lets = LetFqnIndex.getElements(qName.hashCode(), element.getProject());
+                                    Collection<PsiLet> lets = LetFqnIndex.getElements(qName.hashCode(), project, scope);
                                     lets.stream()
                                             .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                                             .findFirst()
@@ -63,7 +66,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                                 });
             } else if (parent instanceof PsiExternal) {
                 String externalQName = ((PsiExternalImpl) parent).getQualifiedName();
-                Collection<PsiExternal> elements = ExternalFqnIndex.getElements(externalQName.hashCode(), element.getProject());
+                Collection<PsiExternal> elements = ExternalFqnIndex.getElements(externalQName.hashCode(), project, scope);
                 elements.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                         .findFirst()
@@ -72,31 +75,33 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                         );
             } else if (parent instanceof PsiValImpl) {
                 String valQName = ((PsiValImpl) parent).getQualifiedName();
-                Collection<PsiLet> elements = LetFqnIndex.getElements(valQName.hashCode(), element.getProject());
+                Collection<PsiLet> elements = LetFqnIndex.getElements(valQName.hashCode(), project, scope);
                 elements.stream()
                         .filter(PSI_IMPL_PREDICATE)
                         .findFirst()
                         .ifPresent(psiTarget ->
                                 result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiTarget.getContainingFile(), psiTarget))
                         );
-            } else if (parent instanceof PsiType) {
-                String valQName = ((PsiTypeImpl) parent).getQualifiedName();
-                Collection<PsiType> elements = TypeFqnIndex.getElements(valQName.hashCode(), element.getProject());
-                elements.stream()
-                        .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
-                        .findFirst()
-                        .ifPresent(psiTarget ->
-                                result.add(createGutterIcon(element, isInterface, "type", (FileBase) psiTarget.getContainingFile(), psiTarget))
-                        );
-            } else if (parent instanceof PsiKlass) {
-                String qName = ((PsiKlassImpl) parent).getQualifiedName();
-                Collection<PsiKlass> elements = KlassFqnIndex.getElements(qName.hashCode(), element.getProject());
-                elements.stream()
-                        .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
-                        .findFirst()
-                        .ifPresent(psiTarget ->
-                                result.add(createGutterIcon(element, isInterface, "class", (FileBase) psiTarget.getContainingFile(), psiTarget))
-                        );
+            } else {
+                if (parent instanceof PsiType) {
+                    String valQName = ((PsiTypeImpl) parent).getQualifiedName();
+                    Collection<PsiType> elements = TypeFqnIndex.getElements(valQName.hashCode(), project, scope);
+                    elements.stream()
+                            .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
+                            .findFirst()
+                            .ifPresent(psiTarget ->
+                                    result.add(createGutterIcon(element, isInterface, "type", (FileBase) psiTarget.getContainingFile(), psiTarget))
+                            );
+                } else if (parent instanceof PsiKlass) {
+                    String qName = ((PsiKlassImpl) parent).getQualifiedName();
+                    Collection<PsiKlass> elements = KlassFqnIndex.getElements(qName.hashCode(), project, scope);
+                    elements.stream()
+                            .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
+                            .findFirst()
+                            .ifPresent(psiTarget ->
+                                    result.add(createGutterIcon(element, isInterface, "class", (FileBase) psiTarget.getContainingFile(), psiTarget))
+                            );
+                }
             }
         } else if (element instanceof PsiUpperIdentifier) {
             if (parent instanceof PsiInnerModule) {
@@ -119,18 +124,18 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         }
     }
 
-    @SafeVarargs private <T extends PsiQualifiedNamedElement> void extractRelatedExpressions(  // TODO: delete
-                                                                                               @Nullable PsiElement element,
-                                                                                               @Nullable String qname,
-                                                                                               @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result,
-                                                                                               @NotNull FileBase containingFile,
-                                                                                               @NotNull String method,
-                                                                                               @NotNull Class<? extends T>... clazz) {
+    @SafeVarargs
+    private <T extends PsiQualifiedNamedElement> void extractRelatedExpressions(@Nullable PsiElement element,
+                                                                                @Nullable String qname,
+                                                                                @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result,
+                                                                                @NotNull FileBase containingFile,
+                                                                                @NotNull String method,
+                                                                                @NotNull Class<? extends T>... clazz) {
         if (element == null) {
             return;
         }
 
-        FileBase psiRelatedFile = containingFile.getProject().getService(PsiFinder.class).findRelatedFile(containingFile);
+        FileBase psiRelatedFile = findRelatedFile(containingFile);
         if (psiRelatedFile != null) {
             List<T> expressions = psiRelatedFile.getQualifiedExpressions(qname, clazz);
             if (expressions.size() >= 1) {
@@ -154,11 +159,29 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 "<p>" + (isInterface ? "Implements " : "Declare ") + method + " in <a href=\"#navigation/" + relatedFile.getVirtualFile().getPath() + ":0\"><code>" + relatedFilename + "</code></a></p>" +
                 "</body></html>";
 
-        return NavigationGutterIconBuilder.create(
-                        isInterface ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
+        return NavigationGutterIconBuilder.create(isInterface ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
                 .setTooltipText(tooltip)
                 .setAlignment(GutterIconRenderer.Alignment.RIGHT)
                 .setTargets(Collections.singleton(relatedElement))
                 .createLineMarkerInfo(psiSource instanceof PsiLowerIdentifier ? psiSource.getFirstChild() : psiSource);
+    }
+
+    @Nullable
+    public FileBase findRelatedFile(@NotNull FileBase file) {
+        PsiDirectory directory = file.getParent();
+        if (directory != null) {
+            String filename = file.getVirtualFile().getNameWithoutExtension();
+
+            String relatedExtension;
+            if (FileHelper.isReason(file.getFileType())) {
+                relatedExtension = file.isInterface() ? RmlFileType.INSTANCE.getDefaultExtension() : RmlInterfaceFileType.INSTANCE.getDefaultExtension();
+            } else {
+                relatedExtension = file.isInterface() ? OclFileType.INSTANCE.getDefaultExtension() : OclInterfaceFileType.INSTANCE.getDefaultExtension();
+            }
+
+            PsiFile relatedPsiFile = directory.findFile(filename + "." + relatedExtension);
+            return relatedPsiFile instanceof FileBase ? (FileBase) relatedPsiFile : null;
+        }
+        return null;
     }
 }

@@ -9,7 +9,7 @@ import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
 public class OclFileStubElementType extends IStubFileElementType<OclFileStub> {
-    private static final int VERSION = 8;
+    private static final int VERSION = 9;
     public static final IStubFileElementType<OclFileStub> INSTANCE = new OclFileStubElementType();
 
     private OclFileStubElementType() {
@@ -23,6 +23,8 @@ public class OclFileStubElementType extends IStubFileElementType<OclFileStub> {
             protected @NotNull PsiFileStub<? extends PsiFile> createStubForFile(@NotNull PsiFile file) {
                 if (file instanceof OclFile) {
                     return new OclFileStub((OclFile) file);
+                } else if (file instanceof OclInterfaceFile) {
+                    return new OclFileStub((OclInterfaceFile) file);
                 }
                 return new PsiFileStubImpl<>(file);
             }
