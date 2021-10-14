@@ -144,6 +144,15 @@ class Resolution implements Comparable<Resolution> {
             return getFirstWeight() != Integer.MAX_VALUE ? -1 : 1;
         }
 
+        // let has more priority than record field
+        if (myElements.size() == 1 && myElements.size() == o.myElements.size()) {
+            PsiQualifiedPathElement myElement = myElements.get(0);
+            PsiQualifiedPathElement otherElement = o.myElements.get(0);
+            if (otherElement instanceof PsiRecordField && myElement instanceof PsiLet) {
+                return -1;
+            }
+        }
+
         // first level with a different weight
         int r1Length = myPath.length;
         int r1Level = r1Length - 1;
@@ -158,7 +167,7 @@ class Resolution implements Comparable<Resolution> {
             oWeight = o.getWeight(oLevel);
         }
 
-        // Reach end of path for one of the element, longest path win
+        // Reach end of path for one of the element, the longest path win
         if (r1Length < oLength) {
             return 1;
         }

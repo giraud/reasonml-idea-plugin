@@ -13,7 +13,7 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiKlassStubElementType extends ORStubElementType<PsiKlassStub, PsiKlass> {
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     public PsiKlassStubElementType(@Nullable Language language) {
         super("C_CLASS_DECLARATION", language);
@@ -31,7 +31,8 @@ public class PsiKlassStubElementType extends ORStubElementType<PsiKlassStub, Psi
 
     @NotNull
     public PsiKlassStub createStub(@NotNull PsiKlass psi, StubElement parentStub) {
-        return new PsiKlassStub(parentStub, this, psi.getName(), psi.getPath());
+        String[] path = psi.getPath();
+        return new PsiKlassStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path);
     }
 
     public void serialize(@NotNull PsiKlassStub stub, @NotNull StubOutputStream dataStream) throws IOException {

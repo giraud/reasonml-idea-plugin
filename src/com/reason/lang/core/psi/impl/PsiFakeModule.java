@@ -9,7 +9,6 @@ import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
@@ -87,6 +86,11 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
     }
 
     @Override
+    public @NotNull PsiElement getComponentNavigationElement() {
+        return ((FileBase) getContainingFile()).getComponentNavigationElement();
+    }
+
+    @Override
     public boolean isInterface() {
         PsiModuleStub greenStub = getGreenStub();
         if (greenStub != null) {
@@ -110,6 +114,21 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
 
     @Override
     public @Nullable String getAlias() {
+        return null;
+    }
+
+    @Override
+    public @Nullable PsiUpperSymbol getAliasSymbol() {
+        return null;
+    }
+
+    @Override
+    public @Nullable PsiElement getModuleType() {
+        return null;
+    }
+
+    @Override
+    public @Nullable PsiElement getBody() {
         return null;
     }
 
@@ -142,15 +161,14 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
     }
 
     @Override
-    public @Nullable PsiVal getValExpression(@Nullable String name) {
-        Collection<PsiVal> expressions = getExpressions(name, PsiVal.class);
+    public @Nullable PsiExternal getExternalExpression(@Nullable String name) {
+        Collection<PsiExternal> expressions = getExpressions(name, PsiExternal.class);
         return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 
-
     @Override
-    public @Nullable PsiType getTypeExpression(@Nullable String name) {
-        List<PsiType> expressions = getExpressions(name, PsiType.class);
+    public @Nullable PsiVal getValExpression(@Nullable String name) {
+        Collection<PsiVal> expressions = getExpressions(name, PsiVal.class);
         return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 
@@ -173,10 +191,6 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
     public @Nullable ItemPresentation getPresentation() {
         // FileBase presentation should be used
         return null;
-    }
-
-    public boolean hasNamespace() {
-        return false;
     }
 
     @Override

@@ -60,7 +60,7 @@ public abstract class ORSyntaxAnnotator implements Annotator {
         } else if (elementType == m_types.C_INTERPOLATION_PART) {
             color(holder, element, STRING_);
         } else if (element instanceof PsiInterpolationReference) {
-            color(holder, element, DefaultLanguageHighlighterColors.IDENTIFIER);
+            color(holder, element, INTERPOLATED_REF_);
         }
     }
 

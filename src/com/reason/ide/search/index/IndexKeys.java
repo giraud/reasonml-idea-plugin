@@ -5,8 +5,15 @@ import com.intellij.util.indexing.*;
 import com.reason.ide.search.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
 
 public class IndexKeys {
+
+    @FunctionalInterface
+    public
+    interface ProcessElement<T> {
+        void process(@NotNull T element);
+    }
 
     public static final ID<String, FileModuleData> FILE_MODULE = ID.create("reason.index.fileModule");
 
@@ -28,6 +35,7 @@ public class IndexKeys {
     public static final StubIndexKey<Integer, PsiExternal> EXTERNALS_FQN = StubIndexKey.createIndexKey("reason.external.fqn");
     public static final StubIndexKey<String, PsiType> TYPES = StubIndexKey.createIndexKey("reason.type");
     public static final StubIndexKey<Integer, PsiType> TYPES_FQN = StubIndexKey.createIndexKey("reason.type.fqn");
+    public static final StubIndexKey<String, PsiObjectField> OBJECT_FIELDS = StubIndexKey.createIndexKey("reason.object_field");
     public static final StubIndexKey<String, PsiRecordField> RECORD_FIELDS = StubIndexKey.createIndexKey("reason.record_field");
     public static final StubIndexKey<String, PsiException> EXCEPTIONS = StubIndexKey.createIndexKey("reason.exception");
     public static final StubIndexKey<Integer, PsiException> EXCEPTIONS_FQN = StubIndexKey.createIndexKey("reason.exception.fqn");

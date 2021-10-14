@@ -13,7 +13,7 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiValStubElementType extends ORStubElementType<PsiValStub, PsiVal> {
-    public static final int VERSION = 11;
+    public static final int VERSION = 12;
 
     public PsiValStubElementType(@Nullable Language language) {
         super("C_VAL_DECLARATION", language);

@@ -17,13 +17,13 @@ public interface PsiLet extends PsiVar, PsiSignatureElement, PsiInferredType, Ps
 
     boolean isJsObject();
 
-    @NotNull
-    Collection<PsiRecordField> getRecordFields();
-
     boolean isScopeIdentifier();
 
     @Nullable
     String getAlias();
+
+    @Nullable
+    PsiElement resolveAlias();
 
     @NotNull
     Collection<PsiElement> getScopeChildren();

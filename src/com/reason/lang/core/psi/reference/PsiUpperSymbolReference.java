@@ -25,7 +25,7 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
     }
 
     @Override
-    public @NotNull ResolveResult[] multiResolve(boolean incompleteCode) {
+    public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         if (myReferenceName == null) {
             return ResolveResult.EMPTY_ARRAY;
         }
@@ -160,7 +160,7 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
 
         public UpperResolveResult(@NotNull PsiElement referencedElement, @Nullable PsiElement sourceParent) {
             if (referencedElement instanceof PsiModule && ((PsiModule) referencedElement).isComponent() && sourceParent instanceof PsiTagStart) {
-                PsiElement make = ((PsiModule) referencedElement).getLetExpression("make");
+                PsiElement make = ((PsiModule) referencedElement).getComponentNavigationElement();
                 PsiLowerIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(make, PsiLowerIdentifier.class);
                 m_referencedIdentifier = identifier == null ? referencedElement : identifier;
             } else if (referencedElement instanceof PsiFakeModule) {

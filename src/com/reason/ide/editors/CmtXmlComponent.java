@@ -1,59 +1,41 @@
 package com.reason.ide.editors;
 
-import com.intellij.ide.highlighter.HtmlFileType;
-import com.intellij.lang.xhtml.XHTMLLanguage;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.ui.components.JBTabbedPane;
-import com.intellij.util.ui.components.BorderLayoutPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.ide.highlighter.*;
+import com.intellij.lang.xhtml.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.*;
+import com.intellij.ui.*;
+import com.intellij.util.ui.components.*;
+import org.jetbrains.annotations.*;
+
+import javax.swing.event.*;
 
 public class CmtXmlComponent extends BorderLayoutPanel implements ChangeListener {
+    private final Project myProject;
+    private final String myXmlDump;
+    private boolean childrenAdded = false;
 
-  private final @NotNull Project m_project;
-  private final @NotNull String m_xmlDump;
-  private boolean childrenAdded = false;
-
-  public CmtXmlComponent(
-      @NotNull Project project, @NotNull JBTabbedPane rootTabbedPane, @NotNull String xmlDump) {
-    m_project = project;
-    m_xmlDump = xmlDump;
-    rootTabbedPane.addChangeListener(this);
-  }
-
-  @Override
-  public void stateChanged(@NotNull ChangeEvent changeEvent) {
-    Object source = changeEvent.getSource();
-    if (source instanceof JBTabbedPane) {
-      if (((JBTabbedPane) source).getSelectedComponent() == this) {
-        ensureChildrenAdded();
-      }
+    public CmtXmlComponent(@NotNull Project project, TabbedPaneWrapper rootTabbedPane, @NotNull String xmlDump) {
+        myProject = project;
+        myXmlDump = xmlDump;
+        rootTabbedPane.addChangeListener(this);
     }
-  }
 
-  private void ensureChildrenAdded() {
-    if (!childrenAdded) {
-      addChildren();
-      childrenAdded = true;
+    @Override
+    public void stateChanged(@NotNull ChangeEvent changeEvent) {
+        if (!childrenAdded) {
+            addChildren();
+            childrenAdded = true;
+        }
     }
-  }
 
-  private void addChildren() {
-    PsiFile psiFile =
-        PsiFileFactory.getInstance(m_project).createFileFromText(XHTMLLanguage.INSTANCE, m_xmlDump);
-    Document document = PsiDocumentManager.getInstance(m_project).getDocument(psiFile);
-    if (document != null) {
-      Editor editor =
-          EditorFactory.getInstance()
-              .createEditor(document, m_project, HtmlFileType.INSTANCE, true);
-      addToCenter(editor.getComponent());
+    private void addChildren() {
+        PsiFile psiFile = PsiFileFactory.getInstance(myProject).createFileFromText(XHTMLLanguage.INSTANCE, myXmlDump);
+        Document document = PsiDocumentManager.getInstance(myProject).getDocument(psiFile);
+        if (document != null) {
+            Editor editor = EditorFactory.getInstance().createEditor(document, myProject, HtmlFileType.INSTANCE, true);
+            addToCenter(editor.getComponent());
+        }
     }
-  }
 }

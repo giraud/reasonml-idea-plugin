@@ -2,6 +2,7 @@ package com.reason.lang.core.stub;
 
 import com.intellij.psi.stubs.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.stub.type.*;
 import com.reason.lang.rescript.*;
 
@@ -16,6 +17,7 @@ public interface RescriptStubBasedElementTypes {
     IStubElementType<PsiExternalStub, PsiExternal> C_EXTERNAL_DECLARATION = new PsiExternalStubElementType(ResLanguage.INSTANCE);
     IStubElementType<PsiLetStub, PsiLet> C_LET_DECLARATION = new PsiLetStubElementType(ResLanguage.INSTANCE);
     IStubElementType<PsiRecordFieldStub, PsiRecordField> C_RECORD_FIELD = new PsiRecordFieldStubElementType(ResLanguage.INSTANCE);
+    IStubElementType<PsiObjectFieldStub, PsiObjectField> C_OBJECT_FIELD = new PsiObjectFieldStubElementType(ResLanguage.INSTANCE);
     IStubElementType<PsiValStub, PsiVal> C_VAL_DECLARATION = new PsiValStubElementType(ResLanguage.INSTANCE);
     IStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> C_VARIANT_DECLARATION = new PsiVariantStubElementType(ResLanguage.INSTANCE);
 

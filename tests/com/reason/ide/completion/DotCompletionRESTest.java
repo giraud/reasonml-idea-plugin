@@ -5,10 +5,10 @@ import com.reason.ide.*;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-public class VariantCompletionRMLTest extends ORBasePlatformTestCase {
-    public void test_basic() {
-        configureCode("A.re", "type color = | Black | Red;");
-        configureCode("B.re", "A.<caret>");
+public class DotCompletionRESTest extends ORBasePlatformTestCase {
+    public void test_variant() {
+        configureCode("A.res", "type color = | Black | Red;");
+        configureCode("B.res", "A.<caret>");
 
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();

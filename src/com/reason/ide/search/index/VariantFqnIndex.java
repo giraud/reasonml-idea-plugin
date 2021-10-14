@@ -1,6 +1,7 @@
 package com.reason.ide.search.index;
 
 import com.intellij.openapi.project.*;
+import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.type.*;
@@ -21,12 +22,12 @@ public class VariantFqnIndex extends IntStubIndexExtension<PsiVariantDeclaration
         return IndexKeys.VARIANTS_FQN;
     }
 
-    public static @NotNull Collection<PsiVariantDeclaration> getElements(@NotNull String key, @NotNull Project project) {
-        return StubIndex.getElements(IndexKeys.VARIANTS_FQN, key.hashCode(), project, null, PsiVariantDeclaration.class);
+    public static @NotNull Collection<PsiVariantDeclaration> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.VARIANTS_FQN, key.hashCode(), project, scope, PsiVariantDeclaration.class);
     }
 
-    public static @Nullable PsiVariantDeclaration getElement(@Nullable String qname, @NotNull Project m_project) {
-        Collection<PsiVariantDeclaration> variants = qname == null ? emptyList() : VariantFqnIndex.getElements(qname, m_project);
+    public static @Nullable PsiVariantDeclaration getElement(@Nullable String qname, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        Collection<PsiVariantDeclaration> variants = qname == null ? emptyList() : VariantFqnIndex.getElements(qname, project, scope);
         return variants.isEmpty() ? null : variants.iterator().next();
     }
 }

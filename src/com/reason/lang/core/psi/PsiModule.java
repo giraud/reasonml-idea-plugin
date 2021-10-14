@@ -20,6 +20,9 @@ public interface PsiModule extends PsiQualifiedPathElement, NavigatablePsiElemen
     String getAlias();
 
     @Nullable
+    PsiUpperSymbol getAliasSymbol();
+
+    @Nullable
     String getModuleName();
 
     @Nullable
@@ -38,11 +41,20 @@ public interface PsiModule extends PsiQualifiedPathElement, NavigatablePsiElemen
     PsiModule getModuleExpression(@Nullable String name);
 
     @Nullable
-    PsiType getTypeExpression(@Nullable String name);
-
-    @Nullable
     PsiLet getLetExpression(@Nullable String name);
 
     @Nullable
+    PsiExternal getExternalExpression(@Nullable String name);
+
+    @Nullable
     PsiVal getValExpression(@Nullable String name);
+
+    @Nullable
+    PsiElement getModuleType();
+
+    @Nullable
+    PsiElement getBody();
+
+    @Nullable
+    PsiElement getComponentNavigationElement();
 }

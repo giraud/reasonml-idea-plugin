@@ -3,7 +3,6 @@ package com.reason.ide.docs;
 import com.intellij.lang.*;
 import com.intellij.lang.documentation.*;
 import com.intellij.openapi.editor.*;
-import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
@@ -52,16 +51,9 @@ public class ORDocumentationProvider implements DocumentationProvider {
             if (element instanceof PsiLet) {
                 String alias = ((PsiLet) element).getAlias();
                 if (alias != null) {
-                    Project project = element.getProject();
-                    PsiFinder psiFinder = project.getService(PsiFinder.class);
-                    PsiVal valFromAlias = psiFinder.findValFromQn(alias);
-                    if (valFromAlias == null) {
-                        PsiLet letFromAlias = psiFinder.findLetFromQn(alias);
-                        if (letFromAlias != null) {
-                            element = letFromAlias;
-                        }
-                    } else {
-                        element = valFromAlias;
+                    PsiElement resolvedAlias = ((PsiLet) element).resolveAlias();
+                    if (resolvedAlias instanceof PsiLowerIdentifier) {
+                        element = resolvedAlias.getParent();
                     }
                 }
             }

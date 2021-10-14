@@ -1,26 +1,24 @@
 package com.reason.lang.core.stub.type;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.impl.PsiInnerModuleImpl;
-import com.reason.lang.core.stub.PsiModuleStub;
-import com.reason.lang.core.type.ORCompositeType;
-import com.reason.lang.core.type.ORTypesUtil;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.stub.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
 public class PsiInnerModuleStubElementType extends PsiModuleStubElementType implements ORCompositeType {
-    public PsiInnerModuleStubElementType(Language language) {
+    public PsiInnerModuleStubElementType(@Nullable Language language) {
         super("C_MODULE_DECLARATION", language);
     }
 
     @NotNull
-    public PsiInnerModule createPsi(@NotNull final ASTNode node) {
+    public PsiInnerModule createPsi(@NotNull ASTNode node) {
         return new PsiInnerModuleImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
     @NotNull
-    public PsiInnerModule createPsi(@NotNull final PsiModuleStub stub) {
+    public PsiInnerModule createPsi(@NotNull PsiModuleStub stub) {
         return new PsiInnerModuleImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 }

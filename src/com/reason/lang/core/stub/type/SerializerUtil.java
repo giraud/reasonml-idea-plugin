@@ -6,13 +6,16 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class SerializerUtil {
+    private SerializerUtil() {
+    }
+
     static void writePath(@NotNull StubOutputStream dataStream, @Nullable String[] path) throws IOException {
         if (path == null) {
             dataStream.writeByte(0);
         } else {
             dataStream.writeByte(path.length);
             for (String name : path) {
-                dataStream.writeUTFFast(name);
+                dataStream.writeUTFFast(name == null ? "" : name);
             }
         }
     }

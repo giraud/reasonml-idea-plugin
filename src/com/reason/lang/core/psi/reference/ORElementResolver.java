@@ -4,6 +4,7 @@ import com.intellij.openapi.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.text.*;
+import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
@@ -179,7 +180,7 @@ public class ORElementResolver implements Disposable {
                 String first = entry.getKey();
                 Collection<Resolution> resolutions = entry.getValue().values();
 
-                Collection<PsiModule> aliases = ModuleAliasedIndex.getElements(first, project, null);
+                Collection<PsiModule> aliases = ModuleAliasedIndex.getElements(first, project, GlobalSearchScope.allScope(project));
                 for (PsiModule alias : aliases) {
                     String[] aliasPath = alias.getQualifiedNameAsPath();
                     for (Resolution resolution : resolutions) {

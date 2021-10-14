@@ -14,12 +14,11 @@ public class PsiModuleStub extends NamedStubBase<PsiModule> {
     private final boolean myIsComponent;
     private final boolean myIsInterface;
     private final boolean myIsTopLevel;
-    private final boolean myIsModuleType;
     private final boolean myIsFunctorCall;
 
     public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable String name,
                          @Nullable String[] path, @Nullable String[] qNamePath, String namespace, String alias, boolean isComponent,
-                         boolean isInterface, boolean isTopLevel, boolean isModuleType, boolean isFunctorCall) {
+                         boolean isInterface, boolean isTopLevel, boolean isFunctorCall) {
         super(parent, elementType, name);
         myPath = path;
         myQualifiedNameAsPath = qNamePath;
@@ -28,13 +27,12 @@ public class PsiModuleStub extends NamedStubBase<PsiModule> {
         myIsComponent = isComponent;
         myIsInterface = isInterface;
         myIsTopLevel = isTopLevel;
-        myIsModuleType = isModuleType;
         myIsFunctorCall = isFunctorCall;
     }
 
     public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name,
                          @Nullable String[] path, @Nullable String[] qNamePath, @Nullable String namespace, String alias, boolean isComponent,
-                         boolean isInterface, boolean isTopLevel, boolean isModuleType, boolean isFunctorCall) {
+                         boolean isInterface, boolean isTopLevel, boolean isFunctorCall) {
         super(parent, elementType, name);
         myPath = path;
         myQualifiedNameAsPath = qNamePath;
@@ -43,7 +41,6 @@ public class PsiModuleStub extends NamedStubBase<PsiModule> {
         myIsComponent = isComponent;
         myIsInterface = isInterface;
         myIsTopLevel = isTopLevel;
-        myIsModuleType = isModuleType;
         myIsFunctorCall = isFunctorCall;
     }
 
@@ -69,10 +66,6 @@ public class PsiModuleStub extends NamedStubBase<PsiModule> {
 
     public boolean isTopLevel() {
         return myIsTopLevel;
-    }
-
-    public boolean isModuleType() {
-        return myIsModuleType;
     }
 
     public boolean isFunctorCall() {

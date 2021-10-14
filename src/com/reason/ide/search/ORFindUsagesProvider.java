@@ -12,7 +12,6 @@ public abstract class ORFindUsagesProvider implements com.intellij.lang.findUsag
         return element instanceof PsiUpperIdentifier || element instanceof PsiLowerIdentifier;
     }
 
-
     @Override
     public @Nullable String getHelpId(@NotNull PsiElement psiElement) {
         return HelpID.FIND_OTHER_USAGES;

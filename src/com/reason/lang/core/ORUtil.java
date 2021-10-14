@@ -6,8 +6,11 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.*;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
@@ -185,26 +188,11 @@ public class ORUtil {
             return Collections.emptyList();
         }
 
-        PsiElement child = element.getFirstChild();
-        if (child == null) {
-            return Collections.emptyList();
-        }
-
-        List<T> result = new ArrayList<>();
-
-        while (child != null) {
-            if (clazz.isInstance(child)) {
-                result.add(clazz.cast(child));
-            }
-            child = child.getNextSibling();
-        }
-
-        return result;
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(element, clazz);
     }
 
     @NotNull
-    public static List<PsiElement> findImmediateChildrenOfType(
-            @Nullable PsiElement element, @NotNull IElementType elementType) {
+    public static List<PsiElement> findImmediateChildrenOfType(@Nullable PsiElement element, @NotNull IElementType elementType) {
         PsiElement child = element == null ? null : element.getFirstChild();
         if (child == null) {
             return Collections.emptyList();
@@ -253,6 +241,22 @@ public class ORUtil {
         }
 
         return null;
+    }
+
+    @Nullable
+    public static <T extends PsiElement> T findImmediateLastChildOfClass(PsiElement element, Class<T> clazz) {
+        PsiElement child = element == null ? null : element.getFirstChild();
+        T found = null;
+
+        while (child != null) {
+            if (clazz.isInstance(child)) {
+                //noinspection unchecked
+                found = (T) child;
+            }
+            child = child.getNextSibling();
+        }
+
+        return found;
     }
 
     public static @Nullable PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class<?>... clazz) {
@@ -370,4 +374,37 @@ public class ORUtil {
         qpath[qpath.length - 1] = name;
         return qpath;
     }
+
+    public static @Nullable PsiElement resolveModuleSymbol(@Nullable PsiUpperSymbol moduleSymbol) {
+        PsiUpperSymbolReference reference = moduleSymbol == null ? null : (PsiUpperSymbolReference) moduleSymbol.getReference();
+        PsiElement resolvedSymbol = reference == null ? null : reference.resolveInterface();
+        return resolvedSymbol instanceof PsiUpperIdentifier ? resolvedSymbol.getParent() : resolvedSymbol;
+    }
+
+    public static @Nullable PsiElement getModuleContent(@NotNull PsiModule module) {
+        PsiElement body = module.getModuleType();
+        return (body == null) ? module.getBody() : body;
+    }
+
+    public static <T> @NotNull List<T> findPreviousSiblingsOrParentOfClass(PsiElement element, Class<T> clazz) {
+        List<T> result = new ArrayList<>();
+
+        PsiElement previous = element.getPrevSibling();
+        PsiElement prevSibling = previous == null ? element.getParent() : previous;
+        while (prevSibling != null) {
+            if (clazz.isInstance(prevSibling)) {
+                //noinspection unchecked
+                result.add((T) prevSibling);
+            }
+            previous = prevSibling.getPrevSibling();
+            prevSibling = previous == null ? prevSibling.getParent() : previous;
+        }
+
+        return result;
+    }
+
+    public static @Nullable <T extends PsiNamedElement> T findImmediateNamedChildOfClass(@Nullable PsiElement element, @NotNull Class<T> clazz, @NotNull String name) {
+        return ORUtil.findImmediateChildrenOfClass(element, clazz).stream().filter(item -> name.equals(item.getName())).findFirst().orElse(null);
+    }
+
 }

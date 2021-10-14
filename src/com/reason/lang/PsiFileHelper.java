@@ -5,7 +5,6 @@ import com.intellij.psi.search.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.search.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
@@ -25,9 +24,8 @@ public class PsiFileHelper {
 
         if (file != null) {
             PsiFinder psiFinder = file.getProject().getService(PsiFinder.class);
-            QNameFinder qnameFinder = PsiFinder.getQNameFinder(file.getLanguage());
-            processSiblingExpressions(
-                    psiFinder, qnameFinder, file.getFirstChild(), eScope, result, filter);
+            QNameFinder qnameFinder = QNameFinderFactory.getQNameFinder(file.getLanguage());
+            processSiblingExpressions(psiFinder, qnameFinder, file.getFirstChild(), eScope, result, filter);
         }
 
         return result;
@@ -44,14 +42,14 @@ public class PsiFileHelper {
 
                 String includedPath = include.getIncludePath();
                 for (String path : qnameFinder.extractPotentialPaths(include)) {
-                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(path + "." + includedPath, true, interfaceOrImplementation, scope);
+                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(path + "." + includedPath, true, interfaceOrImplementation);
                     if (!modulesFromQn.isEmpty()) {
                         includedModule = modulesFromQn.iterator().next();
                         break;
                     }
                 }
                 if (includedModule == null) {
-                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(includedPath, true, interfaceOrImplementation, scope);
+                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(includedPath, true, interfaceOrImplementation);
                     if (!modulesFromQn.isEmpty()) {
                         includedModule = modulesFromQn.iterator().next();
                     }
@@ -83,8 +81,7 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiNamedElement> getExpressions(
-            @NotNull PsiFile file, @Nullable String name) {
+    public static Collection<PsiNamedElement> getExpressions(@NotNull PsiFile file, @Nullable String name) {
         Collection<PsiNamedElement> result = new ArrayList<>();
 
         if (name != null) {
@@ -99,11 +96,6 @@ public class PsiFileHelper {
         }
 
         return result;
-    }
-
-    @NotNull
-    public static List<PsiType> getTypeExpressions(@Nullable PsiFile file) {
-        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiType.class);
     }
 
     @NotNull

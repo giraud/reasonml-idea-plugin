@@ -1,7 +1,9 @@
 package com.reason.lang.core.psi.reference;
 
+import com.intellij.lang.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
+import com.intellij.psi.search.*;
 import com.intellij.psi.tree.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
@@ -68,10 +70,12 @@ public class ORReferenceAnalyzer {
                 // -> A.B   |> A.B
                 // we are no more in a path, skip path
                 prevItem = prevItem.getPrevSibling();
-                prevType = prevItem.getNode().getElementType();
+                ASTNode prevItemNode = prevItem == null ? null : prevItem.getNode();
+                prevType = prevItemNode == null ? null : prevItemNode.getElementType();
                 while (prevType != null && (prevType == types.DOT || prevType == types.C_UPPER_SYMBOL || prevType == types.C_VARIANT || prevType == types.C_LOWER_SYMBOL)) {
                     prevItem = prevItem.getPrevSibling();
-                    prevType = prevItem == null ? null : prevItem.getNode().getElementType();
+                    prevItemNode = prevItem == null ? null : prevItem.getNode();
+                    prevType = prevItemNode == null ? null : prevItemNode.getElementType();
                 }
 
                 // if LocalOpen found, it is still a path
@@ -89,7 +93,10 @@ public class ORReferenceAnalyzer {
         while (item != null) {
             if (item instanceof PsiUpperSymbol || item instanceof PsiLowerSymbol) {
                 // only add if it's from a local path
-                if (item.getNextSibling().getNode().getElementType() == types.DOT && startPath) {
+                //   can be a real path from a record : a.b.c
+                //   or a simulated path from a js object field : a##b##c
+                IElementType nextSiblingNodeType = item.getNextSibling().getNode().getElementType();
+                if ((nextSiblingNodeType == types.DOT || nextSiblingNodeType == types.SHARPSHARP) && startPath) {
                     instructions.push(item instanceof PsiUpperSymbol ? new ORUpperSymbolWithResolution(item) : item);
                 }
             } else if (item instanceof PsiInnerModule) {
@@ -151,6 +158,7 @@ public class ORReferenceAnalyzer {
 
     static @NotNull Deque<CodeInstruction> resolveInstructions(@NotNull Deque<PsiElement> instructions, @NotNull Project project) {
         Deque<CodeInstruction> resolvedInstructions = new LinkedList<>();
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
         while (!instructions.isEmpty()) {
             PsiElement psiElement = instructions.removeFirst();
@@ -185,7 +193,7 @@ public class ORReferenceAnalyzer {
                         CodeInstruction instruction = rIt.next();
                         if (instruction.mySource instanceof PsiUpperSymbol) {
                             qname = instruction.mySource.getText() + "." + qname;
-                            Collection<PsiModule> elements = ModuleAliasesIndex.getElements(qname, project, null);
+                            Collection<PsiModule> elements = ModuleAliasesIndex.getElements(qname, project, scope);
                             if (elements.isEmpty()) {
                                 hasNext = rIt.hasNext();
                             } else {

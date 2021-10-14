@@ -48,7 +48,7 @@ public class FileModuleIndexService {
         LOG.debug("all keys (" + allKeys.size() + "): " + Joiner.join(", ", allKeys));
         for (String key : allKeys) {
             if (!"Pervasives".equals(key)) {
-                Collection<PsiModule> psiModules = ModuleIndex.getElements(key, project, null);
+                Collection<PsiModule> psiModules = ModuleIndex.getElements(key, project, scope);
                 for (PsiModule psiModule : psiModules) {
                     result.add((FileBase) psiModule.getContainingFile());
                 }

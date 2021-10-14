@@ -7,7 +7,7 @@ import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 public class PsiFakeModuleStubElementType extends PsiModuleStubElementType implements ORCompositeType {
-    public PsiFakeModuleStubElementType(Language language) {
+    public PsiFakeModuleStubElementType(@Nullable Language language) {
         super("C_FAKE_MODULE", language);
     }
 

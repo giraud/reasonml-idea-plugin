@@ -11,7 +11,8 @@ public interface PsiInclude extends PsiStructuredElement, StubBasedPsiElement<Ps
 
     @NotNull String getIncludePath();
 
-    @Nullable PsiModule getModule();
+    @Nullable PsiUpperSymbol getModuleReference();
+    @Nullable PsiElement resolveModule();
 
     boolean useFunctor();
 }

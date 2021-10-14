@@ -12,6 +12,14 @@
 
 ## Unreleased
 
+## 0.104 - 2021/10/14
+
+- :bug: [#357](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/357) Read access is allowed from inside read-action
+- :bug: [#354](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/354) Update spellCheck strategy
+- :bug: ![r] [#353](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/353) Interpolation incorrectly parsed
+- :bug: [#352](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/352) CMT viewer is broken
+- :bug: [#327](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/32V) Use resolver for completions
+
 ## 0.103 - 2021/09/21
 
 - :rocket: [#344](https://github.com/giraud/reasonml-idea-plugin/pull/344) Enabling spellchecker [@QuentinRa](https://github.com/QuentinRa)

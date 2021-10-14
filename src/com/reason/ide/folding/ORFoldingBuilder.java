@@ -22,7 +22,7 @@ import java.util.*;
 
 public class ORFoldingBuilder extends FoldingBuilderEx {
     @Override
-    public @NotNull FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
+    public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
         ORTypes types = ORUtil.getTypes(root.getLanguage());
 
@@ -97,7 +97,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
     }
 
     private void foldFunctor(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiFunctor element) {
-        FoldingDescriptor foldBinding = fold(element.getBinding());
+        FoldingDescriptor foldBinding = fold(element.getBody());
         if (foldBinding != null) {
             descriptors.add(foldBinding);
         }

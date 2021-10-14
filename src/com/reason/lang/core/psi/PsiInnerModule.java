@@ -6,13 +6,11 @@ import com.reason.lang.core.stub.*;
 import org.jetbrains.annotations.*;
 
 public interface PsiInnerModule extends PsiModule, StubBasedPsiElement<PsiModuleStub> {
-  boolean isComponent();
+    boolean isComponent();
 
-  boolean isModuleType();
+    boolean isFunctorCall();
 
-  boolean isFunctorCall();
-
-  @Nullable
+    @Nullable
     PsiModuleType getModuleType();
 
     @Nullable

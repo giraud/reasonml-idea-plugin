@@ -348,6 +348,45 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     }
     */
 
+    //region record
+    public void test_record() {
+        configureCode("B.re", "let b = { a: 1, b: 2 }; b<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("B.b", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+    }
+
+    public void test_record_l1() {
+        configureCode("B.re", "let b = { a: 1, b: 2 }; b.b<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("B.b.b", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+    }
+
+    public void test_record_l3() {
+        configureCode("A.re", "let a = { b: { c: { d: 1 } } }; a.b.c.d<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.a.b.c.d", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+    }
+    //endregion
+
+    //region object
+    public void test_object_l1() {
+        configureCode("A.re", "let a = { \"b\": 1, \"c\": 2 }; a##b<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.a.b", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+    }
+
+    public void test_object_l3() {
+        configureCode("A.re", "let a = { \"b\": { \"c\": { \"d\": 1 } } }; a##b##c##d<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.a.b.c.d", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+    }
+    //endregion
+
     public void test_GH_167_deconstruction() {
         configureCode("A.re", "let (count, setCount) = React.useState(() => 0); setCount<caret>(1);");
 

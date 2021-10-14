@@ -11,7 +11,7 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
-    private static final int VERSION = 7;
+    private static final int VERSION = 8;
     public static final IStubFileElementType<RmlFileStub> INSTANCE = new RmlFileStubElementType();
 
     private RmlFileStubElementType() {

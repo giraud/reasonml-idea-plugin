@@ -117,7 +117,7 @@ public class DotCompletionRMLTest extends ORBasePlatformTestCase {
 
     public void test_functor_include() {
         configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) => { let y = 1; };");
-        configureCode("B.re", "include A.MakeIntf({let x = true});");
+        configureCode("B.re", "include A.MakeIntf({ let x = true; });");
         configureCode("C.re", "B.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
@@ -168,5 +168,16 @@ public class DotCompletionRMLTest extends ORBasePlatformTestCase {
         List<String> elements = myFixture.getLookupElementStrings();
 
         assertSameElements(elements, "a");
+    }
+
+    public void test_variant() {
+        configureCode("A.re", "type color = | Black | Red;");
+        configureCode("B.re", "A.<caret>");
+
+        myFixture.completeBasic();
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSize(3, elements);
+        assertContainsElements(elements, "color", "Black", "Red");
     }
 }

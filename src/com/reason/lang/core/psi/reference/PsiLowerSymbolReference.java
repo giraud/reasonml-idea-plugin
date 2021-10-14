@@ -27,7 +27,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
     }
 
     @Override
-    public @NotNull ResolveResult[] multiResolve(boolean incompleteCode) {
+    public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         if (myReferenceName == null) {
             return ResolveResult.EMPTY_ARRAY;
         }
@@ -64,8 +64,6 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         // Find all elements by name and create a list of paths
         Project project = myElement.getProject();
         ORElementResolver.Resolutions resolutions = project.getService(ORElementResolver.class).getComputation();
-        //Module module = Platform.getModule(project, myElement.getContainingFile().getVirtualFile());
-        //GlobalSearchScope scope = module == null ? GlobalSearchScope.projectScope(project) : GlobalSearchScope.moduleScope(module);
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
         Collection<PsiType> types = TypeIndex.getElements(myReferenceName, project, scope);
@@ -73,11 +71,12 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         Collection<PsiLet> lets = LetIndex.getElements(myReferenceName, project, scope);
         Collection<PsiExternal> externals = ExternalIndex.getElements(myReferenceName, project, scope);
         Collection<PsiRecordField> recordFields = RecordFieldIndex.getElements(myReferenceName, project, scope);
+        Collection<PsiObjectField> objectFields = ObjectFieldIndex.getElements(myReferenceName, project, scope);
         Collection<PsiParameter> parameters = ParameterIndex.getElements(myReferenceName, project, scope);
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("  indexes: types=" + types.size() + ", vals=" + vals.size() + ", lets=" + lets.size() +
-                    ", externals=" + externals.size() + ", fieds=" + recordFields.size() + ", params=" + parameters.size());
+                    ", externals=" + externals.size() + ", fieds=" + (recordFields.size() + objectFields.size()) + ", params=" + parameters.size());
         }
 
         long endIndexes = System.currentTimeMillis();
@@ -87,6 +86,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         resolutions.add(lets, false);
         resolutions.add(externals, false);
         resolutions.add(recordFields, false);
+        resolutions.add(objectFields, false);
         resolutions.add(parameters, false);
 
         long endAddResolutions = System.currentTimeMillis();

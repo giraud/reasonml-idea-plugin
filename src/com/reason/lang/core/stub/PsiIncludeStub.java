@@ -11,7 +11,7 @@ public class PsiIncludeStub extends StubBase<PsiInclude> {
     private final String[] myQualifiedPath;
     private final String[] myResolvedPath;
 
-    public PsiIncludeStub(StubElement parent, IStubElementType elementType, @Nullable StringRef fileModule, String includePath, String[] qualifiedPath, String[] resolvedPath) {
+    public PsiIncludeStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef fileModule, String includePath, String[] qualifiedPath, String[] resolvedPath) {
         super(parent, elementType);
         myFileModule = fileModule;
         myIncludePath = includePath;
@@ -19,7 +19,7 @@ public class PsiIncludeStub extends StubBase<PsiInclude> {
         myResolvedPath = resolvedPath;
     }
 
-    public PsiIncludeStub(StubElement parent, IStubElementType elementType, @Nullable String fileModule, String includePath, String[] qualifiedPath, String[] resolvedPath) {
+    public PsiIncludeStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String fileModule, String includePath, String[] qualifiedPath, String[] resolvedPath) {
         super(parent, elementType);
         myFileModule = StringRef.fromString(fileModule);
         myIncludePath = includePath;

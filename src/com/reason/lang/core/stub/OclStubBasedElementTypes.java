@@ -2,6 +2,7 @@ package com.reason.lang.core.stub;
 
 import com.intellij.psi.stubs.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.stub.type.*;
 import com.reason.lang.ocaml.*;
 
@@ -16,6 +17,7 @@ public interface OclStubBasedElementTypes {
     IStubElementType<PsiExternalStub, PsiExternal> C_EXTERNAL_DECLARATION = new PsiExternalStubElementType(OclLanguage.INSTANCE);
     IStubElementType<PsiLetStub, PsiLet> C_LET_DECLARATION = new PsiLetStubElementType(OclLanguage.INSTANCE);
     IStubElementType<PsiRecordFieldStub, PsiRecordField> C_RECORD_FIELD = new PsiRecordFieldStubElementType(OclLanguage.INSTANCE);
+    IStubElementType<PsiObjectFieldStub, PsiObjectField> C_OBJECT_FIELD = new PsiObjectFieldStubElementType(OclLanguage.INSTANCE);
     IStubElementType<PsiValStub, PsiVal> C_VAL_DECLARATION = new PsiValStubElementType(OclLanguage.INSTANCE);
     IStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> C_VARIANT_DECLARATION = new PsiVariantStubElementType(OclLanguage.INSTANCE);
 
