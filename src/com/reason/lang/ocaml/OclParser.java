@@ -853,6 +853,9 @@ public class OclParser extends CommonParser<OclTypes> {
             } else if (state.isOneOf(m_types.C_FUN_BODY, m_types.C_FUN_EXPR)) {
                 // block attribute inside a function
                 state.popEndUntil(m_types.C_FUN_EXPR).popEnd();
+            } else if (state.in(m_types.C_SIG_EXPR)) {
+                // block attribute inside a signature
+                state.popEndUntil(m_types.C_SIG_EXPR).popEnd();
             }
             state.markScope(m_types.C_ANNOTATION, m_types.LBRACKET);
         } else {

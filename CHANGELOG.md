@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: ![o] [#360](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/360) Should not display annotation signature
+
 ## 0.104 - 2021/10/14
 
 - :bug: [#357](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/357) Read access is allowed from inside read-action

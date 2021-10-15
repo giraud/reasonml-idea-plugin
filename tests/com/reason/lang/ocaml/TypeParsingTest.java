@@ -52,14 +52,9 @@ public class TypeParsingTest extends OclParsingTestCase {
     }
 
     public void test_bindingWithRecordAs() {
-        PsiTypeBinding typeBinding =
-                first(
-                        findChildrenOfType(
-                                first(
-                                        typeExpressions(
-                                                parseCode(
-                                                        "type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))),
-                                PsiTypeBinding.class));
+        PsiTypeBinding typeBinding = first(findChildrenOfType(first(
+                        typeExpressions(parseCode("type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))),
+                PsiTypeBinding.class));
         PsiRecord record = PsiTreeUtil.findChildOfType(typeBinding, PsiRecord.class);
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
         assertEquals(2, fields.size());
@@ -115,5 +110,13 @@ public class TypeParsingTest extends OclParsingTestCase {
         assertSize(2, f);
         assertEquals("buffer", f.get(0).getName());
         assertEquals("breakpoints", f.get(1).getName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/360
+    public void test_GH_360() {
+        PsiVal e = firstOfType(parseCode("val push : exn -> Exninfo.iexn\n [@@ocaml.deprecated \"please use [Exninfo.capture]\"]"), PsiVal.class);
+
+        PsiSignature signature = e.getSignature();
+        assertEquals("exn -> Exninfo.iexn", signature.getText());
     }
 }
