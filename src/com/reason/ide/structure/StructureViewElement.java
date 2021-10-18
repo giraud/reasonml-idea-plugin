@@ -16,8 +16,8 @@ import javax.swing.*;
 import java.util.*;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
-    @NotNull private final PsiElement m_element;
-    @Nullable private final PsiElement m_viewElement;
+    private final PsiElement m_element;
+    private final PsiElement m_viewElement;
     private final int m_level;
     private final boolean m_navigateToViewElement;
 
@@ -298,16 +298,14 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     }
 
     static class StructureModuleImplView implements StructureViewTreeElement, SortableTreeElement {
-
-        final PsiElement m_rootElement;
+        final PsiElement myRootElement;
 
         StructureModuleImplView(PsiElement rootElement) {
-            m_rootElement = rootElement;
+            myRootElement = rootElement;
         }
 
-        @NotNull
         @Override
-        public ItemPresentation getPresentation() {
+        public @NotNull ItemPresentation getPresentation() {
             return new ItemPresentation() {
                 @Override
                 public @NotNull String getPresentableText() {
@@ -331,13 +329,13 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         @Override
         public TreeElement @NotNull [] getChildren() {
             List<TreeElement> treeElements = new ArrayList<>();
-            m_rootElement.acceptChildren(new ElementVisitor(treeElements, 1));
+            myRootElement.acceptChildren(new ElementVisitor(treeElements, 1));
             return treeElements.toArray(new TreeElement[0]);
         }
 
         @Override
         public Object getValue() {
-            return m_rootElement;
+            return myRootElement;
         }
 
         @Override

@@ -211,14 +211,12 @@ public class ORUtil {
     }
 
     @NotNull
-    public static Collection<PsiElement> findImmediateChildrenOfType(
-            @Nullable PsiElement element, @NotNull ORCompositeType elementType) {
+    public static Collection<PsiElement> findImmediateChildrenOfType(@Nullable PsiElement element, @NotNull ORCompositeType elementType) {
         return findImmediateChildrenOfType(element, (IElementType) elementType);
     }
 
     @Nullable
-    public static PsiElement findImmediateFirstChildOfType(
-            @NotNull PsiElement element, @NotNull IElementType elementType) {
+    public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull IElementType elementType) {
         Collection<PsiElement> children = findImmediateChildrenOfType(element, elementType);
         return children.isEmpty() ? null : children.iterator().next();
     }
@@ -263,9 +261,11 @@ public class ORUtil {
         PsiElement child = element.getFirstChild();
 
         while (child != null) {
-            for (Class<?> aClazz : clazz) {
-                if (aClazz.isInstance(child)) {
-                    return child;
+            if (!(child instanceof PsiWhiteSpace)) {
+                for (Class<?> aClazz : clazz) {
+                    if (aClazz.isInstance(child)) {
+                        return child;
+                    }
                 }
             }
             child = child.getNextSibling();

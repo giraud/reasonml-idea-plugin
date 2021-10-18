@@ -11,12 +11,12 @@ public class ORStructureViewModel extends StructureViewModelBase implements com.
         super(psiFile, new StructureViewElement(psiFile, 1));
     }
 
-    public @NotNull Sorter[] getSorters() {
+    public Sorter @NotNull [] getSorters() {
         return new Sorter[]{Sorter.ALPHA_SORTER};
     }
 
     @Override
-    public @NotNull Filter[] getFilters() {
+    public Filter @NotNull [] getFilters() {
         return new Filter[]{new NestedFunctionsFilter()};
     }
 
