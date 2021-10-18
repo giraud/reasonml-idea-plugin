@@ -42,7 +42,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
             }
 
             if (!text.isEmpty()) {
-                return DocFormatter.format(element.getContainingFile(), element, text);
+                return DocFormatter.format(element.getContainingFile(), element, originalElement.getLanguage(), text);
             }
         } else if (element instanceof PsiUpperIdentifier || element instanceof PsiLowerIdentifier) {
             element = element.getParent();
@@ -63,7 +63,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
                 PsiElement belowComment = findBelowComment(element);
                 if (belowComment != null) {
                     return isSpecialComment(belowComment)
-                            ? DocFormatter.format(element.getContainingFile(), element, belowComment.getText())
+                            ? DocFormatter.format(element.getContainingFile(), element, originalElement.getLanguage(), belowComment.getText())
                             : belowComment.getText();
                 }
             }
@@ -78,7 +78,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
                 }
 
                 return isSpecialComment(aboveComment)
-                        ? DocFormatter.format(element.getContainingFile(), element, aboveComment.getText())
+                        ? DocFormatter.format(element.getContainingFile(), element, originalElement.getLanguage(), aboveComment.getText())
                         : aboveComment.getText();
             }
         }
@@ -103,9 +103,9 @@ public class ORDocumentationProvider implements DocumentationProvider {
                             + relative_path
                             + "</div>"
                             + "Module "
-                            + DocFormatter.NAME_START
-                            + resolvedFile.getModuleName()
-                            + DocFormatter.NAME_END;
+                            //+ DocFormatter.NAME_START
+                            + resolvedFile.getModuleName();
+            //+ DocFormatter.NAME_END;
         } else {
             PsiElement resolvedElement = (resolvedIdentifier instanceof PsiLowerIdentifier
                     || resolvedIdentifier instanceof PsiUpperIdentifier)
@@ -168,18 +168,31 @@ public class ORDocumentationProvider implements DocumentationProvider {
             return null;
         }
 
+        PsiElement commentElement = null;
+
+        // search for a comment above
+        boolean search = true;
         PsiElement prevSibling = element.getPrevSibling();
-        PsiElement prevPrevSibling = prevSibling == null ? null : prevSibling.getPrevSibling();
-
-        boolean isCommentLike = prevPrevSibling instanceof PsiComment || (prevPrevSibling instanceof PsiAnnotation && "@ocaml.doc".equals(((PsiAnnotation) prevPrevSibling).getName()));
-
-        if (isCommentLike
-                && prevSibling instanceof PsiWhiteSpace
-                && prevSibling.getText().replaceAll("[ \t]", "").length() == 1) {
-            return prevPrevSibling;
+        while (search) {
+            if (prevSibling instanceof PsiComment) {
+                search = false;
+                commentElement = prevSibling;
+            } else if (prevSibling instanceof PsiWhiteSpace) {
+                prevSibling = prevSibling.getPrevSibling();
+            } else if (prevSibling instanceof PsiAnnotation) {
+                PsiAnnotation annotation = (PsiAnnotation) prevSibling;
+                if ("@ocaml.doc".equals(annotation.getName())) {
+                    search = false;
+                    commentElement = annotation;
+                } else {
+                    prevSibling = prevSibling.getPrevSibling();
+                }
+            } else {
+                search = false;
+            }
         }
 
-        return null;
+        return commentElement;
     }
 
     @Nullable
