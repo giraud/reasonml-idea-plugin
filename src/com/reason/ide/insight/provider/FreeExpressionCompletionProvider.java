@@ -83,7 +83,7 @@ public class FreeExpressionCompletionProvider {
                     if (!(expression instanceof PsiAnnotation)) {
                         resultSet.addElement(
                                 LookupElementBuilder.create(expression)
-                                        .withTypeText(PsiSignatureUtil.getSignature(expression, element.getLanguage()))
+                                        .withTypeText(PsiSignatureUtil.getSignature(expression, ORLanguageProperties.cast(element.getLanguage())))
                                         .withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
                                         .withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
                     }
@@ -108,14 +108,14 @@ public class FreeExpressionCompletionProvider {
                     for (PsiElement deconstructedElement : ((PsiLet) item).getDeconstructedElements()) {
                         resultSet.addElement(
                                 LookupElementBuilder.create(deconstructedElement.getText())
-                                        .withTypeText(PsiSignatureUtil.getSignature(item, element.getLanguage()))
+                                        .withTypeText(PsiSignatureUtil.getSignature(item, ORLanguageProperties.cast(element.getLanguage())))
                                         .withIcon(ORIcons.LET));
                     }
                 } else {
                     PsiNamedElement expression = (PsiNamedElement) item;
                     resultSet.addElement(
                             LookupElementBuilder.create(expression)
-                                    .withTypeText(PsiSignatureUtil.getSignature(expression, element.getLanguage()))
+                                    .withTypeText(PsiSignatureUtil.getSignature(expression, ORLanguageProperties.cast(element.getLanguage())))
                                     .withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
                     if (item instanceof PsiType) {
                         expandType((PsiType) item, resultSet);

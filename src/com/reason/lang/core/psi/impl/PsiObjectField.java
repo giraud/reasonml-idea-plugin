@@ -4,6 +4,7 @@ import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.*;
+import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
@@ -22,18 +23,18 @@ public class PsiObjectField extends PsiTokenStub<ORTypes, PsiObjectField, PsiObj
     }
     // endregion
 
-    @Nullable
-    public PsiElement getNameIdentifier() {
+    public @Nullable PsiElement getNameIdentifier() {
         return getFirstChild();
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         PsiElement nameElement = getNameIdentifier();
         return nameElement == null ? "" : nameElement.getText().replaceAll("\"", "");
     }
 
-    @Override public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    @Override
+    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;
     }
 
@@ -64,37 +65,35 @@ public class PsiObjectField extends PsiTokenStub<ORTypes, PsiObjectField, PsiObj
         return ORUtil.findImmediateFirstChildOfClass(this, PsiSignature.class);
     }
 
-    @NotNull
     @Override
-    public String asText(@NotNull Language language) {
-        if (getLanguage() == language) {
-            return getText();
-        }
+    public @NotNull String asText(@Nullable ORLanguageProperties toLang) {
+        StringBuilder convertedText = null;
+        Language fromLang = getLanguage();
 
-        String convertedText;
+        if (fromLang != toLang) {
+            if (toLang != OclLanguage.INSTANCE) {
+                convertedText = new StringBuilder();
 
-        if (language == OclLanguage.INSTANCE) {
-            // Convert from Reason to OCaml
-            convertedText = getText();
-        } else {
-            // Convert from OCaml to Reason
-            PsiElement nameIdentifier = getNameIdentifier();
-            if (nameIdentifier == null) {
-                convertedText = getText();
-            } else {
-                String valueAsText = "";
-                PsiElement value = getValue();
-                if (value instanceof PsiLanguageConverter) {
-                    valueAsText = ((PsiLanguageConverter) value).asText(language);
-                } else if (value != null) {
-                    valueAsText = value.getText();
+                // Convert from OCaml to Reason
+                PsiElement nameIdentifier = getNameIdentifier();
+                if (nameIdentifier == null) {
+                    convertedText.append(getText());
+                } else {
+                    PsiElement value = getValue();
+
+                    String valueAsText = "";
+                    if (value instanceof PsiLanguageConverter) {
+                        valueAsText = ((PsiLanguageConverter) value).asText(toLang);
+                    } else if (value != null) {
+                        valueAsText = value.getText();
+                    }
+
+                    convertedText.append(nameIdentifier.getText()).append(":").append(valueAsText);
                 }
-
-                convertedText = "" + nameIdentifier.getText() + ":" + valueAsText;
             }
         }
 
-        return convertedText;
+        return convertedText == null ? getText() : convertedText.toString();
     }
 
     @Nullable

@@ -7,6 +7,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiType;
@@ -56,7 +57,7 @@ public class DotExpressionCompletionProvider {
                 LOG.trace(" -> no expressions found");
             } else {
                 LOG.trace(" -> expressions", expressions);
-                addExpressions(resultSet, expressions, element.getLanguage());
+                addExpressions(resultSet, expressions, ORLanguageProperties.cast(element.getLanguage()));
             }
         } else if (previousElement instanceof PsiLowerSymbol) {
             // Records: let x = {a:1, b:2};       x.<caret>
@@ -77,7 +78,7 @@ public class DotExpressionCompletionProvider {
                     for (PsiRecordField recordField : ((PsiVar) resolvedParent).getRecordFields()) {
                         resultSet.addElement(
                                 LookupElementBuilder.create(recordField)
-                                        .withTypeText(PsiSignatureUtil.getSignature(recordField, element.getLanguage()))
+                                        .withTypeText(PsiSignatureUtil.getSignature(recordField, ORLanguageProperties.cast(element.getLanguage())))
                                         .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
                     }
                 }
@@ -159,7 +160,7 @@ public class DotExpressionCompletionProvider {
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiException.class));
     }
 
-    private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNamedElement> expressions, @NotNull Language language) {
+    private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNamedElement> expressions, @Nullable ORLanguageProperties language) {
         for (PsiNamedElement expression : expressions) {
             if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
                 // TODO: if include => include

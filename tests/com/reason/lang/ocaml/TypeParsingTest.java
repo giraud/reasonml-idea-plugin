@@ -19,14 +19,23 @@ public class TypeParsingTest extends OclParsingTestCase {
     }
 
     public void test_recursive_type() {
-        PsiType type = first(typeExpressions(parseCode("type 'a tree = | Leaf of 'a | Tree of 'a tree  * 'a tree")));
+        PsiType type = first(typeExpressions(parseCode("type rec 'a tree = | Leaf of 'a | Tree of 'a tree  * 'a tree")));
         assertEquals("tree", type.getName());
     }
 
+    public void test_option() {
+        PsiType e = first(typeExpressions(parseCode("type t = int option")));
+
+        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        assertNotNull(option);
+        assertEquals("int option", option.getText());
+    }
+
     public void test_bindingWithVariant() {
-        assertNotNull(
-                first(findChildrenOfType(
-                        first(typeExpressions(parseCode("type t = | Tick"))), PsiTypeBinding.class)));
+        PsiType e = first(typeExpressions(parseCode("type t = | Tick")));
+
+        PsiTypeBinding binding = first(findChildrenOfType(e, PsiTypeBinding.class));
+        assertNotNull(binding);
     }
 
     public void test_bindingWithRecord() {

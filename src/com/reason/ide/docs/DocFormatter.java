@@ -1,11 +1,11 @@
 package com.reason.ide.docs;
 
-import com.intellij.lang.*;
 import com.intellij.lang.documentation.*;
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.util.text.*;
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
+import com.reason.lang.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.doc.*;
 import com.reason.lang.doc.ocaml.*;
@@ -19,8 +19,7 @@ class DocFormatter {
     private DocFormatter() {
     }
 
-    @NotNull
-    static String format(@NotNull PsiFile file, @NotNull PsiElement element, @NotNull Language lang, @NotNull String text) {
+    static @NotNull String format(@NotNull PsiFile file, @NotNull PsiElement element, @Nullable ORLanguageProperties lang, @NotNull String text) {
         if (file instanceof FileBase) {
             FileBase source = (FileBase) file;
 
@@ -80,8 +79,8 @@ class DocFormatter {
         return text;
     }
 
-    @NotNull
-    static String escapeCodeForHtml(@Nullable PsiElement code) {
+
+    static @NotNull String escapeCodeForHtml(@Nullable PsiElement code) {
         if (code == null) {
             return "";
         }

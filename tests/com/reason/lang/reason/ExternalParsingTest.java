@@ -16,7 +16,7 @@ public class ExternalParsingTest extends RmlParsingTestCase {
     public void test_withString() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"FormattedMessage\""), PsiExternal.class);
 
-        assertEquals("ReasonReact.reactClass", e.getSignature().asText(myLanguage));
+        assertEquals("ReasonReact.reactClass", e.getSignature().asText(getLangProps()));
         assertFalse(e.isFunction());
         assertEquals("FormattedMessage", e.getExternalName());
     }
@@ -24,7 +24,7 @@ public class ExternalParsingTest extends RmlParsingTestCase {
     public void test_withEmptyString() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"\""), PsiExternal.class);
 
-        assertEquals("ReasonReact.reactClass", e.getSignature().asText(myLanguage));
+        assertEquals("ReasonReact.reactClass", e.getSignature().asText(getLangProps()));
         assertFalse(e.isFunction());
         assertEquals("", e.getExternalName());
     }

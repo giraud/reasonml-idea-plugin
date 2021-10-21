@@ -1,9 +1,9 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.lang.Language;
-import org.jetbrains.annotations.NotNull;
+import com.reason.lang.*;
+import org.jetbrains.annotations.*;
 
 public interface PsiLanguageConverter {
-  @NotNull
-  String asText(@NotNull Language language);
+    @NotNull
+    String asText(@Nullable ORLanguageProperties language);
 }

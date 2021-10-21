@@ -200,6 +200,11 @@ public class ParserState {
         m_currentScope = scope;
     }
 
+    public @NotNull ParserState markDummy(@NotNull ORTypes types) {
+        mark(types.C_DUMMY).dummy();
+        return this;
+    }
+
     public @NotNull ParserState mark(@NotNull ORCompositeType composite) {
         ParserScope scope = ParserScope.mark(m_builder, composite);
         add(scope);
@@ -356,15 +361,9 @@ public class ParserState {
         return m_currentScope.hasScope();
     }
 
-    @NotNull
-    public ParserState updateCurrentCompositeElementType(
-            @NotNull ORCompositeType compositeElementType) {
+    public @NotNull ParserState updateCurrentCompositeElementType(@NotNull ORCompositeType compositeElementType) {
         m_currentScope.updateCompositeElementType(compositeElementType);
         return this;
-    }
-
-    public @Nullable ParserScopeEnum currentResolution() {
-        return m_currentScope.getResolution();
     }
 
     @NotNull
@@ -485,4 +484,16 @@ public class ParserState {
     public @NotNull ParserState markOptionalParenDummyScope(@NotNull ORTypes types) {
         return markOptionalParenDummyScope(types, types.C_DUMMY);
     }
+
+    public boolean isDummy() {
+        return m_currentScope.isDummy();
+    }
+
+    @NotNull public ParserState popDummy() {
+        if (isDummy()) {
+            popEnd();
+        }
+        return this;
+    }
+
 }

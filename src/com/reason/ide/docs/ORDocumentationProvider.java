@@ -8,6 +8,7 @@ import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
 import com.reason.ide.search.*;
+import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiType;
@@ -26,6 +27,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
 
     @Override
     public @Nullable String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
+        ORLanguageProperties languageProperties = ORLanguageProperties.cast(originalElement == null ? null : originalElement.getLanguage());
         if (element instanceof PsiFakeModule) {
             PsiElement child = element.getContainingFile().getFirstChild();
             String text = "";
@@ -42,7 +44,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
             }
 
             if (!text.isEmpty()) {
-                return DocFormatter.format(element.getContainingFile(), element, originalElement.getLanguage(), text);
+                return DocFormatter.format(element.getContainingFile(), element, languageProperties, text);
             }
         } else if (element instanceof PsiUpperIdentifier || element instanceof PsiLowerIdentifier) {
             element = element.getParent();
@@ -63,7 +65,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
                 PsiElement belowComment = findBelowComment(element);
                 if (belowComment != null) {
                     return isSpecialComment(belowComment)
-                            ? DocFormatter.format(element.getContainingFile(), element, originalElement.getLanguage(), belowComment.getText())
+                            ? DocFormatter.format(element.getContainingFile(), element, languageProperties, belowComment.getText())
                             : belowComment.getText();
                 }
             }
@@ -78,7 +80,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
                 }
 
                 return isSpecialComment(aboveComment)
-                        ? DocFormatter.format(element.getContainingFile(), element, originalElement.getLanguage(), aboveComment.getText())
+                        ? DocFormatter.format(element.getContainingFile(), element, languageProperties, aboveComment.getText())
                         : aboveComment.getText();
             }
         }
@@ -89,6 +91,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
     @Override
     public @Nullable String getQuickNavigateInfo(@NotNull PsiElement resolvedIdentifier, @NotNull PsiElement originalElement) {
         String quickDoc = null;
+        ORLanguageProperties languageProperties = ORLanguageProperties.cast(originalElement.getLanguage());
 
         if (resolvedIdentifier instanceof ORFakeResolvedElement) {
             // A fake element, used to query inferred types
@@ -125,7 +128,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
             if (resolvedElement instanceof PsiSignatureElement) {
                 PsiSignature signature = ((PsiSignatureElement) resolvedElement).getSignature();
                 if (signature != null) {
-                    String sig = DocFormatter.escapeCodeForHtml(signature.asText(originalElement.getLanguage()));
+                    String sig = DocFormatter.escapeCodeForHtml(signature.asText(languageProperties));
                     if (resolvedElement instanceof PsiQualifiedPathElement) {
                         PsiQualifiedPathElement qualifiedElement = (PsiQualifiedPathElement) resolvedElement;
                         String elementType = PsiTypeElementProvider.getType(resolvedIdentifier);
@@ -144,11 +147,11 @@ public class ORDocumentationProvider implements DocumentationProvider {
                 String[] path = ORUtil.getQualifiedPath(resolvedElement);
 
                 PsiFile psiFile = originalElement.getContainingFile();
-                String inferredType = getInferredSignature(originalElement, psiFile, originalElement.getLanguage());
+                String inferredType = getInferredSignature(originalElement, psiFile, languageProperties);
 
                 if (inferredType == null) {
                     // Can't find type in the usage, try to get type from the definition
-                    inferredType = getInferredSignature(resolvedIdentifier, resolvedElement.getContainingFile(), resolvedElement.getLanguage());
+                    inferredType = getInferredSignature(resolvedIdentifier, resolvedElement.getContainingFile(), languageProperties);
                 }
 
                 String sig = inferredType == null ? null : DocFormatter.escapeCodeForHtml(inferredType);
@@ -247,8 +250,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
     }
 
     @Nullable
-    private String getInferredSignature(@NotNull PsiElement element, @NotNull PsiFile psiFile, @NotNull Language language) {
-        SignatureProvider.InferredTypesWithLines signaturesContext = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
+    private String getInferredSignature(@NotNull PsiElement element, @NotNull PsiFile psiFile, @NotNull ORLanguageProperties language) {
+        SignatureProvider.InferredTypesWithLines signaturesContext = psiFile.getUserData(SignatureProvider.SIGNATURES_CONTEXT);
         if (signaturesContext != null) {
             PsiSignature elementSignature = signaturesContext.getSignatureByOffset(element.getTextOffset());
             if (elementSignature != null) {

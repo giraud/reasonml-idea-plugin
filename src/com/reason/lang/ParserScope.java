@@ -1,6 +1,7 @@
 package com.reason.lang;
 
 import com.intellij.lang.*;
+import com.intellij.lang.impl.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
@@ -26,12 +27,12 @@ public class ParserScope {
         m_scopeTokenElementType = scopeTokenElementType;
     }
 
-    public static @NotNull ParserScope mark(@NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType) {
-        return new ParserScope(builder, builder.mark(), compositeElementType, null);
+    public static ParserScope copy(ParserScope scope) {
+        return new ParserScope(scope.m_builder, scope.m_builder.mark(), scope.m_compositeElementType, scope.m_scopeTokenElementType);
     }
 
-    public static @NotNull ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
-        return new ParserScope(builder, builder.mark(), compositeElementType, scopeTokenElementType);
+    public static @NotNull ParserScope mark(@NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType) {
+        return new ParserScope(builder, builder.mark(), compositeElementType, null);
     }
 
     public static @NotNull ParserScope precedeScope(@NotNull ParserScope scope, @NotNull ORCompositeType compositeType) {
@@ -134,8 +135,9 @@ public class ParserScope {
         m_scopeTokenElementType = tokenElementType;
     }
 
-    public void updateCompositeElementType(ORCompositeType compositeType) {
+    public void updateCompositeElementType(@NotNull ORCompositeType compositeType) {
         m_compositeElementType = compositeType;
+        m_isDummy = false;
     }
 
     public boolean isStart() {

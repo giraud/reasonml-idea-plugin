@@ -14,9 +14,9 @@ public class RecordParsingTest extends OclParsingTestCase {
 
         List<PsiRecordField> fields = record.getFields();
         assertEquals("a", fields.get(0).getName());
-        assertEquals("int", fields.get(0).getSignature().asText(myLanguage));
+        assertEquals("int", fields.get(0).getSignature().asText(getLangProps()));
         assertEquals("b", fields.get(1).getName());
-        assertEquals("string list", fields.get(1).getSignature().asText(myLanguage));
+        assertEquals("string list", fields.get(1).getSignature().asText(getLangProps()));
     }
 
     public void test_usage() {
