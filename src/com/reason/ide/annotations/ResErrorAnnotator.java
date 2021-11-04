@@ -1,5 +1,6 @@
 package com.reason.ide.annotations;
 
+import com.intellij.execution.*;
 import com.intellij.execution.process.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
@@ -10,6 +11,7 @@ import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.rescript.*;
 import jpsplugin.com.reason.*;
+import org.apache.tools.ant.taskdefs.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -117,14 +119,13 @@ public class ResErrorAnnotator {
                     processListener.onTextAvailable(line, ProcessOutputTypes.STDERR);
                 }
             }
-            process.destroy();
-
             return processListener.getOutputInfo();
         } catch (IOException e) {
-            if (process != null) {
-                process.destroyForcibly();
-            }
             ORNotification.notifyError("Rescript", "Execution exception", e.getMessage(), null);
+        } finally {
+            if (process != null) {
+                process.destroy();
+            }
         }
 
         return emptyList();

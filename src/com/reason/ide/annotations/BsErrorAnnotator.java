@@ -42,7 +42,7 @@ public class BsErrorAnnotator {
         Ninja ninja = compiler.readNinja();
         VirtualFile sourceFile = psiFile.getVirtualFile();
 
-        if (ninja.isRescriptFormat()) {
+        if (ninja != null && ninja.isRescriptFormat()) {
             List<String> args = isDevSource(sourceFile, contentRoot, config) ? ninja.getArgsDev() : ninja.getArgs();
             return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, null, editor, args, config.getJsxVersion());
         }
@@ -59,7 +59,7 @@ public class BsErrorAnnotator {
         // https://bucklescript.github.io/docs/en/build-configuration#sources
         for (String devSource : config.getDevSources()) {
             VirtualFile devFile = contentRoot.findFileByRelativePath(devSource);
-            if (devFile != null && FileUtil.isAncestor(devFile.getPath(), sourceFile.getPath(), true)) {
+            if (ninja != null && devFile != null && FileUtil.isAncestor(devFile.getPath(), sourceFile.getPath(), true)) {
                 ninja.addInclude(devSource);
             }
         }
@@ -208,14 +208,14 @@ public class BsErrorAnnotator {
                     processListener.onTextAvailable(line, ProcessOutputTypes.STDERR);
                 }
             }
-            process.destroy();
 
             return processListener.getOutputInfo();
         } catch (IOException e) {
+            ORNotification.notifyError("Bucklescript", "Execution exception", e.getMessage(), null);
+        } finally {
             if (process != null) {
                 process.destroyForcibly();
             }
-            ORNotification.notifyError("Bucklescript", "Execution exception", e.getMessage(), null);
         }
 
         return emptyList();

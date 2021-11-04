@@ -69,6 +69,10 @@ public class ResCompiler implements Compiler {
     public void run(@Nullable VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
         ORSettings settings = myProject.getService(ORSettings.class);
         if (!isDisabled() && settings.isBsEnabled()) {
+            if (sourceFile != null) {
+                myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
+            }
+
             // ResPlatform.findRescriptExe
             VirtualFile bsConfig = sourceFile == null ? ResPlatform.findConfigFile(myProject) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, sourceFile);
             if (bsConfig == null) {
@@ -104,14 +108,9 @@ public class ResCompiler implements Compiler {
 
                         console.attachToProcess(processHandler);
                         processHandler.startNotify();
-
-                        if (sourceFile != null) {
-                            myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
-                        }
                     }
                 } catch (ExecutionException e) {
                     ORNotification.notifyError("Rescript", "Execution exception", e.getMessage(), null);
-                    //return null;
                 }
             }
         }
