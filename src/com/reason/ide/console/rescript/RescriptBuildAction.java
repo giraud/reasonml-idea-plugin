@@ -3,6 +3,7 @@ package com.reason.ide.console.rescript;
 import com.intellij.icons.*;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.*;
+import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.rescript.*;
 import com.reason.ide.console.*;
@@ -19,7 +20,7 @@ public class RescriptBuildAction extends CompilerAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        ResCompiler compiler = project == null ? null : project.getService(ResCompiler.class);
+        Compiler compiler = project == null ? null : project.getService(ResCompiler.class);
         if (compiler != null) {
             e.getPresentation().setEnabled(!compiler.isRunning());
         }
@@ -28,8 +29,9 @@ public class RescriptBuildAction extends CompilerAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        if (project != null) {
-            doAction(project, CliType.Rescript.MAKE, null);
+        Compiler compiler = project == null ? null : project.getService(ResCompiler.class);
+        if (compiler != null) {
+            doAction(project, CliType.Rescript.MAKE, () -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
     }
 }

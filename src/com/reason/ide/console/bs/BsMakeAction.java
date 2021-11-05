@@ -25,8 +25,9 @@ public class BsMakeAction extends CompilerAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        if (project != null) {
-            doAction(project, CliType.Bs.MAKE, null);
+        BsCompiler compiler = project == null ? null : project.getService(BsCompiler.class);
+        if (compiler != null) {
+            doAction(project, CliType.Bs.MAKE, () -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
     }
 }

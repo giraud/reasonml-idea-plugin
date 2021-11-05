@@ -25,8 +25,9 @@ public class RescriptResetAction extends CompilerAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        if (project != null) {
-            doAction(project, CliType.Rescript.CLEAN, null);
+        ResCompiler compiler = project == null ? null : project.getService(ResCompiler.class);
+        if (compiler != null) {
+            doAction(project, CliType.Rescript.CLEAN, () -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
     }
 }
