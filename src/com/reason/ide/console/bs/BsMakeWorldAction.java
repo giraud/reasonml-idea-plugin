@@ -1,24 +1,32 @@
 package com.reason.ide.console.bs;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.project.Project;
+import com.intellij.icons.*;
+import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.project.*;
 import com.reason.comp.*;
+import com.reason.comp.bs.*;
 import com.reason.ide.console.*;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 public class BsMakeWorldAction extends CompilerAction {
-
-  @SuppressWarnings("WeakerAccess")
-  public BsMakeWorldAction() {
-    super("Clean and make world bsb", "Clean and make world bsb", AllIcons.General.Web);
-  }
-
-  @Override
-  public void actionPerformed(@NotNull AnActionEvent e) {
-    Project project = e.getProject();
-    if (project != null) {
-      doAction(project, CliType.Bs.CLEAN_MAKE);
+    public BsMakeWorldAction() {
+        super("Clean and make world bsb", "Clean and make world bsb", AllIcons.General.Web);
     }
-  }
+
+    @Override
+    public void update(@NotNull AnActionEvent e) {
+        Project project = e.getProject();
+        BsCompiler compiler = project == null ? null : project.getService(BsCompiler.class);
+        if (compiler != null) {
+            e.getPresentation().setEnabled(!compiler.isRunning());
+        }
+    }
+
+    @Override
+    public void actionPerformed(@NotNull AnActionEvent e) {
+        Project project = e.getProject();
+        if (project != null) {
+            doAction(project, CliType.Bs.CLEAN_MAKE, null);
+        }
+    }
 }

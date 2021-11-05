@@ -40,4 +40,6 @@ public interface Compiler {
     void runDefault(@NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated);
 
     void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated);
+
+    boolean isRunning();
 }

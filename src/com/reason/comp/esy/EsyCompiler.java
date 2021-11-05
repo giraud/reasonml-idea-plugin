@@ -50,6 +50,9 @@ public class EsyCompiler implements Compiler {
             LOG.error("Invalid cliType for esy compiler. cliType = " + cliType);
             return;
         }
+        if (myProject.isDisposed()) {
+            return;
+        }
 
         if (myProcessStarted.compareAndSet(false, true)) {
             VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : file;
@@ -62,12 +65,14 @@ public class EsyCompiler implements Compiler {
                     processHandler.addProcessListener(new ProcessFinishedListener());
                     processHandler.addProcessListener(new ProcessAdapter() {
                         @Override public void processTerminated(@NotNull ProcessEvent event) {
-                            myProcessStarted.set(false);
+                            myProcessStarted.compareAndSet(true, false);
                         }
                     });
 
                     console.attachToProcess(processHandler);
                     process.startNotify();
+                } else {
+                    myProcessStarted.compareAndSet(true, false);
                 }
             }
         }
@@ -82,5 +87,10 @@ public class EsyCompiler implements Compiler {
     @Override
     public boolean isAvailable(@NotNull Project project) {
         return true; // not implemented yet
+    }
+
+    @Override
+    public boolean isRunning() {
+        return myProcessStarted.get();
     }
 }

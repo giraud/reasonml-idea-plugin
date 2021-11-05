@@ -1,14 +1,11 @@
 package com.reason.ide;
 
-import com.intellij.facet.Facet;
-import com.intellij.facet.ProjectWideFacetListener;
-import com.intellij.facet.ProjectWideFacetListenersRegistry;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.reason.ide.console.ORToolWindowManager;
-import com.reason.ide.facet.DuneFacet;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.facet.*;
+import com.intellij.openapi.application.*;
+import com.intellij.openapi.project.*;
+import com.reason.ide.console.*;
+import com.reason.ide.facet.*;
+import org.jetbrains.annotations.*;
 
 public class ORFacetListener implements ProjectWideFacetListener<Facet> {
 
@@ -53,7 +50,7 @@ public class ORFacetListener implements ProjectWideFacetListener<Facet> {
     private static void showHideDuneToolWindow(@NotNull Project project, Facet facet) {
         if (facet instanceof DuneFacet) {
             ORToolWindowManager toolWindowManager = project.getService(ORToolWindowManager.class);
-            ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
+            ApplicationManager.getApplication().invokeLater(toolWindowManager::showShowToolWindows);
         }
     }
 }
