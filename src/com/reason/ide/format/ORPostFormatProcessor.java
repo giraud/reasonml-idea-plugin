@@ -70,7 +70,10 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
                     caretModel.moveToOffset(caretOffset);
                 }
 
-                postProcessorHelper.updateResultRange(oldTextLength, source.getTextLength());
+                int newTextLength = source.getTextLength();
+                if (newTextLength > oldTextLength) {
+                    postProcessorHelper.updateResultRange(oldTextLength, newTextLength);
+                }
                 return postProcessorHelper.getResultTextRange();
             }
         }
