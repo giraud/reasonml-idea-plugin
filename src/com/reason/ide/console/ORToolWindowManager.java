@@ -51,6 +51,7 @@ public class ORToolWindowManager {
                     ReadAction.nonBlocking(() -> compiler.getFullVersion(null)) // slow operation not allowed on UI thread
                             .finishOnUiThread(ModalityState.defaultModalityState(),
                                     version -> consoleView.print("Detected compiler: " + version + "\n", ConsoleViewContentType.NORMAL_OUTPUT))
+                            .coalesceBy(compiler)
                             .submit(AppExecutorUtil.getAppExecutorService());
                 }
             });

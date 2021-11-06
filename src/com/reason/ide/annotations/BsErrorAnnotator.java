@@ -111,6 +111,13 @@ public class BsErrorAnnotator {
         File cmtFile;
         List<OutputInfo> info;
 
+        // https://github.com/giraud/reasonml-idea-plugin/issues/362
+        // lib directory can be invalidated after a clean
+        if (!initialInfo.libRoot.isValid()) {
+            LOG.debug("lib directory is invalid, skip compilation");
+            return null;
+        }
+
         if (initialInfo.oldFormat) {
             assert initialInfo.tempFile != null;
             File baseFile = new File(initialInfo.tempFile.getParent(), FileUtil.getNameWithoutExtension(initialInfo.tempFile));
@@ -210,8 +217,8 @@ public class BsErrorAnnotator {
             }
 
             return processListener.getOutputInfo();
-        } catch (IOException e) {
-            ORNotification.notifyError("Bucklescript", "Execution exception", e.getMessage(), null);
+        } catch (Exception e) {
+            LOG.info("Execution error", e);
         } finally {
             if (process != null) {
                 process.destroyForcibly();
