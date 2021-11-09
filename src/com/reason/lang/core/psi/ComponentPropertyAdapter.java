@@ -1,71 +1,76 @@
 package com.reason.lang.core.psi;
 
 import com.intellij.psi.*;
+import com.reason.lang.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
 
 public class ComponentPropertyAdapter {
-    private final @Nullable String m_name;
-    private final String m_type;
-    private final PsiElement m_psiElement;
-    private boolean m_mandatory;
+    private final String myName;
+    private final String myType;
+    private final PsiElement myPsiElement;
+    private boolean myMandatory;
 
     public ComponentPropertyAdapter(@NotNull PsiRecordField field, @NotNull List<PsiAnnotation> annotations) {
-        m_psiElement = field;
-        m_name = field.getName();
+        myPsiElement = field;
+        myName = field.getName();
         PsiSignature signature = field.getSignature();
-        m_type = signature == null ? "" : signature.asText(RmlLanguage.INSTANCE);
-        m_mandatory = false; // TODO: hmSignature.isMandatory(0);
+        myType = signature == null ? "" : signature.asText(RmlLanguage.INSTANCE);
+        myMandatory = false; // TODO: hmSignature.isMandatory(0);
 
         for (PsiAnnotation annotation : annotations) {
             if ("@bs.optional".equals(annotation.getName())) {
-                m_mandatory = false;
+                myMandatory = false;
             }
         }
     }
 
     public ComponentPropertyAdapter(@NotNull PsiParameter parameter) {
-        m_psiElement = parameter;
-        m_name = parameter.getName();
+        myPsiElement = parameter;
+        myName = parameter.getName();
         PsiSignature signature = parameter.getSignature();
-        m_type = signature == null ? (parameter.getDefaultValue() == null ? "" : "=" + parameter.getDefaultValue().getText()) : signature.asText(parameter.getLanguage());
-        m_mandatory = parameter.getDefaultValue() == null;
+        if (signature == null) {
+            myType = (parameter.getDefaultValue() == null ? "" : "=" + parameter.getDefaultValue().getText());
+        } else {
+            myType = signature.asText(ORLanguageProperties.cast(parameter.getLanguage()));
+        }
+        myMandatory = parameter.getDefaultValue() == null;
     }
 
     public ComponentPropertyAdapter(@NotNull PsiSignatureItem signatureItem) {
-        m_psiElement = signatureItem;
-        m_name = signatureItem.getName();
-        m_type = signatureItem.asText(signatureItem.getLanguage());
-        m_mandatory = !signatureItem.isOptional();
+        myPsiElement = signatureItem;
+        myName = signatureItem.getName();
+        myType = signatureItem.asText(ORLanguageProperties.cast(signatureItem.getLanguage()));
+        myMandatory = !signatureItem.isOptional();
     }
 
     public ComponentPropertyAdapter(@Nullable String name, String type) {
-        m_psiElement = null;
-        m_name = name;
-        m_type = type;
-        m_mandatory = false;
+        myPsiElement = null;
+        myName = name;
+        myType = type;
+        myMandatory = false;
     }
 
     public @Nullable PsiElement getElement() {
-        return m_psiElement;
+        return myPsiElement;
     }
 
     public @Nullable String getName() {
-        return m_name;
+        return myName;
     }
 
     public String getType() {
-        return m_type;
+        return myType;
     }
 
     public boolean isMandatory() {
-        return m_mandatory;
+        return myMandatory;
     }
 
     @Override
     public @NotNull String toString() {
-        return m_name + ":" + m_type;
+        return myName + ":" + myType;
     }
 }

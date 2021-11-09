@@ -4,8 +4,10 @@ import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
+import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiLiteralExpression;
 import com.reason.lang.core.psi.*;
@@ -34,7 +36,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class, PsiLiteralExpression.class/*rescript custom operator*/);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class, PsiLiteralExpression.class/*rescript custom operator*/, PsiUnit.class);
     }
 
     @Override
@@ -45,7 +47,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         }
 
         PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE
+        IElementType nameType = nameIdentifier == null ? null : nameIdentifier.getNode().getElementType();
+        return nameType == null || nameType == m_types.UNDERSCORE || nameType == m_types.C_UNIT
                 ? null
                 : nameIdentifier.getText();
     }
@@ -239,6 +242,9 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
     @Override
     public boolean canBeDisplayed() {
         PsiElement nameIdentifier = getNameIdentifier();
+        if (nameIdentifier instanceof PsiUnit) {
+            return false;
+        }
         if (nameIdentifier != null) {
             return true;
         }
@@ -270,16 +276,14 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
                 return letName;
             }
 
-            @Nullable
             @Override
-            public String getLocationString() {
+            public @Nullable String getLocationString() {
                 PsiSignature signature = hasInferredType() ? getInferredType() : getSignature();
-                return (signature == null ? null : signature.asText(getLanguage()));
+                return (signature == null ? null : signature.asText(ORLanguageProperties.cast(getLanguage())));
             }
 
-            @NotNull
             @Override
-            public Icon getIcon(boolean unused) {
+            public @NotNull Icon getIcon(boolean unused) {
                 return isFunction() ? ORIcons.FUNCTION : ORIcons.LET;
             }
         };

@@ -9,7 +9,7 @@ import com.reason.lang.core.type.*;
 abstract class ResParsingTestCase extends BaseParsingTestCase {
     public ORTypes m_types = ResTypes.INSTANCE;
 
-    public ResParsingTestCase() {
+    protected ResParsingTestCase() {
         super("", "res", new ResParserDefinition());
     }
 
@@ -20,5 +20,9 @@ abstract class ResParsingTestCase extends BaseParsingTestCase {
         stubElementTypeHolderEP.holderClass = RescriptStubBasedElementTypes.class.getName();
         registerExtension(StubElementTypeHolderEP.EP_NAME, stubElementTypeHolderEP);
         LanguageASTFactory.INSTANCE.addExplicitExtension(ResLanguage.INSTANCE, new ResASTFactory());
+    }
+
+    protected ORLanguageProperties getLangProps() {
+        return ORLanguageProperties.cast(myLanguage);
     }
 }

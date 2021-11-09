@@ -19,6 +19,7 @@ import com.reason.comp.rescript.*;
 import com.reason.hints.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
+import com.reason.lang.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -96,7 +97,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
             LOG.trace("Clear problems", sourceFile);
             problemSolver.clearProblems(sourceFile);
             // Call rincewind on the generated cmt file !
-            updateCodeLens(project, sourcePsiFile.getLanguage(), sourceFile, cmtFile);
+            updateCodeLens(project, ORLanguageProperties.cast(sourcePsiFile.getLanguage()), sourceFile, cmtFile);
         } else {
             Collection<Problem> problems = new ArrayList<>();
 
@@ -124,7 +125,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
 
     }
 
-    private void updateCodeLens(@NotNull Project project, @NotNull Language lang, @NotNull VirtualFile sourceFile, @NotNull File cmtFile) {
+    private void updateCodeLens(@NotNull Project project, @Nullable ORLanguageProperties lang, @NotNull VirtualFile sourceFile, @NotNull File cmtFile) {
         InsightManager insightManager = project.getService(InsightManager.class);
         if (insightManager != null && !FileHelper.isInterface(sourceFile.getFileType())) {
             insightManager.queryTypes(sourceFile, cmtFile.toPath(), types -> {

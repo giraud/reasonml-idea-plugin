@@ -59,7 +59,7 @@ public class RescriptToolWindowFactory extends ORToolWindowFactory {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
         group.add(new ClearLogAction(console));
-        group.add(new RescriptBuildAction());
+        group.add(new RescriptBuildAction(console));
         group.add(new RescriptResetAction());
 
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);

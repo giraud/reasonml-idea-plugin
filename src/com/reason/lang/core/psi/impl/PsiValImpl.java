@@ -6,6 +6,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
+import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
@@ -103,7 +104,7 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implem
             @Override
             public @Nullable String getLocationString() {
                 PsiSignature signature = getSignature();
-                return signature == null ? null : signature.asText(getLanguage());
+                return signature == null ? null : signature.asText(ORLanguageProperties.cast(getLanguage()));
             }
 
             @Override

@@ -1,15 +1,14 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
+import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 public class PsiSignatureItemImpl extends CompositeTypePsiElement<ORTypes> implements PsiSignatureItem {
-
     protected PsiSignatureItemImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
@@ -35,19 +34,17 @@ public class PsiSignatureItemImpl extends CompositeTypePsiElement<ORTypes> imple
         return namedParam != null && namedParam.isOptional();
     }
 
-    @NotNull
     @Override
-    public String asText(@NotNull Language language) {
+    public @NotNull String asText(@Nullable ORLanguageProperties toLang) {
         PsiElement firstChild = getFirstChild();
         if (firstChild instanceof PsiLanguageConverter) {
-            return ((PsiLanguageConverter) firstChild).asText(language);
+            return ((PsiLanguageConverter) firstChild).asText(toLang);
         }
         return getText();
     }
 
-    @NotNull
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Signature item";
     }
 }

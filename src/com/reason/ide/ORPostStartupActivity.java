@@ -1,6 +1,5 @@
 package com.reason.ide;
 
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.*;
@@ -34,7 +33,7 @@ public class ORPostStartupActivity implements StartupActivity, DumbAware {
                 }
             }
 
-            project.getService(ORToolWindowManager.class).showHideToolWindows();
+            project.getService(ORToolWindowManager.class).showShowToolWindows();
         });
     }
 }

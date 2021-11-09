@@ -1,11 +1,11 @@
 package com.reason.ide.hints;
 
-import com.intellij.lang.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.containers.Stack;
+import com.reason.lang.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.ocaml.*;
 import gnu.trove.*;
@@ -22,14 +22,14 @@ public class InferredTypesImplementation implements InferredTypes {
     private static final String PARAM = "Pa";
     private static final String RECORD_FIELD = "Rf";
 
-    private final Map<String, Stack<OpenModule>> m_opens = new THashMap<>();
-    private final Map<Integer, LogicalORSignature> m_vals = new THashMap<>();
-    private final Map<LogicalPosition, PsiSignature> m_signatures = new THashMap<>();
+    private final Map<String, Stack<OpenModule>> myOpens = new THashMap<>();
+    private final Map<Integer, LogicalORSignature> myVals = new THashMap<>();
+    private final Map<LogicalPosition, PsiSignature> mySignatures = new THashMap<>();
 
-    public @NotNull Map<Integer, LogicalPositionSignature> signaturesByLines(@NotNull Language lang) {
+    public @NotNull Map<Integer, LogicalPositionSignature> signaturesByLines(@Nullable ORLanguageProperties lang) {
         Map<Integer, LogicalPositionSignature> result = new THashMap<>();
 
-        for (Stack<OpenModule> openStack : m_opens.values()) {
+        for (Stack<OpenModule> openStack : myOpens.values()) {
             for (OpenModule openModule : openStack) {
                 String exposing = openModule.getExposing();
                 if (exposing != null) {
@@ -38,18 +38,15 @@ public class InferredTypesImplementation implements InferredTypes {
             }
         }
 
-        for (Map.Entry<Integer, LogicalORSignature> entry : m_vals.entrySet()) {
+        for (Map.Entry<Integer, LogicalORSignature> entry : myVals.entrySet()) {
             result.put(entry.getKey(), makeLogicalPositionSignature(lang, entry.getValue()));
         }
 
         return result;
     }
 
-    private @NotNull LogicalPositionSignature makeLogicalPositionSignature(@NotNull Language lang, @NotNull LogicalORSignature value) {
-        return makeLogicalPositionSignature(
-                value.getLogicalStart().column,
-                value.getLogicalEnd().column,
-                value.getSignature().asText(lang));
+    private @NotNull LogicalPositionSignature makeLogicalPositionSignature(@Nullable ORLanguageProperties lang, @NotNull LogicalORSignature value) {
+        return makeLogicalPositionSignature(value.getLogicalStart().column, value.getLogicalEnd().column, value.getSignature().asText(lang));
     }
 
     private @NotNull LogicalPositionSignature makeLogicalPositionSignature(int colStart, int colEnd, @NotNull String signature) {
@@ -62,17 +59,17 @@ public class InferredTypesImplementation implements InferredTypes {
 
     @Override
     public @Nullable PsiSignature getSignatureByPosition(@NotNull LogicalPosition elementPosition) {
-        return m_signatures.get(elementPosition);
+        return mySignatures.get(elementPosition);
     }
 
     public void add(@NotNull Project project, @NotNull String entry, @NotNull LogicalPosition start, @NotNull LogicalPosition end, @NotNull String line) {
         switch (entry) {
             case OPEN:
                 // Pattern :: Name
-                Stack<OpenModule> openStack = m_opens.get(line);
+                Stack<OpenModule> openStack = myOpens.get(line);
                 if (openStack == null) {
                     openStack = new Stack<>();
-                    m_opens.put(line, openStack);
+                    myOpens.put(line, openStack);
                 }
 
                 openStack.push(new OpenModule(start));
@@ -84,7 +81,7 @@ public class InferredTypesImplementation implements InferredTypes {
                 PsiSignature psiSignature = PsiTreeUtil.findChildOfType(psiFile, PsiSignature.class);
                 if (psiSignature != null) {
                     addVisibleSignature(start, end, psiSignature);
-                    m_signatures.put(start, psiSignature);
+                    mySignatures.put(start, psiSignature);
                 }
                 break;
             }
@@ -96,7 +93,7 @@ public class InferredTypesImplementation implements InferredTypes {
                 PsiSignature psiSignature = PsiTreeUtil.findChildOfType(psiFile, PsiSignature.class);
                 if (psiSignature != null) {
                     addVisibleSignature(start, end, psiSignature);
-                    m_signatures.put(start, psiSignature);
+                    mySignatures.put(start, psiSignature);
                 }
                 break;
             }
@@ -107,14 +104,14 @@ public class InferredTypesImplementation implements InferredTypes {
                 PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText("Dummy", OclLanguage.INSTANCE, "let x:" + tokens[2]);
                 PsiSignature psiSignature = PsiTreeUtil.findChildOfType(psiFile, PsiSignature.class);
                 if (psiSignature != null) {
-                    m_signatures.put(start, psiSignature);
+                    mySignatures.put(start, psiSignature);
                 }
 
                 if (!tokens[0].equals(tokens[1])) {
                     int lastDot = tokens[1].lastIndexOf(".");
                     if (0 < lastDot) {
                         String path = tokens[1].substring(0, lastDot);
-                        Stack<OpenModule> open = m_opens.get(path);
+                        Stack<OpenModule> open = myOpens.get(path);
                         if (open != null) {
                             open.peek().addId(tokens[0]);
                         }
@@ -129,7 +126,7 @@ public class InferredTypesImplementation implements InferredTypes {
                 PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText("Dummy", OclLanguage.INSTANCE, "let x:" + tokens[1]);
                 PsiSignature psiSignature = PsiTreeUtil.findChildOfType(psiFile, PsiSignature.class);
                 if (psiSignature != null) {
-                    m_signatures.put(start, psiSignature);
+                    mySignatures.put(start, psiSignature);
                 }
             }
             case RECORD_FIELD: {
@@ -139,9 +136,9 @@ public class InferredTypesImplementation implements InferredTypes {
     }
 
     private void addVisibleSignature(@NotNull LogicalPosition lStart, @NotNull LogicalPosition lEnd, @NotNull PsiSignature signature) {
-        LogicalORSignature savedSignature = m_vals.get(lStart.line);
+        LogicalORSignature savedSignature = myVals.get(lStart.line);
         if (savedSignature == null || lStart.column < savedSignature.getLogicalStart().column) {
-            m_vals.put(lStart.line, new LogicalORSignature(lStart, lEnd, signature));
+            myVals.put(lStart.line, new LogicalORSignature(lStart, lEnd, signature));
         }
     }
 

@@ -34,11 +34,10 @@ public class ModuleHelper {
         // JSX 2
 
         // Try to find if it's a proxy to a React class
-        List<PsiExternal> externals =
-                PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiExternal.class);
+        List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiExternal.class);
         for (PsiExternal external : externals) {
             PsiSignature signature = external.getSignature();
-            String signatureText = signature == null ? null : signature.asText(element.getLanguage());
+            String signatureText = signature == null ? null : signature.asText(ORLanguageProperties.cast(element.getLanguage()));
             if ("ReasonReact.reactClass".equals(signatureText)) {
                 componentDef = external;
                 break;

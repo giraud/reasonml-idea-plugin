@@ -2,12 +2,14 @@ package com.reason.ide.js;
 
 import com.intellij.lang.javascript.library.*;
 import com.intellij.openapi.*;
+import com.intellij.openapi.application.*;
 import com.intellij.openapi.command.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.startup.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.vfs.pointers.*;
+import com.intellij.util.concurrency.*;
 import com.intellij.webcore.libraries.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
@@ -32,40 +34,41 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
     private void runActivityLater(@NotNull Project project) {
         LOG.info("run Js library manager");
 
-        Optional<VirtualFile> bsConfigFileOptional =
-                ORProjectManager.findFirstBsConfigurationFile(project);
-        if (bsConfigFileOptional.isPresent()) {
-            VirtualFile bsConfigFile = bsConfigFileOptional.get();
-            LOG.debug("bucklescript config file", bsConfigFile);
+        ReadAction.nonBlocking(() -> ORProjectManager.findFirstBsConfigurationFile(project)).
+                finishOnUiThread(ModalityState.defaultModalityState(), bsConfigFileOptional -> {
+                    if (bsConfigFileOptional.isPresent()) {
+                        VirtualFile bsConfigFile = bsConfigFileOptional.get();
+                        LOG.debug("bucklescript config file", bsConfigFile);
 
-            String baseDir = "file://" + bsConfigFile.getParent().getPath() + "/node_modules/";
-            List<VirtualFile> sources =
-                    new ArrayList<>(readBsConfigDependencies(project, baseDir, bsConfigFile));
+                        String baseDir = "file://" + bsConfigFile.getParent().getPath() + "/node_modules/";
+                        List<VirtualFile> sources = new ArrayList<>(readBsConfigDependencies(project, baseDir, bsConfigFile));
 
-            JSLibraryManager jsLibraryManager = JSLibraryManager.getInstance(project);
+                        JSLibraryManager jsLibraryManager = JSLibraryManager.getInstance(project);
 
-            ScriptingLibraryModel bucklescriptModel = jsLibraryManager.getLibraryByName(LIB_NAME);
-            if (bucklescriptModel == null) {
-                LOG.debug("Creating js library", LIB_NAME);
-                jsLibraryManager.createLibrary(
-                        LIB_NAME,
-                        sources.toArray(new VirtualFile[0]),
-                        EMPTY_ARRAY,
-                        EMPTY_STRING_ARRAY,
-                        PROJECT,
-                        true);
-            } else {
-                LOG.debug("Updating js library", LIB_NAME);
-                jsLibraryManager.updateLibrary(
-                        LIB_NAME,
-                        LIB_NAME,
-                        sources.toArray(new VirtualFile[0]),
-                        EMPTY_ARRAY,
-                        EMPTY_STRING_ARRAY);
-            }
+                        ScriptingLibraryModel bucklescriptModel = jsLibraryManager.getLibraryByName(LIB_NAME);
+                        if (bucklescriptModel == null) {
+                            LOG.debug("Creating js library", LIB_NAME);
+                            jsLibraryManager.createLibrary(
+                                    LIB_NAME,
+                                    sources.toArray(new VirtualFile[0]),
+                                    EMPTY_ARRAY,
+                                    EMPTY_STRING_ARRAY,
+                                    PROJECT,
+                                    true);
+                        } else {
+                            LOG.debug("Updating js library", LIB_NAME);
+                            jsLibraryManager.updateLibrary(
+                                    LIB_NAME,
+                                    LIB_NAME,
+                                    sources.toArray(new VirtualFile[0]),
+                                    EMPTY_ARRAY,
+                                    EMPTY_STRING_ARRAY);
+                        }
 
-            WriteCommandAction.runWriteCommandAction(project, (Runnable) jsLibraryManager::commitChanges);
-        }
+                        WriteCommandAction.runWriteCommandAction(project, (Runnable) jsLibraryManager::commitChanges);
+                    }
+                }).
+                submit(AppExecutorUtil.getAppExecutorService());
     }
 
     private @NotNull List<VirtualFile> readBsConfigDependencies(@NotNull Project project, @NotNull String nodeModulesDir, @NotNull VirtualFile bsConfigFile) {

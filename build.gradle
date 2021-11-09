@@ -41,11 +41,10 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#357 - Read access is allowed from inside read-action</li>
-                    <li>#354 - Update spellCheck strategy</li>
-                    <li>#353 - Interpolation incorrectly parsed</li>
-                    <li>#352 - CMT viewer is broken</li>
-                    <li>#327 - Use resolver for completions</li>
+                    <li>#362 - Check invalid file before compile (rescript execution exception)</li>
+                    <li>#360 - Should not display annotation signature</li>
+                    <li>#359 - Doc not displayed for JSX component</li>
+                    <li>Prevent multiple compiler run in parallel</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

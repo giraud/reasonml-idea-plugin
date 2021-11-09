@@ -15,8 +15,7 @@ import java.util.*;
 
 public class RincewindProcess {
     private static final Log LOG = Log.create("hints.rincewind");
-
-    private final @NotNull Project myProject;
+    private final Project myProject;
 
     RincewindProcess(@NotNull Project project) {
         myProject = project;
@@ -26,7 +25,7 @@ public class RincewindProcess {
         LOG.debug("Looking for types for file", sourceFile);
 
         Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(myProject, sourceFile);
-        if (!contentRoot.isPresent()) {
+        if (contentRoot.isEmpty()) {
             return;
         }
 

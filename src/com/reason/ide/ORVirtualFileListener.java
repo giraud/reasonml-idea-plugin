@@ -1,9 +1,8 @@
 package com.reason.ide;
 
 import com.intellij.openapi.application.*;
-import com.intellij.openapi.components.*;
-import com.intellij.openapi.module.*;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.vfs.newvfs.events.*;
@@ -71,7 +70,7 @@ class ORVirtualFileListener implements AsyncFileListener {
                 LOG.info("Update tool windows visibility");
                 for (Project project : ProjectManager.getInstance().getOpenProjects()) {
                     ORToolWindowManager toolWindowManager = project.getService(ORToolWindowManager.class);
-                    ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
+                    ApplicationManager.getApplication().invokeLater(toolWindowManager::showShowToolWindows);
                 }
             }
         }

@@ -3,40 +3,33 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.Language;
 import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.reason.lang.*;
 import com.reason.lang.core.psi.PsiLanguageConverter;
 import com.reason.lang.ocaml.OclLanguage;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 public class PsiObject extends CompositePsiElement implements PsiLanguageConverter {
-
-  protected PsiObject(IElementType type) {
-    super(type);
-  }
-
-  @NotNull
-  @Override
-  public String asText(@NotNull Language language) {
-    String text = getText();
-    if (getLanguage() == language) {
-      return text;
+    protected PsiObject(@NotNull IElementType type) {
+        super(type);
     }
 
-    String convertedText;
+    @Override
+    public @NotNull String asText(@Nullable ORLanguageProperties toLang) {
+        StringBuilder convertedText = null;
+        Language fromLang = getLanguage();
 
-    if (language == OclLanguage.INSTANCE) {
-      // Convert from Reason to OCaml
-      convertedText = text;
-    } else {
-      // Convert from OCaml to Reason
-      convertedText = "{. " + text.substring(1, getTextLength() - 1) + " }";
+        if (fromLang != toLang) {
+            if (toLang != OclLanguage.INSTANCE) {
+                convertedText = new StringBuilder();
+                convertedText.append("{. ").append(getText(), 1, getTextLength() - 1).append(" }");
+            }
+        }
+
+        return convertedText == null ? getText() : convertedText.toString();
     }
 
-    return convertedText;
-  }
-
-  @NotNull
-  @Override
-  public String toString() {
-    return "Object";
-  }
+    @Override
+    public @NotNull String toString() {
+        return "Object";
+    }
 }

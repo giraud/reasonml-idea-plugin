@@ -5,14 +5,12 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiUnit extends CompositePsiElement {
+    protected PsiUnit(IElementType type) {
+        super(type);
+    }
 
-  protected PsiUnit(IElementType type) {
-    super(type);
-  }
-
-  @NotNull
-  @Override
-  public String toString() {
-    return "Unit";
-  }
+    @Override
+    public @NotNull String toString() {
+        return "Unit";
+    }
 }
