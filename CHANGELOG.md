@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+## 0.105 - 2021/11/09
+
 - :bug: [#362](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/362) Check invalid file before compile (rescript execution exception)
 - :bug: ![o] [#360](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/360) Should not display annotation signature
 - :bug: [#359](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/359) Doc not displayed for JSX component
