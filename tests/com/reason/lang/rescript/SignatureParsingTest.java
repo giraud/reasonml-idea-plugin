@@ -12,7 +12,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let x: int = 1")));
 
         PsiSignature signature = let.getSignature();
-        assertEquals("int", signature.asText(myLanguage));
+        assertEquals("int", signature.asText(getLangProps()));
         assertFalse(signature.getItems().get(0).isOptional());
     }
 
@@ -20,7 +20,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string =>\n  componentSpec<\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  >\n")));
 
         PsiSignature signature = let.getSignature();
-        assertEquals("string => componentSpec<stateless, stateless, noRetainedProps, noRetainedProps, actionless>", signature.asText(myLanguage));
+        assertEquals("string => componentSpec<stateless, stateless, noRetainedProps, noRetainedProps, actionless>", signature.asText(getLangProps()));
     }
 
     public void test_parsing_named_params() {
@@ -28,7 +28,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
         PsiSignature signature = let.getSignature();
         assertEquals(3, signature.getItems().size());
-        assertEquals("(~v:length, ~h:length) => rule", signature.asText(myLanguage));
+        assertEquals("(~v:length, ~h:length) => rule", signature.asText(getLangProps()));
         assertFalse(signature.getItems().get(0).isOptional());
         assertEquals("v", signature.getItems().get(0).getNamedParam().getName());
         assertFalse(signature.getItems().get(1).isOptional());
@@ -55,10 +55,10 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
         assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
         assertFalse(parameters.get(1).getSignature().getItems().get(0).isOptional());
-        assertEquals("bool", parameters.get(2).getSignature().asText(myLanguage));
+        assertEquals("bool", parameters.get(2).getSignature().asText(getLangProps()));
         assertTrue(parameters.get(2).isOptional());
         assertEquals("false", parameters.get(2).getDefaultValue().getText());
-        assertEquals("float", parameters.get(3).getSignature().asText(myLanguage));
+        assertEquals("float", parameters.get(3).getSignature().asText(getLangProps()));
         assertTrue(parameters.get(3).isOptional());
         assertEquals("?", parameters.get(3).getDefaultValue().getText());
     }
@@ -79,7 +79,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
 
         assertEquals(1, fields.size());
-        assertEquals("{\"__html\": string}", fields.get(0).getSignature().asText(myLanguage));
+        assertEquals("{\"__html\": string}", fields.get(0).getSignature().asText(getLangProps()));
     }
 
     public void test_external_fun() {
@@ -87,7 +87,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
         PsiSignature signature = e.getSignature();
         assertSize(2, ORUtil.findImmediateChildrenOfClass(e.getSignature(), PsiSignatureItem.class));
-        assertEquals("reactRef => {..}", signature.asText(myLanguage));
+        assertEquals("reactRef => {..}", signature.asText(getLangProps()));
     }
 
     public void test_external_fun_2() {
@@ -105,14 +105,14 @@ public class SignatureParsingTest extends ResParsingTestCase {
         PsiExternal e = first(externalExpressions(parseCode("external e: option<show> = \"\"")));
 
         PsiSignatureItem sigItem = ORUtil.findImmediateChildrenOfClass(e.getSignature(), PsiSignatureItem.class).iterator().next();
-        assertEquals("option<show>", sigItem.asText(myLanguage));
+        assertEquals("option<show>", sigItem.asText(getLangProps()));
     }
 
     public void test_default_optional() {
         PsiLet let = first(letExpressions(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa")));
         PsiSignature signature = let.getSignature();
         // assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
-        // signature.asString(myLanguage));
+        // signature.asString(getLangProps()));
     }
 
     // TODO later

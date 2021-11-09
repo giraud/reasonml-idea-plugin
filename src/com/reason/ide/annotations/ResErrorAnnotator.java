@@ -73,6 +73,13 @@ public class ResErrorAnnotator {
 
         long compilationStartTime = System.currentTimeMillis();
 
+        // https://github.com/giraud/reasonml-idea-plugin/issues/362
+        // lib directory can be invalidated after a clean
+        if (!initialInfo.libRoot.isValid()) {
+            LOG.debug("lib directory is invalid, skip compilation");
+            return null;
+        }
+
         List<OutputInfo> info = compile((ResResolvedCompiler) initialInfo.compiler, arguments, initialInfo.libRoot);
 
         if (LOG.isTraceEnabled()) {
@@ -92,14 +99,14 @@ public class ResErrorAnnotator {
         return new AnnotationResult(info, initialInfo.editor, cmtFile);
     }
 
-    @NotNull static List<OutputInfo> compile(@NotNull ResResolvedCompiler compiler, @NotNull List<String> arguments, @NotNull VirtualFile workDir) {
+    static @NotNull List<OutputInfo> compile(@NotNull ResResolvedCompiler compiler, @NotNull List<String> arguments, @NotNull VirtualFile workDir) {
         List<String> command = new ArrayList<>();
         command.add(compiler.getPath());
         command.addAll(arguments.stream().filter(s -> !"-bin-annot".equals(s)).collect(Collectors.toList()));
 
         if (LOG.isTraceEnabled()) {
             LOG.trace(Joiner.join(" ", command.toArray(new String[0])));
-            LOG.trace("  work dir", workDir);
+            LOG.trace("  work dir" + (workDir.isValid() ? " [valid]" : " [not valid]"), workDir);
         }
 
         Process process = null;
@@ -117,14 +124,13 @@ public class ResErrorAnnotator {
                     processListener.onTextAvailable(line, ProcessOutputTypes.STDERR);
                 }
             }
-            process.destroy();
-
             return processListener.getOutputInfo();
-        } catch (IOException e) {
+        } catch (Exception e) {
+            LOG.info("Execution error", e);
+        } finally {
             if (process != null) {
-                process.destroyForcibly();
+                process.destroy();
             }
-            ORNotification.notifyError("Rescript", "Execution exception", e.getMessage(), null);
         }
 
         return emptyList();

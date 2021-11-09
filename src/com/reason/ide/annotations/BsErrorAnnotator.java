@@ -42,7 +42,7 @@ public class BsErrorAnnotator {
         Ninja ninja = compiler.readNinja();
         VirtualFile sourceFile = psiFile.getVirtualFile();
 
-        if (ninja.isRescriptFormat()) {
+        if (ninja != null && ninja.isRescriptFormat()) {
             List<String> args = isDevSource(sourceFile, contentRoot, config) ? ninja.getArgsDev() : ninja.getArgs();
             return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, null, editor, args, config.getJsxVersion());
         }
@@ -59,7 +59,7 @@ public class BsErrorAnnotator {
         // https://bucklescript.github.io/docs/en/build-configuration#sources
         for (String devSource : config.getDevSources()) {
             VirtualFile devFile = contentRoot.findFileByRelativePath(devSource);
-            if (devFile != null && FileUtil.isAncestor(devFile.getPath(), sourceFile.getPath(), true)) {
+            if (ninja != null && devFile != null && FileUtil.isAncestor(devFile.getPath(), sourceFile.getPath(), true)) {
                 ninja.addInclude(devSource);
             }
         }
@@ -110,6 +110,13 @@ public class BsErrorAnnotator {
     public static @Nullable AnnotationResult doAnnotate(@NotNull InitialInfo<? extends ORResolvedCompiler<?>> initialInfo) {
         File cmtFile;
         List<OutputInfo> info;
+
+        // https://github.com/giraud/reasonml-idea-plugin/issues/362
+        // lib directory can be invalidated after a clean
+        if (!initialInfo.libRoot.isValid()) {
+            LOG.debug("lib directory is invalid, skip compilation");
+            return null;
+        }
 
         if (initialInfo.oldFormat) {
             assert initialInfo.tempFile != null;
@@ -208,14 +215,14 @@ public class BsErrorAnnotator {
                     processListener.onTextAvailable(line, ProcessOutputTypes.STDERR);
                 }
             }
-            process.destroy();
 
             return processListener.getOutputInfo();
-        } catch (IOException e) {
+        } catch (Exception e) {
+            LOG.info("Execution error", e);
+        } finally {
             if (process != null) {
                 process.destroyForcibly();
             }
-            ORNotification.notifyError("Bucklescript", "Execution exception", e.getMessage(), null);
         }
 
         return emptyList();

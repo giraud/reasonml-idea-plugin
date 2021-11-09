@@ -15,29 +15,29 @@ public abstract class CompilerAction extends DumbAwareAction {
         super(text, description, icon);
     }
 
-    protected void doAction(@NotNull Project project, @NotNull CliType cliType) {
+    protected void doAction(@NotNull Project project, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         Editor editor = getActiveEditor(project);
         if (editor == null) {
-            compileDirectory(project, cliType);
+            compileDirectory(project, cliType, onProcessTerminated);
         } else {
-            compileFile(project, editor, cliType);
+            compileFile(project, editor, cliType, onProcessTerminated);
         }
     }
 
-    private static void compileDirectory(@NotNull Project project, @NotNull CliType cliType) {
+    private static void compileDirectory(@NotNull Project project, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         Compiler compiler = project.getService(ORCompilerManager.class).getCompiler(cliType);
         if (compiler != null) {
-            compiler.run(null, cliType, null);
+            compiler.run(null, cliType, onProcessTerminated);
         }
     }
 
-    private static void compileFile(@NotNull Project project, @NotNull Editor editor, @NotNull CliType cliType) {
+    private static void compileFile(@NotNull Project project, @NotNull Editor editor, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         Compiler compiler = project.getService(ORCompilerManager.class).getCompiler(cliType);
         PsiFile activeFile = getActiveFile(project, editor);
 
         // We always use the opened file to detect the config file
         if (activeFile != null && compiler != null) {
-            compiler.run(activeFile.getVirtualFile(), cliType, null);
+            compiler.run(activeFile.getVirtualFile(), cliType, onProcessTerminated);
         }
     }
 

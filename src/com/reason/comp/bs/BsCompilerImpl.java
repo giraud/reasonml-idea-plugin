@@ -27,12 +27,12 @@ public class BsCompilerImpl implements BsCompiler {
     private static final Log LOG = Log.create("compiler.bs");
 
     private final Project myProject;
-    private final Map<String, BsConfig> m_configs = new THashMap<>();
-    private final AtomicBoolean m_refreshNinjaIsNeeded = new AtomicBoolean(true);
+    private final Map<String, BsConfig> myConfigs = new THashMap<>();
+    private final AtomicBoolean myRefreshNinjaIsNeeded = new AtomicBoolean(true);
     private final AtomicBoolean myProcessStarted = new AtomicBoolean(false);
 
-    private Boolean m_disabled = null; // Never call directly, use isDisabled()
-    private Ninja m_ninja = new Ninja(null);
+    private Boolean myDisabled = null; // Never call directly, use isDisabled()
+    private Ninja myNinja = new Ninja(null);
 
     private BsCompilerImpl(@NotNull Project project) {
         myProject = project;
@@ -45,7 +45,7 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public void refreshNinjaBuild() {
-        m_refreshNinjaIsNeeded.compareAndSet(false, true);
+        myRefreshNinjaIsNeeded.compareAndSet(false, true);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class BsCompilerImpl implements BsCompiler {
         VirtualFile file = bsConfigFile.isDirectory() ? bsConfigFile.findChild(ORConstants.BS_CONFIG_FILENAME) : bsConfigFile;
         if (file != null) {
             BsConfig updatedConfig = BsConfigReader.read(file);
-            m_configs.put(file.getCanonicalPath(), updatedConfig);
+            myConfigs.put(file.getCanonicalPath(), updatedConfig);
         }
     }
 
@@ -100,7 +100,7 @@ public class BsCompilerImpl implements BsCompiler {
                     bscHandler.addProcessListener(new ProcessAdapter() {
                         @Override
                         public void processTerminated(@NotNull ProcessEvent event) {
-                            myProcessStarted.set(false);
+                            myProcessStarted.compareAndSet(true, false);
                             LOG.debug("Compilation process terminated, restart daemon code analyzer for all edited files");
                             DaemonCodeAnalyzer.getInstance(myProject).restart();
                         }
@@ -111,7 +111,7 @@ public class BsCompilerImpl implements BsCompiler {
                     myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
                 }
             } else {
-                myProcessStarted.set(false);
+                myProcessStarted.compareAndSet(true, false);
             }
         }
     }
@@ -152,37 +152,42 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public @NotNull Ninja readNinjaBuild(@Nullable VirtualFile contentRoot) {
-        if (m_refreshNinjaIsNeeded.get() && contentRoot != null) {
+        if (myRefreshNinjaIsNeeded.get() && contentRoot != null) {
             VirtualFile ninjaFile = contentRoot.findFileByRelativePath("lib/bs/build.ninja");
             if (ninjaFile != null) {
-                m_ninja = new Ninja(FileUtil.readFileContent(ninjaFile));
+                myNinja = new Ninja(FileUtil.readFileContent(ninjaFile));
             }
         }
 
-        return m_ninja;
+        return myNinja;
     }
 
     @Nullable
     private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
         String bsConfigPath = bsConfigFile.getCanonicalPath();
-        BsConfig bsConfig = m_configs.get(bsConfigPath);
+        BsConfig bsConfig = myConfigs.get(bsConfigPath);
         if (bsConfig == null) {
             refresh(bsConfigFile);
-            bsConfig = m_configs.get(bsConfigPath);
+            bsConfig = myConfigs.get(bsConfigPath);
         }
         return bsConfig;
     }
     // endregion
 
     private boolean isDisabled() {
-        if (m_disabled == null) {
-            m_disabled = Boolean.getBoolean("reasonBsbDisabled");
-            if (m_disabled) {
+        if (myDisabled == null) {
+            myDisabled = Boolean.getBoolean("reasonBsbDisabled");
+            if (myDisabled) {
                 // Possible but you should NEVER do that
                 Notifications.Bus.notify(new ORNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
             }
         }
 
-        return m_disabled;
+        return myDisabled;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return myProcessStarted.get();
     }
 }

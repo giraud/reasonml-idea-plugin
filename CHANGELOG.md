@@ -12,13 +12,20 @@
 
 ## Unreleased
 
+## 0.105 - 2021/11/09
+
+- :bug: [#362](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/362) Check invalid file before compile (rescript execution exception)
+- :bug: ![o] [#360](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/360) Should not display annotation signature
+- :bug: [#359](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/359) Doc not displayed for JSX component
+- :house: prevent multiple compiler run in parallel
+ 
 ## 0.104 - 2021/10/14
 
 - :bug: [#357](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/357) Read access is allowed from inside read-action
 - :bug: [#354](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/354) Update spellCheck strategy
 - :bug: ![r] [#353](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/353) Interpolation incorrectly parsed
 - :bug: [#352](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/352) CMT viewer is broken
-- :bug: [#327](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/32V) Use resolver for completions
+- :bug: [#327](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/327) Use resolver for completions
 
 ## 0.103 - 2021/09/21
 

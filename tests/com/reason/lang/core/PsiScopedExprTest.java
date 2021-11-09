@@ -1,26 +1,22 @@
 package com.reason.lang.core;
 
-import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.impl.PsiDeconstruction;
-import com.reason.lang.core.psi.impl.PsiUnit;
-import com.reason.lang.ocaml.OclParserDefinition;
+import com.intellij.psi.util.*;
+import com.reason.ide.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 @SuppressWarnings("ConstantConditions")
-public class PsiScopedExprTest extends BaseParsingTestCase {
-  public PsiScopedExprTest() {
-    super("", "ml", new OclParserDefinition());
-  }
+public class PsiScopedExprTest extends ORBasePlatformTestCase {
+    public void testEmptyScope() {
+        PsiLet e = PsiTreeUtil.findChildOfType(configureCode("A.ml", "let () = x1"), PsiLet.class);
 
-  public void testEmptyScope() {
-    PsiLet e = (PsiLet) firstElement(parseCode("let () = x1"));
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(e, PsiUnit.class));
+        assertNull(e.getName());
+    }
 
-    assertNotNull(ORUtil.findImmediateFirstChildOfClass(e, PsiUnit.class));
-  }
+    public void testNotEmptyScope() {
+        PsiLet e = PsiTreeUtil.findChildOfType(configureCode("A.ml", "let (a, b) = x"), PsiLet.class);
 
-  public void testNotEmptyScope() {
-    PsiLet e = (PsiLet) firstElement(parseCode("let (a, b) = x"));
-
-    assertNotNull(ORUtil.findImmediateFirstChildOfClass(e, PsiDeconstruction.class));
-  }
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(e, PsiDeconstruction.class));
+    }
 }

@@ -19,14 +19,23 @@ public class TypeParsingTest extends OclParsingTestCase {
     }
 
     public void test_recursive_type() {
-        PsiType type = first(typeExpressions(parseCode("type 'a tree = | Leaf of 'a | Tree of 'a tree  * 'a tree")));
+        PsiType type = first(typeExpressions(parseCode("type rec 'a tree = | Leaf of 'a | Tree of 'a tree  * 'a tree")));
         assertEquals("tree", type.getName());
     }
 
+    public void test_option() {
+        PsiType e = first(typeExpressions(parseCode("type t = int option")));
+
+        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        assertNotNull(option);
+        assertEquals("int option", option.getText());
+    }
+
     public void test_bindingWithVariant() {
-        assertNotNull(
-                first(findChildrenOfType(
-                        first(typeExpressions(parseCode("type t = | Tick"))), PsiTypeBinding.class)));
+        PsiType e = first(typeExpressions(parseCode("type t = | Tick")));
+
+        PsiTypeBinding binding = first(findChildrenOfType(e, PsiTypeBinding.class));
+        assertNotNull(binding);
     }
 
     public void test_bindingWithRecord() {
@@ -52,14 +61,9 @@ public class TypeParsingTest extends OclParsingTestCase {
     }
 
     public void test_bindingWithRecordAs() {
-        PsiTypeBinding typeBinding =
-                first(
-                        findChildrenOfType(
-                                first(
-                                        typeExpressions(
-                                                parseCode(
-                                                        "type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))),
-                                PsiTypeBinding.class));
+        PsiTypeBinding typeBinding = first(findChildrenOfType(first(
+                        typeExpressions(parseCode("type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))),
+                PsiTypeBinding.class));
         PsiRecord record = PsiTreeUtil.findChildOfType(typeBinding, PsiRecord.class);
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
         assertEquals(2, fields.size());
@@ -115,5 +119,13 @@ public class TypeParsingTest extends OclParsingTestCase {
         assertSize(2, f);
         assertEquals("buffer", f.get(0).getName());
         assertEquals("breakpoints", f.get(1).getName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/360
+    public void test_GH_360() {
+        PsiVal e = firstOfType(parseCode("val push : exn -> Exninfo.iexn\n [@@ocaml.deprecated \"please use [Exninfo.capture]\"]"), PsiVal.class);
+
+        PsiSignature signature = e.getSignature();
+        assertEquals("exn -> Exninfo.iexn", signature.getText());
     }
 }

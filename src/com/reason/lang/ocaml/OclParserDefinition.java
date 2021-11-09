@@ -70,6 +70,6 @@ public class OclParserDefinition implements ParserDefinition {
             return ((ORStubElementType) type).createPsi(node);
         }
 
-        throw new IllegalArgumentException("Not an OCaml node: " + node + " (" + type + ", " + type.getLanguage() + "): " + node.getText());
+        throw new IllegalArgumentException("Not an OCaml stub node: " + node + " (" + type + ", " + type.getLanguage() + "): " + node.getText());
     }
 }

@@ -1,10 +1,12 @@
 package com.reason.ide.console;
 
 import com.intellij.execution.ui.*;
+import com.intellij.openapi.application.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.ui.*;
 import com.intellij.openapi.wm.*;
 import com.intellij.ui.content.*;
+import com.intellij.util.concurrency.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.Compiler.*;
 import com.reason.comp.*;
@@ -33,7 +35,7 @@ public class ORToolWindowManager {
         return panel == null ? null : (ConsoleView) panel.getComponent(0);
     }
 
-    public void showHideToolWindows() {
+    public void showShowToolWindows() {
         setToolWindowAvailable(RescriptToolWindowFactory.ID, shouldShowRescriptToolWindow(myProject));
         setToolWindowAvailable(BsToolWindowFactory.ID, shouldShowBsToolWindow(myProject));
         setToolWindowAvailable(DuneToolWindowFactory.ID, shouldShowDuneToolWindow(myProject));
@@ -46,7 +48,11 @@ public class ORToolWindowManager {
             toolWindow.setAvailable(compiler != null, () -> {
                 ConsoleView consoleView = getConsoleView(id);
                 if (consoleView != null && compiler != null) {
-                    consoleView.print("Detected compiler: " + compiler.getFullVersion(null) + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                    ReadAction.nonBlocking(() -> compiler.getFullVersion(null)) // slow operation not allowed on UI thread
+                            .finishOnUiThread(ModalityState.defaultModalityState(),
+                                    version -> consoleView.print("Detected compiler: " + version + "\n", ConsoleViewContentType.NORMAL_OUTPUT))
+                            .coalesceBy(compiler)
+                            .submit(AppExecutorUtil.getAppExecutorService());
                 }
             });
         }

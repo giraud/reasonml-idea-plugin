@@ -13,6 +13,14 @@ public class ShowDocOCLTest extends ORBasePlatformTestCase {
         FileBase a = configureCode("A.ml", "Doc.x<caret>");
 
         String doc = getDoc(a, LANG);
-        assertEquals("<div style='padding-bottom: 5px; border-bottom: 1px solid #AAAAAAEE'>Doc</div><div><p> doc for x </p></div>", doc);
+        assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let x</i></p></div><div class=\"content\"><p>doc for x</p></div>", doc);
+    }
+
+    public void test_type() {
+        FileBase a = configureCode("A.ml", "(** my type *) type t<caret> = string");
+
+        String doc = getDoc(a, LANG);
+
+        assertEquals("<div class=\"definition\"><b>A</b><p><i>type t</i></p></div><div class=\"content\"><p>my type</p></div>", doc);
     }
 }

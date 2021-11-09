@@ -9,7 +9,7 @@ import com.reason.lang.core.type.*;
 abstract class OclParsingTestCase extends BaseParsingTestCase {
     public ORTypes m_types = OclTypes.INSTANCE;
 
-    public OclParsingTestCase() {
+    protected OclParsingTestCase() {
         super("", "ml", new OclParserDefinition());
     }
 
@@ -20,5 +20,9 @@ abstract class OclParsingTestCase extends BaseParsingTestCase {
         stubElementTypeHolderEP.holderClass = OclStubBasedElementTypes.class.getName();
         registerExtension(StubElementTypeHolderEP.EP_NAME, stubElementTypeHolderEP);
         LanguageASTFactory.INSTANCE.addExplicitExtension(OclLanguage.INSTANCE, new OclASTFactory());
+    }
+
+    protected ORLanguageProperties getLangProps() {
+        return ORLanguageProperties.cast(myLanguage);
     }
 }

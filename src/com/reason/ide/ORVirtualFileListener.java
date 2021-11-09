@@ -71,7 +71,7 @@ class ORVirtualFileListener implements AsyncFileListener {
                 LOG.info("Update tool windows visibility");
                 for (Project project : ProjectManager.getInstance().getOpenProjects()) {
                     ORToolWindowManager toolWindowManager = project.getService(ORToolWindowManager.class);
-                    ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
+                    ApplicationManager.getApplication().invokeLater(toolWindowManager::showShowToolWindows);
                 }
             }
         }

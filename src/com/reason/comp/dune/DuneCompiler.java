@@ -103,7 +103,7 @@ public class DuneCompiler implements Compiler {
                 processHandler.addProcessListener(new ProcessFinishedListener());
                 processHandler.addProcessListener(new ProcessAdapter() {
                     @Override public void processTerminated(@NotNull ProcessEvent event) {
-                        myProcessStarted.set(false);
+                        myProcessStarted.compareAndSet(true, false);
                     }
                 });
 
@@ -112,8 +112,13 @@ public class DuneCompiler implements Compiler {
 
                 myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
             } else {
-                myProcessStarted.set(false);
+                myProcessStarted.compareAndSet(true, false);
             }
         }
+    }
+
+    @Override
+    public boolean isRunning() {
+        return myProcessStarted.get();
     }
 }

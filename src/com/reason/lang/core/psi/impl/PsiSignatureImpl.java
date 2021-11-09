@@ -2,6 +2,7 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.psi.tree.*;
+import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
@@ -14,9 +15,6 @@ import java.util.*;
 import java.util.stream.*;
 
 public class PsiSignatureImpl extends CompositeTypePsiElement<ORTypes> implements PsiSignature {
-    private static final String REASON_SEPARATOR = " => ";
-    private static final String OCAML_SEPARATOR = " -> ";
-
     PsiSignatureImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
@@ -27,42 +25,40 @@ public class PsiSignatureImpl extends CompositeTypePsiElement<ORTypes> implement
     }
 
     @Override
-    public @NotNull String asText(@NotNull Language lang) {
+    public @NotNull String asText(@NotNull ORLanguageProperties toLang) {
         List<PsiSignatureItem> items = getItems();
         if (items.isEmpty()) {
             return "";
         }
 
-
+        boolean reason = toLang == RmlLanguage.INSTANCE || toLang == ResLanguage.INSTANCE;
         boolean isFunction = 1 < items.size();
-        boolean reason = lang == RmlLanguage.INSTANCE || lang == ResLanguage.INSTANCE;
 
         String signatureText;
-        if (lang.equals(getLanguage())) {
+        if (toLang.equals(getLanguage())) {
             signatureText = getText();
         } else {
             StringBuilder sb = new StringBuilder();
-            String inputSeparator = reason ? ", " : OCAML_SEPARATOR;
 
-            List<String> conversions = items.stream().map(item -> item.asText(lang)).collect(Collectors.toList());
+            List<String> conversions = items.stream().map(item -> item.asText(toLang)).collect(Collectors.toList());
             String result = conversions.remove(items.size() - 1);
 
             if (isFunction) {
                 if (reason && 1 < conversions.size()) {
                     sb.append("(");
                 }
-                sb.append(Joiner.join(inputSeparator, conversions));
+                sb.append(Joiner.join(toLang.getParameterSeparator(), conversions));
                 if (reason && 1 < conversions.size()) {
                     sb.append(")");
                 }
-                sb.append(reason ? REASON_SEPARATOR : OCAML_SEPARATOR);
+                sb.append(toLang.getFunctionSeparator());
             }
             sb.append(result);
             signatureText = sb.toString();
         }
 
         String text = signatureText.replaceAll("\\s+", " ");
-        if (lang == ResLanguage.INSTANCE) {
+        if (toLang == ResLanguage.INSTANCE) {
             text = text
                     .replaceAll("< ", "<")
                     .replaceAll(", >", ">");

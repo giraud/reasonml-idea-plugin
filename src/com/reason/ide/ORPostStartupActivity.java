@@ -33,7 +33,7 @@ public class ORPostStartupActivity implements StartupActivity, DumbAware {
                 }
             }
 
-            project.getService(ORToolWindowManager.class).showHideToolWindows();
+            project.getService(ORToolWindowManager.class).showShowToolWindows();
         });
     }
 }

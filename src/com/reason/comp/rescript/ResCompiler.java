@@ -69,6 +69,10 @@ public class ResCompiler implements Compiler {
     public void run(@Nullable VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
         ORSettings settings = myProject.getService(ORSettings.class);
         if (!isDisabled() && settings.isBsEnabled()) {
+            if (sourceFile != null) {
+                myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
+            }
+
             // ResPlatform.findRescriptExe
             VirtualFile bsConfig = sourceFile == null ? ResPlatform.findConfigFile(myProject) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, sourceFile);
             if (bsConfig == null) {
@@ -82,36 +86,37 @@ public class ResCompiler implements Compiler {
 
             if (bin != null && console != null) {
                 try {
-                    GeneralCommandLine cli = getCommandLine(bin.getPath(), (CliType.Rescript) cliType);
-
-                    cli.withWorkDirectory(bsConfig.getParent().getPath());
-                    cli.withEnvironment("NINJA_ANSI_FORCED", "1");
-                    if (!settings.isUseSuperErrors()) {
-                        cli.withEnvironment("BS_VSCODE", "1");
-                    }
-
-                    ResProcessHandler processHandler = new ResProcessHandler(cli);
                     if (myProcessStarted.compareAndSet(false, true)) {
+                        GeneralCommandLine cli = getCommandLine(bin.getPath(), (CliType.Rescript) cliType);
+
+                        cli.withWorkDirectory(bsConfig.getParent().getPath());
+                        cli.withEnvironment("NINJA_ANSI_FORCED", "1");
+                        if (!settings.isUseSuperErrors()) {
+                            cli.withEnvironment("BS_VSCODE", "1");
+                        }
+
+                        ResProcessHandler processHandler = new ResProcessHandler(cli);
                         processHandler.addProcessListener(new ProcessFinishedListener(System.currentTimeMillis()));
                         processHandler.addProcessListener(new ProcessAdapter() {
-                            @Override public void processTerminated(@NotNull ProcessEvent event) {
-                                myProcessStarted.set(false);
+                            @Override
+                            public void processTerminated(@NotNull ProcessEvent event) {
+                                if (onProcessTerminated != null) {
+                                    onProcessTerminated.run();
+                                }
                                 // When build is done, we need to refresh editors to be notified of the latest modifications
                                 LOG.debug("Compilation process terminated, restart daemon code analyzer for all edited files");
                                 DaemonCodeAnalyzer.getInstance(myProject).restart();
+
+                                myProcessStarted.compareAndSet(true, false);
                             }
                         });
 
                         console.attachToProcess(processHandler);
                         processHandler.startNotify();
-
-                        if (sourceFile != null) {
-                            myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
-                        }
                     }
                 } catch (ExecutionException e) {
                     ORNotification.notifyError("Rescript", "Execution exception", e.getMessage(), null);
-                    //return null;
+                    myProcessStarted.compareAndSet(true, false);
                 }
             }
         }
@@ -129,16 +134,16 @@ public class ResCompiler implements Compiler {
     }
 
     public @NotNull Ninja readNinjaBuild(@Nullable VirtualFile contentRoot) {
-        @NotNull Ninja m_ninja = new Ninja(null);
+        @NotNull Ninja ninja = new Ninja(null);
 
         if (/*m_refreshNinjaIsNeeded.get() &&*/ contentRoot != null) {
             VirtualFile ninjaFile = contentRoot.findFileByRelativePath("lib/bs/build.ninja");
             if (ninjaFile != null) {
-                m_ninja = new Ninja(FileUtil.readFileContent(ninjaFile));
+                ninja = new Ninja(FileUtil.readFileContent(ninjaFile));
             }
         }
 
-        return m_ninja;
+        return ninja;
     }
 
     @Override
@@ -156,5 +161,10 @@ public class ResCompiler implements Compiler {
 
     private boolean isDisabled() {
         return false;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return myProcessStarted.get();
     }
 }
