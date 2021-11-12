@@ -12,7 +12,9 @@
 
 ## Unreleased
 
-## 0.105 - 2021/11/09
+## 0.105.1 - 2021/11/12
+
+Logo changed: it was too similar to the jetbrains plugins
 
 - :bug: [#362](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/362) Check invalid file before compile (rescript execution exception)
 - :bug: ![o] [#360](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/360) Should not display annotation signature
