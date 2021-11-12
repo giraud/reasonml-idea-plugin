@@ -1,5 +1,3 @@
-<img height="96" src="website/static/img/reason-idea-plugin.svg"/> 
-
 # Reason IDEA Plugin
 
 [**giraud.github.io/reasonml-idea-plugin**](https://giraud.github.io/reasonml-idea-plugin/)
