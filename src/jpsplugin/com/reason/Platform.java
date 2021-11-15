@@ -54,15 +54,15 @@ public class Platform {
         return plugin == null ? null : plugin.getPluginPath();
     }
 
-    private static @NotNull Map<Module, VirtualFile> findContentRootsFor(@NotNull Project project, @NotNull String filename) {
+    public static @NotNull Map<Module, VirtualFile> findContentRootsFor(@NotNull Project project, @NotNull String filename) {
         Map<Module, VirtualFile> rootContents = new HashMap<>();
 
         ModuleManager moduleManager = ModuleManager.getInstance(project);
         for (Module module : moduleManager.getModules()) {
             for (VirtualFile contentRoot : ModuleRootManager.getInstance(module).getContentRoots()) {
-                VirtualFile packageJson = contentRoot.findChild(filename);
-                if (packageJson != null && !rootContents.containsKey(module)) {
-                    rootContents.put(module, packageJson);
+                VirtualFile child = contentRoot.findChild(filename);
+                if (child != null && !rootContents.containsKey(module)) {
+                    rootContents.put(module, child);
                 }
             }
         }

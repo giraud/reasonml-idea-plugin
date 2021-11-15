@@ -5,18 +5,16 @@ import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
+import com.reason.comp.ocaml.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
-import java.util.concurrent.atomic.*;
 
 public final class DuneProcess {
     private final @NotNull Project myProject;
-
-    private @Nullable KillableColoredProcessHandler m_processHandler;
+    private @Nullable KillableColoredProcessHandler myProcessHandler;
 
     DuneProcess(@NotNull Project project) {
         myProject = project;
@@ -24,35 +22,35 @@ public final class DuneProcess {
 
     // Wait for the tool window to be ready before starting the process
     public void startNotify() {
-        if (m_processHandler != null && !m_processHandler.isStartNotified()) {
+        if (myProcessHandler != null && !myProcessHandler.isStartNotified()) {
             try {
-                m_processHandler.startNotify();
+                myProcessHandler.startNotify();
             } catch (Throwable e) {
                 // already done ?
             }
         }
     }
 
-    public @Nullable ProcessHandler create(@NotNull VirtualFile source, @NotNull CliType cliType, @NotNull AtomicBoolean configurationWarning, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    public @Nullable ProcessHandler create(@NotNull VirtualFile source, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         try {
             killIt();
 
-            GeneralCommandLine cli = new DuneCommandLine(myProject, "dune")
+            GeneralCommandLine cli = new DuneCommandLine(myProject, DunePlatform.DUNE_EXECUTABLE_NAME)
                     .addParameters((CliType.Dune) cliType)
-                    .create(source, configurationWarning);
+                    .create(source);
 
             if (cli != null) {
-                m_processHandler = new KillableColoredProcessHandler(cli);
+                myProcessHandler = new KillableColoredProcessHandler(cli);
                 if (onProcessTerminated != null) {
-                    m_processHandler.addProcessListener(new ProcessAdapter() {
+                    myProcessHandler.addProcessListener(new ProcessAdapter() {
                         @Override
                         public void processTerminated(@NotNull ProcessEvent event) {
-                            onProcessTerminated.run();
+                            onProcessTerminated.run(null);
                         }
                     });
                 }
             }
-            return m_processHandler;
+            return myProcessHandler;
         } catch (ExecutionException e) {
             ORNotification.notifyError("Dune", "Execution exception", e.getMessage(), null);
             return null;
@@ -60,9 +58,9 @@ public final class DuneProcess {
     }
 
     private void killIt() {
-        if (m_processHandler != null) {
-            m_processHandler.killProcess();
-            m_processHandler = null;
+        if (myProcessHandler != null) {
+            myProcessHandler.killProcess();
+            myProcessHandler = null;
         }
     }
 

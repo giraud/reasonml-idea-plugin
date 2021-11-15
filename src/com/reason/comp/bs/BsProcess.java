@@ -8,7 +8,6 @@ import com.intellij.notification.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
-import com.reason.comp.Compiler;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -25,7 +24,7 @@ public final class BsProcess {
         myProject = project;
     }
 
-    @Nullable ProcessHandler create(@NotNull VirtualFile source, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    @Nullable ProcessHandler create(@NotNull VirtualFile source, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         try {
             if (cliType instanceof CliType.Bs) {
                 return createProcessHandler(source, (CliType.Bs) cliType, onProcessTerminated);
@@ -40,13 +39,13 @@ public final class BsProcess {
     }
 
     @Nullable
-    private ProcessHandler createProcessHandler(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) throws ExecutionException {
+    private ProcessHandler createProcessHandler(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) throws ExecutionException {
         killIt();
         GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
         if (cli != null) {
-            myBsb = new BsColoredProcessHandler(cli, () -> {
+            myBsb = new BsColoredProcessHandler(cli, (_none) -> {
                 if (onProcessTerminated != null) {
-                    onProcessTerminated.run();
+                    onProcessTerminated.run(null);
                 }
 
                 // When build is done, we need to refresh editors to be notified of the latest modifications

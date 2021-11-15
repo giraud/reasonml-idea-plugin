@@ -20,12 +20,11 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 
-public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactory {
+public class OClSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactory {
     @Override
     public SdkPathEditor createPathEditor(final Sdk sdk) {
-        FileChooserDescriptor descriptor =
-                new FileChooserDescriptor(true, true, false, false, false, true);
-        return new OCamlSourcesOrderRootTypeUIFactory.SourcesPathEditor(descriptor);
+        FileChooserDescriptor descriptor = new FileChooserDescriptor(true, true, false, false, false, true);
+        return new OClSourcesOrderRootTypeUIFactory.SourcesPathEditor(descriptor);
     }
 
     @Override
@@ -40,18 +39,13 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
 
     private static class SourcesPathEditor extends SdkPathEditor {
         SourcesPathEditor(@NotNull FileChooserDescriptor descriptor) {
-            super("Sourcepath", OCamlSourcesOrderRootType.getInstance(), descriptor);
+            super("Sourcepath", OclSourcesOrderRootType.getInstance(), descriptor);
         }
 
         @Override
         protected VirtualFile @NotNull [] adjustAddedFileSet(final Component component, final VirtualFile[] files) {
-            java.util.List<OrderRoot> orderRoots =
-                    RootDetectionUtil.detectRoots(
-                            Arrays.asList(files),
-                            component,
-                            null,
-                            new OCamlRootsDetector(),
-                            new OrderRootType[]{OCamlSourcesOrderRootType.getInstance()});
+            java.util.List<OrderRoot> orderRoots = RootDetectionUtil.detectRoots(Arrays.asList(files), component, null, new OCamlRootsDetector(),
+                    new OrderRootType[]{OclSourcesOrderRootType.getInstance()});
 
             List<VirtualFile> result = new ArrayList<>();
             for (OrderRoot root : orderRoots) {
@@ -65,7 +59,7 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
             @Override
             public @NotNull Collection<DetectedLibraryRoot> detectRoots(@NotNull VirtualFile rootCandidate, @NotNull ProgressIndicator progressIndicator) {
                 List<DetectedLibraryRoot> result = new ArrayList<>();
-                OrderRootType OCAML_SOURCES = OCamlSourcesOrderRootType.getInstance();
+                OrderRootType OCAML_SOURCES = OclSourcesOrderRootType.getInstance();
                 Collection<VirtualFile> files = suggestOCamlRoots(rootCandidate, progressIndicator);
                 for (VirtualFile file : files) {
                     result.add(new DetectedLibraryRoot(file, OCAML_SOURCES, false));
@@ -113,7 +107,7 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
 
             @Override
             public @Nullable String getRootTypeName(@NotNull LibraryRootType rootType) {
-                if (OCamlSourcesOrderRootType.getInstance().equals(rootType.getType())
+                if (OclSourcesOrderRootType.getInstance().equals(rootType.getType())
                         && !rootType.isJarDirectory()) {
                     return "sources";
                 }

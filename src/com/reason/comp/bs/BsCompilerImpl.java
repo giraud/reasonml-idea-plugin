@@ -77,12 +77,12 @@ public class BsCompilerImpl implements BsCompiler {
     }
 
     @Override
-    public void runDefault(@NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated) {
+    public void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         run(file, CliType.Bs.MAKE, onProcessTerminated);
     }
 
     @Override
-    public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
+    public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         if (!isDisabled() && myProject.getService(ORSettings.class).isBsEnabled()) {
             VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : file;
             Optional<VirtualFile> bsConfigFile = sourceFile == null ? Optional.empty() : BsPlatform.findBsConfig(myProject, sourceFile);

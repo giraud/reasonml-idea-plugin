@@ -40,12 +40,12 @@ public class EsyCompiler implements Compiler {
     }
 
     @Override
-    public void runDefault(@NotNull VirtualFile file, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    public void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         run(file, CliType.Esy.BUILD, onProcessTerminated);
     }
 
     @Override
-    public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
+    public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         if (!(cliType instanceof CliType.Esy)) {
             LOG.error("Invalid cliType for esy compiler. cliType = " + cliType);
             return;

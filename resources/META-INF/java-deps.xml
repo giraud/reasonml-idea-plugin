@@ -1,14 +1,6 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <sdkType implementation="jpsplugin.com.reason.sdk.OCamlSdkType"/>
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
-        <moduleConfigurationEditorProvider implementation="jpsplugin.com.reason.module.OCamlDefaultModuleEditorsProvider"/>
-        <projectStructure.sourceRootEditHandler implementation="jpsplugin.com.reason.module.OCamlBinaryRootEditHandler"/>
-
-        <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="jpsplugin.com.reason.OCamlSourcesOrderRootTypeUIFactory"/>
-
-        <projectService serviceImplementation="com.reason.comp.dune.OpamProcess"/>
-        <projectService serviceImplementation="com.reason.comp.dune.OpamEnv"/>
 
         <!--
          | External system integration (the import from model...)
@@ -18,30 +10,9 @@
         <projectImportBuilder implementation="com.reason.ide.importWizard.DuneProjectImportBuilder"/>
 
         <!--
-         | Listeners
-         -->
-
-        <projectService serviceImplementation="com.reason.ide.ORFacetListener"/>
-
-        <!--
-         | OCaml module builder
-         -->
-
-        <moduleType id="ocamlModuleType" implementationClass="jpsplugin.com.reason.module.OCamlModuleType"/>
-        <moduleBuilder builderClass="jpsplugin.com.reason.module.OCamlModuleBuilder"/>
-
-        <facetType implementation="com.reason.ide.facet.DuneFacetType"/>
-        <framework.detector implementation="com.reason.ide.facet.DuneFrameworkDetector"/>
-
-        <!-- Dune -->
-
-        <projectService serviceImplementation="com.reason.comp.dune.DuneCompiler"/>
-
-        <!--
          | UI
          -->
 
-        <toolWindow id="Dune:" anchor="bottom" factoryClass="com.reason.ide.console.dune.DuneToolWindowFactory"/>
         <toolWindow id="Esy:" anchor="bottom" factoryClass="com.reason.ide.console.esy.EsyToolWindowFactory"/>
 
     </extensions>

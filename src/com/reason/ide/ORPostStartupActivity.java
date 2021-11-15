@@ -1,13 +1,11 @@
 package com.reason.ide;
 
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.projectRoots.*;
-import com.intellij.openapi.roots.ui.configuration.projectRoot.*;
 import com.intellij.openapi.startup.*;
-import com.reason.comp.dune.*;
+import com.reason.comp.ocaml.*;
 import com.reason.ide.console.*;
+import com.reason.ide.settings.*;
 import jpsplugin.com.reason.*;
-import jpsplugin.com.reason.sdk.*;
 import org.jetbrains.annotations.*;
 
 /**
@@ -18,20 +16,15 @@ public class ORPostStartupActivity implements StartupActivity, DumbAware {
 
     @Override
     public void runActivity(@NotNull Project project) {
-        ORProjectRootListener.ensureSubscribed(project);
-        ORFacetListener.ensureSubscribed(project);
         ORFileDocumentListener.ensureSubscribed(project);
         LOG.debug("Subscribed project and document listeners.");
 
         DumbService.getInstance(project).smartInvokeLater(() -> {
-            ProjectSdksModel model = new ProjectSdksModel();
-            model.reset(project);
+            ORSettings settings = project.getService(ORSettings.class);
+
             OpamEnv opamEnv = project.getService(OpamEnv.class);
-            for (Sdk sdk : model.getSdks()) {
-                if (sdk.getSdkType() instanceof OCamlSdkType) {
-                    opamEnv.computeEnv(sdk, data -> LOG.debug("Computed opam env for " + sdk));
-                }
-            }
+            opamEnv.computeEnv(settings.getOpamLocation(), settings.getSwitchName(), settings.getCygwinBash(),
+                    data -> LOG.debug("Computed opam env for " + settings.getSwitchName()));
 
             project.getService(ORToolWindowManager.class).showShowToolWindows();
         });

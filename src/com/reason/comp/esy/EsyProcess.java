@@ -6,7 +6,6 @@ import com.intellij.execution.process.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
 import jpsplugin.com.reason.*;
@@ -38,7 +37,7 @@ public class EsyProcess {
     }
 
     @Nullable
-    public ProcessHandler create(@NotNull VirtualFile source, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    public ProcessHandler create(@NotNull VirtualFile source, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         killIt();
 
         Optional<VirtualFile> workingDirOptional = findWorkingDirectory(myProject);
@@ -109,11 +108,11 @@ public class EsyProcess {
         return esyContentRootOptional;
     }
 
-    private static final Function<Compiler.ProcessTerminated, ProcessListener> processTerminatedListener = (onProcessTerminated) ->
+    private static final Function<ORProcessTerminated<Void>, ProcessListener> processTerminatedListener = (onProcessTerminated) ->
             new ProcessAdapter() {
                 @Override
                 public void processTerminated(@NotNull ProcessEvent event) {
-                    onProcessTerminated.run();
+                    onProcessTerminated.run(null);
                 }
             };
 }

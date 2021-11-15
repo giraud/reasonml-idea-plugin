@@ -1,25 +1,48 @@
 package com.reason.ide.settings;
 
+import com.intellij.execution.wsl.*;
+import com.intellij.openapi.application.*;
 import com.intellij.openapi.fileChooser.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.*;
+import com.intellij.openapi.roots.*;
+import com.intellij.openapi.roots.libraries.*;
+import com.intellij.openapi.roots.libraries.ui.*;
+import com.intellij.openapi.roots.libraries.ui.impl.*;
 import com.intellij.openapi.ui.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.util.ui.*;
+import com.intellij.workspaceModel.ide.impl.legacyBridge.library.*;
+import com.reason.comp.dune.*;
+import com.reason.comp.ocaml.*;
+import com.reason.ide.console.*;
+import com.reason.ide.library.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
+import javax.swing.table.*;
+import java.awt.event.*;
+import java.nio.file.*;
+import java.util.*;
 
 public class ORSettingsConfigurable implements SearchableConfigurable, Configurable.NoScroll {
-
     @Nls
     private static final String BS_PLATFORM_LOCATION_LABEL = "Choose bs-platform Directory: ";
     @Nls
     private static final String ESY_EXECUTABLE_LABEL = "Choose esy Executable: ";
 
-    private final @NotNull Project m_project;
-    private ORSettings m_settings;
+    private final @NotNull Project myProject;
+    private ORSettings mySettings;
+    private final List<String[]> myEnv = new ArrayList<>();
 
-    private JPanel f_rootPanel;
-    private JTabbedPane f_tabs;
+    private JPanel myRootPanel;
+    private JTabbedPane myTabs;
+
+    private TextFieldWithBrowseButton myOpamLocation;
+    private boolean myIsWsl = false;
+    private String myCygwinBash;
 
     // General
     private JTextField f_generalFormatWidthColumns;
@@ -30,11 +53,16 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     private JCheckBox f_bsIsEnabled;
     private TextFieldWithBrowseButton f_bsPlatformLocation;
 
+    // Opam
+    private JComboBox<String> mySwitchSelect;
+
     // Esy
     private TextFieldWithBrowseButton f_esyExecutable;
+    private JLabel myDetectionLabel;
+    private JTable myOpamLibraries;
 
     public ORSettingsConfigurable(@NotNull Project project) {
-        m_project = project;
+        myProject = project;
     }
 
     @NotNull
@@ -59,81 +87,273 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     @Nullable
     @Override
     public JComponent createComponent() {
-        m_settings = m_project.getService(ORSettings.class);
+        mySettings = myProject.getService(ORSettings.class);
         createGeneralTab();
         createBsTab();
-        createDuneTab();
+        createOpamTab();
         createEsyTab();
-        return f_rootPanel;
+
+
+        mySwitchSelect.addItemListener(itemEvent -> {
+            if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+                String version = (String) itemEvent.getItem();
+                clearEnv();
+                listLibraries(version);
+            }
+        });
+
+        myOpamLibraries.setBorder(BorderFactory.createLineBorder(JBUI.CurrentTheme.DefaultTabs.borderColor()));
+        listLibraries(mySettings.getSwitchName());
+
+        return myRootPanel;
     }
 
     @Override
     public void apply() {
         // General
-        m_settings.setFormatOnSaveEnabled(f_generalIsFormatOnSave.isSelected());
-        m_settings.setFormatColumnWidth(sanitizeInput(f_generalFormatWidthColumns));
-        m_settings.setUseSuperErrors(myUseSuperErrorsCheckBox.isSelected());
+        mySettings.setFormatOnSaveEnabled(f_generalIsFormatOnSave.isSelected());
+        mySettings.setFormatColumnWidth(sanitizeInput(f_generalFormatWidthColumns));
+        mySettings.setUseSuperErrors(myUseSuperErrorsCheckBox.isSelected());
         // BuckleScript
-        m_settings.setBsEnabled(f_bsIsEnabled.isSelected());
-        m_settings.setBsPlatformLocation(sanitizeInput(f_bsPlatformLocation));
+        mySettings.setBsEnabled(f_bsIsEnabled.isSelected());
+        mySettings.setBsPlatformLocation(sanitizeInput(f_bsPlatformLocation));
+        // Opam
+        mySettings.setOpamLocation(sanitizeInput(myOpamLocation));
+        mySettings.setCygwinBash(myCygwinBash);
+        mySettings.setIsWsl(myIsWsl);
+        mySettings.setSwitchName((String) mySwitchSelect.getSelectedItem());
         // Esy
-        m_settings.setEsyExecutable(sanitizeInput(f_esyExecutable));
+        mySettings.setEsyExecutable(sanitizeInput(f_esyExecutable));
+
+        // Create external library based on the selected opam switch
+        createExternalLibraryDependency(mySettings);
+        // Compute env
+        OpamEnv opamEnv = myProject.getService(OpamEnv.class);
+        opamEnv.computeEnv(mySettings.getOpamLocation(), mySettings.getSwitchName(), mySettings.getCygwinBash(), null);
+        // Display compiler info in console (if any)
+        myProject.getService(ORToolWindowManager.class).showShowToolWindows();
+    }
+
+    private void createExternalLibraryDependency(ORSettings settings) {
+        Project project = settings.getProject();
+
+        LibraryTable projectLibraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project);
+        LibraryTable.ModifiableModel projectLibraryTableModel = projectLibraryTable.getModifiableModel();
+
+        String libraryName = "switch:" + settings.getSwitchName();
+
+        // Remove existing lib
+        Library oldLibrary = projectLibraryTableModel.getLibraryByName(libraryName);
+        VirtualFile opamRootCandidate = VirtualFileManager.getInstance().findFileByNioPath(Path.of(settings.getOpamLocation(), settings.getSwitchName()));
+        if (opamRootCandidate != null && opamRootCandidate.exists() && opamRootCandidate.isValid()) {
+            Library library = oldLibrary == null ? projectLibraryTableModel.createLibrary(libraryName, OclLibraryKind.INSTANCE) : null;
+            Library.ModifiableModel libraryModel = library == null ? null : library.getModifiableModel();
+
+            if (libraryModel != null) {
+                OclLibraryType libraryType = (OclLibraryType) LibraryType.findByKind(OclLibraryKind.INSTANCE);
+                LibraryRootsComponentDescriptor rootsComponentDescriptor = libraryType.createLibraryRootsComponentDescriptor();
+                List<OrderRoot> orderRoots = RootDetectionUtil.detectRoots(Collections.singleton(opamRootCandidate), myRootPanel, project, rootsComponentDescriptor);
+                for (OrderRoot orderRoot : orderRoots) {
+                    libraryModel.addRoot(orderRoot.getFile(), orderRoot.getType());
+                }
+            }
+
+            ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(() -> {
+                if (libraryModel != null) {
+                    libraryModel.commit();
+                    projectLibraryTableModel.commit();
+                }
+
+                // Find module that contains dune config root file
+                Map<Module, VirtualFile> duneContentRoots = Platform.findContentRootsFor(project, DunePlatform.DUNE_PROJECT_FILENAME);
+                for (Module module : duneContentRoots.keySet()) {
+                    ModuleRootModificationUtil.updateModel(module, moduleModel -> {
+                        // Remove all libraries entries that are of type Ocaml
+                        moduleModel.orderEntries().forEach(entry -> {
+                            Library entryLibrary = (entry instanceof LibraryOrderEntry) ? ((LibraryOrderEntry) entry).getLibrary() : null;
+                            PersistentLibraryKind<?> entryLibraryKind = (entryLibrary instanceof LibraryBridge) ? ((LibraryBridge) entryLibrary).getKind() : null;
+                            if (entryLibraryKind instanceof OclLibraryKind) {
+                                moduleModel.removeOrderEntry(entry);
+                            }
+
+                            return true;
+                        });
+                        // Add the new lib as order entry
+                        moduleModel.addLibraryEntry(library == null ? oldLibrary : library);
+                    });
+                }
+            }));
+        }
+    }
+
+
+    private void listLibraries(@NotNull String version) {
+        myProject.getService(OpamProcess.class)
+                .list(myOpamLocation.getText(), version, myCygwinBash, libs -> {
+                    myEnv.clear();
+                    if (libs != null) {
+                        myEnv.addAll(libs);
+                    }
+                    myOpamLibraries.setModel(createDataModel());
+                });
+    }
+
+    @NotNull
+    private AbstractTableModel createDataModel() {
+        return new AbstractTableModel() {
+            @Override
+            public int getRowCount() {
+                return myEnv.size();
+            }
+
+            @Override
+            public int getColumnCount() {
+                return 3;
+            }
+
+            @Override
+            public @NotNull Object getValueAt(int rowIndex, int columnIndex) {
+                String[] columns = myEnv.get(rowIndex);
+                return columns.length <= columnIndex ? "" : columns[columnIndex];
+            }
+        };
+    }
+
+    private void clearEnv() {
+        myEnv.clear();
+        myOpamLibraries.setModel(createDataModel());
     }
 
     @Override
     public boolean isModified() {
+        // General
         boolean isFormatOnSaveModified =
-                f_generalIsFormatOnSave.isSelected() != m_settings.isFormatOnSaveEnabled();
+                f_generalIsFormatOnSave.isSelected() != mySettings.isFormatOnSaveEnabled();
         boolean isFormatWidthColumnsModified =
-                !f_generalFormatWidthColumns.getText().equals(m_settings.getFormatColumnWidth());
-        boolean isUseSuperErrorModified = myUseSuperErrorsCheckBox.isSelected() != m_settings.isUseSuperErrors();
-        boolean isBsEnabledModified = f_bsIsEnabled.isSelected() != m_settings.isBsEnabled();
+                !f_generalFormatWidthColumns.getText().equals(mySettings.getFormatColumnWidth());
+        boolean isUseSuperErrorModified = myUseSuperErrorsCheckBox.isSelected() != mySettings.isUseSuperErrors();
+        // Bs
+        boolean isBsEnabledModified = f_bsIsEnabled.isSelected() != mySettings.isBsEnabled();
         boolean isBsPlatformLocationModified =
-                !f_bsPlatformLocation.getText().equals(m_settings.getBsPlatformLocation());
+                !f_bsPlatformLocation.getText().equals(mySettings.getBsPlatformLocation());
+        // Opam
+        boolean isOpamLocationModified =
+                !myOpamLocation.getText().equals(mySettings.getOpamLocation());
+        boolean isOpamSwitchModified = !mySettings.getSwitchName().equals(mySwitchSelect.getSelectedItem());
+        // Esy
         boolean isEsyExecutableModified =
-                !f_esyExecutable.getText().equals(m_settings.getEsyExecutable());
-        return isFormatOnSaveModified
-                || isFormatWidthColumnsModified
-                || isUseSuperErrorModified
-                || isBsEnabledModified
-                || isBsPlatformLocationModified
-                || isEsyExecutableModified;
+                !f_esyExecutable.getText().equals(mySettings.getEsyExecutable());
+
+        return isFormatOnSaveModified || isFormatWidthColumnsModified || isUseSuperErrorModified
+                || isBsEnabledModified || isBsPlatformLocationModified || isOpamLocationModified
+                || isOpamSwitchModified || isEsyExecutableModified;
     }
 
     @Override
     public void reset() {
         // General
-        f_generalIsFormatOnSave.setSelected(m_settings.isFormatOnSaveEnabled());
-        f_generalFormatWidthColumns.setText(m_settings.getFormatColumnWidth());
-        myUseSuperErrorsCheckBox.setSelected(m_settings.isUseSuperErrors());
+        f_generalIsFormatOnSave.setSelected(mySettings.isFormatOnSaveEnabled());
+        f_generalFormatWidthColumns.setText(mySettings.getFormatColumnWidth());
+        myUseSuperErrorsCheckBox.setSelected(mySettings.isUseSuperErrors());
         // BuckleScript
-        f_bsIsEnabled.setSelected(m_settings.isBsEnabled());
-        f_bsPlatformLocation.setText(m_settings.getBsPlatformLocation());
+        f_bsIsEnabled.setSelected(mySettings.isBsEnabled());
+        f_bsPlatformLocation.setText(mySettings.getBsPlatformLocation());
+        // Opam
+        myOpamLocation.setText(mySettings.getOpamLocation());
+        myCygwinBash = mySettings.getCygwinBash();
+        myIsWsl = mySettings.isWsl();
         // Esy
-        f_esyExecutable.setText(m_settings.getEsyExecutable());
+        f_esyExecutable.setText(mySettings.getEsyExecutable());
+
+        setDetectionText();
+        createSwitch(mySettings.getOpamLocation());
     }
 
     private void createGeneralTab() {
     }
 
+    private void setDetectionText() {
+        if (myCygwinBash != null) {
+            myDetectionLabel.setText("Cygwin detected");
+        } else if (myIsWsl) {
+            myDetectionLabel.setText("WSL detected");
+        } else {
+            myDetectionLabel.setText("");
+        }
+    }
+
     private void createBsTab() {
-        Project project = m_settings.getProject();
-        f_bsPlatformLocation.addBrowseFolderListener(
-                BS_PLATFORM_LOCATION_LABEL,
-                null,
-                project,
+        Project project = mySettings.getProject();
+        f_bsPlatformLocation.addBrowseFolderListener(BS_PLATFORM_LOCATION_LABEL, null, project,
                 FileChooserDescriptorFactory.createSingleFolderDescriptor());
     }
 
-    private void createDuneTab() {
+    private void createOpamTab() {
+        Project project = mySettings.getProject();
+        myOpamLocation.addBrowseFolderListener(
+                new TextBrowseFolderListener(FileChooserDescriptorFactory.createSingleFolderDescriptor(), project) {
+                    @Override
+                    protected void onFileChosen(@NotNull VirtualFile chosenFile) {
+                        super.onFileChosen(chosenFile);
+
+                        // Try to detect specific os implementation
+                        String path = chosenFile.getPath();
+                        myIsWsl = path.replace("/", "\\").startsWith(WSLDistribution.UNC_PREFIX);
+                        myCygwinBash = null;
+                        if (!myIsWsl && Platform.isWindows()) { // cygwin
+                            VirtualFile binDir = findBinary(chosenFile);
+                            if (binDir != null && binDir.isValid()) {
+                                VirtualFile opam = binDir.findChild("bash.exe");
+                                if (opam != null && opam.isValid()) {
+                                    myCygwinBash = opam.getPath();
+                                }
+                            }
+                        }
+                        setDetectionText();
+
+                        // Build a list of switch
+                        createSwitch(path);
+                    }
+                });
+    }
+
+    private VirtualFile findBinary(@Nullable VirtualFile dir) {
+        if (dir == null) {
+            return null;
+        }
+
+        VirtualFile child = dir.findChild("bin");
+        if (child != null) {
+            return child;
+        }
+
+        return findBinary(dir.getParent());
+    }
+
+    private void createSwitch(@NotNull String opamLocation) {
+        OpamProcess opamProcess = new OpamProcess(myProject);
+        opamProcess.listSwitch(opamLocation, myCygwinBash, opamSwitches -> {
+            mySwitchSelect.removeAllItems();
+            mySwitchSelect.setEnabled(opamSwitches != null && !opamSwitches.isEmpty());
+            if (opamSwitches != null) {
+                boolean useOpamSelection = mySettings.getSwitchName().isEmpty();
+                //System.out.println("Add: [" + Joiner.join(", ", opamSwitches) + "]");
+                for (OpamProcess.OpamSwitch opamSwitch : opamSwitches) {
+                    mySwitchSelect.addItem(opamSwitch.name);
+                    if (opamSwitch.isSelected && useOpamSelection) {
+                        mySwitchSelect.setSelectedIndex(mySwitchSelect.getItemCount() - 1);
+                    }
+                }
+                if (!useOpamSelection) {
+                    mySwitchSelect.setSelectedItem(mySettings.getSwitchName());
+                }
+            }
+        });
     }
 
     private void createEsyTab() {
-        Project project = m_settings.getProject();
-        f_esyExecutable.addBrowseFolderListener(
-                ESY_EXECUTABLE_LABEL,
-                null,
-                project,
+        Project project = mySettings.getProject();
+        f_esyExecutable.addBrowseFolderListener(ESY_EXECUTABLE_LABEL, null, project,
                 FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
     }
 
@@ -141,8 +361,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         return sanitizeInput(textField.getText());
     }
 
-    private static @NotNull String sanitizeInput(
-            @NotNull TextFieldWithBrowseButton textFieldWithBrowseButton) {
+    private static @NotNull String sanitizeInput(@NotNull TextFieldWithBrowseButton textFieldWithBrowseButton) {
         return sanitizeInput(textFieldWithBrowseButton.getText());
     }
 

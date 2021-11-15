@@ -22,11 +22,6 @@ public interface Compiler {
         }
     }
 
-    @FunctionalInterface
-    interface ProcessTerminated {
-        void run();
-    }
-
     @NotNull CompilerType getType();
 
     boolean isConfigured(@NotNull Project project);
@@ -37,9 +32,9 @@ public interface Compiler {
 
     void refresh(@NotNull VirtualFile configFile);
 
-    void runDefault(@NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated);
+    void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated);
 
-    void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated);
+    void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated);
 
     boolean isRunning();
 }
