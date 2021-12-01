@@ -7,7 +7,7 @@ import org.jetbrains.annotations.*;
 
 public class OCamlDefaultModuleEditorsProvider implements ModuleConfigurationEditorProvider {
     @Override
-    public @NotNull ModuleConfigurationEditor[] createEditors(@NotNull ModuleConfigurationState state) {
+    public ModuleConfigurationEditor @NotNull [] createEditors(@NotNull ModuleConfigurationState state) {
         Module module = state.getCurrentRootModel().getModule();
         if (ModuleType.get(module) instanceof OCamlModuleType) {
             return new ModuleConfigurationEditor[]{

@@ -9,9 +9,9 @@ import java.util.*;
 import java.util.stream.*;
 
 class CodeInstruction {
-    @NotNull final PsiElement mySource;
-    @Nullable final String[] myValues;
-    @Nullable Set<String> myAlternateValues = null;
+    final PsiElement mySource;
+    final String[] myValues;
+    Set<String> myAlternateValues = null;
 
     public CodeInstruction(@NotNull PsiElement source, @Nullable String value, @Nullable Collection<PsiInclude> includes) {
         mySource = source;

@@ -12,7 +12,7 @@ public class DuneFacetConfiguration implements FacetConfiguration, PersistentSta
     public @Nullable String sdkName = null;
 
     @Override
-    public @NotNull FacetEditorTab[] createEditorTabs(@NotNull FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
+    public FacetEditorTab @NotNull [] createEditorTabs(@NotNull FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
         return new FacetEditorTab[]{new DuneFacetEditor(editorContext, this)};
     }
 

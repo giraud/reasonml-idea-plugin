@@ -22,26 +22,31 @@ public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub,
         super("C_INCLUDE", language);
     }
 
-    @Override public PsiInclude createPsi(@NotNull PsiIncludeStub stub) {
+    @Override
+    public @NotNull PsiInclude createPsi(@NotNull PsiIncludeStub stub) {
         return new PsiIncludeImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    @Override public @NotNull PsiElement createPsi(ASTNode node) {
+    @Override
+    public @NotNull PsiElement createPsi(@NotNull ASTNode node) {
         return new PsiIncludeImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    @Override public @NotNull PsiIncludeStub createStub(@NotNull PsiInclude psi, StubElement parentStub) {
+    @Override
+    public @NotNull PsiIncludeStub createStub(@NotNull PsiInclude psi, StubElement parentStub) {
         return new PsiIncludeStub(parentStub, this, ((FileBase) psi.getContainingFile()).getModuleName(), psi.getIncludePath(), psi.getQualifiedPath(), psi.getResolvedPath());
     }
 
-    @Override public void serialize(@NotNull PsiIncludeStub stub, @NotNull StubOutputStream dataStream) throws IOException {
+    @Override
+    public void serialize(@NotNull PsiIncludeStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getFileModule());
         dataStream.writeUTFFast(stub.getIncludePath());
         SerializerUtil.writePath(dataStream, stub.getQualifiedPath());
         SerializerUtil.writePath(dataStream, stub.getResolvedPath());
     }
 
-    @Override public @NotNull PsiIncludeStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    @Override
+    public @NotNull PsiIncludeStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
         StringRef fileModule = dataStream.readName();
         String includePath = dataStream.readUTFFast();
         String[] qualifiedPath = SerializerUtil.readPath(dataStream);
@@ -49,11 +54,13 @@ public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub,
         return new PsiIncludeStub(parentStub, this, fileModule, includePath, qualifiedPath, resolvedPath);
     }
 
-    @Override public void indexStub(@NotNull PsiIncludeStub stub, @NotNull IndexSink sink) {
+    @Override
+    public void indexStub(@NotNull PsiIncludeStub stub, @NotNull IndexSink sink) {
         sink.occurrence(IndexKeys.INCLUDES, Joiner.join(".", stub.getResolvedPath()));
     }
 
-    @Override public @NotNull String getExternalId() {
+    @Override
+    public @NotNull String getExternalId() {
         return getLanguage().getID() + "." + super.toString();
     }
 }

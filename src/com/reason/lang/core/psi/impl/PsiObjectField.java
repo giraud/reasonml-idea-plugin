@@ -34,7 +34,7 @@ public class PsiObjectField extends PsiTokenStub<ORTypes, PsiObjectField, PsiObj
     }
 
     @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    public @Nullable PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;
     }
 

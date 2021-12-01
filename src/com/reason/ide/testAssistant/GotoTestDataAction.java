@@ -1,28 +1,24 @@
 package com.reason.ide.testAssistant;
 
-import static com.intellij.notification.NotificationType.INFORMATION;
-
-import com.intellij.notification.Notifications;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.ui.awt.RelativePoint;
-import jpsplugin.com.reason.ORNotification;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.ORFileType;
-import com.reason.lang.core.psi.PsiModule;
+import com.intellij.notification.*;
+import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.ui.popup.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import com.intellij.ui.awt.*;
+import com.reason.ide.files.*;
+import com.reason.ide.search.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import jpsplugin.com.reason.*;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-import org.jetbrains.annotations.NotNull;
+import static com.intellij.notification.NotificationType.*;
 
 public class GotoTestDataAction extends AnAction {
 
@@ -96,7 +92,7 @@ public class GotoTestDataAction extends AnAction {
         return Collections.emptyList();
     }
 
-    private @NotNull String[] splitModuleName(@NotNull String moduleName) {
+    private String @NotNull [] splitModuleName(@NotNull String moduleName) {
         int underscoreIndex = moduleName.lastIndexOf("_");
         return 0 < underscoreIndex
                 ? new String[]{

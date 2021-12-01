@@ -95,7 +95,7 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
             super(model);
         }
 
-        public static Table create(TableModel model) {
+        public static @NotNull Table create(TableModel model) {
             Table table = new Table(model);
             table.setTableHeader(table.createDefaultTableHeader());
             table.invalidate();

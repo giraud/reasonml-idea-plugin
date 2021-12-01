@@ -15,7 +15,7 @@ public class OCamlContentType extends TemplateContextType {
         super("OCAML", "Ocaml");
     }
 
-    protected OCamlContentType(String name) {
+    protected OCamlContentType(@NotNull String name) {
         super("OCAML." + name, name, OCamlContentType.class);
     }
 
@@ -46,7 +46,7 @@ public class OCamlContentType extends TemplateContextType {
          * @param onComment if true, then "isContext" is checking that we are inside a Comment,
          *                  otherwise, "isContext" is checking that we aren't inside a Comment
          */
-        protected ScopeTemplates(String name, boolean onComment) {
+        protected ScopeTemplates(@NotNull String name, boolean onComment) {
             super(name);
             myOnComment = onComment;
         }

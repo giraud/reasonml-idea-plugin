@@ -25,7 +25,7 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedPathEl
 
     //region PsiQualifiedName
     @Override
-    public @Nullable String[] getPath() {
+    public String @Nullable [] getPath() {
         return null;
     }
 
@@ -43,7 +43,7 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedPathEl
         return ModuleHelper.isComponent(this);
     }
 
-    public PsiElement getComponentNavigationElement() {
+    public @Nullable PsiElement getComponentNavigationElement() {
         if (isComponent()) {
             List<PsiLet> lets = PsiTreeUtil.getStubChildrenOfTypeAsList(this, PsiLet.class);
             for (PsiLet let : lets) {

@@ -28,7 +28,7 @@ public class ReplRunConfigurationType implements ConfigurationType {
     }
 
     @Override
-    public @NotNull ConfigurationFactory[] getConfigurationFactories() {
+    public ConfigurationFactory @NotNull [] getConfigurationFactories() {
         return new ConfigurationFactory[]{new ReplConfigurationFactory(this)};
     }
 }

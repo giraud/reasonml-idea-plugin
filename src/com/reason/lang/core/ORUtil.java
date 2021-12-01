@@ -241,7 +241,7 @@ public class ORUtil {
     }
 
     @Nullable
-    public static <T extends PsiElement> T findImmediateLastChildOfClass(PsiElement element, Class<T> clazz) {
+    public static <T extends PsiElement> T findImmediateLastChildOfClass(@Nullable PsiElement element, @NotNull Class<T> clazz) {
         PsiElement child = element == null ? null : element.getFirstChild();
         T found = null;
 
@@ -256,7 +256,7 @@ public class ORUtil {
         return found;
     }
 
-    public static @Nullable PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class<?>... clazz) {
+    public static @Nullable PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, Class<?> @NotNull ... clazz) {
         PsiElement child = element.getFirstChild();
 
         while (child != null) {
@@ -286,7 +286,7 @@ public class ORUtil {
         return null;
     }
 
-    public static @Nullable String[] getQualifiedPath(@NotNull PsiElement element) {
+    public static String @Nullable [] getQualifiedPath(@NotNull PsiElement element) {
         String path = "";
 
         PsiElement parent = element.getParent();
@@ -357,7 +357,7 @@ public class ORUtil {
         return isALias ? aliasName.toString() : null;
     }
 
-    public static @Nullable String[] getQualifiedNameAsPath(@NotNull PsiQualifiedPathElement element) {
+    public static String @Nullable [] getQualifiedNameAsPath(@NotNull PsiQualifiedPathElement element) {
         String[] path = element.getPath();
         if (path == null) {
             return null;
@@ -385,7 +385,7 @@ public class ORUtil {
         return (body == null) ? module.getBody() : body;
     }
 
-    public static <T> @NotNull List<T> findPreviousSiblingsOrParentOfClass(PsiElement element, Class<T> clazz) {
+    public static <T> @NotNull List<T> findPreviousSiblingsOrParentOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
         List<T> result = new ArrayList<>();
 
         PsiElement previous = element.getPrevSibling();

@@ -11,28 +11,21 @@ import java.util.stream.*;
 
 public class BsConfig {
 
-  private final @NotNull String m_name;
-  private final @NotNull String m_namespace;
-  private final @Nullable String m_jsxVersion;
+  private final String m_name;
+  private final String m_namespace;
+  private final String m_jsxVersion;
   private final String m_rootBsPlatform;
   private final Set<String> m_externals = new THashSet<>();
   private final Set<String> m_sources = new THashSet<>();
   private final Set<String> m_devSources = new THashSet<>();
   private final Set<String> m_deps = new THashSet<>();
   private final Set<Path> m_paths = new THashSet<>();
-  private final @NotNull String[] m_ppx;
+  private final String[] m_ppx;
   private boolean m_useExternalAsSource = false;
-  private @Nullable Path m_basePath = null;
+  private Path m_basePath = null;
 
-  BsConfig(
-      @NotNull String name,
-      @Nullable String namespace,
-      @Nullable String jsxVersion,
-      @Nullable Set<String> sources,
-      @Nullable Set<String> devSources,
-      @Nullable Set<String> externals,
-      @Nullable Set<String> deps,
-      @Nullable List<String> ppx) {
+  BsConfig(@NotNull String name, @Nullable String namespace, @Nullable String jsxVersion, @Nullable Set<String> sources,
+           @Nullable Set<String> devSources, @Nullable Set<String> externals, @Nullable Set<String> deps, @Nullable List<String> ppx) {
     m_name = name;
     m_namespace = namespace == null ? "" : namespace;
     m_jsxVersion = jsxVersion;
@@ -132,7 +125,7 @@ public class BsConfig {
     return m_jsxVersion;
   }
 
-  public @NotNull String[] getPpx() {
+  public String @NotNull [] getPpx() {
     return m_ppx;
   }
 

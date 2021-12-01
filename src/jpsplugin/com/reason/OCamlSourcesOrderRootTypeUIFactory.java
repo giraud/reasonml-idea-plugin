@@ -44,7 +44,7 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
         }
 
         @Override
-        protected @NotNull VirtualFile[] adjustAddedFileSet(final Component component, final VirtualFile[] files) {
+        protected VirtualFile @NotNull [] adjustAddedFileSet(final Component component, final VirtualFile[] files) {
             java.util.List<OrderRoot> orderRoots =
                     RootDetectionUtil.detectRoots(
                             Arrays.asList(files),
@@ -112,7 +112,7 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
             }
 
             @Override
-            public String getRootTypeName(@NotNull LibraryRootType rootType) {
+            public @Nullable String getRootTypeName(@NotNull LibraryRootType rootType) {
                 if (OCamlSourcesOrderRootType.getInstance().equals(rootType.getType())
                         && !rootType.isJarDirectory()) {
                     return "sources";

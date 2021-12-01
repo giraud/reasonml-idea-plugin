@@ -228,7 +228,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
             myLineProcessor.onTextAvailable(sb.toString());
         }
 
-        public List<OutputInfo> getOutputInfo() {
+        public @NotNull List<OutputInfo> getOutputInfo() {
             return myLineProcessor.getOutputInfo();
         }
     }

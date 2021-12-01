@@ -19,7 +19,7 @@ public class ResPlatform {
         return contentRoot == null ? null : contentRoot.findFileByRelativePath(BS_CONFIG_FILENAME);
     }
 
-    public static BsConfig readConfig(@NotNull VirtualFile contentRoot) {
+    public static @Nullable BsConfig readConfig(@NotNull VirtualFile contentRoot) {
         // Read bsConfig to get the compilation directives
         VirtualFile bsConfigFile = contentRoot.findChild(BS_CONFIG_FILENAME);
         return bsConfigFile == null ? null : BsConfigReader.read(bsConfigFile);
