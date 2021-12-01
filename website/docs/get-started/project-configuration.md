@@ -18,7 +18,7 @@ If you want to have completion and get type annotations, you need to define an S
 
 ## Define a SDK
 
-You need to create a SDK to locate the compiled files and the source files of the OCaml language.
+You need to create a SDK to locate the compiled files, and the source files of the OCaml language.
 
 First, open the project structure (File | Project structure), and go to SDK:
 
@@ -28,7 +28,7 @@ Locate your ocaml installation:
 
 ![](../../static/img/sdk_02.png)
 
-**NOTE**: SDK version extraction is based on a simple regex and it expects that ocaml installation contains the version number.
+**NOTE**: SDK version extraction is based on a simple regex, and it expects that ocaml installation contains the version number.
 If it's not the case, you should probably create a symlink to your real implementation with the version number.
 
 
@@ -37,7 +37,7 @@ You also need to add the directory of the ocaml sources to get some completion
 This is needed because the plugin is working at the source level for completion.
 
 
-Use the + icon and locate the directory where you cloned the github project:
+Use the + icon and locate the directory where you cloned the GitHub project:
 
 ![](../../static/img/sdk_03.png)
 

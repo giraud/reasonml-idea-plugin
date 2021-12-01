@@ -26,12 +26,6 @@ public class DuneToolWindowFactory extends ORToolWindowFactory {
         return ORIcons.DUNE_TOOL;
     }
 
-    @Nls
-    @Override
-    public @NotNull String getTitle() {
-        return "Process";
-    }
-
     @Override
     public @NotNull String getStripeTitle() {
         return "Dune";

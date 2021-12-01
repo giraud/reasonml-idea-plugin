@@ -1,6 +1,5 @@
 package com.reason.ide.docs;
 
-import com.intellij.lang.*;
 import com.intellij.lang.documentation.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.psi.*;

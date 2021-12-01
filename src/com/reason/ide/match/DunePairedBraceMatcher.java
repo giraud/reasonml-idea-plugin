@@ -1,12 +1,10 @@
 package com.reason.ide.match;
 
-import com.intellij.lang.BracePair;
-import com.intellij.lang.PairedBraceMatcher;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.dune.DuneTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.dune.*;
+import org.jetbrains.annotations.*;
 
 public class DunePairedBraceMatcher implements PairedBraceMatcher {
     private static final BracePair[] PAIRS =
@@ -15,7 +13,7 @@ public class DunePairedBraceMatcher implements PairedBraceMatcher {
             };
 
     @Override
-    public @NotNull BracePair[] getPairs() {
+    public BracePair @NotNull [] getPairs() {
         return PAIRS;
     }
 

@@ -109,7 +109,7 @@ class Resolution implements Comparable<Resolution> {
         }
 
         PsiQualifiedNamedElement element = myElements.get(0);
-        return "(" + myIsComplete + ", level:" + myLevel + ", path:[" + sb.toString() + "], element: '" + element.getQualifiedName() + "' " + element.getClass().getSimpleName() + ")";
+        return "(" + myIsComplete + ", level:" + myLevel + ", path:[" + sb + "], element: '" + element.getQualifiedName() + "' " + element.getClass().getSimpleName() + ")";
     }
 
     /*

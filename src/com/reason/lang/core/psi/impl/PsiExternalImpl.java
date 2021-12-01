@@ -61,7 +61,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
 
     //region PsiQualifiedName
     @Override
-    public @NotNull String[] getPath() {
+    public String @NotNull [] getPath() {
         PsiExternalStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

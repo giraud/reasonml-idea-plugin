@@ -12,7 +12,7 @@ Currently, three project types are supported:
 2. BuckleScript
 3. Esy (Beta)
 
-Project types are auto-detected and a single IDEA project may contain multiple project types. An IDEA project can even contain multiple of the same type of project (mono-repo).
+Project types are auto-detected, and a single IDEA project may contain multiple project types. An IDEA project can even contain multiple of the same type of project (mono-repo).
 
 # Project Detection
 Projects are auto-detected but may require additional setup. Detection is based on the presence of certain project configuration files. These are outlined below.

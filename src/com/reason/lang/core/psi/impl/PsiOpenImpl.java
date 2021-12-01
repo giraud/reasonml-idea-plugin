@@ -24,8 +24,7 @@ public class PsiOpenImpl extends PsiTokenStub<ORTypes, PsiOpen, PsiOpenStub> imp
     }
     // endregion
 
-    @NotNull
-    public String getPath() {
+    public @NotNull String getPath() {
         PsiOpenStub stub = getGreenStub();
         if (stub != null) {
             return stub.getOpenPath();

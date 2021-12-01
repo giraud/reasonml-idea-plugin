@@ -1,7 +1,6 @@
 package com.reason.ide.annotations;
 
 import com.intellij.execution.process.*;
-import com.intellij.lang.*;
 import com.intellij.lang.annotation.*;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.editor.*;

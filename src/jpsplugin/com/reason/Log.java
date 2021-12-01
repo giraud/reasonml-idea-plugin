@@ -201,7 +201,7 @@ public class Log {
                 sb.append(entry.getKey()).append(":").append(entry.getValue());
                 start = false;
             }
-            m_log.debug(comment + SEP + "[" + sb.toString() + "]");
+            m_log.debug(comment + SEP + "[" + sb + "]");
         }
     }
 
@@ -249,7 +249,7 @@ public class Log {
                     .append(entry.getValue())
                     .append(")");
         }
-        m_log.info(msg + SEP + sb.toString());
+        m_log.info(msg + SEP + sb);
     }
 
     public void trace(String msg) {

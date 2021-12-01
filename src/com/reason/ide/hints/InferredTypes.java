@@ -1,6 +1,5 @@
 package com.reason.ide.hints;
 
-import com.intellij.lang.*;
 import com.intellij.openapi.editor.*;
 import com.reason.lang.*;
 import com.reason.lang.core.psi.*;

@@ -1,45 +1,29 @@
 package com.reason.ide.importWizard;
 
-import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.getSdkFilter;
+import com.intellij.ide.util.*;
+import com.intellij.ide.util.projectWizard.*;
+import com.intellij.ide.wizard.*;
+import com.intellij.openapi.fileChooser.*;
+import com.intellij.openapi.options.*;
+import com.intellij.openapi.progress.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.projectRoots.impl.*;
+import com.intellij.openapi.roots.ui.configuration.*;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.*;
+import com.intellij.openapi.ui.*;
+import com.intellij.openapi.util.*;
+import com.intellij.openapi.vfs.*;
+import jpsplugin.com.reason.*;
+import jpsplugin.com.reason.sdk.*;
+import org.jetbrains.annotations.*;
 
-import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.ide.util.projectWizard.ModuleWizardStep;
-import com.intellij.ide.util.projectWizard.ProjectBuilder;
-import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.ide.wizard.CommitStepException;
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkModificator;
-import com.intellij.openapi.projectRoots.SdkTypeId;
-import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil;
-import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
-import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileSystem;
-import jpsplugin.com.reason.Log;
-import jpsplugin.com.reason.OCamlSourcesOrderRootType;
-import jpsplugin.com.reason.sdk.OCamlSdkType;
-import jpsplugin.com.reason.sdk.SdkDownloader;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import javax.swing.*;
+import java.io.*;
+import java.nio.file.*;
+import java.nio.file.attribute.*;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.*;
 
 public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
@@ -189,16 +173,15 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
     private void addSdkSources(@NotNull SdkModificator odkModificator, @NotNull File targetSdkLocation) throws IOException {
         VirtualFileSystem fileSystem = LocalFileSystem.getInstance();
 
-        Files.walkFileTree(targetSdkLocation.toPath(),
-                new SimpleFileVisitor<Path>() {
-                    @Override
-                    public @NotNull FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
-                        VirtualFile file = fileSystem.findFileByPath(path.toString());
-                        if (file != null) {
-                            odkModificator.addRoot(file, OCamlSourcesOrderRootType.getInstance());
-                        }
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
+        Files.walkFileTree(targetSdkLocation.toPath(), new SimpleFileVisitor<>() {
+            @Override
+            public @NotNull FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
+                VirtualFile file = fileSystem.findFileByPath(path.toString());
+                if (file != null) {
+                    odkModificator.addRoot(file, OCamlSourcesOrderRootType.getInstance());
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 }

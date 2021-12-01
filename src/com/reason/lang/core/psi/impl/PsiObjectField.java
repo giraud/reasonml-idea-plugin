@@ -40,7 +40,7 @@ public class PsiObjectField extends PsiTokenStub<ORTypes, PsiObjectField, PsiObj
 
     //region PsiQualifiedName
     @Override
-    public @NotNull String[] getPath() {
+    public String @NotNull [] getPath() {
         PsiObjectFieldStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

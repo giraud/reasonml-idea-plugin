@@ -10,11 +10,9 @@ import com.reason.ide.console.*;
 import org.jetbrains.annotations.*;
 
 public class RescriptBuildAction extends CompilerAction {
-    private final RescriptConsoleView myConsoleView;
 
-    public RescriptBuildAction(RescriptConsoleView consoleView) {
+    public RescriptBuildAction() {
         super("Build", "Build", AllIcons.Actions.Compile);
-        myConsoleView = consoleView;
     }
 
     @Override

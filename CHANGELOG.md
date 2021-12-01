@@ -36,9 +36,9 @@ Logo changed: it was too similar to the jetbrains plugins
 - :bug: ![o] [#325](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/325) Structure panel missing "pp_misc" for "let misc, pp_misc = ...". Gutter icon missing for pp_misc in mli file
 - :bug: ![o] [#322](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/322) Class types in .mli files should link to the corresponding definition in the .ml file
 - :house: [#351](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/351) Error annotator use detected compiler, not file language
-- :house: update github workflow to use Java 11
+- :house: update GitHub workflow to use Java 11
 - :house: add qualified name index for classes
-- :house: add line markers for rescript
+- :house: add line markers for Rescript
 - :house: enable line markers in every IDE
 
 ## 0.102.2 - 2021/08/26

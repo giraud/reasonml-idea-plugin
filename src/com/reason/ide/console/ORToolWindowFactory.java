@@ -12,8 +12,6 @@ public abstract class ORToolWindowFactory implements ToolWindowFactory, DumbAwar
 
     public abstract @NotNull Icon getIcon();
 
-    public abstract @NotNull String getTitle();
-
     public abstract @NotNull String getStripeTitle();
 
     /**
@@ -30,7 +28,7 @@ public abstract class ORToolWindowFactory implements ToolWindowFactory, DumbAwar
     @Override
     public void init(@NotNull ToolWindow window) {
         window.setIcon(getIcon());
-        window.setTitle(getTitle());
+        window.setTitle("Process");
         window.setStripeTitle(getStripeTitle());
     }
 }

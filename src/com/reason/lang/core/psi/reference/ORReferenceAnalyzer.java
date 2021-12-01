@@ -43,7 +43,7 @@ public class ORReferenceAnalyzer {
     }
 
     static class ORLocalAlias extends ORFakeResolvedElement {
-        public String myResolvedAlias;
+        public final String myResolvedAlias;
 
         public ORLocalAlias(@NotNull PsiElement element, @NotNull String resolvedAlias) {
             super(element);
@@ -231,13 +231,13 @@ public class ORReferenceAnalyzer {
                     CodeInstruction localAlias = resolvedInstructions.stream().filter(instruction -> instruction.mySource instanceof ORLocalAlias && ((ORLocalAlias) instruction.mySource).isModuleName(aliasPath[0])).findFirst().orElse(null);
                     if (localAlias == null) {
                         PsiElement local = new ORLocalAlias(psiElement, alias);
-                        resolvedInstructions.push(new CodeInstruction(local, (String) null));
+                        resolvedInstructions.push(new CodeInstruction(local, null));
                     } else {
                         int pos = alias.indexOf(".");
                         if (0 <= pos) {
                             String newAlias = ((ORLocalAlias) localAlias.mySource).myResolvedAlias + alias.substring(pos);
                             PsiElement local = new ORLocalAlias(psiElement, newAlias);
-                            resolvedInstructions.push(new CodeInstruction(local, (String) null));
+                            resolvedInstructions.push(new CodeInstruction(local, null));
                         }
                     }
                 }

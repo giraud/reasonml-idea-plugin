@@ -54,14 +54,13 @@ public class OCamlSdkType extends SdkType {
         return ORIcons.OCL_SDK;
     }
 
-    @Nullable
     @Override
-    public String suggestHomePath() {
+    public @Nullable String suggestHomePath() {
         return null;
     }
 
     @Override
-    public boolean isValidSdkHome(String path) {
+    public boolean isValidSdkHome(@NotNull String path) {
         return true;
     }
 

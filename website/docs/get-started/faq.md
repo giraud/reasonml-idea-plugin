@@ -7,13 +7,13 @@ slug: /get-started/faq
 
 - **Why don't you consider using Language Server Protocol?**
 
-  Mainly because I want a strong integration in the IDE and I need a first class support of Windows.
+  Mainly because I want a strong integration in the IDE, and I need a first class support of Windows.
 
-- **What versions does the plugin support at the moment?**
+- **What versions do the plugin support at the moment?**
 
   The latest version of the plugin supports **IDEA 2020.3**.
 
-- **How is it different than [ocaml language plugin](https://github.com/sidharthkuruvila/ocaml-ide)?**
+- **How is it different from [ocaml language plugin](https://github.com/sidharthkuruvila/ocaml-ide)?**
 
   I wanted to have a plugin dedicated to reason and that's why I created one called ReasonML, not OCaml.
   Then I realised that I still need OCaml support and that people are asking for it.

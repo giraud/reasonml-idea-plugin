@@ -70,12 +70,12 @@ Post any questions or feedback in [Discord](https://discord.gg/65fz5jb).
 <a href="https://liberapay.com/hgiraud/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a>
 Support my work with liberapay.
 
-<a href="https://www.paypal.me/rvgiraud"><img alt="Donate using paypal" src="https://img.shields.io/badge/paypal-me-blue.svg"></a>
+<a href="https://www.paypal.me/rvgiraud"><img alt="Donate using PayPal" src="https://img.shields.io/badge/paypal-me-blue.svg"></a>
 Support my work with paypal-me.
 
 ## 🍻 Thanks 
 
-To all the people who have donated, you are awesome !! Really, this is pure anonymous donation and it blows my mind... I'm very grateful and it's kinda stupid but it keeps me motivated. So big thanks.
+To all the people who have donated, you are awesome !! Really, this is pure anonymous donation, and it blows my mind... I'm very grateful, and it's kinda stupid, but it keeps me motivated. So big thanks.
 
 Many thanks also to the [JetBrains Team](https://www.jetbrains.com/?from=reasonml-idea-plugin) who provide me an OSS licence for their product.
 

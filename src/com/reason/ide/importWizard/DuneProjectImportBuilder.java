@@ -92,21 +92,19 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder<Module> {
 
                 try {
                     Path rootPath = new File(ideaModuleDirPath).toPath();
-                    Files.walkFileTree(
-                            rootPath,
-                            new SimpleFileVisitor<Path>() {
-                                @Override
-                                public @NotNull FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
-                                    if ("dune".equals(path.getFileName().toString())) {
-                                        VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path.toString());
-                                        VirtualFile dir = file == null ? null : file.getParent();
-                                        if (dir != null) {
-                                            content.addSourceFolder(dir, false);
-                                        }
-                                    }
-                                    return FileVisitResult.CONTINUE;
+                    Files.walkFileTree(rootPath, new SimpleFileVisitor<>() {
+                        @Override
+                        public @NotNull FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
+                            if ("dune".equals(path.getFileName().toString())) {
+                                VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path.toString());
+                                VirtualFile dir = file == null ? null : file.getParent();
+                                if (dir != null) {
+                                    content.addSourceFolder(dir, false);
                                 }
-                            });
+                            }
+                            return FileVisitResult.CONTINUE;
+                        }
+                    });
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

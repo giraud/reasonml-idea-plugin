@@ -9,8 +9,8 @@ import java.util.*;
 import java.util.stream.*;
 
 class CodeInstruction {
-    @NotNull PsiElement mySource;
-    @Nullable String[] myValues;
+    @NotNull final PsiElement mySource;
+    @Nullable final String[] myValues;
     @Nullable Set<String> myAlternateValues = null;
 
     public CodeInstruction(@NotNull PsiElement source, @Nullable String value, @Nullable Collection<PsiInclude> includes) {
@@ -25,12 +25,7 @@ class CodeInstruction {
         this(source, value, null);
     }
 
-    public CodeInstruction(@NotNull PsiElement source, @NotNull String[] values) {
-        mySource = source;
-        myValues = values;
-    }
-
-    @Nullable public String getFirstValue() {
+    public @Nullable String getFirstValue() {
         return myValues == null ? null : myValues[0];
     }
 

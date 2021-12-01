@@ -18,7 +18,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
 
     ORCompletionContributor(@NotNull ORTypes types, @NotNull QNameFinder qnameFinder) {
         extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(),
-                new CompletionProvider<CompletionParameters>() {
+                new CompletionProvider<>() {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
                         PsiElement position = parameters.getPosition();

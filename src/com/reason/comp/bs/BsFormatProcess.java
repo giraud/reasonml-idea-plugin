@@ -1,6 +1,5 @@
 package com.reason.comp.bs;
 
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.ex.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
@@ -38,7 +37,7 @@ public class BsFormatProcess {
         ProcessBuilder processBuilder =
                 new ProcessBuilder(refmtDir.getPath(), "-i", Boolean.toString(isInterface), "--parse=" + fromFormat, "-p", toFormat, "-w", columnsWidth);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + " cols for project [" + m_project + "]");
+            LOG.debug("Reformatting " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + " cols for project [" + m_project + "]");
         }
 
         Process refmt = null;

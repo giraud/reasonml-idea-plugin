@@ -29,10 +29,10 @@ public class ResParameterInfoHandler extends ORParameterInfoHandler {
                     if (signature != null) {
                         return new ArgumentsDescription[]{new ArgumentsDescription((PsiQualifiedNamedElement) resolvedElement, signature)};
                     }
-                } else {
-                    // Try to read signature from cmt file
-                    // TODO #334
                 }
+                // else {
+                //   Try to read signature from cmt file - TODO #334
+                // }
             }
         }
 

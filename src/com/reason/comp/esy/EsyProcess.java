@@ -42,12 +42,12 @@ public class EsyProcess {
         killIt();
 
         Optional<VirtualFile> workingDirOptional = findWorkingDirectory(myProject);
-        if (!workingDirOptional.isPresent()) {
+        if (workingDirOptional.isEmpty()) {
             return null;
         }
 
         Optional<VirtualFile> esyExecutableOptional = BsPlatform.findEsyExecutable(myProject);
-        if (!esyExecutableOptional.isPresent()) {
+        if (esyExecutableOptional.isEmpty()) {
             return null;
         }
 
@@ -102,7 +102,7 @@ public class EsyProcess {
     private static Optional<VirtualFile> findWorkingDirectory(@NotNull Project project) {
         Optional<VirtualFile> esyContentRootOptional =
                 ORProjectManager.findFirstEsyContentRoot(project);
-        if (!esyContentRootOptional.isPresent()) {
+        if (esyContentRootOptional.isEmpty()) {
             EsyNotification.showEsyProjectNotFound();
             return Optional.empty();
         }

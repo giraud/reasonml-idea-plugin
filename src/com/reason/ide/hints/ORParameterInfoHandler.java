@@ -78,9 +78,9 @@ public abstract class ORParameterInfoHandler implements ParameterInfoHandler<Psi
     }
 
     static class ArgumentsDescription {
-        PsiQualifiedNamedElement resolvedElement;
-        PsiSignature signature;
-        String[] arguments; // ?
+        final PsiQualifiedNamedElement resolvedElement;
+        final PsiSignature signature;
+        final String[] arguments; // ?
 
         public ArgumentsDescription(PsiQualifiedNamedElement resolvedElement, @NotNull PsiSignature signature) {
             this.resolvedElement = resolvedElement;

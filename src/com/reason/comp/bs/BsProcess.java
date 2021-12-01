@@ -66,13 +66,13 @@ public final class BsProcess {
     @Nullable
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType) {
         Optional<VirtualFile> bsContentRootOptional = BsPlatform.findContentRoot(myProject, sourceFile);
-        if (!bsContentRootOptional.isPresent()) {
+        if (bsContentRootOptional.isEmpty()) {
             BsNotification.showWorkingDirectoryNotFound();
             return null;
         }
         String bsContentRoot = bsContentRootOptional.get().getPath();
         Optional<VirtualFile> bsbExecutable = BsPlatform.findBsbExecutable(myProject, sourceFile);
-        if (!bsbExecutable.isPresent()) {
+        if (bsbExecutable.isEmpty()) {
             BsNotification.showBsbNotFound(bsContentRoot);
             return null;
         }

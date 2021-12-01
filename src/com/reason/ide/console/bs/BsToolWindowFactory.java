@@ -26,12 +26,6 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
         return ORIcons.BUCKLESCRIPT_TOOL;
     }
 
-    @Nls
-    @Override
-    public @NotNull String getTitle() {
-        return "Process";
-    }
-
     @Override
     public @NotNull String getStripeTitle() {
         return "BuckleScript";

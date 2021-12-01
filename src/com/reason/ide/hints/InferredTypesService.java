@@ -1,6 +1,5 @@
 package com.reason.ide.hints;
 
-import com.intellij.lang.*;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.fileEditor.*;
