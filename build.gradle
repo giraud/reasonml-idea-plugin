@@ -29,12 +29,8 @@ sourceSets {
 intellij {
     version = platformVersion
     type = platformType
-    plugins = [
-            'java',
-            'JavaScriptLanguage',
-            'com.jetbrains.hackathon.indices.viewer:' + indicesVersion,
-            'PsiViewer:' + psiVersion
-    ]
+    plugins = platformPlugins.split(',').collect { it.trim() }
+    downloadSources = true
 
     patchPluginXml {
         sinceBuild = pluginSinceBuild
