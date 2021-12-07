@@ -55,16 +55,18 @@ public class RincewindProcess {
                     if (!line.isEmpty()) {
                         LOG.trace(line);
                         int entryPos = line.indexOf("|");
-                        String entry = line.substring(0, entryPos);
+                        String entry = entryPos > 0 ? line.substring(0, entryPos) : line;
                         if (!"__".equals(entry)) {
                             int locPos = line.indexOf("|", entryPos + 1);
-                            String[] loc = line.substring(entryPos + 1, locPos).split(",");
-                            types.add(
-                                    myProject,
-                                    entry,
-                                    decodePosition(loc[0]),
-                                    decodePosition(loc[1]),
-                                    line.substring(locPos + 1));
+                            if (locPos > entryPos) {
+                                String[] loc = line.substring(entryPos + 1, locPos).split(",");
+                                types.add(
+                                        myProject,
+                                        entry,
+                                        decodePosition(loc[0]),
+                                        decodePosition(loc[1]),
+                                        line.substring(locPos + 1));
+                            }
                         }
                     }
                 });
