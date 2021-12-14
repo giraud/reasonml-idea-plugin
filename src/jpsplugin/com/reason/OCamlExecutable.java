@@ -97,9 +97,6 @@ public abstract class OCamlExecutable {
         @NotNull
         public GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine, @Nullable String pathToBinary,
                                                    boolean login, @NotNull Project project) {
-            String exe = commandLine.getExePath();
-            commandLine.setExePath(pathToBinary == null ? exe : convertPath(new File(pathToBinary + "/" + exe).toPath()));
-
             try {
                 return m_distribution.patchCommandLine(commandLine, project, new WSLCommandLineOptions());
             } catch (ExecutionException e) {

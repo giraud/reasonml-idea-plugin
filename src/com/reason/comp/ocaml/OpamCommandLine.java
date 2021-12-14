@@ -43,6 +43,7 @@ public abstract class OpamCommandLine {
             VirtualFile[] contentRoots = module == null ? EMPTY_VFILES : ModuleRootManager.getInstance(module).getContentRoots();
             if (contentRoots.length > 0) {
                 GeneralCommandLine cli = new GeneralCommandLine(ContainerUtil.prepend(getParameters(), myBinary));
+                cli.withParentEnvironmentType(GeneralCommandLine.ParentEnvironmentType.CONSOLE);
                 cli.setWorkDirectory(contentRoots[0].getPath());
                 cli.setRedirectErrorStream(myRedirectErrorStream);
 
@@ -54,7 +55,7 @@ public abstract class OpamCommandLine {
                 }
 
                 OCamlExecutable executable = OCamlExecutable.getExecutable(opamLocation, settings.getCygwinBash());
-                return executable.patchCommandLine(cli, binPath, false, myProject);
+                return executable.patchCommandLine(cli, null, false, myProject);
             } else {
                 LOG.debug("Content roots", contentRoots);
                 LOG.debug("Binary directory", binPath);
