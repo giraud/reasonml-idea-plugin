@@ -23,16 +23,10 @@
         <action id="dune.actions.build" class="com.reason.ide.console.dune.DuneBuildAction" text="Dune build"/>
         <!--suppress PluginXmlCapitalization -->
         <action id="dune.actions.clean" class="com.reason.ide.console.dune.DuneCleanAction" text="Dune clean"/>
-        <!--suppress PluginXmlCapitalization -->
-        <action id="dune.actions.install" class="com.reason.ide.console.dune.DuneInstallAction" text="Dune install"/>
 
         <!-- CONSOLE ACTIONS - ESY -->
         <!--suppress PluginXmlCapitalization -->
         <action id="esy.actions.build" class="com.reason.ide.console.esy.EsyBuildAction" text="Esy build"/>
-        <!--suppress PluginXmlCapitalization -->
-        <action id="esy.actions.install" class="com.reason.ide.console.esy.EsyInstallAction" text="Esy install"/>
-        <!--suppress PluginXmlCapitalization -->
-        <action id="esy.actions.shell" class="com.reason.ide.console.esy.EsyShellAction" text="Esy shell"/>
 
         <!--suppress PluginXmlCapitalization -->
         <action id="reason.actions.convert" class="com.reason.ide.actions.ConvertAction"

@@ -6,6 +6,8 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
+import com.reason.comp.dune.*;
+import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.esy.*;
@@ -62,6 +64,7 @@ public class EsyCompiler implements Compiler {
                 EsyProcess process = new EsyProcess(myProject);
                 ProcessHandler processHandler = process.create(sourceFile, cliType, onProcessTerminated);
                 if (processHandler != null) {
+                    processHandler.addProcessListener(new CompilerOutputListener(myProject, new DuneOutputAnalyzer()));
                     processHandler.addProcessListener(new ProcessFinishedListener());
                     processHandler.addProcessListener(new ProcessAdapter() {
                         @Override public void processTerminated(@NotNull ProcessEvent event) {
@@ -71,6 +74,8 @@ public class EsyCompiler implements Compiler {
 
                     console.attachToProcess(processHandler);
                     process.startNotify();
+
+                    myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
                 } else {
                     myProcessStarted.compareAndSet(true, false);
                 }
