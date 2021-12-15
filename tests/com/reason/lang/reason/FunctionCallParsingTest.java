@@ -11,11 +11,11 @@ import java.util.*;
 @SuppressWarnings("ConstantConditions")
 public class FunctionCallParsingTest extends RmlParsingTestCase {
     public void test_call() {
-        PsiLet e = first(letExpressions(parseCode("let _ = string_of_int(1)")));
+        PsiLetBinding e = first(letExpressions(parseCode("let _ = string_of_int(1)"))).getBinding();
 
-        PsiFunctionCallParams callParams = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class);
-        Collection<PsiParameter> parameters = callParams.getParametersList();
-        assertEquals(1, parameters.size());
+        PsiFunctionCall call = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertEquals("string_of_int(1)", call.getText());
+        assertEquals(1, call.getParameters().size());
     }
 
     public void test_call2() {
@@ -37,8 +37,8 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         assertEmpty(callParams.getParametersList());
     }
 
-    public void test_unitLast() {
-        PsiLet e = first(letExpressions(parseCode("let _ = f(1, ());")));
+    public void test_unit_last() {
+        PsiLetBinding e = first(letExpressions(parseCode("let _ = f(1, ());"))).getBinding();
 
         PsiFunctionCallParams params = PsiTreeUtil.findChildOfType(e, PsiFunctionCallParams.class);
         assertSize(2, params.getParametersList());
