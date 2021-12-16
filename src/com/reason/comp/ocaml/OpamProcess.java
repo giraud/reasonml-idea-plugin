@@ -5,6 +5,7 @@ import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
+import com.intellij.openapi.util.text.StringUtil;
 import com.reason.comp.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -13,7 +14,6 @@ import java.util.*;
 import java.util.regex.*;
 
 public class OpamProcess {
-    //private static final Log LOG = Log.create("opam");
     private static final Pattern SEXP = Pattern.compile("\\(\"([^\"]+)\" \"([^\"]+)\"\\)");
 
     private final @NotNull Project myProject;
@@ -22,13 +22,18 @@ public class OpamProcess {
         myProject = project;
     }
 
-    public void list(@NotNull String opamRoot, @NotNull String version, @Nullable String cygwinBash, @NotNull ORProcessTerminated<List<String[]>> onProcessTerminated) {
+    public void list(@NotNull String opamLocation, @NotNull String version, @Nullable String cygwinBash, @NotNull ORProcessTerminated<List<String[]>> onProcessTerminated) {
         ArrayList<String[]> installedLibs = new ArrayList<>();
+
+        if (StringUtil.isEmpty(opamLocation) || StringUtil.isEmpty(version)) {
+            onProcessTerminated.run(installedLibs);
+            return;
+        }
 
         GeneralCommandLine cli = new GeneralCommandLine("opam", "list", "--installed", "--safe", "--color=never", "--switch=" + version);
         cli.setRedirectErrorStream(true);
 
-        OCamlExecutable executable = OCamlExecutable.getExecutable(opamRoot, cygwinBash);
+        OCamlExecutable executable = OCamlExecutable.getExecutable(opamLocation, cygwinBash);
         executable.patchCommandLine(cli, null, true, myProject);
 
         KillableProcessHandler processHandler;
@@ -57,7 +62,7 @@ public class OpamProcess {
             });
             processHandler.startNotify();
         } catch (ExecutionException e) {
-            ORNotification.notifyError("Dune", "Can't run opam", e.getMessage(), null);
+            ORNotification.notifyError("Opam", "Can't list libraries", e.getMessage(), null);
             installedLibs.add(new String[]{"Error", e.getMessage()});
             onProcessTerminated.run(installedLibs);
         }
@@ -65,6 +70,12 @@ public class OpamProcess {
 
     public void env(@Nullable String opamLocation, @Nullable String version, @Nullable String cygwinBash, @NotNull ORProcessTerminated<Map<String, String>> onProcessTerminated) {
         Map<String, String> result = new HashMap<>();
+
+        if (StringUtil.isEmpty(opamLocation) || StringUtil.isEmpty(version)) {
+            result.put("Incorrect setting", "Setup SDK in project settings");
+            onProcessTerminated.run(result);
+            return;
+        }
 
         GeneralCommandLine cli = new GeneralCommandLine("opam", "config", "env", "--sexp", "--switch=" + version);
         cli.setRedirectErrorStream(true);
@@ -100,7 +111,7 @@ public class OpamProcess {
             });
             processHandler.startNotify();
         } catch (ExecutionException e) {
-            ORNotification.notifyError("Dune", "Can't run opam", e.getMessage(), null);
+            ORNotification.notifyError("Opam", "Can't read opam env", e.getMessage(), null);
             onProcessTerminated.run(result);
         }
     }

@@ -1,12 +1,12 @@
 package com.reason.ide;
 
 import com.google.common.collect.*;
-import com.intellij.openapi.application.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.intellij.psi.search.*;
 import com.reason.comp.esy.*;
 import com.reason.ide.files.*;
+import jpsplugin.com.reason.Platform;
 import org.apache.commons.lang3.*;
 import org.jetbrains.annotations.*;
 
@@ -15,6 +15,7 @@ import java.util.function.*;
 import java.util.stream.*;
 
 import static com.reason.comp.dune.DunePlatform.*;
+import static com.reason.comp.esy.EsyConstants.*;
 
 /**
  * Identifies and retrieves modules by project type (Bs, Esy, Dune).
@@ -59,7 +60,7 @@ public class ORProjectManager {
     }
 
     public static LinkedHashSet<VirtualFile> findEsyConfigurationFiles(@NotNull Project project) {
-        return findFilesInProject(EsyPackageJsonFileType.getDefaultFilename(), project)
+        return findFilesInProject(ESY_CONFIG_FILENAME, project)
                 .stream()
                 .filter(EsyPackageJson::isEsyPackageJson)
                 .sorted(FILE_DEPTH_COMPARATOR)
@@ -86,14 +87,9 @@ public class ORProjectManager {
                 .collect(Collectors.toSet());
     }
 
-    // TODO : remove index usage
     public static @NotNull Set<VirtualFile> findFilesInProject(@NotNull String filename, @NotNull Project project) {
-        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        if (ApplicationManager.getApplication().isReadAccessAllowed()) {
-            Collection<VirtualFile> virtualFilesByName = FilenameIndex.getVirtualFilesByName(project, filename, scope);
-            return new HashSet<>(virtualFilesByName);
-        }
-        return Collections.emptySet();
+        Map<Module, VirtualFile> contentRootsFor = Platform.findContentRootsFor(project, filename);
+        return contentRootsFor.isEmpty() ? Collections.emptySet() : new HashSet<>(contentRootsFor.values());
     }
 
     public static @Nullable VirtualFile findFirstBsContentRoot(@NotNull Project project) {

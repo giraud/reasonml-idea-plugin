@@ -70,36 +70,6 @@ public class Platform {
         return rootContents;
     }
 
-    /**
-     * @deprecated replace usages with ORProjectManager::findContentRoots which returns ALL potential
-     * roots.
-     */
-    @Deprecated
-    public static @Nullable VirtualFile findContentRootFor(@NotNull Project project, @NotNull String filename) {
-        Map<Module, VirtualFile> rootContents = findContentRootsFor(project, filename);
-
-        if (rootContents.isEmpty()) {
-            // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/249
-            // LOG.warn("No content roots with " + filename + " file found");
-            return null;
-        } else if (rootContents.size() == 1) {
-            Module module = rootContents.keySet().iterator().next();
-            VirtualFile file = rootContents.get(module);
-            return file.getParent();
-        } else {
-            Module module = rootContents.keySet().iterator().next();
-            VirtualFile file = rootContents.get(module);
-            LOG.info(
-                    "Many modules with "
-                            + filename
-                            + " file in it found ("
-                            + rootContents.size()
-                            + "), using first",
-                    rootContents);
-            return file.getParent();
-        }
-    }
-
     public static @NotNull Optional<Path> findExecutableInPath(String filename, String shellPath) {
         if (SystemInfo.isWindows) {
             filename += WINDOWS_EXECUTABLE_SUFFIX;

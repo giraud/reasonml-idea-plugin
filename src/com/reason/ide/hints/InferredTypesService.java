@@ -7,6 +7,7 @@ import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
+import com.intellij.util.concurrency.*;
 import com.reason.hints.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
@@ -45,13 +46,17 @@ public class InferredTypesService {
                             InsightManager insightManager = project.getService(InsightManager.class);
 
                             if (!DumbService.isDumb(project)) {
-                                LOG.debug("Reading types from file", psiFile);
-                                PsiFile cmtFile = findCmtFileFromSource(project, sourceFile.getNameWithoutExtension());
-                                if (cmtFile != null) {
-                                    Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
-                                    insightManager.queryTypes(sourceFile, cmtPath,
-                                            types -> application.runReadAction(() -> annotatePsiFile(project, languageProperties, sourceFile, types)));
-                                }
+                                ReadAction.nonBlocking(() -> {
+                                            LOG.debug("Reading types from file", psiFile);
+                                            PsiFile cmtFile = findCmtFileFromSource(project, sourceFile.getNameWithoutExtension());
+                                            if (cmtFile != null) {
+                                                Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
+                                                insightManager.queryTypes(sourceFile, cmtPath,
+                                                        types -> application.runReadAction(() -> annotatePsiFile(project, languageProperties, sourceFile, types)));
+                                            }
+                                        })
+                                        .coalesceBy(insightManager)
+                                        .submit(AppExecutorUtil.getAppExecutorService());
                             }
                         }
                     } else {
