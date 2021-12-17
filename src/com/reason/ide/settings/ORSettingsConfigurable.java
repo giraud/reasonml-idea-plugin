@@ -134,8 +134,11 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         myProject.getService(ORToolWindowManager.class).showShowToolWindows();
     }
 
-    private void createExternalLibraryDependency(ORSettings settings) {
+    private void createExternalLibraryDependency(@NotNull ORSettings settings) {
         Project project = settings.getProject();
+        if (settings.getSwitchName().isEmpty()) {
+            return;
+        }
 
         LibraryTable projectLibraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project);
         LibraryTable.ModifiableModel projectLibraryTableModel = projectLibraryTable.getModifiableModel();
@@ -288,33 +291,61 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
                 FileChooserDescriptorFactory.createSingleFolderDescriptor());
     }
 
+    private void detectSwitchSystem(@NotNull VirtualFile dir) {
+        myIsWsl = dir.getPath().replace("/", "\\").startsWith(WSLDistribution.UNC_PREFIX);
+        myCygwinBash = null;
+        if (!myIsWsl && Platform.isWindows()) { // cygwin
+            VirtualFile binDir = findBinary(dir);
+            if (binDir != null && binDir.isValid()) {
+                VirtualFile opam = binDir.findChild("bash.exe");
+                if (opam != null && opam.isValid()) {
+                    myCygwinBash = opam.getPath();
+                }
+            }
+        }
+    }
+
     private void createOpamTab() {
         Project project = mySettings.getProject();
-        myOpamLocation.addBrowseFolderListener(
-                new TextBrowseFolderListener(FileChooserDescriptorFactory.createSingleFolderDescriptor(), project) {
-                    @Override
-                    protected void onFileChosen(@NotNull VirtualFile chosenFile) {
-                        super.onFileChosen(chosenFile);
+        TextBrowseFolderListener browseListener = new TextBrowseFolderListener(FileChooserDescriptorFactory.createSingleFolderDescriptor(), project) {
+            @Override
+            protected void onFileChosen(@NotNull VirtualFile chosenDir) {
+                super.onFileChosen(chosenDir);
 
-                        // Try to detect specific os implementation
-                        String path = chosenFile.getPath();
-                        myIsWsl = path.replace("/", "\\").startsWith(WSLDistribution.UNC_PREFIX);
-                        myCygwinBash = null;
-                        if (!myIsWsl && Platform.isWindows()) { // cygwin
-                            VirtualFile binDir = findBinary(chosenFile);
-                            if (binDir != null && binDir.isValid()) {
-                                VirtualFile opam = binDir.findChild("bash.exe");
-                                if (opam != null && opam.isValid()) {
-                                    myCygwinBash = opam.getPath();
-                                }
-                            }
-                        }
+                detectSwitchSystem(chosenDir);
+                setDetectionText();
+                createSwitch(chosenDir.getPath());
+            }
+
+        };
+
+        final String[] previousOpamLocation = new String[1];
+
+        FocusListener focusListener = new FocusListener() {
+            @Override public void focusGained(FocusEvent e) {
+                previousOpamLocation[0] = myOpamLocation.getText();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String path = myOpamLocation.getText();
+                String oldPath = previousOpamLocation[0];
+                if (!path.equals(oldPath)) {
+                    VirtualFile chosenDir = VirtualFileManager.getInstance().findFileByNioPath(Path.of(path));
+                    if (chosenDir == null) {
+                        createSwitch("");
+                        clearEnv();
+                    } else {
+                        detectSwitchSystem(chosenDir);
                         setDetectionText();
-
-                        // Build a list of switch
-                        createSwitch(path);
+                        createSwitch(chosenDir.getPath());
                     }
-                });
+                }
+            }
+        };
+
+        myOpamLocation.getTextField().addFocusListener(focusListener);
+        myOpamLocation.addBrowseFolderListener(browseListener);
     }
 
     private VirtualFile findBinary(@Nullable VirtualFile dir) {
@@ -333,9 +364,10 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     private void createSwitch(@NotNull String opamLocation) {
         OpamProcess opamProcess = new OpamProcess(myProject);
         opamProcess.listSwitch(opamLocation, myCygwinBash, opamSwitches -> {
+            boolean switchEnabled = opamSwitches != null && !opamSwitches.isEmpty();
             mySwitchSelect.removeAllItems();
-            mySwitchSelect.setEnabled(opamSwitches != null && !opamSwitches.isEmpty());
-            if (opamSwitches != null) {
+            mySwitchSelect.setEnabled(switchEnabled);
+            if (switchEnabled) {
                 boolean useOpamSelection = mySettings.getSwitchName().isEmpty();
                 //System.out.println("Add: [" + Joiner.join(", ", opamSwitches) + "]");
                 for (OpamProcess.OpamSwitch opamSwitch : opamSwitches) {
@@ -347,6 +379,8 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
                 if (!useOpamSelection) {
                     mySwitchSelect.setSelectedItem(mySettings.getSwitchName());
                 }
+            } else {
+                clearEnv();
             }
         });
     }
