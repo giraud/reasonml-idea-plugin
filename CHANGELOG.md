@@ -11,6 +11,8 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
 ## Unreleased
+              
+- :boom: :rocket: New opam configuration, should allow other IDE to use dune projects. Dune facet is removed.
 
 ## 0.105.1 - 2021/11/12
 
