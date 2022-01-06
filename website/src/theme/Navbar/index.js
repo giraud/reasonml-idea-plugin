@@ -1,14 +1,12 @@
 import React, {useCallback, useState, useEffect} from 'react';
 import clsx from 'clsx';
-import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import SearchBar from '@theme/SearchBar';
 import Toggle from '@theme/Toggle';
 import useThemeContext from '@theme/hooks/useThemeContext';
 import useHideableNavbar from '@theme/hooks/useHideableNavbar';
 import useLockBodyScroll from '@theme/hooks/useLockBodyScroll';
-import useWindowSize, {windowSizes} from '@theme/hooks/useWindowSize';
-import useLogo from '@theme/hooks/useLogo';
+import Logo from '@theme/Logo';
 import styles from './styles.module.scss';
 import NavbarItem from '@theme/NavbarItem'; // retrocompatible with v1
 
@@ -47,7 +45,6 @@ function Navbar() {
   const [isSearchBarExpanded, setIsSearchBarExpanded] = useState(false);
   const {isDarkTheme, setLightTheme, setDarkTheme} = useThemeContext();
   const {navbarRef, isNavbarVisible} = useHideableNavbar(hideOnScroll);
-  const {logoLink, logoLinkProps, logoImageUrl, logoAlt} = useLogo();
   useLockBodyScroll(sidebarShown);
   const showSidebar = useCallback(() => {
     setSidebarShown(true);
@@ -59,12 +56,6 @@ function Navbar() {
     (e) => (e.target.checked ? setDarkTheme() : setLightTheme()),
     [setLightTheme, setDarkTheme],
   );
-  const windowSize = useWindowSize();
-  useEffect(() => {
-    if (windowSize === windowSizes.desktop) {
-      setSidebarShown(false);
-    }
-  }, [windowSize]);
   const {leftItems, rightItems} = splitNavItemsByPosition(items);
   return (
     <nav
@@ -104,16 +95,7 @@ function Navbar() {
               </svg>
             </div>
           )}
-          <Link className="navbar__brand" to={logoLink} {...logoLinkProps}>
-            {title != null && (
-              <strong
-                className={clsx('navbar__title', {
-                  [styles.hideLogoText]: isSearchBarExpanded,
-                })}>
-                {title}
-              </strong>
-            )}
-          </Link>
+          {hideOnScroll && <Logo tabIndex={-1} className="navbar__brand"/>}
           {leftItems.map((item, i) => (
             <NavbarItem {...item} key={i} />
           ))}
@@ -143,23 +125,7 @@ function Navbar() {
       />
       <div className="navbar-sidebar">
         <div className="navbar-sidebar__brand">
-          <Link
-            className="navbar__brand"
-            onClick={hideSidebar}
-            to={logoLink}
-            {...logoLinkProps}>
-            {logoImageUrl != null && (
-              <img
-                key={isClient}
-                className="navbar__logo"
-                src={logoImageUrl}
-                alt={logoAlt}
-              />
-            )}
-            {title != null && (
-              <strong className="navbar__title">{title}</strong>
-            )}
-          </Link>
+          <Logo tabIndex={-1} className="navbar__brand" />
           {!disableColorModeSwitch && sidebarShown && (
             <Toggle
               aria-label="Dark mode toggle in sidebar"
