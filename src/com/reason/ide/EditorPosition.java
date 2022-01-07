@@ -1,19 +1,18 @@
 package com.reason.ide;
 
-import com.intellij.openapi.editor.LogicalPosition;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.editor.*;
+import org.jetbrains.annotations.*;
 
 /**
  * Offset <-> Position converter
  */
 public class EditorPosition {
-    private final @NotNull int[] m_lineLengths;
+    private final int @NotNull [] m_lineLengths;
 
     /**
      * Extract each line length, needed to compute an offset without a ref to the editor.
      */
-    public EditorPosition(@NotNull String[] lines) {
+    public EditorPosition(String @NotNull [] lines) {
         m_lineLengths = new int[lines.length];
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];

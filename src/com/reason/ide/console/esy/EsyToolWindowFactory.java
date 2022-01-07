@@ -26,12 +26,6 @@ public class EsyToolWindowFactory extends ORToolWindowFactory {
         return ORIcons.ESY_TOOL;
     }
 
-    @Nls
-    @Override
-    public @NotNull String getTitle() {
-        return "Process";
-    }
-
     @Override
     public @NotNull String getStripeTitle() {
         return "Esy";
@@ -59,9 +53,7 @@ public class EsyToolWindowFactory extends ORToolWindowFactory {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
         group.add(new ClearLogAction(console));
-        group.add(new EsyInstallAction());
         group.add(new EsyBuildAction());
-        group.add(new EsyShellAction());
 
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
         toolbar.setTargetComponent(console.getComponent());

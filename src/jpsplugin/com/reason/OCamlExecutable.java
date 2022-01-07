@@ -4,13 +4,11 @@ import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.wsl.*;
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.impl.wsl.*;
 import com.intellij.util.containers.*;
-import jpsplugin.com.reason.sdk.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -18,42 +16,29 @@ import java.nio.file.*;
 import java.util.*;
 
 public abstract class OCamlExecutable {
+    private static final Log LOG = Log.create("ocaml");
 
-    private static final Log LOG = Log.create("sdk");
+    protected String myId;
 
-    protected Sdk m_odk;
-    protected String m_id;
-
-    public static @NotNull OCamlExecutable getExecutable(@Nullable Sdk odk) {
-        if (odk == null) {
+    public static @NotNull OCamlExecutable getExecutable(@Nullable String opamRootPath, @Nullable String cygwinBash) {
+        if (opamRootPath == null) {
             return new OCamlExecutable.Unknown();
         }
 
         if (Platform.isWindows()) {
-            String odkPath = odk.getHomePath();
-            if (odkPath == null) {
-                return new OCamlExecutable.Unknown();
-            }
-
-            Pair<String, WSLDistribution> pair = OCamlExecutable.parseWslPath(odkPath.replace("/", "\\"));
+            Pair<String, WSLDistribution> pair = OCamlExecutable.parseWslPath(opamRootPath.replace("/", "\\"));
             if (pair != null) {
                 if (pair.second == null) {
-                    LOG.debug("Sdk home not found", odkPath);
+                    LOG.debug("Opam home not found", opamRootPath);
                     return new OCamlExecutable.Unknown();
                 } else {
-                    return new OCamlExecutable.Wsl(odk, pair.second);
+                    return new OCamlExecutable.Wsl(pair.second);
                 }
             }
         }
 
-        return new OCamlExecutable.Local(odk);
+        return new OCamlExecutable.Local(cygwinBash);
     }
-
-    abstract String getPathSeparator();
-
-    abstract @NotNull String getPathVariable();
-
-    public abstract @Nullable String convertPath(Path file);
 
     public abstract @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine,
                                                                  String pathToBinary, boolean login,
@@ -86,23 +71,11 @@ public abstract class OCamlExecutable {
     public static class Wsl extends OCamlExecutable {
         private final WSLDistribution m_distribution;
 
-        public Wsl(@NotNull Sdk odk, @NotNull WSLDistribution distribution) {
-            m_odk = odk;
+        public Wsl(@NotNull WSLDistribution distribution) {
             m_distribution = distribution;
-            m_id = "wsl-" + distribution.getId();
+            myId = "wsl-" + distribution.getId();
         }
 
-        @Override
-        public @NotNull String getPathSeparator() {
-            return ":";
-        }
-
-        @Override
-        public @NotNull String getPathVariable() {
-            return "$PATH";
-        }
-
-        @Override
         public @Nullable String convertPath(@NotNull Path path) {
             // 'C:\Users\file.txt' -> '/mnt/c/Users/file.txt'
             String wslPath = m_distribution.getWslPath(path.toString());
@@ -125,9 +98,6 @@ public abstract class OCamlExecutable {
         @NotNull
         public GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine, @Nullable String pathToBinary,
                                                    boolean login, @NotNull Project project) {
-            String exe = commandLine.getExePath();
-            commandLine.setExePath(pathToBinary == null ? exe : convertPath(new File(pathToBinary + "/" + exe).toPath()));
-
             try {
                 return m_distribution.patchCommandLine(commandLine, project, new WSLCommandLineOptions());
             } catch (ExecutionException e) {
@@ -142,43 +112,25 @@ public abstract class OCamlExecutable {
     }
 
     public static class Local extends OCamlExecutable {
+        private final String myCygwinBash;
 
-        public Local(@Nullable Sdk odk) {
-            m_id = "local";
-            m_odk = odk;
-        }
-
-        @Override
-        String getPathSeparator() {
-            return File.pathSeparator;
-        }
-
-        @Override
-        @NotNull String getPathVariable() {
-            return Platform.isWindows() ? "%PATH%" : "$PATH";
-        }
-
-        @Override
-        public String convertPath(@NotNull Path file) {
-            return file.toString();
+        public Local(@Nullable String cygwinBash) {
+            myId = "local";
+            myCygwinBash = cygwinBash;
         }
 
         @Override
         public @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine, @Nullable String pathToBinary, boolean login, @NotNull Project project) {
-            OCamlSdkAdditionalData odkData = (OCamlSdkAdditionalData) m_odk.getSdkAdditionalData();
-            boolean isCygwin = odkData != null && odkData.isCygwin();
-
             ParametersList parametersList = commandLine.getParametersList();
             List<String> realParamsList = parametersList.getList();
+            boolean isCygwin = myCygwinBash != null;
 
             String extension = Platform.isWindows() && isCygwin ? Platform.WINDOWS_EXECUTABLE_SUFFIX : "";
             String exe = commandLine.getExePath() + extension;
             String exePath = pathToBinary == null ? exe : pathToBinary + "/" + exe;
 
             if (isCygwin) {
-                LOG.debug("[" + m_id + "] Patching: " + commandLine.getCommandLineString());
-
-                commandLine.setExePath(odkData.getCygwinBash());
+                commandLine.setExePath(myCygwinBash);
                 String bashParameters = StringUtil.join(ContainerUtil.prepend(realParamsList, exePath), CommandLineUtil::posixQuote, " ");
 
                 parametersList.clearAll();
@@ -191,35 +143,20 @@ public abstract class OCamlExecutable {
                 commandLine.setExePath(exePath);
             }
 
-            LOG.debug("[" + m_id + "] " + "Patched as: " + commandLine.getCommandLineString());
+            LOG.debug("[" + myId + (isCygwin ? "/cygwin" : "") + "] " + "Patched as: " + commandLine.getCommandLineString());
 
             return commandLine;
         }
 
         @Override
         public String toString() {
-            return m_id;
+            return myId;
         }
     }
 
     public static class Unknown extends OCamlExecutable {
         public Unknown() {
-            m_id = "wsl-unknown";
-        }
-
-        @Override
-        String getPathSeparator() {
-            return File.pathSeparator;
-        }
-
-        @Override
-        @NotNull String getPathVariable() {
-            return Platform.isWindows() ? "%PATH%" : "$PATH";
-        }
-
-        @Override
-        public String convertPath(@NotNull Path path) {
-            return path.toString();
+            myId = "wsl-unknown";
         }
 
         @Override
@@ -231,7 +168,7 @@ public abstract class OCamlExecutable {
 
         @Override
         public String toString() {
-            return m_id;
+            return myId;
         }
     }
 }

@@ -1,16 +1,12 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;
 import com.intellij.lexer.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.tree.*;
 import com.intellij.psi.tree.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.type.*;
-import com.reason.lang.ocamlyacc.*;
 import org.jetbrains.annotations.*;
 
 public class OclParserDefinition implements ParserDefinition {

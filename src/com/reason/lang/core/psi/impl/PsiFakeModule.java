@@ -53,7 +53,7 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
 
     //region PsiQualifiedPath
     @Override
-    public @Nullable String[] getPath() {
+    public String @Nullable [] getPath() {
         PsiModuleStub greenStub = getGreenStub();
         if (greenStub != null) {
             return greenStub.getPath();

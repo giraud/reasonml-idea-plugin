@@ -1,6 +1,5 @@
 package com.reason.comp;
 
-import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.Compiler.*;
@@ -33,12 +32,12 @@ public class ORCompilerManager {
         return compiler != null && compiler.isConfigured(myProject) ? compiler : null;
     }
 
-    public @Nullable ORResolvedCompiler<?> getCompiler(@NotNull VirtualFile editorFile) {
+    public @Nullable ORResolvedCompiler<? extends Compiler> getCompiler(@NotNull VirtualFile editorFile) {
         boolean shouldTraverse = editorFile.isDirectory() || FileHelper.isCompilable(editorFile.getFileType());
-        return  shouldTraverse ? traverseAncestorsForCompiler(editorFile.getParent(), new HashMap<>()) : null;
+        return shouldTraverse ? traverseAncestorsForCompiler(editorFile.getParent(), new HashMap<>()) : null;
     }
 
-    private @Nullable ORResolvedCompiler<?> traverseAncestorsForCompiler(@Nullable VirtualFile currentDir, @NotNull Map<String, VirtualFile> visited) {
+    private @Nullable ORResolvedCompiler<? extends Compiler> traverseAncestorsForCompiler(@Nullable VirtualFile currentDir, @NotNull Map<String, VirtualFile> visited) {
         // hit filesystem root, give up
         if (currentDir == null) {
             return null;
@@ -84,7 +83,7 @@ public class ORCompilerManager {
     }
 
     private class CompilerVisitor extends VirtualFileVisitor<VirtualFile> {
-        ORResolvedCompiler<?> myCompiler = null;
+        ORResolvedCompiler<? extends Compiler> myCompiler = null;
 
         CompilerVisitor() {
             super(SKIP_ROOT, NO_FOLLOW_SYMLINKS, ONE_LEVEL_DEEP);

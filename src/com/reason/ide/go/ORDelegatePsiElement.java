@@ -37,7 +37,7 @@ public abstract class ORDelegatePsiElement extends PsiElementBase {
     }
 
     @Override
-    public @NotNull PsiElement[] getChildren() {
+    public PsiElement @NotNull [] getChildren() {
         return m_source.getChildren();
     }
 
@@ -98,7 +98,7 @@ public abstract class ORDelegatePsiElement extends PsiElementBase {
     }
 
     @Override
-    public @NotNull char[] textToCharArray() {
+    public char @NotNull [] textToCharArray() {
         return m_source.textToCharArray();
     }
 

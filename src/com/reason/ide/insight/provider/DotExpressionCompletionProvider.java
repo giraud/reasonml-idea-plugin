@@ -2,7 +2,6 @@ package com.reason.ide.insight.provider;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.*;
-import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;

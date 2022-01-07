@@ -1,19 +1,14 @@
 package com.reason.ide.settings;
 
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.options.colors.AttributesDescriptor;
-import com.intellij.openapi.options.colors.ColorDescriptor;
-import com.intellij.openapi.options.colors.ColorSettingsPage;
-import com.reason.ide.highlight.ORSyntaxHighlighter;
-import com.reason.lang.reason.RmlTypes;
-import icons.ORIcons;
+import com.intellij.openapi.editor.colors.*;
+import com.intellij.openapi.options.colors.*;
+import com.reason.ide.highlight.*;
+import com.reason.lang.reason.*;
+import icons.*;
+import org.jetbrains.annotations.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.*;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.*;
 
 public class ORColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS =
@@ -91,12 +86,12 @@ public class ORColorSettingsPage implements ColorSettingsPage {
     }
 
     @Override
-    public @NotNull AttributesDescriptor[] getAttributeDescriptors() {
+    public AttributesDescriptor @NotNull [] getAttributeDescriptors() {
         return DESCRIPTORS;
     }
 
     @Override
-    public @NotNull ColorDescriptor[] getColorDescriptors() {
+    public ColorDescriptor @NotNull [] getColorDescriptors() {
         return ColorDescriptor.EMPTY_ARRAY;
     }
 

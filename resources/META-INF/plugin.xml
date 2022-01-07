@@ -23,16 +23,10 @@
         <action id="dune.actions.build" class="com.reason.ide.console.dune.DuneBuildAction" text="Dune build"/>
         <!--suppress PluginXmlCapitalization -->
         <action id="dune.actions.clean" class="com.reason.ide.console.dune.DuneCleanAction" text="Dune clean"/>
-        <!--suppress PluginXmlCapitalization -->
-        <action id="dune.actions.install" class="com.reason.ide.console.dune.DuneInstallAction" text="Dune install"/>
 
         <!-- CONSOLE ACTIONS - ESY -->
         <!--suppress PluginXmlCapitalization -->
         <action id="esy.actions.build" class="com.reason.ide.console.esy.EsyBuildAction" text="Esy build"/>
-        <!--suppress PluginXmlCapitalization -->
-        <action id="esy.actions.install" class="com.reason.ide.console.esy.EsyInstallAction" text="Esy install"/>
-        <!--suppress PluginXmlCapitalization -->
-        <action id="esy.actions.shell" class="com.reason.ide.console.esy.EsyShellAction" text="Esy shell"/>
 
         <!--suppress PluginXmlCapitalization -->
         <action id="reason.actions.convert" class="com.reason.ide.actions.ConvertAction"
@@ -63,7 +57,6 @@
          | Listeners
          -->
 
-        <projectService serviceImplementation="com.reason.ide.ORProjectRootListener"/>
         <projectService serviceImplementation="com.reason.ide.ORFileDocumentListener"/>
         <vfs.asyncListener implementation="com.reason.ide.ORVirtualFileListener"/>
 
@@ -280,21 +273,33 @@
         <gotoDeclarationHandler implementation="com.reason.ide.go.ORGotoDeclarationHandler"/>
 
         <!--
-         | Settings
+         | SDK / Libs / Settings
          -->
+
+        <orderRootType implementation="jpsplugin.com.reason.OclSourcesOrderRootType" id="OCAML_SOURCES" order="FIRST"/>
+        <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="jpsplugin.com.reason.OClSourcesOrderRootTypeUIFactory"/>
+
+        <library.type implementation="com.reason.ide.library.OclLibraryType"/>
+        <additionalLibraryRootsProvider implementation="com.reason.ide.library.OclLibraryRootProvider"/>
 
         <projectService serviceImplementation="com.reason.ide.settings.ORSettings"/>
         <projectConfigurable id="settings.reason" groupId="language" displayName="OCaml / Reason"
                              instance="com.reason.ide.settings.ORSettingsConfigurable"/>
+
+        <projectSdkSetupValidator implementation="com.reason.ide.library.OclSdkSetupValidator"/>
+        <projectService serviceImplementation="com.reason.comp.ocaml.OpamProcess"/>
+        <projectService serviceImplementation="com.reason.comp.ocaml.OpamEnv"/>
 
         <!--
          | Compiler
          -->
 
         <projectService serviceImplementation="com.reason.comp.ORCompilerManager"/>
+
         <projectService serviceInterface="com.reason.comp.bs.BsCompiler"
                         serviceImplementation="com.reason.comp.bs.BsCompilerImpl"/>
         <projectService serviceImplementation="com.reason.comp.rescript.ResCompiler"/>
+        <projectService serviceImplementation="com.reason.comp.dune.DuneCompiler"/>
         <projectService serviceImplementation="com.reason.comp.esy.EsyCompiler"/>
 
         <!--
@@ -316,7 +321,7 @@
 
         <projectService serviceImplementation="com.reason.comp.bs.BsFormatProcess"/>
         <projectService serviceImplementation="com.reason.comp.rescript.ResFormatProcess"/>
-        <projectService serviceImplementation="com.reason.comp.dune.OcamlFormatProcess"/>
+        <projectService serviceImplementation="com.reason.comp.ocaml.OcamlFormatProcess"/>
         <postFormatProcessor implementation="com.reason.ide.format.ORPostFormatProcessor"/>
 
         <projectService serviceImplementation="com.reason.ide.console.ORToolWindowManager"/>
@@ -404,23 +409,21 @@
          | Spellchecker
          -->
 
-        <spellchecker.support language="OCaml" implementationClass="com.reason.ide.spellcheckers.OclSpellCheckerStrategy"/>
-        <spellchecker.support language="Reason" implementationClass="com.reason.ide.spellcheckers.RmlSpellCheckerStrategy"/>
-        <spellchecker.support language="Rescript" implementationClass="com.reason.ide.spellcheckers.ResSpellCheckerStrategy"/>
-
-        <!--
-         | Debug
-         -->
-
-        <programRunner implementation="com.reason.ide.debug.OCamlDebugRunner"/>
-        <xdebugger.breakpointType implementation="com.reason.ide.debug.ORLineBreakpointType"/>
+        <spellchecker.support language="OCaml"
+                              implementationClass="com.reason.ide.spellcheckers.OclSpellCheckerStrategy"/>
+        <spellchecker.support language="Reason"
+                              implementationClass="com.reason.ide.spellcheckers.RmlSpellCheckerStrategy"/>
+        <spellchecker.support language="Rescript"
+                              implementationClass="com.reason.ide.spellcheckers.ResSpellCheckerStrategy"/>
 
         <!--
          | UI
          -->
 
         <toolWindow id="BuckleScript:" anchor="bottom" factoryClass="com.reason.ide.console.bs.BsToolWindowFactory"/>
-        <toolWindow id="Rescript:" anchor="bottom" factoryClass="com.reason.ide.console.rescript.RescriptToolWindowFactory"/>
+        <toolWindow id="Rescript:" anchor="bottom"
+                    factoryClass="com.reason.ide.console.rescript.RescriptToolWindowFactory"/>
+        <toolWindow id="Dune:" anchor="bottom" factoryClass="com.reason.ide.console.dune.DuneToolWindowFactory"/>
 
         <!-- <codeInsight.typeInfo language="Reason" implementationClass="com.reason.ide.hints.RmlTypeProvider"/> ctrl-shift-p -->
         <codeInsight.parameterInfo language="Reason"
@@ -430,7 +433,6 @@
 
         <consoleFilterProvider implementation="com.reason.ide.console.ORConsoleFilterProvider"/>
         <editorFactoryListener implementation="com.reason.ide.OREditorFactoryListener"/>
-
 
         <!-- Gutter icons -->
 

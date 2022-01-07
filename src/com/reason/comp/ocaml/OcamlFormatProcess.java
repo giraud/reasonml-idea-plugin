@@ -1,4 +1,4 @@
-package com.reason.comp.dune;
+package com.reason.comp.ocaml;
 
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
@@ -24,7 +24,7 @@ public class OcamlFormatProcess {
     }
 
     public @NotNull String format(@NotNull VirtualFile file, @NotNull String textToFormat) {
-        GeneralCommandLine commandLine = new OCamlFormatCommandLine(myProject, "ocamlformat").addParameters(file).create(file, myConfigurationWarning);
+        GeneralCommandLine commandLine = new OCamlFormatCommandLine(myProject, "ocamlformat").addParameters(file).create(file);
         if (commandLine != null && !textToFormat.isEmpty()) {
             Process fmt = null;
             try {

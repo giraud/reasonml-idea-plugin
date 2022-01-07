@@ -365,16 +365,13 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     }
 
     @Override
-    public @NotNull PsiElement getComponentNavigationElement() {
+    public @Nullable PsiElement getComponentNavigationElement() {
         if (isComponent()) {
             PsiElement make = ORUtil.findImmediateNamedChildOfClass(getBody(), PsiLet.class, "make");
             if (make == null) {
                 make = ORUtil.findImmediateNamedChildOfClass(getBody(), PsiExternal.class, "make");
             }
-
-            if (make != null) {
-                return make;
-            }
+            return make;
         }
         return null;
     }

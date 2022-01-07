@@ -1,7 +1,6 @@
 package com.reason.ide.highlight;
 
 import com.intellij.lang.annotation.*;
-import com.intellij.openapi.editor.*;
 import com.intellij.openapi.editor.colors.*;
 import com.intellij.openapi.editor.markup.*;
 import com.intellij.psi.*;

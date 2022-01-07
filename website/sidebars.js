@@ -2,7 +2,6 @@ module.exports = {
   someSidebar: {
     'Get Started': [
       'get-started/overview',
-      'get-started/project-configuration',
       'get-started/project-types',
       'get-started/live-templates',
       'get-started/faq',

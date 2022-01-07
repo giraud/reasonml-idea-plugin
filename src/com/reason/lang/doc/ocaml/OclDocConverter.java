@@ -127,20 +127,17 @@ public class OclDocConverter extends ORDocConverter {
                     String yyValue = extract(1, 0, myLexer.yytext());
                     if (currentBuilder instanceof ORDocSectionsBuilder) {
                         ORDocSectionsBuilder sectionsBuilder = (ORDocSectionsBuilder) currentBuilder;
+                        trimEndChildren(sectionsBuilder.myChildren);
                         if (sectionsBuilder.myTag.equals(yyValue)) {
-                            trimEndChildren(sectionsBuilder.myChildren);
                             sectionsBuilder.myChildren.add(HtmlChunk.raw("</p><p>"));
-                            tokenType = skipWhiteSpace(myLexer);
-                            advanced = true;
                         } else {
-                            trimEndChildren(sectionsBuilder.myChildren);
                             sectionsBuilder.myChildren.add(HtmlChunk.raw("</p>"));
                             sectionsBuilder.addSection();
 
                             sectionsBuilder.addHeaderCell(yyValue);
-                            tokenType = skipWhiteSpace(myLexer);
-                            advanced = true;
                         }
+                        tokenType = skipWhiteSpace(myLexer);
+                        advanced = true;
                     } else {
                         currentBuilder.appendChildren(true);
 

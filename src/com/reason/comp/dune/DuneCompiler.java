@@ -2,7 +2,6 @@ package com.reason.comp.dune;
 
 import com.intellij.execution.process.*;
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
@@ -10,7 +9,7 @@ import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.dune.*;
-import com.reason.ide.facet.*;
+import com.reason.ide.settings.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -21,7 +20,6 @@ public class DuneCompiler implements Compiler {
 
     private final @NotNull Project myProject;
     private final AtomicBoolean myProcessStarted = new AtomicBoolean(false);
-    private final AtomicBoolean myConfigurationWarning = new AtomicBoolean(false);
 
     DuneCompiler(@NotNull Project project) {
         myProject = project;
@@ -34,10 +32,10 @@ public class DuneCompiler implements Compiler {
 
     @Override
     public @NotNull String getFullVersion(@Nullable VirtualFile file) {
-        /* Dune version, but we don't care in fact. We are interested in OCaml version.
+        /* Dune version, but we don't care in fact. We are interested in OCaml version. *
         GeneralCommandLine cli = new DuneProcess.DuneCommandLine(myProject, "dune")
                 .addParameters(CliType.Dune.VERSION)
-                .create(file, myConfigurationWarning);
+                .create(file);
 
         try (InputStream inputStream = Runtime.getRuntime().exec(cli.getCommandLineString(), new String[]{}, cli.getWorkDirectory()).getInputStream()) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -45,27 +43,32 @@ public class DuneCompiler implements Compiler {
         } catch (IOException e) {
             return "error: " + e.getMessage();
         }
-        */
+        /*
         String version = "unknown ";
 
-        DuneFacet duneFacet = DunePlatform.getFacet(myProject, file);
-        if (duneFacet == null) {
-            return version + "(dune facet not found)";
-        } else {
-            Sdk odk = duneFacet.getODK();
-            SdkTypeId sdkType = odk == null ? null : odk.getSdkType();
-            if (sdkType == null) {
-                return version + "(SDK not found)";
-            }
-            version = sdkType.getVersionString(odk);
-        }
+        version += " - not implemented yet";
+        //DuneFacet duneFacet = DunePlatform.getFacet(myProject, file);
+        //if (duneFacet == null) {
+        //    return version + "(dune facet not found)";
+        //} else {
+        //    Sdk odk = duneFacet.getODK();
+        //    SdkTypeId sdkType = odk == null ? null : odk.getSdkType();
+        //    if (sdkType == null) {
+        //        return version + "(SDK not found)";
+        //    }
+        //    version = sdkType.getVersionString(odk);
+        //}
 
         return "Dune ( OCaml:" + version + " )";
+        */
+        ORSettings settings = myProject.getService(ORSettings.class);
+        return "Dune (Switch: " + settings.getSwitchName() + ")";
     }
 
     @Override
     public boolean isConfigured(@NotNull Project project) {
-        return DunePlatform.getFacet(project) != null;
+        ORSettings settings = project.getService(ORSettings.class);
+        return !settings.getOpamLocation().isEmpty() && settings.getSwitchName() != null;
     }
 
     @Override
@@ -79,12 +82,12 @@ public class DuneCompiler implements Compiler {
     }
 
     @Override
-    public void runDefault(@NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated) {
+    public void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         run(file, CliType.Dune.BUILD, onProcessTerminated);
     }
 
     @Override
-    public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         if (!(cliType instanceof CliType.Dune)) {
             LOG.error("Invalid cliType for dune compiler. cliType = " + cliType);
             return;
@@ -97,7 +100,7 @@ public class DuneCompiler implements Compiler {
             VirtualFile sourceFile = file == null ? ORProjectManager.findFirstDuneConfigFile(myProject) : file;
             DuneConsoleView console = (DuneConsoleView) myProject.getService(ORToolWindowManager.class).getConsoleView(DuneToolWindowFactory.ID);
             DuneProcess process = new DuneProcess(myProject);
-            ProcessHandler processHandler = sourceFile == null ? null : process.create(sourceFile, cliType, myConfigurationWarning, onProcessTerminated);
+            ProcessHandler processHandler = sourceFile == null ? null : process.create(sourceFile, cliType, onProcessTerminated);
             if (processHandler != null && console != null) {
                 processHandler.addProcessListener(new CompilerOutputListener(myProject, new DuneOutputAnalyzer()));
                 processHandler.addProcessListener(new ProcessFinishedListener());

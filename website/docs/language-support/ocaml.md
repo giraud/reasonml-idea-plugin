@@ -7,84 +7,45 @@ slug: /language-support/ocaml
 
 # Configuring an OCaml project
 
-**prerequesites**: You need one of the IDEA product (community or ultimate).
-
-OCaml project follow Java project structures, and need to have a correctly defined 
-SDK. The SDK is used to locate the binary files of the OCaml installation.
-
-A SDK is global to a project: it means that you can't mix Java and OCaml in the
-same project.
-
 ## Define a SDK
 
-First, open the project structure (`File` | `Project structure`), and go to SDK:
+The SDK is used to locate the binary files of the OCaml installation.
+
+First, open the project settings (`File` | `Settings`), and go to `Languages & Frameworks` | `OCaml/Reason`:
 
 ![](../../static/img/sdk_01.png)
 
-Locate your ocaml installation:
+Locate your ocaml installation, it should be the `.opam` directory in your `home`.
 
-- Linux host, using native opam installation <br/> ![Linux](../../static/img/sdk_02.png)
-- Windows host, using WSL <br/> ![Wsl](../../static/img/sdk_02_wsl.png)
-- Windows host, using Cygwin <br/> ![Cygwin](../../static/img/sdk_02_cygwin.png)
+On Windows, if you're using a WSL or a Cygwin installation, 
+it should be detected by the plugin:
 
-**NOTE**: SDK version extraction uses a very simple regular expression, and it
-expects that ocaml installation contains the version number. If it's not the
-case, you should probably create a symlink to your real implementation with the
-version number.
+![Cygwin](../../static/img/sdk_02_cygwin.png)
 
-### Cygwin
+When opam location is set, switches are listed.
 
-Cygwin users must select the `cygwin` checkbox and locate the `bash.exe` binary:
+![Cygwin](../../static/img/sdk_02_switch.png)
 
-![Cygwin bash](../../static/img/sdk_02_bash.png)
+When you select a switch, the installed libraries should be listed.
 
 ### Sources 
 
-The plugin works at the source level: you need to add language source files to
-get completion and references to OCaml structures and functions.
+The plugin works at the source level: when you validate your SDK configuration,
+a popup with detected sources will appear:
 
-Set the location to where the OCaml sources will be downloaded and extracted,
-and then click the `Download sources` button:
-
-![Download sources](../../static/img/sdk_03_download_sources.png)
-
-When sources have been extracted to the target directory add them to the 
-`sourcepath` with the `+` icon (select the directory that has been created under
-the download target):
-
-![Add sources](../../static/img/sdk_03_add_sources.png)
+![Add sources](../../static/img/sdk_03.png)
 > You can exclude files you don't want completion for
 
-## Set up your project SDK
+## Structure
 
-Go to the project entry and select the OCaml SDK:
+The selected SDK should be displayed as an external library:
 
 ![project SDK](../../static/img/sdk_04.png)
 
-## Define an OCaml module
+Technically, the switch is added as a module library: 
+this will automatically index the sources.
 
-Go to the modules entry and add an OCaml module:
+![project SDK](../../static/img/sdk_05.png)
 
-> When importing a project, you may have a generic java module already defined.
-> You need to delete it and create an OCaml module instead.
- 
-![add a module](../../static/img/module_01.png)
-
-![add a module](../../static/img/module_02.png)
-
-the content root must be the directory where the dune-project file is found.
-
-You can then specify the source/test/binary folders:
-> This is a manual operation, but it might be more automated in the future 
-
-![module sources](../../static/img/module_03.png)
-
-### Dune facet
-
-To enable dune compilation inside the IDE, and display the dune console, you
-need to add a Dune facet to the OCaml module.
-
-![add facet](../../static/img/facet_01.png)
-
-![facet](../../static/img/facet_02.png)
+This module is always defined, but only visible in major IDE (IC/IU).
 

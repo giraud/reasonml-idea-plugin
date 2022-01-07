@@ -7,6 +7,5 @@ import org.jetbrains.annotations.*;
  * A {@link PsiQualifiedNamedElement} with extra access to the element path as array of strings.
  */
 public interface PsiQualifiedPathElement extends PsiQualifiedNamedElement {
-    @Nullable
-    String[] getPath();
+    String @Nullable [] getPath();
 }

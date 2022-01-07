@@ -50,10 +50,8 @@ public class ObjectCompletionProvider {
                 } else {
                     for (PsiObjectField field : fields) {
                         String fieldName = field.getName();
-                        if (fieldName != null) {
-                            resultSet.addElement(LookupElementBuilder.create(fieldName)
-                                    .withIcon(PsiIconUtil.getProvidersIcon(field, 0)));
-                        }
+                        resultSet.addElement(LookupElementBuilder.create(fieldName)
+                                .withIcon(PsiIconUtil.getProvidersIcon(field, 0)));
                     }
                 }
             }

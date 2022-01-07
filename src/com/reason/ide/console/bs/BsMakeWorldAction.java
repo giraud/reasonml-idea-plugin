@@ -27,7 +27,7 @@ public class BsMakeWorldAction extends CompilerAction {
         Project project = e.getProject();
         BsCompiler compiler = project == null ? null : project.getService(BsCompiler.class);
         if (compiler != null) {
-            doAction(project, CliType.Bs.CLEAN_MAKE, () -> e.getPresentation().setEnabled(!compiler.isRunning()));
+            doAction(project, CliType.Bs.CLEAN_MAKE, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
     }
 }

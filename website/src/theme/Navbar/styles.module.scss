@@ -7,6 +7,11 @@
   .navbar__inner {
     max-width: var(--ifm-container-width);
   }
+
+  a.navbar__brand > img {
+    height: 2rem;
+    padding-right: 1rem;
+  }
 }
 
 :global {

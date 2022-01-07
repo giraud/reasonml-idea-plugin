@@ -7,14 +7,14 @@ slug: /build-tools/esy
 
 # Overview
 
-Support for Esy is ongoing. The initial goal is to support Esy project detection and an esy tool window that allows you to run basic esy tasks.
+Support for Esy is ongoing. The initial goal is to support Esy project detection, and an esy tool window that allows you to run basic esy tasks.
 
 Please tag any Esy feature requests with the `esy` tag.
 
 # Setup
 
 ## Find the Esy Executable
-To setup Esy, you'll first need to figure out where Esy is installed on your machine.
+To set up Esy, you'll first need to figure out where Esy is installed on your machine.
 
 This can be done by running the `whereis` command (unix only):
 

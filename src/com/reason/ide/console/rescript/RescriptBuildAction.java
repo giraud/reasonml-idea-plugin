@@ -10,11 +10,9 @@ import com.reason.ide.console.*;
 import org.jetbrains.annotations.*;
 
 public class RescriptBuildAction extends CompilerAction {
-    private final RescriptConsoleView myConsoleView;
 
-    public RescriptBuildAction(RescriptConsoleView consoleView) {
+    public RescriptBuildAction() {
         super("Build", "Build", AllIcons.Actions.Compile);
-        myConsoleView = consoleView;
     }
 
     @Override
@@ -31,7 +29,7 @@ public class RescriptBuildAction extends CompilerAction {
         Project project = e.getProject();
         Compiler compiler = project == null ? null : project.getService(ResCompiler.class);
         if (compiler != null) {
-            doAction(project, CliType.Rescript.MAKE, () -> e.getPresentation().setEnabled(!compiler.isRunning()));
+            doAction(project, CliType.Rescript.MAKE, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
     }
 }

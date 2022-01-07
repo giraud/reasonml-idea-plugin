@@ -54,50 +54,20 @@ public class Platform {
         return plugin == null ? null : plugin.getPluginPath();
     }
 
-    private static @NotNull Map<Module, VirtualFile> findContentRootsFor(@NotNull Project project, @NotNull String filename) {
+    public static @NotNull Map<Module, VirtualFile> findContentRootsFor(@NotNull Project project, @NotNull String filename) {
         Map<Module, VirtualFile> rootContents = new HashMap<>();
 
         ModuleManager moduleManager = ModuleManager.getInstance(project);
         for (Module module : moduleManager.getModules()) {
             for (VirtualFile contentRoot : ModuleRootManager.getInstance(module).getContentRoots()) {
-                VirtualFile packageJson = contentRoot.findChild(filename);
-                if (packageJson != null && !rootContents.containsKey(module)) {
-                    rootContents.put(module, packageJson);
+                VirtualFile child = contentRoot.findChild(filename);
+                if (child != null && !rootContents.containsKey(module)) {
+                    rootContents.put(module, child);
                 }
             }
         }
 
         return rootContents;
-    }
-
-    /**
-     * @deprecated replace usages with ORProjectManager::findContentRoots which returns ALL potential
-     * roots.
-     */
-    @Deprecated
-    public static @Nullable VirtualFile findContentRootFor(@NotNull Project project, @NotNull String filename) {
-        Map<Module, VirtualFile> rootContents = findContentRootsFor(project, filename);
-
-        if (rootContents.isEmpty()) {
-            // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/249
-            // LOG.warn("No content roots with " + filename + " file found");
-            return null;
-        } else if (rootContents.size() == 1) {
-            Module module = rootContents.keySet().iterator().next();
-            VirtualFile file = rootContents.get(module);
-            return file.getParent();
-        } else {
-            Module module = rootContents.keySet().iterator().next();
-            VirtualFile file = rootContents.get(module);
-            LOG.info(
-                    "Many modules with "
-                            + filename
-                            + " file in it found ("
-                            + rootContents.size()
-                            + "), using first",
-                    rootContents);
-            return file.getParent();
-        }
     }
 
     public static @NotNull Optional<Path> findExecutableInPath(String filename, String shellPath) {

@@ -3,7 +3,6 @@ package com.reason.ide;
 import static com.intellij.AppTopics.FILE_DOCUMENT_SYNC;
 
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
 import com.intellij.openapi.project.Project;

@@ -2,7 +2,7 @@
 
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.1.6'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.2.1'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
@@ -31,22 +31,16 @@ sourceSets {
 intellij {
     version = platformVersion
     type = platformType
-    plugins = [
-            'java',
-            'JavaScriptLanguage',
-            'com.jetbrains.hackathon.indices.viewer:' + indicesVersion,
-            'PsiViewer:' + psiVersion
-    ]
+    plugins = platformPlugins.split(',').collect { it.trim() }
+    downloadSources = true
 
     patchPluginXml {
         sinceBuild = pluginSinceBuild
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#362 - Check invalid file before compile (rescript execution exception)</li>
-                    <li>#360 - Should not display annotation signature</li>
-                    <li>#359 - Doc not displayed for JSX component</li>
-                    <li>Prevent multiple compiler run in parallel</li>
+                    <li>New opam configuration, should allow other IDE to use dune projects. Dune facet is removed.</li>
+                    <li>#364 - StringIndexOutOfBoundsException</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
@@ -63,14 +57,3 @@ runIde {
     systemProperty 'idea.is.internal', true
     jvmArgs '-Xmx2G'
 }
-
-/*
-project(':jps-plugin') {
-    jar.archiveFileName = "jps-plugin.jar"
-    patchPluginXml.enabled = false
-}
-
-dependencies {
-    implementation project(':jps-plugin')
-}
-*/

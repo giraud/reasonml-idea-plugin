@@ -9,21 +9,21 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 class Resolution implements Comparable<Resolution> {
-    final @NotNull List<PsiQualifiedPathElement> myElements = new ArrayList<>();
-    private final @Nullable String[] myPath;
-    private @Nullable String[] myAlternatePath;
+    final List<PsiQualifiedPathElement> myElements = new ArrayList<>();
+    private final String[] myPath;
+    private String[] myAlternatePath;
 
     int myLevel; // reverse order
     boolean myIsComplete = false;
-    @Nullable Integer[] myWeights;
+    Integer[] myWeights;
 
-    public Resolution(@Nullable String[] path, @NotNull PsiQualifiedPathElement element) {
+    public Resolution(String @Nullable [] path, @NotNull PsiQualifiedPathElement element) {
         myPath = path;
         myLevel = path == null ? -1 : myPath.length - 1;
         myElements.add(element);
     }
 
-    public Resolution(@Nullable String[] path, @NotNull List<PsiQualifiedPathElement> elements) {
+    public Resolution(String @Nullable [] path, @NotNull List<PsiQualifiedPathElement> elements) {
         myPath = path;
         myLevel = path == null ? -1 : myPath.length - 1;
         myElements.addAll(elements);
@@ -109,7 +109,7 @@ class Resolution implements Comparable<Resolution> {
         }
 
         PsiQualifiedNamedElement element = myElements.get(0);
-        return "(" + myIsComplete + ", level:" + myLevel + ", path:[" + sb.toString() + "], element: '" + element.getQualifiedName() + "' " + element.getClass().getSimpleName() + ")";
+        return "(" + myIsComplete + ", level:" + myLevel + ", path:[" + sb + "], element: '" + element.getQualifiedName() + "' " + element.getClass().getSimpleName() + ")";
     }
 
     /*
@@ -188,7 +188,7 @@ class Resolution implements Comparable<Resolution> {
         return levels;
     }
 
-    public boolean isPathEqualTo(@Nullable String[] otherPath) {
+    public boolean isPathEqualTo(String @Nullable [] otherPath) {
         if (myAlternatePath == null) {
             if (myPath == null) {
                 return otherPath == null;
@@ -215,7 +215,7 @@ class Resolution implements Comparable<Resolution> {
         return true;
     }
 
-    public @NotNull String[] augmentPath(@NotNull String[] path) {
+    public String @NotNull [] augmentPath(@NotNull String @NotNull [] path) {
         if (myAlternatePath == null && myPath.length == 1) {
             return path;
         }

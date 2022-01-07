@@ -49,7 +49,7 @@ public class PsiIncludeImpl extends PsiTokenStub<ORTypes, PsiInclude, PsiInclude
     }
 
     @Override
-    public @Nullable String[] getResolvedPath() {
+    public String @Nullable [] getResolvedPath() {
         PsiIncludeStub stub = getGreenStub();
         if (stub != null) {
             return stub.getResolvedPath();

@@ -97,7 +97,7 @@ public class Log {
         }
     }
 
-    public void debug(String comment, @Nullable PsiFile[] t) {
+    public void debug(String comment, PsiFile @Nullable [] t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.length + " "));
         }
@@ -109,7 +109,7 @@ public class Log {
         }
     }
 
-    public void debug(String comment, @Nullable ResolveResult[] t) {
+    public void debug(String comment, ResolveResult @Nullable [] t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.length + " [" + Joiner.join(", ", t) + "]"));
         }
@@ -201,7 +201,7 @@ public class Log {
                 sb.append(entry.getKey()).append(":").append(entry.getValue());
                 start = false;
             }
-            m_log.debug(comment + SEP + "[" + sb.toString() + "]");
+            m_log.debug(comment + SEP + "[" + sb + "]");
         }
     }
 
@@ -249,7 +249,7 @@ public class Log {
                     .append(entry.getValue())
                     .append(")");
         }
-        m_log.info(msg + SEP + sb.toString());
+        m_log.info(msg + SEP + sb);
     }
 
     public void trace(String msg) {

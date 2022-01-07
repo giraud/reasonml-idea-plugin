@@ -22,7 +22,7 @@ public class ORResolvedCompiler<C extends Compiler> {
         return myCompiler.getType();
     }
 
-    public void runDefault(@NotNull VirtualFile file, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    public void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         myCompiler.runDefault(file, onProcessTerminated);
     }
 
