@@ -37,10 +37,8 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#362 - Check invalid file before compile (rescript execution exception)</li>
-                    <li>#360 - Should not display annotation signature</li>
-                    <li>#359 - Doc not displayed for JSX component</li>
-                    <li>Prevent multiple compiler run in parallel</li>
+                    <li>New opam configuration, should allow other IDE to use dune projects. Dune facet is removed.</li>
+                    <li>#364 - StringIndexOutOfBoundsException</li>
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

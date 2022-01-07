@@ -11,8 +11,11 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
 ## Unreleased
-              
+
+## 0.105.2 - 2022/01/07
+
 - :boom: :rocket: New opam configuration, should allow other IDE to use dune projects. Dune facet is removed.
+- :bug: [#364](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/364) StringIndexOutOfBoundsException
 
 ## 0.105.1 - 2021/11/12
 
