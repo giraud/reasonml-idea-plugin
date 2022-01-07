@@ -31,7 +31,7 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
     public @Nullable PsiElement getNameIdentifier() {
         PsiElement parent = getParent();
         PsiElement grandParent = parent == null ? null : parent.getParent();
-        if (parent instanceof PsiFunctionCallParams || grandParent instanceof PsiFunctorCall) {
+        if (grandParent instanceof PsiFunctionCall || grandParent instanceof PsiFunctorCall) {
             return null;
         }
 
@@ -65,7 +65,7 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
         PsiElement parent = getParent();
         PsiElement grandParent = parent == null ? null : parent.getParent();
 
-        if (parent instanceof PsiFunctionCallParams || grandParent instanceof PsiFunctorCall) {
+        if (parent instanceof PsiFunctionCallParams || grandParent instanceof PsiFunctionCall || grandParent instanceof PsiFunctorCall) {
             List<PsiParameter> parameters = parent instanceof PsiFunctionCallParams ?
                     ((PsiFunctionCallParams) parent).getParametersList() :
                     ((PsiParameters) parent).getParametersList();
@@ -110,7 +110,7 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
 
         PsiElement parent = getParent();
         PsiElement grandParent = parent == null ? null : parent.getParent();
-        boolean isCall = parent instanceof PsiFunctionCallParams || grandParent instanceof PsiFunctorCall;
+        boolean isCall = grandParent instanceof PsiFunctionCall || grandParent instanceof PsiFunctorCall;
 
         String name = getName();
         String[] path = getPath();
@@ -135,10 +135,5 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
     @Override
     public boolean isOptional() {
         return getDefaultValue() != null;
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Parameter " + getQualifiedName();
     }
 }

@@ -16,4 +16,9 @@ public abstract class CompositeTypePsiElement<T> extends CompositePsiElement {
     protected @Nullable <C extends PsiElement> C findChildByClass(@NotNull Class<C> clazz) {
         return ORUtil.findImmediateFirstChildOfClass(this, clazz);
     }
+
+    @Override
+    public String toString() {
+        return "ORElement(" + getElementType() + ")";
+    }
 }

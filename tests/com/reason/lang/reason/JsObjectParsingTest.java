@@ -72,7 +72,7 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
                         + "  );")));
 
         PsiLetBinding binding = e.getBinding();
-        PsiFunctionCallParams call = PsiTreeUtil.findChildOfType(binding, PsiFunctionCallParams.class);
+        PsiParameters call = PsiTreeUtil.findChildOfType(binding, PsiParameters.class);
         PsiLocalOpen open = PsiTreeUtil.findChildOfType(call, PsiLocalOpen.class);
         PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(open, PsiJsObject.class);
         assertNotNull(jsObject);

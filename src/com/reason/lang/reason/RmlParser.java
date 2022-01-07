@@ -368,7 +368,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
                         .markScope(m_types.C_DECONSTRUCTION, m_types.LPAREN)
                         .advance();
             }
-        } else if (state.is(m_types.C_FUN_CALL_PARAMS) || state.is(m_types.C_FUN_PARAMS)) {
+        } else if (state.is(m_types.C_PARAMETERS) || state.is(m_types.C_FUN_PARAMS)/*zzz*/) {
             state.advance();
             IElementType nextTokenType = state.getTokenType();
             if (nextTokenType != m_types.RPAREN) {
@@ -745,10 +745,12 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
                     state.mark(m_types.C_RECORD_FIELD).wrapWith(m_types.C_LOWER_IDENTIFIER);
                 } else if (state.is(m_types.C_RECORD_FIELD)) {
                     state.wrapWith(m_types.C_LOWER_IDENTIFIER);
+                } else if (nextElementType == m_types.LPAREN) {
+                    state.mark(m_types.C_FUN_CALL);
                 }
             }
 
-            if (state.is(m_types.C_DECONSTRUCTION) || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS))) {
+            if (state.is(m_types.C_DECONSTRUCTION) || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_PARAMETERS))) {
                 state.wrapWith(m_types.C_LOWER_IDENTIFIER);
             } else if (!state.is(m_types.C_RECORD_FIELD) && !state.is(m_types.C_TAG_PROPERTY)) {
                 state.wrapWith(m_types.C_LOWER_SYMBOL);
@@ -934,12 +936,12 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
         } else if (state.is(m_types.C_IF) || state.is(m_types.C_SWITCH_EXPR)) {
             // if |>(<| ...  OR  switch |>(<| ...
             state.markScope(m_types.C_BINARY_CONDITION, m_types.LPAREN);
-        } else if (state.previousElementType1 == m_types.LIDENT
+        } else if (state.is(m_types.C_FUN_CALL)
                 && !(state.is(m_types.C_TYPE_DECLARATION)
                 || state.inAny(m_types.C_TYPE_BINDING, m_types.C_SIG_ITEM))) {
             // calling a function
             state
-                    .markScope(m_types.C_FUN_CALL_PARAMS, m_types.LPAREN)
+                    .markScope(m_types.C_PARAMETERS, m_types.LPAREN)
                     .advance();
             IElementType nextTokenType = state.getTokenType();
             if (nextTokenType != m_types.RPAREN) {
@@ -1025,6 +1027,9 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
 
             // Remove the scope from the stack, we want to test its parent
             state.popEnd();
+            if (state.is(m_types.C_FUN_CALL)) {
+                state.popEnd();
+            }
 
             if (nextTokenType == m_types.LPAREN) {
                 if (state.is(m_types.C_CLASS_DECLARATION)) {
@@ -1170,7 +1175,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
             state.popEnd().advance().mark(m_types.C_SIG_ITEM);
         } else if (state.is(m_types.C_FUN_PARAM)) {
             // x |>=><| ...
-            state.popEndUntilOneOf(m_types.C_FUN_CALL_PARAMS, m_types.C_FUN_EXPR);
+            state.popEndUntilOneOf(m_types.C_PARAMETERS, m_types.C_FUN_EXPR);
             state.advance().mark(m_types.C_FUN_BODY);
         } else if (state.is(m_types.C_FUN_EXPR)) {
             // let x = ( ... ) |>=><|

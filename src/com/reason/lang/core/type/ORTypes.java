@@ -35,6 +35,7 @@ public abstract class ORTypes {
   public ORCompositeType C_DEFAULT_VALUE;
   public ORCompositeType C_DIRECTIVE;
   public ORCompositeType C_DO_LOOP;
+  public ORCompositeType C_FUN_CALL;
   public ORCompositeType C_FUN_CALL_PARAMS;
   public ORCompositeType C_FUN_EXPR;
   public ORCompositeType C_FUN_PARAMS;

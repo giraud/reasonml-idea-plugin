@@ -21,8 +21,8 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
     public void test_call2() {
         PsiLet e = first(letExpressions(parseCode("let _ = Belt.Option.map(self.state.timerId^, Js.Global.clearInterval)")));
 
-        PsiFunctionCallParams callParams = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class);
-        List<PsiParameter> parameters = callParams.getParametersList();
+        PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
+        List<PsiParameter> parameters = fnCall.getParameters();
         assertEquals(2, parameters.size());
         assertEquals("self.state.timerId^", parameters.get(0).getText());
         assertNull(PsiTreeUtil.getChildrenOfType(parameters.get(0), PsiLowerIdentifier.class));
@@ -33,29 +33,29 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
     public void test_call3() {
         PsiLet e = first(letExpressions(parseCode("let _ = subscriber->Topic.unsubscribe()")));
 
-        PsiFunctionCallParams callParams = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class);
-        assertEmpty(callParams.getParametersList());
+        PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
+        assertEmpty(fnCall.getParameters());
     }
 
     public void test_unit_last() {
         PsiLetBinding e = first(letExpressions(parseCode("let _ = f(1, ());"))).getBinding();
 
-        PsiFunctionCallParams params = PsiTreeUtil.findChildOfType(e, PsiFunctionCallParams.class);
-        assertSize(2, params.getParametersList());
+        PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertSize(2, fnCall.getParameters());
     }
 
     public void test_params() {
         FileBase f = parseCode("call(~decode=x => Ok(), ~task=() => y,);");
-        PsiFunctionCallParams e = ORUtil.findImmediateFirstChildOfClass(f, PsiFunctionCallParams.class);
+        PsiFunctionCall fnCall = ORUtil.findImmediateFirstChildOfClass(f, PsiFunctionCall.class);
 
-        assertSize(2, e.getParametersList());
+        assertSize(2, fnCall.getParameters());
     }
 
     public void test_GH_120() {
         PsiLet e = first(letExpressions(parseCode("let _ = f(x == U.I, 1)")));
 
-        PsiFunctionCallParams params = PsiTreeUtil.findChildOfType(e, PsiFunctionCallParams.class);
-        assertSize(2, params.getParametersList());
+        PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertSize(2, fnCall.getParameters());
     }
 
     public void test_paramName() {

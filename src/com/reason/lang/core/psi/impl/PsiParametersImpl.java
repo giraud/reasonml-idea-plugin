@@ -9,19 +9,12 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class PsiParametersImpl extends CompositeTypePsiElement<ORTypes> implements PsiParameters {
+    protected PsiParametersImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
+    }
 
-  protected PsiParametersImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
-    super(types, elementType);
-  }
-
-  @Override
-  public @NotNull List<PsiParameter> getParametersList() {
-    return ORUtil.findImmediateChildrenOfClass(this, PsiParameter.class);
-  }
-
-  @NotNull
-  @Override
-  public String toString() {
-    return "Parameters";
-  }
+    @Override
+    public @NotNull List<PsiParameter> getParametersList() {
+        return ORUtil.findImmediateChildrenOfClass(this, PsiParameter.class);
+    }
 }

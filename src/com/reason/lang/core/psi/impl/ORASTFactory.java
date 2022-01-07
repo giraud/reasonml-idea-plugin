@@ -43,6 +43,9 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_TAG_START) {
             return new PsiTagStartImpl(m_types, type);
         }
+        if (type == m_types.C_FUN_CALL) {
+            return new PsiFunctionCall(m_types, type);
+        }
         if (type == m_types.C_FUN_CALL_PARAMS) {
             return new PsiFunctionCallParamsImpl(m_types, type);
         }

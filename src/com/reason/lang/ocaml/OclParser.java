@@ -822,7 +822,6 @@ public class OclParser extends CommonParser<OclTypes> {
             }
         }
 
-
         state.popEnd();
 
         if (state.is(m_types.C_NAMED_PARAM) && nextToken != m_types.EQ) {

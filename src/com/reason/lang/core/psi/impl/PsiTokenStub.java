@@ -18,4 +18,9 @@ public class PsiTokenStub<T, P extends PsiElement, S extends StubElement<P>> ext
         super(stub, nodeType);
         m_types = types;
     }
+
+    @Override
+    public String toString() {
+        return "ORElement(" + getElementType() + ")";
+    }
 }
