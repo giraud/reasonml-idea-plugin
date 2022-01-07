@@ -3,7 +3,6 @@ package jpsplugin.com.reason.sdk;
 import com.intellij.notification.*;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.*;
 import com.intellij.util.io.*;

@@ -16,7 +16,7 @@ public class CmtXmlComponent extends BorderLayoutPanel implements ChangeListener
     private final String myXmlDump;
     private boolean childrenAdded = false;
 
-    public CmtXmlComponent(@NotNull Project project, TabbedPaneWrapper rootTabbedPane, @NotNull String xmlDump) {
+    public CmtXmlComponent(@NotNull Project project, @NotNull TabbedPaneWrapper rootTabbedPane, @NotNull String xmlDump) {
         myProject = project;
         myXmlDump = xmlDump;
         rootTabbedPane.addChangeListener(this);

@@ -27,13 +27,13 @@ the parser or the indexing.
 
 Of course, the drawback of not using LSP is that creating a functional plugin needs more work.
 
-The goal of the plugin is also to work out of the box, and be cross platform (this is the strength 
+The goal of the plugin is also to work out of the box, and be cross-platform (this is the strength 
 of the JVM). The idea is to try to keep things at the JVM level, and thus work at much as possible
 at the source level. In a second pass, to improve results, we also use information from the 
 compiled typed trees (the cmt files) - but it is optional.
 
 Finally, these decisions give us the ability to provide multiple languages implementations easily:
-the plugin works at ReasonML and OCaml source code, and embed Dune, ML4, MLG, MLL, MLY syntaxes.
+the plugin works at ReasonML and OCaml source code, and embed Dune, ML4, MLG, MLL, MLY syntax.
 
 #### Language
 
@@ -46,19 +46,19 @@ want to contribute occasionally, and Kotlin workflow is much slower than Java.
 The project is built using the [gradle IntelliJ plugin](https://github.com/JetBrains/gradle-intellij-plugin).
 The `build.gradle` can be found at the root of the project directory.
 
-Each version of the IntelliJ is developed in it's own branch (ex: 191-2019.1, 192-2019.2, etc.).
+Each version of the IntelliJ is developed in its own branch (ex: 191-2019.1, 192-2019.2, etc.).
 The main branch is the version just below the latest version (ex: if 2020.1 is the latest released,
 the master branch contains the 2019.3 version).
 
-You'll find a `jps-plugin` sub project in the sources.
-It was initialy created to integrate bucklescript or dune compilation with the normal build process of Idea,
+You'll find a `jps-plugin` subproject in the sources.
+It was initially created to integrate bucklescript or dune compilation with the normal build process of Idea,
 see [external build process.](https://www.jetbrains.org/intellij/sdk/docs/reference_guide/frameworks_and_external_apis/external_builder_api.html)
 
 That work has been canceled for lack of time, but `jps-plugin` is still used for shared elements. 
 
 Structure of the sources is:
 - `bs`, `esy`, `dune` contains source code of the corresponding compilers
-- `hints` contains source related to rincewind process
+- `hints` contains source related to Rincewind process
 - `ide` contains all editor functionalities
 - `lang` contains parser code, PSI definitions, stubs, etc. for the different languages
 
@@ -211,7 +211,7 @@ namespace: true | "name"
 ```
 
 This is problematic when indexing the files at the source level, because the 
-namespace only exist at the generated code, and indexing files is different than 
+namespace only exist at the generated code, and indexing files is different from 
 indexing inner modules of a file. Also, we want to use the same indexes for the 
 inner modules and for the files. 
 
@@ -261,7 +261,7 @@ up until the start of the file, and build a list of paths. Potential paths for t
 
 The class that extract path is `QNameFinder`.
  
-Then, when we have a list of potential qualified names, we uses the indices to retrieve the
+Then, when we have a list of potential qualified names, we use the indices to retrieve the
 corresponding `PsiElement` from that key. All the code that get Psi from indices is found
 in the `Psifinder` class.
 
@@ -271,7 +271,7 @@ Type inference is the signatures you see next to the code, and it can't be selec
 
 ![](../../static/img/arch/type_inference.png)
 
-> That information is retrieved from the `.cmt` files. These files contains the serialized
+> That information is retrieved from the `.cmt` files. These files contain the serialized
 content of a typed tree after compilation by OCaml.
 
 When a file is saved, it is compiled and that creates a cmt file. A process read that file

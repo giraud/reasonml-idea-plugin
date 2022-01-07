@@ -34,13 +34,13 @@ public class PsiObjectField extends PsiTokenStub<ORTypes, PsiObjectField, PsiObj
     }
 
     @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    public @Nullable PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;
     }
 
     //region PsiQualifiedName
     @Override
-    public @NotNull String[] getPath() {
+    public String @NotNull [] getPath() {
         PsiObjectFieldStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

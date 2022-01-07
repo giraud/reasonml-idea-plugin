@@ -1,7 +1,6 @@
 package com.reason.lang;
 
 import com.intellij.lang.*;
-import com.intellij.lang.impl.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
@@ -11,7 +10,7 @@ public class ParserScope {
     @NotNull private final PsiBuilder m_builder;
     private final int m_offset;
 
-    private @Nullable ParserScopeEnum m_resolution;
+    private ParserScopeEnum m_resolution;
     private ORCompositeType m_compositeElementType;
     private ORTokenElementType m_scopeTokenElementType;
     private boolean m_isComplete = true;
@@ -27,7 +26,7 @@ public class ParserScope {
         m_scopeTokenElementType = scopeTokenElementType;
     }
 
-    public static ParserScope copy(ParserScope scope) {
+    public static @NotNull ParserScope copy(@NotNull ParserScope scope) {
         return new ParserScope(scope.m_builder, scope.m_builder.mark(), scope.m_compositeElementType, scope.m_scopeTokenElementType);
     }
 
@@ -118,7 +117,7 @@ public class ParserScope {
         return m_compositeElementType == compositeType;
     }
 
-    boolean isCompositeIn(@NotNull ORCompositeType... compositeType) {
+    boolean isCompositeIn(ORCompositeType @NotNull ... compositeType) {
         for (ORCompositeType composite : compositeType) {
             if (m_compositeElementType == composite) {
                 return true;
@@ -156,7 +155,7 @@ public class ParserScope {
         return m_scopeTokenElementType != null;
     }
 
-    ORTokenElementType getScopeTokenElementType() {
+    @Nullable ORTokenElementType getScopeTokenElementType() {
         return m_scopeTokenElementType;
     }
 
@@ -177,11 +176,11 @@ public class ParserScope {
         return m_compositeElementType == elementType;
     }
 
-    public ORCompositeType getCompositeType() {
+    public @Nullable ORCompositeType getCompositeType() {
         return m_compositeElementType;
     }
 
-    public ORTokenElementType getScopeType() {
+    public @Nullable ORTokenElementType getScopeType() {
         return m_scopeTokenElementType;
     }
 

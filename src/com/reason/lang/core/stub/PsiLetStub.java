@@ -62,7 +62,7 @@ public class PsiLetStub extends NamedStubBase<PsiLet> {
         return myIsFunction;
     }
 
-    public List<String> getDeconstructionNames() {
+    public @NotNull List<String> getDeconstructionNames() {
         return myDeconstructionNames;
     }
 

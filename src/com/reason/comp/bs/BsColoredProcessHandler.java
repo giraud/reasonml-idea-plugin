@@ -4,15 +4,15 @@ import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
 import com.intellij.openapi.util.*;
-import com.reason.comp.Compiler;
+import com.reason.comp.*;
 import org.jetbrains.annotations.*;
 
 class BsColoredProcessHandler extends KillableProcessHandler implements AnsiEscapeDecoder.ColoredTextAcceptor {
 
     private final @NotNull AnsiEscapeDecoder m_ansiEscapeDecoder = new AnsiEscapeDecoder();
-    private final @Nullable Compiler.ProcessTerminated m_onProcessTerminated;
+    private final @Nullable ORProcessTerminated<Void> m_onProcessTerminated;
 
-    BsColoredProcessHandler(@NotNull GeneralCommandLine commandLine, @Nullable Compiler.ProcessTerminated onProcessTerminated) throws ExecutionException {
+    BsColoredProcessHandler(@NotNull GeneralCommandLine commandLine, @Nullable ORProcessTerminated<Void> onProcessTerminated) throws ExecutionException {
         super(commandLine);
         m_onProcessTerminated = onProcessTerminated;
     }
@@ -21,7 +21,7 @@ class BsColoredProcessHandler extends KillableProcessHandler implements AnsiEsca
     protected void onOSProcessTerminated(int exitCode) {
         super.onOSProcessTerminated(exitCode);
         if (m_onProcessTerminated != null) {
-            m_onProcessTerminated.run();
+            m_onProcessTerminated.run(null);
         }
     }
 

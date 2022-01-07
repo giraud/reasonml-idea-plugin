@@ -4,7 +4,7 @@ import com.intellij.lang.*;
 import org.jetbrains.annotations.*;
 
 public interface ORLanguageProperties {
-    static ORLanguageProperties cast(@Nullable Language language) {
+    static @Nullable ORLanguageProperties cast(@Nullable Language language) {
         return (language instanceof ORLanguageProperties) ? (ORLanguageProperties) language : null;
     }
 

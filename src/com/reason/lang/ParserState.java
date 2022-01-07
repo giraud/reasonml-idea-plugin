@@ -141,7 +141,7 @@ public class ParserState {
         return false;
     }
 
-    public boolean isOneOf(ORCompositeType... composites) {
+    public boolean isOneOf(ORCompositeType @NotNull ... composites) {
         for (ORCompositeType composite : composites) {
             if (m_currentScope.isCompositeType(composite)) {
                 return true;

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.*;
 public interface PsiInclude extends PsiStructuredElement, StubBasedPsiElement<PsiIncludeStub> {
     String[] getQualifiedPath();
 
-    @Nullable String[] getResolvedPath();
+    String @Nullable [] getResolvedPath();
 
     @NotNull String getIncludePath();
 

@@ -61,12 +61,12 @@ public class ResCompiler implements Compiler {
     }
 
     @Override
-    public void runDefault(@NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated) {
+    public void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         run(file, MAKE, onProcessTerminated);
     }
 
     @Override
-    public void run(@Nullable VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
+    public void run(@Nullable VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         ORSettings settings = myProject.getService(ORSettings.class);
         if (!isDisabled() && settings.isBsEnabled()) {
             if (sourceFile != null) {
@@ -101,7 +101,7 @@ public class ResCompiler implements Compiler {
                             @Override
                             public void processTerminated(@NotNull ProcessEvent event) {
                                 if (onProcessTerminated != null) {
-                                    onProcessTerminated.run();
+                                    onProcessTerminated.run(null);
                                 }
                                 // When build is done, we need to refresh editors to be notified of the latest modifications
                                 LOG.debug("Compilation process terminated, restart daemon code analyzer for all edited files");

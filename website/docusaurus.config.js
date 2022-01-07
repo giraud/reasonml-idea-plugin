@@ -6,7 +6,7 @@ module.exports = {
   baseUrl: '/reasonml-idea-plugin/',
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.svg',
-  organizationName: 'reasonml-editor',
+  organizationName: 'hgiraud',
   projectName: 'reasonml-idea-plugin',
   themeConfig: {
     colorMode: {

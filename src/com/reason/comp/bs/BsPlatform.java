@@ -6,7 +6,6 @@ import com.reason.comp.*;
 import com.reason.comp.esy.*;
 import com.reason.ide.*;
 import com.reason.ide.settings.*;
-import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -14,8 +13,6 @@ import java.util.*;
 import static com.reason.comp.ORConstants.*;
 
 public class BsPlatform {
-    private static final Log LOG = Log.create("platform.bs");
-
     private BsPlatform() {
     }
 

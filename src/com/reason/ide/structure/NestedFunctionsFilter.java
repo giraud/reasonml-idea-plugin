@@ -25,8 +25,8 @@ public class NestedFunctionsFilter implements Filter {
     public @NotNull ActionPresentation getPresentation() {
         return new ActionPresentation() {
             @Override
-            public @NotNull @Nls(capitalization = Nls.Capitalization.Title) String getText() {
-                return "Show nested functions";
+            public @NotNull @Nls(capitalization = Nls.Capitalization.Sentence) String getText() {
+                return "Show nested Functions";
             }
 
             @Override

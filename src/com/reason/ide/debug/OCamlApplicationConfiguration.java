@@ -23,7 +23,7 @@ public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCam
 
     @Override
     public @NotNull SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
-        return new CompositeSettingsEditor<RunConfiguration>() {
+        return new CompositeSettingsEditor<>() {
             @Override
             public @Nullable CompositeSettingsBuilder<RunConfiguration> getBuilder() {
                 return null;

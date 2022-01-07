@@ -31,7 +31,7 @@ public class ModuleComponentIndex extends StringStubIndexExtension<PsiModule> {
                 });
     }
 
-    private static Collection<PsiModule> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+    private static @NotNull Collection<PsiModule> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
         return StubIndex.getElements(IndexKeys.MODULES_COMP, key, project, scope, PsiModule.class);
     }
 

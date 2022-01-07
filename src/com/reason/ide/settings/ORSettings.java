@@ -21,6 +21,12 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     private boolean m_isBsEnabled = IS_BS_ENABLED_DEFAULT;
     private String m_bsPlatformLocation = "";
 
+    // Dune
+    private String myOpamLocation = "";
+    private String mySwitchName = "";
+    private String myCygwinBash = null;
+    private boolean myIsWsl = false;
+
     // Esy
     private String m_esyExecutable = "";
 
@@ -28,15 +34,18 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         m_project = project;
     }
 
-    @NotNull
     @Override
-    public ReasonSettingsState getState() {
+    public @NotNull ReasonSettingsState getState() {
         ReasonSettingsState state = new ReasonSettingsState();
         state.isFormatOnSaveEnabled = m_isFormatOnSaveEnabled;
         state.formatColumnWidth = m_formatColumnWidth;
         state.isUseSuperErrors = myUseSuperErrors;
         state.isBsEnabled = m_isBsEnabled;
         state.bsPlatformLocation = m_bsPlatformLocation;
+        state.opamLocation = myOpamLocation;
+        state.cygwinBash = myCygwinBash;
+        state.isWsl = myIsWsl;
+        state.switchName = mySwitchName;
         state.esyExecutable = m_esyExecutable;
         return state;
     }
@@ -48,6 +57,10 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         myUseSuperErrors = state.isUseSuperErrors;
         m_isBsEnabled = state.isBsEnabled;
         m_bsPlatformLocation = state.bsPlatformLocation;
+        myOpamLocation = state.opamLocation;
+        myCygwinBash = state.cygwinBash;
+        myIsWsl = state.isWsl;
+        mySwitchName = state.switchName;
         m_esyExecutable = state.esyExecutable;
     }
 
@@ -102,6 +115,38 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         m_bsPlatformLocation = bsPlatformLocation;
     }
 
+    public @NotNull String getOpamLocation() {
+        return myOpamLocation == null ? "" : myOpamLocation;
+    }
+
+    public void setOpamLocation(@Nullable String location) {
+        myOpamLocation = location;
+    }
+
+    public String getCygwinBash() {
+        return myCygwinBash;
+    }
+
+    public void setCygwinBash(@Nullable String cygwinBash) {
+        myCygwinBash = cygwinBash;
+    }
+
+    public boolean isWsl() {
+        return myIsWsl;
+    }
+
+    public void setIsWsl(boolean isWsl) {
+        myIsWsl = isWsl;
+    }
+
+    public String getSwitchName() {
+        return mySwitchName;
+    }
+
+    public void setSwitchName(@Nullable String name) {
+        mySwitchName = name == null ? "" : name;
+    }
+
     public @NotNull String getEsyExecutable() {
         return m_esyExecutable == null ? "" : m_esyExecutable;
     }
@@ -119,6 +164,11 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         // BuckleScript
         public boolean isBsEnabled = IS_BS_ENABLED_DEFAULT;
         public String bsPlatformLocation = "";
+        // Dune
+        public String opamLocation = "";
+        public String switchName = "";
+        public String cygwinBash = null;
+        public boolean isWsl = false;
         // Esy
         public String esyExecutable = "";
     }

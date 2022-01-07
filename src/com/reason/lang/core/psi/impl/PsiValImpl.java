@@ -52,7 +52,7 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implem
 
     //region PsiQualifiedName
     @Override
-    public @NotNull String[] getPath() {
+    public String @NotNull [] getPath() {
         PsiValStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();
@@ -98,7 +98,8 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implem
         return new ItemPresentation() {
             @Override
             public @NotNull String getPresentableText() {
-                return getName();
+                String name = getName();
+                return name == null ? "" : name;
             }
 
             @Override

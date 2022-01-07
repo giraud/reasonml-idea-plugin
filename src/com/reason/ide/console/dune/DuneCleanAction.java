@@ -27,7 +27,7 @@ public class DuneCleanAction extends CompilerAction {
         Project project = e.getProject();
         DuneCompiler compiler = project == null ? null : project.getService(DuneCompiler.class);
         if (compiler != null) {
-            doAction(project, CliType.Dune.CLEAN, () -> e.getPresentation().setEnabled(!compiler.isRunning()));
+            doAction(project, CliType.Dune.CLEAN, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
     }
 }

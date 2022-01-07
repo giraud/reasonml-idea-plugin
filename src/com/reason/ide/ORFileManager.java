@@ -1,14 +1,20 @@
 package com.reason.ide;
 
-import com.intellij.openapi.project.*;
-import com.intellij.openapi.vfs.*;
-import com.intellij.psi.*;
-import com.intellij.psi.search.*;
-import com.reason.comp.bs.*;
-import jpsplugin.com.reason.*;
-import org.jetbrains.annotations.*;
+import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
+import jpsplugin.com.reason.Joiner;
+import jpsplugin.com.reason.Log;
+import jpsplugin.com.reason.StringUtil;
+import com.reason.comp.bs.BsCompiler;
 
-import java.nio.file.*;
+import java.nio.file.Path;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ORFileManager {
     private static final Log LOG = Log.create("manager.file");

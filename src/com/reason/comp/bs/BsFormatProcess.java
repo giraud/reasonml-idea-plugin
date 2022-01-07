@@ -36,7 +36,7 @@ public class BsFormatProcess {
         ProcessBuilder processBuilder =
                 new ProcessBuilder(refmtDir.getPath(), "-i", Boolean.toString(isInterface), "--parse=" + fromFormat, "-p", toFormat, "-w", columnsWidth);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + " cols for project [" + m_project + "]");
+            LOG.debug("Reformatting " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + " cols for project [" + m_project + "]");
         }
 
         Process refmt = null;

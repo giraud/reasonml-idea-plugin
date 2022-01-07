@@ -87,7 +87,7 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
                 VirtualFilePointer dirPointer = vFilePointerManager.create(depDirUrl, disposable,
                         new VirtualFilePointerListener() {
                             @Override
-                            public void validityChanged(@NotNull VirtualFilePointer[] pointers) {
+                            public void validityChanged(VirtualFilePointer @NotNull [] pointers) {
                                 if (LOG.isDebugEnabled()) {
                                     LOG.debug("validity changed for " + pointers[0]);
                                 }

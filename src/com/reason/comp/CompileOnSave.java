@@ -22,7 +22,7 @@ public class CompileOnSave implements PropertyChangeListener {
     public void propertyChange(@NotNull PropertyChangeEvent evt) {
         if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE) {
             ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
-            ORResolvedCompiler compiler = compilerManager == null ? null : compilerManager.getCompiler(myFile);
+            ORResolvedCompiler<? extends Compiler> compiler = compilerManager == null ? null : compilerManager.getCompiler(myFile);
             if (compiler != null) {
                 // We invokeLater because compiler needs access to index files and can't do it in the event thread
                 ApplicationManagerEx.getApplicationEx()

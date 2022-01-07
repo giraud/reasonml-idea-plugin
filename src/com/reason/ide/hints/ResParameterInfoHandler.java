@@ -14,7 +14,7 @@ public class ResParameterInfoHandler extends ORParameterInfoHandler {
     }
 
     @Override
-    @Nullable ArgumentsDescription[] calculateParameterInfo(PsiFunctionCallParams paramsOwner) {
+    ArgumentsDescription @Nullable [] calculateParameterInfo(PsiFunctionCallParams paramsOwner) {
         PsiLowerSymbol functionName = PsiTreeUtil.getPrevSiblingOfType(paramsOwner, PsiLowerSymbol.class);
         PsiReference reference = functionName == null ? null : functionName.getReference();
         if (reference instanceof PsiLowerSymbolReference) {
@@ -29,10 +29,10 @@ public class ResParameterInfoHandler extends ORParameterInfoHandler {
                     if (signature != null) {
                         return new ArgumentsDescription[]{new ArgumentsDescription((PsiQualifiedNamedElement) resolvedElement, signature)};
                     }
-                } else {
-                    // Try to read signature from cmt file
-                    // TODO #334
                 }
+                // else {
+                //   Try to read signature from cmt file - TODO #334
+                // }
             }
         }
 

@@ -6,6 +6,8 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
+import com.reason.comp.dune.*;
+import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.esy.*;
@@ -40,12 +42,12 @@ public class EsyCompiler implements Compiler {
     }
 
     @Override
-    public void runDefault(@NotNull VirtualFile file, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    public void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         run(file, CliType.Esy.BUILD, onProcessTerminated);
     }
 
     @Override
-    public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
+    public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         if (!(cliType instanceof CliType.Esy)) {
             LOG.error("Invalid cliType for esy compiler. cliType = " + cliType);
             return;
@@ -62,6 +64,7 @@ public class EsyCompiler implements Compiler {
                 EsyProcess process = new EsyProcess(myProject);
                 ProcessHandler processHandler = process.create(sourceFile, cliType, onProcessTerminated);
                 if (processHandler != null) {
+                    processHandler.addProcessListener(new CompilerOutputListener(myProject, new DuneOutputAnalyzer()));
                     processHandler.addProcessListener(new ProcessFinishedListener());
                     processHandler.addProcessListener(new ProcessAdapter() {
                         @Override public void processTerminated(@NotNull ProcessEvent event) {
@@ -71,6 +74,8 @@ public class EsyCompiler implements Compiler {
 
                     console.attachToProcess(processHandler);
                     process.startNotify();
+
+                    myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
                 } else {
                     myProcessStarted.compareAndSet(true, false);
                 }

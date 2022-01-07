@@ -14,7 +14,7 @@ public class RmlParameterInfoHandler extends ORParameterInfoHandler {
     }
 
     @Override
-    @Nullable ArgumentsDescription[] calculateParameterInfo(PsiFunctionCallParams paramsOwner) {
+    ArgumentsDescription @Nullable [] calculateParameterInfo(PsiFunctionCallParams paramsOwner) {
         PsiLowerSymbol functionName = PsiTreeUtil.getPrevSiblingOfType(paramsOwner, PsiLowerSymbol.class);
         PsiReference reference = functionName == null ? null : functionName.getReference();
         if (reference instanceof PsiLowerSymbolReference) {

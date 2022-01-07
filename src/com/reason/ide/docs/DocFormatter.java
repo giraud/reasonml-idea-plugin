@@ -53,11 +53,11 @@ class DocFormatter {
             // Content
 
             HtmlBuilder contentBuilder = new HtmlBuilder();
-            //if (isDeprecated()) {
-            //    contentBuilder
-            //          .append(HtmlChunk.text(xxx).bold().wrapWith(HtmlChunk.font("#" + ColorUtil.toHex(JBColor.RED))))
-            //          .append(HtmlChunk.br());
-            //}
+            /* if (isDeprecated()) {
+                contentBuilder
+                      .append(HtmlChunk.text(xxx).bold().wrapWith(HtmlChunk.font("#" + ColorUtil.toHex(JBColor.RED))))
+                      .append(HtmlChunk.br());
+            } */
 
             FileType fileType = source.getFileType();
             boolean isReasonLikeComment = FileHelper.isReason(fileType) || FileHelper.isRescript(fileType);

@@ -1,7 +1,6 @@
 package com.reason.ide.annotations;
 
 import com.intellij.execution.process.*;
-import com.intellij.lang.*;
 import com.intellij.lang.annotation.*;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.editor.*;
@@ -229,7 +228,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
             myLineProcessor.onTextAvailable(sb.toString());
         }
 
-        public List<OutputInfo> getOutputInfo() {
+        public @NotNull List<OutputInfo> getOutputInfo() {
             return myLineProcessor.getOutputInfo();
         }
     }

@@ -52,7 +52,7 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, Ps
 
     //region PsiQualifiedName
     @Override
-    public @NotNull String[] getPath() {
+    public String @NotNull [] getPath() {
         PsiRecordFieldStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

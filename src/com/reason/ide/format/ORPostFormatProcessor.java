@@ -11,7 +11,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.*;
 import com.intellij.psi.impl.source.codeStyle.*;
 import com.reason.comp.bs.*;
-import com.reason.comp.dune.*;
+import com.reason.comp.ocaml.*;
 import com.reason.comp.rescript.*;
 import com.reason.ide.files.*;
 import com.reason.ide.settings.*;
