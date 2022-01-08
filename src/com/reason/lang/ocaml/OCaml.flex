@@ -273,6 +273,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "*)" { if (!inStringComment) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); inComment = false; tokenEnd(); return types.MULTI_COMMENT; } } }
     // String aren't hightlighted but the take precedence over (* *)
     // so we need to handle them
+    // todo: there is a problem if we remove the " because we will stay inside the state "inStringComment"
     "\"" { inStringComment = !inStringComment; }
     . | {NEWLINE} { }
     <<EOF>> { yybegin(INITIAL); inStringComment = false; inComment = false; tokenEnd(); return types.MULTI_COMMENT; }

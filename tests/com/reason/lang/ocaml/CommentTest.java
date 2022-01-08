@@ -29,8 +29,8 @@ public class CommentTest extends BaseParsingTestCase {
   }
 
   public void testConstant4() {
-    FileBase psiFile = parseCode("(* (* this is a string too*) *)");
+    FileBase psiFile = parseCode("(* (* this is a nested comment *) *)");
     assertInstanceOf(firstElement(psiFile), PsiComment.class);
-    assertEquals(2, childrenCount(psiFile));
+    assertEquals(1, childrenCount(psiFile));
   }
 }
