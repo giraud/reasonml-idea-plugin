@@ -21,4 +21,16 @@ public class CommentTest extends BaseParsingTestCase {
     assertInstanceOf(firstElement(psiFile), PsiComment.class);
     assertEquals(1, childrenCount(psiFile));
   }
+
+  public void testConstant3() {
+    FileBase psiFile = parseCode("(* \"this is a string *)\" \"(* this is a string too*)\" *)");
+    assertInstanceOf(firstElement(psiFile), PsiComment.class);
+    assertEquals(1, childrenCount(psiFile));
+  }
+
+  public void testConstant4() {
+    FileBase psiFile = parseCode("(* (* this is a string too*) *)");
+    assertInstanceOf(firstElement(psiFile), PsiComment.class);
+    assertEquals(2, childrenCount(psiFile));
+  }
 }

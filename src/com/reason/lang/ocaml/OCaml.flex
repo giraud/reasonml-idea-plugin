@@ -19,6 +19,7 @@ import static com.intellij.psi.TokenType.*;
     private CharSequence quotedStringId;
     private int commentDepth;
     private boolean inComment = false;
+    private boolean inStringComment = false;
 
     //Store the start index of a token
     private void tokenStart() {
@@ -267,10 +268,14 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 }
 
 <IN_OCAML_ML_COMMENT> {
-    "(*" { commentDepth += 1; }
-    "*)" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); inComment = false; tokenEnd(); return types.MULTI_COMMENT; } }
-     . | {NEWLINE} { }
-    <<EOF>> { yybegin(INITIAL); inComment = false; tokenEnd(); return types.MULTI_COMMENT; }
+    // ignore (* or *) that are inside a string
+    "(*" { if (!inStringComment) { commentDepth += 1; } }
+    "*)" { if (!inStringComment) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); inComment = false; tokenEnd(); return types.MULTI_COMMENT; } } }
+    // String aren't hightlighted but the take precedence over (* *)
+    // so we need to handle them
+    "\"" { inStringComment = !inStringComment; }
+    . | {NEWLINE} { }
+    <<EOF>> { yybegin(INITIAL); inStringComment = false; inComment = false; tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }
