@@ -161,7 +161,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let onCancel = _ => setUpdatedAttribute(_ => initialAttribute)")));
 
         assertEquals("_ => setUpdatedAttribute(_ => initialAttribute)", e.getBinding().getText());
-        assertEquals("(_ => initialAttribute)", PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class).getText());
+        assertEquals("(_ => initialAttribute)", PsiTreeUtil.findChildOfType(e.getBinding(), PsiParameters.class).getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/113

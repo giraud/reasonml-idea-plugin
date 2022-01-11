@@ -8,6 +8,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
+// TODO funcall: delete
 public class PsiFunctionCallParamsImpl extends CompositeTypePsiElement<ORTypes> implements PsiFunctionCallParams {
 
   protected PsiFunctionCallParamsImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {

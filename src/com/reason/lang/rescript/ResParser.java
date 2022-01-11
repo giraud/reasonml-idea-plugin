@@ -335,7 +335,7 @@ public class ResParser extends CommonParser<ResTypes> {
             }
         } else if (state.isCurrentResolution(signatureScope)) {
             state.advance().mark(m_types.C_SIG_ITEM);
-        } else if (state.is(m_types.C_FUN_CALL_PARAMS) || state.is(m_types.C_FUN_PARAMS)) {
+        } else if ((state.is(m_types.C_PARAMETERS) && !state.isPrevious(m_types.C_TYPE_DECLARATION)) || state.is(m_types.C_FUN_PARAMS)) {
             state.advance();
             IElementType nextTokenType = state.getTokenType();
             if (nextTokenType != m_types.RPAREN) {
@@ -677,9 +677,13 @@ public class ResParser extends CommonParser<ResTypes> {
                 else if (nextElementType == m_types.QUESTION_MARK && !state.in(m_types.C_TAG_START)) {
                     state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
                 }
+                // a function call ::  |>x<| ( ...
+                else if (nextElementType == m_types.LPAREN) {
+                    state.mark(m_types.C_FUN_CALL);
+                }
             }
 
-            if (state.is(m_types.C_DECONSTRUCTION) || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS))
+            if (state.is(m_types.C_DECONSTRUCTION) || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_PARAMETERS))
                     || state.is(m_types.C_NAMED_PARAM) || state.is(m_types.C_RECORD_FIELD)) {
                 state.wrapWith(m_types.C_LOWER_IDENTIFIER);
             } else if (!state.is(m_types.C_TAG_PROPERTY)) {
@@ -879,9 +883,10 @@ public class ResParser extends CommonParser<ResTypes> {
         } else if (state.is(m_types.C_LET_DECLARATION)) {
             // Deconstructing a term ::  let |>(<| a, b ) =
             state.markScope(m_types.C_DECONSTRUCTION, m_types.LPAREN);
-        } else if (state.previousElementType1 == m_types.LIDENT) {
+        } else if (state.previousElementType1 == m_types.LIDENT && !(state.is(m_types.C_TYPE_DECLARATION)
+                || state.inAny(m_types.C_TYPE_BINDING, m_types.C_SIG_ITEM))) {
             // Calling a function
-            state.markScope(m_types.C_FUN_CALL_PARAMS, m_types.LPAREN)
+            state.markScope(m_types.C_PARAMETERS, m_types.LPAREN)
                     .advance();
             IElementType nextTokenType = state.getTokenType();
             if (nextTokenType != m_types.RPAREN) {
@@ -957,6 +962,9 @@ public class ResParser extends CommonParser<ResTypes> {
             }
 
             state.popEnd();
+            if (state.is(m_types.C_FUN_CALL)) {
+                state.popEnd();
+            }
 
             if (state.is(m_types.C_VARIANT_DECLARATION)) {
                 state.popEndUntil(m_types.C_TYPE_BINDING);
@@ -1127,7 +1135,7 @@ public class ResParser extends CommonParser<ResTypes> {
     private void parseArrow(@NotNull ParserState state) {
         if (state.is(m_types.C_FUN_EXPR) || state.is(m_types.C_FUN_PARAM)) {
             // param(s) |>=><| body
-            state.popEndUntilOneOf(m_types.C_FUN_EXPR, m_types.C_FUN_CALL_PARAMS);
+            state.popEndUntilOneOf(m_types.C_PARAMETERS, m_types.C_FUN_EXPR);
             state.advance().mark(m_types.C_FUN_BODY);
         } else if (state.is(m_types.C_SIG_EXPR)) {
             state.advance().mark(m_types.C_SIG_ITEM);

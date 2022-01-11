@@ -2,11 +2,9 @@ package com.reason.lang.rescript;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.reason.*;
 
 import java.util.*;
 
@@ -74,7 +72,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
                         + "})")));
 
         PsiLetBinding binding = e.getBinding();
-        PsiFunctionCallParams call = PsiTreeUtil.findChildOfType(binding, PsiFunctionCallParams.class);
+        PsiParameters call = PsiTreeUtil.findChildOfType(binding, PsiParameters.class);
         PsiOpen open = PsiTreeUtil.findChildOfType(call, PsiOpen.class);
         assertEquals("ComputingReducers", open.getPath());
         PsiJsObject jsObject = PsiTreeUtil.findChildOfType(call, PsiJsObject.class);
