@@ -18,7 +18,6 @@ import static com.intellij.psi.TokenType.*;
     private int tokenStartIndex;
     private CharSequence quotedStringId;
     private int commentDepth;
-    private boolean inComment = false;
     private boolean inStringComment = false;
 
     //Store the start index of a token
@@ -174,8 +173,8 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "`"{UPPERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
     "`"{LOWERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
 
-    "\"" { if (!inComment) {yybegin(IN_STRING); tokenStart(); } }
-    "(*" { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; inComment = true; tokenStart(); }
+    "\"" { if (commentDepth == 0) {yybegin(IN_STRING); tokenStart(); } }
+    "(*" { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; tokenStart(); }
 
     "#if"     { return types.DIRECTIVE_IF; }
     "#else"   { return types.DIRECTIVE_ELSE; }
@@ -270,13 +269,13 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 <IN_OCAML_ML_COMMENT> {
     // ignore (* or *) that are inside a string
     "(*" { if (!inStringComment) { commentDepth += 1; } }
-    "*)" { if (!inStringComment) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); inComment = false; tokenEnd(); return types.MULTI_COMMENT; } } }
+    "*)" { if (!inStringComment) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
     // String aren't hightlighted but the take precedence over (* *)
     // so we need to handle them
-    // todo: there is a problem if we remove the " because we will stay inside the state "inStringComment"
+    // there is a problem if we remove the " because we will stay inside the state "inStringComment"
     "\"" { inStringComment = !inStringComment; }
     . | {NEWLINE} { }
-    <<EOF>> { yybegin(INITIAL); inStringComment = false; inComment = false; tokenEnd(); return types.MULTI_COMMENT; }
+    <<EOF>> { yybegin(INITIAL); inStringComment = false; commentDepth = 0; tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

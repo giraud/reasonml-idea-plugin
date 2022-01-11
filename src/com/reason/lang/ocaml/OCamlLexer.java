@@ -646,7 +646,6 @@ public class OCamlLexer implements FlexLexer {
     private int tokenStartIndex;
     private CharSequence quotedStringId;
     private int commentDepth;
-    private boolean inComment = false;
     private boolean inStringComment = false;
 
     //Store the start index of a token
@@ -919,7 +918,7 @@ public class OCamlLexer implements FlexLexer {
             }  // fall though
             case 363: break;
             case IN_OCAML_ML_COMMENT: {
-              yybegin(INITIAL); inComment = false; tokenEnd(); return types.MULTI_COMMENT;
+              yybegin(INITIAL); inStringComment = false; commentDepth = 0; tokenEnd(); return types.MULTI_COMMENT;
             }  // fall though
             case 364: break;
             default:
@@ -979,7 +978,7 @@ public class OCamlLexer implements FlexLexer {
             // fall through
           case 158: break;
           case 11: 
-            { if (!inComment) {yybegin(IN_STRING); tokenStart(); }
+            { if (commentDepth == 0) {yybegin(IN_STRING); tokenStart(); }
             } 
             // fall through
           case 159: break;
@@ -1189,7 +1188,7 @@ public class OCamlLexer implements FlexLexer {
             // fall through
           case 200: break;
           case 53: 
-            { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; inComment = true; tokenStart();
+            { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; tokenStart();
             } 
             // fall through
           case 201: break;
@@ -1319,7 +1318,7 @@ public class OCamlLexer implements FlexLexer {
             // fall through
           case 226: break;
           case 79: 
-            { if (!inStringComment) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); inComment = false; tokenEnd(); return types.MULTI_COMMENT; } }
+            { if (!inStringComment) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } }
             } 
             // fall through
           case 227: break;
