@@ -6,7 +6,6 @@ import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 
-// Called attribute in OCaml
 @SuppressWarnings("ConstantConditions")
 public class AnnotationParsingTest extends OclParsingTestCase {
     public void test_algebraic_let() {

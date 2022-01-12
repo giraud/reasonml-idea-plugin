@@ -116,9 +116,32 @@ public class ParserState {
         return m_currentScope.isCompositeEqualTo(composite);
     }
 
+    public boolean isComplete(@NotNull ORCompositeType expectedComposite) {
+        // find first NON-optional composite
+        for (ParserScope composite : m_composites) {
+            if (!composite.isOptional()) {
+                return composite.isCompositeEqualTo(expectedComposite);
+            }
+        }
+        return false;
+    }
+
     public boolean isPrevious(ORCompositeType composite) {
         if (m_composites.size() >= 2) {
+            // current index is 0
             return m_composites.get(1).isCompositeType(composite);
+        }
+        return false;
+    }
+
+    public boolean isPreviousComplete(ORCompositeType expectedComposite) {
+        for (ParserScope composite : m_composites) {
+            if (!composite.isOptional()) {
+                int index = m_composites.indexOf(composite);
+                if (index >= 2) {
+                    return m_composites.get(index + 1).isCompositeType(expectedComposite);
+                }
+            }
         }
         return false;
     }
@@ -186,6 +209,14 @@ public class ParserState {
     @NotNull
     public ParserState complete() {
         m_currentScope.complete();
+        return this;
+    }
+
+    @NotNull
+    public ParserState completePrevious() {
+        if (m_composites.size() >= 2) {
+            m_composites.get(1).complete();
+        }
         return this;
     }
 
@@ -276,9 +307,26 @@ public class ParserState {
         return this;
     }
 
+    // skip all optional intermediate scopes, and pop latest complete
     public @NotNull ParserState popEndComplete() {
-        m_latestCompleted = getLatestScope();
-        return popEnd();
+        ParserScope scope = pop();
+        while (scope != null && scope.isOptional()) {
+            scope.drop();
+            scope = pop();
+        }
+        if (scope != null) {
+            scope.end();
+        }
+        return this;
+    }
+
+    //
+    public @NotNull ParserState dropOptionals() {
+        while (!m_composites.isEmpty() && m_currentScope.isOptional()) {
+            popCancel();
+        }
+        ;
+        return this;
     }
 
     public @NotNull ParserState popCancel() {

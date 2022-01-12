@@ -21,7 +21,6 @@ public class OclParser extends CommonParser<OclTypes> {
         Project project = parentElement.getProject();
 
         PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new OclLexer(), root.getLanguage(), chameleon.getText());
-        //builder.setDebugMode(true);
         OclParser parser = new OclParser();
 
         return parser.parse(root, builder).getFirstChildNode();
@@ -201,7 +200,8 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseComma(@NotNull ParserState state) {
-        if (state.isPrevious(m_types.C_LET_DECLARATION)) {
+        if (state.isPreviousComplete(m_types.C_LET_DECLARATION)) {
+            state.dropOptionals();
             // It must be a deconstruction ::  let (a |>,<| b)
             // We need to do it again because lower symbols must be wrapped with identifiers
             if (state.isCurrentResolution(genericExpression)) {
@@ -254,6 +254,15 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseGt(@NotNull ParserState state) {
+        // intermediate structures
+        if (state.isComplete(m_types.C_SIG_ITEM)) {
+            state.popEndComplete() // item
+                    .pop(); // expr
+        }
+        //if (state.isComplete(m_types.C_OBJECT_FIELD)) {
+        //    state.popEndComplete();
+        //}
+
         if (state.is(m_types.C_OBJECT)) {
             state.advance();
             if (state.getTokenType() == m_types.AS) {
@@ -316,7 +325,7 @@ public class OclParser extends CommonParser<OclTypes> {
             state.advance()
                     .mark(m_types.C_SIG_ITEM)
                     .markDummy(m_types /* for template types */);
-        } else if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
+        } else if (state.isComplete(m_types.C_PATTERN_MATCH_EXPR)) {
             state.advance().mark(m_types.C_PATTERN_MATCH_BODY);
         } else if (state.isCurrentResolution(maybeFunctionParameters)) {
             // fun ... |>-><| ...
@@ -374,13 +383,13 @@ public class OclParser extends CommonParser<OclTypes> {
         }
 
         // Remove intermediate constructions
-        if (state.is(m_types.C_IF_THEN_SCOPE)) {
+        if (state.isComplete(m_types.C_IF_THEN_SCOPE)) {
             state.popEndUntil(m_types.C_IF).popEnd();
         }
         if (state.is(m_types.C_FUN_PARAM) && state.in(m_types.C_VARIANT_CONSTRUCTOR)) {
             state.popEndUntil(m_types.C_VARIANT_DECLARATION);
         }
-        if (state.is(m_types.C_PATTERN_MATCH_BODY)) {
+        if (state.isComplete(m_types.C_PATTERN_MATCH_BODY)) {
             state.popEndUntilOneOfResolution(matchWith, functionMatch);
         }
 
@@ -440,10 +449,10 @@ public class OclParser extends CommonParser<OclTypes> {
                 // An include with constraints ::  include M |>with<| ...
                 state.mark(m_types.C_CONSTRAINTS).advance().mark(m_types.C_CONSTRAINT);
             }
-        } else if (state.is(m_types.C_TRY_BODY)) {
+        } else if (state.in(m_types.C_TRY_BODY)) {
             // A try handler ::  try ... |>with<| ...
             state
-                    .popEnd()
+                    .popEndUntil(m_types.C_TRY_BODY).popEnd()
                     .advance()
                     .mark(m_types.C_TRY_HANDLERS)
                     .mark(m_types.C_TRY_HANDLER);
@@ -468,7 +477,9 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseElse(@NotNull ParserState state) {
         // if ... then ... |>else<| ...
-        state.popEndUntil(m_types.C_IF).advance().mark(m_types.C_IF_THEN_SCOPE);
+        state.popEndUntil(m_types.C_IF)
+                .advance()
+                .mark(m_types.C_IF_THEN_SCOPE);
     }
 
     private void parseStruct(@NotNull ParserState state) {
@@ -505,6 +516,12 @@ public class OclParser extends CommonParser<OclTypes> {
             state.popEndUntil(m_types.C_RECORD_FIELD).popEnd().advance();
             if (state.getTokenType() != m_types.RBRACE) {
                 state.mark(m_types.C_RECORD_FIELD);
+            }
+        } else if (state.in(m_types.C_OBJECT_FIELD)) {
+            // SEMI ends the field, and starts a new one
+            state.popEndUntil(m_types.C_OBJECT_FIELD).popEnd().advance();
+            if (state.getTokenType() != m_types.RBRACE) {
+                state.mark(m_types.C_OBJECT_FIELD);
             }
         } else {
             boolean isImplicitScope = state.isOneOf(m_types.C_FUN_BODY, m_types.C_LET_BINDING);
@@ -722,7 +739,7 @@ public class OclParser extends CommonParser<OclTypes> {
                     state.popEndUntil(m_types.C_CONSTRAINTS).popEnd();
                 }
             }
-        } else if (state.is(m_types.C_FUN_PARAM)) {
+        } else if (state.isComplete(m_types.C_FUN_PARAM)) {
             state.popEndUntil(m_types.C_FUN_EXPR).advance().mark(m_types.C_FUN_BODY);
         }
         // let fn ?(x |> = <| ...
@@ -933,6 +950,20 @@ public class OclParser extends CommonParser<OclTypes> {
             if (nextTokenType == m_types.COLON && (state.isDummy() && state.isPrevious(m_types.C_SIG_ITEM))) {
                 // let fn |>x<| : ...
                 state.updateCurrentCompositeElementType(m_types.C_NAMED_PARAM).complete();
+            } else if (!state.in(m_types.C_SIG_ITEM) && !state.is(m_types.C_TYPE_VARIABLE) && !state.is(m_types.C_CONSTRAINT) && !state.is(m_types.C_BINARY_CONDITION)
+                    && !state.is(m_types.C_CLASS_FIELD) && !state.in(m_types.C_TYPE_BINDING) &&
+                    !(state.is(m_types.C_PARAMETERS) && state.isPrevious(m_types.C_LET_DECLARATION)) /* let parameters */
+            ) {
+                if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.INT_VALUE) {
+                    // a function call ::  |>fn<| ...
+                    state.mark(m_types.C_FUN_CALL)
+                            .advance()
+                            .mark(m_types.C_PARAMETERS);
+                    if (nextTokenType == m_types.INT_VALUE) {
+                        state.mark(m_types.C_FUN_PARAM);
+                    }
+                    return;
+                }
             }
 
             state.wrapWith(m_types.C_LOWER_SYMBOL);

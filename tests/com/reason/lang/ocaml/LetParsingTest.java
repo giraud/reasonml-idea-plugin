@@ -186,12 +186,9 @@ public class LetParsingTest extends OclParsingTestCase {
     }
 
     public void test_semi() {
-        PsiLet e =
-                firstOfType(
-                        parseCode("let instantiate = for i = 0 to len - 1 do done; get_data p"), PsiLet.class);
-        PsiLetBinding b = e.getBinding();
+        PsiLet e = firstOfType(parseCode("let instantiate = for i = 0 to len - 1 do done; get_data p"), PsiLet.class);
 
-        assertEquals("for i = 0 to len - 1 do done; get_data p", b.getText());
+        assertEquals("for i = 0 to len - 1 do done; get_data p", e.getBinding().getText());
     }
 
     public void test_name_unit() {
@@ -266,18 +263,13 @@ public class LetParsingTest extends OclParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/270
     // https://caml.inria.fr/pub/docs/manual-ocaml/polymorphism.html#ss:explicit-polymorphism
     public void test_GH_270() {
-        PsiLet e =
-                first(
-                        letExpressions(
-                                parseCode(
-                                        "let rec parser_of_tree : type s tr r. s ty_entry -> int -> int -> (s, tr, r) ty_tree -> r parser_t =\n"
-                                                + "  fun entry nlevn alevn -> ()")));
+        PsiLet e = firstOfType(
+                parseCode("let rec parser_of_tree : type s tr r. s ty_entry -> int -> int -> (s, tr, r) ty_tree -> r parser_t =\n"
+                        + "  fun entry nlevn alevn -> ()"), PsiLet.class);
 
         assertEquals("parser_of_tree", e.getName());
         assertTrue(e.isFunction());
-        assertEquals(
-                "s ty_entry -> int -> int -> (s, tr, r) ty_tree -> r parser_t",
-                e.getSignature().getText());
+        assertEquals("s ty_entry -> int -> int -> (s, tr, r) ty_tree -> r parser_t", e.getSignature().getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/278

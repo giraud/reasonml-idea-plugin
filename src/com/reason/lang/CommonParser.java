@@ -19,7 +19,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
     @Override
     @NotNull
     public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
-        builder.setDebugMode(false);
+        builder.setDebugMode(true);
 
         // System.out.println("start parsing ");
         // long start = System.currentTimeMillis();
