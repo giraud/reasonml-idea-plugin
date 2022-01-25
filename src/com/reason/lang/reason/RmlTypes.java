@@ -213,9 +213,7 @@ public class RmlTypes extends ORTypes {
         OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", RmlLanguage.INSTANCE);
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", RmlLanguage.INSTANCE);
         TAG_NAME = new ORTokenElementType("TAG_NAME", RmlLanguage.INSTANCE);
-        TAG_LT = new ORTokenElementType("TAG_LT", RmlLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", RmlLanguage.INSTANCE);
-        TAG_GT = new ORTokenElementType("TAG_GT", RmlLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", RmlLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", RmlLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", RmlLanguage.INSTANCE);

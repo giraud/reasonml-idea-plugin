@@ -93,6 +93,8 @@ public class ResParser extends CommonParser<ResTypes> {
                     parseCatch(state);
                 } else if (tokenType == m_types.SWITCH) {
                     parseSwitch(state);
+                } else if (tokenType == m_types.TAG_NAME) {
+                    parseTagName(state);
                 } else if (tokenType == m_types.LIDENT) {
                     parseLIdent(state);
                 } else if (tokenType == m_types.UIDENT) {
@@ -481,8 +483,9 @@ public class ResParser extends CommonParser<ResTypes> {
                     .mark(m_types.C_SIG_EXPR)
                     .markOptionalParenDummyScope(m_types)
                     .mark(m_types.C_SIG_ITEM);
-        } else if (state.is(m_types.C_LET_DECLARATION)) {
+        } else if (state.is(m_types.C_LET_DECLARATION) || state.is(m_types.C_FUN_PARAM)) {
             // let x |> :<| ...
+            // let x = (y |> :<| ...
             state.advance()
                     .mark(m_types.C_SIG_EXPR)
                     .markOptionalParenDummyScope(m_types)
@@ -534,20 +537,17 @@ public class ResParser extends CommonParser<ResTypes> {
                 // Note that option is a ReasonML keyword but also a JSX keyword !
                 // Surely a tag
                 state
-                        .remapCurrentToken(m_types.TAG_LT)
                         .mark(m_types.C_TAG)
-                        .markScope(m_types.C_TAG_START, m_types.TAG_LT)
+                        .markScope(m_types.C_TAG_START, m_types.LT)
                         .advance()
                         .remapCurrentToken(m_types.TAG_NAME)
                         .wrapWith(nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
             } else if (nextTokenType == m_types.GT) {
                 // a React fragment start
                 state
-                        .remapCurrentToken(m_types.TAG_LT)
                         .mark(m_types.C_TAG)
                         .mark(m_types.C_TAG_START)
                         .advance()
-                        .remapCurrentToken(m_types.TAG_GT)
                         .advance()
                         .popEnd();
             }
@@ -565,9 +565,9 @@ public class ResParser extends CommonParser<ResTypes> {
         }
 
         if (state.is(m_types.C_TAG_START)) {
-            state.remapCurrentToken(m_types.TAG_GT).advance().popEnd().mark(m_types.C_TAG_BODY);
+            state.advance().popEnd().mark(m_types.C_TAG_BODY);
         } else if (state.is(m_types.C_TAG_CLOSE)) {
-            state.remapCurrentToken(m_types.TAG_GT).advance().popEnd().popEnd();
+            state.advance().popEnd().popEnd();
         } else if (state.is(m_types.C_PARAMETERS)) {
             state.advance().popEnd();
         } else if (state.is(m_types.C_SCOPED_EXPR)) {
@@ -613,9 +613,16 @@ public class ResParser extends CommonParser<ResTypes> {
             state.remapCurrentToken(m_types.TAG_LT_SLASH)
                     .mark(m_types.C_TAG_CLOSE)
                     .advance()
-                    .remapCurrentToken(m_types.TAG_GT)
                     .advance()
                     .popEnd();
+        }
+    }
+
+    private void parseTagName(@NotNull ParserState state) {
+        // LIdent might have been converted to tagName in a first pass, and we need to convert it back if we know
+        // that we are in a signature (second pass)
+        if (state.isPrevious(m_types.C_SIG_ITEM)) {
+            state.remapCurrentToken(m_types.LIDENT).wrapWith(m_types.C_LOWER_SYMBOL);
         }
     }
 

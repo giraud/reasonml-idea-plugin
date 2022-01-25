@@ -103,6 +103,15 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals("type t", t.getText());
     }
 
+    public void test_not_a_tag() {
+        PsiLet e  = firstOfType(parseCode("let make = (x: array<int>) => x"), PsiLet.class);
+
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiLeafTagName.class));
+        PsiParameter param = e.getFunction().getParameters().get(0);
+        PsiSignatureItem sigItem = param.getSignature().getItems().get(0);
+        assertEquals("array<int>", sigItem.getText());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/326
     public void test_GH_326() {
         PsiType e = firstOfType(parseCode("type t = {buffer: GText.buffer, mutable breakpoints: list<breakpoint>}"), PsiType.class);

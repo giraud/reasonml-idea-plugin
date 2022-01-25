@@ -231,9 +231,7 @@ public abstract class ORTypes {
   public ORTokenElementType STARDOT;
   public ORTokenElementType TAG_AUTO_CLOSE;
   public ORTokenElementType TAG_NAME;
-  public ORTokenElementType TAG_LT;
   public ORTokenElementType TAG_LT_SLASH;
-  public ORTokenElementType TAG_GT;
   public ORTokenElementType TILDE;
   public ORTokenElementType UIDENT;
   public ORTokenElementType UNIT;

@@ -3,6 +3,7 @@ package com.reason.ide.highlight;
 import com.intellij.lang.annotation.*;
 import com.intellij.openapi.editor.colors.*;
 import com.intellij.openapi.editor.markup.*;
+import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.psi.*;
@@ -23,22 +24,37 @@ public abstract class ORSyntaxAnnotator implements Annotator {
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         IElementType elementType = element.getNode().getElementType();
 
-        if (elementType == m_types.C_UPPER_IDENTIFIER) {
+        if (elementType == m_types.C_TAG_START) {
+            PsiElement ltElement = element.getFirstChild();
+            PsiElement tagElement = ltElement == null ? null : ltElement.getNextSibling();
+            if (tagElement != null) {
+                TextRange range = TextRange.create(element.getTextRange().getStartOffset(), tagElement.getTextRange().getEndOffset());
+                holder.newSilentAnnotation(INFORMATION).range(range).
+                        enforcedTextAttributes(TextAttributes.ERASE_MARKER).create();
+                holder.newSilentAnnotation(INFORMATION).range(range)
+                        .textAttributes(MARKUP_TAG_).create();
+                color(holder, element.getLastChild(), MARKUP_TAG_);
+            }
+        } else if (elementType == m_types.C_TAG_CLOSE) {
+            color(holder, element, MARKUP_TAG_);
+        } else if (elementType == m_types.C_UPPER_IDENTIFIER) {
             PsiElement parent = element.getParent();
             if (parent instanceof PsiModule) {
                 color(holder, element.getNavigationElement(), MODULE_NAME_);
             }
         } else if (elementType == m_types.C_UPPER_SYMBOL) {
             PsiElement parent = element.getParent();
-            PsiElement nextElement = element.getNextSibling();
-            IElementType nextElementType =
-                    nextElement == null ? null : nextElement.getNode().getElementType();
-            boolean mightBeVariant =
-                    (nextElementType != m_types.DOT)
-                            && !(parent instanceof PsiOpen)
-                            && !(parent instanceof PsiInclude)
-                            && !(parent instanceof PsiModule && ((PsiModule) parent).getAlias() != null);
-            color(holder, element, mightBeVariant ? VARIANT_NAME_ : MODULE_NAME_);
+            if (!(parent instanceof PsiTagStart) && !(parent instanceof PsiTagClose)) {
+                PsiElement nextElement = element.getNextSibling();
+                IElementType nextElementType =
+                        nextElement == null ? null : nextElement.getNode().getElementType();
+                boolean mightBeVariant =
+                        (nextElementType != m_types.DOT)
+                                && !(parent instanceof PsiOpen)
+                                && !(parent instanceof PsiInclude)
+                                && !(parent instanceof PsiModule && ((PsiModule) parent).getAlias() != null);
+                color(holder, element, mightBeVariant ? VARIANT_NAME_ : MODULE_NAME_);
+            }
         } else if (elementType == m_types.C_VARIANT_DECLARATION) {
             PsiElement identifier = element.getNavigationElement();
             color(holder, identifier, VARIANT_NAME_);
@@ -46,12 +62,6 @@ public abstract class ORSyntaxAnnotator implements Annotator {
             color(holder, element, VARIANT_NAME_);
         } else if (elementType == m_types.C_MACRO_NAME) {
             color(holder, element, ANNOTATION_);
-        } else if (elementType == m_types.TAG_NAME
-                || elementType == m_types.TAG_LT
-                || elementType == m_types.TAG_LT_SLASH
-                || elementType == m_types.TAG_GT
-                || elementType == m_types.TAG_AUTO_CLOSE) {
-            color(holder, element, MARKUP_TAG_);
         } else if (elementType == m_types.OPTION) {
             color(holder, element, OPTION_);
         } else if (elementType == m_types.PROPERTY_NAME) {

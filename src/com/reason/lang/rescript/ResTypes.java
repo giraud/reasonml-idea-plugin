@@ -214,9 +214,7 @@ public class ResTypes extends ORTypes {
         OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", ResLanguage.INSTANCE);
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", ResLanguage.INSTANCE);
         TAG_NAME = new ORTokenElementType("TAG_NAME", ResLanguage.INSTANCE);
-        TAG_LT = new ORTokenElementType("TAG_LT", ResLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", ResLanguage.INSTANCE);
-        TAG_GT = new ORTokenElementType("TAG_GT", ResLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", ResLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", ResLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", ResLanguage.INSTANCE);

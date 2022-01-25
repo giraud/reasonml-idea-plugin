@@ -610,9 +610,8 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
                 || nextTokenType == m_types.OPTION) {
             // Surely a tag
             state
-                    .remapCurrentToken(m_types.TAG_LT)
                     .mark(m_types.C_TAG)
-                    .markScope(m_types.C_TAG_START, m_types.TAG_LT)
+                    .markScope(m_types.C_TAG_START, m_types.LT)
                     .advance()
                     .remapCurrentToken(m_types.TAG_NAME)
                     .wrapWith(
@@ -620,11 +619,9 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
         } else if (nextTokenType == m_types.GT) {
             // a React fragment start
             state
-                    .remapCurrentToken(m_types.TAG_LT)
                     .mark(m_types.C_TAG)
                     .mark(m_types.C_TAG_START)
                     .advance()
-                    .remapCurrentToken(m_types.TAG_GT)
                     .advance()
                     .popEnd();
         }
@@ -651,7 +648,6 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
             state.remapCurrentToken(m_types.TAG_LT_SLASH)
                     .mark(m_types.C_TAG_CLOSE)
                     .advance()
-                    .remapCurrentToken(m_types.TAG_GT)
                     .advance()
                     .popEnd();
         }
@@ -668,10 +664,10 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
         }
 
         if (state.is(m_types.C_TAG_START)) {
-            state.remapCurrentToken(m_types.TAG_GT).advance().popEnd().mark(m_types.C_TAG_BODY);
+            state.advance().popEnd().mark(m_types.C_TAG_BODY);
         } else if (state.is(m_types.C_TAG_CLOSE)) {
             // end the tag
-            state.remapCurrentToken(m_types.TAG_GT).advance().popEndUntil(m_types.C_TAG).popEnd();
+            state.advance().popEndUntil(m_types.C_TAG).popEnd();
         }
     }
 

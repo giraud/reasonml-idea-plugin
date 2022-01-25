@@ -2,10 +2,8 @@ package com.reason.lang.rescript;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.reason.*;
 
 import java.util.*;
 
@@ -16,7 +14,6 @@ public class JsxParsingTest extends ResParsingTestCase {
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
         assertEquals("<div>", tag.getText());
-        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), m_types.TAG_GT));
         assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
@@ -49,7 +46,6 @@ public class JsxParsingTest extends ResParsingTestCase {
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
         assertEquals("<option>", tag.getText());
-        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), m_types.TAG_GT));
         assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</option>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
