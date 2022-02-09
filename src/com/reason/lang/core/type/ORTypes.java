@@ -7,7 +7,7 @@ public abstract class ORTypes {
   public ORCompositeType C_EXCEPTION_DECLARATION;
   public ORCompositeType C_EXTERNAL_DECLARATION;
   public ORCompositeType C_FAKE_MODULE;
-  public ORCompositeType C_FUN_PARAM;
+  public ORCompositeType C_FUN_PARAM;   // TODO: zzz delete or rename to C_PARAMETER
   public ORCompositeType C_FUNCTOR_DECLARATION;
   public ORCompositeType C_FUNCTOR_PARAM;
   public ORCompositeType C_INCLUDE;
@@ -36,9 +36,8 @@ public abstract class ORTypes {
   public ORCompositeType C_DIRECTIVE;
   public ORCompositeType C_DO_LOOP;
   public ORCompositeType C_FUN_CALL;
-  public ORCompositeType C_FUN_CALL_PARAMS;  // TODO funcall: remove
   public ORCompositeType C_FUN_EXPR;
-  public ORCompositeType C_FUN_PARAMS;
+  public ORCompositeType C_FUN_PARAMS; // TODO: zzz delete
   public ORCompositeType C_FUN_BODY;
   public ORCompositeType C_FUNCTOR_BINDING;
   public ORCompositeType C_FUNCTOR_CALL;

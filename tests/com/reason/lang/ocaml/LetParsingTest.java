@@ -36,11 +36,8 @@ public class LetParsingTest extends OclParsingTestCase {
     }
 
     public void testScopeWithSome() {
-        PsiLet let =
-                first(
-                        letExpressions(
-                                parseCode(
-                                        "let l = (p) => { switch (a) { | Some(a) => a; (); | None => () }; Some(z); };")));
+        PsiLet let = first(letExpressions(
+                parseCode("let l = (p) => { switch (a) { | Some(a) => a; (); | None => () }; Some(z); };")));
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
         assertNotNull(binding);

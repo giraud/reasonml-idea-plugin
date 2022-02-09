@@ -2,7 +2,6 @@ package com.reason.lang.rescript;
 
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.reason.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ExternalParsingTest extends ResParsingTestCase {

@@ -3,7 +3,6 @@ package com.reason.lang.rescript;
 import com.intellij.psi.*;
 import com.reason.lang.core.psi.impl.PsiIfStatement;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.reason.*;
 
 @SuppressWarnings("ConstantConditions")
 public class IfParsingTest extends ResParsingTestCase {

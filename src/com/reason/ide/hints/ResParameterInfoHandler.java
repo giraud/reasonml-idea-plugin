@@ -14,7 +14,7 @@ public class ResParameterInfoHandler extends ORParameterInfoHandler {
     }
 
     @Override
-    ArgumentsDescription @Nullable [] calculateParameterInfo(PsiFunctionCallParams paramsOwner) {
+    ArgumentsDescription @Nullable [] calculateParameterInfo(PsiParameters paramsOwner) {
         PsiLowerSymbol functionName = PsiTreeUtil.getPrevSiblingOfType(paramsOwner, PsiLowerSymbol.class);
         PsiReference reference = functionName == null ? null : functionName.getReference();
         if (reference instanceof PsiLowerSymbolReference) {
@@ -40,8 +40,8 @@ public class ResParameterInfoHandler extends ORParameterInfoHandler {
     }
 
     @Override
-    @Nullable PsiFunctionCallParams findFunctionParams(@NotNull PsiFile file, int offset) {
+    @Nullable PsiParameters findFunctionParams(@NotNull PsiFile file, int offset) {
         PsiElement elementAt = file.findElementAt(offset);
-        return elementAt == null ? null : PsiTreeUtil.getParentOfType(elementAt, PsiFunctionCallParams.class);
+        return elementAt == null ? null : PsiTreeUtil.getParentOfType(elementAt, PsiParameters.class);
     }
 }

@@ -23,7 +23,7 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         configureCode("A.ml", "let x = 1\n let fn = let x = 2 in fn1 x<caret>");
 
         PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.fn.x", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        assertEquals("A.fn.fn1[0]", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
     }
 
     public void test_inner_scope_in_impl() {
@@ -31,7 +31,7 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         configureCode("A.ml", "let x = 1\n let fn = let foo = 2 in fn1 foo<caret>");
 
         PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.fn.foo", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        assertEquals("A.fn.fn1[0]", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
         assertEquals("A.ml", e.getContainingFile().getName());
     }
 

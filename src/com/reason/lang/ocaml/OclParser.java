@@ -202,7 +202,7 @@ public class OclParser extends CommonParser<OclTypes> {
     private void parseComma(@NotNull ParserState state) {
         if (state.isPreviousComplete(m_types.C_LET_DECLARATION)) {
             state.dropOptionals();
-            // It must be a deconstruction ::  let (a |>,<| b)
+            // It must be a deconstruction ::  let (a |>,<| b) = ..
             // We need to do it again because lower symbols must be wrapped with identifiers
             if (state.isCurrentResolution(genericExpression)) {
                 ParserScope scope = state.pop();
@@ -897,7 +897,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLIdent(@NotNull ParserState state) {
-        if (state.is(m_types.C_FUN_PARAMS)) {
+        if (state.is(m_types.C_FUN_PARAMS) || (state.is(m_types.C_PARAMETERS) && state.isPrevious(m_types.C_FUN_CALL))) {
             state.mark(m_types.C_FUN_PARAM);
         } else if (state.is(m_types.C_FUN_PARAM)
                 && !state.hasScopeToken()
@@ -943,7 +943,7 @@ public class OclParser extends CommonParser<OclTypes> {
                 }
             }
             state.popEnd();
-        } else if ((state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS)) || state.is(m_types.C_NAMED_PARAM) || (state.isDummy() && state.isPrevious(m_types.C_NAMED_PARAM))) {
+        } else if ((state.is(m_types.C_FUN_PARAM) /*&& !state.isPrevious(m_types.C_FUN_CALL_PARAMS)*/) || state.is(m_types.C_NAMED_PARAM) || (state.isDummy() && state.isPrevious(m_types.C_NAMED_PARAM))) {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else {
             IElementType nextTokenType = state.lookAhead(1);
@@ -952,7 +952,7 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.updateCurrentCompositeElementType(m_types.C_NAMED_PARAM).complete();
             } else if (!state.in(m_types.C_SIG_ITEM) && !state.is(m_types.C_TYPE_VARIABLE) && !state.is(m_types.C_CONSTRAINT) && !state.is(m_types.C_BINARY_CONDITION)
                     && !state.is(m_types.C_CLASS_FIELD) && !state.in(m_types.C_TYPE_BINDING) &&
-                    !(state.is(m_types.C_PARAMETERS) && state.isPrevious(m_types.C_LET_DECLARATION)) /* let parameters */
+                    !state.is(m_types.C_PARAMETERS)
             ) {
                 if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.INT_VALUE) {
                     // a function call ::  |>fn<| ...

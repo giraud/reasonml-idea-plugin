@@ -18,8 +18,6 @@ public class VariantCallParsingTest extends ResParsingTestCase {
         assertEquals("Var", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiUpperIdentifier.class));
-        // assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding,
-        // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
     }
 
     public void test_withPath() {
@@ -28,8 +26,6 @@ public class VariantCallParsingTest extends ResParsingTestCase {
         assertEquals("A.Variant(1)", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiUpperIdentifier.class));
-        // assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding,
-        // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
     }
 
     public void test_withParam() {
@@ -37,8 +33,6 @@ public class VariantCallParsingTest extends ResParsingTestCase {
 
         assertEquals("Var(1)", binding.getText());
         assertNull(ORUtil.findImmediateFirstChildOfClass(binding, PsiVariantDeclaration.class));
-        // assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding,
-        // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
     }
 
     public void test_patternMatch() {

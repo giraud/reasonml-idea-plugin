@@ -17,7 +17,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
     public void test_recursive_type() {
         PsiType e = first(typeExpressions(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));")));
         assertEquals("tree", e.getName());
-        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCall.class));
     }
 
     public void test_type_binding_with_variant() {
@@ -94,7 +94,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
     public void test_apply_params() {
         PsiType e = first(typeExpressions(parseCode("type t('value) = Belt.Map.t(key, 'value, Comparator.identity);")));
 
-        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCall.class));
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/326

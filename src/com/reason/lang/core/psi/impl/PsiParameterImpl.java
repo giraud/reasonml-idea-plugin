@@ -65,10 +65,9 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
         PsiElement parent = getParent();
         PsiElement grandParent = parent == null ? null : parent.getParent();
 
-        if (parent instanceof PsiFunctionCallParams || grandParent instanceof PsiFunctionCall || grandParent instanceof PsiFunctorCall) {
-            List<PsiParameter> parameters = parent instanceof PsiFunctionCallParams ?
-                    ((PsiFunctionCallParams) parent).getParametersList() :
-                    ((PsiParameters) parent).getParametersList();
+        if (parent instanceof PsiParameters || grandParent instanceof PsiFunctionCall || grandParent instanceof PsiFunctorCall) {
+            assert parent instanceof PsiParameters;
+            List<PsiParameter> parameters = ((PsiParameters) parent).getParametersList();
             int i = 0;
             for (PsiParameter parameter : parameters) {
                 if (parameter == this) {

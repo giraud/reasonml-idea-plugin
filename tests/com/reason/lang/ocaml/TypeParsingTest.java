@@ -90,7 +90,7 @@ public class TypeParsingTest extends OclParsingTestCase {
     public void test_apply_params() {
         PsiType e = first(typeExpressions(parseCode("type 'value t = (key,'value,Comparator.identity) Belt.Map.t")));
 
-        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiParameters.class));
     }
 
     public void test_qname_functor() {

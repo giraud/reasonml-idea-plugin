@@ -741,7 +741,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
                     state.mark(m_types.C_RECORD_FIELD).wrapWith(m_types.C_LOWER_IDENTIFIER);
                 } else if (state.is(m_types.C_RECORD_FIELD)) {
                     state.wrapWith(m_types.C_LOWER_IDENTIFIER);
-                } else if (nextElementType == m_types.LPAREN) {
+                } else if (nextElementType == m_types.LPAREN && !state.in(m_types.C_TYPE_BINDING)) {
                     state.mark(m_types.C_FUN_CALL);
                 }
             }

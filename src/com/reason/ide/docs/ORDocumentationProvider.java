@@ -214,12 +214,12 @@ public class ORDocumentationProvider implements DocumentationProvider {
 
     @Override
     public @Nullable PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement, int targetOffset) {
+        PsiElement parent = contextElement == null ? null : contextElement.getParent();
+
         // When quick doc inside empty parenthesis, we want to display the function doc (github #155)
         // functionName(<caret>) ==> functionName<caret>()
-        if (contextElement != null
-                && contextElement.getParent() instanceof PsiFunctionCallParams
-                && contextElement.getLanguage() == RmlLanguage.INSTANCE) {
-            PsiElement prevSibling = contextElement.getParent().getPrevSibling();
+        if (contextElement != null && parent instanceof PsiParameters && contextElement.getLanguage() == RmlLanguage.INSTANCE) {
+            PsiElement prevSibling = parent.getPrevSibling();
             if (prevSibling != null) {
                 PsiReference reference = prevSibling.getReference();
                 if (reference != null) {
@@ -228,18 +228,16 @@ public class ORDocumentationProvider implements DocumentationProvider {
             }
         }
 
-        if (contextElement != null && contextElement.getParent() instanceof PsiLowerSymbol) {
-            PsiReference reference = contextElement.getParent().getReference();
+        if (contextElement != null && parent instanceof PsiLowerSymbol) {
+            PsiReference reference = parent.getReference();
             if (reference instanceof PsiPolyVariantReference) {
                 PsiLowerSymbolReference lowerReference = (PsiLowerSymbolReference) reference;
                 ResolveResult[] resolveResults = lowerReference.multiResolve(false);
                 if (0 < resolveResults.length) {
-                    Arrays.sort(
-                            resolveResults,
-                            (rr1, rr2) ->
-                                    ((PsiLowerSymbolReference.LowerResolveResult) rr1).isInterface()
-                                            ? -1
-                                            : (((PsiLowerSymbolReference.LowerResolveResult) rr2).isInterface() ? 1 : 0));
+                    Arrays.sort(resolveResults, (rr1, rr2) ->
+                            ((PsiLowerSymbolReference.LowerResolveResult) rr1).isInterface()
+                                    ? -1
+                                    : (((PsiLowerSymbolReference.LowerResolveResult) rr2).isInterface() ? 1 : 0));
                     return resolveResults[0].getElement();
                 }
             }

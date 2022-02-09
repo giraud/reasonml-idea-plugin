@@ -135,10 +135,11 @@ public class ParserState {
     }
 
     public boolean isPreviousComplete(ORCompositeType expectedComposite) {
+        int size = m_composites.size() - 1;
         for (ParserScope composite : m_composites) {
             if (!composite.isOptional()) {
                 int index = m_composites.indexOf(composite);
-                if (index >= 2) {
+                if (index < size) {
                     return m_composites.get(index + 1).isCompositeType(expectedComposite);
                 }
             }
@@ -316,6 +317,7 @@ public class ParserState {
         }
         if (scope != null) {
             scope.end();
+            m_latestCompleted = scope;
         }
         return this;
     }
@@ -325,7 +327,6 @@ public class ParserState {
         while (!m_composites.isEmpty() && m_currentScope.isOptional()) {
             popCancel();
         }
-        ;
         return this;
     }
 
