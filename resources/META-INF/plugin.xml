@@ -430,6 +430,8 @@
                                    implementationClass="com.reason.ide.hints.RmlParameterInfoHandler"/>
         <codeInsight.parameterInfo language="Rescript"
                                    implementationClass="com.reason.ide.hints.ResParameterInfoHandler"/>
+        <codeInsight.parameterInfo language="OCaml"
+                                   implementationClass="com.reason.ide.hints.OclParameterInfoHandler"/>
 
         <consoleFilterProvider implementation="com.reason.ide.console.ORConsoleFilterProvider"/>
         <editorFactoryListener implementation="com.reason.ide.OREditorFactoryListener"/>

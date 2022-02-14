@@ -59,6 +59,10 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseColon(state);
             } else if (tokenType == m_types.QUESTION_MARK) {
                 parseQuestionMark(state);
+            } else if (tokenType == m_types.INT_VALUE) {
+                parseNumber(state);
+            } else if (tokenType == m_types.FLOAT_VALUE) {
+                parseNumber(state);
             } else if (tokenType == m_types.LIDENT) {
                 parseLIdent(state);
             } else if (tokenType == m_types.UIDENT) {
@@ -896,6 +900,16 @@ public class OclParser extends CommonParser<OclTypes> {
         state.advance().popEnd();
     }
 
+    private void parseNumber(@NotNull ParserState state) {
+        if (state.is(m_types.C_PARAMETERS) && state.isPrevious(m_types.C_FUN_CALL)) {
+            state.mark(m_types.C_FUN_PARAM);
+        } else if (state.is(m_types.C_FUN_PARAM)
+        ) {
+            // Start of a new parameter :: .. fn x |>y<| ..
+            state.complete().popEnd().mark(m_types.C_FUN_PARAM);
+        }
+    }
+
     private void parseLIdent(@NotNull ParserState state) {
         if (state.is(m_types.C_FUN_PARAMS) || (state.is(m_types.C_PARAMETERS) && state.isPrevious(m_types.C_FUN_CALL))) {
             state.mark(m_types.C_FUN_PARAM);
@@ -954,14 +968,11 @@ public class OclParser extends CommonParser<OclTypes> {
                     && !state.is(m_types.C_CLASS_FIELD) && !state.in(m_types.C_TYPE_BINDING) &&
                     !state.is(m_types.C_PARAMETERS)
             ) {
-                if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.INT_VALUE) {
+                if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.INT_VALUE || nextTokenType == m_types.FLOAT_VALUE) {
                     // a function call ::  |>fn<| ...
                     state.mark(m_types.C_FUN_CALL)
-                            .advance()
+                            .wrapWith(m_types.C_LOWER_SYMBOL)
                             .mark(m_types.C_PARAMETERS);
-                    if (nextTokenType == m_types.INT_VALUE) {
-                        state.mark(m_types.C_FUN_PARAM);
-                    }
                     return;
                 }
             }

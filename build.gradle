@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.2.1'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.4.0'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
