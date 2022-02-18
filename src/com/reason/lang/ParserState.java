@@ -126,7 +126,7 @@ public class ParserState {
         return false;
     }
 
-    public boolean isPrevious(ORCompositeType composite) {
+    public boolean isParent(ORCompositeType composite) {
         if (m_composites.size() >= 2) {
             // current index is 0
             return m_composites.get(1).isCompositeType(composite);
@@ -134,7 +134,7 @@ public class ParserState {
         return false;
     }
 
-    public boolean isPreviousComplete(ORCompositeType expectedComposite) {
+    public boolean isParentComplete(ORCompositeType expectedComposite) {
         int size = m_composites.size() - 1;
         for (ParserScope composite : m_composites) {
             if (!composite.isOptional()) {
@@ -143,6 +143,13 @@ public class ParserState {
                     return m_composites.get(index + 1).isCompositeType(expectedComposite);
                 }
             }
+        }
+        return false;
+    }
+
+    public boolean isGrandParent(ORCompositeType composite) {
+        if (m_composites.size() >= 3) {
+            return m_composites.get(2).isCompositeType(composite);
         }
         return false;
     }
@@ -196,13 +203,6 @@ public class ParserState {
     public boolean isGrandPreviousResolution(ParserScopeEnum scope) {
         if (m_composites.size() >= 3) {
             return m_composites.get(2).isResolution(scope);
-        }
-        return false;
-    }
-
-    public boolean isGrandParent(ORCompositeType composite) {
-        if (m_composites.size() >= 3) {
-            return m_composites.get(2).isCompositeType(composite);
         }
         return false;
     }

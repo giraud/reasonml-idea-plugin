@@ -48,11 +48,9 @@ public class RmlTypes extends ORTypes {
         C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", RmlLanguage.INSTANCE);
         C_FUN_CALL = new ORCompositeElementType("C_FUN_CALL", RmlLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", RmlLanguage.INSTANCE);
-        C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", RmlLanguage.INSTANCE);
         C_FUN_BODY = new ORCompositeElementType("C_FUN_BODY", RmlLanguage.INSTANCE);
         C_FUNCTOR_BINDING = new ORCompositeElementType("C_FUNCTOR_BINDING", RmlLanguage.INSTANCE);
         C_FUNCTOR_CALL = new ORCompositeElementType("C_FUNCTOR_CALL", RmlLanguage.INSTANCE);
-        C_FUNCTOR_PARAMS = new ORCompositeElementType("C_FUNCTOR_PARAMS", RmlLanguage.INSTANCE);
         C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", RmlLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", RmlLanguage.INSTANCE);
         C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", RmlLanguage.INSTANCE);

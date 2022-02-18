@@ -9,7 +9,7 @@ public abstract class ORTypes {
   public ORCompositeType C_FAKE_MODULE;
   public ORCompositeType C_FUN_PARAM;   // TODO: zzz delete or rename to C_PARAMETER
   public ORCompositeType C_FUNCTOR_DECLARATION;
-  public ORCompositeType C_FUNCTOR_PARAM;
+  public ORCompositeType C_FUNCTOR_PARAM;  // TODO: zzz delete or rename to C_PARAMETER
   public ORCompositeType C_INCLUDE;
   public ORCompositeType C_LET_DECLARATION;
   public ORCompositeType C_MODULE_DECLARATION;
@@ -37,11 +37,9 @@ public abstract class ORTypes {
   public ORCompositeType C_DO_LOOP;
   public ORCompositeType C_FUN_CALL;
   public ORCompositeType C_FUN_EXPR;
-  public ORCompositeType C_FUN_PARAMS; // TODO: zzz delete
   public ORCompositeType C_FUN_BODY;
   public ORCompositeType C_FUNCTOR_BINDING;
   public ORCompositeType C_FUNCTOR_CALL;
-  public ORCompositeType C_FUNCTOR_PARAMS;
   public ORCompositeType C_FUNCTOR_RESULT;
   public ORCompositeType C_IF;
   public ORCompositeType C_IF_THEN_SCOPE;

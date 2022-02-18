@@ -190,7 +190,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseOption(@NotNull ParserState state) {
-        if (state.isDummy() && (state.isPrevious(m_types.C_SIG_ITEM) || state.isPrevious(m_types.C_TYPE_BINDING))) {
+        if (state.isDummy() && (state.isParent(m_types.C_SIG_ITEM) || state.isParent(m_types.C_TYPE_BINDING))) {
             // in type      :  type t = xxx |>option<|
             // or signature :  ... -> xxx |>option<| ...
             state.updateCurrentCompositeElementType(m_types.C_OPTION).complete();
@@ -204,7 +204,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseComma(@NotNull ParserState state) {
-        if (state.isPreviousComplete(m_types.C_LET_DECLARATION)) {
+        if (state.isParentComplete(m_types.C_LET_DECLARATION)) {
             state.dropOptionals();
             // It must be a deconstruction ::  let (a |>,<| b) = ..
             // We need to do it again because lower symbols must be wrapped with identifiers
@@ -249,7 +249,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLt(@NotNull ParserState state) {
-        if ((state.isDummy() && (state.isPrevious(m_types.C_SIG_ITEM) || state.isPrevious(m_types.C_TYPE_BINDING))) || state.is(m_types.C_OBJECT_FIELD)) {
+        if ((state.isDummy() && (state.isParent(m_types.C_SIG_ITEM) || state.isParent(m_types.C_TYPE_BINDING))) || state.is(m_types.C_OBJECT_FIELD)) {
             // |> < <| .. > ..
             state.markScope(m_types.C_OBJECT, m_types.LT)
                     .advance()
@@ -273,7 +273,7 @@ public class OclParser extends CommonParser<OclTypes> {
                 // type t = < .. > |>as<| ..
                 state.advance().advance().popEnd();
             }
-        } else if (state.isPrevious(m_types.C_OBJECT)) {
+        } else if (state.isParent(m_types.C_OBJECT)) {
             // < ... |> > <| ..
             if (state.isCurrentResolution(objectFieldNamed)) {
                 state.popEnd();
@@ -300,7 +300,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseDo(@NotNull ParserState state) {
-        if (state.is(m_types.C_BINARY_CONDITION) && state.isPrevious(m_types.C_WHILE)) {
+        if (state.is(m_types.C_BINARY_CONDITION) && state.isParent(m_types.C_WHILE)) {
             state.popEnd().advance().markScope(m_types.C_DO_LOOP, m_types.DO);
         } else {
             state.markScope(m_types.C_DO_LOOP, m_types.DO);
@@ -320,9 +320,9 @@ public class OclParser extends CommonParser<OclTypes> {
             state.popEnd();
         }
 
-        if (state.isPrevious(m_types.C_SIG_ITEM)) {
+        if (state.isParent(m_types.C_SIG_ITEM)) {
             state.popEnd().popEnd();
-            if (state.isPrevious(m_types.C_NAMED_PARAM)) {
+            if (state.isParent(m_types.C_NAMED_PARAM)) {
                 // can't have arrow in a named param signature ::  let fn x:int -> y:int
                 state.popEnd().popEndUntil(m_types.C_SIG_EXPR);
             }
@@ -381,7 +381,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parsePipe(@NotNull ParserState state) {
-        if (state.is(m_types.C_SCOPED_EXPR) && state.isPrevious(m_types.C_LET_DECLARATION)) {
+        if (state.is(m_types.C_SCOPED_EXPR) && state.isParent(m_types.C_LET_DECLARATION)) {
             // let ( |>|<| ...
             return;
         }
@@ -397,7 +397,7 @@ public class OclParser extends CommonParser<OclTypes> {
             state.popEndUntilOneOfResolution(matchWith, functionMatch);
         }
 
-        if (state.isDummy() && state.isPrevious(m_types.C_TYPE_BINDING)) {
+        if (state.isDummy() && state.isParent(m_types.C_TYPE_BINDING)) {
             state.popDummy()
                     .advance()
                     .mark(m_types.C_VARIANT_DECLARATION);
@@ -461,7 +461,7 @@ public class OclParser extends CommonParser<OclTypes> {
                     .mark(m_types.C_TRY_HANDLERS)
                     .mark(m_types.C_TRY_HANDLER);
         } else if (state.is(m_types.C_BINARY_CONDITION)) {
-            if (state.isPrevious(m_types.C_MATCH_EXPR)) {
+            if (state.isParent(m_types.C_MATCH_EXPR)) {
                 state.popEnd().resolution(matchWith);
             }
         }
@@ -512,7 +512,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseSemi(@NotNull ParserState state) {
-        if (state.isPrevious(m_types.C_OBJECT)) {
+        if (state.isParent(m_types.C_OBJECT)) {
             // SEMI ends the field, and starts a new one
             state.popEnd().advance().mark(m_types.C_OBJECT_FIELD);
         } else if (state.in(m_types.C_RECORD_FIELD)) {
@@ -642,7 +642,7 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.is(m_types.C_NAMED_PARAM)) {
             state.advance()
                     .markOptionalParenDummyScope(m_types);
-            if (state.isPrevious(m_types.C_SIG_ITEM)) {
+            if (state.isParent(m_types.C_SIG_ITEM)) {
                 // A named param in signature ::  let x : c|> :<| ..
                 state.mark(m_types.C_SIG_EXPR)
                         .mark(m_types.C_SIG_ITEM)
@@ -663,7 +663,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseQuestionMark(@NotNull ParserState state) {
         // First param ::  let f |>?<| ( x ...
-        if (state.is(m_types.C_FUN_PARAMS)) {
+        if (state.is(m_types.C_PARAMETERS) && state.isParent(m_types.C_FUN_EXPR)) {
             state.mark(m_types.C_FUN_PARAM)
                     .mark(m_types.C_NAMED_PARAM);
         }
@@ -674,7 +674,7 @@ public class OclParser extends CommonParser<OclTypes> {
                     .mark(m_types.C_NAMED_PARAM);
         }
         // Condition ?
-        else if (state.is(m_types.C_BINARY_CONDITION) && !state.isPrevious(m_types.C_MATCH_EXPR)) {
+        else if (state.is(m_types.C_BINARY_CONDITION) && !state.isParent(m_types.C_MATCH_EXPR)) {
             IElementType nextType = state.rawLookup(1);
             // ... |>?<| ... : ...
             if (nextType != m_types.LIDENT) {
@@ -701,14 +701,14 @@ public class OclParser extends CommonParser<OclTypes> {
             state
                     .mark(m_types.C_FUN_EXPR)
                     .advance()
-                    .markOptional(m_types.C_FUN_PARAMS)
+                    .markOptional(m_types.C_PARAMETERS)
                     .resolution(maybeFunctionParameters);
         }
     }
 
     private void parseEq(@NotNull ParserState state) {
         // Remove intermediate constructions
-        if (state.isPrevious(m_types.C_SIG_ITEM) || state.is(m_types.C_FUN_PARAMS)) {
+        if (state.isParent(m_types.C_SIG_ITEM) || (state.is(m_types.C_PARAMETERS) && state.isParent(m_types.C_FUN_EXPR))) {
             state.popEnd();
             if (state.is(m_types.C_SIG_ITEM)) {
                 state.popEnd();
@@ -723,7 +723,7 @@ public class OclParser extends CommonParser<OclTypes> {
             state.advance()
                     .mark(m_types.C_TYPE_BINDING)
                     .markDummy(m_types /* for template types */);
-        } else if (state.is(m_types.C_LET_DECLARATION) || (state.isPrevious(m_types.C_LET_DECLARATION) && state.is(m_types.C_PARAMETERS))) {
+        } else if (state.is(m_types.C_LET_DECLARATION) || (state.isParent(m_types.C_LET_DECLARATION) && state.is(m_types.C_PARAMETERS))) {
             // let x |> = <| ...
             // let (x) y z |> = <| ...
             state.popEndUntilStart();
@@ -747,7 +747,7 @@ public class OclParser extends CommonParser<OclTypes> {
             state.popEndUntil(m_types.C_FUN_EXPR).advance().mark(m_types.C_FUN_BODY);
         }
         // let fn ?(x |> = <| ...
-        else if (state.isDummy() && state.isPrevious(m_types.C_NAMED_PARAM)) {
+        else if (state.isDummy() && state.isParent(m_types.C_NAMED_PARAM)) {
             state.advance().mark(m_types.C_DEFAULT_VALUE);
         }
     }
@@ -776,7 +776,7 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.isCurrentResolution(maybeFunctorCall)) {
             // Yes, it is a functor call ::  module M = X |>(<| ... )
             state.complete()
-                    .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
+                    .markScope(m_types.C_PARAMETERS, m_types.LPAREN)
                     .advance()
                     .mark(m_types.C_FUN_PARAM);
         } else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
@@ -784,7 +784,7 @@ public class OclParser extends CommonParser<OclTypes> {
             state.markScope(m_types.C_LOCAL_OPEN, m_types.LPAREN);
         } else if (state.is(m_types.C_CLASS_DECLARATION)) {
             state.markScope(m_types.C_CLASS_CONSTR, m_types.LPAREN);
-        } else if (state.is(m_types.C_FUN_PARAMS)) {
+        } else if (state.is(m_types.C_PARAMETERS) && state.isParent(m_types.C_FUN_EXPR)) {
             // Start of the first parameter ::  let x |>(<| ...
             state.markScope(m_types.C_FUN_PARAM, m_types.LPAREN);
         } else if (state.is(m_types.C_FUN_PARAM)
@@ -800,7 +800,7 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.is(m_types.C_MODULE_DECLARATION)) {
             // This is a functor ::  module Make |>(<| ... )
             state.updateCurrentCompositeElementType(m_types.C_FUNCTOR_DECLARATION)
-                    .markScope(m_types.C_FUNCTOR_PARAMS, m_types.LPAREN)
+                    .markScope(m_types.C_PARAMETERS, m_types.LPAREN)
                     .advance()
                     .mark(m_types.C_FUNCTOR_PARAM);
         } else if (state.is(m_types.C_MODULE_TYPE)) {
@@ -826,7 +826,7 @@ public class OclParser extends CommonParser<OclTypes> {
         state.advance();
 
         int scopeLength = parenScope.getLength();
-        if (scopeLength == 3 && state.isPrevious(m_types.C_LET_DECLARATION)) {
+        if (scopeLength == 3 && state.isParent(m_types.C_LET_DECLARATION)) {
             // unit ::  let ()
             parenScope.updateCompositeElementType(m_types.C_UNIT);
         }
@@ -835,8 +835,8 @@ public class OclParser extends CommonParser<OclTypes> {
         if (nextToken == m_types.LT || nextToken == m_types.LT_OR_EQUAL) {
             // are we in a binary op ?
             state.precedeScope(m_types.C_BINARY_CONDITION);
-        } else if (!state.isPrevious(m_types.C_NAMED_PARAM)) {
-            if (nextToken == m_types.QUESTION_MARK && !state.isPrevious(m_types.C_TERNARY) && !parenScope.isCompositeType(m_types.C_NAMED_PARAM) && !parenScope.isCompositeType(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_PARAM)) {
+        } else if (!state.isParent(m_types.C_NAMED_PARAM)) {
+            if (nextToken == m_types.QUESTION_MARK && !state.isParent(m_types.C_TERNARY) && !parenScope.isCompositeType(m_types.C_NAMED_PARAM) && !parenScope.isCompositeType(m_types.C_FUN_PARAM) && !state.isParent(m_types.C_FUN_PARAM)) {
                 // ( ... |>)<| ? ...
                 state.updateCurrentCompositeElementType(m_types.C_BINARY_CONDITION)
                         .precedeScope(m_types.C_TERNARY);
@@ -855,7 +855,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseLBrace(@NotNull ParserState state) {
         // let fn |>{<| ... } = ...
-        if (state.is(m_types.C_FUN_PARAMS)) {
+        if (state.is(m_types.C_PARAMETERS) && state.isParent(m_types.C_FUN_EXPR)) {
             state.mark(m_types.C_FUN_PARAM);
         }
 
@@ -901,7 +901,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseNumber(@NotNull ParserState state) {
-        if (state.is(m_types.C_PARAMETERS) && state.isPrevious(m_types.C_FUN_CALL)) {
+        if (state.is(m_types.C_PARAMETERS) && state.isParent(m_types.C_FUN_CALL)) {
             state.mark(m_types.C_FUN_PARAM);
         } else if (state.is(m_types.C_FUN_PARAM)
         ) {
@@ -911,7 +911,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLIdent(@NotNull ParserState state) {
-        if (state.is(m_types.C_FUN_PARAMS) || (state.is(m_types.C_PARAMETERS) && state.isPrevious(m_types.C_FUN_CALL))) {
+        if (state.is(m_types.C_PARAMETERS) && (state.isParent(m_types.C_FUN_CALL) || state.isParent(m_types.C_FUN_EXPR))) {
             state.mark(m_types.C_FUN_PARAM);
         } else if (state.is(m_types.C_FUN_PARAM)
                 && !state.hasScopeToken()
@@ -933,7 +933,9 @@ public class OclParser extends CommonParser<OclTypes> {
             } else if (nextToken != m_types.EQ && nextToken != m_types.COLON) {
                 // This is a function, we need to create the let binding now, to be in sync with reason
                 //  let |>x<| y z = ...  vs    let x = y z => ...
-                state.mark(m_types.C_LET_BINDING).mark(m_types.C_FUN_EXPR).mark(m_types.C_FUN_PARAMS);
+                state.mark(m_types.C_LET_BINDING).
+                        mark(m_types.C_FUN_EXPR).
+                        mark(m_types.C_PARAMETERS);
             }
         } else if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
@@ -957,11 +959,11 @@ public class OclParser extends CommonParser<OclTypes> {
                 }
             }
             state.popEnd();
-        } else if ((state.is(m_types.C_FUN_PARAM) /*&& !state.isPrevious(m_types.C_FUN_CALL_PARAMS)*/) || state.is(m_types.C_NAMED_PARAM) || (state.isDummy() && state.isPrevious(m_types.C_NAMED_PARAM))) {
+        } else if ((state.is(m_types.C_FUN_PARAM) /*&& !state.isPrevious(m_types.C_FUN_CALL_PARAMS)*/) || state.is(m_types.C_NAMED_PARAM) || (state.isDummy() && state.isParent(m_types.C_NAMED_PARAM))) {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else {
             IElementType nextTokenType = state.lookAhead(1);
-            if (nextTokenType == m_types.COLON && (state.isDummy() && state.isPrevious(m_types.C_SIG_ITEM))) {
+            if (nextTokenType == m_types.COLON && (state.isDummy() && state.isParent(m_types.C_SIG_ITEM))) {
                 // let fn |>x<| : ...
                 state.updateCurrentCompositeElementType(m_types.C_NAMED_PARAM).complete();
             } else if (!state.in(m_types.C_SIG_ITEM) && !state.is(m_types.C_TYPE_VARIABLE) && !state.is(m_types.C_CONSTRAINT) && !state.is(m_types.C_BINARY_CONDITION)
@@ -1013,7 +1015,7 @@ public class OclParser extends CommonParser<OclTypes> {
             // Declaring an exception  ::  exception |>X<| ...
             state.wrapWith(m_types.C_UPPER_IDENTIFIER);
         } else {
-            if (state.isDummy() && state.isPrevious(m_types.C_TYPE_BINDING)) {
+            if (state.isDummy() && state.isParent(m_types.C_TYPE_BINDING)) {
                 // Might be a variant declaration without a pipe
                 IElementType nextToken = state.lookAhead(1);
                 if (nextToken == m_types.OF || nextToken == m_types.PIPE) {
