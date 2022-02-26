@@ -37,7 +37,7 @@ public class PsiLiteralExpression extends LeafPsiElement implements PsiLanguageI
     }
 
     // Copied from com.intellij.psi.impl.source.tree.injected.StringLiteralEscaper
-    // See https://github.com/reasonml-editor/reasonml-idea-plugin/issues/289
+    // See https://github.com/giraud/reasonml-idea-plugin/issues/289
     public static class StringLiteralEscaper<T extends PsiLanguageInjectionHost> extends LiteralTextEscaper<T> {
         private int[] outSourceOffsets;
 

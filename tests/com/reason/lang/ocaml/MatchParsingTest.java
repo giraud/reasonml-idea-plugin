@@ -122,7 +122,7 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertEquals("Unknown -> None", patterns.get(2).getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/312
+    // https://github.com/giraud/reasonml-idea-plugin/issues/312
     public void test_GH_312() {
         PsiFile f = parseCode("match fn ?arg with |None -> false |Some f -> true");
 
@@ -134,7 +134,7 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertEquals("Some f -> true", patterns.get(1).getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/340
+    // https://github.com/giraud/reasonml-idea-plugin/issues/340
     // Not an object !
     public void test_GH_340() {
         List<PsiLet> es = letExpressions(parseCode("let fn cond i j = match cond with | Some i, Some j -> i < j\n let fn2 s = ()"));

@@ -202,7 +202,7 @@ public class LetParsingTest extends OclParsingTestCase {
     }
 
     // should it be parsed like a function ?
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/309
+    // https://github.com/giraud/reasonml-idea-plugin/issues/309
     public void test_infix_operator() {
         PsiLet e = firstOfType(parseCode("let (|?) m (key, cb) = m |> Ext_json.test key cb"), PsiLet.class);
 
@@ -211,7 +211,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("m |> Ext_json.test key cb", e.getBinding().getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105
+    // https://github.com/giraud/reasonml-idea-plugin/issues/105
     public void test_GH_105() {
         FileBase file = parseCode("let string = \"x\"");
         PsiLet e = first(letExpressions(file));
@@ -244,7 +244,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("bool", e.getName());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/116
+    // https://github.com/giraud/reasonml-idea-plugin/issues/116
     public void test_GH_116() {
         FileBase file =
                 parseCode("let ((), proofview, _, _) = Proofview.apply (Global.env ()) tac pr.proofview");
@@ -255,7 +255,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("Proofview.apply (Global.env ()) tac pr.proofview", e.getBinding().getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121
+    // https://github.com/giraud/reasonml-idea-plugin/issues/121
     public void test_GH_121() {
         Collection<PsiLet> lets =
                 letExpressions(parseCode("let rec f x y = match x with | [] -> return y\n let x =  1"));
@@ -263,7 +263,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertSize(2, lets);
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/270
+    // https://github.com/giraud/reasonml-idea-plugin/issues/270
     // https://caml.inria.fr/pub/docs/manual-ocaml/polymorphism.html#ss:explicit-polymorphism
     public void test_GH_270() {
         PsiLet e =
@@ -280,7 +280,7 @@ public class LetParsingTest extends OclParsingTestCase {
                 e.getSignature().getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/278
+    // https://github.com/giraud/reasonml-idea-plugin/issues/278
     public void test_GH_278() {
         PsiLet e = first(letExpressions(parseCode("let (//) = Ext_path.combine")));
 

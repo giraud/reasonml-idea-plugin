@@ -52,7 +52,7 @@ public class AndParsingTest extends OclParsingTestCase {
         assertSize(2, lets);
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/272
+    // https://github.com/giraud/reasonml-idea-plugin/issues/272
     public void test_GH_pattern_unit_chaining() {
         FileBase file = parseCode("let x = match xx with | Y -> let fn y = 1 in () and z = 1 ");
         List<PsiLet> exps = letExpressions(file);
@@ -72,7 +72,7 @@ public class AndParsingTest extends OclParsingTestCase {
         assertEquals("self", second(types).getName());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/135
+    // https://github.com/giraud/reasonml-idea-plugin/issues/135
     public void test_GH_135() {
         List<PsiLet> lets =
                 new ArrayList<>(letExpressions(parseCode("let f1 = function | _ -> ()\nand missing = ()")));
@@ -82,7 +82,7 @@ public class AndParsingTest extends OclParsingTestCase {
         assertEquals("missing", lets.get(1).getName());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/175
+    // https://github.com/giraud/reasonml-idea-plugin/issues/175
     public void test_GH_175() {
         List<PsiLet> lets =
                 new ArrayList<>(
@@ -96,7 +96,7 @@ public class AndParsingTest extends OclParsingTestCase {
         assertEquals("f3", lets.get(2).getName());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/271
+    // https://github.com/giraud/reasonml-idea-plugin/issues/271
     public void test_GH_271() {
         List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode(
                 "let parser_of_token_list a = \nlet loop x = () in \n() \nand parser_of_symbol b = ()")));

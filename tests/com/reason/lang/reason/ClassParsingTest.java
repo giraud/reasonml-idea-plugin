@@ -78,7 +78,7 @@ public class ClassParsingTest extends RmlParsingTestCase {
         assertEquals(clazz.getMethods().size(), 2);
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/310
+    // https://github.com/giraud/reasonml-idea-plugin/issues/310
     public void test_GH_310() {
         FileBase file = parseCode("class type control = { pub detach: unit => unit; };\n" +
                 "type errpage = page(list((int, string)));");

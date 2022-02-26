@@ -7,7 +7,7 @@ import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class WhileParsingTest extends OclParsingTestCase {
-  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/176
+  // https://github.com/giraud/reasonml-idea-plugin/issues/176
   public void test_GH_176() {
     PsiLet e =
         first(letExpressions(parseCode("let x = while true do match x with | _ -> () done")));
@@ -16,7 +16,7 @@ public class WhileParsingTest extends OclParsingTestCase {
     assertEquals("true", while_.getCondition().getText());
   }
 
-  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/189
+  // https://github.com/giraud/reasonml-idea-plugin/issues/189
   public void test_GH_189() {
     Collection<PsiLet> es =
         letExpressions(

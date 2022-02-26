@@ -164,7 +164,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("(_ => initialAttribute)", PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class).getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/113
+    // https://github.com/giraud/reasonml-idea-plugin/issues/113
     public void test_GH_113() {
         PsiFunction e = (PsiFunction) firstElement(parseCode("() => switch (isBuggy()) { | _ => \"buggy\" };"));
 

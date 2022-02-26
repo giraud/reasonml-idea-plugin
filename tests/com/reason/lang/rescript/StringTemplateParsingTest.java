@@ -36,7 +36,7 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
         assertEquals(ref.getText(), "var");
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/353
+    // https://github.com/giraud/reasonml-idea-plugin/issues/353
     public void test_GH_353() {
         PsiLet e = first(letExpressions(parseCode("let _ = `${rowStart} / ${colStart}`")));
         PsiLetBinding binding = e.getBinding();

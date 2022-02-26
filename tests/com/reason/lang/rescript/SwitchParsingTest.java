@@ -160,7 +160,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertEquals("Unknown => None", patterns.get(3).getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/275
+    // https://github.com/giraud/reasonml-idea-plugin/issues/275
     public void test_GH_275() {
         PsiFunction e = firstOfType(
                 parseCode("items->Belt.Array.map(i => switch (i: t) { | Value => 1 })"),

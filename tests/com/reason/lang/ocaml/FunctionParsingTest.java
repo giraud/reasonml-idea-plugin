@@ -86,7 +86,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
     assertEquals("let x = 1", let.getFunction().getBody().getText());
   }
 
-  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/291
+  // https://github.com/giraud/reasonml-idea-plugin/issues/291
   public void test_GH_291() {
     PsiLet e = first(letExpressions(parseCode("let fn = function | OpenedModule -> true | _ -> false")));
 

@@ -15,7 +15,7 @@ public class ExpandLocalOpenIntentionRMLTest extends ORBasePlatformTestCase {
     myFixture.checkResult("let x = { open Js.Promise; Api.all(); };");
   }
 
-  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/67
+  // https://github.com/giraud/reasonml-idea-plugin/issues/67
   public void testInner() {
     myFixture.configureByText(
         RmlFileType.INSTANCE,

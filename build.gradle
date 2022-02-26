@@ -40,7 +40,7 @@ intellij {
                     <li>New opam configuration, should allow other IDE to use dune projects. Dune facet is removed.</li>
                     <li>#364 - StringIndexOutOfBoundsException</li>
                 </ul>
-                <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
+                <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
                 <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
             """.stripIndent()

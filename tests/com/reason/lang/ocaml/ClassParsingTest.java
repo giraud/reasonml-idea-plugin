@@ -105,7 +105,7 @@ public class ClassParsingTest extends OclParsingTestCase {
         assertEquals("unit -> unit", methods.get(7).getSignature().getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/310
+    // https://github.com/giraud/reasonml-idea-plugin/issues/310
     public void test_GH_310() {
         FileBase file = parseCode("class type control =\n" +
                 "  object\n" +

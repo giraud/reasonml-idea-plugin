@@ -99,7 +99,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("struct end", e.getBody().getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/91
+    // https://github.com/giraud/reasonml-idea-plugin/issues/91
     public void test_GH_91() {
         FileBase file = parseCode("module Branch : (module type of Vcs_.Branch with type t = Vcs_.Branch.t)\ntype id");
 
