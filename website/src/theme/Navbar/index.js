@@ -3,9 +3,7 @@ import clsx from 'clsx';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import SearchBar from '@theme/SearchBar';
 import Toggle from '@theme/Toggle';
-import useThemeContext from '@theme/hooks/useThemeContext';
-import useHideableNavbar from '@theme/hooks/useHideableNavbar';
-import useLockBodyScroll from '@theme/hooks/useLockBodyScroll';
+import {useColorMode, useHideableNavbar, useLockBodyScroll} from '@docusaurus/theme-common';
 import Logo from '@theme/Logo';
 import styles from './styles.module.scss';
 import NavbarItem from '@theme/NavbarItem'; // retrocompatible with v1
@@ -43,7 +41,7 @@ function Navbar() {
   } = useDocusaurusContext();
   const [sidebarShown, setSidebarShown] = useState(false);
   const [isSearchBarExpanded, setIsSearchBarExpanded] = useState(false);
-  const {isDarkTheme, setLightTheme, setDarkTheme} = useThemeContext();
+  const {isDarkTheme, setLightTheme, setDarkTheme} = useColorMode();
   const {navbarRef, isNavbarVisible} = useHideableNavbar(hideOnScroll);
   useLockBodyScroll(sidebarShown);
   const showSidebar = useCallback(() => {

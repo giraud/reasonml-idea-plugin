@@ -87,10 +87,6 @@ module.exports = {
             ],
             copyright: `Copyright © ${new Date().getFullYear()} Reason IDEA Plugin`,
         },
-        gtag: {
-            trackingID: 'G-HN9MJXSN5F',
-            anonymizeIP: true,
-        },
     },
     plugins: ['docusaurus-plugin-sass', '@docusaurus/plugin-ideal-image'],
     presets: [
@@ -104,6 +100,10 @@ module.exports = {
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.scss'),
+                },
+                gtag: {
+                    trackingID: 'G-HN9MJXSN5F',
+                    anonymizeIP: true,
                 },
             },
         ],
