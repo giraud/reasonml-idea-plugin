@@ -10,6 +10,10 @@ import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
 public class OclParameterInfoHandler extends ORParameterInfoHandler {
+    @Override public boolean isWhitespaceSensitive() {
+        return true;
+    }
+
     @Override
     int computeParameterIndex(@NotNull PsiParameters paramsOwner, @NotNull UpdateParameterInfoContext context) {
         return ParameterInfoUtils.getCurrentParameterIndex(paramsOwner.getNode(), context.getOffset(), TokenType.WHITE_SPACE);
