@@ -20,6 +20,7 @@ public class InsightManagerImplTest {
 
     @Test
     public void test_dune() {
-        assertEquals("4.07.1", ocamlVersionExtractor("Dune ( OCaml:4.07.1 )"));
+        assertEquals("4.07.1", ocamlVersionExtractor("Dune (OCaml:4.07.1)"));
+        assertEquals("4.12.0", ocamlVersionExtractor("Dune (OCaml:4.12.0+mingw64c)"));
     }
 }

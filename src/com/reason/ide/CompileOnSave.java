@@ -1,11 +1,14 @@
-package com.reason.comp;
+package com.reason.ide;
 
 import com.intellij.openapi.application.ex.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
+import com.reason.comp.*;
+import com.reason.comp.Compiler;
 import org.jetbrains.annotations.*;
 
 import java.beans.*;
+import java.lang.*;
 
 public class CompileOnSave implements PropertyChangeListener {
     private final @NotNull Project myProject;

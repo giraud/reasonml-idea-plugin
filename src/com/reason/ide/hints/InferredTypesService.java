@@ -8,19 +8,22 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.util.concurrency.*;
+import com.reason.comp.Compiler;
+import com.reason.comp.*;
 import com.reason.hints.*;
+import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
+import com.reason.lang.core.psi.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.nio.file.*;
 
-import static com.reason.ide.ORFileManager.*;
+import static com.reason.comp.Compiler.CompilerType.*;
 import static com.reason.ide.hints.CodeLens.*;
 
 public class InferredTypesService {
-
     private static final Log LOG = Log.create("hints.inferredTypes");
 
     private InferredTypesService() {
@@ -45,10 +48,25 @@ public class InferredTypesService {
                         if (FileHelper.isCompilable(fileType)) {
                             InsightManager insightManager = project.getService(InsightManager.class);
 
+                            // Find namespace if ocaml is compiled through dune
+                            final String[] namespace = {""};
+                            ORResolvedCompiler<? extends Compiler> compiler = project.getService(ORCompilerManager.class).getCompiler(sourceFile);
+                            if (compiler != null && compiler.getType() == DUNE) {
+                                VirtualFile duneSource = ORFileUtils.findAncestor(project, "dune", sourceFile);
+                                PsiFile dune = duneSource == null ? null : PsiManager.getInstance(project).findFile(duneSource);
+                                if (dune instanceof DuneFile) {
+                                    PsiStanza library = ((DuneFile) dune).getStanza("library");
+                                    PsiDuneField field = library == null ? null : library.getField("public_name");
+                                    if (field != null) {
+                                        namespace[0] = field.getValue() + "__";
+                                    }
+                                }
+                            }
+
                             if (!DumbService.isDumb(project)) {
                                 ReadAction.nonBlocking(() -> {
                                             LOG.debug("Reading types from file", psiFile);
-                                            PsiFile cmtFile = findCmtFileFromSource(project, sourceFile.getNameWithoutExtension());
+                                            PsiFile cmtFile = ORFileUtils.findCmtFileFromSource(project, sourceFile.getNameWithoutExtension(), namespace[0]);
                                             if (cmtFile != null) {
                                                 Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
                                                 insightManager.queryTypes(sourceFile, cmtPath,

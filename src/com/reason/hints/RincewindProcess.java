@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.bs.*;
+import com.reason.ide.*;
 import com.reason.ide.hints.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -22,19 +23,28 @@ public class RincewindProcess {
     }
 
     public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
-        LOG.debug("Looking for types for file", sourceFile);
-
-        Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(myProject, sourceFile);
-        if (contentRoot.isEmpty()) {
-            return;
-        }
-
         if (!new File(rincewindBinary).exists()) {
             return;
         }
 
+        LOG.debug("Looking for types for file", sourceFile);
+
+        VirtualFile processDir = null;
+
+        boolean isDuneProject = ORProjectManager.isDuneProject(myProject);
+        if (isDuneProject) {
+            LOG.debug("Not implemented");
+        } else {
+            processDir = BsPlatform.findContentRoot(myProject, sourceFile).orElse(null);
+        }
+
+        if (processDir == null) {
+            LOG.trace("no content root found");
+            return;
+        }
+
         ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
-        processBuilder.directory(new File(contentRoot.get().getPath()));
+        processBuilder.directory(new File(processDir.getPath()));
 
         Process rincewind = null;
         try {

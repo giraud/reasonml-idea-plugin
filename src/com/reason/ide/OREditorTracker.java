@@ -10,7 +10,6 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.util.messages.*;
-import com.reason.comp.*;
 import com.reason.hints.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
