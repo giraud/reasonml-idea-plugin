@@ -59,9 +59,9 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public @NotNull String getNamespace(@NotNull VirtualFile sourceFile) {
-        Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfig(myProject, sourceFile);
-        if (bsConfigFile.isPresent()) {
-            BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile.get());
+        VirtualFile bsConfigFile = BsPlatform.findBsConfig(myProject, sourceFile);
+        if (bsConfigFile != null) {
+            BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile);
             return bsConfig == null ? "" : bsConfig.getNamespace();
         }
         return "";
@@ -85,11 +85,11 @@ public class BsCompilerImpl implements BsCompiler {
     public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         if (!isDisabled() && myProject.getService(ORSettings.class).isBsEnabled()) {
             VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : file;
-            Optional<VirtualFile> bsConfigFile = sourceFile == null ? Optional.empty() : BsPlatform.findBsConfig(myProject, sourceFile);
-            if (bsConfigFile.isEmpty()) {
+            VirtualFile bsConfigFile = sourceFile == null ? null : BsPlatform.findBsConfig(myProject, sourceFile);
+            if (bsConfigFile == null) {
                 return;
             }
-            getOrRefreshBsConfig(bsConfigFile.get());
+            getOrRefreshBsConfig(bsConfigFile);
 
             if (myProcessStarted.compareAndSet(false, true)) {
                 ProcessHandler bscHandler = new BsProcess(myProject).create(sourceFile, cliType, onProcessTerminated);
@@ -136,8 +136,8 @@ public class BsCompilerImpl implements BsCompiler {
         if (file == null) {
             return false;
         }
-        Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfig(myProject, file);
-        BsConfig bsConfig = bsConfigFile.map(this::getOrRefreshBsConfig).orElse(null);
+        VirtualFile bsConfigFile = BsPlatform.findBsConfig(myProject, file);
+        BsConfig bsConfig = bsConfigFile == null ? null : getOrRefreshBsConfig(bsConfigFile);
         return bsConfig == null || bsConfig.accept(file.getPath());
     }
 

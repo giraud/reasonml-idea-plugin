@@ -8,7 +8,6 @@ import java.nio.file.*;
 import java.util.*;
 
 public interface InsightManager {
-
     @FunctionalInterface
     interface ProcessTerminated {
         void run(@NotNull InferredTypes types);

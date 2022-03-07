@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.bs.*;
+import com.reason.comp.dune.*;
 import com.reason.ide.*;
 import com.reason.ide.hints.*;
 import jpsplugin.com.reason.*;
@@ -22,7 +23,7 @@ public class RincewindProcess {
         myProject = project;
     }
 
-    public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
+    public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmtPath, @NotNull InsightManager.ProcessTerminated runAfter) {
         if (!new File(rincewindBinary).exists()) {
             return;
         }
@@ -33,9 +34,9 @@ public class RincewindProcess {
 
         boolean isDuneProject = ORProjectManager.isDuneProject(myProject);
         if (isDuneProject) {
-            LOG.debug("Not implemented");
+            processDir = DunePlatform.findContentRoot(myProject, sourceFile);
         } else {
-            processDir = BsPlatform.findContentRoot(myProject, sourceFile).orElse(null);
+            processDir = BsPlatform.findContentRoot(myProject, sourceFile);
         }
 
         if (processDir == null) {
@@ -43,7 +44,7 @@ public class RincewindProcess {
             return;
         }
 
-        ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
+        ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmtPath);
         processBuilder.directory(new File(processDir.getPath()));
 
         Process rincewind = null;
@@ -124,12 +125,23 @@ public class RincewindProcess {
     }
 
     public void dumper(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile, @NotNull String arg, @NotNull DumpVisitor visitor) {
-        Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(myProject, cmtFile);
-        if (contentRoot.isPresent()) {
+        if (!new File(rincewindBinary).exists()) {
+            LOG.debug("File doesn't exists", rincewindBinary);
+            return;
+        }
+
+        VirtualFile contentRoot;
+        if (ORProjectManager.isDuneProject(myProject)) {
+            contentRoot = DunePlatform.findContentRoot(myProject, cmtFile);
+        } else {
+            contentRoot = BsPlatform.findContentRoot(myProject, cmtFile);
+        }
+
+        if (contentRoot != null) {
             Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 
             ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, arg, cmtPath.toString());
-            processBuilder.directory(new File(contentRoot.get().getPath()));
+            processBuilder.directory(new File(contentRoot.getPath()));
 
             Process rincewind = null;
             try {

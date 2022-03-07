@@ -69,12 +69,11 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
             String namespace = "";
             FileBase psiFile = (FileBase) inputData.getPsiFile();
 
-            Optional<VirtualFile> bsconfigFile =
-                    BsPlatform.findBsConfig(inputData.getProject(), inputData.getFile());
-            if (bsconfigFile.isPresent()) {
-                VirtualFile parent = bsconfigFile.get().getParent();
+            VirtualFile bsconfigFile = BsPlatform.findBsConfig(inputData.getProject(), inputData.getFile());
+            if (bsconfigFile != null) {
+                VirtualFile parent = bsconfigFile.getParent();
                 boolean useExternalAsSource = "bs-platform".equals(parent.getName());
-                BsConfig bsConfig = BsConfigReader.read(bsconfigFile.get(), useExternalAsSource);
+                BsConfig bsConfig = BsConfigReader.read(bsconfigFile, useExternalAsSource);
                 if (!bsConfig.isInSources(inputData.getFile())) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsconfigFile);
