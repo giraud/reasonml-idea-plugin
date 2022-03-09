@@ -12,13 +12,11 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
-import java.util.regex.*;
 
 import static jpsplugin.com.reason.Platform.*;
 
 public class InsightManagerImpl implements InsightManager {
     private static final Log LOG = Log.create("hints");
-    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).*\\)");
 
     final @NotNull AtomicBoolean isDownloading = new AtomicBoolean(false);
     private final @NotNull Project myProject;
@@ -96,8 +94,8 @@ public class InsightManagerImpl implements InsightManager {
         ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
         ORResolvedCompiler<?> compiler = compilerManager.getCompiler(sourceFile);
         String fullVersion = compiler == null ? null : compiler.getFullVersion(sourceFile);
-        String ocamlVersion = ocamlVersionExtractor(fullVersion);
-        String rincewindVersion = getRincewindVersion(ocamlVersion);
+        String ocamlVersion = Rincewind.extractOcamlVersion(fullVersion);
+        String rincewindVersion = Rincewind.getLatestVersion(ocamlVersion);
 
         if (ocamlVersion != null && !rincewindVersion.equals(excludedVersion)) {
             return "rincewind_" + getOsPrefix() + ocamlVersion + "-" + rincewindVersion + ".exe";
@@ -106,25 +104,4 @@ public class InsightManagerImpl implements InsightManager {
         return null;
     }
 
-    static @Nullable String ocamlVersionExtractor(@Nullable String fullVersion) {
-        if (fullVersion != null) {
-            Matcher matcher = BS_VERSION_REGEXP.matcher(fullVersion);
-            if (matcher.matches()) {
-                return matcher.group(1);
-            }
-            if (fullVersion.startsWith("ReScript")) {
-                return "4.06.1";
-            }
-        }
-
-        return null;
-    }
-
-    private @NotNull String getRincewindVersion(@Nullable String ocamlVersion) {
-        if ("4.02".equals(ocamlVersion)) {
-            return "0.4";
-        }
-
-        return "0.9.1";
-    }
 }
