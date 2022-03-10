@@ -17,6 +17,15 @@ public class StringUtil {
     return value.substring(0, 1).toUpperCase(Locale.getDefault()) + value.substring(1);
   }
 
+  @NotNull
+  public static String toFirstLower(@Nullable String value) {
+    if (value == null || value.isEmpty()) {
+      return "";
+    }
+
+    return value.substring(0, 1).toLowerCase(Locale.getDefault()) + value.substring(1);
+  }
+
   public static @Nullable String trimLastCR(@Nullable String value) {
     if (value == null || value.isEmpty()) {
       return value;

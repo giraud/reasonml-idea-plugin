@@ -23,9 +23,7 @@ public class ORFileUtils {
 
             PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename, scope);
             if (cmtFiles.length == 0) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("File module for " + filename + " is NOT FOUND, files found: [" + Joiner.join(", ", cmtFiles) + "]");
-                }
+                LOG.debug("File module NOT FOUND", filename);
                 return null;
             }
 
@@ -50,6 +48,7 @@ public class ORFileUtils {
         int dotPos = sourcePath.lastIndexOf(".");
         return 0 <= dotPos ? sourcePath.substring(0, dotPos) + ".re" : sourcePath;
     }
+
     /**
      * Given a `start` directory (or file), searches that directory for `target`, continuing up
      * directories until either `target` is found or the project base path is reached.

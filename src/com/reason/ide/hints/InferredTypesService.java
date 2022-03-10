@@ -49,6 +49,7 @@ public class InferredTypesService {
                             InsightManager insightManager = project.getService(InsightManager.class);
 
                             // Find namespace if ocaml is compiled through dune
+                            // zzz dune lib util ? + tests
                             final String[] namespace = {""};
                             ORResolvedCompiler<? extends Compiler> compiler = project.getService(ORCompilerManager.class).getCompiler(sourceFile);
                             if (compiler != null && compiler.getType() == DUNE) {
@@ -56,9 +57,12 @@ public class InferredTypesService {
                                 PsiFile dune = duneSource == null ? null : PsiManager.getInstance(project).findFile(duneSource);
                                 if (dune instanceof DuneFile) {
                                     PsiStanza library = ((DuneFile) dune).getStanza("library");
-                                    PsiDuneField field = library == null ? null : library.getField("public_name");
-                                    if (field != null) {
-                                        namespace[0] = field.getValue() + "__";
+                                    PsiDuneField name = library == null ? null : library.getField("name");
+                                    if (name == null && library != null) {
+                                        name = library.getField("public_name");
+                                    }
+                                    if (name != null) {
+                                        namespace[0] = StringUtil.toFirstLower(name.getValue()) + "__";
                                     }
                                 }
                             }
