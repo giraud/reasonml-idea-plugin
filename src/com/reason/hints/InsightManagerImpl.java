@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
+import com.reason.ide.hints.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -46,7 +47,7 @@ public class InsightManagerImpl implements InsightManager {
     }
 
     @Override
-    public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
+    public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ORProcessTerminated<InferredTypes> runAfter) {
         String rincewindName = getRincewindFilename(sourceFile.getParent(), "");
         File rincewindFile = rincewindName == null ? null : getRincewindTarget(rincewindName);
         if (rincewindFile != null) {

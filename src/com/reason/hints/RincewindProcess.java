@@ -23,7 +23,7 @@ public class RincewindProcess {
         myProject = project;
     }
 
-    public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmtPath, @NotNull InsightManager.ProcessTerminated runAfter) {
+    public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmtPath, @NotNull ORProcessTerminated<InferredTypes> runAfter) {
         if (!new File(rincewindBinary).exists()) {
             return;
         }

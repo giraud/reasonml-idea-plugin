@@ -1,7 +1,7 @@
 package com.reason.comp.ocaml;
 
 import com.intellij.openapi.project.*;
-import com.reason.comp.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

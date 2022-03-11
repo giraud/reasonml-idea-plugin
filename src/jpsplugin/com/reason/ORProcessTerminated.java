@@ -1,4 +1,4 @@
-package com.reason.comp;
+package jpsplugin.com.reason;
 
 import org.jetbrains.annotations.*;
 
