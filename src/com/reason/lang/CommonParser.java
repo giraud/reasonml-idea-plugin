@@ -19,7 +19,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
     @Override
     @NotNull
     public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
-        builder.setDebugMode(true);
+        builder.setDebugMode(false);
 
         // System.out.println("start parsing ");
         // long start = System.currentTimeMillis();
@@ -40,8 +40,8 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
     @Override
     public void parseLight(IElementType elementType, PsiBuilder builder) {
-        builder = adapt_builder_(elementType, builder, this, null);
-        PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
+        builder = adapt_builder_(elementType, builder, this);
+        PsiBuilder.Marker m = enter_section_(builder, 0, _NONE_);
 
         ParserScope fileScope = ParserScope.markRoot(builder);
 
