@@ -14,20 +14,25 @@ public class VariantDeclarationTest extends OclParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Black", declarations.get(0).getVariant().getText());
-        // assertTrue(declarations.get(0).getVariant().isVariant());
         assertEquals("White", declarations.get(1).getVariant().getText());
-        // assertTrue(declarations.get(1).getVariant().isVariant());
     }
 
-    public void test_basic2() {
-        PsiType e = first(typeExpressions(parseCode("type t = Black | White")));
+    public void test_no_pipe_first() {
+        PsiType e = first(typeExpressions(parseCode("type t = V1 | V2")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
-        assertEquals("Black", declarations.get(0).getVariant().getText());
-        // assertTrue(declarations.get(0).getVariant().isVariant());
-        assertEquals("White", declarations.get(1).getVariant().getText());
-        // assertTrue(declarations.get(1).getVariant().isVariant());
+        assertEquals("V1", declarations.get(0).getVariant().getText());
+        assertEquals("V2", declarations.get(1).getVariant().getText());
+    }
+
+    public void test_no_pipe_first_constructor() {
+        PsiType e = first(typeExpressions(parseCode("type t = V1 of string | V2")));
+
+        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        assertEquals(2, declarations.size());
+        assertEquals("V1", declarations.get(0).getVariant().getText());
+        assertEquals("V2", declarations.get(1).getVariant().getText());
     }
 
     public void test_constructor() {
@@ -36,10 +41,8 @@ public class VariantDeclarationTest extends OclParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Hex", declarations.get(0).getVariant().getText());
-        // assertTrue(declarations.get(0).getVariant().isVariant());
         assertEquals(1, declarations.get(0).getParameterList().size());
         assertEquals("Rgb", declarations.get(1).getVariant().getText());
-        // assertTrue(declarations.get(1).getVariant().isVariant());
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
@@ -49,7 +52,6 @@ public class VariantDeclarationTest extends OclParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(3, declarations.size());
         assertEquals("Cannot", declarations.get(0).getVariant().getText());
-        // assertTrue(declarations.get(0).getVariant().isVariant());
         assertEquals(1, declarations.get(0).getParameterList().size());
         assertEquals("Loose", declarations.get(1).getVariant().getText());
         assertEquals("Strict", declarations.get(2).getVariant().getText());

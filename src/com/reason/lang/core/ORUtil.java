@@ -338,7 +338,7 @@ public class ORUtil {
         StringBuilder aliasName = new StringBuilder();
         IElementType elementType = currentElement == null ? null : currentElement.getNode().getElementType();
         while (elementType != null && elementType != types.SEMI) {
-            if (elementType != TokenType.WHITE_SPACE && elementType != types.C_UPPER_SYMBOL && elementType != types.DOT) {
+            if (elementType != TokenType.WHITE_SPACE && elementType != types.C_PATH && elementType != types.C_UPPER_SYMBOL && elementType != types.DOT) {
                 // if last term is lower symbol, and we accept lower symbol, then it's an alias
                 if (elementType != types.C_LOWER_SYMBOL || currentElement.getNextSibling() != null || !lowerAccepted) {
                     isALias = false;

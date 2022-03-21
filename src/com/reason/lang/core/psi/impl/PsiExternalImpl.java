@@ -145,9 +145,4 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
             }
         };
     }
-
-    @Override
-    public @Nullable String toString() {
-        return "external " + getQualifiedName();
-    }
 }

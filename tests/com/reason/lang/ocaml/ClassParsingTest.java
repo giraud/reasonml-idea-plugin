@@ -2,8 +2,8 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.PsiKlass;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
@@ -18,18 +18,15 @@ public class ClassParsingTest extends OclParsingTestCase {
     }
 
     public void test_classType() {
-        Collection<PsiKlass> classes =
-                classExpressions(
-                        parseCode(
-                                "class type restricted_point_type = object method get_x : int method bump : unit end"));
+        Collection<PsiKlass> classes = classExpressions(parseCode(
+                "class type restricted_point_type = object method get_x : int method bump : unit end"));
 
         assertEquals(1, classes.size());
         assertEquals("restricted_point_type", first(classes).getName());
     }
 
     public void test_fields() {
-        Collection<PsiKlass> classes =
-                classExpressions(parseCode("class foo = object val mutable a = [] val b = 2 end"));
+        Collection<PsiKlass> classes = classExpressions(parseCode("class foo = object val mutable a = [] val b = 2 end"));
 
         PsiKlass clazz = first(classes);
         Collection<PsiClassField> fields = clazz.getFields();
@@ -37,8 +34,7 @@ public class ClassParsingTest extends OclParsingTestCase {
     }
 
     public void test_methods() {
-        Collection<PsiKlass> classes =
-                classExpressions(parseCode("class foo = object method get_x = x method get_y = y end"));
+        Collection<PsiKlass> classes = classExpressions(parseCode("class foo = object method get_x = x method get_y = y end"));
 
         PsiKlass clazz = first(classes);
         Collection<PsiClassMethod> methods = clazz.getMethods();
@@ -46,19 +42,16 @@ public class ClassParsingTest extends OclParsingTestCase {
     }
 
     public void test_both() {
-        Collection<PsiKlass> classes =
-                classExpressions(parseCode("class foo = object val mutable x = [] method get_x = x end"));
+        Collection<PsiKlass> classes = classExpressions(parseCode("class foo = object val mutable x = [] method get_x = x end"));
 
         PsiKlass clazz = first(classes);
         assertEquals(clazz.getFields().size(), 1);
         assertEquals(clazz.getMethods().size(), 1);
     }
 
-    public void test_classConstraint() {
-        Collection<PsiKlass> classes =
-                classExpressions(
-                        parseCode(
-                                "class ['a] circle (c : 'a) = object constraint 'a = #point val mutable center = c method set_center c = center <- c method move = center#move end"));
+    public void test_class_constructor_constraint() {
+        Collection<PsiKlass> classes = classExpressions(parseCode(
+                "class ['a] circle (c : 'a) = object constraint 'a = #point val mutable center = c method set_center c = center <- c method move = center#move end"));
 
         PsiKlass clazz = first(classes);
         assertEquals("circle", first(classes).getName());
@@ -69,21 +62,15 @@ public class ClassParsingTest extends OclParsingTestCase {
     }
 
     public void test_GH_268() {
-        PsiKlass clazz =
-                first(
-                        classExpressions(
-                                parseCode(
-                                        "class tag : text_tag -> object method as_tag : text_tag method connect : tag_signals end")));
+        PsiKlass clazz = first(classExpressions(parseCode(
+                "class tag : text_tag -> object method as_tag : text_tag method connect : tag_signals end")));
 
         assertSize(2, clazz.getMethods());
     }
 
     public void test_GH_269() {
-        PsiKlass e =
-                first(
-                        classExpressions(
-                                parseCode(
-                                        "class type ops = object\n method go_to_insert : unit task\n method go_to_mark : GText.mark -> unit task\n method process_next_phrase : unit task\n method get_n_errors : int\n method get_errors : (int * string) list\n method get_slaves_status : int * int * string CString.Map.t\n method handle_failure : handle_exn_rty -> unit task\n method destroy : unit -> unit end")));
+        PsiKlass e = first(classExpressions(parseCode(
+                "class type ops = object\n method go_to_insert : unit task\n method go_to_mark : GText.mark -> unit task\n method process_next_phrase : unit task\n method get_n_errors : int\n method get_errors : (int * string) list\n method get_slaves_status : int * int * string CString.Map.t\n method handle_failure : handle_exn_rty -> unit task\n method destroy : unit -> unit end")));
 
         assertSize(8, e.getMethods());
         ArrayList<PsiClassMethod> methods = new ArrayList<>(e.getMethods());

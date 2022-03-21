@@ -96,9 +96,4 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, Ps
             }
         };
     }
-
-    @Override
-    public @NotNull String toString() {
-        return "Record field " + getQualifiedName();
-    }
 }

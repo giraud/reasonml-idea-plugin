@@ -43,6 +43,7 @@ public class RmlTypes extends ORTypes {
         C_DEFAULT_VALUE = new ORCompositeElementType("C_DEFAULT_VALUE", RmlLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", RmlLanguage.INSTANCE);
         C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", RmlLanguage.INSTANCE);
+        C_FOR_LOOP = new ORCompositeElementType("C_FOR_LOOP", RmlLanguage.INSTANCE);
         C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", RmlLanguage.INSTANCE);
         C_LOWER_BOUND_CONSTRAINT = new ORCompositeElementType("C_LOWER_BOUND_CONSTRAINT", RmlLanguage.INSTANCE);
         C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", RmlLanguage.INSTANCE);
@@ -68,10 +69,11 @@ public class RmlTypes extends ORTypes {
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", RmlLanguage.INSTANCE);
         C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
         C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", RmlLanguage.INSTANCE);
+        C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", RmlLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", RmlLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", RmlLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", RmlLanguage.INSTANCE);
-        C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", RmlLanguage.INSTANCE);
+        C_PATH = new ORCompositeElementType("C_PATH", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", RmlLanguage.INSTANCE);
         C_RECORD_EXPR = new ORCompositeElementType("C_RECORD_EXPR", RmlLanguage.INSTANCE);
@@ -91,6 +93,7 @@ public class RmlTypes extends ORTypes {
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", RmlLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", RmlLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", RmlLanguage.INSTANCE);
+        C_TUPLE = new ORCompositeElementType("C_TUPLE", RmlLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", RmlLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", RmlLanguage.INSTANCE);
         C_UPPER_BOUND_CONSTRAINT = new ORCompositeElementType("C_UPPER_BOUND_CONSTRAINT", RmlLanguage.INSTANCE);

@@ -75,6 +75,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
 
+        assertSize(4, parameters);
         assertFalse(parameters.get(0).isOptional());
         assertFalse(parameters.get(1).isOptional());
         assertTrue(parameters.get(2).isOptional());
@@ -117,7 +118,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals("()", parameters.get(1).getText());
     }
 
-    public void test_signatureItems() {
+    public void test_signature_items() {
         PsiLet e = first(letExpressions(parseCode("let createAction: < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element;")));
         PsiSignature signature = e.getSignature();
 

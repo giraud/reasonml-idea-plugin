@@ -187,38 +187,12 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     }
 
     @Override
-    public @Nullable PsiExternal getExternalExpression(@Nullable String name) {
-        if (name != null) {
-            ExpressionFilter expressionFilter = element -> element instanceof PsiExternal && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
-            if (!expressions.isEmpty()) {
-                return (PsiExternal) expressions.iterator().next();
-            }
-        }
-        return null;
-    }
-
-    @Override
     public @Nullable PsiLet getLetExpression(@Nullable String name) {
         if (name != null) {
             ExpressionFilter expressionFilter = element -> element instanceof PsiLet && name.equals(element.getName());
             Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
                 return (PsiLet) expressions.iterator().next();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public @Nullable PsiVal getValExpression(@Nullable String name) {
-        if (name != null) {
-            ExpressionFilter expressionFilter =
-                    element -> element instanceof PsiVal && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions =
-                    getExpressions(ExpressionScope.all, expressionFilter);
-            if (!expressions.isEmpty()) {
-                return (PsiVal) expressions.iterator().next();
             }
         }
         return null;

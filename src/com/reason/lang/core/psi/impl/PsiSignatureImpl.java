@@ -72,9 +72,4 @@ public class PsiSignatureImpl extends CompositeTypePsiElement<ORTypes> implement
     public @NotNull List<PsiSignatureItem> getItems() {
         return ORUtil.findImmediateChildrenOfClass(this, PsiSignatureItem.class);
     }
-
-    @Override
-    public @NotNull String toString() {
-        return "PsiSignature";
-    }
 }

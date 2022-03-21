@@ -41,16 +41,23 @@ public class PsiOpenImpl extends PsiTokenStub<ORTypes, PsiOpen, PsiOpenStub> imp
             child = PsiTreeUtil.skipWhitespacesForward(child);
         }
 
-        if (child instanceof PsiFunctorCall) {
-            return ((PsiFunctorCall) child).getFunctorName();
+        if (child instanceof PsiPath) {
+            String path = child.getText();
+            child = PsiTreeUtil.skipWhitespacesForward(child);
+            if (child instanceof PsiFunctorCall) {
+                return path + ((PsiFunctorCall) child).getFunctorName();
+            } else if (child instanceof PsiUpperSymbol) {
+                return path + child.getText();
+            }
         }
+
         return child == null ? "" : ORUtil.getTextUntilTokenType(child, null);
     }
 
     @Override
     public boolean useFunctor() {
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        return firstChild instanceof PsiFunctorCall;
+        PsiElement firstChild = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+        return firstChild != null;
     }
 
     @Override
@@ -61,10 +68,5 @@ public class PsiOpenImpl extends PsiTokenStub<ORTypes, PsiOpen, PsiOpenStub> imp
     @Override
     public ItemPresentation getPresentation() {
         return new GoToSymbolProvider.BaseNavigationItem(this, getPath(), ORIcons.OPEN);
-    }
-
-    @Override
-    public @Nullable String toString() {
-        return "Open " + getPath();
     }
 }

@@ -330,8 +330,8 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
 
             if (isTypeResolution(latestScope)) {
                 state.advance().mark(m_types.C_TYPE_DECLARATION).setStart();
-            } else if (isLetResolution(latestScope)) {
-                state.advance().mark(m_types.C_LET_DECLARATION).setStart();
+            // zzz } else if (isLetResolution(latestScope)) {
+            //    state.advance().mark(m_types.C_LET_DECLARATION).setStart();
             } else if (isModuleResolution(latestScope)) {
                 state.advance().mark(m_types.C_MODULE_DECLARATION).resolution(module).setStart();
             }
@@ -823,9 +823,9 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
         } else if (state.is(m_types.C_MODULE_TYPE)) {
             // module M : |>{<| ...
             state.updateScopeToken(m_types.LBRACE);
-        } else if (isFunctorResolution(state.getLatestScope())) {
+        // zzz } else if (isFunctorResolution(state.getLatestScope())) {
             // module M = (...) => |>{<| ...
-            state.markScope(m_types.C_FUNCTOR_BINDING, m_types.LBRACE);
+            //state.markScope(m_types.C_FUNCTOR_BINDING, m_types.LBRACE);
         } else if (state.isCurrentResolution(moduleNamedSignature)) {
             state.markScope(m_types.C_SIG_EXPR, m_types.LBRACE);
         } else if (state.is(m_types.C_LET_BINDING)) {
@@ -1016,10 +1016,10 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
                 }
             } else if (nextTokenType == m_types.QUESTION_MARK && !state.isParent(m_types.C_TERNARY)) {
                 // ( ... |>)<| ? ...
-                state
-                        .precedeScope(m_types.C_TERNARY)
-                        .updateCurrentCompositeElementType(m_types.C_BINARY_CONDITION)
-                        .popEnd();
+                //state
+                //        .precedeScope(m_types.C_TERNARY)
+                //        .updateCurrentCompositeElementType(m_types.C_BINARY_CONDITION)
+                //        .popEnd();
                 return;
             }
 

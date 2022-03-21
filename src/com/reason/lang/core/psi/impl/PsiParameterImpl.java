@@ -126,7 +126,7 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
     public @Nullable PsiDefaultValue getDefaultValue() {
         PsiElement firstChild = getFirstChild();
         if (firstChild instanceof PsiNamedParam) {
-            return ORUtil.findImmediateFirstChildOfClass(firstChild, PsiDefaultValue.class);
+            return PsiTreeUtil.findChildOfType(firstChild, PsiDefaultValue.class); //ORUtil.findImmediateFirstChildOfClass(firstChild, PsiDefaultValue.class);
         }
         return null;
     }

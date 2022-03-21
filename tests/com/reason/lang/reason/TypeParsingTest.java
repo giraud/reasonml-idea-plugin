@@ -14,6 +14,14 @@ public class TypeParsingTest extends RmlParsingTestCase {
         assertTrue(e.isAbstract());
     }
 
+    public void test_option() {
+        PsiType e = first(typeExpressions(parseCode("type t = option(array(string))")));
+
+        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        assertNotNull(option);
+        assertEquals("option(array(string))", option.getText());
+    }
+
     public void test_recursive_type() {
         PsiType e = first(typeExpressions(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));")));
         assertEquals("tree", e.getName());

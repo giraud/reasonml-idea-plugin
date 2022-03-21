@@ -289,10 +289,4 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         };
     }
     // endregion
-
-    @Nullable
-    @Override
-    public String toString() {
-        return "Let " + getQualifiedName();
-    }
 }

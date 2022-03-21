@@ -963,9 +963,9 @@ public class ResParser extends CommonParser<ResTypes> {
         if (lparenScope != null) {
             if (nextTokenType == m_types.QUESTION_MARK && !state.isParent(m_types.C_TERNARY)) {
                 // ( ... |>)<| ? ...
-                state
-                        .precedeScope(m_types.C_TERNARY)
-                        .updateCurrentCompositeElementType(m_types.C_BINARY_CONDITION);
+                //state
+                //        .precedeScope(m_types.C_TERNARY)
+                //        .updateCurrentCompositeElementType(m_types.C_BINARY_CONDITION);
             }
 
             state.popEnd();

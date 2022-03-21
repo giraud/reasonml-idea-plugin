@@ -43,6 +43,7 @@ public class ResTypes extends ORTypes {
         C_DEFAULT_VALUE = new ORCompositeElementType("C_DEFAULT_VALUE", ResLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", ResLanguage.INSTANCE);
         C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", ResLanguage.INSTANCE);
+        C_FOR_LOOP = new ORCompositeElementType("C_FOR_LOOP", ResLanguage.INSTANCE);
         C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", ResLanguage.INSTANCE);
         C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", ResLanguage.INSTANCE);
         C_FUN_CALL = new ORCompositeElementType("C_FUN_CALL", ResLanguage.INSTANCE);
@@ -67,11 +68,13 @@ public class ResTypes extends ORTypes {
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", ResLanguage.INSTANCE);
         C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", ResLanguage.INSTANCE);
         C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", ResLanguage.INSTANCE);
+        C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", ResLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", ResLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", ResLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", ResLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", ResLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", ResLanguage.INSTANCE);
+        C_PATH = new ORCompositeElementType("C_PATH", ResLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", ResLanguage.INSTANCE);
         C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", ResLanguage.INSTANCE);
         C_RECORD_EXPR = new ORCompositeElementType("C_RECORD_EXPR", ResLanguage.INSTANCE);
@@ -91,6 +94,7 @@ public class ResTypes extends ORTypes {
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", ResLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", ResLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", ResLanguage.INSTANCE);
+        C_TUPLE = new ORCompositeElementType("C_TUPLE", ResLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", ResLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", ResLanguage.INSTANCE);
         C_DUMMY = new ORCompositeElementType("C_DUMMY", ResLanguage.INSTANCE);

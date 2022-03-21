@@ -24,11 +24,11 @@ public class TypeParsingTest extends OclParsingTestCase {
     }
 
     public void test_option() {
-        PsiType e = first(typeExpressions(parseCode("type t = int option")));
+        PsiType e = first(typeExpressions(parseCode("type t = string array option")));
 
         PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
         assertNotNull(option);
-        assertEquals("int option", option.getText());
+        assertEquals("string array option", option.getText());
     }
 
     public void test_bindingWithVariant() {
@@ -60,10 +60,10 @@ public class TypeParsingTest extends OclParsingTestCase {
         assertInstanceOf(b.getFirstChild(), PsiObject.class);
     }
 
-    public void test_bindingWithRecordAs() {
-        PsiTypeBinding typeBinding = first(findChildrenOfType(first(
-                        typeExpressions(parseCode("type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))),
-                PsiTypeBinding.class));
+    public void test_binding_with_record_as() {
+        PsiTypeBinding typeBinding = first(findChildrenOfType(first(typeExpressions(parseCode(
+                "type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))), PsiTypeBinding.class));
+
         PsiRecord record = PsiTreeUtil.findChildOfType(typeBinding, PsiRecord.class);
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
         assertEquals(2, fields.size());
@@ -71,8 +71,8 @@ public class TypeParsingTest extends OclParsingTestCase {
         assertEquals("pos", fields.get(1).getName());
     }
 
-    public void test_chainDef() {
-        FileBase file = parseCode("type 'branch_type branch_info = 'branch_type Vcs_.branch_info = { kind : [> `Master] as 'branch_type; root : id; pos  : id; }");
+    public void test_chain_definitions() {
+        FileBase file = parseCode("type 'branch_type branch_info = 'branch_type Vcs_.branch_info = { kind: [> `Master] as 'branch_type; root: id; pos: id; }");
 
         assertEquals(1, childrenCount(file));
     }

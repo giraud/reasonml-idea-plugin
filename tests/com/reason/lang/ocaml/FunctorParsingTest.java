@@ -47,11 +47,9 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertEquals("struct end", f.getBody().getText());
     }
 
-    public void test_withConstraints() {
-        Collection<PsiNamedElement> expressions =
-                expressions(
-                        parseCode(
-                                "module Make (M: Input) : S with type +'a t = 'a M.t and type b = M.b = struct end"));
+    public void test_with_constraints() {
+        Collection<PsiNamedElement> expressions = expressions(parseCode(
+                "module Make (M: Input) : S with type +'a t = 'a M.t and type b = M.b = struct end"));
 
         assertEquals(1, expressions.size());
         PsiFunctor f = (PsiFunctor) first(expressions);
@@ -67,18 +65,12 @@ public class FunctorParsingTest extends OclParsingTestCase {
     }
 
     public void test_signature() {
-        Collection<PsiFunctor> functors =
-                functorExpressions(
-                        parseCode( //
-                                "module GlobalBindings (M : sig\n"
-                                        + //
-                                        "val relation_classes : string list\n"
-                                        + //
-                                        "val morphisms : string list\n"
-                                        + //
-                                        "val arrow : evars -> evars * constr\n"
-                                        + //
-                                        "end) = struct  open M  end"));
+        Collection<PsiFunctor> functors = functorExpressions(parseCode( //
+                "module GlobalBindings (M : sig\n" + //
+                        "val relation_classes : string list\n" + //
+                        "val morphisms : string list\n" + //
+                        "val arrow : evars -> evars * constr\n" + //
+                        "end) = struct  open M  end"));
 
         assertEquals(1, functors.size());
         PsiFunctor functor = first(functors);
@@ -90,11 +82,10 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertNotNull(functor.getBody());
     }
 
-    public void test_functorInstanciation() {
+    public void test_functor_instanciation() {
         PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module Printing = Make (struct let encode = encode_record end)")));
 
-        assertNull(module.getBody());
-        PsiFunctorCall call = PsiTreeUtil.findChildOfType(module, PsiFunctorCall.class);
+        PsiFunctorCall call = PsiTreeUtil.findChildOfType(module.getBody(), PsiFunctorCall.class);
         assertEquals("Make (struct let encode = encode_record end)", call.getText());
 
         Collection<PsiParameter> parameters = call.getParameters();
@@ -102,15 +93,14 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertEquals("Dummy.Printing.Make[0]", first(parameters).getQualifiedName());
     }
 
-    public void test_functorInstanciationChaining() {
+    public void test_functor_instanciation_chaining() {
         PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos");
         List<PsiNamedElement> expressions = new ArrayList<>(expressions(file));
 
         assertEquals(2, expressions.size());
 
         PsiInnerModule module = (PsiInnerModule) expressions.get(0);
-        assertNull(module.getBody());
-        PsiFunctorCall call = PsiTreeUtil.findChildOfType(module, PsiFunctorCall.class);
+        PsiFunctorCall call = PsiTreeUtil.findChildOfType(module.getBody(), PsiFunctorCall.class);
         assertNotNull(call);
         assertEquals("Hashtbl.Make(KeyHash)", call.getText());
     }

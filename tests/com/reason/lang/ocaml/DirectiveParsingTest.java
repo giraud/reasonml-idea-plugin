@@ -5,6 +5,7 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
+@SuppressWarnings("ConstantConditions")
 public class DirectiveParsingTest extends OclParsingTestCase {
     public void test_if() {
         FileBase f = parseCode("#if BS then\nx\n#else\ny\n#end");

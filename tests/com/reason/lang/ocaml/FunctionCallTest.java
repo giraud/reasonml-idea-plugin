@@ -56,6 +56,4 @@ public class FunctionCallTest extends OclParsingTestCase {
         assertEquals("fn1 b", call1.getText());
         assertEquals(1, call1.getParameters().size());
     }
-
-
 }

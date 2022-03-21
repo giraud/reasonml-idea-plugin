@@ -1,18 +1,14 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.CompositeTypePsiElement;
-import com.reason.lang.core.ORCodeFactory;
-import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.intellij.util.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
 public class PsiLowerIdentifier extends CompositeTypePsiElement<ORTypes> implements PsiNameIdentifierOwner {
-
     // region Constructors
     public PsiLowerIdentifier(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
@@ -48,9 +44,4 @@ public class PsiLowerIdentifier extends CompositeTypePsiElement<ORTypes> impleme
         return this;
     }
     // endregion
-
-    @Override
-    public @NotNull String toString() {
-        return "LID";
-    }
 }

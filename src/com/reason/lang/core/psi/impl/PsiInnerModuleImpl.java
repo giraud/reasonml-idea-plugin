@@ -115,12 +115,16 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
 
     @Override
     public @Nullable PsiElement getBody() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiScopedExpr.class, PsiStruct.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiModuleBinding.class, PsiSignature.class);
     }
 
     @Override
     public @Nullable PsiModuleType getModuleType() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiModuleType.class);
+        PsiElement child = ORUtil.findImmediateFirstChildOfAnyClass(this, PsiModuleType.class, PsiScopedExpr.class);
+        if (child instanceof PsiScopedExpr) {
+            child = ORUtil.findImmediateFirstChildOfClass(child, PsiModuleType.class);
+        }
+        return child instanceof PsiModuleType ? (PsiModuleType) child : null;
     }
 
     @Override
@@ -224,20 +228,6 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     }
 
     @Override
-    public @Nullable PsiExternal getExternalExpression(@Nullable String name) {
-        PsiElement body = name == null ? null : getBody();
-        if (body != null) {
-            ExpressionFilter expressionFilter = element -> element instanceof PsiExternal && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
-            if (!expressions.isEmpty()) {
-                return (PsiExternal) expressions.iterator().next();
-            }
-        }
-
-        return null;
-    }
-
-    @Override
     public @Nullable PsiLet getLetExpression(@Nullable String name) {
         PsiElement body = name == null ? null : getBody();
         if (body != null) {
@@ -245,22 +235,6 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
                 return (PsiLet) expressions.iterator().next();
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public @Nullable PsiVal getValExpression(@Nullable String name) {
-        PsiElement body = name == null ? null : getBody();
-        if (body != null) {
-            ExpressionFilter expressionFilter =
-                    element -> element instanceof PsiVal && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions =
-                    getExpressions(ExpressionScope.all, expressionFilter);
-            if (!expressions.isEmpty()) {
-                return (PsiVal) expressions.iterator().next();
             }
         }
 
@@ -387,16 +361,11 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             return stub.getAlias();
         }
 
-        PsiElement eq = findChildByType(m_types.EQ);
-        if (eq != null) {
-            return ORUtil.computeAlias(eq.getNextSibling(), getLanguage(), false);
+        PsiModuleBinding binding = ORUtil.findImmediateFirstChildOfClass(this, PsiModuleBinding.class);
+        if (binding != null) {
+            return ORUtil.computeAlias(binding.getFirstChild(), getLanguage(), false);
         }
 
         return null;
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Module " + getQualifiedName();
     }
 }

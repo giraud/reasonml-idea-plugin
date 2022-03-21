@@ -37,7 +37,7 @@ public class ORSpellCheckerStrategy extends SpellcheckingStrategy {
             return TEXT_TOKENIZER;
         }
         // Named elements
-        if (element instanceof PsiUpperIdentifier || element instanceof PsiUpperSymbol || element instanceof PsiLowerIdentifier || element instanceof PsiLowerSymbolImpl) {
+        if (element instanceof PsiUpperIdentifier || element instanceof PsiUpperSymbol || element instanceof PsiLowerIdentifier || element instanceof PsiLowerSymbol) {
             return TEXT_TOKENIZER;
         }
         return EMPTY_TOKENIZER; // skip everything else

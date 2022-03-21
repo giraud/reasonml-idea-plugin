@@ -52,9 +52,4 @@ public class PsiNamedParam extends CompositeTypePsiElement<ORTypes> implements P
 
         return convertedText == null ? getText() : convertedText.toString();
     }
-
-    @Override
-    public @NotNull String toString() {
-        return "Named param";
-    }
 }

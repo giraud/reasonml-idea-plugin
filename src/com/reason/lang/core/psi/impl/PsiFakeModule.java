@@ -160,18 +160,6 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
         return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 
-    @Override
-    public @Nullable PsiExternal getExternalExpression(@Nullable String name) {
-        Collection<PsiExternal> expressions = getExpressions(name, PsiExternal.class);
-        return expressions.isEmpty() ? null : expressions.iterator().next();
-    }
-
-    @Override
-    public @Nullable PsiVal getValExpression(@Nullable String name) {
-        Collection<PsiVal> expressions = getExpressions(name, PsiVal.class);
-        return expressions.isEmpty() ? null : expressions.iterator().next();
-    }
-
     @NotNull
     private <T extends PsiNamedElement> List<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
         List<T> result = new ArrayList<>();

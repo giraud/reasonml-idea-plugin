@@ -1,15 +1,15 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.tree.*;
 import com.intellij.psi.tree.*;
 import com.intellij.util.containers.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiRecord extends CompositePsiElement {
+public class PsiRecord extends ORCompositePsiElement {
     protected PsiRecord(IElementType type) {
         super(type);
     }
@@ -28,10 +28,5 @@ public class PsiRecord extends CompositePsiElement {
         }
 
         return result;
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Record";
     }
 }

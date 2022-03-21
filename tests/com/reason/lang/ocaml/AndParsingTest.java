@@ -1,18 +1,13 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiSwitch;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class AndParsingTest extends OclParsingTestCase {
@@ -74,8 +69,7 @@ public class AndParsingTest extends OclParsingTestCase {
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/135
     public void test_GH_135() {
-        List<PsiLet> lets =
-                new ArrayList<>(letExpressions(parseCode("let f1 = function | _ -> ()\nand missing = ()")));
+        List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode("let f1 = function | _ -> ()\nand missing = ()")));
 
         assertSize(2, lets);
         assertEquals("f1", lets.get(0).getName());
@@ -84,11 +78,7 @@ public class AndParsingTest extends OclParsingTestCase {
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/175
     public void test_GH_175() {
-        List<PsiLet> lets =
-                new ArrayList<>(
-                        letExpressions(
-                                parseCode(
-                                        "let f1 = let f11 = function | _ -> \"\" in ()\n and f2 = let f21 = function | _ -> \"\" in ()\n and f3 = ()\n")));
+        List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode("let f1 = let f11 = function | _ -> \"\" in ()\n and f2 = let f21 = function | _ -> \"\" in ()\n and f3 = ()\n")));
 
         assertSize(3, lets);
         assertEquals("f1", lets.get(0).getName());
@@ -98,8 +88,7 @@ public class AndParsingTest extends OclParsingTestCase {
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/271
     public void test_GH_271() {
-        List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode(
-                "let parser_of_token_list a = \nlet loop x = () in \n() \nand parser_of_symbol b = ()")));
+        List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode("let parser_of_token_list a = \nlet loop x = () in \n() \nand parser_of_symbol b = ()")));
 
         assertSize(2, lets);
         assertEquals("parser_of_token_list", lets.get(0).getName());

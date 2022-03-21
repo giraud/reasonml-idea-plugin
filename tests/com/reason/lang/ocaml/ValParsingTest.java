@@ -1,17 +1,19 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiScopedExpr;
 import com.reason.lang.core.psi.impl.PsiValImpl;
 
 @SuppressWarnings("ConstantConditions")
 public class ValParsingTest extends OclParsingTestCase {
-    public void test_qualifiedName() {
+    public void test_qualified_name() {
         PsiVal e = first(valExpressions(parseCode("val x : int")));
 
         assertEquals("Dummy.x", e.getQualifiedName());
         assertFalse(e.isFunction());
+        PsiSignature signature = e.getSignature();
+        assertEquals("int", signature.getText());
     }
 
     public void test_name() {
@@ -21,7 +23,7 @@ public class ValParsingTest extends OclParsingTestCase {
         assertEquals("x", e.getName());
     }
 
-    public void test_specialName() {
+    public void test_special_name() {
         PsiVal e = first(valExpressions(parseCode("val (>>=) : 'a -> 'a t")));
 
         assertInstanceOf(((PsiValImpl) e).getNameIdentifier(), PsiScopedExpr.class);

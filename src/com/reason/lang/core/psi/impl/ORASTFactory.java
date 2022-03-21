@@ -55,6 +55,9 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_CUSTOM_OPERATOR || type == m_types.C_SCOPED_EXPR || type == m_types.C_IF_THEN_SCOPE || type == m_types.C_DO_LOOP) {
             return new PsiScopedExpr(m_types, type);
         }
+        if (type == m_types.C_FOR_LOOP) {
+            return new PsiForLoop(type);
+        }
         if (type == m_types.C_LOCAL_OPEN) {
             return new PsiLocalOpen(type);
         }
@@ -63,6 +66,9 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         }
         if (type == m_types.C_PARAMETERS || type == m_types.C_VARIANT_CONSTRUCTOR) {
             return new PsiParametersImpl(m_types, type);
+        }
+        if (type == m_types.C_PATH) {
+            return new PsiPath(type);
         }
         if (type == m_types.C_PATTERN_MATCH_BODY) {
             return new PsiPatternMatchBody(type);
@@ -86,7 +92,10 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new PsiRecord(type);
         }
         if (type == m_types.C_MODULE_TYPE) {
-            return new PsiModuleType(m_types, type);
+            return new PsiModuleType(type);
+        }
+        if (type == m_types.C_MODULE_BINDING) {
+            return new PsiModuleBinding(type);
         }
         if (type == m_types.C_ANNOTATION) {
             return new PsiAnnotationImpl(m_types, type);
@@ -163,6 +172,9 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_TRY_EXPR) {
             return new PsiTry(m_types, type);
         }
+        if (type == m_types.C_TUPLE) {
+            return new PsiTuple(type);
+        }
         if (type == m_types.C_ML_INTERPOLATOR) {
             return new PsiMultiLineInterpolator(type);
         }
@@ -192,7 +204,7 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new PsiLowerIdentifier(m_types, type);
         }
         if (type == m_types.C_LOWER_SYMBOL) {
-            return new PsiLowerSymbolImpl(m_types, type);
+            return new PsiLowerSymbol(m_types, type);
         }
         if (type == m_types.C_UPPER_IDENTIFIER) {
             return new PsiUpperIdentifier(m_types, type);

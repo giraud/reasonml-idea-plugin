@@ -83,8 +83,8 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected Collection<PsiVal> valExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getValExpressions(file);
+    protected Collection<PsiVal> valExpressions(@NotNull PsiElement root) {
+        return findChildrenOfType(root, PsiVal.class);
     }
 
     @NotNull

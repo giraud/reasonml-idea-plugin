@@ -50,9 +50,4 @@ public class PsiFunctorCall extends CompositeTypePsiElement<ORTypes> {
 
         return null;
     }
-
-    @Override
-    public @NotNull String toString() {
-        return "Functor call";
-    }
 }

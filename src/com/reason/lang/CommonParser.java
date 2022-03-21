@@ -6,7 +6,6 @@ import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import static com.reason.lang.ParserScopeEnum.*;
 
 public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
@@ -66,7 +65,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
     protected boolean isTypeResolution(@NotNull ParserScope scope) {
         if (m_types instanceof ORTypes) {
-            return scope.isCompositeEqualTo(((ORTypes) m_types).C_TYPE_DECLARATION);
+            return scope.isCompositeType(((ORTypes) m_types).C_TYPE_DECLARATION);
         }
         return false;
     }
@@ -74,18 +73,18 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
     protected boolean isModuleResolution(@NotNull ParserScope scope) {
         if (m_types instanceof ORTypes) {
             ORTypes m_types = (ORTypes) this.m_types;
-            return scope.isCompositeEqualTo(m_types.C_MODULE_DECLARATION) || scope.isCompositeEqualTo(m_types.C_MODULE_TYPE);
+            return scope.isCompositeType(m_types.C_MODULE_DECLARATION) || scope.isCompositeType(m_types.C_MODULE_TYPE);
         }
         return false;
     }
 
-    protected boolean isFunctorResolution(@Nullable ParserScope scope) {
-        return scope != null && (scope.isResolution(functorNamedEq) || scope.isResolution(functorNamedEqColon));
-    }
+    // zzz protected boolean isFunctorResolution(@Nullable ParserScope scope) {
+    //    return scope != null && (scope.isResolution(functorNamedEq) || scope.isResolution(functorNamedEqColon));
+    //}
 
-    protected boolean isLetResolution(@NotNull ParserScope scope) {
-        return scope.isResolution(letNamed);
-    }
+    // zzz protected boolean isLetResolution(@NotNull ParserScope scope) {
+    //    return scope.isResolution(letNamed);
+    //}
 
     @Nullable
     protected WhitespaceSkippedCallback endJsxPropertyIfWhitespace(@NotNull ParserState state) {

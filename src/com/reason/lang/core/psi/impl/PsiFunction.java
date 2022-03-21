@@ -16,8 +16,8 @@ public class PsiFunction extends CompositeTypePsiElement<ORTypes> implements Psi
     }
 
     public @NotNull List<PsiParameter> getParameters() {
-        return ORUtil.findImmediateChildrenOfClass(
-                ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameter.class);
+        PsiParameters parameters = ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class);
+        return ORUtil.findImmediateChildrenOfClass(parameters, PsiParameter.class);
     }
 
     public @Nullable PsiFunctionBody getBody() {

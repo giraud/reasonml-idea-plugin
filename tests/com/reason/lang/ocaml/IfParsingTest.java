@@ -3,8 +3,6 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.*;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiIfStatement;
 import com.reason.lang.core.psi.impl.*;
 
@@ -29,15 +27,14 @@ public class IfParsingTest extends OclParsingTestCase {
 
         assertNotNull(e);
         assertNotNull(e.getCondition());
-        List<PsiScopedExpr> scopes =
-                new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiScopedExpr.class));
+        List<PsiScopedExpr> scopes = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiScopedExpr.class));
         assertEquals(2, scopes.size());
         assertEquals("1", scopes.get(0).getText());
         assertEquals("2", scopes.get(1).getText());
     }
 
     public void test_with_in() {
-        FileBase file = parseCode("let _ =  if x then let init = y in let data = z");
+        FileBase file = parseCode("let _ = if x then let init = y in let data = z");
 
         assertEquals(1, letExpressions(file).size());
         assertNotNull(firstOfType(file, PsiIfStatement.class));

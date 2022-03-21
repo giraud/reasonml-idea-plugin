@@ -35,6 +35,7 @@ public abstract class ORTypes {
   public ORCompositeType C_DEFAULT_VALUE;
   public ORCompositeType C_DIRECTIVE;
   public ORCompositeType C_DO_LOOP;
+  public ORCompositeType C_FOR_LOOP;
   public ORCompositeType C_FUN_CALL;
   public ORCompositeType C_FUN_EXPR;
   public ORCompositeType C_FUN_BODY;
@@ -53,6 +54,7 @@ public abstract class ORTypes {
   public ORCompositeType C_MACRO_EXPR;
   public ORCompositeType C_MACRO_NAME;
   public ORCompositeType C_MODULE_TYPE;
+  public ORCompositeType C_MODULE_BINDING;
   public ORCompositeType C_JS_OBJECT;
   public ORCompositeType C_MACRO_RAW_BODY;
   public ORCompositeType C_MATCH_EXPR;
@@ -62,6 +64,7 @@ public abstract class ORTypes {
   public ORCompositeType C_OBJECT;
   public ORCompositeType C_OPTION;
   public ORCompositeType C_PARAMETERS;
+  public ORCompositeType C_PATH;
   public ORCompositeType C_PATTERN_MATCH_BODY;
   public ORCompositeType C_PATTERN_MATCH_EXPR;
   public ORCompositeType C_SIG_EXPR;
@@ -79,6 +82,7 @@ public abstract class ORTypes {
   public ORCompositeType C_TAG_CLOSE;
   public ORCompositeType C_TAG_PROPERTY;
   public ORCompositeType C_TERNARY;
+  public ORCompositeType C_TUPLE;
   public ORCompositeType C_RECORD_EXPR;
   public ORCompositeType C_SWITCH_EXPR;
   public ORCompositeType C_STRUCT_EXPR;

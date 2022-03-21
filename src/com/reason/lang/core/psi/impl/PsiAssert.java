@@ -1,25 +1,17 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.CompositePsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
+import org.jetbrains.annotations.*;
 
-public class PsiAssert extends CompositePsiElement {
+public class PsiAssert extends ORCompositePsiElement {
+    protected PsiAssert(IElementType type) {
+        super(type);
+    }
 
-  protected PsiAssert(IElementType type) {
-    super(type);
-  }
-
-  @NotNull
-  @Override
-  public String toString() {
-    return "Assert";
-  }
-
-  public @Nullable PsiElement getAssertion() {
-    return PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-  }
+    public @Nullable PsiElement getAssertion() {
+        return PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+    }
 }

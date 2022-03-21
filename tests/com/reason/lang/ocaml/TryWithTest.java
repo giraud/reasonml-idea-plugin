@@ -36,9 +36,7 @@ public class TryWithTest extends OclParsingTestCase {
     }
 
     public void test_GH_256() {
-        PsiFile file =
-                parseCode(
-                        "try find nt with Not_found -> (error \"Missing nt '%s' for splice\" nt; []) in let splice_prods = xxx");
+        PsiFile file = parseCode("try find nt with Not_found -> (error \"Missing nt '%s' for splice\" nt; []) in let splice_prods = xxx");
         PsiTry e = (PsiTry) firstElement(file);
         PsiElement handlers = ORUtil.findImmediateFirstChildOfType(e, m_types.C_TRY_HANDLERS);
 

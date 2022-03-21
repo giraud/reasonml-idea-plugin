@@ -42,9 +42,4 @@ public class PsiSignatureItemImpl extends CompositeTypePsiElement<ORTypes> imple
         }
         return getText();
     }
-
-    @Override
-    public @NotNull String toString() {
-        return "Signature item";
-    }
 }

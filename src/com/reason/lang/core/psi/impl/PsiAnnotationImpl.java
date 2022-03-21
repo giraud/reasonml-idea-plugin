@@ -37,9 +37,4 @@ public class PsiAnnotationImpl extends CompositeTypePsiElement<ORTypes> implemen
     public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
     }
-
-    @Override
-    public @Nullable String toString() {
-        return "Annotation";
-    }
 }

@@ -34,9 +34,9 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        if (myElement instanceof PsiLowerIdentifier) {
-            return ResolveResult.EMPTY_ARRAY;
-        }
+        //if (myElement instanceof PsiLowerIdentifier) {   zzz (distinction ?? why ??)
+        //    return ResolveResult.EMPTY_ARRAY;
+        //}
 
         long startAll = System.currentTimeMillis();
 

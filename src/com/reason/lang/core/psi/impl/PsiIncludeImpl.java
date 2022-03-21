@@ -41,11 +41,18 @@ public class PsiIncludeImpl extends PsiTokenStub<ORTypes, PsiInclude, PsiInclude
             return stub.getIncludePath();
         }
 
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        if (firstChild instanceof PsiFunctorCall) {
-            return ((PsiFunctorCall) firstChild).getFunctorName();
+        PsiElement child = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+        if (child instanceof PsiPath) {
+            String path = child.getText();
+            child = PsiTreeUtil.skipWhitespacesForward(child);
+            if (child instanceof PsiFunctorCall) {
+                return path + ((PsiFunctorCall) child).getFunctorName();
+            } else if (child instanceof PsiUpperSymbol) {
+                return path + child.getText();
+            }
         }
-        return firstChild == null ? "" : ORUtil.getTextUntilClass(firstChild, PsiConstraints.class);
+
+        return child == null ? "" : ORUtil.getTextUntilClass(child, PsiConstraints.class);
     }
 
     @Override
@@ -84,8 +91,8 @@ public class PsiIncludeImpl extends PsiTokenStub<ORTypes, PsiInclude, PsiInclude
 
     @Override
     public boolean useFunctor() {
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        return firstChild instanceof PsiFunctorCall;
+        PsiElement firstChild = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+        return firstChild != null;
     }
 
     @Override

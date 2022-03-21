@@ -141,9 +141,4 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiType, PsiTypeStub> imp
             }
         };
     }
-
-    @Override
-    public @NotNull String toString() {
-        return "Type " + getQualifiedName();
-    }
 }

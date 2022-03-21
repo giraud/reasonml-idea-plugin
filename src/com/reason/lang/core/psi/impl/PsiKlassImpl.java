@@ -7,7 +7,7 @@ import com.intellij.psi.stubs.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiKlass;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import icons.*;
@@ -102,10 +102,5 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
                 return ORIcons.CLASS;
             }
         };
-    }
-
-    @Override
-    public @Nullable String toString() {
-        return "Class " + getQualifiedName();
     }
 }

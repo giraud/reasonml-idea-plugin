@@ -44,12 +44,6 @@ public interface PsiModule extends PsiQualifiedPathElement, NavigatablePsiElemen
     PsiLet getLetExpression(@Nullable String name);
 
     @Nullable
-    PsiExternal getExternalExpression(@Nullable String name);
-
-    @Nullable
-    PsiVal getValExpression(@Nullable String name);
-
-    @Nullable
     PsiElement getModuleType();
 
     @Nullable

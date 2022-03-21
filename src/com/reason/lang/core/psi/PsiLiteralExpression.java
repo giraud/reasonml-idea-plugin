@@ -31,11 +31,6 @@ public class PsiLiteralExpression extends LeafPsiElement implements PsiLanguageI
         return new StringLiteralEscaper<>(this);
     }
 
-    @Override
-    public @NotNull String toString() {
-        return "PsiLiteralExpression:" + getText();
-    }
-
     // Copied from com.intellij.psi.impl.source.tree.injected.StringLiteralEscaper
     // See https://github.com/giraud/reasonml-idea-plugin/issues/289
     public static class StringLiteralEscaper<T extends PsiLanguageInjectionHost> extends LiteralTextEscaper<T> {
@@ -65,5 +60,10 @@ public class PsiLiteralExpression extends LeafPsiElement implements PsiLanguageI
         public boolean isOneLine() {
             return true;
         }
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "ORElement.LiteralExpression(" + getElementType() + ")";
     }
 }

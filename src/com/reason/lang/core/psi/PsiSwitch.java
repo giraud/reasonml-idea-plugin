@@ -1,16 +1,15 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.PsiElement;
-import com.reason.lang.core.psi.impl.PsiBinaryCondition;
-import com.reason.lang.core.psi.impl.PsiPatternMatch;
+import com.intellij.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
+
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public interface PsiSwitch extends PsiElement {
-  @Nullable
-  PsiBinaryCondition getCondition();
+    @Nullable
+    PsiBinaryCondition getCondition();
 
-  @NotNull
-  List<PsiPatternMatch> getPatterns();
+    @NotNull
+    List<PsiPatternMatch> getPatterns();
 }
