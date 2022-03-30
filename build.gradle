@@ -39,8 +39,8 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>New opam configuration, should allow other IDE to use dune projects. Dune facet is removed.</li>
-                    <li>#364 - StringIndexOutOfBoundsException</li>
+                    <li>#379 - Plugin crashes with NoClassDefFoundError in WebStorm during any attempt to autocomplete</li>
+                    <li>#378 - NPE in macro
                 </ul>
                 <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
