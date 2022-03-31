@@ -40,7 +40,8 @@ public class PsiMacroBody extends CompositeTypePsiElement<ORTypes> implements Ps
     }
 
     public @Nullable TextRange getMacroTextRange() {
-        IElementType elementType = getNode().getFirstChildNode().getElementType();
+        ASTNode firstChildNode = getNode().getFirstChildNode();
+        IElementType elementType = firstChildNode == null ? null : firstChildNode.getElementType();
         if (elementType == m_types.STRING_VALUE || elementType == m_types.ML_STRING_VALUE) {
             int max = getTextLength() - 1;
             if (1 <= max) {

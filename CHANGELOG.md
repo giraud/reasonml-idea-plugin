@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: [#378](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/378) NPE in macro
+
 ## 0.106 - 2022/01/07
 
 - :boom: :rocket: New opam configuration, should allow other IDE to use dune projects. Dune facet is removed.
