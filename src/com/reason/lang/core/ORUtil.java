@@ -221,8 +221,7 @@ public class ORUtil {
     }
 
     @Nullable
-    public static PsiElement findImmediateFirstChildOfType(
-            @NotNull PsiElement element, @NotNull ORCompositeType elementType) {
+    public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull ORCompositeType elementType) {
         return findImmediateFirstChildOfType(element, (IElementType) elementType);
     }
 

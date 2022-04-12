@@ -115,9 +115,4 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
 
         return result;
     }
-
-    @Override
-    public @NotNull String toString() {
-        return "Tag start";
-    }
 }

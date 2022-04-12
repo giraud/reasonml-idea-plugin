@@ -101,10 +101,4 @@ public class PsiObjectField extends PsiTokenStub<ORTypes, PsiObjectField, PsiObj
         PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, m_types.COLON);
         return colon == null ? null : ORUtil.nextSiblingNode(colon.getNode()).getPsi();
     }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "ObjectField";
-    }
 }

@@ -22,6 +22,15 @@ public class FunctorCallParsingTest extends RmlParsingTestCase {
         assertEquals("Dummy.Printing.Make[0].encode", let.getQualifiedName());
     }
 
+    public void test_with_path() {
+        PsiInnerModule e = (PsiInnerModule) first(moduleExpressions(parseCode("module X = A.B.Make({})")));
+
+        assertTrue(e.isFunctorCall());
+        assertNull(e.getBody());
+        PsiFunctorCall call = PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class);
+        assertEquals("Make({})", call.getText());
+    }
+
     public void test_chaining() {
         PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash);\ntype infos;");
         List<PsiNamedElement> es = new ArrayList<>(expressions(file));
@@ -32,7 +41,6 @@ public class FunctorCallParsingTest extends RmlParsingTestCase {
         assertTrue(module.isFunctorCall());
         assertNull(module.getBody());
         PsiFunctorCall call = PsiTreeUtil.findChildOfType(module, PsiFunctorCall.class);
-        assertNotNull(call);
-        assertEquals("Hashtbl.Make(KeyHash)", call.getText());
+        assertEquals("Make(KeyHash)", call.getText());
     }
 }

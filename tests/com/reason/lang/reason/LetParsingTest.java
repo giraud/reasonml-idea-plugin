@@ -83,8 +83,7 @@ public class LetParsingTest extends RmlParsingTestCase {
     }
 
     public void test_signature() {
-        PsiLet let =
-                first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
+        PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
 
         assertEquals("(style, style) => style", let.getSignature().getText());
         assertEquals("(a, b) => { }", let.getBinding().getText());
@@ -95,9 +94,7 @@ public class LetParsingTest extends RmlParsingTestCase {
 
         assertNull(PsiTreeUtil.findChildOfType(let, PsiFunction.class));
         assertEquals("M1.y => M2.z", let.getSignature().getText());
-        List<PsiSignatureItem> items =
-                new ArrayList<>(
-                        PsiTreeUtil.findChildrenOfType(let.getSignature(), PsiSignatureItem.class));
+        List<PsiSignatureItem> items = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let.getSignature(), PsiSignatureItem.class));
         assertEquals("M1.y", items.get(0).getText());
     }
 
@@ -105,8 +102,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let x: {. a:string, b:int } => unit;")));
 
         assertEquals("{. a:string, b:int } => unit", let.getSignature().getText());
-        List<PsiObjectField> fields =
-                new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, PsiObjectField.class));
+        List<PsiObjectField> fields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, PsiObjectField.class));
         assertEquals("a:string", fields.get(0).getText());
         assertEquals("b:int", fields.get(1).getText());
     }
@@ -129,8 +125,7 @@ public class LetParsingTest extends RmlParsingTestCase {
 
     public void test_let_and_in_module() {
         FileBase file = parseCode("module M = { let f1 = x => x and f2 = y => y; };");
-        Collection<PsiNamedElement> es =
-                PsiFileHelper.getModuleExpressions(file).iterator().next().getExpressions(pub, FILTER_LET);
+        Collection<PsiNamedElement> es = PsiFileHelper.getModuleExpressions(file).iterator().next().getExpressions(pub, FILTER_LET);
 
         assertSize(2, es);
         assertEquals("f2 = y => y", second(es).getText());

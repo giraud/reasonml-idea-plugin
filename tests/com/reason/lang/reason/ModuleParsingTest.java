@@ -1,8 +1,11 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.*;
+import com.intellij.psi.util.*;
+import com.intellij.testFramework.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
 
@@ -24,7 +27,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals("Y", module.getAlias());
     }
 
-    public void test_aliasPath() {
+    public void test_alias_path() {
         PsiModule module = first(moduleExpressions(parseCode("module M = Y.Z;")));
 
         assertEquals("M", module.getName());
@@ -45,6 +48,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals(1, expressions(file).size());
         assertEquals("Styles", module.getName());
         assertEquals("{ open Css; let y = 1 }", module.getBody().getText());
+        assertNull(PsiTreeUtil.findChildOfType(file, PsiScopedExpr.class));
     }
 
     public void test_inline_interface() {
@@ -73,8 +77,8 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals("{ type t = int; }", e.getBody().getText());
     }
 
-    public void test_moduleOpenVariant() {
+    public void test_module_open_variant() {
         FileBase file = parseCode("ModelActions.UserCapabilitiesLoaded.( UserCapabilitiesBuilder.( ) ),");
-        assertEquals(6, childrenCount(file));
+        assertEquals(3, childrenCount(file));
     }
 }

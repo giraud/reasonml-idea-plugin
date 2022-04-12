@@ -2,13 +2,12 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.tree.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
-public class PsiMacro extends CompositePsiElement {
+public class PsiMacro extends ORCompositePsiElement {
     protected PsiMacro(IElementType type) {
         super(type);
     }
@@ -36,10 +35,5 @@ public class PsiMacro extends CompositePsiElement {
         }
 
         return name.getText().startsWith("%%");
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "PsiMacro";
     }
 }

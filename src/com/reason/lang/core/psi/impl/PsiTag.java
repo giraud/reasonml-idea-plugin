@@ -19,14 +19,11 @@ public class PsiTag extends CompositeTypePsiElement<ORTypes> {
         return tagStart == null ? null : ORUtil.getTextUntilWhitespace(tagStart.getFirstChild().getNextSibling());
     }
 
-    @NotNull
-    public Collection<PsiTagProperty> getProperties() {
-        return ORUtil.findImmediateChildrenOfClass(getFirstChild() /*tag start*/, PsiTagProperty.class);
+    public @NotNull Collection<PsiTagProperty> getProperties() {
+        return ORUtil.findImmediateChildrenOfClass(getFirstChild(/*tag_start*/), PsiTagProperty.class);
     }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "Tag";
+    public @Nullable PsiTagBody getBody() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiTagBody.class);
     }
 }

@@ -8,7 +8,6 @@ import org.jetbrains.annotations.*;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 
 public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
-
     protected final T m_types;
 
     protected CommonParser(T types) {
@@ -18,7 +17,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
     @Override
     @NotNull
     public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
-        builder.setDebugMode(false);
+        builder.setDebugMode(true);
 
         // System.out.println("start parsing ");
         // long start = System.currentTimeMillis();
@@ -42,7 +41,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
         builder = adapt_builder_(elementType, builder, this);
         PsiBuilder.Marker m = enter_section_(builder, 0, _NONE_);
 
-        ParserScope fileScope = ParserScope.markRoot(builder);
+        MarkerScope fileScope = MarkerScope.markRoot(builder);
 
         ParserState state = new ParserState(builder, fileScope);
         parseFile(builder, state);
@@ -63,14 +62,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
-    protected boolean isTypeResolution(@NotNull ParserScope scope) {
-        if (m_types instanceof ORTypes) {
-            return scope.isCompositeType(((ORTypes) m_types).C_TYPE_DECLARATION);
-        }
-        return false;
-    }
-
-    protected boolean isModuleResolution(@NotNull ParserScope scope) {
+    protected boolean isModuleResolution(@NotNull MarkerScope scope) {
         if (m_types instanceof ORTypes) {
             ORTypes m_types = (ORTypes) this.m_types;
             return scope.isCompositeType(m_types.C_MODULE_DECLARATION) || scope.isCompositeType(m_types.C_MODULE_TYPE);

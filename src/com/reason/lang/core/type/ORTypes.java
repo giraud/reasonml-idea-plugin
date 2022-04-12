@@ -7,6 +7,7 @@ public abstract class ORTypes {
   public ORCompositeType C_EXCEPTION_DECLARATION;
   public ORCompositeType C_EXTERNAL_DECLARATION;
   public ORCompositeType C_FAKE_MODULE;
+  public ORCompositeType C_FIELD_VALUE;
   public ORCompositeType C_FUN_PARAM;   // TODO: zzz delete or rename to C_PARAMETER
   public ORCompositeType C_FUNCTOR_DECLARATION;
   public ORCompositeType C_FUNCTOR_PARAM;  // TODO: zzz delete or rename to C_PARAMETER
@@ -27,7 +28,6 @@ public abstract class ORTypes {
   public ORCompositeType C_CLASS_CONSTR;
   public ORCompositeType C_CLASS_FIELD;
   public ORCompositeType C_CLASS_METHOD;
-  public ORCompositeType C_CLASS_PARAMS;
   public ORCompositeType C_CONSTRAINTS;
   public ORCompositeType C_CONSTRAINT;
   public ORCompositeType C_CUSTOM_OPERATOR;
@@ -39,7 +39,7 @@ public abstract class ORTypes {
   public ORCompositeType C_FUN_CALL;
   public ORCompositeType C_FUN_EXPR;
   public ORCompositeType C_FUN_BODY;
-  public ORCompositeType C_FUNCTOR_BINDING;
+  public ORCompositeType C_FUNCTOR_BINDING;  // zzz to delete. use C_MODULE_BINDING
   public ORCompositeType C_FUNCTOR_CALL;
   public ORCompositeType C_FUNCTOR_RESULT;
   public ORCompositeType C_IF;
@@ -48,15 +48,15 @@ public abstract class ORTypes {
   public ORCompositeType C_LET_BINDING;
   public ORCompositeType C_LOCAL_OPEN;
   public ORCompositeType C_LOWER_SYMBOL;
-  public ORCompositeType C_LOWER_IDENTIFIER;
+  public ORCompositeType C_LOWER_IDENTIFIER;   // zzz merge with C_LOWER_SYMBOL ????
   public ORCompositeType C_LOWER_BOUND_CONSTRAINT;
   public ORCompositeType C_TYPE_VARIABLE;
   public ORCompositeType C_MACRO_EXPR;
   public ORCompositeType C_MACRO_NAME;
+  public ORCompositeType C_MACRO_BODY;
   public ORCompositeType C_MODULE_TYPE;
   public ORCompositeType C_MODULE_BINDING;
   public ORCompositeType C_JS_OBJECT;
-  public ORCompositeType C_MACRO_RAW_BODY;
   public ORCompositeType C_MATCH_EXPR;
   public ORCompositeType C_MIXIN_FIELD;
   public ORCompositeType C_ML_INTERPOLATOR;
@@ -85,6 +85,7 @@ public abstract class ORTypes {
   public ORCompositeType C_TUPLE;
   public ORCompositeType C_RECORD_EXPR;
   public ORCompositeType C_SWITCH_EXPR;
+  public ORCompositeType C_SWITCH_BODY;
   public ORCompositeType C_STRUCT_EXPR;
   public ORCompositeType C_TRY_EXPR;
   public ORCompositeType C_TRY_BODY;

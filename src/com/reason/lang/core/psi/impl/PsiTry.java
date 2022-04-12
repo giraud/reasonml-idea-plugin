@@ -17,7 +17,6 @@ public class PsiTry extends CompositeTypePsiElement<ORTypes> {
         return ORUtil.findImmediateFirstChildOfType(this, (IElementType) m_types.C_TRY_BODY);
     }
 
-
     public @Nullable List<PsiElement> getHandlers() {
         PsiElement scopedElement = ORUtil.findImmediateFirstChildOfType(this, (IElementType) m_types.C_TRY_HANDLERS);
         return ORUtil.findImmediateChildrenOfType(scopedElement, (IElementType) m_types.C_TRY_HANDLER);

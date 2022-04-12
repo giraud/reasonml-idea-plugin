@@ -76,8 +76,8 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
     }
 
     @Override
-    public @NotNull Collection<PsiClassParameters> getParameters() {
-        return PsiTreeUtil.findChildrenOfType(this, PsiClassParameters.class);
+    public @NotNull Collection<PsiParameters> getParameters() {
+        return PsiTreeUtil.findChildrenOfType(this, PsiParameters.class);
     }
 
     @Override

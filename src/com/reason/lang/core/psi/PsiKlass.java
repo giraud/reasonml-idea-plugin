@@ -19,7 +19,7 @@ public interface PsiKlass extends PsiQualifiedPathElement, NavigatablePsiElement
     Collection<PsiClassMethod> getMethods();
 
     @NotNull
-    Collection<PsiClassParameters> getParameters();
+    Collection<PsiParameters> getParameters();
 
     @Nullable
     PsiClassConstructor getConstructor();

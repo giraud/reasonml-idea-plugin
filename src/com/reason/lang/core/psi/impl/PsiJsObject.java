@@ -71,9 +71,4 @@ public class PsiJsObject extends CompositePsiElement implements PsiLanguageConve
 
         return convertedText == null ? getText() : convertedText.toString();
     }
-
-    @Override
-    public @NotNull String toString() {
-        return "JsObject";
-    }
 }

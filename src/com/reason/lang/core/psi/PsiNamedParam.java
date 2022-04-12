@@ -25,9 +25,8 @@ public class PsiNamedParam extends CompositeTypePsiElement<ORTypes> implements P
         return ORUtil.findImmediateFirstChildOfType(this, m_types.EQ) != null;
     }
 
-    public @Nullable String getDefaultValue() {
-        PsiDefaultValue defaultValue = ORUtil.findImmediateFirstChildOfClass(this, PsiDefaultValue.class);
-        return defaultValue == null ? null : defaultValue.getText();
+    public @Nullable PsiDefaultValue getDefaultValue() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiDefaultValue.class);
     }
 
     public @Nullable PsiSignature getSignature() {

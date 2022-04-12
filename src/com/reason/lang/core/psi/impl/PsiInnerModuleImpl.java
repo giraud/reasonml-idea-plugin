@@ -170,8 +170,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             if (moduleType == null) {
                 PsiElement body = getBody();
                 if (body == null) {
-                    PsiFunctorCall functorCall =
-                            ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+                    PsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
                     if (functorCall != null) {
                         result = new ArrayList<>();
                         // Include all expressions from functor
@@ -179,23 +178,17 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
 
                         Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorCall);
                         for (String potentialPath : potentialPaths) {
-                            Set<PsiModule> modules =
-                                    psiFinder.findModulesFromQn(
-                                            potentialPath + "." + functorCall.getFunctorName(),
-                                            true,
-                                            interfaceOrImplementation
-                                    );
+                            Set<PsiModule> modules = psiFinder.findModulesFromQn(
+                                    potentialPath + "." + functorCall.getFunctorName(),
+                                    true,
+                                    interfaceOrImplementation
+                            );
                             for (PsiModule module : modules) {
                                 result.addAll(module.getExpressions(eScope, filter));
                             }
                         }
 
-                        Set<PsiModule> modules =
-                                psiFinder.findModulesFromQn(
-                                        functorCall.getFunctorName(),
-                                        true,
-                                        interfaceOrImplementation
-                                );
+                        Set<PsiModule> modules = psiFinder.findModulesFromQn(functorCall.getFunctorName(), true, interfaceOrImplementation);
                         for (PsiModule module : modules) {
                             result.addAll(module.getExpressions(eScope, filter));
                         }

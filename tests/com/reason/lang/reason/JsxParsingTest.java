@@ -14,7 +14,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
         assertEquals("<div>", tag.getText());
-        assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
+        assertEquals("children", e.getBody().getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
 
@@ -80,8 +80,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
     public void test_tag_prop_with_paren() {
         PsiTag tag = (PsiTag) firstElement(parseCode("<div style=(x) onFocus=a11y.onFocus/>"));
 
-        Collection<PsiTagProperty> properties =
-                PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
+        Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
         assertEquals(2, properties.size());
         Iterator<PsiTagProperty> itProperties = properties.iterator();
         assertEquals("style=(x)", itProperties.next().getText());
@@ -130,9 +129,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
     }
 
     public void test_tag_props_with_local_open() {
-        PsiTag e =
-                (PsiTag)
-                        firstElement(parseCode("<Icon width=Dimensions.(3->px) height=Dimensions.(2->rem)>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<Icon width=Dimensions.(3->px) height=Dimensions.(2->rem)>"));
 
         List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
         assertSize(2, props);
@@ -141,9 +138,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
     }
 
     public void test_tag_chaining() {
-        Collection<PsiModule> psiModules =
-                moduleExpressions(
-                        parseCode(
+        Collection<PsiModule> psiModules = moduleExpressions(parseCode(
                                 "module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};"));
         assertEquals(2, psiModules.size());
     }
@@ -151,36 +146,26 @@ public class JsxParsingTest extends RmlParsingTestCase {
     public void test_incorrect_prop() {
         PsiTag e = (PsiTag) firstElement(parseCode("<MyComp prunningProp prop=1/>"));
 
-        Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(e, PsiTagProperty.class);
-        assertEquals(2, properties.size());
+        assertEquals(2, e.getProperties().size());
     }
 
     public void test_prop02() {
-        PsiTag e =
-                (PsiTag)
-                        firstElement(
-                                parseCode(
+        PsiTag e = (PsiTag) firstElement(parseCode(
                                         "<Splitter left={<NotificationsList notifications />} right={<div> {ReasonReact.string(\"switch inside\")} </div>}/>"));
 
         List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(2, properties.size());
         assertEquals("{<NotificationsList notifications />}", properties.get(0).getValue().getText());
-        assertEquals(
-                "{<div> {ReasonReact.string(\"switch inside\")} </div>}",
-                properties.get(1).getValue().getText());
+        assertEquals("{<div> {ReasonReact.string(\"switch inside\")} </div>}", properties.get(1).getValue().getText());
     }
 
     public void test_prop03() {
-        PsiTag e =
-                (PsiTag)
-                        firstElement(
-                                parseCode(
+        PsiTag e = (PsiTag) firstElement(parseCode(
                                         "<PageContentGrid height={computePageHeight(miniDashboardHeight)} title=\"X\"/>"));
 
         List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(2, properties.size());
-        assertEquals(
-                "{computePageHeight(miniDashboardHeight)}", properties.get(0).getValue().getText());
+        assertEquals("{computePageHeight(miniDashboardHeight)}", properties.get(0).getValue().getText());
         assertEquals("\"X\"", properties.get(1).getValue().getText());
     }
 

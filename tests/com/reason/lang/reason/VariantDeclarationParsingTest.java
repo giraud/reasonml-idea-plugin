@@ -31,8 +31,7 @@ public class VariantDeclarationParsingTest extends RmlParsingTestCase {
     }
 
     public void test_constructor() {
-        PsiType e =
-                first(typeExpressions(parseCode("type color = | Hex(string) | Rgb(int, int, int);")));
+        PsiType e = first(typeExpressions(parseCode("type color = | Hex(string) | Rgb(int, int, int);")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
@@ -44,7 +43,7 @@ public class VariantDeclarationParsingTest extends RmlParsingTestCase {
     }
 
     public void test_constructor2() {
-        PsiType e = first(typeExpressions(parseCode("type color = Hex(string) | Rgb(int, int, int);")));
+        PsiType e = first(typeExpressions(parseCode("type color = Hex(string) | Rgb(int, int, int, );")));
 
         List<PsiVariantDeclaration> declarations = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e.getBinding(), PsiVariantDeclaration.class));
         assertEquals(2, declarations.size());
@@ -58,8 +57,7 @@ public class VariantDeclarationParsingTest extends RmlParsingTestCase {
     public void test_mixed() {
         PsiType e = first(typeExpressions(parseCode("type unfocusable = | Cannot(reason) | Loose | Strict;")));
 
-        List<PsiVariantDeclaration> declarations =
-                ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(3, declarations.size());
         assertEquals("Cannot", declarations.get(0).getVariant().getText());
         // assertTrue(declarations.get(0).getVariant().isVariant());

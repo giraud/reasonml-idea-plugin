@@ -38,10 +38,13 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new PsiTagPropertyImpl(m_types, type);
         }
         if (type == m_types.C_TAG_PROP_VALUE) {
-            return new PsiTagPropertyValueImpl(m_types, type);
+            return new PsiTagPropertyValue(m_types, type);
         }
         if (type == m_types.C_TAG_START) {
             return new PsiTagStartImpl(m_types, type);
+        }
+        if (type == m_types.C_FIELD_VALUE) {
+            return new PsiFieldValue(type);
         }
         if (type == m_types.C_FUN_CALL) {
             return new PsiFunctionCall(m_types, type);
@@ -100,7 +103,7 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_ANNOTATION) {
             return new PsiAnnotationImpl(m_types, type);
         }
-        if (type == m_types.C_MACRO_RAW_BODY) {
+        if (type == m_types.C_MACRO_BODY) {
             return new PsiMacroBody(m_types, type);
         }
         if (type == m_types.C_FUNCTOR_CALL) {
@@ -124,9 +127,6 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_OPTION) {
             return new PsiOption(m_types, type);
         }
-        if (type == m_types.C_CLASS_PARAMS) {
-            return new PsiClassParameters(type);
-        }
         if (type == m_types.C_CLASS_CONSTR) {
             return new PsiClassConstructor(type);
         }
@@ -136,11 +136,14 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_CLASS_METHOD) {
             return new PsiClassMethod(type);
         }
+        if (type == m_types.C_SWITCH_BODY) {
+            return new PsiSwitchBody(m_types, type);
+        }
         if (type == m_types.C_SWITCH_EXPR || type == m_types.C_MATCH_EXPR) {
             return new PsiSwitchImpl(m_types, type);
         }
         if (type == m_types.C_FUNCTOR_BINDING) {
-            return new PsiFunctorBinding(m_types, type);
+            return new PsiFunctorBinding(type);
         }
         if (type == m_types.C_FUNCTOR_RESULT) {
             return new PsiFunctorResult(m_types, type);

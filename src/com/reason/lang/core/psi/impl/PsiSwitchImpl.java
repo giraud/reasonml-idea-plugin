@@ -21,7 +21,7 @@ public class PsiSwitchImpl extends CompositeTypePsiElement<ORTypes> implements P
 
     @Override
     public @NotNull List<PsiPatternMatch> getPatterns() {
-        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
+        PsiSwitchBody scope = ORUtil.findImmediateFirstChildOfClass(this, PsiSwitchBody.class);
         return ORUtil.findImmediateChildrenOfClass(scope == null ? this : scope, PsiPatternMatch.class);
     }
 }

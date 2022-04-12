@@ -54,6 +54,7 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
 
+        assertSize(4, parameters);
         assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
         assertFalse(parameters.get(1).getSignature().getItems().get(0).isOptional());
         assertEquals("bool", parameters.get(2).getSignature().asText(getLangProps()));

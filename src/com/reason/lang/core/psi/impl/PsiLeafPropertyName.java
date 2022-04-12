@@ -19,6 +19,6 @@ public class PsiLeafPropertyName extends LeafPsiElement {
 
     @Override
     public @NotNull String toString() {
-        return "PropertyName:" + getText();
+        return "PsiPropertyName";
     }
 }

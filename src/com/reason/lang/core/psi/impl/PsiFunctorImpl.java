@@ -206,13 +206,22 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
 
     @Override
     public @Nullable PsiFunctorResult getReturnType() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorResult.class);
+        PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, m_types.COLON);
+        PsiElement element = ORUtil.nextSibling(colon);
+
+        return element instanceof PsiFunctorResult ? (PsiFunctorResult) element : ORUtil.findImmediateFirstChildOfClass(element, PsiFunctorResult.class);
     }
 
     @Override
     public @NotNull Collection<PsiConstraint> getConstraints() {
         PsiConstraints constraints = ORUtil.findImmediateFirstChildOfClass(this, PsiConstraints.class);
-        return ORUtil.findImmediateChildrenOfClass(constraints, PsiConstraint.class);
+        if (constraints == null) {
+            PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, m_types.COLON);
+            PsiElement element = ORUtil.nextSibling(colon);
+            constraints = element instanceof PsiConstraints ? (PsiConstraints) element : ORUtil.findImmediateFirstChildOfClass(element, PsiConstraints.class);
+        }
+
+        return constraints == null ? Collections.emptyList() : ORUtil.findImmediateChildrenOfClass(constraints, PsiConstraint.class);
     }
 
     public ItemPresentation getPresentation() {
@@ -235,10 +244,5 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
                 return ORIcons.FUNCTOR;
             }
         };
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Functor";
     }
 }

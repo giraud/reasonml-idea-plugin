@@ -42,12 +42,11 @@ public class TypeParsingTest extends RmlParsingTestCase {
     }
 
     public void test_type_special_props() {
-        PsiType e = first(typeExpressions(
-                parseCode(
-                        "type props = { "
-                                + "string: string, "
-                                + "ref: Js.nullable(Dom.element) => unit, "
-                                + "method: string };")));
+        PsiType e = first(typeExpressions(parseCode(
+                "type props = { "
+                        + "string: string, "
+                        + "ref: Js.nullable(Dom.element) => unit, "
+                        + "method: string };")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
         Collection<PsiRecordField> fields = record.getFields();
@@ -85,7 +84,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
         assertEquals("props", namedParam.getName());
         assertEquals("Js.t({..})", namedParam.getSignature().getText());
         assertTrue(namedParam.isOptional());
-        assertEquals("?", namedParam.getDefaultValue());
+        assertEquals("?", namedParam.getDefaultValue().getText());
         assertEquals("array(reactElement)", items.get(2).getText());
         assertEquals("reactElement", items.get(3).getText());
     }

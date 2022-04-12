@@ -41,17 +41,17 @@ public class VariantCallParsingTest extends RmlParsingTestCase {
         // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
     }
 
-    public void test_patternMatch() {
+    public void test_pattern_match() {
         PsiSwitch e = firstOfType(parseCode("switch (action) { | UpdateDescription(desc) => ReasonReact.SideEffects.(_self => onDescriptionChange(desc)) };"), PsiSwitch.class);
 
         PsiPatternMatchBody body = PsiTreeUtil.findChildOfType(e, PsiPatternMatchBody.class);
         assertEquals("ReasonReact.SideEffects.(_self => onDescriptionChange(desc))", body.getText());
-        List<PsiUpperSymbol> uppers = ORUtil.findImmediateChildrenOfClass(body, PsiUpperSymbol.class);
-        assertEquals("ReasonReact, SideEffects", Joiner.join(", ", uppers.stream().map(PsiElement::getText).collect(Collectors.toList())));
+        PsiPath path = ORUtil.findImmediateFirstChildOfClass(body, PsiPath.class);
+        assertEquals("ReasonReact.SideEffects.", path.getText());
     }
 
-    public void test_inMethod() {
-        PsiFunction e = firstOfType(parseCode("(. fileName, data) => self.send(SetErrorMessage(fileName, data##message))"), PsiFunction.class);
+    public void test_in_method() {
+        PsiFunction e = firstOfType(parseCode("let _ = (. fileName, data) => self.send(SetErrorMessage(fileName, data##message))"), PsiFunction.class);
 
         PsiUpperSymbol upper = PsiTreeUtil.findChildOfType(e, PsiUpperSymbol.class);
         assertEquals("SetErrorMessage", upper.getText());
