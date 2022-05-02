@@ -121,11 +121,10 @@ public class DotExpressionCompletionProvider {
 
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiVal.class));
         List<PsiModule> modules = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiModule.class);
-        // remove fake module
-        modules.remove(modules.size() - 1);
+        modules.remove(modules.size() - 1); // remove fake module
         expressions.addAll(modules);
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiFunctor.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiClass.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiKlass.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiExternal.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiException.class));
     }
@@ -154,7 +153,7 @@ public class DotExpressionCompletionProvider {
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiVal.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiModule.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiFunctor.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiClass.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiKlass.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiException.class));
     }
