@@ -12,11 +12,11 @@
 
 ## Unreleased
 
-- :bug: [#379](https://github.com/giraud/reasonml-idea-plugin/issues/379) Plugin crashes with NoClassDefFoundError in WebStorm during any attempt to autocomplete
+## 0.106.1 - 2022/05/02
+
+- :bug: [#379](https://github.com/giraud/reasonml-idea-plugin/issues/379) Plugin crashes with NoClassDefFoundError in
+  WebStorm during any attempt to autocomplete
 - :bug: [#378](https://github.com/giraud/reasonml-idea-plugin/issues/378) NPE in macro
-
-## 0.106 - 2022/01/07
-
 - :boom: :rocket: New opam configuration, should allow other IDE to use dune projects. Dune facet is removed.
 - :bug: [#364](https://github.com/giraud/reasonml-idea-plugin/issues/364) StringIndexOutOfBoundsException
 
