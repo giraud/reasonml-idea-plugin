@@ -10,6 +10,6 @@ public abstract class ORCompositePsiElement extends CompositePsiElement {
 
     @Override
     public String toString() {
-        return "ORElement(" + getElementType() + ")";
+        return "ORComposite(" + getElementType() + ")";
     }
 }

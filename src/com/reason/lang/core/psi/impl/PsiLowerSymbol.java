@@ -7,7 +7,7 @@ import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiLowerSymbol extends CompositeTypePsiElement<ORTypes> implements PsiElement {
+public class PsiLowerSymbol extends ORCompositeTypePsiElement<ORTypes> implements PsiElement {
     // region Constructors
     protected PsiLowerSymbol(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);

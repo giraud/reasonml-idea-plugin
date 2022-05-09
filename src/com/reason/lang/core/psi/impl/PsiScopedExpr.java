@@ -6,7 +6,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiScopedExpr extends CompositeTypePsiElement<ORTypes> {
+public class PsiScopedExpr extends ORCompositeTypePsiElement<ORTypes> {
     protected PsiScopedExpr(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

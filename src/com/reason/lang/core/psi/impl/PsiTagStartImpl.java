@@ -16,7 +16,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements PsiTagStart {
+public class PsiTagStartImpl extends ORCompositeTypePsiElement<ORTypes> implements PsiTagStart {
     protected PsiTagStartImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

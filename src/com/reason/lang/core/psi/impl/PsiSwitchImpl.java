@@ -9,7 +9,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiSwitchImpl extends CompositeTypePsiElement<ORTypes> implements PsiSwitch {
+public class PsiSwitchImpl extends ORCompositeTypePsiElement<ORTypes> implements PsiSwitch {
     protected PsiSwitchImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

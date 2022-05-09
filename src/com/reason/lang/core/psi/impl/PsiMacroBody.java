@@ -10,7 +10,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiMacroBody extends CompositeTypePsiElement<ORTypes> implements PsiLanguageInjectionHost {
+public class PsiMacroBody extends ORCompositeTypePsiElement<ORTypes> implements PsiLanguageInjectionHost {
     protected PsiMacroBody(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

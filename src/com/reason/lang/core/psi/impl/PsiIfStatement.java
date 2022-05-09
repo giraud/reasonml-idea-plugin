@@ -7,7 +7,7 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiIfStatement extends CompositeTypePsiElement<ORTypes> implements PsiConditional {
+public class PsiIfStatement extends ORCompositeTypePsiElement<ORTypes> implements PsiConditional {
     protected PsiIfStatement(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

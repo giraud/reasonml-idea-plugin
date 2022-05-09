@@ -7,7 +7,7 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiTagPropertyImpl extends CompositeTypePsiElement<ORTypes> implements PsiTagProperty {
+public class PsiTagPropertyImpl extends ORCompositeTypePsiElement<ORTypes> implements PsiTagProperty {
     // region Constructors
     protected PsiTagPropertyImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);

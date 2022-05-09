@@ -5,10 +5,10 @@ import com.intellij.psi.impl.source.tree.*;
 import com.intellij.psi.tree.*;
 import org.jetbrains.annotations.*;
 
-public abstract class CompositeTypePsiElement<T> extends CompositePsiElement {
+public abstract class ORCompositeTypePsiElement<T> extends CompositePsiElement {
     protected final @NotNull T m_types;
 
-    protected CompositeTypePsiElement(@NotNull T types, @NotNull IElementType elementType) {
+    protected ORCompositeTypePsiElement(@NotNull T types, @NotNull IElementType elementType) {
         super(elementType);
         m_types = types;
     }
@@ -19,6 +19,6 @@ public abstract class CompositeTypePsiElement<T> extends CompositePsiElement {
 
     @Override
     public String toString() {
-        return "ORElement(" + getElementType() + ")";
+        return "ORComposite(" + getElementType() + ")";
     }
 }

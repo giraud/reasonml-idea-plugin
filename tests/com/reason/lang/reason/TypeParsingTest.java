@@ -14,6 +14,15 @@ public class TypeParsingTest extends RmlParsingTestCase {
         assertTrue(e.isAbstract());
     }
 
+    public void test_simple_binding() {
+        PsiType e = first(typeExpressions(parseCode("type t = int;")));
+
+        assertEquals("t", e.getName());
+        assertFalse(e.isAbstract());
+        assertEquals("int", e.getBinding().getText());
+    }
+
+
     public void test_option() {
         PsiType e = first(typeExpressions(parseCode("type t = option(array(string))")));
 

@@ -244,7 +244,7 @@ public class OclParser extends CommonParser<OclTypes> {
         else if (state.inAny(m_types.C_LET_DECLARATION, m_types.C_SIG_ITEM, m_types.C_MATCH_EXPR, m_types.C_FUN_PARAM, m_types.C_SCOPED_EXPR)) {
             // all same priority
 
-            if (state.isLatestScopeFound(m_types.C_LET_DECLARATION)) {
+            if (state.isFound(m_types.C_LET_DECLARATION)) {
                 if (state.in(m_types.C_DECONSTRUCTION)) {
                     state.popEndUntil(m_types.C_DECONSTRUCTION);
                 } else {
@@ -254,7 +254,7 @@ public class OclParser extends CommonParser<OclTypes> {
                     state.rollbackTo(letPos - 1);
                     state.mark(m_types.C_DECONSTRUCTION);
                 }
-            } else if (state.isLatestScopeFound(m_types.C_SCOPED_EXPR)) {
+            } else if (state.isFound(m_types.C_SCOPED_EXPR)) {
                 MarkerScope blockScope = state.find(state.getIndex());
                 MarkerScope parentScope = state.find(state.getIndex() + 1);
                 if (blockScope != null && parentScope != null) {
@@ -601,7 +601,7 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.in(m_types.C_TRY_HANDLER)) {
             state.popEndUntil(m_types.C_TRY_EXPR);
         } else if (state.inAny(m_types.C_LET_DECLARATION, m_types.C_PATTERN_MATCH_BODY)) {
-            boolean isStart = state.isLatestScopeFound(m_types.C_LET_DECLARATION);
+            boolean isStart = state.isFound(m_types.C_LET_DECLARATION);
             state.popEndUntilIndex(state.getIndex());
             if (isStart) {
                 state.popEnd();
@@ -631,7 +631,7 @@ public class OclParser extends CommonParser<OclTypes> {
             //        state.advance().mark(m_types.C_CONSTRAINTS).mark(m_types.C_CONSTRAINT);
             //    }
             //} else
-            if (scope.isScopeToken(m_types.STRUCT) && state.is(m_types.C_MODULE_DECLARATION)) {
+            if (/*scope.isScopeToken(m_types.STRUCT) &&*/ state.is(m_types.C_MODULE_DECLARATION)) {
                 // module M = struct .. |>end<|
                 state.popEnd();
 
@@ -766,7 +766,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseFunction(@NotNull ParserState state) {
         if (state.inAny(m_types.C_LET_BINDING, m_types.C_FUN_EXPR)) {
-            if (state.isLatestScopeFound(m_types.C_LET_BINDING)) {
+            if (state.isFound(m_types.C_LET_BINDING)) {
                 state.mark(m_types.C_FUN_EXPR).advance()
                         .mark(m_types.C_FUN_BODY);
             }
@@ -908,7 +908,7 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.inAny(m_types.C_FUN_PARAM, m_types.C_SIG_ITEM, m_types.C_NAMED_PARAM)
                 /*&& !state.hasScopeToken()
                 && state.previousElementType1 != m_types.QUESTION_MARK*/) {
-            if (state.isLatestScopeFound(m_types.C_FUN_PARAM)) {
+            if (state.isFound(m_types.C_FUN_PARAM)) {
                 // Start of a new parameter:: let f xxx |>(<| ..tuple? ) = ..
                 state.popEndUntil(m_types.C_FUN_PARAM).popEnd()
                         .mark(m_types.C_FUN_PARAM)
@@ -1027,7 +1027,7 @@ public class OclParser extends CommonParser<OclTypes> {
             } else if (nextElementType == m_types.ARROBASE_2) {
                 // attribute attached to a 'block' expression
                 if (state.inAny(m_types.C_LET_BINDING, m_types.C_SIG_EXPR)) {
-                    if (state.isLatestScopeFound(m_types.C_SIG_EXPR)) {
+                    if (state.isFound(m_types.C_SIG_EXPR)) {
                         // block attribute inside a signature
                         state.popEnd();
                     }

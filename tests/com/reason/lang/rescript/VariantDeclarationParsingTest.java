@@ -31,8 +31,7 @@ public class VariantDeclarationParsingTest extends ResParsingTestCase {
     }
 
     public void test_constructor() {
-        PsiType e =
-                first(typeExpressions(parseCode("type t = | Hex(string) | Rgb(int, int, int)")));
+        PsiType e = first(typeExpressions(parseCode("type t = | Hex(string) | Rgb(int, int, int)")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());

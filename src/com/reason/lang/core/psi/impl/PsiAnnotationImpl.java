@@ -8,7 +8,7 @@ import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiAnnotationImpl extends CompositeTypePsiElement<ORTypes> implements PsiAnnotation {
+public class PsiAnnotationImpl extends ORCompositeTypePsiElement<ORTypes> implements PsiAnnotation {
     protected PsiAnnotationImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

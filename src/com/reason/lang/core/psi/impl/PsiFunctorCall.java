@@ -14,7 +14,7 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class PsiFunctorCall extends CompositeTypePsiElement<ORTypes> {
+public class PsiFunctorCall extends ORCompositeTypePsiElement<ORTypes> {
     protected PsiFunctorCall(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

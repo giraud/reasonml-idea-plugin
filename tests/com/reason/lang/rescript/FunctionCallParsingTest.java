@@ -58,7 +58,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertSize(2, call.getParameters());
     }
 
-    public void test_paramName() {
+    public void test_param_name() {
         List<PsiLet> expressions = letAllExpressions(parseCode("describe(\"context\", () => { test(\"should do something\", () => { let inner = 1 }) })"));
         PsiLet e = first(expressions);
 

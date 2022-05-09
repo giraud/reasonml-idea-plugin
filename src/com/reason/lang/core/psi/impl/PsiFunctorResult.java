@@ -8,7 +8,7 @@ import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiFunctorResult extends CompositeTypePsiElement<ORTypes> {
+public class PsiFunctorResult extends ORCompositeTypePsiElement<ORTypes> {
     protected PsiFunctorResult(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

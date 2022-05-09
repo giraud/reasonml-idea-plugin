@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiTag extends CompositeTypePsiElement<ORTypes> {
+public class PsiTag extends ORCompositeTypePsiElement<ORTypes> {
     protected PsiTag(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

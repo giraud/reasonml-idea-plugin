@@ -10,18 +10,29 @@ import java.util.*;
 public class TypeParsingTest extends ResParsingTestCase {
     public void test_abstract_type() {
         PsiType e = first(typeExpressions(parseCode("type t")));
+
         assertEquals("t", e.getName());
         assertTrue(e.isAbstract());
     }
 
+    public void test_simple_binding() {
+        PsiType e = first(typeExpressions(parseCode("type t = int")));
+
+        assertEquals("t", e.getName());
+        assertFalse(e.isAbstract());
+        assertEquals("int", e.getBinding().getText());
+    }
+
     public void test_recursive_type() {
         PsiType e = first(typeExpressions(parseCode("type rec tree<'a> = Leaf('a) | Tree(tree<'a>, tree<'a>)")));
+
         assertEquals("tree", e.getName());
         assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCall.class));
     }
 
     public void test_type_binding_with_variant() {
         PsiType e = first(typeExpressions(parseCode("type t = | Tick")));
+
         assertNotNull(e.getBinding());
     }
 
@@ -34,12 +45,10 @@ public class TypeParsingTest extends ResParsingTestCase {
     }
 
     public void test_type_special_props() {
-        PsiType e = first(typeExpressions(
-                parseCode(
-                        "type props = { "
-                                + "string: string, "
-                                + "ref: Js.nullable<Dom.element> => unit, "
-                                + "method: string, }")));
+        PsiType e = first(typeExpressions(parseCode("type props = { "
+                + "string: string, "
+                + "ref: Js.nullable<Dom.element> => unit, "
+                + "method: string, }")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
         Collection<PsiRecordField> fields = record.getFields();
@@ -61,6 +70,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         PsiType e = first(typeExpressions(parseCode("type declaration_arity<'a, 'b> = RegularArity<'a>")));
 
         assertEquals("declaration_arity", e.getName());
+        assertNotNull(PsiTreeUtil.findChildOfType(e, PsiParameters.class));
         assertEquals("RegularArity<'a>", e.getBinding().getText());
     }
 
@@ -77,7 +87,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals("props", namedParam.getName());
         assertEquals("{..}", namedParam.getSignature().getText());
         assertTrue(namedParam.isOptional());
-        assertEquals("?", namedParam.getDefaultValue());
+        assertEquals("?", namedParam.getDefaultValue().getText());
         assertEquals("array<reactElement>", items.get(2).getText());
         assertEquals("reactElement", items.get(3).getText());
     }
@@ -104,7 +114,7 @@ public class TypeParsingTest extends ResParsingTestCase {
     }
 
     public void test_not_a_tag() {
-        PsiLet e  = firstOfType(parseCode("let make = (x: array<int>) => x"), PsiLet.class);
+        PsiLet e = firstOfType(parseCode("let make = (x: array<int>) => x"), PsiLet.class);
 
         assertNull(PsiTreeUtil.findChildOfType(e, PsiLeafTagName.class));
         PsiParameter param = e.getFunction().getParameters().get(0);

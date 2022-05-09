@@ -8,7 +8,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiLowerIdentifier extends CompositeTypePsiElement<ORTypes> implements PsiNameIdentifierOwner {
+public class PsiLowerIdentifier extends ORCompositeTypePsiElement<ORTypes> implements PsiNameIdentifierOwner {
     // region Constructors
     public PsiLowerIdentifier(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);

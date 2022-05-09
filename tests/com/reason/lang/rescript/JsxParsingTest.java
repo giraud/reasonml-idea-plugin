@@ -1,6 +1,5 @@
 package com.reason.lang.rescript;
 
-import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -13,12 +12,19 @@ public class JsxParsingTest extends ResParsingTestCase {
         PsiTag e = (PsiTag) firstElement(parseCode("<div>children</div>"));
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
-        assertEquals("<div>", tag.getText());
+        assertEquals("div", tag.getNameIdentifier().getText());
         assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
 
     public void test_tag_name() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<Comp disabled=false/>"));
+
+        PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
+        assertEquals("Comp", tag.getNameIdentifier().getText());
+    }
+
+    public void test_prop_function() {
         PsiTag e = (PsiTag) firstElement(parseCode("<Comp render={() => <Another/>}/>"));
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
@@ -65,23 +71,20 @@ public class JsxParsingTest extends ResParsingTestCase {
         PsiTagStart tagStart = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
         assertInstanceOf(tagStart.getNameIdentifier(), PsiUpperSymbol.class);
         assertEquals("Test", tagStart.getNameIdentifier().getText());
-        PsiElement nextSibling = tagStart.getFirstChild().getNextSibling();
-        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
-        nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        // zzz List<PsiLeafTagName> tagNames = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, PsiLeafTagName.class));
+        //assertEquals("Container", tagNames.get(0).getText());
+        //assertEquals("Test", tagNames.get(1).getText());
 
         PsiTagClose tagClose = first(PsiTreeUtil.findChildrenOfType(let, PsiTagClose.class));
-        nextSibling = tagClose.getFirstChild().getNextSibling();
-        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
-        nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        //List<PsiLeafTagName> closeNames = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, PsiLeafTagName.class));
+        //assertEquals("Container", closeNames.get(0).getText());
+        //assertEquals("Test", closeNames.get(1).getText());
     }
 
     public void test_tag_prop_with_paren() {
         PsiTag tag = (PsiTag) firstElement(parseCode("<div style=(x) onFocus=a11y.onFocus/>"));
 
-        Collection<PsiTagProperty> properties =
-                PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
+        Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
         assertEquals(2, properties.size());
         Iterator<PsiTagProperty> itProperties = properties.iterator();
         assertEquals("style=(x)", itProperties.next().getText());
@@ -139,10 +142,9 @@ public class JsxParsingTest extends ResParsingTestCase {
     }
 
     public void test_tag_chaining() {
-        Collection<PsiModule> psiModules =
-                moduleExpressions(
-                        parseCode(
-                                "module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};"));
+        Collection<PsiModule> psiModules = moduleExpressions(parseCode(
+                "module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};"));
+
         assertEquals(2, psiModules.size());
     }
 
@@ -154,31 +156,22 @@ public class JsxParsingTest extends ResParsingTestCase {
     }
 
     public void test_prop02() {
-        PsiTag e =
-                (PsiTag)
-                        firstElement(
-                                parseCode(
-                                        "<Splitter left={<NotificationsList notifications />} right={<div> {ReasonReact.string(\"switch inside\")} </div>}/>"));
+        PsiTag e = (PsiTag) firstElement(parseCode(
+                "<Splitter left={<NotificationsList notifications />} right={<div> {ReasonReact.string(\"switch inside\")} </div>}/>"));
 
         List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(2, properties.size());
         assertEquals("{<NotificationsList notifications />}", properties.get(0).getValue().getText());
-        assertEquals(
-                "{<div> {ReasonReact.string(\"switch inside\")} </div>}",
-                properties.get(1).getValue().getText());
+        assertEquals("{<div> {ReasonReact.string(\"switch inside\")} </div>}", properties.get(1).getValue().getText());
     }
 
     public void test_prop03() {
-        PsiTag e =
-                (PsiTag)
-                        firstElement(
-                                parseCode(
-                                        "<PageContentGrid height={computePageHeight(miniDashboardHeight)} title=\"X\"/>"));
+        PsiTag e = (PsiTag) firstElement(parseCode(
+                "<PageContentGrid height={computePageHeight(miniDashboardHeight)} title=\"X\"/>"));
 
         List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(2, properties.size());
-        assertEquals(
-                "{computePageHeight(miniDashboardHeight)}", properties.get(0).getValue().getText());
+        assertEquals("{computePageHeight(miniDashboardHeight)}", properties.get(0).getValue().getText());
         assertEquals("\"X\"", properties.get(1).getValue().getText());
     }
 

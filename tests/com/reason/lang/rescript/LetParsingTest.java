@@ -16,6 +16,7 @@ import static com.reason.lang.core.psi.ExpressionScope.*;
 public class LetParsingTest extends ResParsingTestCase {
     public void test_constant() {
         PsiLet let = first(letExpressions(parseCode("let x = 1")));
+
         assertEquals("x", let.getName());
         assertFalse(let.isFunction());
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
@@ -38,6 +39,7 @@ public class LetParsingTest extends ResParsingTestCase {
 
     public void test_binding() {
         PsiLet let = first(letExpressions(parseCode("let x = {\"u\": \"r\", \"l\": \"lr\"}")));
+
         assertFalse(let.isFunction());
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }

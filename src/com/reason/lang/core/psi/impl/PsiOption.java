@@ -10,7 +10,7 @@ import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
-public class PsiOption extends CompositeTypePsiElement<ORTypes> implements PsiLanguageConverter {
+public class PsiOption extends ORCompositeTypePsiElement<ORTypes> implements PsiLanguageConverter {
     protected PsiOption(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

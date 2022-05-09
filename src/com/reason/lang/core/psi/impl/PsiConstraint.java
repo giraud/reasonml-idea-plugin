@@ -5,7 +5,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiConstraint extends CompositeTypePsiElement<ORTypes> {
+public class PsiConstraint extends ORCompositeTypePsiElement<ORTypes> {
     protected PsiConstraint(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

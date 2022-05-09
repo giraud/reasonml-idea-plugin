@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
-public class ComponentTestJsx3 extends RmlParsingTestCase {
+public class ComponentJsx3ParsingTest extends RmlParsingTestCase {
     public void test_file_component() {
         FileBase e = parseCode("[@react.component]\nlet make = () => { <div/> };");
 

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.*;
 
 // Wrapper around the PsiBuilder.Marker to keep its status
 public class MarkerScope {
-    enum MarkerStatus {
+    enum Status {
         unset, done, dropped
     }
 
@@ -17,7 +17,7 @@ public class MarkerScope {
 
     private ORCompositeType myCompositeElementType;
     private ORTokenElementType myScopeElementType;
-    private MarkerStatus myMarkerStatus = MarkerStatus.unset;
+    private Status myStatus = Status.unset;
     private boolean myIsStart = false;
 
     private MarkerScope(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @Nullable ORCompositeType compositeElementType, @Nullable ORTokenElementType scopeTokenElementType) {
@@ -51,24 +51,25 @@ public class MarkerScope {
 
     public void end() {
         done();
+        myScopeElementType = null;
     }
 
     private void done() {
-        if (myMarkerStatus == MarkerStatus.unset) {
+        if (myStatus == Status.unset) {
             if (myCompositeElementType instanceof IElementType) {
                 myMark.done((IElementType) myCompositeElementType);
-                myMarkerStatus = MarkerStatus.done;
+                myStatus = Status.done;
             } else {
                 myMark.drop();
-                myMarkerStatus = MarkerStatus.dropped;
+                myStatus = Status.dropped;
             }
         }
     }
 
     public void drop() {
-        if (myMarkerStatus == MarkerStatus.unset) {
+        if (myStatus == Status.unset) {
             myMark.drop();
-            myMarkerStatus = MarkerStatus.dropped;
+            myStatus = Status.dropped;
         }
     }
 
@@ -127,7 +128,15 @@ public class MarkerScope {
         return myCompositeElementType;
     }
 
+    public boolean isUnset() {
+        return myStatus == Status.unset;
+    }
+
+    public boolean isDone() {
+        return myStatus == Status.done;
+    }
+
     @Override public String toString() {
-        return myCompositeElementType + (myIsStart ? ".start" : "") + (myScopeElementType == null ? "" : " [" + myScopeElementType + "]") + " (" + myMarkerStatus + ")";
+        return myCompositeElementType + (myIsStart ? ".start" : "") + (myScopeElementType == null ? "" : " [" + myScopeElementType + "]") + " (" + myStatus + ")";
     }
 }

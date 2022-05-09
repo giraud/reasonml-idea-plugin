@@ -112,6 +112,11 @@ public class ParserState {
         return !myMarkers.isEmpty() && myMarkers.peek().isCompositeType(composite);
     }
 
+    public boolean isDone(@Nullable ORCompositeType composite) {
+        MarkerScope marker = myMarkers.isEmpty() ? null : myMarkers.peek();
+        return marker != null && marker.isDone() && marker.isCompositeType(composite);
+    }
+
     public boolean isParent(ORCompositeType composite) {
         boolean found = false;
         if (myMarkers.size() >= 2) {
@@ -153,14 +158,56 @@ public class ParserState {
         int size = myMarkers.size();
         int stop = Math.min(size, maxDepth);
         for (int i = 0; i < stop; i++) {
-            MarkerScope markerScope = myMarkers.get(i);
-            if (markerScope.isCompositeType(excluded)) {
-                myIndex = -1;
-                return false;
+            MarkerScope marker = myMarkers.get(i);
+            if (marker.isUnset()) { // not dropped or done
+                if (marker.isCompositeType(excluded)) {
+                    myIndex = -1;
+                    return false;
+                }
+                if ((useScope && marker.hasScope()) || marker.isCompositeType(composite)) {
+                    myIndex = i;
+                    return true;
+                }
             }
-            if ((useScope && markerScope.hasScope()) || markerScope.isCompositeType(composite)) {
-                myIndex = i;
-                return true;
+        }
+        myIndex = -1;
+        return false;
+    }
+
+    public boolean strictlyIn(ORCompositeType composite) {
+        int size = myMarkers.size();
+        int stop = Math.min(size, myMarkers.size());
+        for (int i = 0; i < stop; i++) {
+            MarkerScope marker = myMarkers.get(i);
+            if (marker.isUnset()) { // not dropped or done
+                if (marker.isCompositeType(composite)) {
+                    myIndex = i;
+                    return true;
+                }
+                if (marker.hasScope()) {
+                    myIndex = -1;
+                    return false;
+                }
+            }
+        }
+        myIndex = -1;
+        return false;
+    }
+
+    public boolean strictlyInAny(@NotNull ORCompositeType... composite) {
+        int size = myMarkers.size();
+        int stop = Math.min(size, myMarkers.size());
+        for (int i = 0; i < stop; i++) {
+            MarkerScope marker = myMarkers.get(i);
+            if (marker.isUnset()) { // not dropped or done
+                if (marker.isCompositeIn(composite)) {
+                    myIndex = i;
+                    return true;
+                }
+                if (marker.hasScope()) {
+                    myIndex = -1;
+                    return false;
+                }
             }
         }
         myIndex = -1;
@@ -473,7 +520,7 @@ public class ParserState {
         return myIndex;
     }
 
-    public boolean isLatestScopeFound(@Nullable ORCompositeType expectedType) {
+    public boolean isFound(@Nullable ORCompositeType expectedType) {
         MarkerScope scope = find(myIndex);
         return scope != null && scope.isCompositeType(expectedType);
     }
@@ -488,5 +535,10 @@ public class ParserState {
     public boolean isAtIndex(int index, @NotNull ORCompositeType expectedComposite) {
         MarkerScope marker = find(index);
         return marker != null && marker.isCompositeType(expectedComposite);
+    }
+
+    public @NotNull ParserState end() {
+        getLatestScope().end();
+        return this;
     }
 }

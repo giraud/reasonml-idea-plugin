@@ -8,7 +8,7 @@ import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiUpperSymbolImpl extends CompositeTypePsiElement<ORTypes> implements PsiUpperSymbol {
+public class PsiUpperSymbolImpl extends ORCompositeTypePsiElement<ORTypes> implements PsiUpperSymbol {
     // region Constructors
     protected PsiUpperSymbolImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);

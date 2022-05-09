@@ -11,6 +11,6 @@ public class PsiLeafTagName extends LeafPsiElement {
 
     @Override
     public @NotNull String toString() {
-        return "TagName:" + getText();
+        return "ORLeaf(TAG_NAME)";
     }
 }

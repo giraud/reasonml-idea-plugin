@@ -10,7 +10,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiFunction extends CompositeTypePsiElement<ORTypes> implements PsiElement {
+public class PsiFunction extends ORCompositeTypePsiElement<ORTypes> implements PsiElement {
     protected PsiFunction(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
