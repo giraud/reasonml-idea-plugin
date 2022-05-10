@@ -31,11 +31,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
 
                         if (LOG.isTraceEnabled()) {
                             LOG.debug("»» Completion: position: " + position + ", " + position.getText());
-                            LOG.debug(
-                                    "               original: "
-                                            + originalPosition
-                                            + ", "
-                                            + (originalPosition == null ? null : originalPosition.getText()));
+                            LOG.debug("               original: " + originalPosition + ", " + (originalPosition == null ? null : originalPosition.getText()));
                             LOG.debug("                element: " + element);
                             LOG.debug("                 parent: " + parent);
                             LOG.debug("           grand-parent: " + grandParent);

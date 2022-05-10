@@ -20,11 +20,11 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
         IElementType tokenType = null;
         state.previousElementType1 = null;
 
-        long parseStart = System.currentTimeMillis();
+        //long parseStart = System.currentTimeMillis();
 
         int c = current_position_(builder);
         while (true) {
-            long parseTime = System.currentTimeMillis();
+            //long parseTime = System.currentTimeMillis();
             //if (5 < parseTime - parseStart) {
             // Protection: abort the parsing if too much time spent
             //state.error("ABORT");
@@ -747,10 +747,6 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
     }
 
     private void parseLIdent(@NotNull ParserState state) {
-        if (state.in(m_types.C_PATH)) {
-            state.popEndUntil(m_types.C_PATH).popEnd();
-        }
-
         if (state.is(m_types.C_LET_DECLARATION)) {
             // let |>x<| ...
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
@@ -842,11 +838,17 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
         } else if (nextTokenType == m_types.PERCENT) {
             // |>[ <| % ...
             state.markScope(m_types.C_MACRO_EXPR, m_types.LBRACKET);
-        } else if (state.in(m_types.C_PATH)) {
-            // Local open ::  M.|>[ <| ... ]
-            state.popEndUntilIndex(state.getIndex()).popEnd()
-                    .markScope(m_types.C_LOCAL_OPEN, m_types.LBRACKET);
-        } else {
+        } else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
+            // Local open ::  M.|>(<| ...
+            state.markScope(m_types.C_LOCAL_OPEN, m_types.LBRACKET);
+        }
+
+        //else if (state.in(m_types.C_PATH)) {
+        //    // Local open ::  M.|>[ <| ... ]
+        //    state.popEndUntilIndex(state.getIndex()).popEnd()
+        //            .markScope(m_types.C_LOCAL_OPEN, m_types.LBRACKET);
+        //}
+        else {
             state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET);
         }
     }
@@ -865,9 +867,9 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
     }
 
     private void parseLBrace(@NotNull ParserState state) {
-        if (state.previousElementType1 == m_types.DOT && state.in(m_types.C_PATH)/*previousElementType2 == m_types.UIDENT*/) {
+        if (state.previousElementType1 == m_types.DOT && state.previousElementType2 == m_types.UIDENT) {
             // Local open a js object or a record ::  Xxx.|>{<| ... }
-            state.popEndUntil(m_types.C_PATH).popEnd().mark(m_types.C_LOCAL_OPEN);
+            state.mark(m_types.C_LOCAL_OPEN);
             IElementType nextElementType = state.lookAhead(1);
             if (nextElementType == m_types.LIDENT) {
                 state.markScope(m_types.C_RECORD_EXPR, m_types.LBRACE);
@@ -981,9 +983,9 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
             //  let |>(<| + ) =
             //  let |>(<| a, b ) =
             state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN);
-        } else if (state.in(m_types.C_PATH)/*state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT*/) {
+        } else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
             // Local open ::  M.|>(<| ...
-            state.popEndUntilIndex(state.getIndex()).popEnd()
+            state//.popEndUntilIndex(state.getIndex()).popEnd()
                     .markScope(m_types.C_LOCAL_OPEN, m_types.LPAREN);
         }
         //if (state.is(m_types.C_SIG_ITEM) && state.previousElementType1 == m_types.COLON) {
@@ -1225,15 +1227,15 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
             return;
         }
 
-        IElementType nextToken = state.lookAhead(1);
-        MarkerScope latestScope = null;
-        if (nextToken == m_types.DOT && !state.in(m_types.C_PATH)) {
-            state.mark(m_types.C_PATH);
-        } else if (nextToken != m_types.DOT && state.in(m_types.C_PATH)) {
-            state.popEndUntil(m_types.C_PATH);
-            latestScope = state.getLatestScope();
-            state.popEnd();
-        }
+        //IElementType nextToken = state.lookAhead(1);
+        //MarkerScope latestScope = null;
+        //if (nextToken == m_types.DOT && !state.in(m_types.C_PATH)) {
+        //    state.mark(m_types.C_PATH);
+        //} else if (nextToken != m_types.DOT && state.in(m_types.C_PATH)) {
+        //    state.popEndUntil(m_types.C_PATH);
+        //    latestScope = state.getLatestScope();
+        //    state.popEnd();
+        //}
 
         if (state.is(m_types.C_MODULE_DECLARATION) || state.is(m_types.C_FUNCTOR_DECLARATION)) {
             // module |>M<| ...
@@ -1288,17 +1290,12 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
                     // We are declaring a variant without a pipe before ::  type t = |>X<| | ...
                     state.mark(m_types.C_VARIANT_DECLARATION).wrapWith(m_types.C_UPPER_IDENTIFIER);
                     return;
-                } else if (state.is(m_types.C_MODULE_BINDING) && nextElementType == m_types.LPAREN) {
+                } else if (state.isCurrent(m_types.C_MODULE_BINDING) && nextElementType == m_types.LPAREN) {
                     // functor call ::  |>X<| ( ...
                     // functor call with path :: A.B.|>X<| ( ...
-                    state.getLatestScope().drop();
+                    state.getCurrentMarker().drop();
                     state.mark(m_types.C_FUNCTOR_CALL);
                 }
-                //        else if (!state.isCurrentResolution(maybeFunctorCall) && nextElementType != m_types.DOT) {
-                //            // Must be a variant call
-                //            state.wrapWith(m_types.C_VARIANT);
-                //            return;
-                //        }
             }
 
             state.wrapWith(m_types.C_UPPER_SYMBOL);

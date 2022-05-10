@@ -17,7 +17,6 @@ public class OpenParsingTest extends RmlParsingTestCase {
     public void test_path() {
         PsiOpen e = first(openExpressions(parseCode("open Belt.Array;")));
 
-        assertEquals("Belt.", ORUtil.findImmediateFirstChildOfClass(e, PsiPath.class).getText());
         assertEquals("Belt.Array", e.getPath());
     }
 

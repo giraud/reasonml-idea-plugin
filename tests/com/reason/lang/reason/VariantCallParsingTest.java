@@ -46,8 +46,8 @@ public class VariantCallParsingTest extends RmlParsingTestCase {
 
         PsiPatternMatchBody body = PsiTreeUtil.findChildOfType(e, PsiPatternMatchBody.class);
         assertEquals("ReasonReact.SideEffects.(_self => onDescriptionChange(desc))", body.getText());
-        PsiPath path = ORUtil.findImmediateFirstChildOfClass(body, PsiPath.class);
-        assertEquals("ReasonReact.SideEffects.", path.getText());
+        List<PsiUpperSymbol> uppers = ORUtil.findImmediateChildrenOfClass(body, PsiUpperSymbol.class);
+        assertEquals("ReasonReact, SideEffects", Joiner.join(", ", uppers.stream().map(PsiElement::getText).collect(Collectors.toList())));
     }
 
     public void test_in_method() {

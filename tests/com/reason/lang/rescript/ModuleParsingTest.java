@@ -75,11 +75,6 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("{ type t = int }", e.getBody().getText());
     }
 
-    public void test_module_open_variant() {
-        FileBase file = parseCode("ModelActions.UserCapabilitiesLoaded.( UserCapabilitiesBuilder.( ) ),");
-        assertEquals(3, childrenCount(file));
-    }
-
     public void test_annotation_after() {
         FileBase e = parseCode("module M = {}\n@module(\"x\")");
 

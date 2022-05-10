@@ -1,6 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.*;
+import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -135,5 +136,19 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertSize(2, fields);
         assertEquals(fields.get(0).getName(), "a");
         assertEquals(fields.get(1).getName(), "b");
+    }
+
+    public void test_option() {
+        PsiVal e = firstOfType(parseCode("val x: string array option"), PsiVal.class);
+
+        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        assertEquals("string array option", option.getText());
+    }
+
+    public void test_option_named_params() {
+        PsiExternal e = firstOfType(parseCode("external add : x:int option -> int = \"\""), PsiExternal.class);
+
+        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        assertEquals("int option", option.getText());
     }
 }

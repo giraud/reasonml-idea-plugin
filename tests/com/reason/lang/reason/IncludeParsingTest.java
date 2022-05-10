@@ -5,7 +5,6 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
-@SuppressWarnings("ConstantConditions")
 public class IncludeParsingTest extends RmlParsingTestCase {
     public void test_one() {
         PsiInclude e = first(includeExpressions(parseCode("include Belt;")));
@@ -17,7 +16,6 @@ public class IncludeParsingTest extends RmlParsingTestCase {
     public void test_path() {
         PsiInclude e = first(includeExpressions(parseCode("include Belt.Array;")));
 
-        assertEquals("Belt.", ORUtil.findImmediateFirstChildOfClass(e, PsiPath.class).getText());
         assertEquals("Belt.Array", e.getIncludePath());
     }
 

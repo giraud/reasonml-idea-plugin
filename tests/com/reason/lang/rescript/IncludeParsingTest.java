@@ -5,6 +5,8 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
+import java.util.*;
+
 public class IncludeParsingTest extends ResParsingTestCase {
     public void test_one() {
         PsiInclude e = first(includeExpressions(parseCode("include Belt")));
@@ -16,7 +18,6 @@ public class IncludeParsingTest extends ResParsingTestCase {
     public void test_path() {
         PsiInclude e = first(includeExpressions(parseCode("include Belt.Array")));
 
-        assertEquals("Belt.", ORUtil.findImmediateFirstChildOfClass(e, PsiPath.class).getText());
         assertEquals("Belt.Array", e.getIncludePath());
     }
 
@@ -25,5 +26,11 @@ public class IncludeParsingTest extends ResParsingTestCase {
 
         assertTrue(e.useFunctor());
         assertEquals("A.Make", e.getIncludePath());
+    }
+
+    public void test_chaining() {
+        Collection<PsiInclude> includes = includeExpressions(parseCode("include Belt include Js"));
+
+        assertSize(2, includes);
     }
 }

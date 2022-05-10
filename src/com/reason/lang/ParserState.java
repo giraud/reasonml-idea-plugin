@@ -84,32 +84,31 @@ public class ParserState {
         return scope;
     }
 
-    @Nullable
-    public MarkerScope peekUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
-        if (!myMarkers.isEmpty()) {
-            for (MarkerScope scope : myMarkers) {
-                if (scope != null && scope.getScopeTokenElementType() == scopeElementType) {
-                    return scope;
-                }
-            }
-        }
-
-        return null;
-    }
-
     public @NotNull MarkerScope getLatestScope() {
         return myMarkers.isEmpty() ? myRootMarker : myMarkers.peek();
     }
 
-    public @Nullable MarkerScope getLatestCompletedScope() {
-        //ParserScope completed = m_latestCompleted;
-        //m_latestCompleted = null;
-        //return completed;
-        return null;
+    public @NotNull MarkerScope getCurrentMarker() {
+        for (MarkerScope marker : myMarkers) {
+            if (marker.isUnset()) {
+                return marker;
+            }
+        }
+        return  myRootMarker;
     }
 
     public boolean is(@Nullable ORCompositeType composite) {
         return !myMarkers.isEmpty() && myMarkers.peek().isCompositeType(composite);
+    }
+
+    public boolean isCurrent(@Nullable ORCompositeType composite) {
+        // skip done/drop elements
+        for (MarkerScope marker : myMarkers) {
+            if (marker.isUnset()) {
+                return marker.isCompositeType(composite);
+            }
+        }
+        return false;
     }
 
     public boolean isDone(@Nullable ORCompositeType composite) {
@@ -265,16 +264,13 @@ public class ParserState {
         return false;
     }
 
-    public boolean isCurrentCompositeElementType(@Nullable ORCompositeType compositeType) {
-        return is(compositeType);
-    }
-
     public boolean isScopeTokenElementType(@Nullable ORTokenElementType scopeTokenElementType) {
         return getLatestScope().isScopeToken(scopeTokenElementType);
     }
 
     public @NotNull ParserState mark(@NotNull ORCompositeType composite) {
-        myMarkers.push(MarkerScope.mark(myBuilder, composite));
+        MarkerScope mark = MarkerScope.mark(myBuilder, composite);
+        myMarkers.push(mark);
         return this;
     }
 
@@ -382,7 +378,9 @@ public class ParserState {
     }
 
     public ParserState popEndUntilFoundIndex() {
-        return popEndUntilIndex(getIndex());
+        int index = myIndex;
+        myIndex = -1;
+        return popEndUntilIndex(index);
     }
 
     public boolean hasScopeToken() {

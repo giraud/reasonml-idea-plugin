@@ -70,23 +70,15 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
         return false;
     }
 
-    // zzz protected boolean isFunctorResolution(@Nullable ParserScope scope) {
-    //    return scope != null && (scope.isResolution(functorNamedEq) || scope.isResolution(functorNamedEqColon));
-    //}
-
-    // zzz protected boolean isLetResolution(@NotNull ParserScope scope) {
-    //    return scope.isResolution(letNamed);
-    //}
-
     @Nullable
     protected WhitespaceSkippedCallback endJsxPropertyIfWhitespace(@NotNull ParserState state) {
         if (m_types instanceof ORTypes) {
             ORTypes types = (ORTypes) m_types;
             return (type, start, end) -> {
                 if (state.is(types.C_TAG_PROPERTY)
-                        || (state.is(types.C_TAG_PROP_VALUE) && !state.hasScopeToken())) {
-                    if (state.is(types.C_TAG_PROP_VALUE)) {
-                        state.popEnd();
+                        || (state.strictlyIn(types.C_TAG_PROP_VALUE)/* && !state.hasScopeToken()*/)) {
+                    if (state.isFound(types.C_TAG_PROP_VALUE)) {
+                        state.popEndUntilFoundIndex().popEnd();
                     }
                     state.popEnd();
                     state.setWhitespaceSkippedCallback(null);

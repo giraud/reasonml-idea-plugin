@@ -70,9 +70,6 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == m_types.C_PARAMETERS || type == m_types.C_VARIANT_CONSTRUCTOR) {
             return new PsiParametersImpl(m_types, type);
         }
-        if (type == m_types.C_PATH) {
-            return new PsiPath(type);
-        }
         if (type == m_types.C_PATTERN_MATCH_BODY) {
             return new PsiPatternMatchBody(type);
         }

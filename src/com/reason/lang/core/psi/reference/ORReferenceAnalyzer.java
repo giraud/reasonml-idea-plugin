@@ -91,6 +91,12 @@ public class ORReferenceAnalyzer {
         Deque<PsiElement> instructions = new LinkedList<>();
 
         while (item != null) {
+            if (item instanceof PsiPath) {
+                List<PsiUpperSymbol> uppers = ORUtil.findImmediateChildrenOfClass(item, PsiUpperSymbol.class);
+                for (int i = uppers.size()-1; i >= 0; i--) {
+                    instructions.push(new ORUpperSymbolWithResolution(uppers.get(i)));
+                }
+            }
             if (item instanceof PsiUpperSymbol || item instanceof PsiLowerSymbol) {
                 // only add if it's from a local path
                 //   can be a real path from a record : a.b.c

@@ -1,5 +1,6 @@
 package com.reason.lang.rescript;
 
+import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -71,14 +72,16 @@ public class JsxParsingTest extends ResParsingTestCase {
         PsiTagStart tagStart = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
         assertInstanceOf(tagStart.getNameIdentifier(), PsiUpperSymbol.class);
         assertEquals("Test", tagStart.getNameIdentifier().getText());
-        // zzz List<PsiLeafTagName> tagNames = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, PsiLeafTagName.class));
-        //assertEquals("Container", tagNames.get(0).getText());
-        //assertEquals("Test", tagNames.get(1).getText());
+        PsiElement nextSibling = tagStart.getFirstChild().getNextSibling();
+        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        nextSibling = nextSibling.getNextSibling().getNextSibling();
+        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
 
         PsiTagClose tagClose = first(PsiTreeUtil.findChildrenOfType(let, PsiTagClose.class));
-        //List<PsiLeafTagName> closeNames = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, PsiLeafTagName.class));
-        //assertEquals("Container", closeNames.get(0).getText());
-        //assertEquals("Test", closeNames.get(1).getText());
+        nextSibling = tagClose.getFirstChild().getNextSibling();
+        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        nextSibling = nextSibling.getNextSibling().getNextSibling();
+        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
     }
 
     public void test_tag_prop_with_paren() {

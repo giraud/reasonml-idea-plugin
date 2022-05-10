@@ -88,12 +88,12 @@ public class JsxParsingTest extends RmlParsingTestCase {
     }
 
     public void test_tag_props_with_dot() {
-        PsiTag e = (PsiTag) firstElement(parseCode("<a className=Styles.link href=h download=d></a>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<a className=A.B.link href=h download=d></a>"));
 
         List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
         assertSize(3, props);
         assertEquals("className", props.get(0).getName());
-        assertEquals("Styles.link", props.get(0).getValue().getText());
+        assertEquals("A.B.link", props.get(0).getValue().getText());
         assertEquals("href", props.get(1).getName());
         assertEquals("h", props.get(1).getValue().getText());
         assertEquals("download", props.get(2).getName());

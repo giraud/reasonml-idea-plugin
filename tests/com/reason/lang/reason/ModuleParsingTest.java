@@ -76,9 +76,4 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals("{ type t; }", e.getModuleType().getText());
         assertEquals("{ type t = int; }", e.getBody().getText());
     }
-
-    public void test_module_open_variant() {
-        FileBase file = parseCode("ModelActions.UserCapabilitiesLoaded.( UserCapabilitiesBuilder.( ) ),");
-        assertEquals(3, childrenCount(file));
-    }
 }

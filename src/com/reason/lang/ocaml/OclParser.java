@@ -196,16 +196,11 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseOption(@NotNull ParserState state) {
-        //if (state.isDummy() && (state.isParent(m_types.C_SIG_ITEM) || state.isParent(m_types.C_TYPE_BINDING))) {
-        // in type      :  type t = xxx |>option<|
-        // or signature :  ... -> xxx |>option<| ...
-        //state.updateCurrentCompositeElementType(m_types.C_OPTION).complete();
-        //}
-        if (state.inAny(m_types.C_TYPE_BINDING)) {
+        if (state.strictlyInAny(m_types.C_TYPE_BINDING, m_types.C_SIG_ITEM)) {
+            // in type      :  type t = xxx |>option<|
+            // or signature :  ... -> xxx |>option<| ...
             int pos = state.getIndex();
             if (pos > 0) {
-                // in type      :  type t = xxx |>option<|
-                // or signature :  ... -> xxx |>option<| ...
                 state.markBefore(pos - 1, m_types.C_OPTION);
             }
         }
@@ -886,7 +881,7 @@ public class OclParser extends CommonParser<OclTypes> {
                     .mark(m_types.C_FUN_PARAM);
         } else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
             // Detecting a local open ::  M1.M2. |>(<| ... )
-            state.popEndUntil(m_types.C_PATH).popEnd().
+            state./*popEndUntil(m_types.C_PATH).*/popEnd().
                     markScope(m_types.C_LOCAL_OPEN, m_types.LPAREN);
         } else if (state.in(m_types.C_FUNCTOR_CALL)) {
             // module X = M |>(<| ...
@@ -1066,9 +1061,9 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLIdent(@NotNull ParserState state) {   // zzz merge symbol/ident ?
-        if (state.in(m_types.C_PATH)) {
-            state.popEndUntil(m_types.C_PATH).popEnd();
-        }
+        //if (state.in(m_types.C_PATH)) {
+        //    state.popEndUntil(m_types.C_PATH).popEnd();
+        //}
 
         if (state.is(m_types.C_LET_DECLARATION)) {
             // let |>x<| ...
@@ -1166,15 +1161,15 @@ public class OclParser extends CommonParser<OclTypes> {
 
         IElementType nextToken = state.lookAhead(1);
         MarkerScope latestScope = null;
-        if (nextToken == m_types.DOT && !state.in(m_types.C_PATH)) {
-            state.mark(m_types.C_PATH);
-        } else if (nextToken != m_types.DOT && state.in(m_types.C_PATH)) {
-            state.popEndUntil(m_types.C_PATH);
-            latestScope = state.getLatestScope();
-            state.popEnd();
-        }
+        //if (nextToken == m_types.DOT && !state.in(m_types.C_PATH)) {
+        //    state.mark(m_types.C_PATH);
+        //} else if (nextToken != m_types.DOT && state.in(m_types.C_PATH)) {
+        //    state.popEndUntil(m_types.C_PATH);
+        //    latestScope = state.getLatestScope();
+        //    state.popEnd();
+        //}
 
-        if (state.is(m_types.C_MODULE_DECLARATION) && state.previousElementType1 != m_types.OF && (latestScope == null || !latestScope.isCompositeType(m_types.C_PATH))) {
+        if (state.is(m_types.C_MODULE_DECLARATION) && state.previousElementType1 != m_types.OF && (latestScope == null/* || !latestScope.isCompositeType(m_types.C_PATH)*/)) {
             // module |>M<| ...
             state.wrapWith(m_types.C_UPPER_IDENTIFIER);
         } else if (state.is(m_types.C_FUNCTOR_DECLARATION)) {

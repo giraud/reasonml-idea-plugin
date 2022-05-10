@@ -41,14 +41,8 @@ public class PsiOpenImpl extends PsiTokenStub<ORTypes, PsiOpen, PsiOpenStub> imp
             child = PsiTreeUtil.skipWhitespacesForward(child);
         }
 
-        if (child instanceof PsiPath) {
-            String path = child.getText();
-            child = PsiTreeUtil.skipWhitespacesForward(child);
-            if (child instanceof PsiFunctorCall) {
-                return path + ((PsiFunctorCall) child).getFunctorName();
-            } else if (child instanceof PsiUpperSymbol) {
-                return path + child.getText();
-            }
+        if (child instanceof PsiFunctorCall) {
+            return ((PsiFunctorCall) child).getFunctorName();
         }
 
         return child == null ? "" : ORUtil.getTextUntilTokenType(child, null);
