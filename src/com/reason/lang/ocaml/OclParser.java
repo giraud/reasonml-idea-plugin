@@ -353,14 +353,15 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.inAny(m_types.C_LET_DECLARATION, m_types.C_TYPE_DECLARATION)) {
             // pop scopes until a chainable expression is found
             state.popEndUntilIndex(state.getIndex());
-            Marker latestScope = state.getLatestScope();
+            Marker marker = state.getLatestMarker();
 
             state.popEnd().advance();
-
-            if (latestScope.isCompositeType(m_types.C_LET_DECLARATION)) {
-                state.mark(m_types.C_LET_DECLARATION).setStart();
-            } else if (latestScope.isCompositeType(m_types.C_TYPE_DECLARATION)) {
-                state.mark(m_types.C_TYPE_DECLARATION).setStart();
+            if (marker != null) {
+                if (marker.isCompositeType(m_types.C_LET_DECLARATION)) {
+                    state.mark(m_types.C_LET_DECLARATION).setStart();
+                } else if (marker.isCompositeType(m_types.C_TYPE_DECLARATION)) {
+                    state.mark(m_types.C_TYPE_DECLARATION).setStart();
+                }
             }
         }
     }
@@ -1100,11 +1101,7 @@ public class OclParser extends CommonParser<OclTypes> {
                 && state.previousElementType1 != m_types.STRUCT
                 && state.previousElementType1 != m_types.SIG
                 && state.previousElementType1 != m_types.COLON) {
-            Marker markerScope = state.getLatestScope();
-            while (!state.isRoot(markerScope) && !markerScope.hasScope()) {
-                state.popEnd();
-                markerScope = state.getLatestScope();
-            }
+            state.popEndUntilScope();
         }
     }
 }

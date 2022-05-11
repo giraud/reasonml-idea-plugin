@@ -17,21 +17,20 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
     @Override
     @NotNull
     public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
-        builder.setDebugMode(true);
+        //builder.setDebugMode(true);
 
-        // System.out.println("start parsing ");
-        // long start = System.currentTimeMillis();
+        //System.out.println("start parsing ");
+        //long start = System.currentTimeMillis();
 
         ASTNode treeBuilt;
 
-        // try {
+        //try {
         parseLight(elementType, builder);
         treeBuilt = builder.getTreeBuilt();
-        // }
-        // finally {
+        //} finally {
         //    long end = System.currentTimeMillis();
         //    System.out.println("end parsing in " + (end - start) + "ms");
-        // }
+        //}
 
         return treeBuilt;
     }
@@ -43,7 +42,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
         Marker fileScope = Marker.markRoot(builder);
 
-        ParserState state = new ParserState(builder, fileScope);
+        ParserState state = new ParserState(builder);
         parseFile(builder, state);
 
         // if we have a scope at last position in a file, without SEMI, we need to handle it here

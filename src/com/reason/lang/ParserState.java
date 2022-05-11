@@ -11,16 +11,14 @@ import java.util.*;
 public class ParserState {
     public final PsiBuilder myBuilder;
     private final LinkedList<Marker> myMarkers = new LinkedList<>();
-    private final Marker myRootMarker;
     public boolean dontMove = false;
     private int myIndex; // found index when using in(..)/inAny(..) functions
 
     public IElementType previousElementType2;
     public IElementType previousElementType1;
 
-    public ParserState(@NotNull PsiBuilder builder, @NotNull Marker rootCompositeMarker) {
+    public ParserState(@NotNull PsiBuilder builder) {
         myBuilder = builder;
-        myRootMarker = rootCompositeMarker;
     }
 
     public @NotNull ParserState popEndUntilStart() {
@@ -38,34 +36,30 @@ public class ParserState {
                         scope.end();
                     }
                 }
-                scope = getLatestScope();
+                scope = getLatestMarker();
             }
         }
 
         return this;
     }
 
-    public @NotNull Marker popEndUntilScope() {
+    public @Nullable Marker popEndUntilScope() {
         Marker latestKnownScope = null;
 
         if (!myMarkers.isEmpty()) {
             latestKnownScope = myMarkers.peek();
             Marker marker = latestKnownScope;
-            while (marker != myRootMarker && !marker.hasScope()) {
+            while (marker != null && !marker.hasScope()) {
                 marker = pop();
                 if (marker != null) {
-                    //if (marker.isEmpty()) {
-                    //    marker.drop();
-                    //} else {
                     marker.end();
-                    //}
                     latestKnownScope = marker;
                 }
-                marker = getLatestScope();
+                marker = getLatestMarker();
             }
         }
 
-        return latestKnownScope == null ? myRootMarker : latestKnownScope;
+        return latestKnownScope;
     }
 
     public @Nullable Marker popEndUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
@@ -73,26 +67,26 @@ public class ParserState {
 
         if (!myMarkers.isEmpty()) {
             scope = myMarkers.peek();
-            while (scope != myRootMarker && scope.getScopeTokenElementType() != scopeElementType) {
+            while (scope != null && scope.getScopeTokenElementType() != scopeElementType) {
                 popEnd();
-                scope = getLatestScope();
+                scope = getLatestMarker();
             }
         }
 
         return scope;
     }
 
-    public @NotNull Marker getLatestScope() {
-        return myMarkers.isEmpty() ? myRootMarker : myMarkers.peek();
+    public @Nullable Marker getLatestMarker() {
+        return myMarkers.isEmpty() ? null : myMarkers.peek();
     }
 
-    public @NotNull Marker getCurrentMarker() {
+    public @Nullable Marker getCurrentMarker() {
         for (Marker marker : myMarkers) {
             if (marker.isUnset()) {
                 return marker;
             }
         }
-        return myRootMarker;
+        return null;
     }
 
     public boolean is(@Nullable ORCompositeType composite) {
@@ -254,17 +248,20 @@ public class ParserState {
     }
 
     public boolean isOneOf(ORCompositeType @NotNull ... composites) {
-        Marker marker = getLatestScope();
-        for (ORCompositeType composite : composites) {
-            if (marker.isCompositeType(composite)) {
-                return true;
+        Marker marker = getLatestMarker();
+        if (marker != null) {
+            for (ORCompositeType composite : composites) {
+                if (marker.isCompositeType(composite)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
     public boolean isScopeTokenElementType(@Nullable ORTokenElementType scopeTokenElementType) {
-        return getLatestScope().isScopeToken(scopeTokenElementType);
+        Marker latestScope = getLatestMarker();
+        return latestScope != null && latestScope.isScopeToken(scopeTokenElementType);
     }
 
     public @NotNull ParserState mark(@NotNull ORCompositeType composite) {
@@ -280,7 +277,10 @@ public class ParserState {
 
     public @NotNull ParserState markDummyScope(@NotNull ORCompositeType composite, @NotNull ORTokenElementType scope) {
         markScope(composite, scope);
-        getLatestScope().drop();
+        Marker latestScope = getLatestMarker();
+        if (latestScope != null) {
+            latestScope.drop();
+        }
         return this;
     }
 
@@ -313,44 +313,37 @@ public class ParserState {
         return this;
     }
 
-    @Nullable
-    public Marker popEndUntilOneOf(@NotNull ORCompositeType... composites) {
-        Marker scope = null;
-
+    public void popEndUntilOneOf(@NotNull ORCompositeType... composites) {
         if (!myMarkers.isEmpty()) {
-            scope = myMarkers.peek();
-            while (scope != null && !ArrayUtil.contains(scope.getCompositeType(), composites)) {
+            Marker marker = myMarkers.peek();
+            while (marker != null && !ArrayUtil.contains(marker.getCompositeType(), composites)) {
                 popEnd();
-                scope = getLatestScope();
+                marker = getLatestMarker();
             }
         }
-
-        return scope;
     }
 
     @Nullable
     public Marker popEndUntilOneOfElementType(@NotNull ORTokenElementType... scopeElementTypes) {
-        Marker scope = null;
+        Marker marker = null;
 
         if (!myMarkers.isEmpty()) {
-            scope = myMarkers.peek();
-            while (scope != myRootMarker && !ArrayUtil.contains(scope.getScopeTokenElementType(), scopeElementTypes)) {
+            marker = myMarkers.peek();
+            while (marker != null && !ArrayUtil.contains(marker.getScopeTokenElementType(), scopeElementTypes)) {
                 popEnd();
-                scope = getLatestScope();
+                marker = getLatestMarker();
             }
         }
 
-        return scope;
+        return marker;
     }
 
     @NotNull
     public ParserState popEndUntil(@NotNull ORCompositeType composite) {
-        if (!myMarkers.isEmpty()) {
-            Marker scope = myMarkers.peek();
-            while (scope != myRootMarker && !scope.isCompositeType(composite)) {
-                popEnd();
-                scope = getLatestScope();
-            }
+        Marker marker = getLatestMarker();
+        while (marker != null && !marker.isCompositeType(composite)) {
+            popEnd();
+            marker = getLatestMarker();
         }
 
         return this;
@@ -372,11 +365,15 @@ public class ParserState {
     }
 
     public boolean hasScopeToken() {
-        return getLatestScope().hasScope();
+        Marker marker = getLatestMarker();
+        return marker != null && marker.hasScope();
     }
 
     public @NotNull ParserState updateComposite(@NotNull ORCompositeType compositeElementType) {
-        getLatestScope().updateCompositeType(compositeElementType);
+        Marker marker = getLatestMarker();
+        if (marker != null) {
+            marker.updateCompositeType(compositeElementType);
+        }
         return this;
     }
 
@@ -390,7 +387,10 @@ public class ParserState {
 
     public @NotNull ParserState updateScopeToken(@Nullable ORTokenElementType token) {
         if (token != null) {
-            getLatestScope().setScopeType(token);
+            Marker marker = getLatestMarker();
+            if (marker != null) {
+                marker.setScopeType(token);
+            }
         }
         return this;
     }
@@ -404,11 +404,17 @@ public class ParserState {
     }
 
     public void setStart() {
-        getLatestScope().setIsStart(true);
+        Marker marker = getLatestMarker();
+        if (marker != null) {
+            marker.setIsStart(true);
+        }
     }
 
     public @NotNull ParserState setStart(boolean isStart) {
-        getLatestScope().setIsStart(isStart);
+        Marker marker = getLatestMarker();
+        if (marker != null) {
+            marker.setIsStart(isStart);
+        }
         return this;
     }
 
@@ -443,11 +449,7 @@ public class ParserState {
     }
 
     public boolean isRoot() {
-        return getLatestScope() == myRootMarker;
-    }
-
-    public boolean isRoot(@Nullable Marker marker) {
-        return marker == myRootMarker;
+        return myMarkers.isEmpty();
     }
 
     public boolean isOptional() {
@@ -516,7 +518,10 @@ public class ParserState {
     }
 
     public @NotNull ParserState end() {
-        getLatestScope().end();
+        Marker marker = getLatestMarker();
+        if (marker != null) {
+            marker.end();
+        }
         return this;
     }
 }

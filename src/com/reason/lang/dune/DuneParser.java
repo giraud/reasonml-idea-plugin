@@ -14,15 +14,7 @@ public class DuneParser extends CommonParser<DuneTypes> {
   protected void parseFile(@NotNull PsiBuilder builder, @NotNull ParserState state) {
     IElementType tokenType = null;
 
-    // long parseStart = System.currentTimeMillis();
-
     while (true) {
-      // long parseTime = System.currentTimeMillis();
-      // if (5 < parseTime - parseStart) {
-      // Protection: abort the parsing if too much time spent
-      // break;
-      // }
-
       state.previousElementType1 = tokenType;
       tokenType = builder.getTokenType();
       if (tokenType == null) {

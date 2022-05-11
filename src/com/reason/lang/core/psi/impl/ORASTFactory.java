@@ -222,6 +222,11 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new PsiMacroName(type);
         }
 
+        // should not happen
+        if (type == m_types.C_DUMMY) {
+            return new PsiDummy(type);
+        }
+
         return null;
     }
 

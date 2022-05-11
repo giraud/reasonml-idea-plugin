@@ -9,7 +9,6 @@ import org.jetbrains.annotations.*;
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
 
 public class ResParser extends CommonParser<ResTypes> {
-
     ResParser() {
         super(ResTypes.INSTANCE);
     }
@@ -19,15 +18,7 @@ public class ResParser extends CommonParser<ResTypes> {
         IElementType tokenType = null;
         state.previousElementType1 = null;
 
-        // long parseStart = System.currentTimeMillis();
-
         while (true) {
-            // long parseTime = System.currentTimeMillis();
-            // if (5 < parseTime - parseStart) {
-            // Protection: abort the parsing if too much time spent
-            // break;
-            // }
-
             state.previousElementType2 = state.previousElementType1;
             state.previousElementType1 = tokenType;
             tokenType = builder.getTokenType();

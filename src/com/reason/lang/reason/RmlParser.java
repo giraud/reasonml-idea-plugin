@@ -20,17 +20,8 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
         IElementType tokenType = null;
         state.previousElementType1 = null;
 
-        //long parseStart = System.currentTimeMillis();
-
         int c = current_position_(builder);
         while (true) {
-            //long parseTime = System.currentTimeMillis();
-            //if (5 < parseTime - parseStart) {
-            // Protection: abort the parsing if too much time spent
-            //state.error("ABORT");
-            //break;
-            //}
-
             state.previousElementType2 = state.previousElementType1;
             state.previousElementType1 = tokenType;
             tokenType = state.getTokenType();
