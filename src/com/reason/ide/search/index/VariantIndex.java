@@ -12,7 +12,7 @@ import java.util.*;
 public class VariantIndex extends StringStubIndexExtension<PsiVariantDeclaration> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiVariantStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.VARIANT;
     }
 
     @Override

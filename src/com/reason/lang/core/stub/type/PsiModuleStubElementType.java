@@ -12,8 +12,6 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModuleStub, PsiModule> {
-    public static final int VERSION = 24;
-
     protected PsiModuleStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);
     }

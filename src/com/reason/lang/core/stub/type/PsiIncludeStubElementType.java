@@ -16,8 +16,6 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub, PsiInclude> {
-    public static final int VERSION = 3;
-
     public PsiIncludeStubElementType(@Nullable Language language) {
         super("C_INCLUDE", language);
     }

@@ -12,8 +12,6 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiVariantStubElementType extends ORStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> {
-    public static final int VERSION = 6;
-
     public PsiVariantStubElementType(@Nullable Language language) {
         super("C_VARIANT_DECLARATION", language);
     }

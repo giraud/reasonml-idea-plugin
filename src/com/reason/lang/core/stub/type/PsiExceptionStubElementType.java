@@ -13,8 +13,6 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiExceptionStubElementType extends ORStubElementType<PsiExceptionStub, PsiException> {
-    public static final int VERSION = 7;
-
     public PsiExceptionStubElementType(Language language) {
         super("C_EXCEPTION_DECLARATION", language);
     }

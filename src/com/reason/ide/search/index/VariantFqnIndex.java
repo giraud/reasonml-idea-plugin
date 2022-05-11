@@ -14,7 +14,7 @@ import static java.util.Collections.*;
 public class VariantFqnIndex extends IntStubIndexExtension<PsiVariantDeclaration> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiVariantStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.VARIANT;
     }
 
     @Override

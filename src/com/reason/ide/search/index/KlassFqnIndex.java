@@ -12,7 +12,7 @@ import java.util.*;
 public class KlassFqnIndex extends IntStubIndexExtension<PsiKlass> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiKlassStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.KLASS;
     }
 
     @Override

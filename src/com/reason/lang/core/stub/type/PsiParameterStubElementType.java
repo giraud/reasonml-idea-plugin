@@ -13,8 +13,6 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiParameterStubElementType extends ORStubElementType<PsiParameterStub, PsiParameter> {
-    public static final int VERSION = 5;
-
     public PsiParameterStubElementType(@NotNull String name, @NotNull Language language) {
         super(name, language);
     }
