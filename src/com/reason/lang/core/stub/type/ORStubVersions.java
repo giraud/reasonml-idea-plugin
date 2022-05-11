@@ -4,21 +4,21 @@ public class ORStubVersions {
     private ORStubVersions() {
     }
 
-    public static final int INCLUDE = 3;
-    public static final int KLASS = 2;
-    public static final int LET = 14;
-    public static final int EXCEPTION = 7;
-    public static final int EXTERNAL = 9;
-    public static final int MODULE = 24;
-    public static final int OBJECT_FIELD = 2;
-    public static final int OPEN = 2;
-    public static final int PARAMETER = 5;
-    public static final int RECORD_FIELD = 5;
-    public static final int TYPE = 11;
-    public static final int VAL = 12;
-    public static final int VARIANT = 6;
+    public static final int INCLUDE = 4;
+    public static final int KLASS = 3;
+    public static final int LET = 15;
+    public static final int EXCEPTION = 8;
+    public static final int EXTERNAL = 10;
+    public static final int MODULE = 25;
+    public static final int OBJECT_FIELD = 3;
+    public static final int OPEN = 3;
+    public static final int PARAMETER = 6;
+    public static final int RECORD_FIELD = 6;
+    public static final int TYPE = 12;
+    public static final int VAL = 13;
+    public static final int VARIANT = 7;
 
-    public static final int OCL_FILE = 9;
-    public static final int RES_FILE = 9;
-    public static final int RML_FILE = 8;
+    public static final int OCL_FILE = 10;
+    public static final int RES_FILE = 10;
+    public static final int RML_FILE = 10;
 }
