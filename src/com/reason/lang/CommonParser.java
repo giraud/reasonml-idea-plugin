@@ -41,7 +41,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
         builder = adapt_builder_(elementType, builder, this);
         PsiBuilder.Marker m = enter_section_(builder, 0, _NONE_);
 
-        MarkerScope fileScope = MarkerScope.markRoot(builder);
+        Marker fileScope = Marker.markRoot(builder);
 
         ParserState state = new ParserState(builder, fileScope);
         parseFile(builder, state);
@@ -62,7 +62,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
-    protected boolean isModuleResolution(@NotNull MarkerScope scope) {
+    protected boolean isModuleResolution(@NotNull Marker scope) {
         if (m_types instanceof ORTypes) {
             ORTypes m_types = (ORTypes) this.m_types;
             return scope.isCompositeType(m_types.C_MODULE_DECLARATION) || scope.isCompositeType(m_types.C_MODULE_TYPE);

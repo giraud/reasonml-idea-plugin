@@ -6,7 +6,7 @@ import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 // Wrapper around the PsiBuilder.Marker to keep its status
-public class MarkerScope {
+public class Marker {
     enum Status {
         unset, done, dropped
     }
@@ -20,7 +20,7 @@ public class MarkerScope {
     private Status myStatus = Status.unset;
     private boolean myIsStart = false;
 
-    private MarkerScope(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @Nullable ORCompositeType compositeElementType, @Nullable ORTokenElementType scopeTokenElementType) {
+    private Marker(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @Nullable ORCompositeType compositeElementType, @Nullable ORTokenElementType scopeTokenElementType) {
         myBuilder = builder;
         myMark = mark;
         myOffset = builder.getCurrentOffset();
@@ -28,17 +28,17 @@ public class MarkerScope {
         myScopeElementType = scopeTokenElementType;
     }
 
-    public static @NotNull MarkerScope mark(@NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType) {
-        return new MarkerScope(builder, builder.mark(), compositeElementType, null);
+    public static @NotNull Marker mark(@NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType) {
+        return new Marker(builder, builder.mark(), compositeElementType, null);
     }
 
-    public static @NotNull MarkerScope precedeScope(@NotNull MarkerScope scope, @NotNull ORCompositeType compositeType) {
+    public static @NotNull Marker precedeScope(@NotNull Marker scope, @NotNull ORCompositeType compositeType) {
         PsiBuilder.Marker precede = scope.myMark.precede();
-        return new MarkerScope(scope.myBuilder, precede, compositeType, null);
+        return new Marker(scope.myBuilder, precede, compositeType, null);
     }
 
-    static @NotNull MarkerScope markRoot(@NotNull PsiBuilder builder) {
-        return new MarkerScope(builder, builder.mark(), null, null);
+    static @NotNull Marker markRoot(@NotNull PsiBuilder builder) {
+        return new Marker(builder, builder.mark(), null, null);
     }
 
     public int getLength() {
@@ -73,8 +73,8 @@ public class MarkerScope {
         }
     }
 
-    public void updateScope(@Nullable ORTokenElementType scopeToken) {
-        myScopeElementType = scopeToken;
+    public void updateCompositeType(@NotNull ORCompositeType compositeType) {
+        myCompositeElementType = compositeType;
     }
 
     boolean isCompositeIn(ORCompositeType @NotNull ... compositeType) {
@@ -86,16 +86,20 @@ public class MarkerScope {
         return false;
     }
 
-    public boolean isScopeToken(ORTokenElementType tokenElementType) {
-        return myScopeElementType == tokenElementType;
+    void setScopeType(@NotNull ORTokenElementType scopeType) {
+        myScopeElementType = scopeType;
     }
 
-    void setScopeTokenType(@NotNull ORTokenElementType tokenElementType) {
-        myScopeElementType = tokenElementType;
+    public void updateScope(@Nullable ORTokenElementType scopeToken) {
+        myScopeElementType = scopeToken;
     }
 
-    public void updateCompositeElementType(@NotNull ORCompositeType compositeType) {
-        myCompositeElementType = compositeType;
+    public boolean isScopeToken(ORTokenElementType scopeType) {
+        return myScopeElementType == scopeType;
+    }
+
+    @Nullable ORTokenElementType getScopeTokenElementType() {
+        return myScopeElementType;
     }
 
     public boolean isStart() {
@@ -110,9 +114,6 @@ public class MarkerScope {
         return myScopeElementType != null;
     }
 
-    @Nullable ORTokenElementType getScopeTokenElementType() {
-        return myScopeElementType;
-    }
 
     public void rollbackTo() {
         if (myMark != null) {
@@ -136,7 +137,7 @@ public class MarkerScope {
         return myStatus == Status.done;
     }
 
-    @Override public String toString() {
-        return myCompositeElementType + (myIsStart ? ".start" : "") + (myScopeElementType == null ? "" : " [" + myScopeElementType + "]") + " (" + myStatus + ")";
+    public boolean isDropped() {
+        return myStatus == Status.dropped;
     }
 }

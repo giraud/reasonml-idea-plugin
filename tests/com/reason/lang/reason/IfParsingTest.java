@@ -76,7 +76,7 @@ public class IfParsingTest extends RmlParsingTestCase {
 
         assertNotNull(e);
         assertNotNull(e.getCondition());
-        // zzz    assertEquals("fn(a)", e.getCondition().getText());
+        assertEquals("fn(a)", e.getCondition().getText());
         assertEquals("b", e.getThenExpression().getText());
         assertEquals("c", e.getElseExpression().getText());
     }

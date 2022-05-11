@@ -10,27 +10,25 @@ import java.util.*;
 
 public class ParserState {
     public final PsiBuilder myBuilder;
-    private final LinkedList<MarkerScope> myMarkers = new LinkedList<>();
-    private final MarkerScope myRootMarker;
+    private final LinkedList<Marker> myMarkers = new LinkedList<>();
+    private final Marker myRootMarker;
     public boolean dontMove = false;
     private int myIndex; // found index when using in(..)/inAny(..) functions
 
-    // zzz ?
     public IElementType previousElementType2;
     public IElementType previousElementType1;
-    // zzz
 
-    public ParserState(@NotNull PsiBuilder builder, @NotNull MarkerScope rootCompositeMarker) {
+    public ParserState(@NotNull PsiBuilder builder, @NotNull Marker rootCompositeMarker) {
         myBuilder = builder;
         myRootMarker = rootCompositeMarker;
     }
 
     public @NotNull ParserState popEndUntilStart() {
-        MarkerScope latestKnownScope;
+        Marker latestKnownScope;
 
         if (!myMarkers.isEmpty()) {
             latestKnownScope = myMarkers.peek();
-            MarkerScope scope = latestKnownScope;
+            Marker scope = latestKnownScope;
             while (scope != null && !scope.isStart()) {
                 scope = pop();
                 if (scope != null) {
@@ -47,12 +45,12 @@ public class ParserState {
         return this;
     }
 
-    public @NotNull MarkerScope popEndUntilScope() {
-        MarkerScope latestKnownScope = null;
+    public @NotNull Marker popEndUntilScope() {
+        Marker latestKnownScope = null;
 
         if (!myMarkers.isEmpty()) {
             latestKnownScope = myMarkers.peek();
-            MarkerScope marker = latestKnownScope;
+            Marker marker = latestKnownScope;
             while (marker != myRootMarker && !marker.hasScope()) {
                 marker = pop();
                 if (marker != null) {
@@ -70,8 +68,8 @@ public class ParserState {
         return latestKnownScope == null ? myRootMarker : latestKnownScope;
     }
 
-    public @Nullable MarkerScope popEndUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
-        MarkerScope scope = null;
+    public @Nullable Marker popEndUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
+        Marker scope = null;
 
         if (!myMarkers.isEmpty()) {
             scope = myMarkers.peek();
@@ -84,17 +82,17 @@ public class ParserState {
         return scope;
     }
 
-    public @NotNull MarkerScope getLatestScope() {
+    public @NotNull Marker getLatestScope() {
         return myMarkers.isEmpty() ? myRootMarker : myMarkers.peek();
     }
 
-    public @NotNull MarkerScope getCurrentMarker() {
-        for (MarkerScope marker : myMarkers) {
+    public @NotNull Marker getCurrentMarker() {
+        for (Marker marker : myMarkers) {
             if (marker.isUnset()) {
                 return marker;
             }
         }
-        return  myRootMarker;
+        return myRootMarker;
     }
 
     public boolean is(@Nullable ORCompositeType composite) {
@@ -103,7 +101,7 @@ public class ParserState {
 
     public boolean isCurrent(@Nullable ORCompositeType composite) {
         // skip done/drop elements
-        for (MarkerScope marker : myMarkers) {
+        for (Marker marker : myMarkers) {
             if (marker.isUnset()) {
                 return marker.isCompositeType(composite);
             }
@@ -112,8 +110,13 @@ public class ParserState {
     }
 
     public boolean isDone(@Nullable ORCompositeType composite) {
-        MarkerScope marker = myMarkers.isEmpty() ? null : myMarkers.peek();
+        Marker marker = myMarkers.isEmpty() ? null : myMarkers.peek();
         return marker != null && marker.isDone() && marker.isCompositeType(composite);
+    }
+
+    public boolean isDropped(@Nullable ORCompositeType composite) {
+        Marker marker = myMarkers.isEmpty() ? null : myMarkers.peek();
+        return marker != null && marker.isDropped() && marker.isCompositeType(composite);
     }
 
     public boolean isParent(ORCompositeType composite) {
@@ -157,7 +160,7 @@ public class ParserState {
         int size = myMarkers.size();
         int stop = Math.min(size, maxDepth);
         for (int i = 0; i < stop; i++) {
-            MarkerScope marker = myMarkers.get(i);
+            Marker marker = myMarkers.get(i);
             if (marker.isUnset()) { // not dropped or done
                 if (marker.isCompositeType(excluded)) {
                     myIndex = -1;
@@ -174,10 +177,8 @@ public class ParserState {
     }
 
     public boolean strictlyIn(ORCompositeType composite) {
-        int size = myMarkers.size();
-        int stop = Math.min(size, myMarkers.size());
-        for (int i = 0; i < stop; i++) {
-            MarkerScope marker = myMarkers.get(i);
+        for (int i = 0; i < myMarkers.size(); i++) {
+            Marker marker = myMarkers.get(i);
             if (marker.isUnset()) { // not dropped or done
                 if (marker.isCompositeType(composite)) {
                     myIndex = i;
@@ -194,10 +195,8 @@ public class ParserState {
     }
 
     public boolean strictlyInAny(@NotNull ORCompositeType... composite) {
-        int size = myMarkers.size();
-        int stop = Math.min(size, myMarkers.size());
-        for (int i = 0; i < stop; i++) {
-            MarkerScope marker = myMarkers.get(i);
+        for (int i = 0; i < myMarkers.size(); i++) {
+            Marker marker = myMarkers.get(i);
             if (marker.isUnset()) { // not dropped or done
                 if (marker.isCompositeIn(composite)) {
                     myIndex = i;
@@ -213,13 +212,13 @@ public class ParserState {
         return false;
     }
 
-    public @Nullable MarkerScope find(int index) {
+    public @Nullable Marker find(int index) {
         return (0 <= index && index < myMarkers.size()) ? myMarkers.get(index) : null;
     }
 
     public int indexOfComposite(@NotNull ORCompositeType composite) {
         for (int i = myMarkers.size() - 1; i >= 0; i--) {
-            MarkerScope markerScope = myMarkers.get(i);
+            Marker markerScope = myMarkers.get(i);
             if (markerScope.isCompositeType(composite)) {
                 return i;
             }
@@ -231,7 +230,7 @@ public class ParserState {
     public boolean inAny(ORCompositeType... composite) {
         int stop = myMarkers.size();
         for (int i = 0; i < stop; i++) {
-            MarkerScope markerScope = myMarkers.get(i);
+            Marker markerScope = myMarkers.get(i);
             if (markerScope.isCompositeIn(composite)) {
                 myIndex = i;
                 return true;
@@ -244,7 +243,7 @@ public class ParserState {
     public boolean inScopeOrAny(ORCompositeType... composite) {
         int stop = myMarkers.size();
         for (int i = 0; i < stop; i++) {
-            MarkerScope markerScope = myMarkers.get(i);
+            Marker markerScope = myMarkers.get(i);
             if (markerScope.hasScope() || markerScope.isCompositeIn(composite)) {
                 myIndex = i;
                 return true;
@@ -255,7 +254,7 @@ public class ParserState {
     }
 
     public boolean isOneOf(ORCompositeType @NotNull ... composites) {
-        MarkerScope marker = getLatestScope();
+        Marker marker = getLatestScope();
         for (ORCompositeType composite : composites) {
             if (marker.isCompositeType(composite)) {
                 return true;
@@ -269,7 +268,7 @@ public class ParserState {
     }
 
     public @NotNull ParserState mark(@NotNull ORCompositeType composite) {
-        MarkerScope mark = MarkerScope.mark(myBuilder, composite);
+        Marker mark = Marker.mark(myBuilder, composite);
         myMarkers.push(mark);
         return this;
     }
@@ -289,12 +288,12 @@ public class ParserState {
         return myMarkers.isEmpty();
     }
 
-    public @Nullable MarkerScope tryPop(@NotNull LinkedList<MarkerScope> scopes) {
+    public @Nullable Marker tryPop(@NotNull LinkedList<Marker> scopes) {
         return empty() ? null : scopes.pop();
     }
 
     void clear() {
-        MarkerScope scope = tryPop(myMarkers);
+        Marker scope = tryPop(myMarkers);
         while (scope != null) {
             scope.end();
             scope = tryPop(myMarkers);
@@ -302,32 +301,21 @@ public class ParserState {
     }
 
     @Nullable
-    public MarkerScope pop() {
+    public Marker pop() {
         return tryPop(myMarkers);
     }
 
     public @NotNull ParserState popEnd() {
-        MarkerScope scope = pop();
+        Marker scope = pop();
         if (scope != null) {
             scope.end();
         }
         return this;
     }
 
-    // skip all optional intermediate scopes, and pop latest complete
-    @SuppressWarnings("UnusedReturnValue")
-    public @NotNull ParserState popEndComplete() {
-        MarkerScope scope = pop();
-        while (scope != null) {
-            scope.drop();
-            scope = pop();
-        }
-        return this;
-    }
-
     @Nullable
-    public MarkerScope popEndUntilOneOf(@NotNull ORCompositeType... composites) {
-        MarkerScope scope = null;
+    public Marker popEndUntilOneOf(@NotNull ORCompositeType... composites) {
+        Marker scope = null;
 
         if (!myMarkers.isEmpty()) {
             scope = myMarkers.peek();
@@ -341,8 +329,8 @@ public class ParserState {
     }
 
     @Nullable
-    public MarkerScope popEndUntilOneOfElementType(@NotNull ORTokenElementType... scopeElementTypes) {
-        MarkerScope scope = null;
+    public Marker popEndUntilOneOfElementType(@NotNull ORTokenElementType... scopeElementTypes) {
+        Marker scope = null;
 
         if (!myMarkers.isEmpty()) {
             scope = myMarkers.peek();
@@ -358,7 +346,7 @@ public class ParserState {
     @NotNull
     public ParserState popEndUntil(@NotNull ORCompositeType composite) {
         if (!myMarkers.isEmpty()) {
-            MarkerScope scope = myMarkers.peek();
+            Marker scope = myMarkers.peek();
             while (scope != myRootMarker && !scope.isCompositeType(composite)) {
                 popEnd();
                 scope = getLatestScope();
@@ -387,8 +375,8 @@ public class ParserState {
         return getLatestScope().hasScope();
     }
 
-    public @NotNull ParserState updateCurrentCompositeElementType(@NotNull ORCompositeType compositeElementType) {
-        getLatestScope().updateCompositeElementType(compositeElementType);
+    public @NotNull ParserState updateComposite(@NotNull ORCompositeType compositeElementType) {
+        getLatestScope().updateCompositeType(compositeElementType);
         return this;
     }
 
@@ -402,7 +390,7 @@ public class ParserState {
 
     public @NotNull ParserState updateScopeToken(@Nullable ORTokenElementType token) {
         if (token != null) {
-            getLatestScope().setScopeTokenType(token);
+            getLatestScope().setScopeType(token);
         }
         return this;
     }
@@ -454,19 +442,11 @@ public class ParserState {
         return myBuilder.getTokenType();
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    public @NotNull ParserState updatePreviousComposite(@NotNull ORCompositeType composite) {
-        if (myMarkers.size() > 1) {
-            myMarkers.get(1).updateCompositeElementType(composite);
-        }
-        return this;
-    }
-
     public boolean isRoot() {
         return getLatestScope() == myRootMarker;
     }
 
-    public boolean isRoot(@Nullable MarkerScope marker) {
+    public boolean isRoot(@Nullable Marker marker) {
         return marker == myRootMarker;
     }
 
@@ -491,14 +471,14 @@ public class ParserState {
 
     public ParserState markBefore(int pos, ORCompositeType compositeType) {
         if (pos >= 0) {
-            MarkerScope scope = myMarkers.get(pos);
-            MarkerScope precedeScope = MarkerScope.precedeScope(scope, compositeType);
+            Marker scope = myMarkers.get(pos);
+            Marker precedeScope = Marker.precedeScope(scope, compositeType);
             myMarkers.add(pos + 1, precedeScope);
         }
         return this;
     }
 
-    public @Nullable MarkerScope getPrevious() {
+    public @Nullable Marker getPrevious() {
         if (myMarkers.size() > 1) {
             return myMarkers.get(1);
         }
@@ -519,11 +499,11 @@ public class ParserState {
     }
 
     public boolean isFound(@Nullable ORCompositeType expectedType) {
-        MarkerScope scope = find(myIndex);
+        Marker scope = find(myIndex);
         return scope != null && scope.isCompositeType(expectedType);
     }
 
-    public ParserState updateScopeToken(@Nullable MarkerScope scope, @Nullable ORTokenElementType scopeToken) {
+    public ParserState updateScopeToken(@Nullable Marker scope, @Nullable ORTokenElementType scopeToken) {
         if (scope != null) {
             scope.updateScope(scopeToken);
         }
@@ -531,7 +511,7 @@ public class ParserState {
     }
 
     public boolean isAtIndex(int index, @NotNull ORCompositeType expectedComposite) {
-        MarkerScope marker = find(index);
+        Marker marker = find(index);
         return marker != null && marker.isCompositeType(expectedComposite);
     }
 

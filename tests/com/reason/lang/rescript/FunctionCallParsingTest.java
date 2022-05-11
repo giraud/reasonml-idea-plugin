@@ -14,6 +14,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let _ = string_of_int(1)")));
 
         PsiFunctionCall call = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(call, PsiLowerSymbol.class));
         assertEquals("string_of_int(1)", call.getText());
         assertEquals(1, call.getParameters().size());
     }

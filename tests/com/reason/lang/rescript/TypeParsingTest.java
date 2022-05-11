@@ -1,6 +1,7 @@
 package com.reason.lang.rescript;
 
 import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -23,6 +24,26 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals("int", e.getBinding().getText());
     }
 
+    public void test_path() {
+        PsiType e = first(typeExpressions(parseCode("type t = A.B.other")));
+
+        assertEquals("t", e.getName());
+        assertFalse(e.isAbstract());
+        assertEquals("A.B.other", e.getBinding().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiVariantDeclaration.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiUpperIdentifier.class));
+        List<PsiUpperSymbol> modules = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiUpperSymbol.class);
+        assertSize(2, modules);
+    }
+
+    public void test_option() {
+        PsiType e = first(typeExpressions(parseCode("type t = option<array<string>>")));
+
+        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        assertNotNull(option);
+        assertEquals("option<array<string>>", option.getText());
+    }
+
     public void test_recursive_type() {
         PsiType e = first(typeExpressions(parseCode("type rec tree<'a> = Leaf('a) | Tree(tree<'a>, tree<'a>)")));
 
@@ -34,6 +55,12 @@ public class TypeParsingTest extends ResParsingTestCase {
         PsiType e = first(typeExpressions(parseCode("type t = | Tick")));
 
         assertNotNull(e.getBinding());
+    }
+
+    public void test_poly_variant() {
+        PsiType e = first(typeExpressions(parseCode("type t = [#visible | #hidden | #collapse]")));
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiPatternMatch.class));
+        assertSize(3, PsiTreeUtil.findChildrenOfType(e, PsiVariantDeclaration.class));
     }
 
     public void test_type_binding_with_record() {

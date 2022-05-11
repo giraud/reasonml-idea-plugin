@@ -182,6 +182,22 @@ public class LetParsingTest extends ResParsingTestCase {
         assertEquals("{ test ? { call(Some(a)) } : b }", f.getBody().getText());
     }
 
+    /* zzz
+    public void test_chaining_lident() {
+        PsiLet e = first(letExpressions(parseCode("let x = Doc.y\n test")));
+
+        assertEquals("x", e.getName());
+        assertEquals("Doc.y", e.getBinding().getText());
+    }
+
+    public void test_chaining_call() {
+        PsiLet e = first(letExpressions(parseCode("let x = Doc.y\n test()")));
+
+        assertEquals("x", e.getName());
+        assertEquals("Doc.y", e.getBinding().getText());
+    }
+    */
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/105
     public void test_GH_105() {
         FileBase file = parseCode("let string = \"x\"");

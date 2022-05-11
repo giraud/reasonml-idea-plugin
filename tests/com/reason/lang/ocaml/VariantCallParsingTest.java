@@ -24,6 +24,17 @@ public class VariantCallParsingTest extends OclParsingTestCase {
                         .getElementType());
     }
 
+    public void test_params() {
+        PsiLetBinding binding = firstOfType(parseCode("let x = Var(a, b, c)"), PsiLet.class).getBinding();
+
+        assertEquals("Var(a, b, c)", binding.getText());
+        assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
+        assertNull(PsiTreeUtil.findChildOfType(binding, PsiUpperIdentifier.class));
+        assertNull(PsiTreeUtil.findChildOfType(binding, PsiSignatureItem.class));
+        // assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding,
+        // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
+    }
+
     public void test_with_param() {
         PsiLetBinding binding = firstOfType(parseCode("let x = Var(1)"), PsiLet.class).getBinding();
 

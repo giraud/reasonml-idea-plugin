@@ -79,4 +79,13 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
         PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(open, PsiJsObject.class);
         assertNotNull(jsObject);
     }
+
+    public void test_deep() {
+        PsiLet e = firstOfType(parseCode("let oo = {\"f1\": {\"f11\": 111}, \"f2\": o,\"f3\": {\"f33\": 333} }"), PsiLet.class);
+
+        PsiJsObject o = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiJsObject.class);
+        List<PsiObjectField> fields = new ArrayList<>(o.getFields());
+        assertSize(3, fields);
+        assertInstanceOf(fields.get(0).getValue(), PsiJsObject.class);
+    }
 }

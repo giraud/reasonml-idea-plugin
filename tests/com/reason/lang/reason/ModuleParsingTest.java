@@ -25,6 +25,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
         assertEquals("M", module.getName());
         assertEquals("Y", module.getAlias());
+        assertEquals("Y", module.getAliasSymbol().getText());
     }
 
     public void test_alias_path() {
@@ -32,13 +33,16 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
         assertEquals("M", module.getName());
         assertEquals("Y.Z", module.getAlias());
+        assertEquals("Z", module.getAliasSymbol().getText());
     }
 
     public void test_module_type() {
-        PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module type RedFlagsSig = {};")));
+        PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module type Intf = { let x: bool; };")));
 
-        assertEquals("RedFlagsSig", module.getName());
+        assertEquals("Intf", module.getName());
         assertTrue(module.isInterface());
+        assertInstanceOf(module.getBody(), PsiModuleBinding.class);
+
     }
 
     public void test_module() {
@@ -58,7 +62,10 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals(1, expressions(file).size());
         assertEquals("Router", module.getName());
         assertEquals("{ let watchUrl: (url => unit) => watcherID; }", module.getModuleType().getText());
+        assertNull(PsiTreeUtil.findChildOfType(file, PsiScopedExpr.class));
         assertNull(module.getBody());
+        PsiLet let = PsiTreeUtil.findChildOfType(file, PsiLet.class);
+        assertEquals("(url => unit) => watcherID", let.getSignature().getText());
     }
 
     public void test_interface_sig_body() {

@@ -47,18 +47,6 @@ public class AndParsingTest extends OclParsingTestCase {
         assertSize(2, lets);
     }
 
-    // https://github.com/giraud/reasonml-idea-plugin/issues/272
-    public void test_GH_pattern_unit_chaining() {
-        FileBase file = parseCode("let x = match xx with | Y -> let fn y = 1 in () and z = 1 ");
-        List<PsiLet> exps = letExpressions(file);
-
-        assertEquals(2, exps.size());
-        assertEquals("x", exps.get(0).getName());
-        assertEquals("z", exps.get(1).getName());
-        PsiPatternMatchBody body = PsiTreeUtil.findChildOfType(file, PsiPatternMatchBody.class);
-        assertEquals("let fn y = 1", PsiTreeUtil.findChildOfType(body, PsiLet.class).getText());
-    }
-
     public void test_type_chaining() {
         Collection<PsiType> types = typeExpressions(parseCode("type update = | NoUpdate and 'state self = {state: 'state;}"));
 
@@ -93,5 +81,17 @@ public class AndParsingTest extends OclParsingTestCase {
         assertSize(2, lets);
         assertEquals("parser_of_token_list", lets.get(0).getName());
         assertEquals("parser_of_symbol", lets.get(1).getName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/272
+    public void test_GH_272() {
+        FileBase file = parseCode("let x = match xx with | Y -> let fn y = 1 in () and z = 1 ");
+        List<PsiLet> exps = letExpressions(file);
+
+        assertEquals(2, exps.size());
+        assertEquals("x", exps.get(0).getName());
+        assertEquals("z", exps.get(1).getName());
+        PsiPatternMatchBody body = PsiTreeUtil.findChildOfType(file, PsiPatternMatchBody.class);
+        assertEquals("let fn y = 1", PsiTreeUtil.findChildOfType(body, PsiLet.class).getText());
     }
 }

@@ -22,6 +22,15 @@ public class TypeParsingTest extends RmlParsingTestCase {
         assertEquals("int", e.getBinding().getText());
     }
 
+    public void test_path() {
+        PsiType e = first(typeExpressions(parseCode("type t = A.B.other")));
+
+        assertEquals("t", e.getName());
+        assertFalse(e.isAbstract());
+        assertEquals("A.B.other", e.getBinding().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiVariantDeclaration.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiUpperIdentifier.class));
+    }
 
     public void test_option() {
         PsiType e = first(typeExpressions(parseCode("type t = option(array(string))")));
@@ -40,6 +49,12 @@ public class TypeParsingTest extends RmlParsingTestCase {
     public void test_type_binding_with_variant() {
         PsiType e = first(typeExpressions(parseCode("type t = | Tick;")));
         assertNotNull(e.getBinding());
+    }
+
+    public void test_poly_variant() {
+        PsiType e = first(typeExpressions(parseCode("type t = [ | `visible | `hidden | `collapse ];")));
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiPatternMatch.class));
+        assertSize(3, PsiTreeUtil.findChildrenOfType(e, PsiVariantDeclaration.class));
     }
 
     public void test_type_binding_with_record() {

@@ -79,9 +79,15 @@ public class ObjectCompletionProvider {
             PsiElement value = field.getValue();
             if (value instanceof PsiJsObject) {
                 return ((PsiJsObject) value).getFields();
-            } else {
+            } else if (value instanceof PsiLowerSymbol) {
                 // Must be an object defined outside
-                PsiLowerSymbol lSymbol = ORUtil.findImmediateLastChildOfClass(field, PsiLowerSymbol.class);
+                PsiLowerSymbol lSymbol = (PsiLowerSymbol) value;
+                PsiLowerSymbolReference valueReference = (PsiLowerSymbolReference) lSymbol.getReference();
+                PsiElement valueResolvedElement = valueReference == null ? null : valueReference.resolveInterface();
+                return valueResolvedElement == null ? null : getFields(qnameFinder, valueResolvedElement);
+            } else if (value instanceof PsiUpperSymbol) {
+                // Must be a path of an object defined outside
+                PsiElement lSymbol = ORUtil.nextSiblingWithTokenType(value, ORUtil.getTypes(resolvedElement.getLanguage()).C_LOWER_SYMBOL);
                 PsiLowerSymbolReference valueReference = lSymbol == null ? null : (PsiLowerSymbolReference) lSymbol.getReference();
                 PsiElement valueResolvedElement = valueReference == null ? null : valueReference.resolveInterface();
                 return valueResolvedElement == null ? null : getFields(qnameFinder, valueResolvedElement);

@@ -21,7 +21,7 @@ public class ShowDocRESTest extends ORBasePlatformTestCase {
 
     public void test_GH_156() {
         configureCode("Doc.res", "/** Doc for y */\nlet y = 1");
-        FileBase a = configureCode("A.res", "let x = Doc.y\nx<caret>");
+        FileBase a = configureCode("A.res", "let x = Doc.y\nlet z = x<caret>");
 
         assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let y</i></p></div><div class=\"content\"><p>Doc for y</p></div>", getDoc(a, LANG));
     }

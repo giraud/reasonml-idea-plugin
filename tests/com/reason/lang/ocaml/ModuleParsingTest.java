@@ -26,6 +26,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
         assertEquals("M", module.getName());
         assertEquals("Y", module.getAlias());
+        assertEquals("Y", module.getAliasSymbol().getText());
     }
 
     public void test_alias_path() {
@@ -33,6 +34,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
         assertEquals("M", module.getName());
         assertEquals("Y.Z", module.getAlias());
+        assertEquals("Z", module.getAliasSymbol().getText());
     }
 
     public void test_module_type() {
@@ -40,9 +42,8 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
         assertEquals("Intf", e.getName());
         assertTrue(e.isInterface());
-        PsiVal val = firstOfType(e, PsiVal.class);
-        assertNotNull(val);
-        assertEquals("bool", val.getSignature().getText());
+        assertInstanceOf(e.getBody(), PsiModuleBinding.class);
+        assertEquals("bool", firstOfType(e, PsiVal.class).getSignature().getText());
     }
 
     public void test_module_signature() {

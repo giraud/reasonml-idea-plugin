@@ -1,11 +1,9 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.util.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
-@SuppressWarnings("ConstantConditions")
 public class OpenParsingTest extends RmlParsingTestCase {
     public void test_one() {
         PsiOpen e = first(openExpressions(parseCode("open Belt;")));

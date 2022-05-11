@@ -33,6 +33,20 @@ public class RecordParsingTest extends RmlParsingTestCase {
         assertNull(fields.get(2).getSignature());
     }
 
+    public void test_usage_with_sig() {
+        PsiLet e = first(letExpressions(parseCode("let r: M.t = { a: 1, b: 2, c: 3, };")));
+        PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
+
+        List<PsiRecordField> fields = new ArrayList<>(record.getFields());
+        assertSize(3, fields);
+        assertEquals("a", fields.get(0).getName());
+        assertNull(fields.get(0).getSignature());
+        assertEquals("b", fields.get(1).getName());
+        assertNull(fields.get(1).getSignature());
+        assertEquals("c", fields.get(2).getName());
+        assertNull(fields.get(2).getSignature());
+    }
+
     public void test_usage_deep() {
         PsiLet e = first(letExpressions(parseCode("let r = { a: { b: { c: 3 } } };")));
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();

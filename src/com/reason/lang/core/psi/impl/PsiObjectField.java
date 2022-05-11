@@ -98,7 +98,11 @@ public class PsiObjectField extends PsiTokenStub<ORTypes, PsiObjectField, PsiObj
 
     @Nullable
     public PsiElement getValue() {
-        PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, m_types.COLON);
-        return colon == null ? null : ORUtil.nextSiblingNode(colon.getNode()).getPsi();
+        PsiFieldValue fieldValue = ORUtil.findImmediateFirstChildOfClass(this, PsiFieldValue.class);
+        if (fieldValue != null) {
+            return fieldValue.getFirstChild();
+        } else {
+            return ORUtil.findImmediateFirstChildOfClass(this, PsiSignature.class);  // ?
+        }
     }
 }

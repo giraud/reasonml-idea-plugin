@@ -344,7 +344,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     }
 
     public @Nullable PsiUpperSymbol getAliasSymbol() {
-        return ORUtil.findImmediateLastChildOfClass(this, PsiUpperSymbol.class);
+        PsiModuleBinding binding = ORUtil.findImmediateFirstChildOfClass(this, PsiModuleBinding.class);
+        return binding == null ? null : ORUtil.findImmediateLastChildOfClass(binding, PsiUpperSymbol.class);
     }
 
     @Override

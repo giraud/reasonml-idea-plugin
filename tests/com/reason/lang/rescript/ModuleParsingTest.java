@@ -1,10 +1,12 @@
 package com.reason.lang.rescript;
 
 import com.intellij.psi.*;
+import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
 
@@ -24,13 +26,22 @@ public class ModuleParsingTest extends ResParsingTestCase {
 
         assertEquals("M", module.getName());
         assertEquals("Y", module.getAlias());
+        assertEquals("Y", module.getAliasSymbol().getText());
     }
 
-    public void test_aliasPath() {
+    public void test_alias_path() {
         PsiModule module = first(moduleExpressions(parseCode("module M = Y.Z")));
 
         assertEquals("M", module.getName());
         assertEquals("Y.Z", module.getAlias());
+        assertEquals("Z", module.getAliasSymbol().getText());
+    }
+
+    public void test_alias_chaining() {
+        PsiModule module = first(moduleExpressions(parseCode("module D = B include D.C")));
+
+        assertEquals("D", module.getName());
+        assertEquals("B", module.getAlias());
     }
 
     public void test_module_type() {
@@ -57,6 +68,9 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("Router", module.getName());
         assertEquals("{ let watchUrl: (url => unit) => watcherID }", module.getModuleType().getText());
         assertNull(module.getBody());
+        assertNull(PsiTreeUtil.findChildOfType(file, PsiScopedExpr.class));
+        PsiLet let = PsiTreeUtil.findChildOfType(file, PsiLet.class);
+        assertEquals("(url => unit) => watcherID", let.getSignature().getText());
     }
 
     public void test_interface_sig_body() {

@@ -3,6 +3,7 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -21,6 +22,17 @@ public class TypeParsingTest extends OclParsingTestCase {
     public void test_recursive_type() {
         PsiType type = first(typeExpressions(parseCode("type rec 'a tree = | Leaf of 'a | Tree of 'a tree  * 'a tree")));
         assertEquals("tree", type.getName());
+    }
+
+    public void test_path() {
+        PsiType e = first(typeExpressions(parseCode("type t = A.B.other")));
+
+        assertEquals("t", e.getName());
+        assertFalse(e.isAbstract());
+        assertEquals("A.B.other", e.getBinding().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiVariantDeclaration.class));
+        List<PsiUpperSymbol> modules = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiUpperSymbol.class);
+        assertSize(2, modules);
     }
 
     public void test_option() {

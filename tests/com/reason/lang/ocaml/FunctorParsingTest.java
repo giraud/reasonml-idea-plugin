@@ -18,6 +18,8 @@ public class FunctorParsingTest extends OclParsingTestCase {
         PsiFunctor f = (PsiFunctor) e;
         assertEquals("struct end", f.getBody().getText());
         assertEquals("S", f.getReturnType().getText());
+        PsiParameter p = f.getParameters().iterator().next();
+        assertEquals(OclTypes.INSTANCE.C_FUNCTOR_PARAM, p.getNode().getElementType());
         List<IElementType> uTypes =
                 PsiTreeUtil.findChildrenOfType(e, PsiUpperSymbol.class)
                         .stream()
@@ -80,28 +82,5 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertSize(1, parameters);
         assertEquals("M", first(parameters).getName());
         assertNotNull(functor.getBody());
-    }
-
-    public void test_functor_instanciation() {
-        PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module Printing = Make (struct let encode = encode_record end)")));
-
-        PsiFunctorCall call = PsiTreeUtil.findChildOfType(module.getBody(), PsiFunctorCall.class);
-        assertEquals("Make (struct let encode = encode_record end)", call.getText());
-
-        Collection<PsiParameter> parameters = call.getParameters();
-        assertSize(1, parameters);
-        assertEquals("Dummy.Printing.Make[0]", first(parameters).getQualifiedName());
-    }
-
-    public void test_functor_instanciation_chaining() {
-        PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos");
-        List<PsiNamedElement> expressions = new ArrayList<>(expressions(file));
-
-        assertEquals(2, expressions.size());
-
-        PsiInnerModule module = (PsiInnerModule) expressions.get(0);
-        PsiFunctorCall call = PsiTreeUtil.findChildOfType(module.getBody(), PsiFunctorCall.class);
-        assertNotNull(call);
-        assertEquals("Hashtbl.Make(KeyHash)", call.getText());
     }
 }

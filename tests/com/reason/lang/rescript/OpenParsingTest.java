@@ -42,4 +42,10 @@ public class OpenParsingTest extends ResParsingTestCase {
         assertEquals("Belt.Array", es.get(0).getPath());
         assertEquals("Css.Types", es.get(1).getPath());
     }
+
+    public void test_chaining() {
+        PsiOpen e = firstOfType(parseCode("open Css.Rules\n fontStyle"), PsiOpen.class);
+
+        assertEquals("Css.Rules", e.getPath());
+    }
 }

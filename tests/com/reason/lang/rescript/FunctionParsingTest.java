@@ -100,9 +100,9 @@ public class FunctionParsingTest extends ResParsingTestCase {
         List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
         assertSize(3, parameters);
 
-        // zzz assertEquals("id", parameters.get(0).getName());
-        //assertEquals("values", parameters.get(1).getName());
-        //assertEquals("children", parameters.get(2).getName());
+        assertEquals("id", parameters.get(0).getName());
+        assertEquals("values", parameters.get(1).getName());
+        assertEquals("children", parameters.get(2).getName());
     }
 
     public void test_parameters_named_symbols2() {
