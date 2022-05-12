@@ -19,13 +19,11 @@ public class PsiIfStatement extends ORCompositeTypePsiElement<ORTypes> implement
 
     @Override
     public @Nullable PsiElement getThenExpression() {
-        PsiBinaryCondition condition = getCondition();
-        return condition == null ? null : ORUtil.nextSibling(condition);
+        return ORUtil.findImmediateFirstChildOfType(this, m_types.C_IF_THEN_SCOPE);
     }
 
     @Override
     public @Nullable PsiElement getElseExpression() {
-        PsiElement else_ = ORUtil.findImmediateFirstChildOfType(this, m_types.ELSE);
-        return else_ == null ? null : ORUtil.nextSibling(else_);
+        return ORUtil.findImmediateLastChildOfType(this, m_types.C_IF_THEN_SCOPE);
     }
 }

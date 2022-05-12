@@ -48,15 +48,23 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
 
     //region PsiQualifiedName
     @Override
-    public @Nullable String[] getPath() { // zzz stub
+    public @Nullable String[] getPath() {
+        PsiKlassStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
         return ORUtil.getQualifiedPath(this);
     }
 
     @Override
     public @NotNull String getQualifiedName() {
-        String[] path = getPath();
-        String name = getName();
-        return name == null ? "" : Joiner.join(".", path) + "." + name;
+        PsiKlassStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+
+        return ORUtil.getQualifiedName(this);
     }
     //endregion
 

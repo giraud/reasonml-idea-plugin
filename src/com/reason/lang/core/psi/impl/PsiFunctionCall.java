@@ -13,8 +13,13 @@ public class PsiFunctionCall extends ORCompositeTypePsiElement<ORTypes> {
         super(types, elementType);
     }
 
-    public
-    @NotNull List<PsiParameter> getParameters() {
+    @Override
+    public @NotNull String getName() {
+        PsiLowerSymbol name = ORUtil.findImmediateFirstChildOfClass(this, PsiLowerSymbol.class);
+        return name == null ? "" : name.getText();
+    }
+
+    public @NotNull List<PsiParameter> getParameters() {
         return ORUtil.findImmediateChildrenOfClass(
                 ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameter.class);
     }

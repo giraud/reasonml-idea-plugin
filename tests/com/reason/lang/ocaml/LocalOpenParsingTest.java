@@ -8,7 +8,7 @@ import com.reason.lang.core.psi.impl.*;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-public class LocalOpenTest extends OclParsingTestCase {
+public class LocalOpenParsingTest extends OclParsingTestCase {
     public void test_local_open() {
         List<PsiLet> lets = letExpressions(parseCode("let _ = Int64.(x + y / of_int 2) let x = 1"));
 

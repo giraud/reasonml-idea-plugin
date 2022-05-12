@@ -7,7 +7,7 @@ import com.reason.lang.core.psi.PsiVariantDeclaration;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-public class VariantDeclarationTest extends OclParsingTestCase {
+public class VariantDeclarationParsingTest extends OclParsingTestCase {
     public void test_basic() {
         PsiType e = first(typeExpressions(parseCode("type t = | Black | White")));
 

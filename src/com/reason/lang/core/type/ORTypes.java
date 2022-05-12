@@ -48,7 +48,7 @@ public abstract class ORTypes {
   public ORCompositeType C_LET_BINDING;
   public ORCompositeType C_LOCAL_OPEN;
   public ORCompositeType C_LOWER_SYMBOL;
-  public ORCompositeType C_LOWER_IDENTIFIER;   // zzz merge with C_LOWER_SYMBOL ????
+  public ORCompositeType C_LOWER_IDENTIFIER;
   public ORCompositeType C_LOWER_BOUND_CONSTRAINT;
   public ORCompositeType C_TYPE_VARIABLE;
   public ORCompositeType C_MACRO_EXPR;
@@ -91,13 +91,15 @@ public abstract class ORTypes {
   public ORCompositeType C_TRY_HANDLERS;
   public ORCompositeType C_TRY_HANDLER;
   public ORCompositeType C_TYPE_BINDING;
-  public ORCompositeType C_DUMMY;
   public ORCompositeType C_UPPER_SYMBOL;
   public ORCompositeType C_UPPER_IDENTIFIER;
   public ORCompositeType C_UPPER_BOUND_CONSTRAINT;
   public ORCompositeType C_VARIANT;
   public ORCompositeType C_VARIANT_CONSTRUCTOR;
   public ORCompositeType C_WHILE;
+
+  public ORCompositeType C_DUMMY;
+  public ORCompositeType C_DUMMY_COLLECTION_ITEM;
 
   // Token element types
 
@@ -138,6 +140,7 @@ public abstract class ORTypes {
   public ORTokenElementType INITIALIZER;
   public ORTokenElementType LAZY;
   public ORTokenElementType LET;
+  public ORTokenElementType LIST;
   public ORTokenElementType L_AND;
   public ORTokenElementType OP_STRUCT_DIFF;
   public ORTokenElementType L_OR;

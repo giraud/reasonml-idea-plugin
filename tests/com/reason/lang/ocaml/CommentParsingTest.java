@@ -6,8 +6,8 @@ import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 
 @SuppressWarnings("ConstantConditions")
-public class CommentTest extends BaseParsingTestCase {
-  public CommentTest() {
+public class CommentParsingTest extends BaseParsingTestCase {
+  public CommentParsingTest() {
     super("", "ml", new OclParserDefinition());
   }
 

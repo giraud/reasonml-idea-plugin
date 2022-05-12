@@ -94,9 +94,6 @@ public class TypeParsingTest extends OclParsingTestCase {
 
         assertEquals("declaration_arity", e.getName());
         assertEquals("| RegularArity of 'a", e.getBinding().getText());
-
-        // zzz PsiTypeConstrName cname = e.getConstrName();
-        // assertTrue(cname.hasParameters());
     }
 
     public void test_apply_params() {

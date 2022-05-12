@@ -141,9 +141,8 @@ public class ORElementResolver implements Disposable {
                         sourcePath = newPath;
                     }
 
-                    String first = sourcePath[0];
-                    Map<String, Resolution> resolutionsPerQName = myResolutionsPerTopModule.get(first);
-                    //noinspection Java8MapApi
+                    String first = sourcePath.length > 0 ? sourcePath[0] : null;
+                    Map<String, Resolution> resolutionsPerQName = first == null ? null : myResolutionsPerTopModule.get(first);
                     if (resolutionsPerQName == null) {
                         resolutionsPerQName = new HashMap<>();
                         myResolutionsPerTopModule.put(first, resolutionsPerQName);

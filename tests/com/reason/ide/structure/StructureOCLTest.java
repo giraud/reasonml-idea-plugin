@@ -79,7 +79,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         TreeElement e = model.getRoot().getChildren()[0];
         assertPresentation("X", "", ORIcons.INNER_MODULE, e.getPresentation());
         TreeElement ee = e.getChildren()[0];
-// zzz        assertPresentation("A.Vcs.Branch", "", ORIcons.MODULE_TYPE, ee.getPresentation());
+        assertPresentation("A.Vcs.Branch", "", ORIcons.MODULE_TYPE, ee.getPresentation());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/274

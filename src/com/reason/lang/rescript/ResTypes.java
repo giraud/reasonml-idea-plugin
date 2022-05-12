@@ -97,12 +97,14 @@ public class ResTypes extends ORTypes {
         C_TUPLE = new ORCompositeElementType("C_TUPLE", ResLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", ResLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", ResLanguage.INSTANCE);
-        C_DUMMY = new ORCompositeElementType("C_DUMMY", ResLanguage.INSTANCE);
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", ResLanguage.INSTANCE);
         C_UPPER_BOUND_CONSTRAINT = new ORCompositeElementType("C_UPPER_BOUND_CONSTRAINT", ResLanguage.INSTANCE);
         C_VARIANT = new ORCompositeElementType("C_VARIANT", ResLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", ResLanguage.INSTANCE);
         C_WHILE = new ORCompositeElementType("C_WHILE", ResLanguage.INSTANCE);
+
+        C_DUMMY = new ORCompositeElementType("C_DUMMY", ResLanguage.INSTANCE);
+        C_DUMMY_COLLECTION_ITEM = new ORCompositeElementType("C_DUMMY_COLLECTION_ITEM", ResLanguage.INSTANCE);
 
         // Token element types
 
@@ -171,6 +173,7 @@ public class ResTypes extends ORTypes {
         LBRACE = new ORTokenElementType("LBRACE", ResLanguage.INSTANCE);
         LBRACKET = new ORTokenElementType("LBRACKET", ResLanguage.INSTANCE);
         LET = new ORTokenElementType("LET", ResLanguage.INSTANCE);
+        LIST = new ORTokenElementType("LIST", ResLanguage.INSTANCE);
         LIDENT = new ORTokenElementType("LIDENT", ResLanguage.INSTANCE);
         LPAREN = new ORTokenElementType("LPAREN", ResLanguage.INSTANCE);
         LT = new ORTokenElementType("LT", ResLanguage.INSTANCE);

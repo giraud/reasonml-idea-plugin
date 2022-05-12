@@ -38,7 +38,16 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertEmpty(call.getParameters());
     }
 
-    public void test_unitLast() {
+    public void test_end_comma() {
+        PsiLet e = first(letExpressions(parseCode("let _ = style([ color(red), ])")));
+
+        assertEquals("style([ color(red), ])", e.getBinding().getText());
+        PsiFunctionCall f = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
+        assertNull(PsiTreeUtil.findChildOfType(f, PsiDeconstruction.class));
+        assertSize(1, f.getParameters());
+    }
+
+    public void test_unit_last() {
         PsiLet e = first(letExpressions(parseCode("let _ = f(1, ())")));
 
         PsiFunctionCall call = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);

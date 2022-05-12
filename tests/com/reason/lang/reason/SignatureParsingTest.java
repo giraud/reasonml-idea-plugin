@@ -103,6 +103,15 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         assertSize(3, signatureItems);
     }
 
+    public void test_dot() {
+        PsiExternal e = firstOfType(parseCode("external getPlatformInformation: (. store) => platform = \"\""), PsiExternal.class);
+
+        List<PsiSignatureItem> items = e.getSignature().getItems();
+        assertSize(2, items);
+        assertEquals("store", items.get(0).getText());
+        assertEquals("platform", items.get(1).getText());
+    }
+
     public void test_option() {
         PsiExternal e = first(externalExpressions(parseCode("external e : option(show) = \"\";")));
 

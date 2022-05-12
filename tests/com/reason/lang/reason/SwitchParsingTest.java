@@ -100,19 +100,13 @@ public class SwitchParsingTest extends RmlParsingTestCase {
         assertEquals("\"Total\"", m2.getBody().getText());
     }
 
-    /* zzz
     public void test_pattern_match_2() {
         FileBase f = parseCode("let greeting = name => switch (name) { | FirstName(fn) => \"hello \" ++ fn | LastName(ln) => \"hello \" ++ ln };");
         PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
 
-        List<PsiPatternMatch> patterns =
-                new ArrayList<>(
-                        ORUtil.findImmediateChildrenOfClass(
-                                ORUtil.findImmediateFirstChildOfClass(e, PsiScopedExpr.class),
-                                PsiPatternMatch.class));
+        List<PsiPatternMatch> patterns = e.getPatterns();
         assertSize(2, patterns);
     }
-    */
 
     public void test_let() {
         PsiLet e = first(letExpressions(parseCode("let makeId = () => switch (id) { | None => text | Some(i) => i };")));

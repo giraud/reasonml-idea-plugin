@@ -10,7 +10,7 @@ import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 
 public class OclYaccParser extends CommonParser<OclYaccTypes> {
     protected OclYaccParser() {
-        super(OclYaccTypes.INSTANCE);
+        super(true, OclYaccTypes.INSTANCE);
     }
 
     @Override protected void parseFile(@NotNull PsiBuilder builder, ParserState parserState) {

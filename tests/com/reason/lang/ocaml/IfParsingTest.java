@@ -3,6 +3,7 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiIfStatement;
 import com.reason.lang.core.psi.impl.*;
 
@@ -38,6 +39,15 @@ public class IfParsingTest extends OclParsingTestCase {
 
         assertEquals(1, letExpressions(file).size());
         assertNotNull(firstOfType(file, PsiIfStatement.class));
+    }
+
+    public void test_function() {
+        PsiLet e = firstOfType(parseCode("let init l f = if l = 0 then [||] else x"), PsiLet.class);
+
+        PsiIfStatement i = PsiTreeUtil.findChildOfType(e, PsiIfStatement.class);
+        assertEquals("l = 0", i.getCondition().getText());
+        assertEquals("[||]", i.getThenExpression().getText());
+        assertEquals("x", i.getElseExpression().getText());
     }
 
     /*

@@ -4,8 +4,10 @@ import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
+import java.util.*;
+
 @SuppressWarnings("ConstantConditions")
-public class FunctionCallTest extends OclParsingTestCase {
+public class FunctionCallParsingTest extends OclParsingTestCase {
     public void test_call() {
         PsiLetBinding e = first(letExpressions(parseCode("let _ = string_of_int 1"))).getBinding();
 
@@ -45,15 +47,19 @@ public class FunctionCallTest extends OclParsingTestCase {
     }
 
     public void test_inner_call() {
-        PsiLetBinding e = first(letExpressions(parseCode("let _ = fn a (fn1 b)"))).getBinding();
+        PsiLetBinding e = first(letExpressions(parseCode("let _ = fn a (b \"{\" c) d"))).getBinding();
 
-        PsiFunctionCall call = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
-        assertEquals("fn a (fn1 b)", call.getText());
-        assertEquals(2, call.getParameters().size());
-        assertEquals("a", call.getParameters().get(0).getText());
-        assertEquals("(fn1 b)", call.getParameters().get(1).getText());
-        PsiFunctionCall call1 = PsiTreeUtil.findChildOfType(call.getParameters().get(1), PsiFunctionCall.class);
-        assertEquals("fn1 b", call1.getText());
-        assertEquals(1, call1.getParameters().size());
+        PsiFunctionCall f = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        List<PsiParameter> p = f.getParameters();
+        assertEquals("fn a (b \"{\" c) d", f.getText());
+        assertEquals(3, p.size());
+        assertEquals("a", p.get(0).getText());
+        assertEquals("(b \"{\" c)", p.get(1).getText());
+        assertEquals("d", p.get(2).getText());
+        PsiFunctionCall f1 = PsiTreeUtil.findChildOfType(p.get(1), PsiFunctionCall.class);
+        assertEquals("b \"{\" c", f1.getText());
+        assertEquals(2, f1.getParameters().size());
+        assertEquals("\"{\"", f1.getParameters().get(0).getText());
+        assertEquals("c", f1.getParameters().get(1).getText());
     }
 }

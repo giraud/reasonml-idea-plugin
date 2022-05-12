@@ -14,6 +14,10 @@ public class SamplesParsingTest extends OclParsingTestCase {
     }
 
     public void test_stream() throws IOException {
-        PsiFile e = parseFile("stream");
+        parseFile("stream");
+    }
+
+    public void test_belt_map() throws IOException {
+        parseFile("belt_Map");
     }
 }

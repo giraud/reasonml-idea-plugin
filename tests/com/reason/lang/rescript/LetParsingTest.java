@@ -155,6 +155,20 @@ public class LetParsingTest extends ResParsingTestCase {
         assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiLowerIdentifier.class));
     }
 
+    public void test_deconstruction_nested() { // belt_Map offset 2272
+        PsiLet e = firstOfType(parseCode("let ((l, r), b) = Dict.split(~cmp, m.data, x)"), PsiLet.class);
+
+        assertTrue(e.isDeconstruction());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(3, names);
+        assertEquals("l", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
+        assertEquals("r", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+        assertEquals("b", names.get(2).getText());
+        assertInstanceOf(names.get(2), PsiLowerIdentifier.class);
+    }
+
     public void test_operator() {
         PsiLet e = first(letExpressions(parseCode("let \\\"/\": (path<'a, 'b> => 'c, 'd => path<'a, 'b>, 'd) => 'c")));
 
@@ -182,12 +196,14 @@ public class LetParsingTest extends ResParsingTestCase {
         assertEquals("{ test ? { call(Some(a)) } : b }", f.getBody().getText());
     }
 
-    /* zzz
-    public void test_chaining_lident() {
-        PsiLet e = first(letExpressions(parseCode("let x = Doc.y\n test")));
+    public void test_chaining_1() {
+        FileBase e = parseCode("let x = cond ? yes : no\n console(. any)");
+        PsiLet l = firstOfType(e, PsiLet.class);
+        PsiFunctionCall f = firstOfType(e, PsiFunctionCall.class);
 
-        assertEquals("x", e.getName());
-        assertEquals("Doc.y", e.getBinding().getText());
+        assertEquals("x", l.getName());
+        assertEquals("cond ? yes : no", l.getBinding().getText());
+        assertEquals("console", f.getName());
     }
 
     public void test_chaining_call() {
@@ -196,7 +212,6 @@ public class LetParsingTest extends ResParsingTestCase {
         assertEquals("x", e.getName());
         assertEquals("Doc.y", e.getBinding().getText());
     }
-    */
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/105
     public void test_GH_105() {

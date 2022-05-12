@@ -57,7 +57,6 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("x", function.getBody().getText());
     }
 
-    /* zzz
     public void test_inner_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = error => Belt.Array.mapU(errors, (. error) => error##message);")));
 
@@ -77,7 +76,6 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         PsiFunction functionInner = PsiTreeUtil.findChildOfType(functionOuter, PsiFunction.class);
         assertEquals("error##message", functionInner.getBody().getText());
     }
-    */
 
     public void test_inner_function_no_parens() {
         PsiLet e = first(letExpressions(parseCode("let _ = funcall(result => 2);")));

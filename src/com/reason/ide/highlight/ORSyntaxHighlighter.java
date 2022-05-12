@@ -53,10 +53,10 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> RML_OPTIONS_TYPES =
             of(RmlTypes.INSTANCE.NONE, RmlTypes.INSTANCE.SOME);
 
-    private static final Set<IElementType> NS_KEYWORD_TYPES =
+    private static final Set<IElementType> RES_KEYWORD_TYPES =
             of(
                     ResTypes.INSTANCE.OPEN, ResTypes.INSTANCE.MODULE, ResTypes.INSTANCE.FUN, ResTypes.INSTANCE.LET,
-                    ResTypes.INSTANCE.TYPE, ResTypes.INSTANCE.INCLUDE, ResTypes.INSTANCE.EXTERNAL,
+                    ResTypes.INSTANCE.TYPE, ResTypes.INSTANCE.INCLUDE, ResTypes.INSTANCE.EXTERNAL, ResTypes.INSTANCE.LIST,
                     ResTypes.INSTANCE.IF, ResTypes.INSTANCE.ELSE, ResTypes.INSTANCE.ENDIF, ResTypes.INSTANCE.SWITCH,
                     ResTypes.INSTANCE.TRY, ResTypes.INSTANCE.RAISE, ResTypes.INSTANCE.FOR, ResTypes.INSTANCE.IN,
                     ResTypes.INSTANCE.TO, ResTypes.INSTANCE.BOOL_VALUE, ResTypes.INSTANCE.REF, ResTypes.INSTANCE.EXCEPTION,
@@ -71,7 +71,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     ResTypes.INSTANCE.DIRECTIVE_ELSE, ResTypes.INSTANCE.DIRECTIVE_ELIF, ResTypes.INSTANCE.DIRECTIVE_END,
                     ResTypes.INSTANCE.DIRECTIVE_ENDIF);
 
-    private static final Set<IElementType> NS_OPERATION_SIGN_TYPES =
+    private static final Set<IElementType> RES_OPERATION_SIGN_TYPES =
             of(
                     ResTypes.INSTANCE.L_AND, ResTypes.INSTANCE.L_OR, ResTypes.INSTANCE.SHORTCUT, ResTypes.INSTANCE.ARROW,
                     ResTypes.INSTANCE.PIPE_FORWARD, ResTypes.INSTANCE.EQEQEQ, ResTypes.INSTANCE.EQEQ, ResTypes.INSTANCE.EQ,
@@ -87,7 +87,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     ResTypes.INSTANCE.BRACKET_GT, ResTypes.INSTANCE.BRACKET_LT, ResTypes.INSTANCE.BRACE_LT,
                     ResTypes.INSTANCE.DOTDOT);
 
-    private static final Set<IElementType> NS_OPTIONS_TYPES =
+    private static final Set<IElementType> RES_OPTIONS_TYPES =
             of(ResTypes.INSTANCE.NONE, ResTypes.INSTANCE.SOME);
 
     private static final Set<IElementType> OCL_KEYWORD_TYPES =
@@ -224,11 +224,11 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                 return OPTION_KEYS;
             }
         } else if (m_types == ResTypes.INSTANCE) {
-            if (NS_KEYWORD_TYPES.contains(tokenType)) {
+            if (RES_KEYWORD_TYPES.contains(tokenType)) {
                 return KEYWORD_KEYS;
-            } else if (NS_OPERATION_SIGN_TYPES.contains(tokenType)) {
+            } else if (RES_OPERATION_SIGN_TYPES.contains(tokenType)) {
                 return OPERATION_SIGN_KEYS;
-            } else if (NS_OPTIONS_TYPES.contains(tokenType)) {
+            } else if (RES_OPTIONS_TYPES.contains(tokenType)) {
                 return OPTION_KEYS;
             }
         } else if (m_types == OclTypes.INSTANCE) {

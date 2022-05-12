@@ -5,6 +5,8 @@ import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiScopedExpr;
 import com.reason.lang.core.psi.impl.PsiValImpl;
 
+import java.util.*;
+
 @SuppressWarnings("ConstantConditions")
 public class ValParsingTest extends OclParsingTestCase {
     public void test_qualified_name() {
@@ -31,10 +33,15 @@ public class ValParsingTest extends OclParsingTestCase {
     }
 
     public void test_function() {
-        PsiVal e = first(valExpressions(parseCode("val get: 'v t -> key -> 'v option")));
+        PsiVal e = first(valExpressions(parseCode("val init: int -> (int -> 'a) -> 'a array")));
 
         assertTrue(e.isFunction());
-        assertEquals("get", e.getName());
-        assertEquals("'v t -> key -> 'v option", e.getSignature().getText());
+        assertEquals("init", e.getName());
+        assertEquals("int -> (int -> 'a) -> 'a array", e.getSignature().getText());
+        List<PsiSignatureItem> is = e.getSignature().getItems();
+        assertEquals("int", is.get(0).getText());
+        assertEquals("int", is.get(1).getText());
+        assertEquals("'a", is.get(2).getText());
+        assertEquals("'a array", is.get(3).getText());
     }
 }

@@ -23,6 +23,20 @@ public class DirectiveParsingTest extends OclParsingTestCase {
         assertEquals("#if BS then\nx\n#else\ny\n#endif", e.getText());
     }
 
+    public void test_let_binding() {
+        PsiLet e = firstOfType(parseCode("let usage_b buf speclist errmsg =\n" +
+                "#if 0  \n" +
+                "  a;\n" +
+                "#else\n" +
+                "  b;\n" +
+                "#end\n" +
+                "  c\n"), PsiLet.class);
+
+        assertEquals("#if 0  \n  a;\n#else\n  b;\n#end\n  c", e.getFunction().getBody().getText());
+        PsiDirective d = PsiTreeUtil.findChildOfType(e, PsiDirective.class);
+        assertEquals("#if 0  \n  a;\n#else\n  b;\n#end", d.getText());
+    }
+
     public void test_oCamlBeforeDirective() {
         PsiVal e = first(valExpressions(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end")));
 

@@ -10,7 +10,7 @@ abstract class RmlParsingTestCase extends BaseParsingTestCase {
     public ORTypes m_types = RmlTypes.INSTANCE;
 
     protected RmlParsingTestCase() {
-        super("testData/com/reason/lang", "re", new RmlParserDefinition());
+        super("", "re", new RmlParserDefinition());
     }
 
     @Override

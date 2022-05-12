@@ -7,33 +7,32 @@ import org.jetbrains.annotations.*;
 
 public class DuneParser extends CommonParser<DuneTypes> {
   DuneParser() {
-    super(DuneTypes.INSTANCE);
+    super(true, DuneTypes.INSTANCE);
   }
 
   @Override
   protected void parseFile(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-    IElementType tokenType = null;
+    IElementType tokenType;
 
     while (true) {
-      state.previousElementType1 = tokenType;
       tokenType = builder.getTokenType();
       if (tokenType == null) {
         break;
       }
 
-      if (tokenType == m_types.ATOM) {
+      if (tokenType == myTypes.ATOM) {
         parseAtom(state);
       }
       // ( ... )
-      else if (tokenType == m_types.LPAREN) {
+      else if (tokenType == myTypes.LPAREN) {
         parseLParen(state);
-      } else if (tokenType == m_types.RPAREN) {
+      } else if (tokenType == myTypes.RPAREN) {
         parseRParen(state);
       }
       // %{ ... }
-      else if (tokenType == m_types.VAR_START) {
+      else if (tokenType == myTypes.VAR_START) {
         parseVarStart(state);
-      } else if (tokenType == m_types.VAR_END) {
+      } else if (tokenType == myTypes.VAR_END) {
         parseVarEnd(state);
       }
 
@@ -46,23 +45,23 @@ public class DuneParser extends CommonParser<DuneTypes> {
   }
 
   private void parseAtom(@NotNull ParserState state) {
-    if (state.is(m_types.C_STANZA)) {
-      state.advance().mark(m_types.C_FIELDS);
+    if (state.is(myTypes.C_STANZA)) {
+      state.advance().mark(myTypes.C_FIELDS);
     }
   }
 
   private void parseLParen(@NotNull ParserState state) {
     if (state.isRoot()) {
-      state.markScope(m_types.C_STANZA, m_types.LPAREN);
-    } else if (state.is(m_types.C_FIELDS)) {
-      state.markScope(m_types.C_FIELD, m_types.LPAREN);
+      state.markScope(myTypes.C_STANZA, myTypes.LPAREN);
+    } else if (state.is(myTypes.C_FIELDS)) {
+      state.markScope(myTypes.C_FIELD, myTypes.LPAREN);
     } else {
-      state.markScope(m_types.C_SEXPR, m_types.LPAREN);
+      state.markScope(myTypes.C_SEXPR, myTypes.LPAREN);
     }
   }
 
   private void parseRParen(@NotNull ParserState state) {
-    if (state.is(m_types.C_FIELDS)) {
+    if (state.is(myTypes.C_FIELDS)) {
       state.popEnd();
     }
 
@@ -75,11 +74,11 @@ public class DuneParser extends CommonParser<DuneTypes> {
 
   private void parseVarStart(@NotNull ParserState state) {
     // |>%{<| ... }
-    state.markScope(m_types.C_VAR, m_types.VAR_START);
+    state.markScope(myTypes.C_VAR, myTypes.VAR_START);
   }
 
   private void parseVarEnd(@NotNull ParserState state) {
-    if (state.is(m_types.C_VAR)) {
+    if (state.is(myTypes.C_VAR)) {
       // %{ ... |>}<|
       state.advance().popEnd();
     }

@@ -36,7 +36,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("x y = x + y", e.getBinding().getText());
     }
 
-    public void testScopeWithSome() {
+    public void test_scope_with_some() {
         PsiLet let = first(letExpressions(
                 parseCode("let l = (p) => { switch (a) { | Some(a) => a; (); | None => () }; Some(z); };")));
 
@@ -44,7 +44,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertNotNull(binding);
     }
 
-    public void testScopeWithLIdent() {
+    public void test_scope_with_lIdent() {
         PsiLet e = first(letExpressions(parseCode("let fn p = Js.log p; returnObj")));
 
         assertTrue(e.isFunction());
@@ -72,7 +72,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("lx", let.getName());
     }
 
-    public void test_inDoLoop() {
+    public void test_in_do_loop() {
         FileBase file = parseCode("let x l = for i = 0 to l - 1 do let x = 1 done");
         PsiLet let = first(letExpressions(file));
 
@@ -80,20 +80,20 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("l = for i = 0 to l - 1 do let x = 1 done", let.getBinding().getText());
     }
 
-    public void test_withSemiSeparator() {
+    public void test_with_semi_separator() {
         FileBase file = parseCode("let rec read_num = Printf.printf; let l = 1");
         Collection<PsiLet> lets = letExpressions(file);
 
         assertEquals(1, lets.size());
     }
 
-    public void test_likeLocalOpen() {
+    public void test_like_local_open() {
         PsiOpen open = first(openExpressions(parseCode("let open Univ")));
 
         assertEquals("let open Univ", open.getText());
     }
 
-    public void test_likeModule() {
+    public void test_like_module() {
         FileBase file = parseCode("let module Repr = (val repr : S)");
         PsiModule module = first(moduleExpressions(file));
 
@@ -153,6 +153,20 @@ public class LetParsingTest extends OclParsingTestCase {
         assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
         assertEquals("b", names.get(1).getText());
         assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+    }
+
+    public void test_deconstruction_nested() { // belt_Map offset 2272
+        PsiLet e = firstOfType(parseCode("let (l,r),b = Dict.split ~cmp m.data x"), PsiLet.class);
+
+        assertTrue(e.isDeconstruction());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(3, names);
+        assertEquals("l", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
+        assertEquals("r", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+        assertEquals("b", names.get(2).getText());
+        assertInstanceOf(names.get(2), PsiLowerIdentifier.class);
     }
 
     public void test_List() {

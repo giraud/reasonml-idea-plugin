@@ -220,9 +220,27 @@ public class ORUtil {
         return children.isEmpty() ? null : children.iterator().next();
     }
 
+
+    public static @Nullable PsiElement findImmediateLastChildOfType(@NotNull PsiElement element, @NotNull IElementType elementType) {
+        Collection<PsiElement> children = findImmediateChildrenOfType(element, elementType);
+        Iterator<PsiElement> it = children.iterator();
+
+        PsiElement child = null;
+        while (it.hasNext()) {
+            child = it.next();
+        }
+
+        return child;
+    }
+
     @Nullable
     public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull ORCompositeType elementType) {
         return findImmediateFirstChildOfType(element, (IElementType) elementType);
+    }
+
+    @Nullable
+    public static PsiElement findImmediateLastChildOfType(@NotNull PsiElement element, @NotNull ORCompositeType elementType) {
+        return findImmediateLastChildOfType(element, (IElementType) elementType);
     }
 
     @Nullable

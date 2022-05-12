@@ -93,7 +93,6 @@ public class OclTypes extends ORTypes {
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", OclLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", OclLanguage.INSTANCE);
         C_UPPER_BOUND_CONSTRAINT = new ORCompositeElementType("C_UPPER_BOUND_CONSTRAINT", OclLanguage.INSTANCE);
-        C_DUMMY = new ORCompositeElementType("C_DUMMY", OclLanguage.INSTANCE);
         C_VARIANT = new ORCompositeElementType("C_VARIANT", OclLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR =
                 new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
@@ -106,6 +105,9 @@ public class OclTypes extends ORTypes {
         C_SWITCH_EXPR = new ORCompositeElementType("C_SWITCH_EXPR", OclLanguage.INSTANCE);
         C_SWITCH_BODY = new ORCompositeElementType("C_SWITCH_BODY", OclLanguage.INSTANCE);
         C_WHILE = new ORCompositeElementType("C_WHILE", OclLanguage.INSTANCE);
+
+        C_DUMMY = new ORCompositeElementType("C_DUMMY", OclLanguage.INSTANCE);
+        C_DUMMY_COLLECTION_ITEM = new ORCompositeElementType("C_DUMMY_COLLECTION_ITEM", OclLanguage.INSTANCE);
 
         // Token element types
 
@@ -172,6 +174,7 @@ public class OclTypes extends ORTypes {
         LBRACE = new ORTokenElementType("LBRACE", OclLanguage.INSTANCE);
         LBRACKET = new ORTokenElementType("LBRACKET", OclLanguage.INSTANCE);
         LET = new ORTokenElementType("LET", OclLanguage.INSTANCE);
+        LIST = new ORTokenElementType("LIST", OclLanguage.INSTANCE);
         LIDENT = new ORTokenElementType("LIDENT", OclLanguage.INSTANCE);
         LPAREN = new ORTokenElementType("LPAREN", OclLanguage.INSTANCE);
         LT = new ORTokenElementType("LT", OclLanguage.INSTANCE);

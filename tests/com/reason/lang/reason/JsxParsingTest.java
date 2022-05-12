@@ -88,16 +88,19 @@ public class JsxParsingTest extends RmlParsingTestCase {
     }
 
     public void test_tag_props_with_dot() {
-        PsiTag e = (PsiTag) firstElement(parseCode("<a className=A.B.link href=h download=d></a>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<a className=A.B.link onClick={C.call()} download=d></a>"));
 
         List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
         assertSize(3, props);
         assertEquals("className", props.get(0).getName());
         assertEquals("A.B.link", props.get(0).getValue().getText());
-        assertEquals("href", props.get(1).getName());
-        assertEquals("h", props.get(1).getValue().getText());
+        assertEquals("onClick", props.get(1).getName());
+        assertEquals("{C.call()}", props.get(1).getValue().getText());
         assertEquals("download", props.get(2).getName());
         assertEquals("d", props.get(2).getValue().getText());
+
+        PsiFunctionCall f = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertNotNull(f);
     }
 
     public void test_optional_prop() {
@@ -160,13 +163,16 @@ public class JsxParsingTest extends RmlParsingTestCase {
     }
 
     public void test_prop03() {
-        PsiTag e = (PsiTag) firstElement(parseCode(
-                                        "<PageContentGrid height={computePageHeight(miniDashboardHeight)} title=\"X\"/>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<PageContentGrid onClick={(. _e) => action(true, ())} title=\"X\"/>"));
 
         List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(2, properties.size());
-        assertEquals("{computePageHeight(miniDashboardHeight)}", properties.get(0).getValue().getText());
+        assertEquals("{(. _e) => action(true, ())}", properties.get(0).getValue().getText());
         assertEquals("\"X\"", properties.get(1).getValue().getText());
+
+        PsiFunction f = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
+        assertEquals("_e", f.getParameters().get(0).getText());
+        assertEquals("action(true, ())", f.getBody().getText());
     }
 
     public void test_prop04() {

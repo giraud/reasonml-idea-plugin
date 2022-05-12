@@ -8,7 +8,7 @@ import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
 
-public class PolyVariantTest extends OclParsingTestCase {
+public class PolyVariantParsingTest extends OclParsingTestCase {
     public void test_basic_LIdent() {
         PsiLet e = first(letExpressions(parseCode("let x = `red")));
         PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), m_types.POLY_VARIANT));

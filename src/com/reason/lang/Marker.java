@@ -20,12 +20,22 @@ public class Marker {
     private Status myStatus = Status.unset;
     private boolean myIsStart = false;
 
-    private Marker(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @Nullable ORCompositeType compositeElementType, @Nullable ORTokenElementType scopeTokenElementType) {
+    private Marker(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull ORCompositeType compositeElementType, @Nullable ORTokenElementType scopeTokenElementType) {
         myBuilder = builder;
         myMark = mark;
         myOffset = builder.getCurrentOffset();
         myCompositeElementType = compositeElementType;
         myScopeElementType = scopeTokenElementType;
+    }
+
+    public static Marker duplicate(Marker marker) {
+        Marker newMarker = new Marker(marker.myBuilder, marker.myBuilder.mark(), marker.myCompositeElementType, marker.myScopeElementType);
+        if (marker.isDone()) {
+            newMarker.done();
+        } else if (marker.isDropped()) {
+            newMarker.drop();
+        }
+        return newMarker;
     }
 
     public static @NotNull Marker mark(@NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType) {
@@ -37,9 +47,9 @@ public class Marker {
         return new Marker(scope.myBuilder, precede, compositeType, null);
     }
 
-    static @NotNull Marker markRoot(@NotNull PsiBuilder builder) {
-        return new Marker(builder, builder.mark(), null, null);
-    }
+    //static @NotNull Marker markRoot(@NotNull PsiBuilder builder) {
+    //    return new Marker(builder, builder.mark(), null, null);
+    //}
 
     public int getLength() {
         return myBuilder.getCurrentOffset() - myOffset;
@@ -98,7 +108,7 @@ public class Marker {
         return myScopeElementType == scopeType;
     }
 
-    @Nullable ORTokenElementType getScopeTokenElementType() {
+    public @Nullable ORTokenElementType getScopeType() {
         return myScopeElementType;
     }
 
@@ -125,7 +135,7 @@ public class Marker {
         return myCompositeElementType == elementType;
     }
 
-    public @Nullable ORCompositeType getCompositeType() {
+    public @NotNull ORCompositeType getCompositeType() {
         return myCompositeElementType;
     }
 

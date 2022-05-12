@@ -3,15 +3,20 @@ package com.reason.lang;
 import com.intellij.lang.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 
 public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
-    protected final T m_types;
+    protected static final Log LOG = Log.create("parser");
 
-    protected CommonParser(T types) {
-        m_types = types;
+    protected final T myTypes;
+    protected final boolean myIsSafe;
+
+    protected CommonParser(boolean isSafe, T types) {
+        myIsSafe = isSafe;
+        myTypes = types;
     }
 
     @Override
@@ -40,9 +45,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
         builder = adapt_builder_(elementType, builder, this);
         PsiBuilder.Marker m = enter_section_(builder, 0, _NONE_);
 
-        Marker fileScope = Marker.markRoot(builder);
-
-        ParserState state = new ParserState(builder);
+        ParserState state = new ParserState(!myIsSafe, builder);
         parseFile(builder, state);
 
         // if we have a scope at last position in a file, without SEMI, we need to handle it here
@@ -50,10 +53,8 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
             state.clear();
         }
 
-        fileScope.end();
-
-        if (m_types instanceof ORTypes) {
-            state.mark(((ORTypes) m_types).C_FAKE_MODULE).popEnd();
+        if (myTypes instanceof ORTypes) {
+            state.mark(((ORTypes) myTypes).C_FAKE_MODULE).popEnd();
         }
 
         exit_section_(builder, 0, m, elementType, true, true, TRUE_CONDITION);
@@ -62,8 +63,8 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
     protected boolean isModuleResolution(@NotNull Marker scope) {
-        if (m_types instanceof ORTypes) {
-            ORTypes m_types = (ORTypes) this.m_types;
+        if (myTypes instanceof ORTypes) {
+            ORTypes m_types = (ORTypes) this.myTypes;
             return scope.isCompositeType(m_types.C_MODULE_DECLARATION) || scope.isCompositeType(m_types.C_MODULE_TYPE);
         }
         return false;
@@ -71,8 +72,8 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
     @Nullable
     protected WhitespaceSkippedCallback endJsxPropertyIfWhitespace(@NotNull ParserState state) {
-        if (m_types instanceof ORTypes) {
-            ORTypes types = (ORTypes) m_types;
+        if (myTypes instanceof ORTypes) {
+            ORTypes types = (ORTypes) myTypes;
             return (type, start, end) -> {
                 if (state.is(types.C_TAG_PROPERTY)
                         || (state.strictlyIn(types.C_TAG_PROP_VALUE)/* && !state.hasScopeToken()*/)) {

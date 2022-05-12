@@ -152,6 +152,20 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiLowerIdentifier.class));
     }
 
+    public void test_deconstruction_nested() { // belt_Map offset 2272
+        PsiLet e = firstOfType(parseCode("let ((l, r), b) = Dict.split(~cmp, m.data, x);"), PsiLet.class);
+
+        assertTrue(e.isDeconstruction());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(3, names);
+        assertEquals("l", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
+        assertEquals("r", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+        assertEquals("b", names.get(2).getText());
+        assertInstanceOf(names.get(2), PsiLowerIdentifier.class);
+    }
+
     public void test_operator() {
         PsiLet e = first(letExpressions(parseCode("let (/): (path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c;")));
 

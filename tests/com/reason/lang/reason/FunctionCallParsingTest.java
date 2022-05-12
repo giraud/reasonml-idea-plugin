@@ -38,6 +38,15 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         assertEmpty(fnCall.getParameters());
     }
 
+    public void test_end_comma() {
+        PsiLet e = first(letExpressions(parseCode("let _ = style([ color(red), ])")));
+
+        assertEquals("style([ color(red), ])", e.getBinding().getText());
+        PsiFunctionCall f = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
+        assertNull(PsiTreeUtil.findChildOfType(f, PsiDeconstruction.class));
+        assertSize(1, f.getParameters());
+    }
+
     public void test_unit_last() {
         PsiLetBinding e = first(letExpressions(parseCode("let _ = f(1, ());"))).getBinding();
 
@@ -49,13 +58,6 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         FileBase f = parseCode("call(~decode=x => Ok(), ~task=() => y,);");
         PsiFunctionCall fnCall = ORUtil.findImmediateFirstChildOfClass(f, PsiFunctionCall.class);
 
-        assertSize(2, fnCall.getParameters());
-    }
-
-    public void test_GH_120() {
-        PsiLet e = first(letExpressions(parseCode("let _ = f(x == U.I, 1)")));
-
-        PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
         assertSize(2, fnCall.getParameters());
     }
 
@@ -71,5 +73,13 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
 
         PsiFunctionBody body = PsiTreeUtil.findChildOfType(e, PsiFunctionBody.class);
         assertEquals("{ M.{k: v} }", body.getText());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/120
+    public void test_GH_120() {
+        PsiLet e = first(letExpressions(parseCode("let _ = f(x == U.I, 1)")));
+
+        PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertSize(2, fnCall.getParameters());
     }
 }

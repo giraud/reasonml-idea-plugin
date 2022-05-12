@@ -1,6 +1,7 @@
 package com.reason.lang;
 
 import com.intellij.lang.*;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.util.*;
 import com.reason.lang.core.type.*;
@@ -9,16 +10,36 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class ParserState {
+    private final boolean myVerbose;
     public final PsiBuilder myBuilder;
     private final LinkedList<Marker> myMarkers = new LinkedList<>();
     public boolean dontMove = false;
     private int myIndex; // found index when using in(..)/inAny(..) functions
 
-    public IElementType previousElementType2;
-    public IElementType previousElementType1;
-
-    public ParserState(@NotNull PsiBuilder builder) {
+    public ParserState(boolean verbose, @NotNull PsiBuilder builder) {
+        myVerbose = verbose;
         myBuilder = builder;
+    }
+
+
+    public @Nullable IElementType previousElementType(int step) {
+        int pos = -1;
+        int found = 0;
+
+        IElementType elementType = myBuilder.rawLookup(pos);
+        if (elementType != null && elementType != TokenType.WHITE_SPACE) {
+            found++;
+        }
+
+        while (elementType != null && found != step) {
+            pos--;
+            elementType = myBuilder.rawLookup(pos);
+            if (elementType != null && elementType != TokenType.WHITE_SPACE) {
+                found++;
+            }
+        }
+
+        return elementType;
     }
 
     public @NotNull ParserState popEndUntilStart() {
@@ -67,7 +88,7 @@ public class ParserState {
 
         if (!myMarkers.isEmpty()) {
             scope = myMarkers.peek();
-            while (scope != null && scope.getScopeTokenElementType() != scopeElementType) {
+            while (scope != null && scope.getScopeType() != scopeElementType) {
                 popEnd();
                 scope = getLatestMarker();
             }
@@ -140,10 +161,6 @@ public class ParserState {
 
     public boolean in(ORCompositeType composite) {
         return in(composite, null, myMarkers.size(), false);
-    }
-
-    public boolean inScopeOr(ORCompositeType composite) {
-        return in(composite, null, myMarkers.size(), true);
     }
 
     public boolean in(ORCompositeType composite, @Nullable ORCompositeType excluded) {
@@ -220,7 +237,6 @@ public class ParserState {
         return -1;
     }
 
-    // zzz: merge with inScopeOrAny ?
     public boolean inAny(ORCompositeType... composite) {
         int stop = myMarkers.size();
         for (int i = 0; i < stop; i++) {
@@ -259,9 +275,9 @@ public class ParserState {
         return false;
     }
 
-    public boolean isScopeTokenElementType(@Nullable ORTokenElementType scopeTokenElementType) {
-        Marker latestScope = getLatestMarker();
-        return latestScope != null && latestScope.isScopeToken(scopeTokenElementType);
+    public boolean isScope(@Nullable ORTokenElementType scopeTokenElementType) {
+        Marker latest = getLatestMarker();
+        return latest != null && latest.isScopeToken(scopeTokenElementType);
     }
 
     public @NotNull ParserState mark(@NotNull ORCompositeType composite) {
@@ -270,16 +286,32 @@ public class ParserState {
         return this;
     }
 
-    public @NotNull ParserState markScope(@NotNull ORCompositeType composite, @NotNull ORTokenElementType scope) {
+    public @NotNull ParserState markScope(@NotNull ORCompositeType composite, @Nullable ORTokenElementType scope) {
         mark(composite).updateScopeToken(scope);
         return this;
     }
 
     public @NotNull ParserState markDummyScope(@NotNull ORCompositeType composite, @NotNull ORTokenElementType scope) {
         markScope(composite, scope);
-        Marker latestScope = getLatestMarker();
-        if (latestScope != null) {
-            latestScope.drop();
+        Marker latest = myMarkers.peek();
+        if (latest != null) {
+            latest.drop();
+        }
+        return this;
+    }
+
+    public @NotNull ParserState markDummy(@NotNull ORCompositeType composite) {
+        mark(composite);
+        Marker latest = myMarkers.peek();
+        if (latest != null) {
+            latest.drop();
+        }
+        return this;
+    }
+
+    public @NotNull ParserState markDummyParenthesisScope(@NotNull ORTypes types) {
+        if (getTokenType() == types.LPAREN) {
+            markDummyScope(types.C_DUMMY, types.LPAREN);
         }
         return this;
     }
@@ -329,7 +361,7 @@ public class ParserState {
 
         if (!myMarkers.isEmpty()) {
             marker = myMarkers.peek();
-            while (marker != null && !ArrayUtil.contains(marker.getScopeTokenElementType(), scopeElementTypes)) {
+            while (marker != null && !ArrayUtil.contains(marker.getScopeType(), scopeElementTypes)) {
                 popEnd();
                 marker = getLatestMarker();
             }
@@ -378,8 +410,6 @@ public class ParserState {
     }
 
     public @NotNull ParserState advance() {
-        previousElementType2 = previousElementType1;
-        previousElementType1 = myBuilder.getTokenType();
         myBuilder.advanceLexer();
         dontMove = true;
         return this;
@@ -456,21 +486,6 @@ public class ParserState {
         return false;
     }
 
-    public @NotNull ParserState markOptionalParenDummyScope(@NotNull ORTypes types, @NotNull ORCompositeType scopeType) {
-        if (getTokenType() == types.LPAREN) {
-            markScope(scopeType, types.LPAREN).advance();
-        }
-        return this;
-    }
-
-    public @NotNull ParserState markOptionalParenDummyScope(@NotNull ORTypes types) {
-        return markOptionalParenDummyScope(types, types.C_DUMMY);
-    }
-
-    public boolean isDummy() {
-        return false;
-    }
-
     public ParserState markBefore(int pos, ORCompositeType compositeType) {
         if (pos >= 0) {
             Marker scope = myMarkers.get(pos);
@@ -491,8 +506,35 @@ public class ParserState {
         for (int i = 0; i < pos; i++) {
             myMarkers.pop();
         }
+
         myMarkers.pop().rollbackTo();
+        if (myVerbose) {
+            System.out.println("rollbacked to: " + myBuilder.getCurrentOffset() + ", " + myBuilder.getTokenType() + "(" + myBuilder.getTokenText() + ")");
+        }
+
         dontMove = true;
+        return this;
+    }
+
+    public @NotNull ParserState rollbackToFoundIndex() {
+        for (int i = 0; i < myIndex; i++) {
+            myMarkers.pop();
+        }
+
+        Marker foundMarker = myMarkers.pop();
+        foundMarker.rollbackTo();
+        if (myVerbose) {
+            System.out.println("rollbacked to found: " + myBuilder.getCurrentOffset() + ", " + myBuilder.getTokenType() + "(" + myBuilder.getTokenText() + ")");
+        }
+
+        Marker marker = Marker.duplicate(foundMarker);
+        myMarkers.push(marker);
+
+        if (marker.hasScope()) {
+            advance();
+        }
+        dontMove = true;
+
         return this;
     }
 

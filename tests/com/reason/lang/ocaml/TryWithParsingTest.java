@@ -6,7 +6,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.impl.*;
 
 @SuppressWarnings("ConstantConditions")
-public class TryWithTest extends OclParsingTestCase {
+public class TryWithParsingTest extends OclParsingTestCase {
     public void test_structure() {
         PsiTry e = (PsiTry) firstElement(parseCode("try x with Not_found -> ()"));
 
