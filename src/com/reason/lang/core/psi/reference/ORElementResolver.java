@@ -178,13 +178,14 @@ public class ORElementResolver implements Disposable {
             for (Map.Entry<String, Map<String, Resolution>> entry : myResolutionsPerTopModule.entrySet()) {
                 String first = entry.getKey();
                 Collection<Resolution> resolutions = entry.getValue().values();
-
-                Collection<PsiModule> aliases = ModuleAliasedIndex.getElements(first, project, GlobalSearchScope.allScope(project));
-                for (PsiModule alias : aliases) {
-                    String[] aliasPath = alias.getQualifiedNameAsPath();
-                    for (Resolution resolution : resolutions) {
-                        Resolution aliasResolution = Resolution.createAlternate(resolution, aliasPath);
-                        aliasResolutions.add(aliasResolution);
+                if (first != null) {
+                    Collection<PsiModule> aliases = ModuleAliasedIndex.getElements(first, project, GlobalSearchScope.allScope(project));
+                    for (PsiModule alias : aliases) {
+                        String[] aliasPath = alias.getQualifiedNameAsPath();
+                        for (Resolution resolution : resolutions) {
+                            Resolution aliasResolution = Resolution.createAlternate(resolution, aliasPath);
+                            aliasResolutions.add(aliasResolution);
+                        }
                     }
                 }
             }

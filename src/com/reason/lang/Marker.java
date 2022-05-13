@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 // Wrapper around the PsiBuilder.Marker to keep its status
 public class Marker {
     enum Status {
-        unset, done, dropped
+        unset, hold, done, dropped
     }
 
     private final PsiBuilder myBuilder;
@@ -69,10 +69,12 @@ public class Marker {
             if (myCompositeElementType instanceof IElementType) {
                 myMark.done((IElementType) myCompositeElementType);
                 myStatus = Status.done;
-            } else {
-                myMark.drop();
-                myStatus = Status.dropped;
             }
+        }
+
+        if (myStatus != Status.done && myStatus != Status.dropped) {
+            myMark.drop();
+            myStatus = Status.dropped;
         }
     }
 
@@ -80,6 +82,12 @@ public class Marker {
         if (myStatus == Status.unset) {
             myMark.drop();
             myStatus = Status.dropped;
+        }
+    }
+
+    public void hold() {
+        if (myStatus == Status.unset) {
+            myStatus = Status.hold;
         }
     }
 
@@ -149,5 +157,13 @@ public class Marker {
 
     public boolean isDropped() {
         return myStatus == Status.dropped;
+    }
+
+    public boolean isHold() {
+        return myStatus == Status.hold;
+    }
+
+    public void resetStatus() {
+        myStatus = Status.unset;
     }
 }

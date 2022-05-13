@@ -98,7 +98,7 @@ public abstract class ORTypes {
   public ORCompositeType C_VARIANT_CONSTRUCTOR;
   public ORCompositeType C_WHILE;
 
-  public ORCompositeType C_DUMMY;
+  public ORCompositeType C_PLACE_HOLDER;
   public ORCompositeType C_DUMMY_COLLECTION_ITEM;
 
   // Token element types

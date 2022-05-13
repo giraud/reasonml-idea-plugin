@@ -159,4 +159,11 @@ public class IfParsingTest extends RmlParsingTestCase {
         List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
         assertEquals("x ? Some(x) : None", ts.get(0).getText());
     }
+
+    public void test_ternary_let_binding() {
+        PsiLet e = firstOfType(parseCode("let x = { let a = 1; x ? 1 : 2; }"), PsiLet.class);
+
+        List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
+        assertEquals("x ? 1 : 2", ts.get(0).getText());
+    }
 }

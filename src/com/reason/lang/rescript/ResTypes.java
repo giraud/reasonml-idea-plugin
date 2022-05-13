@@ -103,7 +103,7 @@ public class ResTypes extends ORTypes {
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", ResLanguage.INSTANCE);
         C_WHILE = new ORCompositeElementType("C_WHILE", ResLanguage.INSTANCE);
 
-        C_DUMMY = new ORCompositeElementType("C_DUMMY", ResLanguage.INSTANCE);
+        C_PLACE_HOLDER = new ORCompositeElementType("C_PLACE_HOLDER", ResLanguage.INSTANCE);
         C_DUMMY_COLLECTION_ITEM = new ORCompositeElementType("C_DUMMY_COLLECTION_ITEM", ResLanguage.INSTANCE);
 
         // Token element types

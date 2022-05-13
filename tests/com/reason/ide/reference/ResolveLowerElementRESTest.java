@@ -176,15 +176,16 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals("A.B.t", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
     }
 
-    public void test_include_2() {
-        configureCode("Css_AtomicTypes.resi", "module Visibility: { type t = [ #visible | #hidden | #collapse ] }");
-        configureCode("Css_Legacy_Core.res", "module Types = Css_AtomicTypes");
-        configureCode("Css.res", "include Css_Legacy_Core");
-        configureCode("A.res", "type layoutRule\n let visibility: [< Css.Types.Length.t | Css.Types.Visibility.t<caret> ] => layoutRule;");
-
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Css_AtomicTypes.Visibility.t", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
-    }
+    // zzz
+    //public void test_include_2() {
+    //    configureCode("Css_AtomicTypes.resi", "module Visibility: { type t = [ #visible | #hidden | #collapse ] }");
+    //    configureCode("Css_Legacy_Core.res", "module Types = Css_AtomicTypes");
+    //    configureCode("Css.res", "include Css_Legacy_Core");
+    //    configureCode("A.res", "type layoutRule\n let visibility: [< Css.Types.Length.t | Css.Types.Visibility.t<caret> ] => layoutRule;");
+    //
+    //    PsiElement e = myFixture.getElementAtCaret();
+    //    assertEquals("Css_AtomicTypes.Visibility.t", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+    //}
 
     public void test_include_qualified() {
         configureCode("A.res", "module B = { module C = { type t } }\n module D = B\n include D.C");

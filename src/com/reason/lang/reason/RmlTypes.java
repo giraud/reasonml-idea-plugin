@@ -100,11 +100,10 @@ public class RmlTypes extends ORTypes {
         C_UPPER_BOUND_CONSTRAINT = new ORCompositeElementType("C_UPPER_BOUND_CONSTRAINT", RmlLanguage.INSTANCE);
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", RmlLanguage.INSTANCE);
         C_VARIANT = new ORCompositeElementType("C_VARIANT", RmlLanguage.INSTANCE);
-        C_VARIANT_CONSTRUCTOR =
-                new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", RmlLanguage.INSTANCE);
+        C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", RmlLanguage.INSTANCE);
         C_WHILE = new ORCompositeElementType("C_WHILE", RmlLanguage.INSTANCE);
 
-        C_DUMMY = new ORCompositeElementType("C_DUMMY", RmlLanguage.INSTANCE);
+        C_PLACE_HOLDER = new ORCompositeElementType("C_PLACE_HOLDER", RmlLanguage.INSTANCE);
         C_DUMMY_COLLECTION_ITEM = new ORCompositeElementType("C_DUMMY_COLLECTION_ITEM", RmlLanguage.INSTANCE);
 
         // Token element types

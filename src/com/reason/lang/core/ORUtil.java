@@ -20,6 +20,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class ORUtil {
+    private static final String[] EMPTY_PATH = new String[0];
 
     private ORUtil() {
     }
@@ -303,14 +304,15 @@ public class ORUtil {
         return null;
     }
 
-    public static String @Nullable [] getQualifiedPath(@NotNull PsiElement element) {
+    public static String @NotNull [] getQualifiedPath(@NotNull PsiElement element) {
         String path = "";
 
         PsiElement parent = element.getParent();
         while (parent != null) {
             if (parent instanceof PsiQualifiedPathElement) {
                 if (parent instanceof PsiNameIdentifierOwner && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
-                    return ((PsiQualifiedPathElement) parent).getPath();
+                    String[] parentPath = ((PsiQualifiedPathElement) parent).getPath();
+                    return parentPath == null ? EMPTY_PATH : parentPath;
                 }
                 return (((PsiQualifiedNamedElement) parent).getQualifiedName() + (path.isEmpty() ? "" : "." + path)).split("\\.");
             } else {

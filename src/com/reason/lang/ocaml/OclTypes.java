@@ -106,7 +106,7 @@ public class OclTypes extends ORTypes {
         C_SWITCH_BODY = new ORCompositeElementType("C_SWITCH_BODY", OclLanguage.INSTANCE);
         C_WHILE = new ORCompositeElementType("C_WHILE", OclLanguage.INSTANCE);
 
-        C_DUMMY = new ORCompositeElementType("C_DUMMY", OclLanguage.INSTANCE);
+        C_PLACE_HOLDER = new ORCompositeElementType("C_PLACE_HOLDER", OclLanguage.INSTANCE);
         C_DUMMY_COLLECTION_ITEM = new ORCompositeElementType("C_DUMMY_COLLECTION_ITEM", OclLanguage.INSTANCE);
 
         // Token element types

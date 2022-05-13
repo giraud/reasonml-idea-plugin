@@ -29,6 +29,12 @@ public class PsiObjectField extends PsiTokenStub<ORTypes, PsiObjectField, PsiObj
 
     @Override
     public @NotNull String getName() {
+        PsiObjectFieldStub stub = getGreenStub();
+        if (stub != null) {
+            String name = stub.getName();
+            return name == null ? "" : name;
+        }
+
         PsiElement nameElement = getNameIdentifier();
         return nameElement == null ? "" : nameElement.getText().replaceAll("\"", "");
     }

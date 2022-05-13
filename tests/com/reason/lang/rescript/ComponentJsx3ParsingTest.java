@@ -34,7 +34,7 @@ public class ComponentJsx3ParsingTest extends ResParsingTestCase {
 
         List<PsiParameter> params = e.getFunction().getParameters();
         assertSize(1, params);
-        // zzz assertEquals("layout", params.get(0).getName());
+        assertEquals("layout", params.get(0).getName());
         assertTrue(params.get(0).isOptional());
     }
 }

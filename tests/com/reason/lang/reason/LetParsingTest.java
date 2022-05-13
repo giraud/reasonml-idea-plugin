@@ -77,9 +77,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let typeScale = {one: 1.375, two: 1.0};")));
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-        assertNotNull(binding);
         PsiRecord record = PsiTreeUtil.findChildOfType(binding, PsiRecord.class);
-        assertNotNull(record);
         assertSize(2, record.getFields());
     }
 

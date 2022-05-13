@@ -128,14 +128,14 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("y ? c : d", ts.get(1).getText());
     }
 
-    public void test_ternary_functor_parameters() {
-        PsiParameters e = firstOfType(parseCode("module M = Make( x ? a : b, y ? c : d  )"), PsiParameters.class);
-
-        assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameter.class));
-        List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
-        assertEquals("x ? a : b", ts.get(0).getText());
-        assertEquals("y ? c : d", ts.get(1).getText());
-    }
+    //public void test_ternary_functor_parameters() {
+    //    PsiParameters e = firstOfType(parseCode("module M = Make( x ? a : b, y ? c : d  )"), PsiParameters.class);
+    //
+    //    assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameter.class));
+    //    List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
+    //    assertEquals("x ? a : b", ts.get(0).getText());
+    //    assertEquals("y ? c : d", ts.get(1).getText());
+    //}
 
     public void test_ternary_switch() {
         PsiLet e = firstOfType(parseCode("let compare = switch index { | 0 => appliedCount > appliedCount' ? (-1) : 0 }"), PsiLet.class);
