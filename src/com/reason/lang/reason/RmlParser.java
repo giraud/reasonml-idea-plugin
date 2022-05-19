@@ -3,12 +3,10 @@ package com.reason.lang.reason;
 import com.intellij.lang.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.*;
-import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.*;
 
-// zzz lsymbol/lidentifier - filestub
 public class RmlParser extends CommonPsiParser {
     RmlParser(boolean isSafe) {
         super(isSafe);
@@ -16,19 +14,30 @@ public class RmlParser extends CommonPsiParser {
 
     @Override
     protected ORParser<RmlTypes> getORParser(@NotNull PsiBuilder builder) {
-        return new RmlParserState(builder, !myIsSafe);
+        return new RmlParserState(builder, myIsSafe);
     }
 
     static class RmlParserState extends ORLanguageParser<RmlTypes> {
-        public RmlParserState(@NotNull PsiBuilder builder, boolean verbose) {
-            super(RmlTypes.INSTANCE, builder, verbose);
+        public RmlParserState(@NotNull PsiBuilder builder, boolean isSafe) {
+            super(RmlTypes.INSTANCE, builder, isSafe);
         }
 
         @Override
         public void parse() {
             IElementType tokenType;
 
+            long parseStart = System.currentTimeMillis();
+
             while (!myBuilder.eof()) {
+                long parseTime = System.currentTimeMillis();
+                if (5000 < parseTime - parseStart) {
+                    if (myIsSafe) { // Don't do that in tests
+                        error("CANCEL");
+                        LOG.error("CANCEL REASON PARSING:\n" + myBuilder.getOriginalText().toString());
+                        break;
+                    }
+                }
+
                 tokenType = myBuilder.getTokenType();
 
                 if (in(myTypes.C_INTERPOLATION_EXPR)) {
@@ -232,7 +241,7 @@ public class RmlParser extends CommonPsiParser {
                         .updateCompositeAt(nextPos, myTypes.C_BINARY_CONDITION)
                         .popEndUntilIndex(nextPos).end()
                         .advance().mark(myTypes.C_IF_THEN_SCOPE);
-                markPlaceHolder();
+                markHolder(myTypes.C_PLACE_HOLDER);
             } else if (isAtIndex(foundPos, myTypes.C_DUMMY_COLLECTION_ITEM)) {
                 markHolderBefore(foundPos, myTypes.C_DUMMY_COLLECTION_ITEM);
                 markBefore(foundPos, myTypes.C_TERNARY)
@@ -389,7 +398,7 @@ public class RmlParser extends CommonPsiParser {
                         // not at the end of a list: ie not => (p1, p2<,> )
                         markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
                         mark(myTypes.C_FUN_PARAM);
-                        markPlaceHolder();
+                        markHolder(myTypes.C_PLACE_HOLDER);
                     }
                 } else if (isDropped(myTypes.C_SCOPED_EXPR) && isParent(myTypes.C_SIG_EXPR)) {
                     // type t = ( ... |>,<|
@@ -602,7 +611,7 @@ public class RmlParser extends CommonPsiParser {
                     // x ? y |> :<| ...
                     popEndUntilFoundIndex()
                             .advance().mark(myTypes.C_IF_THEN_SCOPE);
-                    markPlaceHolder();
+                    markHolder(myTypes.C_PLACE_HOLDER);
                 }
 
             }
@@ -707,7 +716,7 @@ public class RmlParser extends CommonPsiParser {
                 //    markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
                 //}
                 mark(myTypes.C_FUN_PARAM);
-                markPlaceHolder();
+                markHolder(myTypes.C_PLACE_HOLDER);
                 wrapWith(myTypes.C_LOWER_IDENTIFIER);
             } else if (strictlyInAny(myTypes.C_TAG_START, myTypes.C_TAG_PROP_VALUE)) {
                 if (previousElementType(1) != myTypes.LT && isFound(myTypes.C_TAG_START)) {
@@ -830,7 +839,7 @@ public class RmlParser extends CommonPsiParser {
                         popEnd();
                     }
                     markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACE).advance();
-                    markPlaceHolder();
+                    markHolder(myTypes.C_PLACE_HOLDER);
                 }
             }
         }
@@ -859,7 +868,7 @@ public class RmlParser extends CommonPsiParser {
                 } else {
                     // ( |>(<| ... ) , ... ) => ...
                     mark(myTypes.C_FUN_PARAM).advance();
-                    markPlaceHolder();
+                    markHolder(myTypes.C_PLACE_HOLDER);
                 }
             } else if (is(myTypes.C_ASSERT_STMT)) {
                 // assert |>(<| ...
@@ -891,7 +900,7 @@ public class RmlParser extends CommonPsiParser {
                 if (isFound(myTypes.C_FUNCTOR_DECLARATION) || isFound(myTypes.C_FUNCTOR_CALL)) {
                     markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance();
                     mark(myTypes.C_FUNCTOR_PARAM);
-                    markPlaceHolder();
+                    markHolder(myTypes.C_PLACE_HOLDER);
                 }
             } else if (in(myTypes.C_VARIANT_DECLARATION)) { // Variant params
                 // type t = | Variant |>(<| .. )
@@ -912,7 +921,7 @@ public class RmlParser extends CommonPsiParser {
                     markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
                 } else {
                     mark(myTypes.C_FUN_PARAM);
-                    markPlaceHolder();
+                    markHolder(myTypes.C_PLACE_HOLDER);
                 }
             } else if (inAny(myTypes.C_OPEN, myTypes.C_INCLUDE)) { // a functor call inside open/include
                 // open/include M |>(<| ...
@@ -995,7 +1004,7 @@ public class RmlParser extends CommonPsiParser {
         private void parseLetBinding() {
             popEndUntil(myTypes.C_LET_DECLARATION).advance()
                     .mark(myTypes.C_LET_BINDING);
-            markPlaceHolder();
+            markHolder(myTypes.C_PLACE_HOLDER);
         }
 
         private void parseSemi() {
@@ -1007,11 +1016,10 @@ public class RmlParser extends CommonPsiParser {
                 popEndUntilScope();
             }
 
-            if (is(myTypes.C_LET_BINDING) || (rawHasScope() && isParent(myTypes.C_LET_BINDING))) {
+            if (is(myTypes.C_LET_BINDING) || rawHasScope()) {
                 // let x = ... |>;<|
-                // let x = { ... |>;<|
-                advance();
-                markPlaceHolder();
+                // { ... |>;<|
+                advance().markHolder(myTypes.C_PLACE_HOLDER);
             }
         }
 
@@ -1088,7 +1096,7 @@ public class RmlParser extends CommonPsiParser {
                             // x |>=><| ...
                             popEndUntil(myTypes.C_FUN_EXPR)
                                     .advance().mark(myTypes.C_FUN_BODY);
-                            markPlaceHolder();
+                            markHolder(myTypes.C_PLACE_HOLDER);
                         } else {
                             // call(x |>=><| ...
                             rollbackToPos(paramIndex);
@@ -1115,24 +1123,14 @@ public class RmlParser extends CommonPsiParser {
                     advance().mark(myTypes.C_FUN_BODY);
                 } else if (isFound(myTypes.C_PATTERN_MATCH_EXPR)) {
                     advance().mark(myTypes.C_PATTERN_MATCH_BODY);
-                    markPlaceHolder();
-                } else if (isCurrent(myTypes.C_SCOPED_EXPR) && !in(myTypes.C_SIG_ITEM)) {
+                    markHolder(myTypes.C_PLACE_HOLDER);
+                } else if (isHold() && !in(myTypes.C_SIG_ITEM)) {
                     // by default, a function
-                    Marker scope = getCurrentMarker();
-                    ORTokenElementType scopeToken = scope == null ? null : scope.getScopeType();
-                    if (scopeToken != null) {
-                        rollbackTo(scope)
-                                .markScope(myTypes.C_SCOPED_EXPR, scopeToken)
-                                .advance().mark(myTypes.C_FUN_EXPR)
-                                .mark(myTypes.C_PARAMETERS);
-                    }
+                    rollbackToPos(0)
+                            .mark(myTypes.C_FUN_EXPR)
+                            .mark(myTypes.C_PARAMETERS);
                 }
-
             }
-        }
-
-        protected ORParser<RmlTypes> markPlaceHolder() {
-            return markHolder(myTypes.C_PLACE_HOLDER);
         }
     }
 }

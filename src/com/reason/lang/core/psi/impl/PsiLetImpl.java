@@ -289,4 +289,10 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         };
     }
     // endregion
+
+
+    @Override
+    public String toString() {
+        return "PsiLet:" + getName();
+    }
 }

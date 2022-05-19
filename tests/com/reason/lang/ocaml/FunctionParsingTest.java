@@ -85,6 +85,11 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertEquals("let x = 1", let.getFunction().getBody().getText());
     }
 
+    public void test_rollback() {
+        PsiFunction f = firstOfType(parseCode("let _ = let x = 1 in let y = 2 in fun () -> 3"), PsiFunction.class); // test infinite rollback
+        assertEquals("fun () -> 3", f.getText());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/291
     public void test_GH_291() {
         PsiLet e = first(letExpressions(parseCode("let fn = function | OpenedModule -> true | _ -> false")));

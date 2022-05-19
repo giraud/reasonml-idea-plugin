@@ -6,7 +6,7 @@ public class ORStubVersions {
 
     public static final int INCLUDE = 4;
     public static final int KLASS = 3;
-    public static final int LET = 15;
+    public static final int LET = 16;
     public static final int EXCEPTION = 8;
     public static final int EXTERNAL = 10;
     public static final int MODULE = 25;

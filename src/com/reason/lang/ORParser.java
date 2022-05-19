@@ -15,15 +15,17 @@ public abstract class ORParser<T> {
 
     protected T myTypes;
     protected final boolean myVerbose;
+    protected final boolean myIsSafe;
     protected final PsiBuilder myBuilder;
     protected final LinkedList<Marker> myMarkers = new LinkedList<>();
     public boolean dontMove = false;
     private int myIndex; // found index when using in(..)/inAny(..) functions
 
-    protected ORParser(@NotNull T types, @NotNull PsiBuilder builder, boolean verbose) {
+    protected ORParser(@NotNull T types, @NotNull PsiBuilder builder, boolean isSafe) {
         myTypes = types;
         myBuilder = builder;
-        myVerbose = verbose;
+        myIsSafe = isSafe;
+        myVerbose = !isSafe;
     }
 
     public abstract void parse();
@@ -429,7 +431,7 @@ public abstract class ORParser<T> {
 
     public @NotNull ORParser<T> updateComposite(@NotNull ORCompositeType compositeElementType) {
         Marker marker = getLatestMarker();
-        if (marker != null) {
+        if (marker != null && !marker.isDropped() && !marker.isDone()) {
             marker.updateCompositeType(compositeElementType);
             marker.resetStatus();
         }

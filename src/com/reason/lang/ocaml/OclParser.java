@@ -26,18 +26,29 @@ public class OclParser extends CommonPsiParser {
 
     @Override
     protected ORParser<OclTypes> getORParser(@NotNull PsiBuilder builder) {
-        return new OclParserState(builder, !myIsSafe);
+        return new OclParserState(builder, myIsSafe);
     }
 
     static class OclParserState extends ORLanguageParser<OclTypes> {
-        protected OclParserState(@NotNull PsiBuilder builder, boolean verbose) {
-            super(OclTypes.INSTANCE, builder, verbose);
+        protected OclParserState(@NotNull PsiBuilder builder, boolean isSafe) {
+            super(OclTypes.INSTANCE, builder, isSafe);
         }
 
         @Override public void parse() {
             IElementType tokenType;
 
+            long parseStart = System.currentTimeMillis();
+
             while (!myBuilder.eof()) {
+                long parseTime = System.currentTimeMillis();
+                if (5000 < parseTime - parseStart) {
+                    if (myIsSafe) { // Don't do that in tests
+                        error("CANCEL");
+                        LOG.error("CANCEL OCAML PARSING:\n" + myBuilder.getOriginalText().toString());
+                        break;
+                    }
+                }
+
                 tokenType = myBuilder.getTokenType();
 
                 if (tokenType == myTypes.SEMI) {

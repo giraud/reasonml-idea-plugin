@@ -30,11 +30,15 @@ public class Marker {
 
     public static Marker duplicate(Marker marker) {
         Marker newMarker = new Marker(marker.myBuilder, marker.myBuilder.mark(), marker.myCompositeElementType, marker.myScopeElementType);
+        newMarker.myStatus = marker.myStatus;
+        newMarker.myIsStart = marker.myIsStart;
+
         if (marker.isDone()) {
             newMarker.done();
         } else if (marker.isDropped()) {
             newMarker.drop();
         }
+
         return newMarker;
     }
 
@@ -164,6 +168,8 @@ public class Marker {
     }
 
     public void resetStatus() {
-        myStatus = Status.unset;
+        if (myStatus != Status.dropped && myStatus != Status.done) {
+            myStatus = Status.unset;
+        }
     }
 }

@@ -16,19 +16,30 @@ public class ResParser extends CommonPsiParser {
 
     @Override
     protected ORParser<ResTypes> getORParser(@NotNull PsiBuilder builder) {
-        return new ResParserState(builder, !myIsSafe);
+        return new ResParserState(builder, myIsSafe);
     }
 
     static class ResParserState extends ORLanguageParser<ResTypes> {
-        public ResParserState(@NotNull PsiBuilder builder, boolean verbose) {
-            super(ResTypes.INSTANCE, builder, verbose);
+        public ResParserState(@NotNull PsiBuilder builder, boolean isSafe) {
+            super(ResTypes.INSTANCE, builder, isSafe);
         }
 
         @Override
         public void parse() {
             IElementType tokenType;
 
+            long parseStart = System.currentTimeMillis();
+
             while (!myBuilder.eof()) {
+                long parseTime = System.currentTimeMillis();
+                if (5000 < parseTime - parseStart) {
+                    if (myIsSafe) { // Don't do that in tests
+                        error("CANCEL");
+                        LOG.error("CANCEL RESCRIPT PARSING:\n" + myBuilder.getOriginalText().toString());
+                        break;
+                    }
+                }
+
                 tokenType = myBuilder.getTokenType();
 
                 // Special analyse when inside an interpolation string

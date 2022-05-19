@@ -172,6 +172,11 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("initialAttribute", f2.getBody().getText());
     }
 
+    public void test_rollback() {
+        PsiFunction f = firstOfType(parseCode("let _ = { let x = 1; let y = 2; () => 3; };"), PsiFunction.class); // test infinite rollback
+        assertEquals("() => 3", f.getText());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/113
     public void test_GH_113() {
         PsiFunction e = firstOfType(parseCode("let _ = () => switch (isBuggy()) { | _ => \"buggy\" };"), PsiFunction.class);

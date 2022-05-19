@@ -33,18 +33,22 @@ public class PsiOption extends ORCompositeTypePsiElement<ORTypes> implements Psi
             } else if (fromLang == OclLanguage.INSTANCE) {
                 // Convert from OCaml
                 PsiElement[] children = getChildren();
-                int lastChild = children[children.length - 2] instanceof PsiWhiteSpace ? children.length - 3 : children.length - 2;
+                if (children.length > 2) {
+                    int lastChild = children[children.length - 2] instanceof PsiWhiteSpace ? children.length - 3 : children.length - 2;
 
-                convertedText.append("option");
-                convertedText.append(toLang.getTemplateStart());
-                for (int i = 0; i <= lastChild; i++) {
-                    PsiElement child = children[i];
-                    IElementType childElementType = child.getNode().getElementType();
-                    if (childElementType != m_types.OPTION) {
-                        convertedText.append(child.getText());
+                    convertedText.append("option");
+                    convertedText.append(toLang.getTemplateStart());
+                    for (int i = 0; i <= lastChild; i++) {
+                        PsiElement child = children[i];
+                        IElementType childElementType = child.getNode().getElementType();
+                        if (childElementType != m_types.OPTION) {
+                            convertedText.append(child.getText());
+                        }
                     }
+                    convertedText.append(toLang.getTemplateEnd());
+                } else {
+                    convertedText.append(getText());
                 }
-                convertedText.append(toLang.getTemplateEnd());
             } else {
                 convertedText.append(getText());
             }
