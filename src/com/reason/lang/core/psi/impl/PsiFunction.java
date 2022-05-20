@@ -23,4 +23,9 @@ public class PsiFunction extends ORCompositeTypePsiElement<ORTypes> implements P
     public @Nullable PsiFunctionBody getBody() {
         return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctionBody.class);
     }
+
+    @Override
+    public String toString() {
+        return "PsiFunction:" + getName();
+    }
 }

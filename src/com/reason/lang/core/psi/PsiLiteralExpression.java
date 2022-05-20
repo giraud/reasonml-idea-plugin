@@ -64,6 +64,6 @@ public class PsiLiteralExpression extends LeafPsiElement implements PsiLanguageI
 
     @Override
     public @NotNull String toString() {
-        return "ORElement.LiteralExpression(" + getElementType() + ")";
+        return "PsiLeafLiteralExpression";
     }
 }

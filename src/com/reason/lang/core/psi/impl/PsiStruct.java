@@ -2,9 +2,11 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
-public class PsiStruct extends ORCompositePsiElement {
-    protected PsiStruct(IElementType type) {
-        super(type);
+public class PsiStruct extends ORCompositeTypePsiElement<ORTypes> {
+    protected PsiStruct(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 }

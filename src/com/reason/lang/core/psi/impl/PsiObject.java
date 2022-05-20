@@ -5,6 +5,7 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -12,9 +13,9 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.stream.*;
 
-public class PsiObject extends ORCompositePsiElement implements PsiLanguageConverter {
-    protected PsiObject(@NotNull IElementType type) {
-        super(type);
+public class PsiObject extends ORCompositeTypePsiElement<ORTypes> implements PsiLanguageConverter {
+    protected PsiObject(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 
     @Override

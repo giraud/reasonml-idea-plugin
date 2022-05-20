@@ -14,7 +14,7 @@ public class PsiTernary extends ORCompositeTypePsiElement<ORTypes> implements Ps
 
     @Override
     public @Nullable PsiBinaryCondition getCondition() {
-        return findChildByClass(PsiBinaryCondition.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiBinaryCondition.class);
     }
 
     @Override

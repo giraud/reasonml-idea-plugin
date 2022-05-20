@@ -48,12 +48,13 @@ public class SignatureParsingTest extends ResParsingTestCase {
     }
 
     public void test_optional_fun_parameters() {
-        PsiLet let = first(letExpressions(parseCode("let x = (a:int, b:option<string>, ~c:bool=false, ~d:float=?) => 3")));
+        PsiLet let = first(letExpressions(parseCode("let x = (a:Js.t, b:option<string>, ~c:bool=false, ~d:float=?) => 3")));
 
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
 
         assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
+        assertEquals("Js.t", parameters.get(0).getSignature().getItems().get(0).getText());
         assertFalse(parameters.get(1).getSignature().getItems().get(0).isOptional());
         assertEquals("bool", parameters.get(2).getSignature().asText(getLangProps()));
         assertTrue(parameters.get(2).isOptional());

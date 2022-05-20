@@ -115,4 +115,9 @@ public class PsiTagStartImpl extends ORCompositeTypePsiElement<ORTypes> implemen
 
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "PsiTagStart";
+    }
 }

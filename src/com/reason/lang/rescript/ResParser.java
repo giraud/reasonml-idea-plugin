@@ -547,9 +547,9 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseGt() {
-            if (is(myTypes.C_TAG_PROP_VALUE)) {
+            if (isCurrent(myTypes.C_TAG_PROP_VALUE)) {
                 // ?prop=value |> > <| ...
-                popEndUntil(myTypes.C_TAG_PROPERTY).popEnd();
+                popEndUntil(myTypes.C_TAG_PROP_VALUE).popEnd().popEnd();
             } else if (is(myTypes.C_TAG_PROPERTY)) {
                 // ?prop |> > <| ...
                 popEnd();

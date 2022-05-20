@@ -4,12 +4,14 @@ import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.*;
+import com.reason.lang.core.type.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
-public class PsiMacro extends ORCompositePsiElement {
-    protected PsiMacro(IElementType type) {
-        super(type);
+public class PsiMacro extends ORCompositeTypePsiElement<ORTypes> {
+
+    protected PsiMacro(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 
     @Override

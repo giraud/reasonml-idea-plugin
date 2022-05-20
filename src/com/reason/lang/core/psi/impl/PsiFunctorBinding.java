@@ -5,8 +5,8 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiFunctorBinding extends ORCompositePsiElement {
-    protected PsiFunctorBinding(@NotNull IElementType elementType) {
-        super(elementType);
+public class PsiFunctorBinding extends ORCompositeTypePsiElement<ORTypes> {
+    protected PsiFunctorBinding(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 }

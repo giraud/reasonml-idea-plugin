@@ -5,13 +5,14 @@ import com.intellij.psi.tree.*;
 import com.intellij.util.containers.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiRecord extends ORCompositePsiElement {
-    protected PsiRecord(IElementType type) {
-        super(type);
+public class PsiRecord extends ORCompositeTypePsiElement<ORTypes> {
+    protected PsiRecord(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 
     public @NotNull List<PsiRecordField> getFields() {

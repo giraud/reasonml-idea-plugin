@@ -6,14 +6,15 @@ import com.intellij.psi.tree.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
 import icons.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class PsiClassMethod extends ORCompositePsiElement implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
-    protected PsiClassMethod(IElementType type) {
-        super(type);
+public class PsiClassMethod extends ORCompositeTypePsiElement<ORTypes> implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
+    protected PsiClassMethod(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 
     @Override

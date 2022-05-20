@@ -13,12 +13,11 @@ public abstract class ORCompositeTypePsiElement<T> extends CompositePsiElement {
         m_types = types;
     }
 
-    protected @Nullable <C extends PsiElement> C findChildByClass(@NotNull Class<C> clazz) {
-        return ORUtil.findImmediateFirstChildOfClass(this, clazz);
-    }
-
     @Override
     public String toString() {
-        return "ORComposite(" + getElementType() + ")";
+        String name = getName();
+        String className = getClass().getSimpleName();
+        boolean isImpl = className.endsWith("Impl");
+        return (isImpl ? className.substring(0, className.length() - 4) : className) + (name == null ? "" : ":" + name);
     }
 }

@@ -68,6 +68,14 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         assertEquals("Dummy.describe[1].test[1].inner", e.getQualifiedName());
     }
 
+    public void test_nested_parenthesis() {
+        PsiFunctionCall f = firstOfType(parseCode("set(x->keep(((y, z)) => y), xx);"), PsiFunctionCall.class);
+
+        assertEquals("set(x->keep(((y, z)) => y), xx);", f.getText());
+        assertEquals("x->keep(((y, z)) => y)", f.getParameters().get(0).getText());
+        assertEquals("xx", f.getParameters().get(1).getText());
+    }
+
     public void test_body() {
         PsiLet e = first(letExpressions(parseCode("let _ = x => { M.{k: v} };")));
 

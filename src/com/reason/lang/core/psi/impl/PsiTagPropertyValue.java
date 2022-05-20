@@ -11,4 +11,10 @@ public class PsiTagPropertyValue extends ORCompositeTypePsiElement<ORTypes> {
         super(types, elementType);
     }
     // endregion
+
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

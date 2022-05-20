@@ -14,7 +14,7 @@ public class PsiIfStatement extends ORCompositeTypePsiElement<ORTypes> implement
 
     @Nullable
     public PsiBinaryCondition getCondition() {
-        return findChildByClass(PsiBinaryCondition.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiBinaryCondition.class);
     }
 
     @Override

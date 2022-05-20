@@ -2,9 +2,11 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
-public class PsiPatternMatchBody extends ORCompositePsiElement {
-    protected PsiPatternMatchBody(IElementType type) {
-        super(type);
+public class PsiPatternMatchBody extends ORCompositeTypePsiElement<ORTypes> {
+    protected PsiPatternMatchBody(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 }

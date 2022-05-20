@@ -597,8 +597,7 @@ public class RmlParser extends CommonPsiParser {
                 if (isFound(myTypes.C_NAMED_PARAM) || isFound(myTypes.C_FUN_PARAM)) {
                     // let x = (~y |> : <| ...
                     advance().mark(myTypes.C_SIG_EXPR);
-                    markDummyParenthesisScope().
-                            advance().mark(myTypes.C_SIG_ITEM);
+                    markDummyParenthesisScope().mark(myTypes.C_SIG_ITEM);
                 } else if (isFound(myTypes.C_RECORD_FIELD) || isFound(myTypes.C_OBJECT_FIELD)) {
                     advance();
                     if (in(myTypes.C_TYPE_BINDING)) {
@@ -665,9 +664,9 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseGt() {
-            if (is(myTypes.C_TAG_PROP_VALUE)) {
+            if (isCurrent(myTypes.C_TAG_PROP_VALUE)) {
                 // ?prop=value |> > <| ...
-                popEnd().popEnd();
+                popEndUntil(myTypes.C_TAG_PROP_VALUE).popEnd().popEnd();
             } else if (is(myTypes.C_TAG_PROPERTY)) {
                 // ?prop |> > <| ...
                 popEnd();
@@ -963,8 +962,8 @@ public class RmlParser extends CommonPsiParser {
                         // module M = (P) |>=><| ...
                         advance().mark(myTypes.C_FUNCTOR_BINDING);
                     }
-                } else if (is(myTypes.C_TAG_PROP_VALUE)) {
-                    popEnd().popEnd();
+                } else if (isCurrent(myTypes.C_TAG_PROP_VALUE)) {
+                    popEndUntilFoundIndex().popEnd();
                 }
             }
         }

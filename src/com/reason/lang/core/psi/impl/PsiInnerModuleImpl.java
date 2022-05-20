@@ -362,4 +362,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
 
         return null;
     }
+
+    @Override public String toString() {
+        return "PsiModule:" + getModuleName();
+    }
 }

@@ -15,7 +15,7 @@ public class PsiAnnotationImpl extends ORCompositeTypePsiElement<ORTypes> implem
 
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return findChildByClass(PsiMacroName.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiMacroName.class);
     }
 
     @Override

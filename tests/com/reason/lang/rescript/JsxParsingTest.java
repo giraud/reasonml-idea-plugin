@@ -139,12 +139,13 @@ public class JsxParsingTest extends ResParsingTestCase {
     }
 
     public void test_tag_props_with_local_open() {
-        PsiTag e = (PsiTag) firstElement(parseCode("<Icon width=Dimensions.(3->px) height=Dimensions.(2->rem)>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<Icon width=Dimensions.(3->px) height=Dimensions.(2->rem)>x</Icon>"));
 
         List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
         assertSize(2, props);
-        assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(0), PsiTagPropertyValue.class));
-        assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(1), PsiTagPropertyValue.class));
+        assertEquals("Dimensions.(3->px)", props.get(0).getValue().getText());
+        assertEquals("Dimensions.(2->rem)", props.get(1).getValue().getText());
+        assertEquals("x", e.getBody().getText());
     }
 
     public void test_tag_chaining() {
@@ -190,6 +191,15 @@ public class JsxParsingTest extends ResParsingTestCase {
         List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(1, properties.size());
         assertEquals("[|white, red|]", properties.get(0).getValue().getText());
+    }
+
+    public void test_prop05() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<div className=Styles.wrappingContainer>{appliedFilters->React.array}</div>"));
+
+        List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
+        assertSize(1, props);
+        assertEquals("Styles.wrappingContainer", props.get(0).getValue().getText());
+        assertEquals("{appliedFilters->React.array}", e.getBody().getText());
     }
 
     public void test_prop_ref() {

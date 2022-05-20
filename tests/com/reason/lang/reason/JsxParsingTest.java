@@ -104,7 +104,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
     }
 
     public void test_optional_prop() {
-        PsiTag e = (PsiTag) firstElement(parseCode("<div ?layout ?style onClick=?cb ?other></div>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<div ?layout ?style onClick=?cb ?other>x</div>"));
 
         List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
         assertSize(4, props);
@@ -128,21 +128,24 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertEquals("onClick=?cb", props.get(2).getText());
         assertEquals("?other", props.get(3).getText());
         assertEquals("other", props.get(3).getName());
+        assertNull(props.get(3).getValue());
+
         assertNull(PsiTreeUtil.findChildOfType(e, PsiTernary.class));
     }
 
     public void test_tag_props_with_local_open() {
-        PsiTag e = (PsiTag) firstElement(parseCode("<Icon width=Dimensions.(3->px) height=Dimensions.(2->rem)>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<Icon width=Dimensions.(3->px) height=Dimensions.(2->rem)>x</Icon>"));
 
         List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
         assertSize(2, props);
-        assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(0), PsiTagPropertyValue.class));
-        assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(1), PsiTagPropertyValue.class));
+        assertEquals("Dimensions.(3->px)", props.get(0).getValue().getText());
+        assertEquals("Dimensions.(2->rem)", props.get(1).getValue().getText());
+        assertEquals("x", e.getBody().getText());
     }
 
     public void test_tag_chaining() {
         Collection<PsiModule> psiModules = moduleExpressions(parseCode(
-                                "module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};"));
+                "module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};"));
         assertEquals(2, psiModules.size());
     }
 
@@ -154,7 +157,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     public void test_prop02() {
         PsiTag e = (PsiTag) firstElement(parseCode(
-                                        "<Splitter left={<NotificationsList notifications />} right={<div> {ReasonReact.string(\"switch inside\")} </div>}/>"));
+                "<Splitter left={<NotificationsList notifications />} right={<div> {ReasonReact.string(\"switch inside\")} </div>}/>"));
 
         List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(2, properties.size());
@@ -181,6 +184,15 @@ public class JsxParsingTest extends RmlParsingTestCase {
         List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(1, properties.size());
         assertEquals("[|white, red|]", properties.get(0).getValue().getText());
+    }
+
+    public void test_prop05() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<div className=Styles.wrappingContainer>{appliedFilters->React.array}</div>"));
+
+        List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
+        assertSize(1, props);
+        assertEquals("Styles.wrappingContainer", props.get(0).getValue().getText());
+        assertEquals("{appliedFilters->React.array}", e.getBody().getText());
     }
 
     public void test_prop_ref() {

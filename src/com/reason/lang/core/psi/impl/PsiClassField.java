@@ -7,14 +7,15 @@ import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
 import icons.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class PsiClassField extends ORCompositePsiElement implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
-    protected PsiClassField(IElementType type) {
-        super(type);
+public class PsiClassField extends ORCompositeTypePsiElement<ORTypes> implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
+    protected PsiClassField(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 
     @Override

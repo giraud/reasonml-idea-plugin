@@ -349,10 +349,7 @@ public class OclParser extends CommonPsiParser {
         private void parseRightArrow() {
             if (is(myTypes.C_SIG_EXPR)) {
                 advance();
-                if (getTokenType() == myTypes.LPAREN) {
-                    markDummyParenthesisScope().advance();
-                }
-                mark(myTypes.C_SIG_ITEM);
+                markDummyParenthesisScope().mark(myTypes.C_SIG_ITEM);
             } else if (strictlyIn(myTypes.C_SIG_ITEM)) {
                 popEndUntilFoundIndex().popEnd();
                 if (in(myTypes.C_NAMED_PARAM)) { // can't have an arrow in a named param signature
@@ -360,10 +357,7 @@ public class OclParser extends CommonPsiParser {
                     popEnd().popEndUntil(myTypes.C_SIG_EXPR);
                 }
                 advance();
-                if (getTokenType() == myTypes.LPAREN) {
-                    markDummyParenthesisScope().advance();
-                }
-                mark(myTypes.C_SIG_ITEM);
+                markDummyParenthesisScope().mark(myTypes.C_SIG_ITEM);
             }
             // same priority
             else if (inAny(
@@ -782,7 +776,7 @@ public class OclParser extends CommonPsiParser {
                     if (lookAhead(1) == myTypes.LIDENT) {
                         // let f x |>(<| fn ...
                         markDummyParenthesisScope()
-                                .advance().mark(myTypes.C_FUN_CALL).wrapWith(myTypes.C_LOWER_SYMBOL)
+                                .mark(myTypes.C_FUN_CALL).wrapWith(myTypes.C_LOWER_SYMBOL)
                                 .mark(myTypes.C_PARAMETERS);
                     } else {
                         // let f x |>(<| ...tuple?
