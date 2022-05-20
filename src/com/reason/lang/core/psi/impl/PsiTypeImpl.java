@@ -8,7 +8,6 @@ import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import icons.*;

@@ -10,7 +10,7 @@ import com.reason.lang.core.psi.impl.*;
 import java.util.*;
 
 import static com.reason.lang.core.ExpressionFilterConstants.*;
-import static com.reason.lang.core.psi.ExpressionScope.*;
+import static com.reason.lang.core.psi.impl.ExpressionScope.*;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends ResParsingTestCase {

@@ -4,7 +4,7 @@ import com.intellij.psi.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
 

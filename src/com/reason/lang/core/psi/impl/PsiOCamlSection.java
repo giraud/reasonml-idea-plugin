@@ -1,4 +1,4 @@
-package com.reason.lang.core.psi;
+package com.reason.lang.core.psi.impl;
 
 import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;

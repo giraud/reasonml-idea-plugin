@@ -1,10 +1,12 @@
-package com.reason.lang.core.psi;
+package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;

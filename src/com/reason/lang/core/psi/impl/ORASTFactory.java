@@ -3,7 +3,6 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.*;
 import com.intellij.psi.impl.source.tree.*;
 import com.intellij.psi.tree.*;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 

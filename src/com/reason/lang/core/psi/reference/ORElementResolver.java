@@ -10,6 +10,7 @@ import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 

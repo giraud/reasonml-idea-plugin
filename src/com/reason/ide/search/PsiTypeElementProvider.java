@@ -2,8 +2,7 @@ package com.reason.ide.search;
 
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
-import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
+import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

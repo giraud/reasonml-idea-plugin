@@ -4,7 +4,7 @@ import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.impl.PsiLetBinding;
 
 @SuppressWarnings("ConstantConditions")
 public class AnnotationParsingTest extends OclParsingTestCase {

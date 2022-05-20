@@ -2,8 +2,6 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.intellij.testFramework.*;
-import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 

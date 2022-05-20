@@ -1,4 +1,4 @@
-package com.reason.lang.core.signature;
+package com.reason.lang.core.psi;
 
 import com.intellij.psi.*;
 import com.reason.lang.*;

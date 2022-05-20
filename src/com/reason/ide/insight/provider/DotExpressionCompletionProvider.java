@@ -13,7 +13,6 @@ import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.psi.reference.*;
-import com.reason.lang.core.signature.*;
 import com.reason.lang.reason.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;

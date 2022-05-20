@@ -3,8 +3,7 @@ package com.reason.lang.dune;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiToken;
+import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 
 class DunePsiElementFactory {

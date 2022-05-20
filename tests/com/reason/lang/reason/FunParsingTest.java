@@ -1,6 +1,7 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
 

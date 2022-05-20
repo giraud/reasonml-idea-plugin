@@ -1,10 +1,11 @@
-package com.reason.lang.core.psi;
+package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.dune.*;
 import icons.*;

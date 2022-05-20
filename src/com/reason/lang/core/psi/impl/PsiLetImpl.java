@@ -9,7 +9,6 @@ import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiLiteralExpression;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.core.stub.*;

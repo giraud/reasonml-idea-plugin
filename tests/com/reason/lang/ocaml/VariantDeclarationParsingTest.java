@@ -2,7 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.impl.PsiVariantDeclaration;
 
 import java.util.*;
 

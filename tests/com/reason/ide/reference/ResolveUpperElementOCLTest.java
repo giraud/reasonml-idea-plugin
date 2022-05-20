@@ -2,7 +2,7 @@ package com.reason.ide.reference;
 
 import com.intellij.psi.*;
 import com.reason.ide.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 public class ResolveUpperElementOCLTest extends ORBasePlatformTestCase {
     public void test_basic_file() {
