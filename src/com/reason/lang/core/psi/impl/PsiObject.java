@@ -13,7 +13,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.stream.*;
 
-public class PsiObject extends ORCompositeTypePsiElement<ORTypes> implements PsiLanguageConverter {
+public class PsiObject extends ORCompositePsiElement<ORTypes> implements PsiLanguageConverter {
     protected PsiObject(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

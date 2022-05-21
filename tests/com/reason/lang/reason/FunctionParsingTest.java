@@ -15,7 +15,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
         assertSize(1, function.getParameters());
         assertEquals("item", first(function.getParameters()).getText());
-        assertInstanceOf(first(function.getParameters()).getNameIdentifier(), PsiLowerIdentifier.class);
+        assertInstanceOf(first(function.getParameters()).getNameIdentifier(), PsiLowerSymbol.class);
         assertEquals("value", function.getBody().getText());
     }
 

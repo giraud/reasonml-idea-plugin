@@ -1,7 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiLowerSymbol;
 import com.reason.lang.core.psi.impl.PsiScopedExpr;
 import com.reason.lang.core.psi.impl.PsiValImpl;
 
@@ -21,7 +21,7 @@ public class ValParsingTest extends OclParsingTestCase {
     public void test_name() {
         PsiVal e = first(valExpressions(parseCode("val x : int")));
 
-        assertInstanceOf(((PsiValImpl) e).getNameIdentifier(), PsiLowerIdentifier.class);
+        assertInstanceOf(((PsiValImpl) e).getNameIdentifier(), PsiLowerSymbol.class);
         assertEquals("x", e.getName());
     }
 

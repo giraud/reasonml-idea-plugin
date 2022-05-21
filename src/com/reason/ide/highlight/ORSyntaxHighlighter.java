@@ -209,7 +209,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
             return POLY_VARIANT_KEYS;
         } else if (m_types.COMMA.equals(tokenType)) {
             return COMMA_KEYS;
-        } else if (m_types.TAG_AUTO_CLOSE.equals(tokenType) || m_types.TAG_LT_SLASH.equals(tokenType) || m_types.TAG_NAME.equals(tokenType)) {
+        } else if (m_types.TAG_AUTO_CLOSE.equals(tokenType) || m_types.TAG_LT_SLASH.equals(tokenType) || m_types.A_LOWER_TAG_NAME.equals(tokenType) || m_types.A_UPPER_TAG_NAME.equals(tokenType)) {
             return MARKUP_TAG_KEYS;
         } else if (m_types.SEMI.equals(tokenType) || m_types.SEMISEMI.equals(tokenType)) {
             return SEMICOLON_KEYS;

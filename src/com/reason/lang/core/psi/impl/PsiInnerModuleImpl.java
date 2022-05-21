@@ -36,7 +36,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
 
     // region NamedElement
     private @Nullable PsiElement getNameIdentifier() {
-        return findChildByClass(PsiUpperIdentifier.class);
+        return findChildByClass(PsiUpperSymbol.class);
     }
 
     @Override
@@ -248,12 +248,12 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
 
         if (of != null) {
             // find latest module name
-            PsiElement module = ORUtil.nextSiblingWithTokenType(of, m_types.C_UPPER_SYMBOL);
+            PsiElement module = ORUtil.nextSiblingWithTokenType(of, m_types.UIDENT);
             PsiElement moduleNextSibling = module == null ? null : module.getNextSibling();
             while (moduleNextSibling != null
                     && moduleNextSibling.getNode().getElementType() == m_types.DOT) {
                 PsiElement element = moduleNextSibling.getNextSibling();
-                if (element != null && element.getNode().getElementType() == m_types.C_UPPER_SYMBOL) {
+                if (element != null && element.getNode().getElementType() == m_types.UIDENT) {
                     module = element;
                     moduleNextSibling = module.getNextSibling();
                 } else {
@@ -264,11 +264,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             if (module != null) {
                 PsiReference reference = module.getReference();
                 PsiElement resolvedElement = reference == null ? null : reference.resolve();
-                if (resolvedElement instanceof PsiUpperIdentifier) {
-                    PsiElement resolvedModule = resolvedElement.getParent();
-                    if (resolvedModule instanceof PsiModule) {
-                        return (PsiModule) resolvedModule;
-                    }
+                if (resolvedElement instanceof PsiModule) {
+                    return (PsiModule) resolvedElement;
                 }
             }
         }
@@ -285,8 +282,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             public @Nullable String getPresentableText() {
                 if (isModuleTypeOf) {
                     if (referencedModuleType == null) {
-                        PsiElement of =
-                                ORUtil.findImmediateFirstChildOfType(PsiInnerModuleImpl.this, m_types.OF);
+                        PsiElement of = ORUtil.findImmediateFirstChildOfType(PsiInnerModuleImpl.this, m_types.OF);
                         assert of != null;
                         return getText().substring(of.getStartOffsetInParent() + 3);
                     }

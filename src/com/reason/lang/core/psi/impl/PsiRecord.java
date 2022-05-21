@@ -3,14 +3,13 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.util.containers.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiRecord extends ORCompositeTypePsiElement<ORTypes> {
+public class PsiRecord extends ORCompositePsiElement<ORTypes> {
     protected PsiRecord(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

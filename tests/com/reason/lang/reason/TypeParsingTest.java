@@ -29,7 +29,6 @@ public class TypeParsingTest extends RmlParsingTestCase {
         assertFalse(e.isAbstract());
         assertEquals("A.B.other", e.getBinding().getText());
         assertNull(PsiTreeUtil.findChildOfType(e, PsiVariantDeclaration.class));
-        assertNull(PsiTreeUtil.findChildOfType(e, PsiUpperIdentifier.class));
     }
 
     public void test_option() {

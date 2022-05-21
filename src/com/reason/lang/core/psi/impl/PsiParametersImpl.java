@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiParametersImpl extends ORCompositeTypePsiElement<ORTypes> implements PsiParameters {
+public class PsiParametersImpl extends ORCompositePsiElement<ORTypes> implements PsiParameters {
     protected PsiParametersImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

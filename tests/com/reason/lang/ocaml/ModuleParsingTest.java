@@ -111,7 +111,6 @@ public class ModuleParsingTest extends OclParsingTestCase {
         PsiInnerModule e = (PsiInnerModule) expressions(file).iterator().next();
         PsiModuleType modType = e.getModuleType();
         assertEquals("module type of Vcs_.Branch", modType.getText());
-        assertEmpty(PsiTreeUtil.findChildrenOfType(modType, PsiUpperIdentifier.class));
         assertNull(modType.getName());
     }
 }

@@ -30,7 +30,7 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implem
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerSymbol.class, PsiScopedExpr.class);
     }
 
     @Override

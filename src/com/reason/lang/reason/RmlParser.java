@@ -33,7 +33,7 @@ public class RmlParser extends CommonPsiParser {
                 if (5000 < parseTime - parseStart) {
                     if (myIsSafe) { // Don't do that in tests
                         error("CANCEL");
-                        LOG.error("CANCEL REASON PARSING:\n" + myBuilder.getOriginalText().toString());
+                        LOG.error("CANCEL REASON PARSING:\n" + myBuilder.getOriginalText());
                         break;
                     }
                 }
@@ -207,7 +207,7 @@ public class RmlParser extends CommonPsiParser {
                 if (!isCurrent(myTypes.C_FUN_PARAM) && !isCurrent(myTypes.C_SIG_ITEM)) {
                     mark(myTypes.C_FUN_PARAM);
                 }
-                mark(myTypes.C_NAMED_PARAM).advance().wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                mark(myTypes.C_NAMED_PARAM).advance().wrapAtom(myTypes.C_LOWER_SYMBOL);
             }
         }
 
@@ -451,9 +451,9 @@ public class RmlParser extends CommonPsiParser {
                 // [@bs |>"x<| ...
                 popEndUntilScope();
             } else if (is(myTypes.C_JS_OBJECT)) {
-                mark(myTypes.C_OBJECT_FIELD).wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                mark(myTypes.C_OBJECT_FIELD).wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if (is(myTypes.C_OBJECT_FIELD)) {
-                wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                wrapAtom(myTypes.C_LOWER_SYMBOL);
             }
         }
 
@@ -631,8 +631,8 @@ public class RmlParser extends CommonPsiParser {
                 mark(myTypes.C_TAG)
                         .markScope(myTypes.C_TAG_START, myTypes.LT)
                         .advance()
-                        .remapCurrentToken(myTypes.TAG_NAME)
-                        .wrapWith(nextTokenType == myTypes.UIDENT ? myTypes.C_UPPER_SYMBOL : myTypes.C_LOWER_SYMBOL);
+                        .remapCurrentToken(nextTokenType == myTypes.UIDENT ? myTypes.A_UPPER_TAG_NAME : myTypes.A_LOWER_TAG_NAME)
+                        .wrapAtom(nextTokenType == myTypes.UIDENT ? myTypes.C_UPPER_SYMBOL : myTypes.C_LOWER_SYMBOL);
             } else if (nextTokenType == myTypes.GT) {
                 // a React fragment start
                 mark(myTypes.C_TAG)
@@ -653,8 +653,8 @@ public class RmlParser extends CommonPsiParser {
                 remapCurrentToken(myTypes.TAG_LT_SLASH)
                         .mark(myTypes.C_TAG_CLOSE)
                         .advance()
-                        .remapCurrentToken(myTypes.TAG_NAME)
-                        .wrapWith(nextTokenType == myTypes.UIDENT ? myTypes.C_UPPER_SYMBOL : myTypes.C_LOWER_SYMBOL);
+                        .remapCurrentToken(nextTokenType == myTypes.UIDENT ? myTypes.A_UPPER_TAG_NAME : myTypes.A_LOWER_TAG_NAME)
+                        .wrapAtom(nextTokenType == myTypes.UIDENT ? myTypes.C_UPPER_SYMBOL : myTypes.C_LOWER_SYMBOL);
             } else if (nextTokenType == myTypes.GT) {
                 // a React fragment end
                 remapCurrentToken(myTypes.TAG_LT_SLASH)
@@ -691,24 +691,25 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseLIdent() {
+            // zzz simplify !!!
             if (is(myTypes.C_LET_DECLARATION)) {
                 // let |>x<| ...
-                wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if (is(myTypes.C_TYPE_DECLARATION)) {
                 // type |>x<| ...
-                wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if (is(myTypes.C_EXTERNAL_DECLARATION)) {
                 // external |>x<| ...
-                wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if (is(myTypes.C_CLASS_DECLARATION)) {
                 // class |>x<| ...
-                wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if (is(myTypes.C_RECORD_EXPR)) {
                 // let x = { |>y<| ...
-                mark(myTypes.C_RECORD_FIELD).wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                mark(myTypes.C_RECORD_FIELD).wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if (is(myTypes.C_RECORD_FIELD)) {
                 // let x = { y, |>z<| ...
-                wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if ((isCurrent(myTypes.C_PARAMETERS) /*&& isCurrentParent(myTypes.C_FUN_EXPR)*/) || isCurrent(myTypes.C_VARIANT_CONSTRUCTOR)) {
                 // ( x , |>y<| ...
                 //if (!isHold()) {
@@ -716,7 +717,7 @@ public class RmlParser extends CommonPsiParser {
                 //}
                 mark(myTypes.C_FUN_PARAM);
                 markHolder(myTypes.C_PLACE_HOLDER);
-                wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if (strictlyInAny(myTypes.C_TAG_START, myTypes.C_TAG_PROP_VALUE)) {
                 if (previousElementType(1) != myTypes.LT && isFound(myTypes.C_TAG_START)) {
                     // This is a property
@@ -733,14 +734,14 @@ public class RmlParser extends CommonPsiParser {
                     popIfHold()
                             .updateComposite(myTypes.C_RECORD_EXPR)
                             .mark(myTypes.C_RECORD_FIELD)
-                            .wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                            .wrapAtom(myTypes.C_LOWER_SYMBOL);
                 } else if (nextElementType == myTypes.LPAREN && !inAny(myTypes.C_TYPE_BINDING, myTypes.C_CONSTRAINT, myTypes.C_SIG_ITEM)) {
                     mark(myTypes.C_FUN_CALL)
-                            .wrapWith(myTypes.C_LOWER_SYMBOL);
+                            .wrapAtom(myTypes.C_LOWER_SYMBOL);
                 } else if (is(myTypes.C_DECONSTRUCTION)) {
-                    wrapWith(myTypes.C_LOWER_IDENTIFIER);
+                    wrapAtom(myTypes.C_LOWER_SYMBOL);
                 } else {
-                    wrapWith(myTypes.C_LOWER_SYMBOL);
+                    wrapAtom(myTypes.C_LOWER_SYMBOL);
                 }
             }
         }
@@ -1029,38 +1030,37 @@ public class RmlParser extends CommonPsiParser {
 
             if (is(myTypes.C_MODULE_DECLARATION) || is(myTypes.C_FUNCTOR_DECLARATION)) {
                 // module |>M<| ...
-                wrapWith(myTypes.C_UPPER_IDENTIFIER);
+                wrapAtom(myTypes.C_UPPER_SYMBOL);
             } else if (is(myTypes.C_VARIANT_DECLARATION)) {
                 // type t = | |>X<| ..
-                wrapWith(myTypes.C_UPPER_IDENTIFIER);
+                wrapAtom(myTypes.C_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ..
-                wrapWith(myTypes.C_UPPER_IDENTIFIER);
-            } else if (is(myTypes.C_PATTERN_MATCH_EXPR)) {
-                wrapWith(myTypes.C_UPPER_SYMBOL);
+                wrapAtom(myTypes.C_UPPER_SYMBOL);
+            } else if ((in(myTypes.C_TAG_START) || in(myTypes.C_TAG_CLOSE)) && previousElementType(1) == myTypes.DOT) { // a namespaced custom component
+                // <X.|>Y<| ...
+                remapCurrentToken(myTypes.A_UPPER_TAG_NAME).wrapAtom(myTypes.C_UPPER_SYMBOL);
             } else {
-                if ((in(myTypes.C_TAG_START) || in(myTypes.C_TAG_CLOSE)) && previousElementType(1) == myTypes.DOT) { // a namespaced custom component
-                    // <X.|>Y<| ...
-                    remapCurrentToken(myTypes.TAG_NAME);
-                } else {
-                    IElementType nextElementType = lookAhead(1);
+                IElementType nextToken = lookAhead(1);
 
-                    if (is(myTypes.C_TYPE_BINDING) && nextElementType != myTypes.DOT) {
-                        // We are declaring a variant without a pipe before ::  type t = |>X<| | ...
-                        mark(myTypes.C_VARIANT_DECLARATION).wrapWith(myTypes.C_UPPER_IDENTIFIER);
-                        return;
-                    } else if (isCurrent(myTypes.C_MODULE_BINDING) && nextElementType == myTypes.LPAREN) {
-                        // functor call ::  |>X<| ( ...
-                        // functor call with path :: A.B.|>X<| ( ...
-                        Marker marker = getCurrentMarker();
-                        if (marker != null) {
-                            marker.drop();
-                            mark(myTypes.C_FUNCTOR_CALL);
-                        }
+                if (is(myTypes.C_TYPE_BINDING) && nextToken != myTypes.DOT) {
+                    // We are declaring a variant without a pipe before ::  type t = |>X<| | ...
+                    mark(myTypes.C_VARIANT_DECLARATION).wrapAtom(myTypes.C_UPPER_SYMBOL);
+                } else if (isCurrent(myTypes.C_MODULE_BINDING) && nextToken == myTypes.LPAREN) {
+                    // functor call ::  |>X<| ( ...
+                    // functor call with path :: A.B.|>X<| ( ...
+                    Marker marker = getCurrentMarker();
+                    if (marker != null) {
+                        marker.drop();
+                        mark(myTypes.C_FUNCTOR_CALL);
                     }
+                    wrapAtom(myTypes.C_UPPER_SYMBOL);
+                } else if (((isCurrent(myTypes.C_PATTERN_MATCH_EXPR) || isCurrent(myTypes.C_LET_BINDING))) && nextToken != myTypes.DOT) { // Pattern matching a variant or using it
+                    // switch (c) { | |>X<| ... / let x = |>X<| ...
+                    remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.C_UPPER_SYMBOL);
+                } else {
+                    wrapAtom(myTypes.C_UPPER_SYMBOL);
                 }
-
-                wrapWith(myTypes.C_UPPER_SYMBOL);
             }
         }
 

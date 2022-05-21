@@ -32,7 +32,7 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     // region PsiNamedElement
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
     }
 
     @Override

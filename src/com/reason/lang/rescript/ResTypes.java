@@ -43,8 +43,6 @@ public class ResTypes extends ORTypes {
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", ResLanguage.INSTANCE);
         C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", ResLanguage.INSTANCE);
         C_FOR_LOOP = new ORCompositeElementType("C_FOR_LOOP", ResLanguage.INSTANCE);
-        C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", ResLanguage.INSTANCE);
-        C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", ResLanguage.INSTANCE);
         C_FIELD_VALUE = new ORCompositeElementType("C_FIELD_VALUE", ResLanguage.INSTANCE);
         C_FUN_CALL = new ORCompositeElementType("C_FUN_CALL", ResLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", ResLanguage.INSTANCE);
@@ -63,7 +61,6 @@ public class ResTypes extends ORTypes {
         C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", ResLanguage.INSTANCE);
         C_LOWER_BOUND_CONSTRAINT = new ORCompositeElementType("C_LOWER_BOUND_CONSTRAINT", ResLanguage.INSTANCE);
         C_TYPE_VARIABLE = new ORCompositeElementType("C_TYPE_VARIABLE", ResLanguage.INSTANCE);
-        C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", ResLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", ResLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", ResLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", ResLanguage.INSTANCE);
@@ -97,16 +94,24 @@ public class ResTypes extends ORTypes {
         C_TUPLE = new ORCompositeElementType("C_TUPLE", ResLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", ResLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", ResLanguage.INSTANCE);
-        C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", ResLanguage.INSTANCE);
         C_UPPER_BOUND_CONSTRAINT = new ORCompositeElementType("C_UPPER_BOUND_CONSTRAINT", ResLanguage.INSTANCE);
-        C_VARIANT = new ORCompositeElementType("C_VARIANT", ResLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", ResLanguage.INSTANCE);
         C_WHILE = new ORCompositeElementType("C_WHILE", ResLanguage.INSTANCE);
+
+        // Atom types
+
+        C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", ResLanguage.INSTANCE);
+        C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", ResLanguage.INSTANCE);
+        A_LOWER_TAG_NAME = new ORTokenElementType("A_LOWER_TAG_NAME", ResLanguage.INSTANCE);
+        A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", ResLanguage.INSTANCE);
+        A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", ResLanguage.INSTANCE);
+
+        // Dummy types
 
         C_PLACE_HOLDER = new ORCompositeElementType("C_PLACE_HOLDER", ResLanguage.INSTANCE);
         C_DUMMY_COLLECTION_ITEM = new ORCompositeElementType("C_DUMMY_COLLECTION_ITEM", ResLanguage.INSTANCE);
 
-        // Token element types
+        // Token element types from lexer
 
         AND = new ORTokenElementType("AND", ResLanguage.INSTANCE);
         L_AND = new ORTokenElementType("L_AND", ResLanguage.INSTANCE);
@@ -187,7 +192,6 @@ public class ResTypes extends ORTypes {
         OPEN = new ORTokenElementType("OPEN", ResLanguage.INSTANCE);
         OPTION = new ORTokenElementType("OPTION", ResLanguage.INSTANCE);
         POLY_VARIANT = new ORTokenElementType("POLY_VARIANT", ResLanguage.INSTANCE);
-        VARIANT_NAME = new ORTokenElementType("VARIANT_NAME", ResLanguage.INSTANCE);
         PIPE = new ORTokenElementType("PIPE", ResLanguage.INSTANCE);
         PIPE_FORWARD = new ORTokenElementType("PIPE_FORWARD", ResLanguage.INSTANCE);
         PLUS = new ORTokenElementType("PLUS", ResLanguage.INSTANCE);
@@ -217,7 +221,6 @@ public class ResTypes extends ORTypes {
         STRUCT = new ORTokenElementType("STRUCT", ResLanguage.INSTANCE);
         OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", ResLanguage.INSTANCE);
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", ResLanguage.INSTANCE);
-        TAG_NAME = new ORTokenElementType("TAG_NAME", ResLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", ResLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", ResLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", ResLanguage.INSTANCE);

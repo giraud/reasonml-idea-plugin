@@ -31,7 +31,6 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertFalse(e.isAbstract());
         assertEquals("A.B.other", e.getBinding().getText());
         assertNull(PsiTreeUtil.findChildOfType(e, PsiVariantDeclaration.class));
-        assertNull(PsiTreeUtil.findChildOfType(e, PsiUpperIdentifier.class));
         List<PsiUpperSymbol> modules = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiUpperSymbol.class);
         assertSize(2, modules);
     }
@@ -143,7 +142,7 @@ public class TypeParsingTest extends ResParsingTestCase {
     public void test_not_a_tag() {
         PsiLet e = firstOfType(parseCode("let make = (x: array<int>) => x"), PsiLet.class);
 
-        assertNull(PsiTreeUtil.findChildOfType(e, PsiLeafTagName.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiUpperTagName.class));
         PsiParameter param = e.getFunction().getParameters().get(0);
         PsiSignatureItem sigItem = param.getSignature().getItems().get(0);
         assertEquals("array<int>", sigItem.getText());

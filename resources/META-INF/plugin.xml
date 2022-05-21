@@ -335,11 +335,11 @@
         <quoteHandler fileType="OCAML_INTF" className="com.reason.ide.handlers.OclQuoteHandler"/>
 
         <lang.refactoringSupport language="OCaml"
-                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
+                                 implementationClass="com.reason.ide.refactor.ORRefactoringSupportProvider"/>
         <lang.refactoringSupport language="Reason"
-                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
+                                 implementationClass="com.reason.ide.refactor.ORRefactoringSupportProvider"/>
         <lang.refactoringSupport language="Rescript"
-                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
+                                 implementationClass="com.reason.ide.refactor.ORRefactoringSupportProvider"/>
 
         <iconProvider implementation="com.reason.ide.IconProvider"/>
 

@@ -16,8 +16,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiTagStartImpl extends ORCompositeTypePsiElement<ORTypes> implements PsiTagStart {
-    protected PsiTagStartImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class PsiTagStart extends ORCompositePsiElement<ORTypes> implements PsiNameIdentifierOwner {
+    protected PsiTagStart(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 
@@ -29,14 +29,14 @@ public class PsiTagStartImpl extends ORCompositeTypePsiElement<ORTypes> implemen
     public @Nullable PsiElement getNameIdentifier() {
         PsiElement lastTag = null;
 
-        Collection<PsiLeafTagName> tags = PsiTreeUtil.findChildrenOfType(this, PsiLeafTagName.class);
-        if (!tags.isEmpty()) {
-            for (PsiLeafTagName tag : tags) {
-                PsiElement currentStart = tag.getParent().getParent();
-                if (currentStart == this) {
-                    lastTag = tag.getParent();
-                }
+        PsiElement element = getFirstChild();
+        IElementType elementType = element == null ? null : element.getNode().getElementType();
+        while (elementType == myTypes.A_UPPER_TAG_NAME || elementType == myTypes.A_LOWER_TAG_NAME || elementType == myTypes.DOT || elementType == myTypes.LT) {
+            if (elementType != myTypes.DOT && elementType != myTypes.LT) {
+                lastTag = element;
             }
+            element = element.getNextSibling();
+            elementType = element == null ? null : element.getNode().getElementType();
         }
 
         return lastTag;
@@ -53,12 +53,10 @@ public class PsiTagStartImpl extends ORCompositeTypePsiElement<ORTypes> implemen
         return null;
     }
 
-    @Override
     public @NotNull List<PsiTagProperty> getProperties() {
         return ORUtil.findImmediateChildrenOfClass(this, PsiTagProperty.class);
     }
 
-    @Override
     public @NotNull List<ComponentPropertyAdapter> getUnifiedPropertyList() {
         final List<ComponentPropertyAdapter> result = new ArrayList<>();
 
@@ -68,24 +66,21 @@ public class PsiTagStartImpl extends ORCompositeTypePsiElement<ORTypes> implemen
         // find tag 'make' expression
         PsiElement tagName = getNameIdentifier();
         if (tagName instanceof PsiUpperSymbol) {
-            PsiUpperSymbolReference uReference = (PsiUpperSymbolReference) tagName.getReference();
-            PsiElement uResolved = uReference == null ? null : uReference.resolveInterface();
-            if (uResolved instanceof PsiLowerIdentifier) {
-                PsiElement resolvedElement = uResolved.getParent();
-                if (resolvedElement instanceof PsiLet) {
-                    PsiFunction makeFunction = ((PsiLet) resolvedElement).getFunction();
-                    if (makeFunction != null) {
-                        makeFunction.getParameters().stream()
-                                .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
-                                .forEach(p -> result.add(new ComponentPropertyAdapter(p)));
-                    }
-                } else if (resolvedElement instanceof PsiExternal) {
-                    PsiSignature signature = ((PsiExternal) resolvedElement).getSignature();
-                    if (signature != null) {
-                        signature.getItems().stream()
-                                .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
-                                .forEach(p -> result.add(new ComponentPropertyAdapter(p)));
-                    }
+            PsiUpperSymbolReference reference = (PsiUpperSymbolReference) tagName.getReference();
+            PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
+            if (resolvedElement instanceof PsiLet) {
+                PsiFunction makeFunction = ((PsiLet) resolvedElement).getFunction();
+                if (makeFunction != null) {
+                    makeFunction.getParameters().stream()
+                            .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
+                            .forEach(p -> result.add(new ComponentPropertyAdapter(p)));
+                }
+            } else if (resolvedElement instanceof PsiExternal) {
+                PsiSignature signature = ((PsiExternal) resolvedElement).getSignature();
+                if (signature != null) {
+                    signature.getItems().stream()
+                            .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
+                            .forEach(p -> result.add(new ComponentPropertyAdapter(p)));
                 }
             }
         } else if (tagName == null) {

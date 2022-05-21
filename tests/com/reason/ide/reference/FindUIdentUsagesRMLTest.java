@@ -2,6 +2,7 @@ package com.reason.ide.reference;
 
 import com.intellij.usageView.*;
 import com.reason.ide.*;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 
@@ -10,8 +11,11 @@ public class FindUIdentUsagesRMLTest extends ORBasePlatformTestCase {
     public void test_exception() {
         configureCode("A.re", "exception Exception<caret>Name; raise(ExceptionName);");
 
-        Collection<UsageInfo> usages = myFixture.testFindUsages("A.re");
-        assertSize(1, usages);
-        assertEquals("(ExceptionName)", usages.iterator().next().getElement().getParent().getText());
+        List<UsageInfo> usages = findUsages("A.re");
+        assertEquals("(ExceptionName)", usages.get(0).getElement().getParent().getText());
+    }
+
+    private @NotNull List<UsageInfo> findUsages(String fileName) {
+        return (List<UsageInfo>) myFixture.testFindUsages(fileName);
     }
 }

@@ -26,9 +26,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         List<PsiParameter> parameters = call.getParameters();
         assertEquals(2, parameters.size());
         assertEquals("self.state.timerId.contents", parameters.get(0).getText());
-        assertNull(PsiTreeUtil.getChildrenOfType(parameters.get(0), PsiLowerIdentifier.class));
         assertEquals("Js.Global.clearInterval", parameters.get(1).getText());
-        assertNull(PsiTreeUtil.getChildrenOfType(parameters.get(1), PsiLowerIdentifier.class));
     }
 
     public void test_call3() {

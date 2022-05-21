@@ -7,7 +7,7 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiIfStatement extends ORCompositeTypePsiElement<ORTypes> implements PsiConditional {
+public class PsiIfStatement extends ORCompositePsiElement<ORTypes> implements PsiConditional {
     protected PsiIfStatement(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
@@ -19,11 +19,11 @@ public class PsiIfStatement extends ORCompositeTypePsiElement<ORTypes> implement
 
     @Override
     public @Nullable PsiElement getThenExpression() {
-        return ORUtil.findImmediateFirstChildOfType(this, m_types.C_IF_THEN_SCOPE);
+        return ORUtil.findImmediateFirstChildOfType(this, myTypes.C_IF_THEN_SCOPE);
     }
 
     @Override
     public @Nullable PsiElement getElseExpression() {
-        return ORUtil.findImmediateLastChildOfType(this, m_types.C_IF_THEN_SCOPE);
+        return ORUtil.findImmediateLastChildOfType(this, myTypes.C_IF_THEN_SCOPE);
     }
 }

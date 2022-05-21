@@ -6,6 +6,8 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
+import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
+
 public class ORASTFactory<T extends ORTypes> extends ASTFactory {
     private final T myTypes;
 
@@ -40,7 +42,7 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new PsiTagPropertyValue(myTypes, type);
         }
         if (type == myTypes.C_TAG_START) {
-            return new PsiTagStartImpl(myTypes, type);
+            return new PsiTagStart(myTypes, type);
         }
         if (type == myTypes.C_FIELD_VALUE) {
             return new PsiFieldValue(myTypes, type);
@@ -97,7 +99,7 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new PsiModuleBinding(myTypes, type);
         }
         if (type == myTypes.C_ANNOTATION) {
-            return new PsiAnnotationImpl(myTypes, type);
+            return new PsiAnnotation(myTypes, type);
         }
         if (type == myTypes.C_MACRO_BODY) {
             return new PsiMacroBody(myTypes, type);
@@ -136,7 +138,7 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new PsiSwitchBody(myTypes, type);
         }
         if (type == myTypes.C_SWITCH_EXPR || type == myTypes.C_MATCH_EXPR) {
-            return new PsiSwitchImpl(myTypes, type);
+            return new PsiSwitch(myTypes, type);
         }
         if (type == myTypes.C_FUNCTOR_BINDING) {
             return new PsiFunctorBinding(myTypes, type);
@@ -198,24 +200,8 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new CompositePsiElement(type) {
             };
         }
-        // Leaf !?
-        if (type == myTypes.C_LOWER_IDENTIFIER) {
-            return new PsiLowerIdentifier(myTypes, type);
-        }
-        if (type == myTypes.C_LOWER_SYMBOL) {
-            return new PsiLowerSymbol(myTypes, type);
-        }
-        if (type == myTypes.C_UPPER_IDENTIFIER) {
-            return new PsiUpperIdentifier(myTypes, type);
-        }
         if (type == myTypes.C_UPPER_BOUND_CONSTRAINT) {
             return new PsiTypeConstraint(myTypes, type);
-        }
-        if (type == myTypes.C_UPPER_SYMBOL) {
-            return new PsiUpperSymbolImpl(myTypes, type);
-        }
-        if (type == myTypes.C_VARIANT) {
-            return new PsiUpperSymbolImpl(myTypes, type);
         }
         if (type == myTypes.C_MACRO_NAME) {
             return new PsiMacroName(myTypes, type);
@@ -226,11 +212,19 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
 
     @Override
     public @Nullable LeafElement createLeaf(@NotNull IElementType type, @NotNull CharSequence text) {
+        if (type == myTypes.UIDENT || type == myTypes.A_VARIANT_NAME) {
+            if (!DUMMY_IDENTIFIER_TRIMMED.contentEquals(text)) {
+                return new PsiUpperSymbol(myTypes, type, text);
+            }
+        }
+        if (type == myTypes.A_UPPER_TAG_NAME) {
+            return new PsiUpperTagName(myTypes, type, text);
+        }
+        if (type == myTypes.LIDENT) {
+            return new PsiLowerSymbol(myTypes, type, text);
+        }
         if (type == myTypes.PROPERTY_NAME) {
             return new PsiLeafPropertyName(type, text);
-        }
-        if (type == myTypes.TAG_NAME) {
-            return new PsiLeafTagName(type, text);
         }
         if (type == myTypes.STRING_VALUE) {
             return new PsiLiteralExpression(type, text);

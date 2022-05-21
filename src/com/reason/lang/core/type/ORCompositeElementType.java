@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class ORCompositeElementType extends IElementType implements ORCompositeType {
-  public ORCompositeElementType(@NotNull @NonNls String debugName, @NotNull Language language) {
-    super(debugName, language);
-  }
+    public ORCompositeElementType(@NotNull @NonNls String debugName, @NotNull Language language) {
+        super(debugName, language);
+    }
 }

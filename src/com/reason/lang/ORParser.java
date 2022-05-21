@@ -460,6 +460,14 @@ public abstract class ORParser<T> {
         return this;
     }
 
+    public @NotNull ORParser<T> wrapAtom(@NotNull ORCompositeType atomCompositeType) {
+        Marker mark = Marker.atom(myBuilder, atomCompositeType);
+        myMarkers.push(mark);
+        advance();
+        mark.end();
+        return this;
+    }
+
     public void setStart() {
         Marker marker = getLatestMarker();
         if (marker != null) {
@@ -517,7 +525,7 @@ public abstract class ORParser<T> {
     public ORParser<T> markBefore(int pos, ORCompositeType compositeType) {
         if (pos >= 0) {
             Marker scope = myMarkers.get(pos);
-            Marker precedeScope = Marker.precedeScope(scope, compositeType);
+            Marker precedeScope = Marker.precede(scope, compositeType);
             myMarkers.add(pos + 1, precedeScope);
         }
         return this;

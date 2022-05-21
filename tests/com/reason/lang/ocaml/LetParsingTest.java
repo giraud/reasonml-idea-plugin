@@ -138,9 +138,9 @@ public class LetParsingTest extends OclParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
-        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
         assertEquals("b", names.get(1).getText());
-        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
     }
 
     public void test_deconstruction_parenless() {
@@ -150,9 +150,9 @@ public class LetParsingTest extends OclParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
-        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
         assertEquals("b", names.get(1).getText());
-        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
     }
 
     public void test_deconstruction_nested() { // belt_Map offset 2272
@@ -162,11 +162,11 @@ public class LetParsingTest extends OclParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(3, names);
         assertEquals("l", names.get(0).getText());
-        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
         assertEquals("r", names.get(1).getText());
-        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
         assertEquals("b", names.get(2).getText());
-        assertInstanceOf(names.get(2), PsiLowerIdentifier.class);
+        assertInstanceOf(names.get(2), PsiLowerSymbol.class);
     }
 
     public void test_List() {

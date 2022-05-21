@@ -4,7 +4,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -37,8 +37,15 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("Z", module.getAliasSymbol().getText());
     }
 
-    public void test_alias_chaining() {
+    public void test_alias_chaining_include() {
         PsiModule module = first(moduleExpressions(parseCode("module D = B include D.C")));
+
+        assertEquals("D", module.getName());
+        assertEquals("B", module.getAlias());
+    }
+
+    public void test_alias_chaining_call() {
+        PsiModule module = first(moduleExpressions(parseCode("module D = B\n D.C")));
 
         assertEquals("D", module.getName());
         assertEquals("B", module.getAlias());

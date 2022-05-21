@@ -32,7 +32,7 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiType, PsiTypeStub> imp
     // region PsiNamedElement
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerIdentifier.class);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Override
@@ -49,9 +49,27 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiType, PsiTypeStub> imp
 
     @Override
     public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        PsiElement id = getNameIdentifier();
+        PsiElement newId = ORCodeFactory.createLetName(getProject(), name);
+        if (id != null && newId != null) {
+            id.replace(newId);
+        }
+
         return this;
     }
     // endregion
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
 
     //region PsiQualifiedPathName
     @Override

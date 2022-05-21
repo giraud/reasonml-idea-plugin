@@ -37,9 +37,8 @@ public class OclParameterInfoHandler extends ORParameterInfoHandler {
             }
         }
 
-        PsiElement parent = elementAt == null ? null : elementAt.getParent();
-        if (parent instanceof PsiFunctionCall) {
-            return ORUtil.findImmediateFirstChildOfClass(parent, PsiParameters.class);
+        if (elementAt instanceof PsiFunctionCall) {
+            return ORUtil.findImmediateFirstChildOfClass(elementAt, PsiParameters.class);
         }
 
         return elementAt == null ? null : PsiTreeUtil.getParentOfType(elementAt, PsiParameters.class);

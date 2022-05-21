@@ -2,7 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.impl.PsiExternalImpl;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiLowerSymbol;
 import com.reason.lang.core.psi.impl.PsiScopedExpr;
 
 @SuppressWarnings("ConstantConditions")
@@ -33,8 +33,8 @@ public class ExternalParsingTest extends OclParsingTestCase {
         PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external string : string -> reactElement = \"%identity\""), PsiExternal.class);
 
         assertEquals("string", e.getName());
-        assertInstanceOf(e.getNameIdentifier(), PsiLowerIdentifier.class);
-        assertEquals(e.getNameIdentifier().getFirstChild().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
+        assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);
+        assertEquals(e.getNameIdentifier().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
         assertEquals("string -> reactElement", e.getSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
@@ -43,8 +43,8 @@ public class ExternalParsingTest extends OclParsingTestCase {
         PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external array : reactElement array -> reactElement = \"%identity\""), PsiExternal.class);
 
         assertEquals("array", e.getName());
-        assertInstanceOf(e.getNameIdentifier(), PsiLowerIdentifier.class);
-        assertEquals(e.getNameIdentifier().getFirstChild().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
+        assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);
+        assertEquals(e.getNameIdentifier().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
         assertEquals("reactElement array -> reactElement", e.getSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
@@ -53,8 +53,8 @@ public class ExternalParsingTest extends OclParsingTestCase {
         PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external raise : exn -> 'a = \"%raise\""), PsiExternal.class);
 
         assertEquals("raise", e.getName());
-        assertInstanceOf(e.getNameIdentifier(), PsiLowerIdentifier.class);
-        assertEquals(e.getNameIdentifier().getFirstChild().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
+        assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);
+        assertEquals(e.getNameIdentifier().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
         assertEquals("exn -> 'a", e.getSignature().getText());
         assertEquals("%raise", e.getExternalName());
     }

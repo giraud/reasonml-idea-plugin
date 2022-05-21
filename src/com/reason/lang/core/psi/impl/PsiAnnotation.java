@@ -4,12 +4,11 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiAnnotationImpl extends ORCompositeTypePsiElement<ORTypes> implements PsiAnnotation {
-    protected PsiAnnotationImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class PsiAnnotation extends ORCompositePsiElement<ORTypes> implements PsiNameIdentifierOwner {
+    protected PsiAnnotation(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 
@@ -25,16 +24,15 @@ public class PsiAnnotationImpl extends ORCompositeTypePsiElement<ORTypes> implem
     }
 
     @Override
+    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return this;
+    }
+
     public @Nullable PsiElement getValue() {
         PsiScopedExpr expr = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
         if (expr != null) {
             return ORUtil.nextSibling(expr.getFirstChild());
         }
         return null;
-    }
-
-    @Override
-    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return this;
     }
 }

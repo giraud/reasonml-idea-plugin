@@ -6,7 +6,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiTagProperty extends ORCompositeTypePsiElement<ORTypes> {
+public class PsiTagProperty extends ORCompositePsiElement<ORTypes> {
     // region Constructors
     protected PsiTagProperty(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
@@ -15,7 +15,7 @@ public class PsiTagProperty extends ORCompositeTypePsiElement<ORTypes> {
 
     @Nullable
     private PsiElement getNameElement() {
-        return ORUtil.findImmediateFirstChildOfType(this, m_types.PROPERTY_NAME);
+        return ORUtil.findImmediateFirstChildOfType(this, myTypes.PROPERTY_NAME);
     }
 
     @NotNull
@@ -26,7 +26,7 @@ public class PsiTagProperty extends ORCompositeTypePsiElement<ORTypes> {
 
     @Nullable
     public PsiElement getValue() {
-        PsiElement eq = ORUtil.nextSiblingWithTokenType(getFirstChild(), m_types.EQ);
+        PsiElement eq = ORUtil.nextSiblingWithTokenType(getFirstChild(), myTypes.EQ);
         return eq == null ? null : eq.getNextSibling();
     }
 

@@ -15,24 +15,24 @@ public class ORCodeFactory {
     }
 
     @Nullable
-    public static PsiUpperIdentifier createModuleName(@NotNull Project project, @NotNull String name) {
+    public static PsiUpperSymbol createModuleName(@NotNull Project project, @NotNull String name) {
         FileBase file = createFileFromText(project, RmlLanguage.INSTANCE, "module " + name + " = {};");
         PsiInnerModule module = ORUtil.findImmediateFirstChildOfClass(file, PsiInnerModule.class);
-        return ORUtil.findImmediateFirstChildOfClass(module, PsiUpperIdentifier.class);
+        return ORUtil.findImmediateFirstChildOfClass(module, PsiUpperSymbol.class);
     }
 
     @Nullable
-    public static PsiLowerIdentifier createLetName(@NotNull Project project, @NotNull String name) {
+    public static PsiLowerSymbol createLetName(@NotNull Project project, @NotNull String name) {
         FileBase file = createFileFromText(project, RmlLanguage.INSTANCE, "let " + name + " = 1;");
         PsiLet let = ORUtil.findImmediateFirstChildOfClass(file, PsiLet.class);
-        return ORUtil.findImmediateFirstChildOfClass(let, PsiLowerIdentifier.class);
+        return ORUtil.findImmediateFirstChildOfClass(let, PsiLowerSymbol.class);
     }
 
     @Nullable
-    public static PsiElement createTypeName(@NotNull Project project, @NotNull String name) {
+    public static PsiLowerSymbol createTypeName(@NotNull Project project, @NotNull String name) {
         FileBase file = createFileFromText(project, RmlLanguage.INSTANCE, "type " + name + ";");
         PsiType type = ORUtil.findImmediateFirstChildOfClass(file, PsiType.class);
-        return ORUtil.findImmediateFirstChildOfClass(type, PsiLowerIdentifier.class);
+        return ORUtil.findImmediateFirstChildOfClass(type, PsiLowerSymbol.class);
     }
 
     @Nullable

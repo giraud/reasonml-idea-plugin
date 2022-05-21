@@ -21,6 +21,8 @@ public class PsiTokenStub<T, P extends PsiElement, S extends StubElement<P>> ext
 
     @Override
     public String toString() {
-        return "ORElement(" + getElementType() + ")";
+        String className = getClass().getSimpleName();
+        boolean isImpl = className.endsWith("Impl");
+        return (isImpl ? className.substring(0, className.length() - 4) : className);
     }
 }

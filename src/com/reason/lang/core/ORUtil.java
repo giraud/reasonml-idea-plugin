@@ -6,7 +6,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.psi.reference.*;
@@ -122,22 +122,6 @@ public class ORUtil {
         return text.toString().trim();
     }
 
-    public static @NotNull String getTextUntilWhitespace(@NotNull PsiElement root) {
-        StringBuilder text = new StringBuilder(root.getText());
-
-        PsiElement sibling = root.getNextSibling();
-        while (sibling != null) {
-            if (sibling instanceof PsiWhiteSpace) {
-                sibling = null;
-            } else {
-                text.append(sibling.getText());
-                sibling = sibling.getNextSibling();
-            }
-        }
-
-        return text.toString().trim();
-    }
-
     /*
      x
      M1.M2.x
@@ -149,7 +133,7 @@ public class ORUtil {
         PsiElement sibling = root == null ? null : root.getNextSibling();
         while (sibling != null) {
             IElementType type = sibling.getNode().getElementType();
-            if (type == types.DOT || type == types.UIDENT || type == types.LIDENT) {
+            if (type == types.DOT || type == types.UIDENT || type == types.LIDENT || type == types.A_UPPER_TAG_NAME || type == types.A_LOWER_TAG_NAME) {
                 text.append(sibling.getText());
                 sibling = PsiTreeUtil.nextLeaf(sibling);
             } else {
@@ -357,9 +341,9 @@ public class ORUtil {
         StringBuilder aliasName = new StringBuilder();
         IElementType elementType = currentElement == null ? null : currentElement.getNode().getElementType();
         while (elementType != null && elementType != types.SEMI) {
-            if (elementType != TokenType.WHITE_SPACE && elementType != types.C_UPPER_SYMBOL && elementType != types.DOT) {
+            if (elementType != TokenType.WHITE_SPACE && elementType != types.UIDENT && elementType != types.DOT) {
                 // if last term is lower symbol, and we accept lower symbol, then it's an alias
-                if (elementType != types.C_LOWER_SYMBOL || currentElement.getNextSibling() != null || !lowerAccepted) {
+                if (elementType != types.LIDENT || currentElement.getNextSibling() != null || !lowerAccepted) {
                     isALias = false;
                     break;
                 }
@@ -396,7 +380,7 @@ public class ORUtil {
     public static @Nullable PsiElement resolveModuleSymbol(@Nullable PsiUpperSymbol moduleSymbol) {
         PsiUpperSymbolReference reference = moduleSymbol == null ? null : (PsiUpperSymbolReference) moduleSymbol.getReference();
         PsiElement resolvedSymbol = reference == null ? null : reference.resolveInterface();
-        return resolvedSymbol instanceof PsiUpperIdentifier ? resolvedSymbol.getParent() : resolvedSymbol;
+        return resolvedSymbol instanceof PsiUpperSymbol ? resolvedSymbol.getParent() : resolvedSymbol;
     }
 
     public static @Nullable PsiElement getModuleContent(@NotNull PsiModule module) {

@@ -14,7 +14,7 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class PsiFunctorCall extends ORCompositeTypePsiElement<ORTypes> {
+public class PsiFunctorCall extends ORCompositePsiElement<ORTypes> {
     protected PsiFunctorCall(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
@@ -41,13 +41,6 @@ public class PsiFunctorCall extends ORCompositeTypePsiElement<ORTypes> {
         PsiUpperSymbolReference reference = uSymbol == null ? null : (PsiUpperSymbolReference) uSymbol.getReference();
         PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
 
-        if (resolvedElement instanceof PsiUpperIdentifier) {
-            PsiElement resolvedParent = resolvedElement.getParent();
-            if (resolvedParent instanceof PsiFunctor) {
-                return (PsiFunctor) resolvedParent;
-            }
-        }
-
-        return null;
+        return resolvedElement instanceof PsiFunctor ? (PsiFunctor) resolvedElement : null;
     }
 }

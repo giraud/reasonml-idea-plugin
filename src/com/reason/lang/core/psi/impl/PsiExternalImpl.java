@@ -35,7 +35,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
             return operatorOverride;
         }
 
-        return findChildByClass(PsiLowerIdentifier.class);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Override
@@ -80,6 +80,18 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
         return ORUtil.getQualifiedName(this);
     }
     //endregion
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
 
     @Override
     public @Nullable PsiSignature getSignature() {

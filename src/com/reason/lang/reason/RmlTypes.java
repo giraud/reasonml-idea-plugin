@@ -43,9 +43,7 @@ public class RmlTypes extends ORTypes {
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", RmlLanguage.INSTANCE);
         C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", RmlLanguage.INSTANCE);
         C_FOR_LOOP = new ORCompositeElementType("C_FOR_LOOP", RmlLanguage.INSTANCE);
-        C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", RmlLanguage.INSTANCE);
         C_LOWER_BOUND_CONSTRAINT = new ORCompositeElementType("C_LOWER_BOUND_CONSTRAINT", RmlLanguage.INSTANCE);
-        C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", RmlLanguage.INSTANCE);
         C_FIELD_VALUE = new ORCompositeElementType("C_FIELD_VALUE", RmlLanguage.INSTANCE);
         C_FUN_CALL = new ORCompositeElementType("C_FUN_CALL", RmlLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", RmlLanguage.INSTANCE);
@@ -63,7 +61,6 @@ public class RmlTypes extends ORTypes {
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", RmlLanguage.INSTANCE);
         C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", RmlLanguage.INSTANCE);
         C_TYPE_VARIABLE = new ORCompositeElementType("C_TYPE_VARIABLE", RmlLanguage.INSTANCE);
-        C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", RmlLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", RmlLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", RmlLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", RmlLanguage.INSTANCE);
@@ -98,10 +95,18 @@ public class RmlTypes extends ORTypes {
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", RmlLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", RmlLanguage.INSTANCE);
         C_UPPER_BOUND_CONSTRAINT = new ORCompositeElementType("C_UPPER_BOUND_CONSTRAINT", RmlLanguage.INSTANCE);
-        C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", RmlLanguage.INSTANCE);
-        C_VARIANT = new ORCompositeElementType("C_VARIANT", RmlLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", RmlLanguage.INSTANCE);
         C_WHILE = new ORCompositeElementType("C_WHILE", RmlLanguage.INSTANCE);
+
+        // Atom types
+
+        C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", RmlLanguage.INSTANCE);
+        C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", RmlLanguage.INSTANCE);
+        A_LOWER_TAG_NAME = new ORTokenElementType("A_LOWER_TAG_NAME", RmlLanguage.INSTANCE);
+        A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", RmlLanguage.INSTANCE);
+        A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", RmlLanguage.INSTANCE);
+
+        // Dummy types
 
         C_PLACE_HOLDER = new ORCompositeElementType("C_PLACE_HOLDER", RmlLanguage.INSTANCE);
         C_DUMMY_COLLECTION_ITEM = new ORCompositeElementType("C_DUMMY_COLLECTION_ITEM", RmlLanguage.INSTANCE);
@@ -185,7 +190,6 @@ public class RmlTypes extends ORTypes {
         OPEN = new ORTokenElementType("OPEN", RmlLanguage.INSTANCE);
         OPTION = new ORTokenElementType("OPTION", RmlLanguage.INSTANCE);
         POLY_VARIANT = new ORTokenElementType("POLY_VARIANT", RmlLanguage.INSTANCE);
-        VARIANT_NAME = new ORTokenElementType("VARIANT_NAME", RmlLanguage.INSTANCE);
         PIPE = new ORTokenElementType("PIPE", RmlLanguage.INSTANCE);
         PIPE_FORWARD = new ORTokenElementType("PIPE_FORWARD", RmlLanguage.INSTANCE);
         PLUS = new ORTokenElementType("PLUS", RmlLanguage.INSTANCE);
@@ -215,7 +219,6 @@ public class RmlTypes extends ORTypes {
         STRUCT = new ORTokenElementType("STRUCT", RmlLanguage.INSTANCE);
         OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", RmlLanguage.INSTANCE);
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", RmlLanguage.INSTANCE);
-        TAG_NAME = new ORTokenElementType("TAG_NAME", RmlLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", RmlLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", RmlLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", RmlLanguage.INSTANCE);

@@ -12,14 +12,14 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class PsiClassMethod extends ORCompositeTypePsiElement<ORTypes> implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
+public class PsiClassMethod extends ORCompositePsiElement<ORTypes> implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
     protected PsiClassMethod(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiLowerIdentifier.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiLowerSymbol.class);
     }
 
     @Override

@@ -27,7 +27,8 @@ public class PsiOpenImpl extends PsiTokenStub<ORTypes, PsiOpen, PsiOpenStub> imp
     public @NotNull String getPath() {
         PsiOpenStub stub = getGreenStub();
         if (stub != null) {
-            return stub.getOpenPath();
+            String openPath = stub.getOpenPath();
+            return openPath == null ? "" : openPath;
         }
 
         // Skip `let` and `open`
@@ -60,7 +61,7 @@ public class PsiOpenImpl extends PsiTokenStub<ORTypes, PsiOpen, PsiOpenStub> imp
     }
 
     @Override
-    public ItemPresentation getPresentation() {
+    public @NotNull ItemPresentation getPresentation() {
         return new GoToSymbolProvider.BaseNavigationItem(this, getPath(), ORIcons.OPEN);
     }
 }

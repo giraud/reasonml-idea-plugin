@@ -72,7 +72,7 @@ public class ORReferenceAnalyzer {
                 prevItem = prevItem.getPrevSibling();
                 ASTNode prevItemNode = prevItem == null ? null : prevItem.getNode();
                 prevType = prevItemNode == null ? null : prevItemNode.getElementType();
-                while (prevType != null && (prevType == types.DOT || prevType == types.C_UPPER_SYMBOL || prevType == types.C_VARIANT || prevType == types.C_LOWER_SYMBOL)) {
+                while (prevType != null && (prevType == types.DOT || prevType == types.UIDENT || prevType == types.A_VARIANT_NAME || prevType == types.LIDENT)) {
                     prevItem = prevItem.getPrevSibling();
                     prevItemNode = prevItem == null ? null : prevItem.getNode();
                     prevType = prevItemNode == null ? null : prevItemNode.getElementType();
@@ -136,7 +136,7 @@ public class ORReferenceAnalyzer {
                     // we are no more in a path, skip path
                     prevItem = prevItem.getPrevSibling();
                     prevType = prevItem == null ? null : prevItem.getNode().getElementType();
-                    while (prevType != null && (prevType == types.DOT || prevType == types.C_UPPER_SYMBOL || prevType == types.C_VARIANT || prevType == types.C_LOWER_SYMBOL)) {
+                    while (prevType != null && (prevType == types.DOT || prevType == types.UIDENT || prevType == types.A_VARIANT_NAME || prevType == types.LIDENT)) {
                         prevItem = prevItem.getPrevSibling();
                         prevType = prevItem == null ? null : prevItem.getNode().getElementType();
                     }

@@ -8,7 +8,7 @@ import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -42,11 +42,8 @@ public class DotExpressionCompletionProvider {
             LOG.debug(" -> resolved to", resolvedElement);
 
             Collection<PsiNamedElement> expressions = new ArrayList<>();
-            if (resolvedElement instanceof PsiUpperIdentifier) {
-                PsiElement resolvedParent = resolvedElement.getParent();
-                if (resolvedParent instanceof PsiInnerModule) {
-                    addInnerModuleExpressions((PsiInnerModule) resolvedParent, expressions);
-                }
+            if (resolvedElement instanceof PsiInnerModule) {
+                addInnerModuleExpressions((PsiInnerModule) resolvedElement, expressions);
             } else if (resolvedElement instanceof FileBase) {
                 addFileExpressions((FileBase) resolvedElement, expressions);
             }
@@ -70,15 +67,12 @@ public class DotExpressionCompletionProvider {
                 LOG.debug(" -> resolved to", resolvedElement == null ? null : resolvedElement.getParent());
             }
 
-            if (resolvedElement instanceof PsiLowerIdentifier) {
-                PsiElement resolvedParent = resolvedElement.getParent();
-                if (resolvedParent instanceof PsiVar) {
-                    for (PsiRecordField recordField : ((PsiVar) resolvedParent).getRecordFields()) {
-                        resultSet.addElement(
-                                LookupElementBuilder.create(recordField)
-                                        .withTypeText(PsiSignatureUtil.getSignature(recordField, ORLanguageProperties.cast(element.getLanguage())))
-                                        .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
-                    }
+            if (resolvedElement instanceof PsiVar) {
+                for (PsiRecordField recordField : ((PsiVar) resolvedElement).getRecordFields()) {
+                    resultSet.addElement(
+                            LookupElementBuilder.create(recordField)
+                                    .withTypeText(PsiSignatureUtil.getSignature(recordField, ORLanguageProperties.cast(element.getLanguage())))
+                                    .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
                 }
             }
         }

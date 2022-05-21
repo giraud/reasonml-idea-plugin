@@ -7,7 +7,7 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiTernary extends ORCompositeTypePsiElement<ORTypes> implements PsiConditional {
+public class PsiTernary extends ORCompositePsiElement<ORTypes> implements PsiConditional {
     protected PsiTernary(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
@@ -19,13 +19,13 @@ public class PsiTernary extends ORCompositeTypePsiElement<ORTypes> implements Ps
 
     @Override
     public @Nullable PsiElement getThenExpression() {
-        PsiElement element = ORUtil.findImmediateFirstChildOfType(this, m_types.QUESTION_MARK);
+        PsiElement element = ORUtil.findImmediateFirstChildOfType(this, myTypes.QUESTION_MARK);
         return element == null ? null : ORUtil.nextSibling(element);
     }
 
     @Override
     public @Nullable PsiElement getElseExpression() {
-        PsiElement element = ORUtil.findImmediateFirstChildOfType(this, m_types.COLON);
+        PsiElement element = ORUtil.findImmediateFirstChildOfType(this, myTypes.COLON);
         return element == null ? null : ORUtil.nextSibling(element);
     }
 }

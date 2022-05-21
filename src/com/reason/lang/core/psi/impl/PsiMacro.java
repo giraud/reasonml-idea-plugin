@@ -8,7 +8,7 @@ import com.reason.lang.core.type.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
-public class PsiMacro extends ORCompositeTypePsiElement<ORTypes> {
+public class PsiMacro extends ORCompositePsiElement<ORTypes> {
 
     protected PsiMacro(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);

@@ -17,9 +17,7 @@ public class VariantCallParsingTest extends RmlParsingTestCase {
 
         assertEquals("Var", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
-        assertNull(PsiTreeUtil.findChildOfType(binding, PsiUpperIdentifier.class));
-        // assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding,
-        // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
+        assertEquals(m_types.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
     public void test_params() {
@@ -27,10 +25,8 @@ public class VariantCallParsingTest extends RmlParsingTestCase {
 
         assertEquals("Var(a, b, c)", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
-        assertNull(PsiTreeUtil.findChildOfType(binding, PsiUpperIdentifier.class));
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiSignatureItem.class));
-        // assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding,
-        // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
+        assertEquals(m_types.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
     public void test_withPath() {
@@ -38,9 +34,8 @@ public class VariantCallParsingTest extends RmlParsingTestCase {
 
         assertEquals("A.Variant(1)", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
-        assertNull(PsiTreeUtil.findChildOfType(binding, PsiUpperIdentifier.class));
-        // assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding,
-        // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
+        ArrayList<PsiUpperSymbol> symbols = new ArrayList<>(PsiTreeUtil.findChildrenOfType(binding, PsiUpperSymbol.class));
+        assertEquals(m_types.A_VARIANT_NAME, symbols.get(1).getNode().getElementType());
     }
 
     public void test_withParam() {

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiFunction extends ORCompositeTypePsiElement<ORTypes> implements PsiElement {
+public class PsiFunction extends ORCompositePsiElement<ORTypes> implements PsiElement {
     protected PsiFunction(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
@@ -22,10 +22,5 @@ public class PsiFunction extends ORCompositeTypePsiElement<ORTypes> implements P
 
     public @Nullable PsiFunctionBody getBody() {
         return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctionBody.class);
-    }
-
-    @Override
-    public String toString() {
-        return "PsiFunction:" + getName();
     }
 }

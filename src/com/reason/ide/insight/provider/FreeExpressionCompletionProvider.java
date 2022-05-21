@@ -13,7 +13,7 @@ import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.*;
-import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;

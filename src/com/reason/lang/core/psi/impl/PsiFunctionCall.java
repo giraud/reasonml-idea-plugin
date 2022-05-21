@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiFunctionCall extends ORCompositeTypePsiElement<ORTypes> {
+public class PsiFunctionCall extends ORCompositePsiElement<ORTypes> {
     protected PsiFunctionCall(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

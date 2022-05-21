@@ -66,22 +66,23 @@ public class JsxParsingTest extends ResParsingTestCase {
     }
 
     public void test_tag_name_with_dot() {
-        // option here is not a ReasonML keyword
         PsiLet let = first(letExpressions(parseCode("let _ = <Container.Test></Container.Test>")));
 
+        PsiTag tag = first(PsiTreeUtil.findChildrenOfType(let, PsiTag.class));
+        assertEquals("Container.Test", tag.getName());
         PsiTagStart tagStart = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
-        assertInstanceOf(tagStart.getNameIdentifier(), PsiUpperSymbol.class);
+        assertInstanceOf(tagStart.getNameIdentifier(), PsiUpperTagName.class);
         assertEquals("Test", tagStart.getNameIdentifier().getText());
         PsiElement nextSibling = tagStart.getFirstChild().getNextSibling();
-        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
         nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
 
         PsiTagClose tagClose = first(PsiTreeUtil.findChildrenOfType(let, PsiTagClose.class));
         nextSibling = tagClose.getFirstChild().getNextSibling();
-        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
         nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
     }
 
     public void test_tag_prop_with_paren() {

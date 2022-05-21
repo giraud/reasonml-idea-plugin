@@ -26,9 +26,7 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         List<PsiParameter> parameters = fnCall.getParameters();
         assertEquals(2, parameters.size());
         assertEquals("self.state.timerId^", parameters.get(0).getText());
-        assertNull(PsiTreeUtil.getChildrenOfType(parameters.get(0), PsiLowerIdentifier.class));
         assertEquals("Js.Global.clearInterval", parameters.get(1).getText());
-        assertNull(PsiTreeUtil.getChildrenOfType(parameters.get(1), PsiLowerIdentifier.class));
     }
 
     public void test_call3() {
@@ -71,7 +69,7 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
     public void test_nested_parenthesis() {
         PsiFunctionCall f = firstOfType(parseCode("set(x->keep(((y, z)) => y), xx);"), PsiFunctionCall.class);
 
-        assertEquals("set(x->keep(((y, z)) => y), xx);", f.getText());
+        assertEquals("set(x->keep(((y, z)) => y), xx)", f.getText());
         assertEquals("x->keep(((y, z)) => y)", f.getParameters().get(0).getText());
         assertEquals("xx", f.getParameters().get(1).getText());
     }

@@ -15,7 +15,7 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDeclaration, PsiVariantDeclarationStub> implements PsiQualifiedPathElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
+public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDeclaration, PsiVariantDeclarationStub> implements PsiNameIdentifierOwner, PsiQualifiedPathElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
     // region Constructors
     public PsiVariantDeclaration(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
@@ -28,14 +28,25 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
 
     //region PsiNamedElement
     @Override
+    public @Nullable PsiElement getNameIdentifier() {
+        return getFirstChild();
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
+
+    @Override
     public String getName() {
         PsiVariantDeclarationStub stub = getGreenStub();
         if (stub != null) {
             return stub.getName();
         }
 
-        PsiElement nameIdentifier = getFirstChild();
-        return nameIdentifier == null ? "" : nameIdentifier.getText();
+        PsiElement id = getNameIdentifier();
+        return id == null ? "" : id.getText();
     }
 
     @Override
@@ -68,13 +79,13 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
 
     @Override
     public @NotNull PsiElement getNavigationElement() {
-        PsiUpperIdentifier id = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
+        PsiUpperSymbol id = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
         return id == null ? this : id;
     }
 
     @Nullable
-    public PsiNameIdentifierOwner getVariant() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
+    public PsiElement getVariant() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
     }
 
     @NotNull

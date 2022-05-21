@@ -8,12 +8,11 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.*;
 import com.intellij.testFramework.fixtures.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.*;
-import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.*;
 
 public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
 
@@ -25,10 +24,6 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
         System.out.println(DebugUtil.psiToString(file, true, true));
 
         return (FileBase) file;
-    }
-
-    protected @Nullable PsiElement getNameIdentifier(@NotNull PsiQualifiedNamedElement e) {
-        return ORUtil.findImmediateFirstChildOfAnyClass(e, PsiUpperIdentifier.class, PsiLowerIdentifier.class);
     }
 
     protected @Nullable PsiElement getFromCaret(@NotNull PsiFile f) {
@@ -61,9 +56,9 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
         return getDocForElement(file, lang, resolvedElement);
     }
 
-    protected @NotNull Set<String> makePaths(String... values) {
+    protected List<String> makePaths(String... values) {
         Set<String> paths = new HashSet<>();
         Collections.addAll(paths, values);
-        return paths;
+        return paths.stream().sorted().collect(Collectors.toList());
     }
 }

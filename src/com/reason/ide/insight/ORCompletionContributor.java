@@ -86,7 +86,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
 
                         // Jsx
                         //IElementType elementType = element.getNode().getElementType();
-                        if (element instanceof PsiLeafTagName) {
+                        if (element instanceof PsiUpperTagName) {
                             LOG.debug("Previous element type is TAG_NAME");
                             JsxNameCompletionProvider.addCompletions(types, element, result);
                             return;

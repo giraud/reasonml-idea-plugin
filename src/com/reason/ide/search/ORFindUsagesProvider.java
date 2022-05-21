@@ -1,15 +1,19 @@
 package com.reason.ide.search;
 
 import com.intellij.lang.*;
+import com.intellij.lang.findUsages.*;
 import com.intellij.psi.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 
-public abstract class ORFindUsagesProvider implements com.intellij.lang.findUsages.FindUsagesProvider {
+public abstract class ORFindUsagesProvider implements FindUsagesProvider {
+
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof PsiUpperIdentifier || element instanceof PsiLowerIdentifier;
+        return element instanceof PsiException ||
+                element instanceof PsiLet || element instanceof PsiType || element instanceof PsiExternal;
     }
 
     @Override

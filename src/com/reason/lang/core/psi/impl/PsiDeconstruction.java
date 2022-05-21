@@ -3,16 +3,15 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.ORCompositeTypePsiElement;
+import com.reason.lang.core.type.ORCompositePsiElement;
 import com.reason.lang.core.type.ORTypes;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.twelvemonkeys.imageio.metadata.psd.*;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiDeconstruction extends ORCompositeTypePsiElement<ORTypes> {
+public class PsiDeconstruction extends ORCompositePsiElement<ORTypes> {
 
     protected PsiDeconstruction(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
@@ -27,10 +26,10 @@ public class PsiDeconstruction extends ORCompositeTypePsiElement<ORTypes> {
                 result.addAll(((PsiDeconstruction) child).getDeconstructedElements());
             } else {
                 IElementType elementType = child.getNode().getElementType();
-                if (elementType != m_types.LPAREN
-                        && elementType != m_types.COMMA
-                        && elementType != m_types.RPAREN
-                        && elementType != m_types.UNDERSCORE
+                if (elementType != myTypes.LPAREN
+                        && elementType != myTypes.COMMA
+                        && elementType != myTypes.RPAREN
+                        && elementType != myTypes.UNDERSCORE
                         && !(child instanceof PsiWhiteSpace)) {
                     result.add(child);
                 }

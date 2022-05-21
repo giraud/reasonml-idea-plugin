@@ -32,7 +32,13 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        if (myElement instanceof PsiUpperIdentifier) {
+        //if (myElement instanceof PsiUpperIdentifier) {
+        PsiElement parent = myElement.getParent();
+        if (parent instanceof PsiModule) {
+            if (!(parent.getParent() instanceof PsiModuleType)) {
+                return ResolveResult.EMPTY_ARRAY;
+            }
+        } else if (parent instanceof PsiException) {
             return ResolveResult.EMPTY_ARRAY;
         }
 
@@ -114,7 +120,6 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
         ResolveResult[] resolveResults = new ResolveResult[sortedResult.size()];
 
         int i = 0;
-        PsiElement parent = myElement.getParent();
         for (PsiElement element : sortedResult) {
             resolveResults[i] = new UpperResolveResult(element, parent);
             i++;
@@ -139,19 +144,7 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
-        PsiUpperIdentifier newNameIdentifier = ORCodeFactory.createModuleName(myElement.getProject(), newName);
-
-        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
-        if (newNameNode != null) {
-            PsiElement nameIdentifier = myElement.getFirstChild();
-            if (nameIdentifier == null) {
-                myElement.getNode().addChild(newNameNode);
-            } else {
-                ASTNode oldNameNode = nameIdentifier.getNode();
-                myElement.getNode().replaceChild(oldNameNode, newNameNode);
-            }
-        }
-
+        //myElement.replace(new PsiUpperTagName(myTypes, myElement.getElementType(), newName));
         return myElement;
     }
 
@@ -161,17 +154,17 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
         public UpperResolveResult(@NotNull PsiElement referencedElement, @Nullable PsiElement sourceParent) {
             if (referencedElement instanceof PsiModule && ((PsiModule) referencedElement).isComponent() && sourceParent instanceof PsiTagStart) {
                 PsiElement make = ((PsiModule) referencedElement).getComponentNavigationElement();
-                PsiLowerIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(make, PsiLowerIdentifier.class);
-                m_referencedIdentifier = identifier == null ? referencedElement : identifier;
+                m_referencedIdentifier = make == null ? referencedElement : make;
             } else if (referencedElement instanceof PsiFakeModule) {
                 // A fake module resolve to its file
                 m_referencedIdentifier = referencedElement.getContainingFile();
-            } else if (referencedElement instanceof PsiNameIdentifierOwner) {
-                m_referencedIdentifier = ((PsiNameIdentifierOwner) referencedElement).getNameIdentifier();
-            } else {
-                PsiUpperIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiUpperIdentifier.class);
-                m_referencedIdentifier = identifier == null ? referencedElement : identifier;
+            } else /*if (referencedElement instanceof PsiNameIdentifierOwner)*/ {
+                m_referencedIdentifier = referencedElement;
             }
+            //else {
+            //    PsiUpperSymbol identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiUpperSymbol.class);
+            //    m_referencedIdentifier = identifier == null ? referencedElement : identifier;
+            //}
         }
 
         @Override

@@ -5,7 +5,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiWhile extends ORCompositeTypePsiElement<ORTypes> {
+public class PsiWhile extends ORCompositePsiElement<ORTypes> {
     protected PsiWhile(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

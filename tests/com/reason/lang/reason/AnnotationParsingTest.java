@@ -1,7 +1,7 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.*;
-import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.impl.PsiAnnotation;
 
 import java.util.*;
 

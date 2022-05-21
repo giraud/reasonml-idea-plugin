@@ -13,7 +13,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.stream.*;
 
-public class PsiSignatureImpl extends ORCompositeTypePsiElement<ORTypes> implements PsiSignature {
+public class PsiSignatureImpl extends ORCompositePsiElement<ORTypes> implements PsiSignature {
     PsiSignatureImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

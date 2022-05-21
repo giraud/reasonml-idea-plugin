@@ -35,7 +35,7 @@ public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet>
         if (psi.isDeconstruction()) {
             List<PsiElement> elements = psi.getDeconstructedElements();
             for (PsiElement element : elements) {
-                if (element instanceof PsiLowerIdentifier) {
+                if (element instanceof PsiLowerSymbol) {
                     deconstructedNames.add(element.getText());
                 }
             }

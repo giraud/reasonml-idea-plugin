@@ -44,7 +44,7 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
         }
 
         if (identifier instanceof PsiNamedParam) {
-            return ORUtil.findImmediateFirstChildOfClass(identifier, PsiLowerIdentifier.class);
+            return ORUtil.findImmediateFirstChildOfClass(identifier, PsiLowerSymbol.class);
         }
 
         return identifier;

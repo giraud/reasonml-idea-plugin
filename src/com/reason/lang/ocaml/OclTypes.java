@@ -43,8 +43,6 @@ public class OclTypes extends ORTypes {
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", OclLanguage.INSTANCE);
         C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", OclLanguage.INSTANCE);
         C_FOR_LOOP = new ORCompositeElementType("C_FOR_LOOP", OclLanguage.INSTANCE);
-        C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", OclLanguage.INSTANCE);
-        C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", OclLanguage.INSTANCE);
         C_FIELD_VALUE = new ORCompositeElementType("C_FIELD_VALUE", OclLanguage.INSTANCE);
         C_FUN_CALL = new ORCompositeElementType("C_FUN_CALL", OclLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", OclLanguage.INSTANCE);
@@ -61,7 +59,6 @@ public class OclTypes extends ORTypes {
         C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", OclLanguage.INSTANCE);
         C_LOWER_BOUND_CONSTRAINT = new ORCompositeElementType("C_LOWER_BOUND_CONSTRAINT", OclLanguage.INSTANCE);
         C_TYPE_VARIABLE = new ORCompositeElementType("C_TYPE_VARIABLE", OclLanguage.INSTANCE);
-        C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", OclLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", OclLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", OclLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);
@@ -93,18 +90,25 @@ public class OclTypes extends ORTypes {
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", OclLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", OclLanguage.INSTANCE);
         C_UPPER_BOUND_CONSTRAINT = new ORCompositeElementType("C_UPPER_BOUND_CONSTRAINT", OclLanguage.INSTANCE);
-        C_VARIANT = new ORCompositeElementType("C_VARIANT", OclLanguage.INSTANCE);
-        C_VARIANT_CONSTRUCTOR =
-                new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
+        C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", OclLanguage.INSTANCE);
         C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", OclLanguage.INSTANCE);
         C_SCOPED_EXPR = new ORCompositeElementType("C_SCOPED_EXPR", OclLanguage.INSTANCE);
-        C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", OclLanguage.INSTANCE);
         C_STRUCT_EXPR = new ORCompositeElementType("C_STRUCT_EXPR", OclLanguage.INSTANCE);
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", OclLanguage.INSTANCE);
         C_SWITCH_EXPR = new ORCompositeElementType("C_SWITCH_EXPR", OclLanguage.INSTANCE);
         C_SWITCH_BODY = new ORCompositeElementType("C_SWITCH_BODY", OclLanguage.INSTANCE);
         C_WHILE = new ORCompositeElementType("C_WHILE", OclLanguage.INSTANCE);
+
+        // Atom types
+
+        C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", OclLanguage.INSTANCE);
+        C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", OclLanguage.INSTANCE);
+        A_LOWER_TAG_NAME = new ORTokenElementType("A_LOWER_TAG_NAME", OclLanguage.INSTANCE);
+        A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", OclLanguage.INSTANCE);
+        A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", OclLanguage.INSTANCE);
+
+        // Dummy types
 
         C_PLACE_HOLDER = new ORCompositeElementType("C_PLACE_HOLDER", OclLanguage.INSTANCE);
         C_DUMMY_COLLECTION_ITEM = new ORCompositeElementType("C_DUMMY_COLLECTION_ITEM", OclLanguage.INSTANCE);
@@ -188,7 +192,6 @@ public class OclTypes extends ORTypes {
         OPEN = new ORTokenElementType("OPEN", OclLanguage.INSTANCE);
         OPTION = new ORTokenElementType("OPTION", OclLanguage.INSTANCE);
         POLY_VARIANT = new ORTokenElementType("POLY_VARIANT", OclLanguage.INSTANCE);
-        VARIANT_NAME = new ORTokenElementType("VARIANT_NAME", OclLanguage.INSTANCE);
         PIPE = new ORTokenElementType("PIPE", OclLanguage.INSTANCE);
         PIPE_FORWARD = new ORTokenElementType("PIPE_FORWARD", OclLanguage.INSTANCE);
         PLUS = new ORTokenElementType("PLUS", OclLanguage.INSTANCE);
@@ -218,7 +221,6 @@ public class OclTypes extends ORTypes {
         STRUCT = new ORTokenElementType("STRUCT", OclLanguage.INSTANCE);
         OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", OclLanguage.INSTANCE);
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", OclLanguage.INSTANCE);
-        TAG_NAME = new ORTokenElementType("TAG_NAME", OclLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", OclLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", OclLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", OclLanguage.INSTANCE);

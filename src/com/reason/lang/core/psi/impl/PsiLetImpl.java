@@ -35,7 +35,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class, PsiLiteralExpression.class/*rescript custom operator*/, PsiUnit.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerSymbol.class, PsiScopedExpr.class, PsiDeconstruction.class, PsiLiteralExpression.class/*rescript custom operator*/, PsiUnit.class);
     }
 
     @Override
@@ -54,9 +54,28 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
 
     @Override
     public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        PsiElement id = getNameIdentifier();
+        PsiElement newId = ORCodeFactory.createLetName(getProject(), name);
+        // deconstruction ???
+        if (id != null && newId != null) {
+            id.replace(newId);
+        }
+
         return this;
     }
     // endregion
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
 
     //region PsiQualifiedName
     @Override

@@ -87,7 +87,7 @@ public abstract class ORParameterInfoHandler implements ParameterInfoHandler<Psi
             PsiReference reference = functionName == null ? null : functionName.getReference();
             if (reference instanceof PsiLowerSymbolReference) {
                 PsiElement resolvedRef = ((PsiLowerSymbolReference) reference).resolveInterface();
-                resolvedElement = (resolvedRef instanceof PsiLowerIdentifier) ? resolvedRef.getParent() : resolvedRef;
+                resolvedElement = (resolvedRef instanceof PsiLowerSymbol) ? resolvedRef.getParent() : resolvedRef;
             }
         } else if (parent instanceof PsiFunctorCall) {
             PsiElement functorName = parent.getFirstChild();

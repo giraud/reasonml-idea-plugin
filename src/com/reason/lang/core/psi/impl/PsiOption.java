@@ -10,7 +10,7 @@ import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
-public class PsiOption extends ORCompositeTypePsiElement<ORTypes> implements PsiLanguageConverter {
+public class PsiOption extends ORCompositePsiElement<ORTypes> implements PsiLanguageConverter {
     protected PsiOption(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
@@ -41,7 +41,7 @@ public class PsiOption extends ORCompositeTypePsiElement<ORTypes> implements Psi
                     for (int i = 0; i <= lastChild; i++) {
                         PsiElement child = children[i];
                         IElementType childElementType = child.getNode().getElementType();
-                        if (childElementType != m_types.OPTION) {
+                        if (childElementType != myTypes.OPTION) {
                             convertedText.append(child.getText());
                         }
                     }

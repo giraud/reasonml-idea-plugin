@@ -43,13 +43,10 @@ public class ModuleCompletionProvider {
             PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
             LOG.debug(" -> resolved to", resolvedElement);
 
-            if (resolvedElement instanceof PsiUpperIdentifier) {
-                PsiElement resolvedParent = resolvedElement.getParent();
-                if (resolvedParent instanceof PsiModule) {
-                    expressions.addAll(getInnerModules((PsiModule) resolvedParent));
-                }
-            } else if (resolvedElement instanceof FileBase) {
+            if (resolvedElement instanceof FileBase) {
                 expressions.addAll(getFileModules((FileBase) resolvedElement));
+            } else if (resolvedElement instanceof PsiInnerModule) {
+                expressions.addAll(getInnerModules((PsiModule) resolvedElement));
             }
         } else {
             // empty path

@@ -8,7 +8,7 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiSignatureItemImpl extends ORCompositeTypePsiElement<ORTypes> implements PsiSignatureItem {
+public class PsiSignatureItemImpl extends ORCompositePsiElement<ORTypes> implements PsiSignatureItem {
     protected PsiSignatureItemImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }

@@ -30,7 +30,7 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerIdentifier.class);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Override

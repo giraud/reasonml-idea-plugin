@@ -9,14 +9,13 @@ import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.Nullable;
 
 public class OclFindUsagesProvider extends ORFindUsagesProvider {
-  @Nullable
-  @Override
-  public WordsScanner getWordsScanner() {
-    ORTypes types = OclTypes.INSTANCE;
-    return new DefaultWordsScanner(
-        new OclLexer(), //
-        TokenSet.create(types.UIDENT, types.LIDENT, types.VARIANT_NAME), //
-        TokenSet.EMPTY, //
-        TokenSet.create(types.FLOAT_VALUE, types.INT_VALUE, types.STRING_VALUE));
-  }
+    @Override
+    public @Nullable WordsScanner getWordsScanner() {
+        ORTypes types = OclTypes.INSTANCE;
+        return new DefaultWordsScanner(
+                new OclLexer(), //
+                TokenSet.create(types.UIDENT, types.LIDENT), //
+                TokenSet.create(types.MULTI_COMMENT), //
+                TokenSet.create(types.FLOAT_VALUE, types.INT_VALUE, types.STRING_VALUE));
+    }
 }
