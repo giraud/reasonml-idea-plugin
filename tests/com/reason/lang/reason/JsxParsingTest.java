@@ -212,4 +212,12 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertNotNull(PsiTreeUtil.findChildOfType(e, PsiTagStart.class));
         assertNotNull(PsiTreeUtil.findChildOfType(e, PsiTagClose.class));
     }
+
+    public void test_prop_no_upper_tag() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<InputText onTextChange={(. id) => dispatch(. ParametersReducers.UpdateURLId(id))}/>"));
+
+        PsiFunctionCall f = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertEmpty(PsiTreeUtil.findChildrenOfType(f, PsiUpperTagName.class));
+        assertSize(2, PsiTreeUtil.findChildrenOfType(f, PsiUpperSymbol.class));
+    }
 }

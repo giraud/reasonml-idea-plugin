@@ -15,6 +15,13 @@ public class FindUIdentUsagesRMLTest extends ORBasePlatformTestCase {
         assertEquals("(ExceptionName)", usages.get(0).getElement().getParent().getText());
     }
 
+    public void test_module() {
+        configureCode("A.re", "module M<caret>; let x = M.x;");
+
+        List<UsageInfo> usages = findUsages("A.re");
+        assertEquals("M.x", usages.get(0).getElement().getParent().getText());
+    }
+
     private @NotNull List<UsageInfo> findUsages(String fileName) {
         return (List<UsageInfo>) myFixture.testFindUsages(fileName);
     }
