@@ -34,7 +34,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
         PsiElement parent = myElement.getParent();
-        if (parent instanceof PsiLet || parent instanceof PsiType || parent instanceof PsiExternal) {
+        if (parent instanceof PsiLet || parent instanceof PsiVal || parent instanceof PsiType || parent instanceof PsiExternal) {
             return ResolveResult.EMPTY_ARRAY;
         }
 

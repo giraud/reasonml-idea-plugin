@@ -54,14 +54,10 @@ public class FindLIdentUsagesRMLTest extends ORBasePlatformTestCase {
     public void test_module_signature() {
         configureCode("A.rei", "module B: { type t<caret>; let toString: t => string; }; module C: { type t; let toString: t => string; };");
 
-        List<UsageInfo> usages = (List<UsageInfo>) findUsages("A.rei");
+        List<UsageInfo> usages = findUsages("A.rei");
         assertSize(1, usages);
         UsageInfo usageInfo = usages.get(0);
         assertEquals("t", usageInfo.getElement().getParent().getText());
         assertEquals("A.B.toString", ((PsiQualifiedPathElement) usageInfo.getElement().getParent().getParent().getParent()).getQualifiedName());
-    }
-
-    private @NotNull List<UsageInfo> findUsages(String fileName) {
-        return (List<UsageInfo>) myFixture.testFindUsages(fileName);
     }
 }

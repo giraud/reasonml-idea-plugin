@@ -21,8 +21,4 @@ public class FindUIdentUsagesRMLTest extends ORBasePlatformTestCase {
         List<UsageInfo> usages = findUsages("A.re");
         assertEquals("M.x", usages.get(0).getElement().getParent().getText());
     }
-
-    private @NotNull List<UsageInfo> findUsages(String fileName) {
-        return (List<UsageInfo>) myFixture.testFindUsages(fileName);
-    }
 }

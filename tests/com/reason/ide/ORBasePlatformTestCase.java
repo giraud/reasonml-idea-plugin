@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.*;
 import com.intellij.testFramework.fixtures.*;
+import com.intellij.usageView.*;
 import com.reason.ide.files.*;
 import org.jetbrains.annotations.*;
 
@@ -54,6 +55,10 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
     protected @Nullable String getDoc(@NotNull FileBase file, @NotNull Language lang) {
         PsiElement resolvedElement = myFixture.getElementAtCaret();
         return getDocForElement(file, lang, resolvedElement);
+    }
+
+    protected @NotNull List<UsageInfo> findUsages(String fileName) {
+        return (List<UsageInfo>) myFixture.testFindUsages(fileName);
     }
 
     protected List<String> makePaths(String... values) {
