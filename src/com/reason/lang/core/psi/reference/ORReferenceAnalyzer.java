@@ -28,7 +28,7 @@ public class ORReferenceAnalyzer {
         }
 
         @Override public String toString() {
-            return getOriginalElement().toString();
+            return getOriginalElement() + " (" + getOriginalElement().getText() + ")";
         }
     }
 
@@ -93,7 +93,7 @@ public class ORReferenceAnalyzer {
         while (item != null) {
             if (item instanceof PsiPath) {
                 List<PsiUpperSymbol> uppers = ORUtil.findImmediateChildrenOfClass(item, PsiUpperSymbol.class);
-                for (int i = uppers.size()-1; i >= 0; i--) {
+                for (int i = uppers.size() - 1; i >= 0; i--) {
                     instructions.push(new ORUpperSymbolWithResolution(uppers.get(i)));
                 }
             }

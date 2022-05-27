@@ -23,12 +23,4 @@ public class FindUIdentUsagesOCLTest extends ORBasePlatformTestCase {
         List<UsageInfo> usages = findUsages("A.ml");
         assertEquals("M.x", usages.get(0).getElement().getParent().getText());
     }
-
-    public void test_val() {
-        configureCode("A.ml", "val x<caret>: int\n let y = x + 2;");
-
-        List<UsageInfo> usages = findUsages("A.ml");
-        assertSize(1, usages);
-        assertInstanceOf(usages.get(0).getElement().getParent(), PsiLetBinding.class);
-    }
 }

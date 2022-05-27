@@ -1,7 +1,11 @@
 package com.reason.lang.reason;
 
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
 import java.util.stream.*;
@@ -35,5 +39,15 @@ public class ComponentJsx3ParsingTest extends RmlParsingTestCase {
         List<ComponentPropertyAdapter> params = e.getFunction().getParameters().stream().map(ComponentPropertyAdapter::new).collect(Collectors.toList());
         assertSize(1, params);
         assertFalse(params.get(0).isMandatory());
+    }
+
+    public void test_close() {
+        PsiLet e = firstOfType(parseCode("[@react.component] let make = () => { <A><B><span>\"X\"->React.string</span></B><C></C></A>; };"), PsiLet.class);
+
+        PsiTag tag = PsiTreeUtil.findChildOfType(e, PsiTag.class);
+        List<PsiTag> innerTags = ORUtil.findImmediateChildrenOfClass(tag.getBody(), PsiTag.class);
+        assertSize(2, innerTags);
+        assertEquals("<B><span>\"X\"->React.string</span></B>", innerTags.get(0).getText());
+        assertEquals("<C></C>", innerTags.get(1).getText());
     }
 }

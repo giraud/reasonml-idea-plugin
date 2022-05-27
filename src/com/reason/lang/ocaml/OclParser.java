@@ -922,7 +922,6 @@ public class OclParser extends CommonPsiParser {
                             mark(myTypes.C_PARAMETERS);
                 }
             }
-            // zzz simplify !!
             else if (is(myTypes.C_EXTERNAL_DECLARATION)) {
                 // external |>x<| ...
                 wrapAtom(myTypes.C_LOWER_SYMBOL);

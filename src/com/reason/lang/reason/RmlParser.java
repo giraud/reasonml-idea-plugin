@@ -348,7 +348,8 @@ public class RmlParser extends CommonPsiParser {
         private void parseComma() {
             if (inScopeOrAny(
                     myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.C_SIG_ITEM, myTypes.C_MIXIN_FIELD,
-                    myTypes.C_VARIANT_CONSTRUCTOR, myTypes.C_PARAMETERS, myTypes.C_SIG_EXPR, myTypes.C_DUMMY_COLLECTION_ITEM
+                    myTypes.C_VARIANT_CONSTRUCTOR, myTypes.C_SIG_EXPR, myTypes.C_DUMMY_COLLECTION_ITEM,
+                    myTypes.C_PARAMETERS, myTypes.C_FUN_PARAM
             )) {
 
                 if (isFound(myTypes.C_DUMMY_COLLECTION_ITEM)) {
@@ -397,6 +398,13 @@ public class RmlParser extends CommonPsiParser {
                     if (getTokenType() != myTypes.RPAREN) {
                         // not at the end of a list: ie not => (p1, p2<,> )
                         markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
+                        mark(myTypes.C_FUN_PARAM);
+                        markHolder(myTypes.C_PLACE_HOLDER);
+                    }
+                } else if (strictlyInAny(myTypes.C_FUN_PARAM)) {
+                    popEndUntilFoundIndex().popEnd().advance();
+                    if (getTokenType() != myTypes.RPAREN) {
+                        // not at the end of a list: ie not => (p1, p2<,> )
                         mark(myTypes.C_FUN_PARAM);
                         markHolder(myTypes.C_PLACE_HOLDER);
                     }
@@ -650,15 +658,13 @@ public class RmlParser extends CommonPsiParser {
                     popEndUntil(myTypes.C_TAG);
                 }
 
-                remapCurrentToken(myTypes.TAG_LT_SLASH)
-                        .mark(myTypes.C_TAG_CLOSE)
+                mark(myTypes.C_TAG_CLOSE)
                         .advance()
                         .remapCurrentToken(nextTokenType == myTypes.UIDENT ? myTypes.A_UPPER_TAG_NAME : myTypes.A_LOWER_TAG_NAME)
                         .wrapAtom(nextTokenType == myTypes.UIDENT ? myTypes.C_UPPER_SYMBOL : myTypes.C_LOWER_SYMBOL);
             } else if (nextTokenType == myTypes.GT) {
                 // a React fragment end
-                remapCurrentToken(myTypes.TAG_LT_SLASH)
-                        .mark(myTypes.C_TAG_CLOSE)
+                mark(myTypes.C_TAG_CLOSE)
                         .advance().advance().popEnd();
             }
         }
@@ -673,14 +679,14 @@ public class RmlParser extends CommonPsiParser {
             }
 
             if (in(myTypes.C_TAG)) {
-                if (inScopeOrAny(myTypes.C_TAG_PROP_VALUE, myTypes.C_TAG_START)) {
-                    advance().popEndUntilIndex(getIndex());
+                if (inScopeOrAny(myTypes.C_TAG_PROP_VALUE, myTypes.C_TAG_START, myTypes.C_TAG_CLOSE)) {
+                    advance().popEndUntilFoundIndex();
                     if (is(myTypes.C_TAG_START)) {
                         popEnd().mark(myTypes.C_TAG_BODY);
+                    } else if (is(myTypes.C_TAG_CLOSE)) {
+                        // end the tag
+                        popEndUntil(myTypes.C_TAG).popEnd();
                     }
-                } else if (in(myTypes.C_TAG_CLOSE)) {
-                    // end the tag
-                    advance().popEndUntil(myTypes.C_TAG).popEnd();
                 }
             }
         }
@@ -691,7 +697,6 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseLIdent() {
-            // zzz simplify !!!
             if (is(myTypes.C_LET_DECLARATION)) {
                 // let |>x<| ...
                 wrapAtom(myTypes.C_LOWER_SYMBOL);
@@ -710,11 +715,8 @@ public class RmlParser extends CommonPsiParser {
             } else if (is(myTypes.C_RECORD_FIELD)) {
                 // let x = { y, |>z<| ...
                 wrapAtom(myTypes.C_LOWER_SYMBOL);
-            } else if ((isCurrent(myTypes.C_PARAMETERS) /*&& isCurrentParent(myTypes.C_FUN_EXPR)*/) || isCurrent(myTypes.C_VARIANT_CONSTRUCTOR)) {
+            } else if ((isCurrent(myTypes.C_PARAMETERS)) || isCurrent(myTypes.C_VARIANT_CONSTRUCTOR)) {
                 // ( x , |>y<| ...
-                //if (!isHold()) {
-                //    markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
-                //}
                 mark(myTypes.C_FUN_PARAM);
                 markHolder(myTypes.C_PLACE_HOLDER);
                 wrapAtom(myTypes.C_LOWER_SYMBOL);
@@ -861,14 +863,19 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseLParen() {
-            if (isCurrent(myTypes.C_PARAMETERS)) {
+            if (isCurrent(myTypes.C_FUN_PARAM)) {
+                markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
+                markHolder(myTypes.C_PLACE_HOLDER);
+            } else if (isCurrent(myTypes.C_PARAMETERS)) {
                 if (!currentHasScope()) {
                     // |>(<| ... ) => ...
                     updateScopeToken(myTypes.LPAREN);
+                    markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
                 } else {
                     // ( |>(<| ... ) , ... ) => ...
-                    mark(myTypes.C_FUN_PARAM).advance();
-                    markHolder(myTypes.C_PLACE_HOLDER);
+                    mark(myTypes.C_FUN_PARAM)
+                            .markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance()
+                            .markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
                 }
             } else if (is(myTypes.C_ASSERT_STMT)) {
                 // assert |>(<| ...
@@ -1037,7 +1044,7 @@ public class RmlParser extends CommonPsiParser {
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ..
                 wrapAtom(myTypes.C_UPPER_SYMBOL);
-            } else if ((in(myTypes.C_TAG_START) || in(myTypes.C_TAG_CLOSE)) && previousElementType(1) == myTypes.DOT) { // a namespaced custom component
+            } else if ((in(myTypes.C_TAG_START, /*not*/myTypes.C_TAG_PROP_VALUE) || in(myTypes.C_TAG_CLOSE)) && previousElementType(1) == myTypes.DOT) { // a namespaced custom component
                 // <X.|>Y<| ...
                 remapCurrentToken(myTypes.A_UPPER_TAG_NAME).wrapAtom(myTypes.C_UPPER_SYMBOL);
             } else {
@@ -1074,8 +1081,7 @@ public class RmlParser extends CommonPsiParser {
 
         private void parseArrow() {
             if (is(myTypes.C_SIG_EXPR)) {
-                advance()
-                        .mark(myTypes.C_SIG_ITEM);
+                advance().mark(myTypes.C_SIG_ITEM);
             } else if (in(myTypes.C_SIG_ITEM, /*not*/ myTypes.C_SCOPED_EXPR)) {
                 popEndUntil(myTypes.C_SIG_ITEM).popEnd().advance()
                         .mark(myTypes.C_SIG_ITEM);

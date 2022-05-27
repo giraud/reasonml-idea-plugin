@@ -322,21 +322,21 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Belt_MapString.get", e.getQualifiedName());
     }
 
-    /* zzz functor resolution
+    /* zzz functor
     public void test_functor_body() {
         configureCode("A.re", "module Make = (M:I) => { let a = 3; };");
         configureCode("B.re", "module Instance = A.Make({}); let b = Instance.a<caret>;");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.Make.a", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.Make.a", e.getQualifiedName());
     }
 
     public void test_file_include_functor() {
         configureCode("A.re", "module Make = (M:I) => { let a = 3; }; include Make({})");
         configureCode("B.re", "let b = A.a<caret>;");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.Make.a", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.Make.a", e.getQualifiedName());
     }
 
     public void test_functor_result_with_alias() {
@@ -344,18 +344,18 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "module T = A; module Make = (M:Intf): T.Result => { let b = 3; };");
         configureCode("C.re", "module Instance = Make({}); let c = Instance.a<caret>;");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.Result.a", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.Result.a", e.getQualifiedName());
     }
+    */
 
     public void test_path_functor() {
         configureCode("pervasives.mli", "external compare : 'a -> 'a -> int = \"%compare\"");
         configureCode("A.re", "module B = X.Functor({ let cmp = Pervasives.compare<caret>; })");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Pervasives.compare", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiExternal e = (PsiExternal) myFixture.getElementAtCaret();
+        assertEquals("Pervasives.compare", e.getQualifiedName());
     }
-    */
 
     //region record
     public void test_record() {

@@ -42,22 +42,21 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals("A.res", e.getContainingFile().getName());
     }
 
-    // zzz todo later ??
-    //public void test_let_local_module_alias() {
-    //    configureCode("A.rei", "let x:int");
-    //    configureCode("B.res", "let x = 1\n module X = A\n X.x<caret>");
-    //
-    //    PsiElement e = myFixture.getElementAtCaret();
-    //    assertEquals("A.x", e.getQualifiedName());
-    //}
-    //
-    //public void test_alias_path() {
-    //    configureCode("A.res", "module W = { module X = { module Y = { module Z = { let z = 1 } } } }");
-    //    configureCode("B.res", "module C = A.W.X\n module D = C.Y.Z\n D.z<caret>");
-    //
-    //    PsiElement e = myFixture.getElementAtCaret();
-    //    assertEquals("A.W.X.Y.Z.z", e.getQualifiedName());
-    //}
+    public void test_let_local_module_alias() {
+        configureCode("A.rei", "let x:int");
+        configureCode("B.res", "let x = 1\n module X = A\n X.x<caret>");
+
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.x", e.getQualifiedName());
+    }
+
+    public void test_alias_path() {
+        configureCode("A.res", "module W = { module X = { module Y = { module Z = { let z = 1 } } } }");
+        configureCode("B.res", "module C = A.W.X\n module D = C.Y.Z\n D.z<caret>");
+
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.W.X.Y.Z.z", e.getQualifiedName());
+    }
 
     public void test_alias_x() {
         configureCode("A.res", "module Mode = { type t }");
@@ -176,16 +175,15 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals("A.B.t", e.getQualifiedName());
     }
 
-    // zzz
-    //public void test_include_2() {
-    //    configureCode("Css_AtomicTypes.resi", "module Visibility: { type t = [ #visible | #hidden | #collapse ] }");
-    //    configureCode("Css_Legacy_Core.res", "module Types = Css_AtomicTypes");
-    //    configureCode("Css.res", "include Css_Legacy_Core");
-    //    configureCode("A.res", "type layoutRule\n let visibility: [< Css.Types.Length.t | Css.Types.Visibility.t<caret> ] => layoutRule;");
-    //
-    //    PsiElement e = myFixture.getElementAtCaret();
-    //    assertEquals("Css_AtomicTypes.Visibility.t", e.getQualifiedName());
-    //}
+    public void test_include_2() {
+        configureCode("Css_AtomicTypes.resi", "module Visibility: { type t = [ #visible | #hidden | #collapse ] }");
+        configureCode("Css_Legacy_Core.res", "module Types = Css_AtomicTypes");
+        configureCode("Css.res", "include Css_Legacy_Core");
+        configureCode("A.res", "type layoutRule\n let visibility: [< Css.Types.Length.t | Css.Types.Visibility.t<caret> ] => layoutRule;");
+
+        PsiType e = (PsiType) myFixture.getElementAtCaret();
+        assertEquals("Css_AtomicTypes.Visibility.t", e.getQualifiedName());
+    }
 
     public void test_include_qualified() {
         configureCode("A.res", "module B = { module C = { type t } }\n module D = B\n include D.C");
@@ -315,12 +313,12 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals("Belt_MapString.get", e.getQualifiedName());
     }
 
-    /*
+    /* zzz functor
     public void test_functor_body() {
         configureCode("A.res", "module Make = (M:I) => { let a = 3; };");
         configureCode("B.res", "module Instance = A.Make({}); let b = Instance.a<caret>;");
 
-        PsiElement e = myFixture.getElementAtCaret();
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
         assertEquals("A.Make.a", e.getQualifiedName());
     }
 
@@ -328,7 +326,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         configureCode("A.res", "module Make = (M:I) => { let a = 3; }; include Make({})");
         configureCode("B.res", "let b = A.a<caret>;");
 
-        PsiElement e = myFixture.getElementAtCaret();
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
         assertEquals("A.Make.a", e.getQualifiedName());
     }
 
@@ -337,18 +335,18 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         configureCode("B.res", "module T = A; module Make = (M:Intf): T.Result => { let b = 3; };");
         configureCode("C.res", "module Instance = Make({}); let c = Instance.a<caret>;");
 
-        PsiElement e = myFixture.getElementAtCaret();
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
         assertEquals("A.Result.a", e.getQualifiedName());
     }
+    */
 
     public void test_path_functor() {
         configureCode("pervasives.mli", "external compare : 'a -> 'a -> int = \"%compare\"");
         configureCode("A.res", "module B = X.Functor({ let cmp = Pervasives.compare<caret>; })");
 
-        PsiElement e = myFixture.getElementAtCaret();
+        PsiExternal e = (PsiExternal) myFixture.getElementAtCaret();
         assertEquals("Pervasives.compare", e.getQualifiedName());
     }
-    */
 
     //region record
     public void test_record() {

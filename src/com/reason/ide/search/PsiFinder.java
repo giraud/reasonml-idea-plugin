@@ -255,7 +255,7 @@ public final class PsiFinder {
                 String alias = resolveAlias ? module.getAlias() : null;
                 if (alias == null) {
                     // It's not an alias, but maybe it's a functor call that we must resolve if asked
-                    PsiFunctorCall functorCall = module.getFunctorCall();
+                    PsiFunctorCall functorCall = module instanceof PsiInnerModule ? ((PsiInnerModule) module).getFunctorCall() : null;
                     if (resolveAlias && functorCall != null) {
                         String functorName = functorCall.getFunctorName();
                         Set<PsiModule> modulesFromFunctor = null;

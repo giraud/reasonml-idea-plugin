@@ -779,8 +779,25 @@ public class ResParser extends CommonPsiParser {
                     mark(myTypes.C_FUN_PARAM)
                             .markHolder(myTypes.C_PLACE_HOLDER);
                 }
-            } else if (is(myTypes.C_PARAMETERS) && !rawHasScope()) {
-                updateScopeToken(myTypes.LPAREN);
+            } else if (isCurrent(myTypes.C_FUN_PARAM)) {
+                popIfHold();
+                if (!currentHasScope()) {
+                    updateScopeToken(myTypes.LPAREN);
+                } else {
+                    markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
+                }
+                advance().markHolder(myTypes.C_PLACE_HOLDER);
+            } else if (isCurrent(myTypes.C_PARAMETERS)) {
+                if (!currentHasScope()) {
+                    // |>(<| ... ) => ...
+                    updateScopeToken(myTypes.LPAREN).advance()
+                            .markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
+                } else {
+                    // ( |>(<| ... ) , ... ) => ...
+                    mark(myTypes.C_FUN_PARAM)
+                            .markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
+                            .markHolder(myTypes.C_PLACE_HOLDER);
+                }
             } else if (is(myTypes.C_MACRO_NAME) && isParent(myTypes.C_ANNOTATION)) {
                 // @ann |>(<| ... )
                 popEnd()
@@ -821,7 +838,7 @@ public class ResParser extends CommonPsiParser {
                 }
             } else {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance()
-                        .markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);  // Needed to rollback to individual item in collection
+                        .markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
             }
         }
 
@@ -1021,22 +1038,31 @@ public class ResParser extends CommonPsiParser {
                     advance().mark(myTypes.C_SIG_ITEM);
                 } else if (isFound(myTypes.C_FUN_PARAM)) { // anonymous function
                     // x( y |>=><| ... )
-                    rollbackToPos(getIndex())
+                    rollbackToFoundIndex()
                             .mark(myTypes.C_FUN_PARAM)
                             .mark(myTypes.C_FUN_EXPR)
                             .mark(myTypes.C_PARAMETERS);
                 }
                 // C_FUN_EXPR -> ignore
-                else if (is(myTypes.C_SCOPED_EXPR) && !in(myTypes.C_SIG_ITEM)) {
+                //else if (is(myTypes.C_SCOPED_EXPR) && !in(myTypes.C_SIG_ITEM)) {
+                //    // by default, a function
+                //    Marker scope = getLatestMarker();
+                //    ORTokenElementType scopeToken = scope == null ? null : scope.getScopeType();
+                //    if (scopeToken != null) {
+                //        rollbackToPos(0)
+                //                .markScope(myTypes.C_SCOPED_EXPR, scopeToken)
+                //                .advance().mark(myTypes.C_FUN_EXPR)
+                //                .mark(myTypes.C_PARAMETERS);
+                //    }
+                //}
+                else if (isHold() && !in(myTypes.C_SIG_ITEM)) {
                     // by default, a function
-                    Marker scope = getLatestMarker();
-                    ORTokenElementType scopeToken = scope == null ? null : scope.getScopeType();
-                    if (scopeToken != null) {
-                        rollbackToPos(0)
-                                .markScope(myTypes.C_SCOPED_EXPR, scopeToken)
-                                .advance().mark(myTypes.C_FUN_EXPR)
-                                .mark(myTypes.C_PARAMETERS);
+                    rollbackToFoundIndex();
+                    if (isCurrent(myTypes.C_PARAMETERS)) {
+                        mark(myTypes.C_FUN_PARAM);
                     }
+                    mark(myTypes.C_FUN_EXPR)
+                            .mark(myTypes.C_PARAMETERS);
                 }
 
             }
@@ -1044,8 +1070,8 @@ public class ResParser extends CommonPsiParser {
 
         private void endLikeSemi() {
             boolean end = isHold() ?
-                    !isAtIndex(1, myTypes.C_LET_BINDING) && !isAtIndex(1, myTypes.C_BINARY_CONDITION) :
-                    !is(myTypes.C_LET_BINDING) && !is(myTypes.C_BINARY_CONDITION);
+                    !isAtIndex(1, myTypes.C_LET_BINDING) && !isAtIndex(1, myTypes.C_BINARY_CONDITION) && !isAtIndex(1, myTypes.C_FUN_PARAM) :
+                    !is(myTypes.C_LET_BINDING) && !is(myTypes.C_BINARY_CONDITION) && !is(myTypes.C_FUN_PARAM);
 
             if (end) {
                 popIfHold();

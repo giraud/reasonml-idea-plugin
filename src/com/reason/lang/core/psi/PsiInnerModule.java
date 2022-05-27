@@ -11,6 +11,9 @@ public interface PsiInnerModule extends PsiModule, StubBasedPsiElement<PsiModule
     boolean isFunctorCall();
 
     @Nullable
+    PsiFunctorCall getFunctorCall();
+
+    @Nullable
     PsiModuleType getModuleType();
 
     @Nullable

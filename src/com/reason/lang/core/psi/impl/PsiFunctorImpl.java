@@ -119,11 +119,6 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     }
 
     @Override
-    public @Nullable PsiFunctorCall getFunctorCall() {
-        return null;
-    }
-
-    @Override
     public @NotNull Collection<PsiNamedElement> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
         Collection<PsiNamedElement> result = emptyList();
 

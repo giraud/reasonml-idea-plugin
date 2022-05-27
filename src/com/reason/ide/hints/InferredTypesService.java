@@ -56,7 +56,6 @@ public class InferredTypesService {
                 InsightManager insightManager = project.getService(InsightManager.class);
 
                 // Find namespace if ocaml is compiled through dune
-                // zzz dune lib util ? + tests
                 final String[] namespace = {""};
                 ORResolvedCompiler<? extends Compiler> compiler = project.getService(ORCompilerManager.class).getCompiler(sourceFile);
                 if (compiler != null && compiler.getType() == DUNE) {

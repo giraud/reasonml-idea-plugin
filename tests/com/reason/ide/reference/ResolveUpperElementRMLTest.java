@@ -201,7 +201,6 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Belt.Map", e.getQualifiedName());
     }
 
-    /* zzz
     public void test_functor_inside() {
         configureCode("F.re", "module type S = {module X: {};};\n" +
                 "module M = () : S => { module X = {}; };\n" +
@@ -209,17 +208,18 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
                 "module X2 = { module X1 = { module X = {}; }; };\n" +
                 "module V = A.X<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
         assertEquals("F.S.X", e.getQualifiedName());
     }
 
+    /* zzz functor
     public void test_functor_outside() {
         configureCode("F.re", "module type S = {module X: {};};\n" +
                 "module M = () : S => { module X = {}; };\n" +
                 "module A = M({});");
         configureCode("B.re", "module X2 = { module X1 = { module X = {}; }; }; module V = F.A.X<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
         assertEquals("F.S.X", e.getQualifiedName());
     }
     */

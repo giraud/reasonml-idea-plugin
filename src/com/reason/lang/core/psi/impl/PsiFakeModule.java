@@ -99,11 +99,6 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
         return ((FileBase) getContainingFile()).isInterface();
     }
 
-    @Override
-    public @Nullable PsiFunctorCall getFunctorCall() {
-        return null;
-    }
-
     public boolean isComponent() {
         PsiModuleStub greenStub = getGreenStub();
         if (greenStub != null) {
