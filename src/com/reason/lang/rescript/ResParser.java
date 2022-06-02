@@ -4,7 +4,6 @@ import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.*;
-import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.*;
@@ -70,9 +69,9 @@ public class ResParser extends CommonPsiParser {
                         // EOL in it ; but we don't want to have it in the parsed tree, we change it to a whitespace
                         myBuilder.remapCurrentToken(TokenType.WHITE_SPACE);
 
-                        if (is(myTypes.C_FUNCTOR_CALL/*PsiOpen is potential functor call*/) && isParent(myTypes.C_OPEN)) {
+                        if (is(myTypes.C_FUNCTOR_CALL/*PsiOpen is potential functor call*/) && isRawParent(myTypes.C_OPEN)) {
                             popEnd().popEnd();
-                        } else if (isParent(myTypes.C_ANNOTATION) && !is(myTypes.C_SCOPED_EXPR)) {
+                        } else if (isRawParent(myTypes.C_ANNOTATION) && !is(myTypes.C_SCOPED_EXPR)) {
                             // inside an annotation
                             popEnd().popEnd();
                         } else if (is(myTypes.C_LET_BINDING)) {
@@ -204,13 +203,13 @@ public class ResParser extends CommonPsiParser {
 
         private void parseNumeric() {
             if (is(myTypes.C_PARAMETERS)) {
-                mark(myTypes.C_FUN_PARAM);
+                mark(myTypes.C_PARAM_DECLARATION);
             }
         }
 
         private void parseUnderscore() {
             if (is(myTypes.C_PARAMETERS)) {
-                mark(myTypes.C_FUN_PARAM);
+                mark(myTypes.C_PARAM_DECLARATION);
             }
         }
 
@@ -287,7 +286,7 @@ public class ResParser extends CommonPsiParser {
 
         private void parseTilde() {
             if (is(myTypes.C_PARAMETERS)) {
-                mark(myTypes.C_FUN_PARAM)
+                mark(myTypes.C_PARAM_DECLARATION)
                         .mark(myTypes.C_NAMED_PARAM).advance()
                         .wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if (strictlyIn(myTypes.C_SIG_EXPR) && !is(myTypes.C_SIG_ITEM)) {
@@ -343,14 +342,14 @@ public class ResParser extends CommonPsiParser {
             }
             // Same priority
             else if (inScopeOrAny(
-                    myTypes.C_FUN_PARAM, myTypes.C_DECONSTRUCTION, myTypes.C_RECORD_FIELD, myTypes.C_MIXIN_FIELD,
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_DECONSTRUCTION, myTypes.C_RECORD_FIELD, myTypes.C_MIXIN_FIELD,
                     myTypes.C_OBJECT_FIELD, myTypes.C_DUMMY_COLLECTION_ITEM
             )) {
 
                 if (isFound(myTypes.C_DUMMY_COLLECTION_ITEM)) {
                     popEndUntilFoundIndex().popEnd()
                             .advance().markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
-                } else if (isFound(myTypes.C_FUN_PARAM)) {
+                } else if (isFound(myTypes.C_PARAM_DECLARATION)) {
                     popEndUntilFoundIndex().popEnd();
                     if (is(myTypes.C_DUMMY_COLLECTION_ITEM) && isHold()) {
                         popEnd();
@@ -359,7 +358,7 @@ public class ResParser extends CommonPsiParser {
                     if (getTokenType() != myTypes.RPAREN) {
                         // not at the end of a list: ie not => (p1, p2<,> )
                         markHolder(myTypes.C_DUMMY_COLLECTION_ITEM)
-                                .mark(myTypes.C_FUN_PARAM)
+                                .mark(myTypes.C_PARAM_DECLARATION)
                                 .markHolder(myTypes.C_PLACE_HOLDER);
                     }
                 } else if (isFound(myTypes.C_DECONSTRUCTION)) {
@@ -465,16 +464,16 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseColon() {
-            if (is(myTypes.C_SCOPED_EXPR) && isParent(myTypes.C_FIELD_VALUE)) {
+            if (is(myTypes.C_SCOPED_EXPR) && isRawParent(myTypes.C_FIELD_VALUE)) {
                 //rollbackToPos(getIndex())
                 //        .markScope(myTypes.C_RECORD_EXPR, myTypes.LBRACE)
                 //        .advance();
             } else if (strictlyInAny(
                     myTypes.C_MODULE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_EXTERNAL_DECLARATION,
-                    myTypes.C_FUN_PARAM, myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.C_NAMED_PARAM,
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.C_NAMED_PARAM,
                     myTypes.C_IF_THEN_SCOPE)) {
 
-                if (isFound(myTypes.C_FUN_PARAM)) {
+                if (isFound(myTypes.C_PARAM_DECLARATION)) {
                     // let x = (y |> :<| ...
                     advance()
                             .mark(myTypes.C_SIG_EXPR)
@@ -556,10 +555,10 @@ public class ResParser extends CommonPsiParser {
 
             // else
             if (is(myTypes.C_SCOPED_EXPR)) {
-                if (isParent(myTypes.C_OPTION)) {
+                if (isRawParent(myTypes.C_OPTION)) {
                     // option < ... |> > <| ...
                     advance().popEnd().popEnd();
-                } else if (isParent(myTypes.C_SIG_ITEM)) {
+                } else if (isRawParent(myTypes.C_SIG_ITEM)) {
                     // : ... < ... |> ><| ...
                     advance().popEnd();
                 }
@@ -623,9 +622,9 @@ public class ResParser extends CommonPsiParser {
                 wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if (is(myTypes.C_FUN_EXPR)) {
                 mark(myTypes.C_PARAMETERS)
-                        .mark(myTypes.C_FUN_PARAM).wrapAtom(myTypes.C_LOWER_SYMBOL);
-            } else if (is(myTypes.C_PARAMETERS) && (isParent(myTypes.C_FUN_EXPR) || isParent(myTypes.C_FUN_CALL))) {
-                mark(myTypes.C_FUN_PARAM).wrapAtom(myTypes.C_LOWER_SYMBOL);
+                        .mark(myTypes.C_PARAM_DECLARATION).wrapAtom(myTypes.C_LOWER_SYMBOL);
+            } else if (isCurrent(myTypes.C_PARAMETERS) && (isParent(myTypes.C_FUN_EXPR) || isParent(myTypes.C_FUN_CALL))) {
+                mark(myTypes.C_PARAM_DECLARATION).wrapAtom(myTypes.C_LOWER_SYMBOL);
             } else if (is(myTypes.C_RECORD_EXPR)) {
                 // { |>x<| ...
                 mark(myTypes.C_RECORD_FIELD)
@@ -652,7 +651,7 @@ public class ResParser extends CommonPsiParser {
                     // |>x<| ( ...
                     endLikeSemi();
                     mark(myTypes.C_FUN_CALL).wrapAtom(myTypes.C_LOWER_SYMBOL);
-                } else if (is(myTypes.C_SIG_EXPR) || (isScope(myTypes.LPAREN) && isParent(myTypes.C_SIG_EXPR))) {
+                } else if (is(myTypes.C_SIG_EXPR) || (isScope(myTypes.LPAREN) && isRawParent(myTypes.C_SIG_EXPR))) {
                     mark(myTypes.C_SIG_ITEM)
                             .wrapAtom(myTypes.C_LOWER_SYMBOL).popEnd();
                 } else {
@@ -717,10 +716,10 @@ public class ResParser extends CommonPsiParser {
             } else if (isDone(myTypes.C_TRY_BODY)) { // A try expression
                 // try ... |>{<| ... }
                 markScope(myTypes.C_TRY_HANDLERS, myTypes.LBRACE);
-            } else if (isDone(myTypes.C_BINARY_CONDITION) && isParent(myTypes.C_IF)) {
+            } else if (isDone(myTypes.C_BINARY_CONDITION) && isRawParent(myTypes.C_IF)) {
                 // if x |>{<| ... }
                 markScope(myTypes.C_IF_THEN_SCOPE, myTypes.LBRACE);
-            } else if (isDone(myTypes.C_BINARY_CONDITION) && isParent(myTypes.C_SWITCH_EXPR)) {
+            } else if (isDone(myTypes.C_BINARY_CONDITION) && isRawParent(myTypes.C_SWITCH_EXPR)) {
                 // switch (x) |>{<| ... }
                 markScope(myTypes.C_SWITCH_BODY, myTypes.LBRACE);
             } else if (strictlyIn(myTypes.C_BINARY_CONDITION)) {
@@ -774,12 +773,11 @@ public class ResParser extends CommonPsiParser {
                 // x |>(<| ...
                 markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance();
                 markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
-                if (getTokenType() == myTypes.RPAREN) {
-                } else {
-                    mark(myTypes.C_FUN_PARAM)
+                if (getTokenType() != myTypes.RPAREN) {
+                    mark(myTypes.C_PARAM_DECLARATION)
                             .markHolder(myTypes.C_PLACE_HOLDER);
                 }
-            } else if (isCurrent(myTypes.C_FUN_PARAM)) {
+            } else if (isCurrent(myTypes.C_PARAM_DECLARATION)) {
                 popIfHold();
                 if (!currentHasScope()) {
                     updateScopeToken(myTypes.LPAREN);
@@ -794,11 +792,11 @@ public class ResParser extends CommonPsiParser {
                             .markHolder(myTypes.C_DUMMY_COLLECTION_ITEM);
                 } else {
                     // ( |>(<| ... ) , ... ) => ...
-                    mark(myTypes.C_FUN_PARAM)
+                    mark(myTypes.C_PARAM_DECLARATION)
                             .markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
                             .markHolder(myTypes.C_PLACE_HOLDER);
                 }
-            } else if (is(myTypes.C_MACRO_NAME) && isParent(myTypes.C_ANNOTATION)) {
+            } else if (is(myTypes.C_MACRO_NAME) && isRawParent(myTypes.C_ANNOTATION)) {
                 // @ann |>(<| ... )
                 popEnd()
                         .markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
@@ -810,7 +808,7 @@ public class ResParser extends CommonPsiParser {
                         .mark(myTypes.C_MACRO_BODY);
             } else if (is(myTypes.C_BINARY_CONDITION)) {
                 updateScopeToken(myTypes.LPAREN);
-            } else if (is(myTypes.C_DECONSTRUCTION) && isParent(myTypes.C_LET_DECLARATION)) {
+            } else if (is(myTypes.C_DECONSTRUCTION) && isRawParent(myTypes.C_LET_DECLARATION)) {
                 // let ((x |>,<| ...
                 markScope(myTypes.C_DECONSTRUCTION, myTypes.LPAREN);
             }
@@ -828,7 +826,7 @@ public class ResParser extends CommonPsiParser {
                     // type t = | Variant |>(<| .. )
                     markScope(myTypes.C_PARAMETERS, myTypes.LPAREN)
                             .advance()
-                            .mark(myTypes.C_FUN_PARAM);
+                            .mark(myTypes.C_PARAM_DECLARATION);
                 }
                 if (isFound(myTypes.C_FUNCTOR_DECLARATION) || isFound(myTypes.C_FUNCTOR_CALL)) {
                     // module M = |>(<| ...
@@ -848,7 +846,7 @@ public class ResParser extends CommonPsiParser {
 
             if (is(myTypes.C_BINARY_CONDITION)) {
                 end();
-                if (isParent(myTypes.C_IF) && getTokenType() != myTypes.LBRACE) {
+                if (isRawParent(myTypes.C_IF) && getTokenType() != myTypes.LBRACE) {
                     // if ( x ) |><| ...
                     mark(myTypes.C_IF_THEN_SCOPE);
                 }
@@ -899,7 +897,7 @@ public class ResParser extends CommonPsiParser {
                     popEndUntilFoundIndex().end();
                     if (isGrandParent(myTypes.C_NAMED_PARAM)) {
                         advance().mark(myTypes.C_DEFAULT_VALUE);
-                    } else if (isParent(myTypes.C_LET_DECLARATION)) {
+                    } else if (isRawParent(myTypes.C_LET_DECLARATION)) {
                         // let x : M.t |> =<| ...
                         popEndUntilFoundIndex().advance()
                                 .mark(myTypes.C_LET_BINDING);
@@ -976,7 +974,7 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parsePolyVariant() {
-            if (isParent(myTypes.C_TYPE_BINDING)) {
+            if (isRawParent(myTypes.C_TYPE_BINDING)) {
                 // type t = [ |>#xxx<| ...
                 mark(myTypes.C_VARIANT_DECLARATION);
             }
@@ -997,12 +995,11 @@ public class ResParser extends CommonPsiParser {
         private void parseCatch() {
             if (strictlyIn(myTypes.C_TRY_BODY)) {
                 popEndUntilFoundIndex().end();
-                //    popEnd();
             }
         }
 
         private void parseArrow() {
-            if (isDone(myTypes.C_PARAMETERS) && isParent(myTypes.C_FUN_EXPR)) {
+            if (isDone(myTypes.C_PARAMETERS) && isRawParent(myTypes.C_FUN_EXPR)) {
                 advance().mark(myTypes.C_FUN_BODY);
             } else if (strictlyIn(myTypes.C_PARAMETERS) && isAtIndex(getIndex() + 1, myTypes.C_FUN_EXPR)) { // parenless param
                 // x |>=><| ...
@@ -1011,7 +1008,7 @@ public class ResParser extends CommonPsiParser {
                         .markHolder(myTypes.C_PLACE_HOLDER);
             } else if (inScopeOrAny(
                     myTypes.C_LET_BINDING, myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_FIELD_VALUE, myTypes.C_FUN_EXPR,
-                    myTypes.C_FUN_PARAM, myTypes.C_SIG_ITEM, myTypes.C_SIG_EXPR
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_SIG_ITEM, myTypes.C_SIG_EXPR
             )) {
 
                 if (isFound(myTypes.C_LET_BINDING)) {
@@ -1036,10 +1033,10 @@ public class ResParser extends CommonPsiParser {
                     advance().mark(myTypes.C_SIG_ITEM);
                 } else if (isFound(myTypes.C_SIG_EXPR)) {
                     advance().mark(myTypes.C_SIG_ITEM);
-                } else if (isFound(myTypes.C_FUN_PARAM)) { // anonymous function
+                } else if (isFound(myTypes.C_PARAM_DECLARATION)) { // anonymous function
                     // x( y |>=><| ... )
                     rollbackToFoundIndex()
-                            .mark(myTypes.C_FUN_PARAM)
+                            .mark(myTypes.C_PARAM_DECLARATION)
                             .mark(myTypes.C_FUN_EXPR)
                             .mark(myTypes.C_PARAMETERS);
                 }
@@ -1059,7 +1056,7 @@ public class ResParser extends CommonPsiParser {
                     // by default, a function
                     rollbackToFoundIndex();
                     if (isCurrent(myTypes.C_PARAMETERS)) {
-                        mark(myTypes.C_FUN_PARAM);
+                        mark(myTypes.C_PARAM_DECLARATION);
                     }
                     mark(myTypes.C_FUN_EXPR)
                             .mark(myTypes.C_PARAMETERS);
@@ -1070,8 +1067,8 @@ public class ResParser extends CommonPsiParser {
 
         private void endLikeSemi() {
             boolean end = isHold() ?
-                    !isAtIndex(1, myTypes.C_LET_BINDING) && !isAtIndex(1, myTypes.C_BINARY_CONDITION) && !isAtIndex(1, myTypes.C_FUN_PARAM) :
-                    !is(myTypes.C_LET_BINDING) && !is(myTypes.C_BINARY_CONDITION) && !is(myTypes.C_FUN_PARAM);
+                    !isAtIndex(1, myTypes.C_LET_BINDING) && !isAtIndex(1, myTypes.C_BINARY_CONDITION) && !isAtIndex(1, myTypes.C_PARAM_DECLARATION) :
+                    !is(myTypes.C_LET_BINDING) && !is(myTypes.C_BINARY_CONDITION) && !is(myTypes.C_PARAM_DECLARATION);
 
             if (end) {
                 popIfHold();

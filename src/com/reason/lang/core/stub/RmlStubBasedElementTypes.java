@@ -25,6 +25,6 @@ public interface RmlStubBasedElementTypes {
     IStubElementType<PsiOpenStub, PsiOpen> C_OPEN = new PsiOpenStubElementType(RmlLanguage.INSTANCE);
 
     // ?
-    IStubElementType<PsiParameterStub, PsiParameter> C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", RmlLanguage.INSTANCE);
+    IStubElementType<PsiParameterStub, PsiParameter> C_PARAM_DECLARATION = new PsiParameterStubElementType("C_PARAM_DECLARATION", RmlLanguage.INSTANCE);
     IStubElementType<PsiParameterStub, PsiParameter> C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", RmlLanguage.INSTANCE);
 }

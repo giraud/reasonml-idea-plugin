@@ -17,7 +17,7 @@ public class RmlTypes extends ORTypes {
         C_LET_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_LET_DECLARATION;
         C_MODULE_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_MODULE_DECLARATION;
         C_VAL_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_VAL_DECLARATION;
-        C_FUN_PARAM = (ORCompositeType) RmlStubBasedElementTypes.C_FUN_PARAM;
+        C_PARAM_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_PARAM_DECLARATION;
         C_FUNCTOR_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_FUNCTOR_DECLARATION;
         C_FUNCTOR_PARAM = (ORCompositeType) RmlStubBasedElementTypes.C_FUNCTOR_PARAM;
         C_RECORD_FIELD = (ORCompositeType) RmlStubBasedElementTypes.C_RECORD_FIELD;

@@ -220,4 +220,12 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertEmpty(PsiTreeUtil.findChildrenOfType(f, PsiUpperTagName.class));
         assertSize(2, PsiTreeUtil.findChildrenOfType(f, PsiUpperSymbol.class));
     }
+
+    public void test_prop_func() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<QueryAttributeSelectionDialog onSelect={(indicator:GlobalStateTypes.AttributeEntity.t) => {()}} onCancel={(.) =>closeAttributeSelector()}/>"));
+
+        PsiFunction f = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
+        assertEmpty(PsiTreeUtil.findChildrenOfType(f, PsiUpperTagName.class));
+        assertSize(2, PsiTreeUtil.findChildrenOfType(f, PsiUpperSymbol.class));
+    }
 }

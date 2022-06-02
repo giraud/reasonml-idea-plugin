@@ -8,7 +8,7 @@ public abstract class ORTypes {
     public ORCompositeType C_EXTERNAL_DECLARATION;
     public ORCompositeType C_FAKE_MODULE;
     public ORCompositeType C_FIELD_VALUE;
-    public ORCompositeType C_FUN_PARAM;
+    public ORCompositeType C_PARAM_DECLARATION;
     public ORCompositeType C_FUNCTOR_DECLARATION;
     public ORCompositeType C_FUNCTOR_PARAM;
     public ORCompositeType C_INCLUDE;

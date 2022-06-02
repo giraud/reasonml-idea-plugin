@@ -145,13 +145,36 @@ public abstract class ORParser<T> {
         return marker != null && marker.isDropped() && marker.isCompositeType(composite);
     }
 
-    public boolean isParent(ORCompositeType composite) {
+    public boolean isRawParent(ORCompositeType composite) {
         boolean found = false;
         if (myMarkers.size() >= 2) {
             // current index is 0
             found = myMarkers.get(1).isCompositeType(composite);
         }
         myIndex = found ? 1 : -1;
+        return found;
+    }
+
+    public boolean isParent(ORCompositeType composite) {
+        boolean found = false;
+        int markersCount = myMarkers.size();
+
+        // find start
+        int startIndex = 0;
+        while (startIndex < markersCount && myMarkers.get(startIndex).isHold()) {
+            startIndex++;
+        }
+        // find parent
+        int parentIndex = startIndex + 1;
+        while (parentIndex < markersCount && !found) {
+            if (myMarkers.get(parentIndex).isHold()) {
+                parentIndex++;
+            } else {
+                found = true;
+            }
+        }
+
+        myIndex = found ? parentIndex : -1;
         return found;
     }
 
