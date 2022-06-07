@@ -19,8 +19,8 @@ public class PsiFunctionCall extends ORCompositePsiElement<ORTypes> {
         return name == null ? "" : name.getText();
     }
 
-    public @NotNull List<PsiParameter> getParameters() {
+    public @NotNull List<PsiParameterReference> getParameters() {
         return ORUtil.findImmediateChildrenOfClass(
-                ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameter.class);
+                ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameterReference.class);
     }
 }

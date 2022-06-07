@@ -16,13 +16,13 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiParameterStub> implements PsiParameter {
+public class PsiParameterDeclaration extends PsiTokenStub<ORTypes, PsiParameter, PsiParameterStub> implements PsiParameter {
     // region Constructors
-    public PsiParameterImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public PsiParameterDeclaration(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public PsiParameterImpl(@NotNull ORTypes types, @NotNull PsiParameterStub stub, @NotNull IStubElementType nodeType) {
+    public PsiParameterDeclaration(@NotNull ORTypes types, @NotNull PsiParameterStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
@@ -37,14 +37,10 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
 
         PsiElement identifier = getFirstChild();
         IElementType elementType = identifier == null ? null : identifier.getNode().getElementType();
-        if (elementType == m_types.TILDE || elementType == m_types.LPAREN || elementType == m_types.QUESTION_MARK) {
+        if (elementType == myTypes.TILDE || elementType == myTypes.LPAREN || elementType == myTypes.QUESTION_MARK) {
             PsiElement nextSibling = identifier.getNextSibling();
             IElementType nextElementType = nextSibling == null ? null : nextSibling.getNode().getElementType();
-            identifier = nextElementType == m_types.LPAREN ? nextSibling.getNextSibling() : nextSibling;
-        }
-
-        if (identifier instanceof PsiNamedParam) {
-            return ORUtil.findImmediateFirstChildOfClass(identifier, PsiLowerSymbol.class);
+            identifier = nextElementType == myTypes.LPAREN ? nextSibling.getNextSibling() : nextSibling;
         }
 
         return identifier;
@@ -63,19 +59,10 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
         }
 
         PsiElement parent = getParent();
-        PsiElement grandParent = parent == null ? null : parent.getParent();
-
-        if (parent instanceof PsiParameters/* || grandParent instanceof PsiFunctionCall || grandParent instanceof PsiFunctorCall*/) {
-            //if (!(parent instanceof PsiParameters)) {
-            //    System.out.println("instance: " + getClass());
-            //    System.out.println("text: " + getText());
-            //    System.out.println("parent.instance: " + parent.getClass());
-            //    System.out.println("parent.text: " + parent.getText());
-            //}
-            //assert parent instanceof PsiParameters;
-            List<PsiParameter> parameters = ((PsiParameters) parent).getParametersList();
+        if (parent instanceof PsiParameters) {
+            List<PsiElement> parameters = ((PsiParameters) parent).getParametersList();
             int i = 0;
-            for (PsiParameter parameter : parameters) {
+            for (PsiElement parameter : parameters) {
                 if (parameter == this) {
                     PsiElement prevSibling = ORUtil.prevSibling(parent);
                     return (prevSibling == null ? "" : prevSibling.getText()) + "[" + i + "]";
@@ -113,13 +100,9 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
             return stub.getQualifiedName();
         }
 
-        PsiElement parent = getParent();
-        PsiElement grandParent = parent == null ? null : parent.getParent();
-        boolean isCall = grandParent instanceof PsiFunctionCall || grandParent instanceof PsiFunctorCall;
-
         String name = getName();
         String[] path = getPath();
-        return Joiner.join(".", path) + (isCall ? "." + name : "[" + name + "]");
+        return Joiner.join(".", path) + "[" + name + "]";
     }
     //endregion
 
@@ -130,10 +113,6 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiPar
 
     @Override
     public @Nullable PsiDefaultValue getDefaultValue() {
-        PsiElement firstChild = getFirstChild();
-        if (firstChild instanceof PsiNamedParam) {
-            return PsiTreeUtil.findChildOfType(firstChild, PsiDefaultValue.class); //ORUtil.findImmediateFirstChildOfClass(firstChild, PsiDefaultValue.class);
-        }
         return null;
     }
 

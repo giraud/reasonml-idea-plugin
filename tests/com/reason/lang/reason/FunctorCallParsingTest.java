@@ -29,6 +29,7 @@ public class FunctorCallParsingTest extends RmlParsingTestCase {
         assertNull(e.getBody());
         PsiFunctorCall call = PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class);
         assertEquals("Make({})", call.getText());
+        assertEquals("Make", call.getName());
     }
 
     public void test_chaining() {
@@ -39,8 +40,9 @@ public class FunctorCallParsingTest extends RmlParsingTestCase {
 
         PsiInnerModule module = (PsiInnerModule) es.get(0);
         assertTrue(module.isFunctorCall());
-        assertNull(module.getBody());
         PsiFunctorCall call = PsiTreeUtil.findChildOfType(module, PsiFunctorCall.class);
         assertEquals("Make(KeyHash)", call.getText());
+        assertEquals("Make", call.getName());
+        assertNull(PsiTreeUtil.findChildOfType(module, PsiParameterDeclaration.class));
     }
 }

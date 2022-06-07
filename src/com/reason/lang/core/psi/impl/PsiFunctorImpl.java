@@ -201,7 +201,7 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
 
     @Override
     public @Nullable PsiFunctorResult getReturnType() {
-        PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, m_types.COLON);
+        PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, myTypes.COLON);
         PsiElement element = ORUtil.nextSibling(colon);
 
         return element instanceof PsiFunctorResult ? (PsiFunctorResult) element : ORUtil.findImmediateFirstChildOfClass(element, PsiFunctorResult.class);
@@ -211,7 +211,7 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     public @NotNull Collection<PsiConstraint> getConstraints() {
         PsiConstraints constraints = ORUtil.findImmediateFirstChildOfClass(this, PsiConstraints.class);
         if (constraints == null) {
-            PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, m_types.COLON);
+            PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, myTypes.COLON);
             PsiElement element = ORUtil.nextSibling(colon);
             constraints = element instanceof PsiConstraints ? (PsiConstraints) element : ORUtil.findImmediateFirstChildOfClass(element, PsiConstraints.class);
         }

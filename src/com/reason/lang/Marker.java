@@ -75,8 +75,13 @@ public class Marker {
     private void done() {
         if (myCompositeElementType instanceof IElementType) {
             if (myStatus == Status.unset) {
-                myMark.done((IElementType) myCompositeElementType);
-                myStatus = Status.done;
+                if (myCompositeElementType.toString().startsWith("D_")) {
+                    myMark.drop();
+                    myStatus = Status.dropped;
+                } else {
+                    myMark.done((IElementType) myCompositeElementType);
+                    myStatus = Status.done;
+                }
             } else if (myStatus == Status.atom && myAtomType != null) {
                 myMark.collapse(myAtomType);
                 myStatus = Status.done;

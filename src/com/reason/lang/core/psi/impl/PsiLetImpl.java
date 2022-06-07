@@ -47,7 +47,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
 
         PsiElement nameIdentifier = getNameIdentifier();
         IElementType nameType = nameIdentifier == null ? null : nameIdentifier.getNode().getElementType();
-        return nameType == null || nameType == m_types.UNDERSCORE || nameType == m_types.C_UNIT
+        return nameType == null || nameType == myTypes.UNDERSCORE || nameType == myTypes.C_UNIT
                 ? null
                 : nameIdentifier.getText();
     }
@@ -116,7 +116,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         PsiElement scope = ORUtil.findImmediateFirstChildOfClass(this, PsiDeconstruction.class);
         if (scope != null) {
             for (PsiElement element : scope.getChildren()) {
-                if (element.getNode().getElementType() != m_types.COMMA) {
+                if (element.getNode().getElementType() != myTypes.COMMA) {
                     result.add(element);
                 }
             }
@@ -170,7 +170,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
             }
         }
 
-        if (m_types instanceof RmlTypes) {
+        if (myTypes instanceof RmlTypes) {
             PsiLetBinding binding = findChildByClass(PsiLetBinding.class);
             return binding != null && binding.getFirstChild() instanceof PsiFunction;
         }

@@ -114,6 +114,15 @@ public abstract class ORParser<T> {
 
     public @Nullable Marker getCurrentMarker() {
         for (Marker marker : myMarkers) {
+            if (!marker.isHold()) {
+                return marker;
+            }
+        }
+        return null;
+    }
+
+    public @Nullable Marker getActiveMarker() { // latest unset, not hold marker
+        for (Marker marker : myMarkers) {
             if (marker.isUnset()) {
                 return marker;
             }
@@ -126,9 +135,9 @@ public abstract class ORParser<T> {
     }
 
     public boolean isCurrent(@Nullable ORCompositeType composite) {
-        // skip done/drop elements
+        // skip done/drop/hold elements
         for (Marker marker : myMarkers) {
-            if (marker.isUnset()) {
+            if (marker.isUnset() && !marker.isHold()) {
                 return marker.isCompositeType(composite);
             }
         }
@@ -155,7 +164,7 @@ public abstract class ORParser<T> {
         return found;
     }
 
-    public boolean isParent(ORCompositeType composite) {
+    public boolean isParent(ORCompositeType expectedType) {
         boolean found = false;
         int markersCount = myMarkers.size();
 
@@ -164,6 +173,7 @@ public abstract class ORParser<T> {
         while (startIndex < markersCount && myMarkers.get(startIndex).isHold()) {
             startIndex++;
         }
+
         // find parent
         int parentIndex = startIndex + 1;
         while (parentIndex < markersCount && !found) {
@@ -174,8 +184,14 @@ public abstract class ORParser<T> {
             }
         }
 
-        myIndex = found ? parentIndex : -1;
-        return found;
+        // parent found, try type
+        if (found && myMarkers.get(parentIndex).isCompositeType(expectedType)) {
+            myIndex = parentIndex;
+            return found;
+        }
+
+        myIndex = -1;
+        return false;
     }
 
     public boolean isPrevious(ORCompositeType expectedComposite, int index) {
@@ -452,8 +468,17 @@ public abstract class ORParser<T> {
         return current != null && current.hasScope();
     }
 
-    public @NotNull ORParser<T> updateComposite(@NotNull ORCompositeType compositeElementType) {
+    public @NotNull ORParser<T> updateLatestComposite(@NotNull ORCompositeType compositeElementType) {
         Marker marker = getLatestMarker();
+        if (marker != null && !marker.isDropped() && !marker.isDone()) {
+            marker.updateCompositeType(compositeElementType);
+            marker.resetStatus();
+        }
+        return this;
+    }
+
+    public @NotNull ORParser<T> updateComposite(@NotNull ORCompositeType compositeElementType) {
+        Marker marker = getCurrentMarker();
         if (marker != null && !marker.isDropped() && !marker.isDone()) {
             marker.updateCompositeType(compositeElementType);
             marker.resetStatus();

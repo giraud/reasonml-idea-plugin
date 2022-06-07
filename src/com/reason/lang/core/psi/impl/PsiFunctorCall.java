@@ -19,19 +19,13 @@ public class PsiFunctorCall extends ORCompositePsiElement<ORTypes> {
         super(types, elementType);
     }
 
-    @NotNull
-    public String getFunctorName() {
-        String text = getText();
-
-        PsiParameters params = PsiTreeUtil.findChildOfType(this, PsiParameters.class);
-        if (params == null) {
-            return text;
-        }
-
-        return text.substring(0, params.getTextOffset() - getTextOffset());
+    @Override
+    public @NotNull String getName() {
+        PsiUpperSymbol name = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
+        return name == null ? "" : name.getText();
     }
 
-    public @NotNull Collection<PsiParameter> getParameters() {
+    public @NotNull Collection<PsiElement> getParameters() {
         PsiParameters params = PsiTreeUtil.findChildOfType(this, PsiParameters.class);
         return params == null ? emptyList() : params.getParametersList();
     }

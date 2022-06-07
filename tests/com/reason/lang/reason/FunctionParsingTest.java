@@ -166,7 +166,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertEquals("{ setUpdatedAttribute(_ => initialAttribute); }", f1.getBody().getText());
         assertEquals("_ => { setUpdatedAttribute(_ => initialAttribute); }", e.getBinding().getText());
         PsiFunctionCall call = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
-        PsiParameter callParam = call.getParameters().get(0);
+        PsiParameterReference callParam = call.getParameters().get(0);
         PsiFunction f2 = PsiTreeUtil.findChildOfType(callParam, PsiFunction.class);
         assertSize(1, f2.getParameters());
         assertEquals("initialAttribute", f2.getBody().getText());

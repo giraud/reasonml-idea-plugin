@@ -1,11 +1,13 @@
 package com.reason.lang.core;
 
 import com.intellij.lang.*;
+import com.intellij.navigation.*;
 import com.intellij.openapi.util.io.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -195,7 +197,7 @@ public class ORUtil {
     }
 
     @NotNull
-    public static Collection<PsiElement> findImmediateChildrenOfType(@Nullable PsiElement element, @NotNull ORCompositeType elementType) {
+    public static List<PsiElement> findImmediateChildrenOfType(@Nullable PsiElement element, @NotNull ORCompositeType elementType) {
         return findImmediateChildrenOfType(element, (IElementType) elementType);
     }
 
@@ -293,7 +295,19 @@ public class ORUtil {
 
         PsiElement parent = element.getParent();
         while (parent != null) {
-            if (parent instanceof PsiQualifiedPathElement) {
+            if (parent instanceof PsiParameterReference) {
+                PsiElement parameters = parent.getParent();
+                PsiElement functionCall = parameters == null ? null : parameters.getParent();
+                if (parameters instanceof PsiParameters && (functionCall instanceof PsiFunctionCall || functionCall instanceof PsiFunctorCall)) {
+                    int index = ((PsiParameters) parameters).getParametersList().indexOf(parent);
+                    if (index >= 0) {
+                        path = ((NavigationItem) functionCall).getName() + "[" + index + "]" + (path.isEmpty() ? "" : "." + path);
+                    }
+                    parent = functionCall.getParent();
+                } else {
+                    parent = parameters;
+                }
+            } else if (parent instanceof PsiQualifiedPathElement) {
                 if (parent instanceof PsiNameIdentifierOwner && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
                     String[] parentPath = ((PsiQualifiedPathElement) parent).getPath();
                     return parentPath == null ? EMPTY_PATH : parentPath;

@@ -123,7 +123,7 @@ public class IfParsingTest extends RmlParsingTestCase {
     public void test_ternary_function_parameters() {
         PsiParameters e = firstOfType(parseCode("let x = fn( x ? a : b, y ? c : d  );"), PsiParameters.class);
 
-        assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameter.class));
+        assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameterReference.class));
         List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
         assertEquals("x ? a : b", ts.get(0).getText());
         assertEquals("y ? c : d", ts.get(1).getText());
@@ -132,7 +132,7 @@ public class IfParsingTest extends RmlParsingTestCase {
     public void test_ternary_functor_parameters() {
         PsiParameters e = firstOfType(parseCode("module M = Make( x ? a : b, y ? c : d  );"), PsiParameters.class);
 
-        assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameter.class));
+        assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameterReference.class));
         List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
         assertEquals("x ? a : b", ts.get(0).getText());
         assertEquals("y ? c : d", ts.get(1).getText());

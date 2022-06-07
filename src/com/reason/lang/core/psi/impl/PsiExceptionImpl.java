@@ -90,7 +90,7 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiException, PsiExc
             return stub.getQualifiedName();
         }
 
-        PsiElement eq = findChildByType(m_types.EQ);
+        PsiElement eq = findChildByType(myTypes.EQ);
         return eq == null ? null : ORUtil.computeAlias(eq.getNextSibling(), getLanguage(), false);
     }
 

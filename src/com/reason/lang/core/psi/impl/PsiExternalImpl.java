@@ -99,7 +99,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
     }
 
     private @NotNull String getRealName() {
-        PsiElement name = findChildByType(m_types.STRING_VALUE);
+        PsiElement name = findChildByType(myTypes.STRING_VALUE);
         return name == null ? "" : name.getText();
     }
 
@@ -116,9 +116,9 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
 
     @Override
     public @NotNull String getExternalName() {
-        PsiElement eq = ORUtil.findImmediateFirstChildOfType(this, m_types.EQ);
+        PsiElement eq = ORUtil.findImmediateFirstChildOfType(this, myTypes.EQ);
         if (eq != null) {
-            PsiElement next = ORUtil.nextSiblingWithTokenType(eq, m_types.STRING_VALUE);
+            PsiElement next = ORUtil.nextSiblingWithTokenType(eq, myTypes.STRING_VALUE);
             if (next != null) {
                 String text = next.getText();
                 return 2 < text.length() ? text.substring(1, text.length() - 1) : "";

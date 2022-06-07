@@ -26,14 +26,16 @@ public class FunctorCallParsingTest extends OclParsingTestCase {
     }
 
     public void test_functor_instanciation_chaining() {
-        PsiFile e = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos");
-        List<PsiNamedElement> expressions = new ArrayList<>(expressions(e));
+        PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos");
+        List<PsiNamedElement> es = new ArrayList<>(expressions(file));
 
-        assertEquals(2, expressions.size());
+        assertEquals(2, es.size());
 
-        PsiInnerModule module = (PsiInnerModule) expressions.get(0);
-        PsiFunctorCall call = PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class);
-        assertNotNull(call);
-        assertEquals("Hashtbl.Make(KeyHash)", call.getText());
+        PsiInnerModule module = (PsiInnerModule) es.get(0);
+        assertTrue(module.isFunctorCall());
+        PsiFunctorCall call = PsiTreeUtil.findChildOfType(module, PsiFunctorCall.class);
+        assertEquals("Make(KeyHash)", call.getText());
+        assertEquals("Make", call.getName());
+        assertNull(PsiTreeUtil.findChildOfType(module, PsiParameterDeclaration.class));
     }
 }

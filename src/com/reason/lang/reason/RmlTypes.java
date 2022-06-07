@@ -10,21 +10,21 @@ public class RmlTypes extends ORTypes {
         // Stub element types
 
         C_CLASS_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_CLASS_DECLARATION;
-        C_FAKE_MODULE = (ORCompositeType) RmlStubBasedElementTypes.C_FAKE_MODULE;
         C_EXCEPTION_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_EXCEPTION_DECLARATION;
-        C_TYPE_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_TYPE_DECLARATION;
         C_EXTERNAL_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_EXTERNAL_DECLARATION;
+        C_FAKE_MODULE = (ORCompositeType) RmlStubBasedElementTypes.C_FAKE_MODULE;
+        C_FUNCTOR_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_FUNCTOR_DECLARATION;
+        C_INCLUDE = (ORCompositeType) RmlStubBasedElementTypes.C_INCLUDE;
         C_LET_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_LET_DECLARATION;
         C_MODULE_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_MODULE_DECLARATION;
-        C_VAL_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_VAL_DECLARATION;
-        C_PARAM_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_PARAM_DECLARATION;
-        C_FUNCTOR_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_FUNCTOR_DECLARATION;
-        C_FUNCTOR_PARAM = (ORCompositeType) RmlStubBasedElementTypes.C_FUNCTOR_PARAM;
-        C_RECORD_FIELD = (ORCompositeType) RmlStubBasedElementTypes.C_RECORD_FIELD;
+        C_NAMED_PARAM_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_NAMED_PARAM_DECLARATION;
         C_OBJECT_FIELD = (ORCompositeType) RmlStubBasedElementTypes.C_OBJECT_FIELD;
-        C_VARIANT_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_VARIANT_DECLARATION;
-        C_INCLUDE = (ORCompositeType) RmlStubBasedElementTypes.C_INCLUDE;
         C_OPEN = (ORCompositeType) RmlStubBasedElementTypes.C_OPEN;
+        C_PARAM_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_PARAM_DECLARATION;
+        C_RECORD_FIELD = (ORCompositeType) RmlStubBasedElementTypes.C_RECORD_FIELD;
+        C_TYPE_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_TYPE_DECLARATION;
+        C_VAL_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_VAL_DECLARATION;
+        C_VARIANT_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_VARIANT_DECLARATION;
 
         // Composite element types
 
@@ -63,13 +63,14 @@ public class RmlTypes extends ORTypes {
         C_TYPE_VARIABLE = new ORCompositeElementType("C_TYPE_VARIABLE", RmlLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", RmlLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", RmlLanguage.INSTANCE);
-        C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", RmlLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
         C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", RmlLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", RmlLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", RmlLanguage.INSTANCE);
+        C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", RmlLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", RmlLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", RmlLanguage.INSTANCE);
+        C_PARAM = new ORCompositeElementType("C_PARAM", RmlLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", RmlLanguage.INSTANCE);
@@ -100,16 +101,16 @@ public class RmlTypes extends ORTypes {
 
         // Atom types
 
-        C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", RmlLanguage.INSTANCE);
-        C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", RmlLanguage.INSTANCE);
+        A_LOWER_SYMBOL = new ORCompositeElementType("A_LOWER_SYMBOL", RmlLanguage.INSTANCE);
+        A_UPPER_SYMBOL = new ORCompositeElementType("A_UPPER_SYMBOL", RmlLanguage.INSTANCE);
         A_LOWER_TAG_NAME = new ORTokenElementType("A_LOWER_TAG_NAME", RmlLanguage.INSTANCE);
         A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", RmlLanguage.INSTANCE);
         A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", RmlLanguage.INSTANCE);
 
         // Dummy types
 
-        C_PLACE_HOLDER = new ORCompositeElementType("C_PLACE_HOLDER", RmlLanguage.INSTANCE);
-        C_DUMMY_COLLECTION_ITEM = new ORCompositeElementType("C_DUMMY_COLLECTION_ITEM", RmlLanguage.INSTANCE);
+        H_PLACE_HOLDER = new ORCompositeElementType("H_PLACE_HOLDER", RmlLanguage.INSTANCE);
+        H_COLLECTION_ITEM = new ORCompositeElementType("H_COLLECTION_ITEM", RmlLanguage.INSTANCE);
 
         // Token element types
 

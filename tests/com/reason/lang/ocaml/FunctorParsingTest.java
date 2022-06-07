@@ -19,7 +19,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertEquals("struct end", f.getBody().getText());
         assertEquals("S", f.getReturnType().getText());
         PsiParameter p = f.getParameters().iterator().next();
-        assertEquals(OclTypes.INSTANCE.C_FUNCTOR_PARAM, p.getNode().getElementType());
+        assertEquals(OclTypes.INSTANCE.C_PARAM_DECLARATION, p.getNode().getElementType());
         List<IElementType> uTypes =
                 PsiTreeUtil.findChildrenOfType(e, PsiUpperSymbol.class)
                         .stream()

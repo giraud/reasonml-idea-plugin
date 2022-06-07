@@ -8,14 +8,14 @@ public abstract class ORTypes {
     public ORCompositeType C_EXTERNAL_DECLARATION;
     public ORCompositeType C_FAKE_MODULE;
     public ORCompositeType C_FIELD_VALUE;
-    public ORCompositeType C_PARAM_DECLARATION;
     public ORCompositeType C_FUNCTOR_DECLARATION;
-    public ORCompositeType C_FUNCTOR_PARAM;
     public ORCompositeType C_INCLUDE;
     public ORCompositeType C_LET_DECLARATION;
     public ORCompositeType C_MODULE_DECLARATION;
+    public ORCompositeType C_NAMED_PARAM_DECLARATION;
     public ORCompositeType C_OBJECT_FIELD;
     public ORCompositeType C_OPEN;
+    public ORCompositeType C_PARAM_DECLARATION;
     public ORCompositeType C_RECORD_FIELD;
     public ORCompositeType C_TYPE_DECLARATION;
     public ORCompositeType C_VAL_DECLARATION;
@@ -62,6 +62,7 @@ public abstract class ORTypes {
     public ORCompositeType C_NAMED_PARAM;
     public ORCompositeType C_OBJECT;
     public ORCompositeType C_OPTION;
+    public ORCompositeType C_PARAM;
     public ORCompositeType C_PARAMETERS;
     public ORCompositeType C_PATTERN_MATCH_BODY;
     public ORCompositeType C_PATTERN_MATCH_EXPR;
@@ -95,16 +96,16 @@ public abstract class ORTypes {
 
     // Atom types
 
-    public ORCompositeType C_LOWER_SYMBOL;
-    public ORCompositeType C_UPPER_SYMBOL;
+    public ORCompositeType A_LOWER_SYMBOL;
+    public ORCompositeType A_UPPER_SYMBOL;
     public ORTokenElementType A_LOWER_TAG_NAME;
     public ORTokenElementType A_UPPER_TAG_NAME;
     public ORTokenElementType A_VARIANT_NAME;
 
     // Dummy types
 
-    public ORCompositeType C_PLACE_HOLDER;
-    public ORCompositeType C_DUMMY_COLLECTION_ITEM;
+    public ORCompositeType H_PLACE_HOLDER;
+    public ORCompositeType H_COLLECTION_ITEM;
 
     // Token element types
 

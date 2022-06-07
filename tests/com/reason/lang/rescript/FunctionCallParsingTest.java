@@ -13,8 +13,9 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
     public void test_call() {
         PsiLet e = first(letExpressions(parseCode("let _ = string_of_int(1)")));
 
-        PsiFunctionCall call = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
+        PsiFunctionCall call = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
         assertNotNull(ORUtil.findImmediateFirstChildOfClass(call, PsiLowerSymbol.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiParameterDeclaration.class));
         assertEquals("string_of_int(1)", call.getText());
         assertEquals(1, call.getParameters().size());
     }
@@ -23,7 +24,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let _ = Belt.Option.map(self.state.timerId.contents, Js.Global.clearInterval)")));
 
         PsiFunctionCall call = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
-        List<PsiParameter> parameters = call.getParameters();
+        List<PsiParameterReference> parameters = call.getParameters();
         assertEquals(2, parameters.size());
         assertEquals("self.state.timerId.contents", parameters.get(0).getText());
         assertEquals("Js.Global.clearInterval", parameters.get(1).getText());

@@ -24,7 +24,7 @@ public interface RescriptStubBasedElementTypes {
     IStubElementType<PsiIncludeStub, PsiInclude> C_INCLUDE = new PsiIncludeStubElementType(ResLanguage.INSTANCE);
     IStubElementType<PsiOpenStub, PsiOpen> C_OPEN = new PsiOpenStubElementType(ResLanguage.INSTANCE);
 
-    // ?
+    IStubElementType<PsiParameterStub, PsiParameter> C_NAMED_PARAM_DECLARATION = new PsiParameterStubElementType("C_NAMED_PARAM_DECLARATION", ResLanguage.INSTANCE);
     IStubElementType<PsiParameterStub, PsiParameter> C_PARAM_DECLARATION = new PsiParameterStubElementType("C_PARAM_DECLARATION", ResLanguage.INSTANCE);
     IStubElementType<PsiParameterStub, PsiParameter> C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", ResLanguage.INSTANCE);
 }

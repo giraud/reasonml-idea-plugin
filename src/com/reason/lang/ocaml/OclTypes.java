@@ -10,22 +10,22 @@ public class OclTypes extends ORTypes {
     private OclTypes() {
         // Stub element types
 
-        C_FAKE_MODULE = (ORCompositeType) OclStubBasedElementTypes.C_FAKE_MODULE;
         C_CLASS_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_CLASS_DECLARATION;
         C_EXCEPTION_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_EXCEPTION_DECLARATION;
-        C_TYPE_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_TYPE_DECLARATION;
         C_EXTERNAL_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_EXTERNAL_DECLARATION;
+        C_FAKE_MODULE = (ORCompositeType) OclStubBasedElementTypes.C_FAKE_MODULE;
+        C_FUNCTOR_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_FUNCTOR_DECLARATION;
+        C_INCLUDE = (ORCompositeType) OclStubBasedElementTypes.C_INCLUDE;
         C_LET_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_LET_DECLARATION;
         C_MODULE_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_MODULE_DECLARATION;
-        C_VAL_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_VAL_DECLARATION;
-        C_PARAM_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_PARAM_DECLARATION;
-        C_FUNCTOR_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_FUNCTOR_DECLARATION;
-        C_FUNCTOR_PARAM = (ORCompositeType) OclStubBasedElementTypes.C_FUNCTOR_PARAM;
-        C_RECORD_FIELD = (ORCompositeType) OclStubBasedElementTypes.C_RECORD_FIELD;
+        C_NAMED_PARAM_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_NAMED_PARAM_DECLARATION;
         C_OBJECT_FIELD = (ORCompositeType) OclStubBasedElementTypes.C_OBJECT_FIELD;
-        C_VARIANT_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_VARIANT_DECLARATION;
-        C_INCLUDE = (ORCompositeType) OclStubBasedElementTypes.C_INCLUDE;
         C_OPEN = (ORCompositeType) OclStubBasedElementTypes.C_OPEN;
+        C_PARAM_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_PARAM_DECLARATION;
+        C_RECORD_FIELD = (ORCompositeType) OclStubBasedElementTypes.C_RECORD_FIELD;
+        C_TYPE_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_TYPE_DECLARATION;
+        C_VARIANT_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_VARIANT_DECLARATION;
+        C_VAL_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_VAL_DECLARATION;
 
         // Composite element types
 
@@ -65,8 +65,9 @@ public class OclTypes extends ORTypes {
         C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", OclLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", OclLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
-        C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", OclLanguage.INSTANCE);
+        C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
+        C_PARAM = new ORCompositeElementType("C_PARAM", OclLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", OclLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", OclLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", OclLanguage.INSTANCE);
@@ -102,16 +103,16 @@ public class OclTypes extends ORTypes {
 
         // Atom types
 
-        C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", OclLanguage.INSTANCE);
-        C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", OclLanguage.INSTANCE);
+        A_LOWER_SYMBOL = new ORCompositeElementType("A_LOWER_SYMBOL", OclLanguage.INSTANCE);
+        A_UPPER_SYMBOL = new ORCompositeElementType("A_UPPER_SYMBOL", OclLanguage.INSTANCE);
         A_LOWER_TAG_NAME = new ORTokenElementType("A_LOWER_TAG_NAME", OclLanguage.INSTANCE);
         A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", OclLanguage.INSTANCE);
         A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", OclLanguage.INSTANCE);
 
         // Dummy types
 
-        C_PLACE_HOLDER = new ORCompositeElementType("C_PLACE_HOLDER", OclLanguage.INSTANCE);
-        C_DUMMY_COLLECTION_ITEM = new ORCompositeElementType("C_DUMMY_COLLECTION_ITEM", OclLanguage.INSTANCE);
+        H_PLACE_HOLDER = new ORCompositeElementType("H_PLACE_HOLDER", OclLanguage.INSTANCE);
+        H_COLLECTION_ITEM = new ORCompositeElementType("H_COLLECTION_ITEM", OclLanguage.INSTANCE);
 
         // Token element types
 

@@ -7,9 +7,11 @@ import org.jetbrains.annotations.*;
 public interface PsiSignatureItem extends PsiElement, PsiLanguageConverter {
     boolean isNamedItem();
 
-    @Nullable PsiNamedParam getNamedParam();
-
     @Nullable String getName();
 
     boolean isOptional();
+
+    @Nullable PsiElement getSignature();
+
+    @Nullable PsiElement getDefaultValue();
 }

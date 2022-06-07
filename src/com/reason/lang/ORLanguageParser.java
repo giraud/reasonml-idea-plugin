@@ -11,7 +11,7 @@ public abstract class ORLanguageParser<T extends ORTypes> extends ORParser<T> {
 
     public @NotNull ORLanguageParser<T> markDummyParenthesisScope() {
         if (getTokenType() == myTypes.LPAREN) {
-            markDummyScope(myTypes.C_PLACE_HOLDER, myTypes.LPAREN).advance();
+            markDummyScope(myTypes.H_PLACE_HOLDER, myTypes.LPAREN).advance();
         }
         return this;
     }

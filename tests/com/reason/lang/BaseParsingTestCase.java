@@ -134,7 +134,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     protected PsiFile parseRawCode(@NotNull String code) {
         myFile = createPsiFile("dummy", code);
         System.out.println("» " + this.getClass());
-        System.out.println(DebugUtil.psiToString(myFile, true, true));
+        System.out.println(DebugUtil.psiToString(myFile, false, true));
         return myFile;
     }
 

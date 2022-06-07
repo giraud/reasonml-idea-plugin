@@ -2,36 +2,34 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.psi.*;
+import com.intellij.psi.stubs.*;
 import com.intellij.psi.tree.*;
+import com.intellij.psi.util.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
-public class PsiNamedParam extends ORCompositePsiElement<ORTypes> implements PsiLanguageConverter {
-    public PsiNamedParam(@NotNull ORTypes types, @NotNull IElementType elementType) {
-        super(types, elementType);
+public class PsiNamedParameterDeclaration extends PsiParameterDeclaration implements PsiLanguageConverter {
+    // region Constructors
+    public PsiNamedParameterDeclaration(@NotNull ORTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
 
-    @Override
-    public @Nullable String getName() {
-        PsiElement firstChild = getFirstChild();
-        PsiElement name = firstChild == null ? null : firstChild.getNode().getElementType() == myTypes.TILDE ? ORUtil.nextSibling(firstChild) : firstChild;
-        return name == null ? null : name.getText();
+    public PsiNamedParameterDeclaration(@NotNull ORTypes types, @NotNull PsiParameterStub stub, @NotNull IStubElementType nodeType) {
+        super(types, stub, nodeType);
     }
-
-    public boolean isOptional() {
-        return ORUtil.findImmediateFirstChildOfType(this, myTypes.EQ) != null;
-    }
+    // endregion
 
     public @Nullable PsiDefaultValue getDefaultValue() {
         return ORUtil.findImmediateFirstChildOfClass(this, PsiDefaultValue.class);
     }
 
     public @Nullable PsiSignature getSignature() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiSignature.class);
+        return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
     }
 
     @Override

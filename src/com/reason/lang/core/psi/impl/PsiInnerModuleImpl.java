@@ -118,7 +118,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
         }
 
         PsiElement psiElement = ORUtil.nextSibling(getFirstChild());
-        return psiElement != null && psiElement.getNode().getElementType() == m_types.TYPE;
+        return psiElement != null && psiElement.getNode().getElementType() == myTypes.TYPE;
     }
 
     @Override
@@ -192,7 +192,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
                         Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorCall);
                         for (String potentialPath : potentialPaths) {
                             Set<PsiModule> modules = psiFinder.findModulesFromQn(
-                                    potentialPath + "." + functorCall.getFunctorName(),
+                                    potentialPath + "." + functorCall.getName(),
                                     true,
                                     interfaceOrImplementation
                             );
@@ -201,7 +201,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
                             }
                         }
 
-                        Set<PsiModule> modules = psiFinder.findModulesFromQn(functorCall.getFunctorName(), true, interfaceOrImplementation);
+                        Set<PsiModule> modules = psiFinder.findModulesFromQn(functorCall.getName(), true, interfaceOrImplementation);
                         for (PsiModule module : modules) {
                             result.addAll(module.getExpressions(eScope, filter));
                         }
@@ -252,21 +252,21 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
         PsiElement nextNextSibling = ORUtil.nextSibling(nextSibling);
         return nextSibling != null
                 && nextNextSibling != null
-                && nextSibling.getNode().getElementType() == m_types.TYPE
-                && nextNextSibling.getNode().getElementType() == m_types.OF;
+                && nextSibling.getNode().getElementType() == myTypes.TYPE
+                && nextNextSibling.getNode().getElementType() == myTypes.OF;
     }
 
     private @Nullable PsiModule findReferencedModuleTypeOf() {
-        PsiElement of = ORUtil.findImmediateFirstChildOfType(this, m_types.OF);
+        PsiElement of = ORUtil.findImmediateFirstChildOfType(this, myTypes.OF);
 
         if (of != null) {
             // find latest module name
-            PsiElement module = ORUtil.nextSiblingWithTokenType(of, m_types.UIDENT);
+            PsiElement module = ORUtil.nextSiblingWithTokenType(of, myTypes.UIDENT);
             PsiElement moduleNextSibling = module == null ? null : module.getNextSibling();
             while (moduleNextSibling != null
-                    && moduleNextSibling.getNode().getElementType() == m_types.DOT) {
+                    && moduleNextSibling.getNode().getElementType() == myTypes.DOT) {
                 PsiElement element = moduleNextSibling.getNextSibling();
-                if (element != null && element.getNode().getElementType() == m_types.UIDENT) {
+                if (element != null && element.getNode().getElementType() == myTypes.UIDENT) {
                     module = element;
                     moduleNextSibling = module.getNextSibling();
                 } else {
@@ -295,7 +295,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             public @Nullable String getPresentableText() {
                 if (isModuleTypeOf) {
                     if (referencedModuleType == null) {
-                        PsiElement of = ORUtil.findImmediateFirstChildOfType(PsiInnerModuleImpl.this, m_types.OF);
+                        PsiElement of = ORUtil.findImmediateFirstChildOfType(PsiInnerModuleImpl.this, myTypes.OF);
                         assert of != null;
                         return getText().substring(of.getStartOffsetInParent() + 3);
                     }
@@ -337,7 +337,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             return stub.isFunctorCall();
         }
 
-        return ORUtil.findImmediateFirstChildOfType(this, m_types.C_FUNCTOR_CALL) != null;
+        return ORUtil.findImmediateFirstChildOfType(this, myTypes.C_FUNCTOR_CALL) != null;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.*;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
@@ -50,7 +49,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         PsiLetBinding e = first(letExpressions(parseCode("let _ = fn a (b \"{\" c) d"))).getBinding();
 
         PsiFunctionCall f = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
-        List<PsiParameter> p = f.getParameters();
+        List<PsiParameterReference> p = f.getParameters();
         assertEquals("fn a (b \"{\" c) d", f.getText());
         assertEquals(3, p.size());
         assertEquals("a", p.get(0).getText());

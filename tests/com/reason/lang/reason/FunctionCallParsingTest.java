@@ -15,6 +15,7 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
 
         PsiFunctionCall call = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
         assertNotNull(ORUtil.findImmediateFirstChildOfClass(call, PsiLowerSymbol.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiParameterDeclaration.class));
         assertEquals("string_of_int(1)", call.getText());
         assertEquals(1, call.getParameters().size());
     }
@@ -23,7 +24,7 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let _ = Belt.Option.map(self.state.timerId^, Js.Global.clearInterval)")));
 
         PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
-        List<PsiParameter> parameters = fnCall.getParameters();
+        List<PsiParameterReference> parameters = fnCall.getParameters();
         assertEquals(2, parameters.size());
         assertEquals("self.state.timerId^", parameters.get(0).getText());
         assertEquals("Js.Global.clearInterval", parameters.get(1).getText());

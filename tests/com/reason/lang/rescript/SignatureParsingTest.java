@@ -30,9 +30,9 @@ public class SignatureParsingTest extends ResParsingTestCase {
         assertEquals(3, signature.getItems().size());
         assertEquals("(~v:length, ~h:length) => rule", signature.asText(getLangProps()));
         assertFalse(signature.getItems().get(0).isOptional());
-        assertEquals("v", signature.getItems().get(0).getNamedParam().getName());
+        assertEquals("v", signature.getItems().get(0).getName());
         assertFalse(signature.getItems().get(1).isOptional());
-        assertEquals("h", signature.getItems().get(1).getNamedParam().getName());
+        assertEquals("h", signature.getItems().get(1).getName());
     }
 
     public void test_optional_fun() {

@@ -12,7 +12,7 @@ public class ORStubVersions {
     public static final int MODULE = 25;
     public static final int OBJECT_FIELD = 3;
     public static final int OPEN = 3;
-    public static final int PARAMETER = 6;
+    public static final int PARAMETER = 7;
     public static final int RECORD_FIELD = 6;
     public static final int TYPE = 12;
     public static final int VAL = 13;
