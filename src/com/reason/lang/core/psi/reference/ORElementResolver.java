@@ -333,7 +333,7 @@ public class ORElementResolver implements Disposable {
             for (Map<String, com.reason.lang.core.psi.reference.Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
                 topModuleEntry.values().removeIf(resolution -> {
                     String name = resolution.getCurrentName();
-                    return name != null && Character.isUpperCase(name.charAt(0));
+                    return name != null && !name.isEmpty() && Character.isUpperCase(name.charAt(0));
                 });
             }
         }
