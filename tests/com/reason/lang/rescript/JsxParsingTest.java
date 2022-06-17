@@ -139,6 +139,19 @@ public class JsxParsingTest extends ResParsingTestCase {
         assertNull(PsiTreeUtil.findChildOfType(e, PsiTernary.class));
     }
 
+    public void test_ternary_in_value() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<AppIcons.Trash colors={isSelected ? green : red} disabled=true/>"));
+
+        List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
+        assertSize(2, props);
+        assertEquals("colors", props.get(0).getName());
+        assertEquals("{isSelected ? green : red}", props.get(0).getValue().getText());
+        PsiTernary t = PsiTreeUtil.findChildOfType(props.get(0), PsiTernary.class);
+        assertEquals("isSelected", t.getCondition().getText());
+        assertEquals("green", t.getThenExpression().getText());
+        assertEquals("red", t.getElseExpression().getText());
+    }
+
     public void test_tag_props_with_local_open() {
         PsiTag e = (PsiTag) firstElement(parseCode("<Icon width=Dimensions.(3->px) height=Dimensions.(2->rem)>x</Icon>"));
 

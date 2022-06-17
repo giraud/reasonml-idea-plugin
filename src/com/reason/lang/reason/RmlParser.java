@@ -234,6 +234,10 @@ public class RmlParser extends CommonPsiParser {
                             .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace())
                             .advance()
                             .remapCurrentToken(myTypes.PROPERTY_NAME);
+                } else if (!strictlyIn(myTypes.C_TAG_PROP_VALUE)) {
+                    if (in(myTypes.C_SCOPED_EXPR, /*not*/myTypes.C_TAG_PROP_VALUE)) {
+                        parseTernary();
+                    }
                 }
             } else if (strictlyIn(myTypes.C_IF_THEN_SCOPE)) {
                 // if_then_scope can be inside a ternary
