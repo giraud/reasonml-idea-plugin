@@ -179,7 +179,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         configureCode("Css_AtomicTypes.resi", "module Visibility: { type t = [ #visible | #hidden | #collapse ] }");
         configureCode("Css_Legacy_Core.res", "module Types = Css_AtomicTypes");
         configureCode("Css.res", "include Css_Legacy_Core");
-        configureCode("A.res", "type layoutRule\n let visibility: [< Css.Types.Length.t | Css.Types.Visibility.t<caret> ] => layoutRule;");
+        configureCode("A.res", "type layoutRule\n let visibility: [< Css.Types.Length.t | Css.Types.Visibility.t<caret> ] => layoutRule");
 
         PsiType e = (PsiType) myFixture.getElementAtCaret();
         assertEquals("Css_AtomicTypes.Visibility.t", e.getQualifiedName());

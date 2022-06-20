@@ -47,8 +47,8 @@ public class OclParser extends CommonPsiParser {
                     long parseTime = System.currentTimeMillis();
                     if (5000 < parseTime - parseStart) {
                         if (myIsSafe) { // Don't do that in tests
-                            error("CANCEL");
-                            LOG.error("CANCEL OCAML PARSING:\n" + myBuilder.getOriginalText());
+                            error("Cancel");
+                            //LOG.error("CANCEL OCAML PARSING:\n" + myBuilder.getOriginalText());
                             break;
                         }
                     }
@@ -412,6 +412,10 @@ public class OclParser extends CommonPsiParser {
             if (in(myTypes.C_PATTERN_MATCH_BODY)) {
                 popEndUntil(myTypes.C_PATTERN_MATCH_EXPR).popEnd().advance()
                         .mark(myTypes.C_PATTERN_MATCH_EXPR);
+            } else if (in(myTypes.C_VARIANT_DECLARATION)) {
+                // type t = | X |>|<| Y ...
+                popEndUntilFoundIndex().popEnd().advance()
+                        .mark(myTypes.C_VARIANT_DECLARATION);
             } else if (in(myTypes.C_TYPE_BINDING)) { // remap an upper symbol to a variant if first element is missing pipe
                 // type t = (|) V1 |>|<| ...
                 popEndUntil(myTypes.C_TYPE_BINDING).advance()
@@ -852,16 +856,16 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseLBracket() {
-            IElementType nextElementType = rawLookup(1);
-            if (nextElementType == myTypes.ARROBASE
-                    || nextElementType == myTypes.ARROBASE_2
-                    || nextElementType == myTypes.ARROBASE_3) {
+            IElementType nextType = rawLookup(1);
+            if (nextType == myTypes.ARROBASE
+                    || nextType == myTypes.ARROBASE_2
+                    || nextType == myTypes.ARROBASE_3) {
                 // https://ocaml.org/manual/attributes.html
 
                 // |> [ <| @?? ...
-                if (nextElementType == myTypes.ARROBASE) {
+                if (nextType == myTypes.ARROBASE) {
                     markScope(myTypes.C_ANNOTATION, myTypes.LBRACKET);
-                } else if (nextElementType == myTypes.ARROBASE_2) {
+                } else if (nextType == myTypes.ARROBASE_2) {
                     // attribute attached to a 'block' expression
                     if (inAny(myTypes.C_LET_BINDING, myTypes.C_SIG_EXPR)) {
                         if (isFound(myTypes.C_SIG_EXPR)) {
@@ -874,6 +878,18 @@ public class OclParser extends CommonPsiParser {
                 } else { // floating attribute
                     endLikeSemi();
                     markScope(myTypes.C_ANNOTATION, myTypes.LBRACKET);
+                }
+            } else if (nextType == myTypes.GT) {
+                // |> [ <| > ... ]
+                markScope(myTypes.C_OPEN_VARIANT, myTypes.LBRACKET).advance().advance();
+                if (getTokenType() != myTypes.RBRACKET) {
+                    mark(myTypes.C_VARIANT_DECLARATION).advance();
+                }
+            } else if (nextType == myTypes.LT) {
+                // |> [ <| < ... ]
+                markScope(myTypes.C_CLOSED_VARIANT, myTypes.LBRACKET).advance().advance();
+                if (getTokenType() != myTypes.RBRACKET) {
+                    mark(myTypes.C_VARIANT_DECLARATION).advance();
                 }
             } else {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACKET);

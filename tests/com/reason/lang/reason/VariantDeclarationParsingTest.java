@@ -1,8 +1,10 @@
 package com.reason.lang.reason;
 
+import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;

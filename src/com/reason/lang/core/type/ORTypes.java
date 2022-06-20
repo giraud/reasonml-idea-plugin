@@ -29,6 +29,7 @@ public abstract class ORTypes {
     public ORCompositeType C_CLASS_CONSTR;
     public ORCompositeType C_CLASS_FIELD;
     public ORCompositeType C_CLASS_METHOD;
+    public ORCompositeType C_CLOSED_VARIANT;
     public ORCompositeType C_CONSTRAINTS;
     public ORCompositeType C_CONSTRAINT;
     public ORCompositeType C_CUSTOM_OPERATOR;
@@ -48,7 +49,6 @@ public abstract class ORTypes {
     public ORCompositeType C_LET_ATTR;
     public ORCompositeType C_LET_BINDING;
     public ORCompositeType C_LOCAL_OPEN;
-    public ORCompositeType C_LOWER_BOUND_CONSTRAINT;
     public ORCompositeType C_TYPE_VARIABLE;
     public ORCompositeType C_MACRO_EXPR;
     public ORCompositeType C_MACRO_NAME;
@@ -61,6 +61,7 @@ public abstract class ORTypes {
     public ORCompositeType C_ML_INTERPOLATOR;
     public ORCompositeType C_NAMED_PARAM;
     public ORCompositeType C_OBJECT;
+    public ORCompositeType C_OPEN_VARIANT;
     public ORCompositeType C_OPTION;
     public ORCompositeType C_PARAM;
     public ORCompositeType C_PARAMETERS;
@@ -90,7 +91,6 @@ public abstract class ORTypes {
     public ORCompositeType C_TRY_HANDLER;
     public ORCompositeType C_TYPE_BINDING;
     public ORCompositeType C_UNIT;
-    public ORCompositeType C_UPPER_BOUND_CONSTRAINT;
     public ORCompositeType C_VARIANT_CONSTRUCTOR;
     public ORCompositeType C_WHILE;
 

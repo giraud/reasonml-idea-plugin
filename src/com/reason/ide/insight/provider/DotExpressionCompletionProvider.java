@@ -140,17 +140,6 @@ public class DotExpressionCompletionProvider {
         }
     }
 
-    private static void addChildren(@Nullable PsiElement body, @NotNull Collection<PsiNamedElement> expressions) {
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiLet.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiVal.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiModule.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiFunctor.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiKlass.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiException.class));
-    }
-
     private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNamedElement> expressions, @Nullable ORLanguageProperties language) {
         for (PsiNamedElement expression : expressions) {
             if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
@@ -180,5 +169,16 @@ public class DotExpressionCompletionProvider {
                 }
             }
         }
+    }
+
+    private static void addChildren(@Nullable PsiElement body, @NotNull Collection<PsiNamedElement> expressions) {
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiLet.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiVal.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiModule.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiFunctor.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiKlass.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiException.class));
     }
 }

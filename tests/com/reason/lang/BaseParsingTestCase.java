@@ -30,8 +30,8 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected Collection<PsiNamedElement> expressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getExpressions(file, ExpressionScope.all, null);
+    protected List<PsiNamedElement> expressions(@NotNull PsiFile file) {
+        return new ArrayList<>(PsiFileHelper.getExpressions(file, ExpressionScope.all, null));
     }
 
     @NotNull

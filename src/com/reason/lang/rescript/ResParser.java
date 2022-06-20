@@ -37,8 +37,8 @@ public class ResParser extends CommonPsiParser {
                     long parseTime = System.currentTimeMillis();
                     if (5000 < parseTime - parseStart) {
                         if (myIsSafe) { // Don't do that in tests
-                            error("CANCEL");
-                            LOG.error("CANCEL RESCRIPT PARSING:\n" + myBuilder.getOriginalText());
+                            error("Cancel");
+                            //LOG.error("CANCEL RESCRIPT PARSING:\n" + myBuilder.getOriginalText());
                             break;
                         }
                     }
@@ -691,12 +691,18 @@ public class ResParser extends CommonPsiParser {
             } else {
                 IElementType nextType = rawLookup(1);
 
-                if (nextType == myTypes.GT) { // Lower bound type constraint
+                if (nextType == myTypes.GT) {
                     // |> [ <| > ... ]
-                    markScope(myTypes.C_LOWER_BOUND_CONSTRAINT, myTypes.LBRACKET).advance();
-                } else if (nextType == myTypes.LT) { // Upper bound type constraint
+                    markScope(myTypes.C_OPEN_VARIANT, myTypes.LBRACKET).advance().advance();
+                    if (getTokenType() != myTypes.RBRACKET) {
+                        mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    }
+                } else if (nextType == myTypes.LT) {
                     // |> [ <| < ... ]
-                    markScope(myTypes.C_UPPER_BOUND_CONSTRAINT, myTypes.LBRACKET).advance();
+                    markScope(myTypes.C_CLOSED_VARIANT, myTypes.LBRACKET).advance().advance();
+                    if (getTokenType() != myTypes.RBRACKET) {
+                        mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    }
                 } else {
                     markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACKET).advance();
                     if (getTokenType() != myTypes.PIPE && getTokenType() != myTypes.POLY_VARIANT) {

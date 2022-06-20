@@ -82,13 +82,13 @@ public class PsiIncludeImpl extends PsiTokenStub<ORTypes, PsiInclude, PsiInclude
 
     @Override
     public @Nullable PsiElement resolveModule() {
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        if (firstChild instanceof PsiFunctorCall) {
-            return ((PsiFunctorCall) firstChild).resolveFunctor();
-        } else if (firstChild instanceof PsiUpperSymbol) {
-            return ORUtil.resolveModuleSymbol((PsiUpperSymbol) firstChild);
+        PsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+        if (functorCall != null) {
+            return functorCall.resolveFunctor();
         }
-        return null;
+
+        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+        return ORUtil.resolveModuleSymbol((PsiUpperSymbol) firstChild);
     }
 
     @Override

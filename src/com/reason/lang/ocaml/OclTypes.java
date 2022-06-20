@@ -35,6 +35,7 @@ public class OclTypes extends ORTypes {
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", OclLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", OclLanguage.INSTANCE);
         C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
+        C_CLOSED_VARIANT = new ORCompositeElementType("C_CLOSED_VARIANT", OclLanguage.INSTANCE);
         C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", OclLanguage.INSTANCE);
         C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", OclLanguage.INSTANCE);
         C_CUSTOM_OPERATOR = new ORCompositeElementType("C_CUSTOM_OPERATOR", OclLanguage.INSTANCE);
@@ -57,7 +58,6 @@ public class OclTypes extends ORTypes {
         C_LET_ATTR = new ORCompositeElementType("C_LET_ATTR", OclLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", OclLanguage.INSTANCE);
         C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", OclLanguage.INSTANCE);
-        C_LOWER_BOUND_CONSTRAINT = new ORCompositeElementType("C_LOWER_BOUND_CONSTRAINT", OclLanguage.INSTANCE);
         C_TYPE_VARIABLE = new ORCompositeElementType("C_TYPE_VARIABLE", OclLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", OclLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", OclLanguage.INSTANCE);
@@ -69,6 +69,7 @@ public class OclTypes extends ORTypes {
         C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
         C_PARAM = new ORCompositeElementType("C_PARAM", OclLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", OclLanguage.INSTANCE);
+        C_OPEN_VARIANT = new ORCompositeElementType("C_OPEN_VARIANT", OclLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", OclLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", OclLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", OclLanguage.INSTANCE);
@@ -90,7 +91,6 @@ public class OclTypes extends ORTypes {
         C_TUPLE = new ORCompositeElementType("C_TUPLE", OclLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", OclLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", OclLanguage.INSTANCE);
-        C_UPPER_BOUND_CONSTRAINT = new ORCompositeElementType("C_UPPER_BOUND_CONSTRAINT", OclLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", OclLanguage.INSTANCE);
         C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", OclLanguage.INSTANCE);

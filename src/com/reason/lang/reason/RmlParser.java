@@ -36,8 +36,8 @@ public class RmlParser extends CommonPsiParser {
                     long parseTime = System.currentTimeMillis();
                     if (5000 < parseTime - parseStart) {
                         if (myIsSafe) { // Don't do that in tests
-                            error("CANCEL");
-                            LOG.error("CANCEL REASON PARSING:\n" + myBuilder.getOriginalText());
+                            error("Cancel");
+                            //LOG.error("CANCEL REASON PARSING:\n" + myBuilder.getOriginalText());
                             break;
                         }
                     }
@@ -454,7 +454,7 @@ public class RmlParser extends CommonPsiParser {
                         .mark(myTypes.C_VARIANT_DECLARATION);
             } else if (in(myTypes.C_VARIANT_DECLARATION)) {
                 // type t = | X |>|<| Y ...
-                popEndUntil(myTypes.C_TYPE_BINDING).advance()
+                popEndUntilFoundIndex().popEnd().advance()
                         .mark(myTypes.C_VARIANT_DECLARATION);
             } else if (in(myTypes.C_PATTERN_MATCH_BODY)) {
                 // can be a switchBody or a 'fun'
@@ -789,17 +789,29 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseLBracket() {
-            IElementType nextTokenType = rawLookup(1);
+            IElementType nextType = rawLookup(1);
 
-            if (nextTokenType == myTypes.ARROBASE) {
+            if (nextType == myTypes.ARROBASE) {
                 // |>[ <| @ ...
                 markScope(myTypes.C_ANNOTATION, myTypes.LBRACKET);
-            } else if (nextTokenType == myTypes.PERCENT) {
+            } else if (nextType == myTypes.PERCENT) {
                 // |>[ <| % ...
                 markScope(myTypes.C_MACRO_EXPR, myTypes.LBRACKET);
             } else if (previousElementType(2) == myTypes.UIDENT && previousElementType(1) == myTypes.DOT) { // Local open
                 // M.|>(<| ...
                 markScope(myTypes.C_LOCAL_OPEN, myTypes.LBRACKET);
+            } else if (nextType == myTypes.GT) {
+                // |> [ <| > ... ]
+                markScope(myTypes.C_OPEN_VARIANT, myTypes.LBRACKET).advance().advance();
+                if (getTokenType() != myTypes.RBRACKET) {
+                    mark(myTypes.C_VARIANT_DECLARATION).advance();
+                }
+            } else if (nextType == myTypes.LT) {
+                // |> [ <| < ... ]
+                markScope(myTypes.C_CLOSED_VARIANT, myTypes.LBRACKET).advance().advance();
+                if (getTokenType() != myTypes.RBRACKET) {
+                    mark(myTypes.C_VARIANT_DECLARATION).advance();
+                }
             } else {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACKET).advance();
                 if (getTokenType() != myTypes.PIPE) {
@@ -927,6 +939,17 @@ public class RmlParser extends CommonPsiParser {
             } else if (is(myTypes.C_DECONSTRUCTION) && isRawParent(myTypes.C_LET_DECLARATION)) {
                 // let ((x |>,<| ...
                 markScope(myTypes.C_DECONSTRUCTION, myTypes.LPAREN);
+            } else if (in(myTypes.C_FUN_CALL)
+                    && !(is(myTypes.C_TYPE_DECLARATION)
+                    || inAny(myTypes.C_TYPE_BINDING, myTypes.C_SIG_ITEM))) { // calling a function
+                markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance();
+                IElementType nextTokenType = getTokenType();
+                if (nextTokenType == myTypes.RPAREN) {
+                    markHolder(myTypes.H_COLLECTION_ITEM);
+                } else {
+                    mark(myTypes.C_PARAM);
+                    markHolder(myTypes.H_PLACE_HOLDER);
+                }
             } else if (inAny(myTypes.C_FUNCTOR_DECLARATION, myTypes.C_FUNCTOR_CALL, myTypes.C_FUNCTOR_RESULT)) {
                 // module M = |>(<| ...
                 // module M = ( ... ) : |>(<| ...
@@ -945,17 +968,6 @@ public class RmlParser extends CommonPsiParser {
                 if (isFound(myTypes.C_CLASS_DECLARATION)) {
                     popEndUntil(myTypes.C_CLASS_DECLARATION).
                             markScope(myTypes.C_CLASS_CONSTR, myTypes.LPAREN);
-                }
-            } else if (in(myTypes.C_FUN_CALL)
-                    && !(is(myTypes.C_TYPE_DECLARATION)
-                    || inAny(myTypes.C_TYPE_BINDING, myTypes.C_SIG_ITEM))) { // calling a function
-                markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance();
-                IElementType nextTokenType = getTokenType();
-                if (nextTokenType == myTypes.RPAREN) {
-                    markHolder(myTypes.H_COLLECTION_ITEM);
-                } else {
-                    mark(myTypes.C_PARAM);
-                    markHolder(myTypes.H_PLACE_HOLDER);
                 }
             } else if (inAny(myTypes.C_OPEN, myTypes.C_INCLUDE)) { // a functor call inside open/include
                 // open/include M |>(<| ...

@@ -35,6 +35,7 @@ public class ResTypes extends ORTypes {
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", ResLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", ResLanguage.INSTANCE);
         C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", ResLanguage.INSTANCE);
+        C_CLOSED_VARIANT = new ORCompositeElementType("C_CLOSED_VARIANT", ResLanguage.INSTANCE);
         C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", ResLanguage.INSTANCE);
         C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", ResLanguage.INSTANCE);
         C_CUSTOM_OPERATOR = new ORCompositeElementType("C_CUSTOM_OPERATOR", ResLanguage.INSTANCE);
@@ -59,7 +60,6 @@ public class ResTypes extends ORTypes {
         C_LET_ATTR = new ORCompositeElementType("C_LET_ATTR", ResLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", ResLanguage.INSTANCE);
         C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", ResLanguage.INSTANCE);
-        C_LOWER_BOUND_CONSTRAINT = new ORCompositeElementType("C_LOWER_BOUND_CONSTRAINT", ResLanguage.INSTANCE);
         C_TYPE_VARIABLE = new ORCompositeElementType("C_TYPE_VARIABLE", ResLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", ResLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", ResLanguage.INSTANCE);
@@ -69,6 +69,7 @@ public class ResTypes extends ORTypes {
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", ResLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", ResLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", ResLanguage.INSTANCE);
+        C_OPEN_VARIANT = new ORCompositeElementType("C_OPEN_VARIANT", ResLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", ResLanguage.INSTANCE);
         C_PARAM = new ORCompositeElementType("C_PARAM", ResLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", ResLanguage.INSTANCE);
@@ -95,7 +96,6 @@ public class ResTypes extends ORTypes {
         C_TUPLE = new ORCompositeElementType("C_TUPLE", ResLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", ResLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", ResLanguage.INSTANCE);
-        C_UPPER_BOUND_CONSTRAINT = new ORCompositeElementType("C_UPPER_BOUND_CONSTRAINT", ResLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", ResLanguage.INSTANCE);
         C_WHILE = new ORCompositeElementType("C_WHILE", ResLanguage.INSTANCE);
 

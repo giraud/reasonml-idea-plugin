@@ -82,6 +82,14 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         assertEquals("{ M.{k: v} }", body.getText());
     }
 
+    public void test_in_functor() {
+        //                                    0        |         |          |         |         |        |         |         |          |
+        PsiFunctor e = firstOfType(parseCode("module Make = (M: Intf) : Result => { let fn = target => (. store) => call(input, item => item); };"), PsiFunctor.class);
+
+        PsiFunctionCall fc = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertEquals("call(input, item => item)", fc.getText());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/120
     public void test_GH_120() {
         PsiLet e = first(letExpressions(parseCode("let _ = f(x == U.I, 1)")));

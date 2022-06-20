@@ -158,8 +158,8 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == myTypes.C_LET_ATTR) {
             return new PsiLetAttribute(type);
         }
-        if (type == myTypes.C_LOWER_BOUND_CONSTRAINT) {
-            return new PsiTypeConstraint(myTypes, type);
+        if (type == myTypes.C_CLOSED_VARIANT) {
+            return new PsiPolyVariantConstraint(myTypes, type);
         }
         if (type == myTypes.C_MACRO_EXPR) {
             return new PsiMacro(myTypes, type);
@@ -200,8 +200,8 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new CompositePsiElement(type) {
             };
         }
-        if (type == myTypes.C_UPPER_BOUND_CONSTRAINT) {
-            return new PsiTypeConstraint(myTypes, type);
+        if (type == myTypes.C_OPEN_VARIANT) {
+            return new PsiPolyVariantConstraint(myTypes, type);
         }
         if (type == myTypes.C_MACRO_NAME) {
             return new PsiMacroName(myTypes, type);
