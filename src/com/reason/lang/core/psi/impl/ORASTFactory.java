@@ -78,7 +78,7 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new PsiPatternMatch(myTypes, type);
         }
         if (type == myTypes.C_JS_OBJECT) {
-            return new PsiJsObject(type);
+            return new PsiJsObject(myTypes, type);
         }
         if (type == myTypes.C_FUN_EXPR) {
             return new PsiFunction(myTypes, type);

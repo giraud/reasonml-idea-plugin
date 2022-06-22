@@ -87,6 +87,8 @@ public class ResParser extends CommonPsiParser {
                         parseEq();
                     } else if (tokenType == myTypes.SOME) {
                         parseSome();
+                    } else if (tokenType == myTypes.WITH) {
+                        parseWith();
                     } else if (tokenType == myTypes.ARROW) {
                         parseArrow();
                     } else if (tokenType == myTypes.REF) {
@@ -325,9 +327,9 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseAnd() {
-            //noinspection StatementWithEmptyBody
-            if (is(myTypes.C_CONSTRAINT)) {
+            if (in(myTypes.C_CONSTRAINT)) {
                 // module M = (X) : ( S with ... |>and<| ... ) = ...
+                popEndUntilFoundIndex().popEnd();
             } else if (strictlyIn(myTypes.C_TYPE_DECLARATION)) {
                 popEndUntilFoundIndex().popEnd()
                         .advance()
@@ -378,7 +380,7 @@ public class ResParser extends CommonPsiParser {
                     if (is(myTypes.H_COLLECTION_ITEM) && isHold()) {
                         popEnd();
                     }
-                    advance();
+                    advanceSkipEOL();
                     if (getTokenType() != myTypes.RPAREN) {
                         // not at the end of a list: ie not => (p1, p2<,> )
                         markHolder(myTypes.H_COLLECTION_ITEM)
@@ -388,9 +390,8 @@ public class ResParser extends CommonPsiParser {
                 } else if (isFound(myTypes.C_DECONSTRUCTION)) {
                     popEndUntilScope();
                 } else if (isFound(myTypes.C_RECORD_FIELD) || isFound(myTypes.C_MIXIN_FIELD) || isFound(myTypes.C_OBJECT_FIELD)) {
-                    popEndUntilFoundIndex().popEnd(); //.advance();
+                    popEndUntilFoundIndex().popEnd();
                 }
-
             }
         }
 
@@ -457,7 +458,10 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseType() {
-            if (!is(myTypes.C_MODULE_DECLARATION)) {
+            if (is(myTypes.C_CONSTRAINTS)) {
+                // module M = (X) : ( S with |>type<| ... ) = ...
+                mark(myTypes.C_CONSTRAINT);
+            } else if (!is(myTypes.C_MODULE_DECLARATION)) {
                 popEndUntilScope();
                 mark(myTypes.C_TYPE_DECLARATION);
             }
@@ -732,10 +736,13 @@ public class ResParser extends CommonPsiParser {
                     markScope(myTypes.C_JS_OBJECT, myTypes.LBRACE);
                 }
             } else if (is(myTypes.C_TYPE_BINDING)) {
-                boolean isJsObject = lookAhead(1) == myTypes.STRING_VALUE;
+                boolean isJsObject = lookAheadSkipEOL() == myTypes.STRING_VALUE;
                 markScope(isJsObject ? myTypes.C_JS_OBJECT : myTypes.C_RECORD_EXPR, myTypes.LBRACE);
             } else if (is(myTypes.C_MODULE_BINDING)) {
                 // module M = |>{<| ...
+                updateScopeToken(myTypes.LBRACE);
+            } else if (is(myTypes.C_FUNCTOR_BINDING)) {
+                // module M = (...) => |>{<| ...
                 updateScopeToken(myTypes.LBRACE);
             } else if (isCurrent(myTypes.C_TAG_PROP_VALUE) || isCurrent(myTypes.C_TAG_BODY)) {
                 // A scoped property
@@ -775,6 +782,14 @@ public class ResParser extends CommonPsiParser {
             }
         }
 
+        @Nullable private IElementType lookAheadSkipEOL() {
+            IElementType elementType = lookAhead(1);
+            if (elementType == myTypes.EOL) {
+                elementType = lookAhead(2);
+            }
+            return elementType;
+        }
+
         private void parseRBrace() {
             Marker scope = popEndUntilOneOfElementType(myTypes.LBRACE, myTypes.RECORD, myTypes.SWITCH);
             advance();
@@ -797,6 +812,15 @@ public class ResParser extends CommonPsiParser {
             if (previousElementType(2) == myTypes.UIDENT && previousElementType(1) == myTypes.DOT) { // Local open
                 // M. |>(<| ... )
                 markScope(myTypes.C_LOCAL_OPEN, myTypes.LPAREN);
+            } else if (is(myTypes.C_MODULE_BINDING) && !in(myTypes.C_FUNCTOR_DECLARATION)) { // This is a functor
+                // module M = |>(<| .. )
+                int moduleIndex = indexOfComposite(myTypes.C_MODULE_DECLARATION);
+                dropLatest()
+                        .popEndUntilIndex(moduleIndex)
+                        .updateComposite(myTypes.C_FUNCTOR_DECLARATION)
+                        .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                        .mark(myTypes.C_PARAM_DECLARATION)
+                        .markHolder(myTypes.H_PLACE_HOLDER);
             } else if (is(myTypes.C_FUN_EXPR)) { // A function
                 // |>(<| .  OR  |>(<| ~
                 markScope(myTypes.C_PARAMETERS, myTypes.LPAREN);
@@ -889,7 +913,20 @@ public class ResParser extends CommonPsiParser {
                     mark(myTypes.C_IF_THEN_SCOPE);
                 }
             } else if (scope != null) {
-                if (is(myTypes.C_PARAMETERS)) {
+                if (isRawParent(myTypes.C_FUNCTOR_DECLARATION)) {
+                    popEnd();
+                    if (tokenType == myTypes.COLON) {
+                        // module M = (P) |> :<| R ...
+                        advance();
+                        if (getTokenType() == myTypes.LPAREN) {
+                            markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
+                        }
+                        mark(myTypes.C_FUNCTOR_RESULT);
+                    } else if (tokenType == myTypes.ARROW) {
+                        // module M = (P) |>=><| ...
+                        advance().mark(myTypes.C_FUNCTOR_BINDING);
+                    }
+                } else if (is(myTypes.C_PARAMETERS)) {
                     end();
                     if (isGrandParent(myTypes.C_FUN_CALL)) {
                         popEnd().popEnd().popEnd();
@@ -1055,6 +1092,14 @@ public class ResParser extends CommonPsiParser {
             }
         }
 
+        private void parseWith() {
+            if (in(myTypes.C_FUNCTOR_RESULT)) {
+                // module M (X) : ( S |>with<| ... ) = ...
+                popEndUntilFoundIndex().popEnd().advance()
+                        .mark(myTypes.C_CONSTRAINTS);
+            }
+        }
+
         private void parseArrow() {
             if (isDone(myTypes.C_PARAMETERS) && isRawParent(myTypes.C_FUN_EXPR)) {
                 advance().mark(myTypes.C_FUN_BODY);
@@ -1065,7 +1110,8 @@ public class ResParser extends CommonPsiParser {
                         .markHolder(myTypes.H_PLACE_HOLDER);
             } else if (inScopeOrAny(
                     myTypes.C_LET_BINDING, myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_FIELD_VALUE, myTypes.C_FUN_EXPR,
-                    myTypes.C_PARAM_DECLARATION, myTypes.C_SIG_ITEM, myTypes.C_SIG_EXPR, myTypes.C_TAG_PROP_VALUE
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_SIG_ITEM, myTypes.C_SIG_EXPR, myTypes.C_TAG_PROP_VALUE,
+                    myTypes.C_FUNCTOR_RESULT
             )) {
 
                 if (isFound(myTypes.C_LET_BINDING)) {
@@ -1096,6 +1142,10 @@ public class ResParser extends CommonPsiParser {
                             .mark(myTypes.C_PARAM_DECLARATION)
                             .mark(myTypes.C_FUN_EXPR)
                             .mark(myTypes.C_PARAMETERS);
+                } else if (isFound(myTypes.C_FUNCTOR_RESULT)) {
+                    // module Make = (M) : R |>=><| ...
+                    popEndUntilFoundIndex().popEnd()
+                            .advance().mark(myTypes.C_FUNCTOR_BINDING);
                 } else if (isHold() && !in(myTypes.C_SIG_ITEM)) {
                     // by default, a function
                     rollbackToPos(0);
@@ -1154,6 +1204,13 @@ public class ResParser extends CommonPsiParser {
                 if (end) {
                     popEndUntilScope();
                 }
+            }
+        }
+
+        private void advanceSkipEOL() {
+            advance();
+            while (getTokenType() == myTypes.EOL) {
+                advance();
             }
         }
     }

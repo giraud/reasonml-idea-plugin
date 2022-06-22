@@ -241,4 +241,16 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertEmpty(PsiTreeUtil.findChildrenOfType(f, PsiUpperTagName.class));
         assertSize(2, PsiTreeUtil.findChildrenOfType(f, PsiUpperSymbol.class));
     }
+
+    public void test_ternary_prop() {
+        PsiTag e = firstOfType(parseCode(//
+                "<>\n" +
+                        "  <div> {test ? React.null : <div> {(. x) => <div onClick={(e: option(string), _) => ()} />} </div>} </div>\n" +
+                        "  <div className=Styles.s> <Title text=\"title\" /> </div>\n" +
+                        "</>"), PsiTag.class);
+
+        List<PsiTagProperty> ps = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTagProperty.class));
+        PsiTagProperty p0 = ps.get(0);
+        assertEquals("onClick={(e: option(string), _) => ()}", p0.getText());
+    }
 }

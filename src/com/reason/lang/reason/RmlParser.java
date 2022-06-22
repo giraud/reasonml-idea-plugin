@@ -623,7 +623,7 @@ public class RmlParser extends CommonPsiParser {
                 mark(myTypes.C_SIG_ITEM);
             }
             //
-            else if (inAny(
+            else if (inScopeOrAny(
                     myTypes.C_NAMED_PARAM_DECLARATION, myTypes.C_PARAM_DECLARATION, myTypes.C_NAMED_PARAM,
                     myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.C_TERNARY
             )) {

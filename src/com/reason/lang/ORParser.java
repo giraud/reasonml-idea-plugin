@@ -600,25 +600,6 @@ public abstract class ORParser<T> {
         return this;
     }
 
-    public @NotNull ORParser<T> rollbackTo(@NotNull Marker marker) {
-        Marker current = myMarkers.peek();
-        while (current != null) {
-            if (current == marker) {
-                break;
-            }
-            myMarkers.pop();
-            current = myMarkers.isEmpty() ? null : myMarkers.peek();
-        }
-
-        myMarkers.pop().rollbackTo();
-        if (myVerbose) {
-            System.out.println("rollbacked to: " + myBuilder.getCurrentOffset() + ", " + myBuilder.getTokenType() + "(" + myBuilder.getTokenText() + ")");
-        }
-
-        dontMove = true;
-        return this;
-    }
-
     public @NotNull ORParser<T> rollbackToFoundIndex() {
         for (int i = 0; i < myIndex; i++) {
             myMarkers.pop();
@@ -677,6 +658,14 @@ public abstract class ORParser<T> {
             if (marker.isHold()) {
                 marker.resetStatus();
             }
+        }
+        return this;
+    }
+
+    public ORParser<T> dropLatest() {
+        Marker marker = getLatestMarker();
+        if (marker != null) {
+            marker.drop();
         }
         return this;
     }

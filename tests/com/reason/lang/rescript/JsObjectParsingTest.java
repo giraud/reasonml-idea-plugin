@@ -23,7 +23,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
     }
 
     public void test_definition() {
-        PsiType e = first(typeExpressions(parseCode("type t = {\"a\": UUID.t, \"b\": int}")));
+        PsiType e = first(typeExpressions(parseCode("type t = {\n \"a\": UUID.t, \"b\": array<int>\n }")));
 
         PsiElement binding = e.getBinding();
         PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
@@ -34,7 +34,8 @@ public class JsObjectParsingTest extends ResParsingTestCase {
         assertEquals("a", fields.get(0).getName());
         assertEquals("UUID.t", fields.get(0).getSignature().getText());
         assertEquals("b", fields.get(1).getName());
-        assertEquals("int", fields.get(1).getSignature().getText());
+        assertEquals("array<int>", fields.get(1).getSignature().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiTagStart.class));
     }
 
     public void test_in_function() {
@@ -87,4 +88,5 @@ public class JsObjectParsingTest extends ResParsingTestCase {
         List<PsiObjectField> fields = new ArrayList<>(o.getFields());
         assertSize(3, fields);
         assertInstanceOf(fields.get(0).getValue(), PsiJsObject.class);
-    }}
+    }
+}
