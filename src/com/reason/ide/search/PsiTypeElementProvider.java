@@ -30,16 +30,12 @@ public class PsiTypeElementProvider {
         if (element instanceof PsiExternal) {
             return "external";
         }
-
-        //if (element instanceof PsiUpperSymbol) { // zzz missing
-        //    if (parent instanceof PsiVariantDeclaration) {
-        //        return "variant";
-        //    }
-        //} else if (element instanceof PsiLowerSymbol) {
-        //    if (parent instanceof PsiParameter) {
-        //        return "parameter";
-        //    }
-        //}
+        if (element instanceof PsiVariantDeclaration) {
+            return "variant";
+        }
+        if (element instanceof PsiParameterDeclaration) {
+            return "parameter";
+        }
 
         return null;
     }
