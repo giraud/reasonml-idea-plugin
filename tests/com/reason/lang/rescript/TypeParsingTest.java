@@ -109,7 +109,6 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals("reactClass", items.get(0).getText());
         assertEquals("~props: {..}=?", items.get(1).getText());
         assertTrue(items.get(1).isNamedItem());
-        //PsiNamedParam namedParam = items.get(1).getNamedParam(); zzz
         assertEquals("props", items.get(1).getName());
         assertEquals("{..}", items.get(1).getSignature().getText());
         assertTrue(items.get(1).isOptional());
