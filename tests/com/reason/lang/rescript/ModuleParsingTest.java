@@ -7,6 +7,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.reason.*;
 
 import java.util.*;
 
@@ -18,6 +19,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals(1, modules.size());
         PsiInnerModule e = (PsiInnerModule) first(modules);
         assertEquals("M", e.getName());
+        assertEquals(ResTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
         assertEquals("{}", e.getBody().getText());
     }
 

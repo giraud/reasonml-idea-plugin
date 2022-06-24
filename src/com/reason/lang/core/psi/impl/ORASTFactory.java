@@ -212,7 +212,7 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
 
     @Override
     public @Nullable LeafElement createLeaf(@NotNull IElementType type, @NotNull CharSequence text) {
-        if (type == myTypes.UIDENT || type == myTypes.A_VARIANT_NAME) {
+        if (type == myTypes.UIDENT || type == myTypes.A_VARIANT_NAME || type == myTypes.A_MODULE_NAME) {
             if (!DUMMY_IDENTIFIER_TRIMMED.contentEquals(text)) {
                 return new PsiUpperSymbol(myTypes, type, text);
             }

@@ -74,6 +74,18 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     }
     //endregion
 
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
+
     @Override public @Nullable String[] getQualifiedNameAsPath() {
         return ORUtil.getQualifiedNameAsPath(this);
     }

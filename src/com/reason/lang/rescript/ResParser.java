@@ -235,7 +235,7 @@ public class ResParser extends CommonPsiParser {
         private void parseRef() {
             if (is(myTypes.C_RECORD_EXPR)) {
                 // { |>x<| ...
-                mark(myTypes.C_RECORD_FIELD).wrapAtom(myTypes.A_LOWER_SYMBOL);
+                mark(myTypes.C_RECORD_FIELD).wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (strictlyIn(myTypes.C_TAG_START)) {
                 remapCurrentToken(myTypes.PROPERTY_NAME).mark(myTypes.C_TAG_PROPERTY);
             }
@@ -307,18 +307,18 @@ public class ResParser extends CommonPsiParser {
             if (is(myTypes.C_PARAMETERS)) {
                 mark(myTypes.C_PARAM_DECLARATION)
                         .mark(myTypes.C_NAMED_PARAM_DECLARATION).advance()
-                        .wrapAtom(myTypes.A_LOWER_SYMBOL);
+                        .wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (strictlyIn(myTypes.C_SIG_EXPR) && !is(myTypes.C_SIG_ITEM)) {
                 mark(myTypes.C_SIG_ITEM)
                         .mark(myTypes.C_NAMED_PARAM_DECLARATION).advance()
-                        .wrapAtom(myTypes.A_LOWER_SYMBOL);
+                        .wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (isCurrent(myTypes.C_PARAM)) {
                 updateComposite(myTypes.C_NAMED_PARAM);
             } else if (isCurrent(myTypes.C_PARAM_DECLARATION)) {
                 updateComposite(myTypes.C_NAMED_PARAM_DECLARATION);
             } else {
                 mark(myTypes.C_NAMED_PARAM_DECLARATION).advance()
-                        .wrapAtom(myTypes.A_LOWER_SYMBOL);
+                        .wrapAtom(myTypes.CA_LOWER_SYMBOL);
             }
         }
 
@@ -641,27 +641,27 @@ public class ResParser extends CommonPsiParser {
 
             if (is(myTypes.C_EXTERNAL_DECLARATION)) {
                 // external |>x<| ...
-                wrapAtom(myTypes.A_LOWER_SYMBOL);
+                wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (is(myTypes.C_LET_DECLARATION)) {
                 // let |>x<| ...
-                wrapAtom(myTypes.A_LOWER_SYMBOL);
+                wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (is(myTypes.C_TYPE_DECLARATION)) {
                 // type |>x<| ...
-                wrapAtom(myTypes.A_LOWER_SYMBOL);
+                wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (is(myTypes.C_FUN_EXPR)) {
                 mark(myTypes.C_PARAMETERS)
-                        .mark(myTypes.C_PARAM_DECLARATION).wrapAtom(myTypes.A_LOWER_SYMBOL);
+                        .mark(myTypes.C_PARAM_DECLARATION).wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (isCurrent(myTypes.C_PARAMETERS) && (isParent(myTypes.C_FUN_EXPR) || isParent(myTypes.C_FUN_CALL))) {
-                mark(myTypes.C_PARAM_DECLARATION).wrapAtom(myTypes.A_LOWER_SYMBOL);
+                mark(myTypes.C_PARAM_DECLARATION).wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (is(myTypes.C_RECORD_EXPR)) {
                 // { |>x<| ...
                 mark(myTypes.C_RECORD_FIELD)
-                        .wrapAtom(myTypes.A_LOWER_SYMBOL);
+                        .wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (is(myTypes.C_TAG_START)) {
                 // tag name
-                remapCurrentToken(myTypes.A_LOWER_TAG_NAME).wrapAtom(myTypes.A_LOWER_SYMBOL);
+                remapCurrentToken(myTypes.A_LOWER_TAG_NAME).wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (is(myTypes.C_DECONSTRUCTION)) {
-                wrapAtom(myTypes.A_LOWER_SYMBOL);
+                wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (strictlyIn(myTypes.C_TAG_START) && !isCurrent(myTypes.C_TAG_PROP_VALUE)) { // no scope
                 // This is a property
                 remapCurrentToken(myTypes.PROPERTY_NAME)
@@ -674,16 +674,16 @@ public class ResParser extends CommonPsiParser {
                     // this is a record usage ::  { |>x<| : ...
                     updateComposite(myTypes.C_RECORD_EXPR)
                             .mark(myTypes.C_RECORD_FIELD)
-                            .wrapAtom(myTypes.A_LOWER_SYMBOL);
+                            .wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 } else if (nextElementType == myTypes.LPAREN && !is(myTypes.C_MACRO_NAME)) { // a function call
                     // |>x<| ( ...
                     endLikeSemi2();
-                    mark(myTypes.C_FUN_CALL).wrapAtom(myTypes.A_LOWER_SYMBOL);
+                    mark(myTypes.C_FUN_CALL).wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 } else if (is(myTypes.C_SIG_EXPR) || (isScope(myTypes.LPAREN) && isRawParent(myTypes.C_SIG_EXPR))) {
                     mark(myTypes.C_SIG_ITEM)
-                            .wrapAtom(myTypes.A_LOWER_SYMBOL).popEnd();
+                            .wrapAtom(myTypes.CA_LOWER_SYMBOL).popEnd();
                 } else {
-                    wrapAtom(myTypes.A_LOWER_SYMBOL).popEnd();
+                    wrapAtom(myTypes.CA_LOWER_SYMBOL).popEnd();
                 }
             }
         }
@@ -1000,30 +1000,30 @@ public class ResParser extends CommonPsiParser {
 
             if (is(myTypes.C_MODULE_DECLARATION)) {
                 // module |>M<| ...
-                wrapAtom(myTypes.A_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ...
-                wrapAtom(myTypes.A_UPPER_SYMBOL);
+                wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (isCurrent(myTypes.C_TAG_START) || isCurrent(myTypes.C_TAG_CLOSE)) {
                 // tag name
-                remapCurrentToken(myTypes.A_UPPER_TAG_NAME).wrapAtom(myTypes.A_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_UPPER_TAG_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (isCurrent(myTypes.C_OPEN)) { // It is a module name/path, or maybe a functor call
                 // open |>M<| ...
-                wrapAtom(myTypes.A_UPPER_SYMBOL);
+                wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 IElementType nextToken = getTokenType();
                 if (nextToken != myTypes.LPAREN && nextToken != myTypes.DOT) {
                     popEndUntil(myTypes.C_OPEN).popEnd();
                 }
             } else if (isCurrent(myTypes.C_INCLUDE)) { // It is a module name/path, or maybe a functor call
                 // include |>M<| ...
-                wrapAtom(myTypes.A_UPPER_SYMBOL);
+                wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 IElementType nextToken = getTokenType();
                 if (nextToken != myTypes.LPAREN && nextToken != myTypes.DOT) {
                     popEndUntil(myTypes.C_INCLUDE).popEnd();
                 }
             } else if (is(myTypes.C_VARIANT_DECLARATION)) { // Declaring a variant
                 // type t = | |>X<| ..
-                remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.A_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 if (getTokenType() == myTypes.LPAREN) {
                     markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
                             .mark(myTypes.C_PARAM_DECLARATION);
@@ -1031,12 +1031,12 @@ public class ResParser extends CommonPsiParser {
             } else if (is(myTypes.C_TYPE_BINDING)) {
                 IElementType nextToken = lookAhead(1);
                 if (nextToken == myTypes.DOT) { // a path
-                    wrapAtom(myTypes.A_UPPER_SYMBOL);
+                    wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 } else { // We are declaring a variant without a pipe before
                     // type t = |>X<| | ...
                     // type t = |>X<| (...) | ...
                     mark(myTypes.C_VARIANT_DECLARATION)
-                            .remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.A_UPPER_SYMBOL);
+                            .remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                     if (getTokenType() == myTypes.LPAREN) {
                         markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
                                 .mark(myTypes.C_PARAM_DECLARATION);
@@ -1055,14 +1055,14 @@ public class ResParser extends CommonPsiParser {
                     mark(myTypes.C_FUNCTOR_CALL);
                 } else if (((isCurrent(myTypes.C_PATTERN_MATCH_EXPR) || isCurrent(myTypes.C_LET_BINDING))) && nextToken != myTypes.DOT) { // Pattern matching a variant or using it
                     // switch c { | |>X<| ... / let x = |>X<| ...
-                    remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.A_UPPER_SYMBOL);
+                    remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                     if (getTokenType() == myTypes.LPAREN) {
                         markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
                                 .markHolder(myTypes.H_COLLECTION_ITEM);
                     }
                 } else {
                     endLikeSemi2();
-                    wrapAtom(myTypes.A_UPPER_SYMBOL);
+                    wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
             }
         }

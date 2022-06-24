@@ -103,11 +103,12 @@ public class OclTypes extends ORTypes {
 
         // Atom types
 
-        A_LOWER_SYMBOL = new ORCompositeElementType("A_LOWER_SYMBOL", OclLanguage.INSTANCE);
-        A_UPPER_SYMBOL = new ORCompositeElementType("A_UPPER_SYMBOL", OclLanguage.INSTANCE);
+        CA_LOWER_SYMBOL = new ORCompositeElementType("CA_LOWER_SYMBOL", OclLanguage.INSTANCE);
+        CA_UPPER_SYMBOL = new ORCompositeElementType("CA_UPPER_SYMBOL", OclLanguage.INSTANCE);
         A_LOWER_TAG_NAME = new ORTokenElementType("A_LOWER_TAG_NAME", OclLanguage.INSTANCE);
         A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", OclLanguage.INSTANCE);
         A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", OclLanguage.INSTANCE);
+        A_MODULE_NAME = new ORTokenElementType("A_MODULE_NAME", OclLanguage.INSTANCE);
 
         // Dummy types
 

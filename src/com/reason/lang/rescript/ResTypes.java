@@ -101,11 +101,12 @@ public class ResTypes extends ORTypes {
 
         // Atom types
 
-        A_LOWER_SYMBOL = new ORCompositeElementType("A_LOWER_SYMBOL", ResLanguage.INSTANCE);
-        A_UPPER_SYMBOL = new ORCompositeElementType("A_UPPER_SYMBOL", ResLanguage.INSTANCE);
+        CA_LOWER_SYMBOL = new ORCompositeElementType("CA_LOWER_SYMBOL", ResLanguage.INSTANCE);
+        CA_UPPER_SYMBOL = new ORCompositeElementType("CA_UPPER_SYMBOL", ResLanguage.INSTANCE);
         A_LOWER_TAG_NAME = new ORTokenElementType("A_LOWER_TAG_NAME", ResLanguage.INSTANCE);
         A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", ResLanguage.INSTANCE);
         A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", ResLanguage.INSTANCE);
+        A_MODULE_NAME = new ORTokenElementType("A_MODULE_NAME", ResLanguage.INSTANCE);
 
         // Dummy types
 

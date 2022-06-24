@@ -23,7 +23,7 @@ import java.util.*;
 import static com.reason.lang.core.ORFileType.*;
 import static java.util.Collections.*;
 
-public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStub> implements PsiInnerModule {
+public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStub> implements PsiInnerModule, PsiNameIdentifierOwner {
     // region Constructors
     public PsiInnerModuleImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
@@ -35,7 +35,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     // endregion
 
     // region NamedElement
-    private @Nullable PsiElement getNameIdentifier() {
+    public @Nullable PsiElement getNameIdentifier() {
         return findChildByClass(PsiUpperSymbol.class);
     }
 

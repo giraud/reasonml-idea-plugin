@@ -6,6 +6,7 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.reason.*;
 
 import java.util.*;
 
@@ -17,6 +18,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(1, modules.size());
         PsiInnerModule e = (PsiInnerModule) first(modules);
         assertEquals("M", e.getName());
+        assertEquals(OclTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
         assertEquals("Dummy.M", e.getQualifiedName());
         assertEquals("struct end", e.getBody().getText());
     }

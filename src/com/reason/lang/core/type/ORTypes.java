@@ -96,11 +96,12 @@ public abstract class ORTypes {
 
     // Atom types
 
-    public ORCompositeType A_LOWER_SYMBOL;
-    public ORCompositeType A_UPPER_SYMBOL;
+    public ORCompositeType CA_LOWER_SYMBOL;
+    public ORCompositeType CA_UPPER_SYMBOL;
     public ORTokenElementType A_LOWER_TAG_NAME;
     public ORTokenElementType A_UPPER_TAG_NAME;
     public ORTokenElementType A_VARIANT_NAME;
+    public ORTokenElementType A_MODULE_NAME;
 
     // Dummy types
 

@@ -101,11 +101,12 @@ public class RmlTypes extends ORTypes {
 
         // Atom types
 
-        A_LOWER_SYMBOL = new ORCompositeElementType("A_LOWER_SYMBOL", RmlLanguage.INSTANCE);
-        A_UPPER_SYMBOL = new ORCompositeElementType("A_UPPER_SYMBOL", RmlLanguage.INSTANCE);
+        CA_LOWER_SYMBOL = new ORCompositeElementType("CA_LOWER_SYMBOL", RmlLanguage.INSTANCE);
+        CA_UPPER_SYMBOL = new ORCompositeElementType("CA_UPPER_SYMBOL", RmlLanguage.INSTANCE);
         A_LOWER_TAG_NAME = new ORTokenElementType("A_LOWER_TAG_NAME", RmlLanguage.INSTANCE);
         A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", RmlLanguage.INSTANCE);
         A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", RmlLanguage.INSTANCE);
+        A_MODULE_NAME = new ORTokenElementType("A_MODULE_NAME", RmlLanguage.INSTANCE);
 
         // Dummy types
 
