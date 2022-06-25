@@ -68,15 +68,15 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertInstanceOf(tagStart.getNameIdentifier(), PsiUpperTagName.class);
         assertEquals("Test", tagStart.getNameIdentifier().getText());
         PsiElement nextSibling = tagStart.getFirstChild().getNextSibling();
-        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
         nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
 
         PsiTagClose tagClose = first(PsiTreeUtil.findChildrenOfType(let, PsiTagClose.class));
         nextSibling = tagClose.getFirstChild().getNextSibling();
-        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
         nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
     }
 
     public void test_tag_prop_with_paren() {
@@ -253,4 +253,6 @@ public class JsxParsingTest extends RmlParsingTestCase {
         PsiTagProperty p0 = ps.get(0);
         assertEquals("onClick={(e: option(string), _) => ()}", p0.getText());
     }
+
+    // spacedetails ??
 }

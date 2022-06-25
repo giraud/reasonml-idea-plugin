@@ -13,14 +13,14 @@ import java.util.*;
 public class PolyVariantParsingTest extends ResParsingTestCase {
     public void test_basic_LIdent() {
         PsiLet e = first(letExpressions(parseCode("let x = #red")));
-        PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), m_types.POLY_VARIANT));
+        PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
 
         assertEquals("#red", variant.getText());
     }
 
     public void test_basic_UIdent() {
         PsiLet e = first(letExpressions(parseCode("let x = #Red")));
-        PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), m_types.POLY_VARIANT));
+        PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
 
         assertEquals("#Red", variant.getText());
     }

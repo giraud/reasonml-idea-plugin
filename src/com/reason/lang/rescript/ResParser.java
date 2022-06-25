@@ -37,7 +37,7 @@ public class ResParser extends CommonPsiParser {
                     long parseTime = System.currentTimeMillis();
                     if (5000 < parseTime - parseStart) {
                         if (myIsSafe) { // Don't do that in tests
-                            error("Cancel");
+                            error("Cancel parsing, took too much time.");
                             //LOG.error("CANCEL RESCRIPT PARSING:\n" + myBuilder.getOriginalText());
                             break;
                         }
@@ -548,7 +548,7 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseLt() {
-            if (is(myTypes.C_OPTION) || is(myTypes.C_SIG_ITEM)) {
+            if (is(myTypes.C_OPTION) || in(myTypes.C_SIG_ITEM)) {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LT);
             } else if (strictlyIn(myTypes.C_TYPE_DECLARATION)) { // type parameters
                 // type t |> < <| 'a >
@@ -580,27 +580,20 @@ public class ResParser extends CommonPsiParser {
                 popEnd();
             }
 
-
             // else
-            if (is(myTypes.C_SCOPED_EXPR)) {
-                if (isRawParent(myTypes.C_OPTION)) {
-                    // option < ... |> > <| ...
-                    advance().popEnd().popEnd();
-                } else if (isRawParent(myTypes.C_SIG_ITEM)) {
-                    // : ... < ... |> ><| ...
-                    advance().popEnd();
-                }
-            } else if (strictlyIn(myTypes.C_TAG_START)) {
-                advance()
-                        .popEndUntilFoundIndex()
-                        .end();
+            if (strictlyIn(myTypes.C_TAG_START)) {
+                advance().popEndUntilFoundIndex().end();
                 mark(myTypes.C_TAG_BODY);
             } else if (strictlyIn(myTypes.C_TAG_CLOSE)) {
-                advance()
-                        .popEndUntil(myTypes.C_TAG)
-                        .end();
+                advance().popEndUntil(myTypes.C_TAG).end();
             } else if (strictlyIn(myTypes.C_PARAMETERS)) {
                 popEndUntilFoundIndex().advance().end();
+            } else if (in(myTypes.C_SCOPED_EXPR) && isFoundScope(myTypes.LT)) {
+                popEndUntilFoundIndex().advance().popEnd();
+                if (isRawParent(myTypes.C_OPTION)) {
+                    // option < ... |> > <| ...
+                    popEnd();
+                }
             }
         }
 
@@ -689,7 +682,7 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseLBracket() {
-            if (previousElementType(2) == myTypes.UIDENT && previousElementType(1) == myTypes.DOT) { // Local open
+            if (previousElementType(2) == myTypes.A_MODULE_NAME && previousElementType(1) == myTypes.DOT) { // Local open
                 // M. |>[ <| ...
                 markScope(myTypes.C_LOCAL_OPEN, myTypes.LBRACKET);
             } else {
@@ -726,7 +719,7 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseLBrace() {
-            if (previousElementType(1) == myTypes.DOT && previousElementType(2) == myTypes.UIDENT) { // Local open a js object or a record
+            if (previousElementType(1) == myTypes.DOT && previousElementType(2) == myTypes.A_MODULE_NAME) { // Local open a js object or a record
                 // Xxx.|>{<| ... }
                 mark(myTypes.C_LOCAL_OPEN);
                 IElementType nextElementType = lookAhead(1);
@@ -809,7 +802,7 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseLParen() {
-            if (previousElementType(2) == myTypes.UIDENT && previousElementType(1) == myTypes.DOT) { // Local open
+            if (previousElementType(2) == myTypes.A_MODULE_NAME && previousElementType(1) == myTypes.DOT) { // Local open
                 // M. |>(<| ... )
                 markScope(myTypes.C_LOCAL_OPEN, myTypes.LPAREN);
             } else if (is(myTypes.C_MODULE_BINDING) && !in(myTypes.C_FUNCTOR_DECLARATION)) { // This is a functor
@@ -869,22 +862,14 @@ public class ResParser extends CommonPsiParser {
             }
             //
             else if (strictlyInAny(
-                    myTypes.C_OPEN, myTypes.C_INCLUDE, myTypes.C_VARIANT_DECLARATION, myTypes.C_FUNCTOR_DECLARATION,
-                    myTypes.C_FUNCTOR_CALL, myTypes.C_FUNCTOR_RESULT
+                    myTypes.C_OPEN, myTypes.C_INCLUDE, myTypes.C_FUNCTOR_DECLARATION, myTypes.C_FUNCTOR_RESULT
             )) {
 
                 if (isFound(myTypes.C_OPEN) || isFound(myTypes.C_INCLUDE)) { // Functor call
                     // open M |>(<| ...
                     markBefore(0, myTypes.C_FUNCTOR_CALL)
                             .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance();
-                }
-                //else if (isFound(myTypes.C_VARIANT_DECLARATION)) { // Variant constructor
-                //    // type t = | Variant |>(<| .. )
-                //    markScope(myTypes.C_PARAMETERS, myTypes.LPAREN)
-                //            .advance()
-                //            .mark(myTypes.C_PARAM_DECLARATION);
-                //}
-                else if (isFound(myTypes.C_FUNCTOR_DECLARATION) || isFound(myTypes.C_FUNCTOR_CALL)) {
+                } else if (isFound(myTypes.C_FUNCTOR_DECLARATION)) {
                     // module M = |>(<| ...
                     // module M = ( ... ) : |>(<| ...
                     boolean isCall = isFound(myTypes.C_FUNCTOR_CALL);
@@ -1001,6 +986,23 @@ public class ResParser extends CommonPsiParser {
             if (is(myTypes.C_MODULE_DECLARATION)) {
                 // module |>M<| ...
                 remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_MODULE_BINDING)) {
+                IElementType nextElement = lookAhead(1);
+                if (nextElement == myTypes.LPAREN) {
+                    // functor call ::  |>X<| ( ...
+                    // functor call with path :: A.B.|>X<| ( ...
+                    mark(myTypes.C_FUNCTOR_CALL)
+                            .remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL)
+                            .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                            .mark(myTypes.C_PARAM);
+                } else {
+                    // module M = |>X<|
+                    // module M = X.|>Y<|
+                    remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                    if (nextElement != myTypes.DOT) {
+                        popEndUntil(myTypes.C_MODULE_DECLARATION).popEnd();
+                    }
+                }
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ...
                 wrapAtom(myTypes.CA_UPPER_SYMBOL);
@@ -1009,14 +1011,14 @@ public class ResParser extends CommonPsiParser {
                 remapCurrentToken(myTypes.A_UPPER_TAG_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (isCurrent(myTypes.C_OPEN)) { // It is a module name/path, or maybe a functor call
                 // open |>M<| ...
-                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 IElementType nextToken = getTokenType();
                 if (nextToken != myTypes.LPAREN && nextToken != myTypes.DOT) {
                     popEndUntil(myTypes.C_OPEN).popEnd();
                 }
             } else if (isCurrent(myTypes.C_INCLUDE)) { // It is a module name/path, or maybe a functor call
                 // include |>M<| ...
-                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 IElementType nextToken = getTokenType();
                 if (nextToken != myTypes.LPAREN && nextToken != myTypes.DOT) {
                     popEndUntil(myTypes.C_INCLUDE).popEnd();
@@ -1031,7 +1033,7 @@ public class ResParser extends CommonPsiParser {
             } else if (is(myTypes.C_TYPE_BINDING)) {
                 IElementType nextToken = lookAhead(1);
                 if (nextToken == myTypes.DOT) { // a path
-                    wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                    remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 } else { // We are declaring a variant without a pipe before
                     // type t = |>X<| | ...
                     // type t = |>X<| (...) | ...
@@ -1045,15 +1047,7 @@ public class ResParser extends CommonPsiParser {
             } else {
                 IElementType nextToken = lookAhead(1);
 
-                if (isCurrent(myTypes.C_MODULE_BINDING) && nextToken == myTypes.LPAREN) {
-                    // functor call ::  |>X<| ( ...
-                    // functor call with path :: A.B.|>X<| ( ...
-                    Marker current = getActiveMarker();
-                    if (current != null) {
-                        current.drop();
-                    }
-                    mark(myTypes.C_FUNCTOR_CALL);
-                } else if (((isCurrent(myTypes.C_PATTERN_MATCH_EXPR) || isCurrent(myTypes.C_LET_BINDING))) && nextToken != myTypes.DOT) { // Pattern matching a variant or using it
+                if (((isCurrent(myTypes.C_PATTERN_MATCH_EXPR) || isCurrent(myTypes.C_LET_BINDING))) && nextToken != myTypes.DOT) { // Pattern matching a variant or using it
                     // switch c { | |>X<| ... / let x = |>X<| ...
                     remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                     if (getTokenType() == myTypes.LPAREN) {
@@ -1062,7 +1056,8 @@ public class ResParser extends CommonPsiParser {
                     }
                 } else {
                     endLikeSemi2();
-                    wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                    remapCurrentToken(nextToken == myTypes.RIGHT_ARROW ? myTypes.A_VARIANT_NAME : myTypes.A_MODULE_NAME)
+                            .wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
             }
         }

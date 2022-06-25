@@ -32,7 +32,7 @@ public class PsiOpenImpl extends PsiTokenStub<ORTypes, PsiOpen, PsiOpenStub> imp
             return openPath == null ? "" : openPath;
         }
 
-        PsiElement firstModule = ORUtil.findImmediateFirstChildOfType(this, myTypes.UIDENT);
+        PsiElement firstModule = ORUtil.findImmediateFirstChildOfType(this, myTypes.A_MODULE_NAME);
         PsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
         if (functorCall != null) {
             String path = "";

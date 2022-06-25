@@ -797,7 +797,7 @@ public class RmlParser extends CommonPsiParser {
             } else if (nextType == myTypes.PERCENT) {
                 // |>[ <| % ...
                 markScope(myTypes.C_MACRO_EXPR, myTypes.LBRACKET);
-            } else if (previousElementType(2) == myTypes.UIDENT && previousElementType(1) == myTypes.DOT) { // Local open
+            } else if (previousElementType(2) == myTypes.A_MODULE_NAME && previousElementType(1) == myTypes.DOT) { // Local open
                 // M.|>(<| ...
                 markScope(myTypes.C_LOCAL_OPEN, myTypes.LBRACKET);
             } else if (nextType == myTypes.GT) {
@@ -834,7 +834,7 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseLBrace() {
-            if (previousElementType(2) == myTypes.UIDENT && previousElementType(1) == myTypes.DOT) { // Local open a js object or a record
+            if (previousElementType(2) == myTypes.A_MODULE_NAME && previousElementType(1) == myTypes.DOT) { // Local open a js object or a record
                 // Xxx.|>{<| ... }
                 mark(myTypes.C_LOCAL_OPEN);
                 IElementType nextElementType = lookAhead(1);
@@ -928,7 +928,7 @@ public class RmlParser extends CommonPsiParser {
                 //  let |>(<| + ) =
                 //  let |>(<| a, b ) =
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
-            } else if (previousElementType(2) == myTypes.UIDENT && previousElementType(1) == myTypes.DOT) { // Local open
+            } else if (previousElementType(2) == myTypes.A_MODULE_NAME && previousElementType(1) == myTypes.DOT) { // Local open
                 // M.|>(<| ...
                 markScope(myTypes.C_LOCAL_OPEN, myTypes.LPAREN);
             } else if (is(myTypes.C_MODULE_BINDING) && !in(myTypes.C_FUNCTOR_DECLARATION)) { // This is a functor
@@ -969,11 +969,6 @@ public class RmlParser extends CommonPsiParser {
                     popEndUntil(myTypes.C_CLASS_DECLARATION).
                             markScope(myTypes.C_CLASS_CONSTR, myTypes.LPAREN);
                 }
-            } else if (inAny(myTypes.C_OPEN, myTypes.C_INCLUDE)) { // a functor call inside open/include
-                // open/include M |>(<| ...
-                markBefore(0, myTypes.C_FUNCTOR_CALL)
-                        .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
-                        .mark(myTypes.C_PARAM_DECLARATION);
             } else {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
                 markHolder(myTypes.H_COLLECTION_ITEM);
@@ -997,7 +992,7 @@ public class RmlParser extends CommonPsiParser {
 
                 if (isRawParent(myTypes.C_FUN_CALL)) {
                     popEnd().popEnd();
-                } else if (isRawParent(myTypes.C_FUNCTOR_DECLARATION)) {
+                } else if (is(myTypes.C_FUNCTOR_DECLARATION)) {
                     if (nextTokenType == myTypes.COLON) {
                         // module M = (P) |> :<| R ...
                         advance();
@@ -1079,7 +1074,7 @@ public class RmlParser extends CommonPsiParser {
                 remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_VARIANT_DECLARATION)) {
                 // type t = | |>X<| ..
-                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ..
                 wrapAtom(myTypes.CA_UPPER_SYMBOL);
@@ -1091,20 +1086,20 @@ public class RmlParser extends CommonPsiParser {
 
                 if (is(myTypes.C_TYPE_BINDING) && nextToken != myTypes.DOT) {
                     // We are declaring a variant without a pipe before ::  type t = |>X<| | ...
-                    mark(myTypes.C_VARIANT_DECLARATION).wrapAtom(myTypes.CA_UPPER_SYMBOL);
-                } else if (isCurrent(myTypes.C_MODULE_BINDING) && nextToken == myTypes.LPAREN) {
+                    mark(myTypes.C_VARIANT_DECLARATION)
+                            .remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                } else if (nextToken == myTypes.LPAREN && (isCurrent(myTypes.C_MODULE_BINDING) || isCurrent(myTypes.C_OPEN) || isCurrent(myTypes.C_INCLUDE))) {
                     // functor call ::  |>X<| ( ...
                     // functor call with path :: A.B.|>X<| ( ...
-                    Marker marker = getActiveMarker();
-                    if (marker != null) {
-                        marker.drop();
-                        mark(myTypes.C_FUNCTOR_CALL);
-                    }
-                    wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                    mark(myTypes.C_FUNCTOR_CALL)
+                            .remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 } else if (((isCurrent(myTypes.C_PATTERN_MATCH_EXPR) || isCurrent(myTypes.C_LET_BINDING))) && nextToken != myTypes.DOT) { // Pattern matching a variant or using it
                     // switch (c) { | |>X<| ... / let x = |>X<| ...
                     remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 } else {
+                    remapCurrentToken(nextToken == myTypes.DOT || isCurrent(myTypes.C_MODULE_BINDING)
+                            || isCurrent(myTypes.C_OPEN) || isCurrent(myTypes.C_INCLUDE)
+                            ? myTypes.A_MODULE_NAME : myTypes.A_VARIANT_NAME);
                     wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
             }

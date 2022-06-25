@@ -202,13 +202,13 @@ public class ORUtil {
     }
 
     @Nullable
-    public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull IElementType elementType) {
+    public static PsiElement findImmediateFirstChildOfType(@Nullable PsiElement element, @NotNull IElementType elementType) {
         Collection<PsiElement> children = findImmediateChildrenOfType(element, elementType);
         return children.isEmpty() ? null : children.iterator().next();
     }
 
 
-    public static @Nullable PsiElement findImmediateLastChildOfType(@NotNull PsiElement element, @NotNull IElementType elementType) {
+    public static @Nullable PsiElement findImmediateLastChildOfType(@Nullable PsiElement element, @NotNull IElementType elementType) {
         Collection<PsiElement> children = findImmediateChildrenOfType(element, elementType);
         Iterator<PsiElement> it = children.iterator();
 
@@ -221,12 +221,12 @@ public class ORUtil {
     }
 
     @Nullable
-    public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull ORCompositeType elementType) {
+    public static PsiElement findImmediateFirstChildOfType(@Nullable PsiElement element, @NotNull ORCompositeType elementType) {
         return findImmediateFirstChildOfType(element, (IElementType) elementType);
     }
 
     @Nullable
-    public static PsiElement findImmediateLastChildOfType(@NotNull PsiElement element, @NotNull ORCompositeType elementType) {
+    public static PsiElement findImmediateLastChildOfType(@Nullable PsiElement element, @NotNull ORCompositeType elementType) {
         return findImmediateLastChildOfType(element, (IElementType) elementType);
     }
 
@@ -354,10 +354,10 @@ public class ORUtil {
         ORTypes types = getTypes(language);
         StringBuilder aliasName = new StringBuilder();
         IElementType elementType = currentElement == null ? null : currentElement.getNode().getElementType();
-        while (elementType != null && elementType != types.SEMI) {
-            if (elementType != TokenType.WHITE_SPACE && elementType != types.UIDENT && elementType != types.DOT) {
+        while (elementType != null && elementType != types.SEMI && elementType != types.EOL) {
+            if (elementType != TokenType.WHITE_SPACE && elementType != types.A_MODULE_NAME && elementType != types.DOT) {
                 // if last term is lower symbol, and we accept lower symbol, then it's an alias
-                if (elementType != types.LIDENT || currentElement.getNextSibling() != null || !lowerAccepted) {
+                if ((elementType != types.LIDENT && elementType != types.A_VARIANT_NAME) || currentElement.getNextSibling() != null || !lowerAccepted) {
                     isALias = false;
                     break;
                 }

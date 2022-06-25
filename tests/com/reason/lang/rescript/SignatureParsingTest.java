@@ -1,5 +1,6 @@
 package com.reason.lang.rescript;
 
+import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -123,6 +124,12 @@ public class SignatureParsingTest extends ResParsingTestCase {
         PsiSignature signature = let.getSignature();
         // assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
         // signature.asString(getLangProps()));
+    }
+
+    public void test_no_tag() {
+        PsiExternal e = firstOfType(parseCode("external make: (. Js.Dict.t<Js.Json.t>) => string"), PsiExternal.class);
+
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiTag.class));
     }
 
     // TODO later

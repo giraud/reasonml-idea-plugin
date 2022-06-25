@@ -18,7 +18,7 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
         assertEquals("`this is a ${var} Template string`", b.getText());
 
         PsiInterpolation inter = (PsiInterpolation) b.getFirstChild();
-        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, m_types.C_INTERPOLATION_PART);
+        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, myTypes.C_INTERPOLATION_PART);
         assertSize(2, parts);
         PsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, PsiInterpolationReference.class);
         assertEquals(ref.getText(), "var");
@@ -30,7 +30,7 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
         assertEquals("`${var}`", b.getText());
 
         PsiInterpolation inter = (PsiInterpolation) b.getFirstChild();
-        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, m_types.C_INTERPOLATION_PART);
+        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, myTypes.C_INTERPOLATION_PART);
         assertEmpty(parts);
         PsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, PsiInterpolationReference.class);
         assertEquals(ref.getText(), "var");

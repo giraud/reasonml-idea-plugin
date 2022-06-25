@@ -43,7 +43,7 @@ public class PsiIncludeImpl extends PsiTokenStub<ORTypes, PsiInclude, PsiInclude
         }
 
 
-        PsiElement firstModule = ORUtil.findImmediateFirstChildOfType(this, myTypes.UIDENT);
+        PsiElement firstModule = ORUtil.findImmediateFirstChildOfType(this, myTypes.A_MODULE_NAME);
         PsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
         if (functorCall != null) {
             String path = "";

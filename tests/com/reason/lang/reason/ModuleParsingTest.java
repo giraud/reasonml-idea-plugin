@@ -20,19 +20,21 @@ public class ModuleParsingTest extends RmlParsingTestCase {
     }
 
     public void test_alias() {
-        PsiModule module = first(moduleExpressions(parseCode("module M = Y;")));
+        PsiModule e = firstOfType(parseCode("module M = Y;"), PsiModule.class);
 
-        assertEquals("M", module.getName());
-        assertEquals("Y", module.getAlias());
-        assertEquals("Y", module.getAliasSymbol().getText());
+        assertEquals("M", e.getName());
+        assertEquals("Y", e.getAlias());
+        assertEquals("Y", e.getAliasSymbol().getText());
+        assertEquals(RmlTypes.INSTANCE.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
     public void test_alias_path() {
-        PsiModule module = first(moduleExpressions(parseCode("module M = Y.Z;")));
+        PsiModule e = firstOfType(parseCode("module M = Y.Z;"), PsiModule.class);
 
-        assertEquals("M", module.getName());
-        assertEquals("Y.Z", module.getAlias());
-        assertEquals("Z", module.getAliasSymbol().getText());
+        assertEquals("M", e.getName());
+        assertEquals("Y.Z", e.getAlias());
+        assertEquals("Z", e.getAliasSymbol().getText());
+        assertEquals(RmlTypes.INSTANCE.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
     public void test_module_type() {

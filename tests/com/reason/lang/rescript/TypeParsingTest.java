@@ -1,11 +1,14 @@
 package com.reason.lang.rescript;
 
+import com.intellij.openapi.util.*;
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends ResParsingTestCase {
@@ -33,6 +36,8 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertNull(PsiTreeUtil.findChildOfType(e, PsiVariantDeclaration.class));
         List<PsiUpperSymbol> modules = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiUpperSymbol.class);
         assertSize(2, modules);
+        List<IElementType> es = modules.stream().map(u -> u.getNode().getElementType()).collect(Collectors.toList());
+        assertEquals(List.of(myTypes.A_MODULE_NAME, myTypes.A_MODULE_NAME), es);
     }
 
     public void test_option() {

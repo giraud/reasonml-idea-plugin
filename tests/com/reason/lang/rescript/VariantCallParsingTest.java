@@ -17,7 +17,7 @@ public class VariantCallParsingTest extends ResParsingTestCase {
 
         assertEquals("Var", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
-        assertEquals(m_types.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
     public void test_params() {
@@ -26,7 +26,7 @@ public class VariantCallParsingTest extends ResParsingTestCase {
         assertEquals("Var(a, b, c)", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiSignatureItem.class));
-        assertEquals(m_types.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
     public void test_with_path() {
@@ -34,6 +34,13 @@ public class VariantCallParsingTest extends ResParsingTestCase {
 
         assertEquals("A.Variant(1)", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
+    }
+
+    public void test_pipe_first() {
+        PsiLetBinding e = firstOfType(parseCode("let _ = A.A1.(Variant->toString)"), PsiLet.class).getBinding();
+
+        PsiLocalOpen l = PsiTreeUtil.findChildOfType(e, PsiLocalOpen.class);
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(l, PsiUpperSymbol.class).getNode().getElementType());
     }
 
     public void test_with_param() {

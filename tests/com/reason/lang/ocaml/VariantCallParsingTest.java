@@ -17,7 +17,7 @@ public class VariantCallParsingTest extends OclParsingTestCase {
 
         assertEquals("Var", binding.getText());
         assertNull(ORUtil.findImmediateFirstChildOfClass(binding, PsiVariantDeclaration.class));
-        assertEquals(m_types.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
     public void test_params() {
@@ -26,7 +26,7 @@ public class VariantCallParsingTest extends OclParsingTestCase {
         assertEquals("Var(a, b, c)", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiSignatureItem.class));
-        assertEquals(m_types.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
     public void test_with_param() {
@@ -34,7 +34,7 @@ public class VariantCallParsingTest extends OclParsingTestCase {
 
         assertEquals("Var(1)", binding.getText());
         assertNull(ORUtil.findImmediateFirstChildOfClass(binding, PsiVariantDeclaration.class));
-        assertEquals(m_types.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
     public void test_pattern_match() {

@@ -123,7 +123,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
 
     @Override
     public @Nullable PsiFunctorCall getFunctorCall() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+        return ORUtil.findImmediateFirstChildOfClass(getBody(), PsiFunctorCall.class);
     }
 
     @Override
@@ -261,12 +261,12 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
 
         if (of != null) {
             // find latest module name
-            PsiElement module = ORUtil.nextSiblingWithTokenType(of, myTypes.UIDENT);
+            PsiElement module = ORUtil.nextSiblingWithTokenType(of, myTypes.A_MODULE_NAME);
             PsiElement moduleNextSibling = module == null ? null : module.getNextSibling();
             while (moduleNextSibling != null
                     && moduleNextSibling.getNode().getElementType() == myTypes.DOT) {
                 PsiElement element = moduleNextSibling.getNextSibling();
-                if (element != null && element.getNode().getElementType() == myTypes.UIDENT) {
+                if (element != null && element.getNode().getElementType() == myTypes.A_MODULE_NAME) {
                     module = element;
                     moduleNextSibling = module.getNextSibling();
                 } else {
@@ -286,40 +286,6 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
         return null;
     }
 
-    public ItemPresentation getPresentation() {
-        boolean isModuleTypeOf = isModuleTypeOf();
-        PsiModule referencedModuleType = isModuleTypeOf ? findReferencedModuleTypeOf() : null;
-
-        return new ItemPresentation() {
-            @Override
-            public @Nullable String getPresentableText() {
-                if (isModuleTypeOf) {
-                    if (referencedModuleType == null) {
-                        PsiElement of = ORUtil.findImmediateFirstChildOfType(PsiInnerModuleImpl.this, myTypes.OF);
-                        assert of != null;
-                        return getText().substring(of.getStartOffsetInParent() + 3);
-                    }
-                    return referencedModuleType.getName();
-                }
-                return getName();
-            }
-
-            @Override
-            public @NotNull String getLocationString() {
-                return referencedModuleType == null
-                        ? ""
-                        : referencedModuleType.getContainingFile().getName();
-            }
-
-            @Override
-            public @NotNull Icon getIcon(boolean unused) {
-                return isInterface()
-                        ? ORIcons.MODULE_TYPE
-                        : (isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE);
-            }
-        };
-    }
-
     @Override
     public boolean isComponent() {
         PsiModuleStub stub = getGreenStub();
@@ -337,7 +303,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             return stub.isFunctorCall();
         }
 
-        return ORUtil.findImmediateFirstChildOfType(this, myTypes.C_FUNCTOR_CALL) != null;
+        return ORUtil.findImmediateFirstChildOfType(getBody(), myTypes.C_FUNCTOR_CALL) != null;
     }
 
     @Override
@@ -372,7 +338,40 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
         return null;
     }
 
-    @Override public String toString() {
+    public ItemPresentation getPresentation() {
+        boolean isModuleTypeOf = isModuleTypeOf();
+        PsiModule referencedModuleType = isModuleTypeOf ? findReferencedModuleTypeOf() : null;
+
+        return new ItemPresentation() {
+            @Override
+            public @Nullable String getPresentableText() {
+                if (isModuleTypeOf) {
+                    if (referencedModuleType == null) {
+                        PsiElement of = ORUtil.findImmediateFirstChildOfType(PsiInnerModuleImpl.this, myTypes.OF);
+                        assert of != null;
+                        return getText().substring(of.getStartOffsetInParent() + 3);
+                    }
+                    return referencedModuleType.getName();
+                }
+                return getName();
+            }
+
+            @Override
+            public @NotNull String getLocationString() {
+                return referencedModuleType == null ? "" : referencedModuleType.getContainingFile().getName();
+            }
+
+            @Override
+            public @NotNull Icon getIcon(boolean unused) {
+                return isInterface()
+                        ? ORIcons.MODULE_TYPE
+                        : (isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE);
+            }
+        };
+    }
+
+    @Override
+    public String toString() {
         return "PsiModule:" + getModuleName();
     }
 }

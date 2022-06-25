@@ -14,7 +14,9 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Black", declarations.get(0).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
         assertEquals("White", declarations.get(1).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
     }
 
     public void test_no_pipe_first() {
@@ -23,7 +25,9 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("V1", declarations.get(0).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
         assertEquals("V2", declarations.get(1).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
     }
 
     public void test_no_pipe_first_constructor() {
@@ -32,6 +36,7 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("V1", declarations.get(0).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
         assertEquals("V2", declarations.get(1).getVariant().getText());
     }
 
@@ -41,8 +46,10 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Hex", declarations.get(0).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
         assertEquals(1, declarations.get(0).getParameterList().size());
         assertEquals("Rgb", declarations.get(1).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 

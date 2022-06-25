@@ -662,6 +662,15 @@ public abstract class ORParser<T> {
         return this;
     }
 
+    protected ORParser<T> dropActive() {
+        Marker marker = getActiveMarker();
+        if (marker != null) {
+            marker.drop();
+        }
+        return this;
+    }
+
+
     public ORParser<T> dropLatest() {
         Marker marker = getLatestMarker();
         if (marker != null) {

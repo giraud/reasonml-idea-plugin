@@ -25,7 +25,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
                         .stream()
                         .map(psi -> psi.getNode().getElementType())
                         .collect(Collectors.toList());
-        assertDoesntContain(uTypes, m_types.A_VARIANT_NAME);
+        assertDoesntContain(uTypes, myTypes.A_VARIANT_NAME);
     }
 
     public void test_struct() {
@@ -39,7 +39,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
                         .stream()
                         .map(psi -> psi.getNode().getElementType())
                         .collect(Collectors.toList());
-        assertDoesntContain(uTypes, m_types.A_VARIANT_NAME);
+        assertDoesntContain(uTypes, myTypes.A_VARIANT_NAME);
     }
 
     public void test_implicit_result() {

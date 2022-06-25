@@ -19,9 +19,25 @@ public class PsiFunctorCall extends ORCompositePsiElement<ORTypes> {
         super(types, elementType);
     }
 
+    private @Nullable PsiUpperSymbol getReferenceIdentifier() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
+    }
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiUpperSymbol id = getReferenceIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiUpperSymbol id = getReferenceIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
+
     @Override
     public @NotNull String getName() {
-        PsiUpperSymbol name = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
+        PsiUpperSymbol name = getReferenceIdentifier();
         return name == null ? "" : name.getText();
     }
 

@@ -14,43 +14,40 @@ import java.util.*;
 @SuppressWarnings("ConstantConditions")
 public class ModuleParsingTest extends ResParsingTestCase {
     public void test_empty() {
-        Collection<PsiModule> modules = moduleExpressions(parseCode("module M = {}"));
+        PsiModule e = firstOfType(parseCode("module M = {}"), PsiModule.class);
 
-        assertEquals(1, modules.size());
-        PsiInnerModule e = (PsiInnerModule) first(modules);
         assertEquals("M", e.getName());
         assertEquals(ResTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
         assertEquals("{}", e.getBody().getText());
     }
 
     public void test_alias() {
-        PsiModule module = firstOfType(parseCode("module M = Y"), PsiInnerModule.class);
+        PsiModule e = firstOfType(parseCode("module M = Y"), PsiModule.class);
 
-        assertEquals("M", module.getName());
-        assertEquals("Y", module.getAlias());
-        assertEquals("Y", module.getAliasSymbol().getText());
+        assertEquals("M", e.getName());
+        assertEquals("Y", e.getAlias());
+        assertEquals("Y", e.getAliasSymbol().getText());
+        assertEquals(myTypes.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
     public void test_alias_path() {
-        PsiModule module = first(moduleExpressions(parseCode("module M = Y.Z")));
+        PsiModule e = firstOfType(parseCode("module M = Y.Z"), PsiModule.class);
 
-        assertEquals("M", module.getName());
-        assertEquals("Y.Z", module.getAlias());
-        assertEquals("Z", module.getAliasSymbol().getText());
+        assertEquals("M", e.getName());
+        assertEquals("Y.Z", e.getAlias());
+        assertEquals("Z", e.getAliasSymbol().getText());
+        assertEquals(myTypes.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
-    public void test_alias_chaining_include() {
-        PsiModule module = first(moduleExpressions(parseCode("module D = B include D.C")));
+    public void test_alias_inner() {
+        PsiModule e = firstOfType(parseCode("module A = { module B = C.D }"), PsiModule.class);
 
-        assertEquals("D", module.getName());
-        assertEquals("B", module.getAlias());
-    }
-
-    public void test_alias_chaining_call() {
-        PsiModule module = first(moduleExpressions(parseCode("module D = B\n D.C")));
-
-        assertEquals("D", module.getName());
-        assertEquals("B", module.getAlias());
+        PsiModule ee = PsiTreeUtil.findChildOfType(e.getBody(), PsiModule.class);
+        assertEquals("B", ee.getName());
+        assertEquals("C.D", ee.getBody().getText());
+        assertEquals("C.D", ee.getAlias());
+        assertEquals("D", ee.getAliasSymbol().getText());
+        assertEquals(myTypes.A_MODULE_NAME, ee.getAliasSymbol().getNode().getElementType());
     }
 
     public void test_module_type() {

@@ -17,7 +17,7 @@ public class VariantCallParsingTest extends RmlParsingTestCase {
 
         assertEquals("Var", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
-        assertEquals(m_types.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
     public void test_params() {
@@ -26,19 +26,26 @@ public class VariantCallParsingTest extends RmlParsingTestCase {
         assertEquals("Var(a, b, c)", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiSignatureItem.class));
-        assertEquals(m_types.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
-    public void test_withPath() {
+    public void test_with_path() {
         PsiLetBinding binding = firstOfType(parseCode("let x = A.Variant(1);"), PsiLet.class).getBinding();
 
         assertEquals("A.Variant(1)", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
         ArrayList<PsiUpperSymbol> symbols = new ArrayList<>(PsiTreeUtil.findChildrenOfType(binding, PsiUpperSymbol.class));
-        assertEquals(m_types.A_VARIANT_NAME, symbols.get(1).getNode().getElementType());
+        assertEquals(myTypes.A_VARIANT_NAME, symbols.get(1).getNode().getElementType());
     }
 
-    public void test_withParam() {
+    public void test_pipe_first() {
+        PsiLetBinding e = firstOfType(parseCode("let _ = A.A1.(Variant->toString);"), PsiLet.class).getBinding();
+
+        PsiLocalOpen l = PsiTreeUtil.findChildOfType(e, PsiLocalOpen.class);
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(l, PsiUpperSymbol.class).getNode().getElementType());
+    }
+
+    public void test_with_param() {
         PsiLetBinding binding = firstOfType(parseCode("let x = Var(1);"), PsiLet.class).getBinding();
 
         assertEquals("Var(1)", binding.getText());

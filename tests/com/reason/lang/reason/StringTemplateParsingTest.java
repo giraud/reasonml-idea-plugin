@@ -14,7 +14,7 @@ public class StringTemplateParsingTest extends RmlParsingTestCase {
         PsiLetBinding binding = e.getBinding();
         PsiInterpolation inter = (PsiInterpolation) binding.getFirstChild();
 
-        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, m_types.C_INTERPOLATION_PART);
+        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, myTypes.C_INTERPOLATION_PART);
         assertSize(2, parts);
         PsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, PsiInterpolationReference.class);
         assertEquals("var", ref.getText());

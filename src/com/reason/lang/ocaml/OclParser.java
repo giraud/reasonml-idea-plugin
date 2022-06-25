@@ -727,30 +727,16 @@ public class OclParser extends CommonPsiParser {
             if (is(myTypes.C_EXTERNAL_DECLARATION)) { // Overloading an operator
                 // external |>(<| ...
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
-            } else if (isRawParent(myTypes.C_MODULE_DECLARATION) && previousElementType(1) == myTypes.UIDENT) {
+            } else if (isRawParent(myTypes.C_MODULE_DECLARATION) && previousElementType(1) == myTypes.A_MODULE_NAME) {
                 //  module M |>(<| ... )
-                rollbackToPos(getIndex())
-                        .mark(myTypes.C_FUNCTOR_DECLARATION).advance();
-            } else if (isRawParent(myTypes.C_FUNCTOR_DECLARATION)) {
-                // module M |>(<| ... )
-                popEnd()
+                updateCompositeAt(1, myTypes.C_FUNCTOR_DECLARATION)
+                        .popEnd()
                         .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
                         .mark(myTypes.C_PARAM_DECLARATION);
-            } else if (previousElementType(2) == myTypes.UIDENT && previousElementType(1) == myTypes.DOT) { // Detecting a local open
+            } else if (previousElementType(2) == myTypes.A_MODULE_NAME && previousElementType(1) == myTypes.DOT) { // Detecting a local open
                 // M1.M2. |>(<| ... )
                 popEnd().
                         markScope(myTypes.C_LOCAL_OPEN, myTypes.LPAREN);
-            } else if (previousElementType(1) == myTypes.UIDENT && in(myTypes.C_MODULE_BINDING)) { // Functor call detected
-                // module X = M |>(<| ...
-                if (strictlyIn(myTypes.C_MODULE_BINDING)) {
-                    Marker marker = getActiveMarker(); // binding
-                    if (marker != null) {
-                        marker.drop();
-                    }
-                }
-                markBefore(0, myTypes.C_FUNCTOR_CALL)
-                        .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
-                        .mark(myTypes.C_PARAM);
             } else if (is(myTypes.C_PARAMETERS) && isRawParent(myTypes.C_FUN_EXPR)) { // Start of the first parameter
                 // let x |>(<| ...
                 markScope(myTypes.C_PARAM_DECLARATION, myTypes.LPAREN);
@@ -1027,12 +1013,23 @@ public class OclParser extends CommonPsiParser {
             if (is(myTypes.C_MODULE_DECLARATION) && previousElementType(1) != myTypes.OF) {
                 // module |>M<| ...
                 remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
-            } else if (is(myTypes.C_FUNCTOR_DECLARATION)) {
-                // module |>M<| ...
-                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_MODULE_BINDING)) {
+                IElementType nextElement = lookAhead(1);
+                if (nextElement == myTypes.LPAREN) {
+                    // functor call ::  |>X<| ( ...
+                    // functor call with path :: A.B.|>X<| ( ...
+                    mark(myTypes.C_FUNCTOR_CALL)
+                            .remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL)
+                            .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                            .mark(myTypes.C_PARAM);
+                } else {
+                    // module M = |>X<|
+                    // module M = X.|>Y<|
+                    remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                }
             } else if (is(myTypes.C_OPEN) || is(myTypes.C_INCLUDE)) { // It is a module name/path, or might be a functor call
                 // open/include |>M<| ...
-                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
 
                 IElementType nextToken = getTokenType();
                 if (nextToken != myTypes.DOT && nextToken != myTypes.LPAREN && nextToken != myTypes.WITH) { // Not a path, nor a functor, must close that open
@@ -1046,14 +1043,15 @@ public class OclParser extends CommonPsiParser {
             } else if (is(myTypes.C_TYPE_BINDING)) {
                 IElementType nextToken = lookAhead(1);
                 if (nextToken == myTypes.DOT) { // a path
-                    wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                    remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 } else { // Variant declaration without a pipe
                     // type t = |>X<| | ...
-                    mark(myTypes.C_VARIANT_DECLARATION).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                    mark(myTypes.C_VARIANT_DECLARATION)
+                            .remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
             } else if (is(myTypes.C_VARIANT_DECLARATION)) { // Declaring a variant
                 // type t = | |>X<| ...
-                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) { // Declaring an exception
                 // exception |>X<| ...
                 wrapAtom(myTypes.CA_UPPER_SYMBOL);
@@ -1066,7 +1064,7 @@ public class OclParser extends CommonPsiParser {
                     return;
                 }
 
-                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             }
         }
 

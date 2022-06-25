@@ -17,9 +17,9 @@ public class VariantDeclarationParsingTest extends RmlParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Black", declarations.get(0).getVariant().getText());
-        // assertTrue(declarations.get(0).getVariant().isVariant());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
         assertEquals("White", declarations.get(1).getVariant().getText());
-        // assertTrue(declarations.get(1).getVariant().isVariant());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
     }
 
     public void test_basic2() {
@@ -28,9 +28,7 @@ public class VariantDeclarationParsingTest extends RmlParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Black", declarations.get(0).getVariant().getText());
-        // assertTrue(declarations.get(0).getVariant().isVariant());
         assertEquals("White", declarations.get(1).getVariant().getText());
-        // assertTrue(declarations.get(1).getVariant().isVariant());
     }
 
     public void test_constructor() {
@@ -39,9 +37,10 @@ public class VariantDeclarationParsingTest extends RmlParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Hex", declarations.get(0).getVariant().getText());
-        // assertTrue(declarations.get(0).getVariant().isVariant());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
         assertEquals(1, declarations.get(0).getParameterList().size());
         assertEquals("Rgb", declarations.get(1).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 

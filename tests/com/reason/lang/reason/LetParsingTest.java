@@ -137,6 +137,14 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("M1.M2.y", e.getAlias());
     }
 
+    public void test_variant() {
+        PsiLet e = first(letExpressions(parseCode("let x = MyVar;")));
+
+        assertEquals("x", e.getName());
+        assertEquals("MyVar", e.getAlias());
+        assertEquals(RmlTypes.INSTANCE.A_VARIANT_NAME, e.getBinding().getFirstChild().getNode().getElementType());
+    }
+
     public void test_deconstruction() {
         PsiLet e = first(letExpressions(parseCode("let (a, b) = x;")));
 

@@ -74,15 +74,15 @@ public class JsxParsingTest extends ResParsingTestCase {
         assertInstanceOf(tagStart.getNameIdentifier(), PsiUpperTagName.class);
         assertEquals("Test", tagStart.getNameIdentifier().getText());
         PsiElement nextSibling = tagStart.getFirstChild().getNextSibling();
-        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
         nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
 
         PsiTagClose tagClose = first(PsiTreeUtil.findChildrenOfType(let, PsiTagClose.class));
         nextSibling = tagClose.getFirstChild().getNextSibling();
-        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
         nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(m_types.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
     }
 
     public void test_tag_prop_with_paren() {
