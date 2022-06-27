@@ -3,7 +3,6 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
 import com.intellij.lexer.FlexLexer;
-import com.reason.lang.ocaml.*;
 
 import static com.intellij.psi.TokenType.*;
 
@@ -19,7 +18,7 @@ import static com.intellij.psi.TokenType.*;
     private int tokenStartIndex;
     private CharSequence quotedStringId;
     private int commentDepth;
-    private boolean inCommentString = false;
+    private boolean inStringComment = false;
 
     //Store the start index of a token
     private void tokenStart() {
@@ -174,7 +173,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "`"{UPPERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
     "`"{LOWERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
 
-    "\"" { yybegin(IN_STRING); tokenStart(); }
+    "\"" { if (commentDepth == 0) {yybegin(IN_STRING); tokenStart(); } }
     "(*" { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; tokenStart(); }
 
     "#if"     { return types.DIRECTIVE_IF; }
@@ -268,11 +267,15 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 }
 
 <IN_OCAML_ML_COMMENT> {
-    "(*" { if (!inCommentString) commentDepth += 1; }
-    "*)" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
-    "\"" { inCommentString = !inCommentString; }
-     . | {NEWLINE} { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
+    // ignore (* or *) that are inside a string
+    "(*" { if (!inStringComment) { commentDepth += 1; } }
+    "*)" { if (!inStringComment) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
+    // String aren't hightlighted but the take precedence over (* *)
+    // so we need to handle them
+    // there is a problem if we remove the " because we will stay inside the state "inStringComment"
+    "\"" { inStringComment = !inStringComment; }
+    . | {NEWLINE} { }
+    <<EOF>> { yybegin(INITIAL); inStringComment = false; commentDepth = 0; tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

@@ -5,7 +5,6 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
 import com.intellij.lexer.FlexLexer;
-import com.reason.lang.ocaml.*;
 
 import static com.intellij.psi.TokenType.*;
 
@@ -647,7 +646,7 @@ public class OCamlLexer implements FlexLexer {
     private int tokenStartIndex;
     private CharSequence quotedStringId;
     private int commentDepth;
-    private boolean inCommentString = false;
+    private boolean inStringComment = false;
 
     //Store the start index of a token
     private void tokenStart() {
@@ -919,7 +918,7 @@ public class OCamlLexer implements FlexLexer {
             }  // fall though
             case 363: break;
             case IN_OCAML_ML_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT;
+              yybegin(INITIAL); inStringComment = false; commentDepth = 0; tokenEnd(); return types.MULTI_COMMENT;
             }  // fall though
             case 364: break;
             default:
@@ -979,7 +978,7 @@ public class OCamlLexer implements FlexLexer {
             // fall through
           case 158: break;
           case 11: 
-            { yybegin(IN_STRING); tokenStart();
+            { if (commentDepth == 0) {yybegin(IN_STRING); tokenStart(); }
             } 
             // fall through
           case 159: break;
@@ -1124,7 +1123,7 @@ public class OCamlLexer implements FlexLexer {
             // fall through
           case 187: break;
           case 40: 
-            { inCommentString = !inCommentString;
+            { inStringComment = !inStringComment;
             } 
             // fall through
           case 188: break;
@@ -1314,12 +1313,12 @@ public class OCamlLexer implements FlexLexer {
             // fall through
           case 225: break;
           case 78: 
-            { if (!inCommentString) commentDepth += 1;
+            { if (!inStringComment) { commentDepth += 1; }
             } 
             // fall through
           case 226: break;
           case 79: 
-            { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } }
+            { if (!inStringComment) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } }
             } 
             // fall through
           case 227: break;
