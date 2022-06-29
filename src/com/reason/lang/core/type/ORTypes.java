@@ -163,6 +163,7 @@ public abstract class ORTypes {
     public ORTokenElementType PRI;
     public ORTokenElementType REC;
     public ORTokenElementType SIG;
+    public ORTokenElementType STRING_CONCAT;
     public ORTokenElementType STRUCT;
     public ORTokenElementType SWITCH;
     public ORTokenElementType THEN;

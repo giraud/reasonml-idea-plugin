@@ -251,4 +251,13 @@ public class JsxParsingTest extends ResParsingTestCase {
         PsiTagProperty p0 = ps.get(0);
         assertEquals("onClick={(e: option(string), _) => ()}", p0.getText());
     }
+
+    public void test_function_call() {
+        PsiTag e = firstOfType(parseCode("<div  rules=[fn(#hv(pct(50.), pct(50.))),]/>"), PsiTag.class);
+
+        PsiTagPropertyValue v = PsiTreeUtil.findChildOfType(e, PsiTagPropertyValue.class);
+        assertEquals("[fn(#hv(pct(50.), pct(50.))),]", v.getText());
+        PsiFunctionCall f1 = PsiTreeUtil.findChildOfType(v, PsiFunctionCall.class);
+        assertSize(1, f1.getParameters());
+    }
 }

@@ -22,6 +22,12 @@ public class LetParsingTest extends OclParsingTestCase {
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(lets.get(0), PsiLetBinding.class)));
     }
 
+    public void test_underscore() {
+        PsiLet e = firstOfType(parseCode("let _ = ()"), PsiLet.class);
+        assertNull(e.getName());
+        assertNotNull(e.getNavigationElement());
+    }
+
     public void test_binding() {
         PsiLet let = first(letExpressions(parseCode("let obj = [%bs.obj { a = \"b\" }];")));
 
@@ -110,14 +116,14 @@ public class LetParsingTest extends OclParsingTestCase {
 
     public void test_case1() {
         FileBase file = parseCode("let format_open {o_loc; o_name; o_items; _} = "
-                + "Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (Util.join_list \", \" !o_items)");
+                + "Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (join_list \", \" !o_items)");
         PsiLet e = first(letExpressions(file));
 
         PsiLetBinding binding = e.getBinding();
         assertInstanceOf(binding.getFirstChild(), PsiFunction.class);
         PsiFunction function = (PsiFunction) binding.getFirstChild();
         assertEquals("{o_loc; o_name; o_items; _}", first(function.getParameters()).getText());
-        assertEquals("Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (Util.join_list \", \" !o_items)",
+        assertEquals("Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (join_list \", \" !o_items)",
                 function.getBody().getText());
     }
 

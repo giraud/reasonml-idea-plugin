@@ -1,5 +1,6 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -60,5 +61,31 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertEquals(2, f1.getParameters().size());
         assertEquals("\"{\"", f1.getParameters().get(0).getText());
         assertEquals("c", f1.getParameters().get(1).getText());
+    }
+
+    public void test_call_02() {
+        PsiFunctionCall e = firstOfType(parseCode("let _ = hov 0 (anomaly_string () ++ str \"xxx\")"), PsiFunctionCall.class);
+
+        assertEquals("hov 0 (anomaly_string () ++ str \"xxx\")", e.getText());
+        List<PsiParameterReference> ep = e.getParameters();
+        assertSize(2, ep);
+        assertEquals("(anomaly_string () ++ str \"xxx\")", ep.get(1).getText());
+        List<PsiFunctionCall> ee = new ArrayList<>(PsiTreeUtil.findChildrenOfType(ep.get(1), PsiFunctionCall.class));
+        assertSize(2, ee);
+        assertEquals("anomaly_string ()", ee.get(0).getText());
+        assertEquals("str \"xxx\"", ee.get(1).getText());
+    }
+
+    public void test_call_03() {
+        PsiFunctionCall e = firstOfType(parseCode("let _ = hov 0 (str \"xxx\" ++ str txt)"), PsiFunctionCall.class);
+
+        assertEquals("hov 0 (str \"xxx\" ++ str txt)", e.getText());
+        List<PsiParameterReference> ep = e.getParameters();
+        assertSize(2, ep);
+        assertEquals("(str \"xxx\" ++ str txt)", ep.get(1).getText());
+        List<PsiFunctionCall> ee = new ArrayList<>(PsiTreeUtil.findChildrenOfType(ep.get(1), PsiFunctionCall.class));
+        assertSize(2, ee);
+        assertEquals("str \"xxx\"", ee.get(0).getText());
+        assertEquals("str txt", ee.get(1).getText());
     }
 }

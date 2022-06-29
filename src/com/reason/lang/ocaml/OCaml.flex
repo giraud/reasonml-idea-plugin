@@ -247,6 +247,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "-."  { return types.MINUSDOT; }
     "/."  { return types.SLASHDOT; }
     "*."  { return types.STARDOT; }
+    "++"  { return types.STRING_CONCAT; }
     "+"   { return types.PLUS; }
     "-"   { return types.MINUS; }
     "/"   { return types.SLASH; }

@@ -218,6 +218,7 @@ public class RmlTypes extends ORTypes {
         SOME = new ORTokenElementType("SOME", RmlLanguage.INSTANCE);
         STAR = new ORTokenElementType("STAR", RmlLanguage.INSTANCE);
         STARDOT = new ORTokenElementType("STARDOT", RmlLanguage.INSTANCE);
+        STRING_CONCAT = new ORTokenElementType("STRING_CONCAT", RmlLanguage.INSTANCE);
         STRUCT = new ORTokenElementType("STRUCT", RmlLanguage.INSTANCE);
         OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", RmlLanguage.INSTANCE);
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", RmlLanguage.INSTANCE);

@@ -1067,6 +1067,8 @@ public class ResParser extends CommonPsiParser {
                 // type t = [ |>#xxx<| ...
                 mark(myTypes.C_VARIANT_DECLARATION);
             }
+            advance();
+            markParenthesisScope();
         }
 
         private void parseSwitch() {

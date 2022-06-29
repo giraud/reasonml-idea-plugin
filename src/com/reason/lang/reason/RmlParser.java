@@ -81,6 +81,8 @@ public class RmlParser extends CommonPsiParser {
                         parseLIdent();
                     } else if (tokenType == myTypes.UIDENT) {
                         parseUIdent();
+                    } else if (tokenType == myTypes.POLY_VARIANT) {
+                        parsePolyVariant();
                     } else if (tokenType == myTypes.ARROBASE) {
                         parseArrobase();
                     } else if (tokenType == myTypes.PERCENT) {
@@ -197,6 +199,15 @@ public class RmlParser extends CommonPsiParser {
                     myBuilder.advanceLexer();
                 }
             }
+        }
+
+        private void parsePolyVariant() {
+            if (isRawParent(myTypes.C_TYPE_BINDING)) {
+                // type t = [ |>`xxx<| ...
+                mark(myTypes.C_VARIANT_DECLARATION);
+            }
+            advance();
+            markParenthesisScope();
         }
 
         private void parseUnderscore() {
@@ -878,8 +889,8 @@ public class RmlParser extends CommonPsiParser {
                     if (isHold()) {
                         popEnd();
                     }
-                    markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACE).advance();
-                    markHolder(myTypes.H_PLACE_HOLDER);
+                    markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACE)
+                            .advance().markHolder(myTypes.H_PLACE_HOLDER);
                 }
             }
         }
@@ -939,6 +950,10 @@ public class RmlParser extends CommonPsiParser {
             } else if (is(myTypes.C_DECONSTRUCTION) && isRawParent(myTypes.C_LET_DECLARATION)) {
                 // let ((x |>,<| ...
                 markScope(myTypes.C_DECONSTRUCTION, myTypes.LPAREN);
+            } else if (previousElementType(1) == myTypes.SOME) {
+                // Some |>(<|
+                markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
+                        .advance().markHolder(myTypes.H_PLACE_HOLDER);
             } else if (in(myTypes.C_FUN_CALL)
                     && !(is(myTypes.C_TYPE_DECLARATION)
                     || inAny(myTypes.C_TYPE_BINDING, myTypes.C_SIG_ITEM))) { // calling a function

@@ -16,6 +16,14 @@ public abstract class ORLanguageParser<T extends ORTypes> extends ORParser<T> {
         return this;
     }
 
+    public @NotNull ORLanguageParser<T> markParenthesisScope() {
+        if (getTokenType() == myTypes.LPAREN) {
+            markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
+                    .advance().markHolder(myTypes.H_COLLECTION_ITEM);
+        }
+        return this;
+    }
+
     @Nullable protected WhitespaceSkippedCallback endJsxPropertyIfWhitespace() {
         return (type, start, end) -> {
             if (is(myTypes.C_TAG_PROPERTY) || (strictlyIn(myTypes.C_TAG_PROP_VALUE))) {

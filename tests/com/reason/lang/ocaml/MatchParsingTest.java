@@ -71,6 +71,7 @@ public class MatchParsingTest extends OclParsingTestCase {
 
         PsiPatternMatch m1 = patterns.get(0);
         assertEquals("Typedtree", PsiTreeUtil.findChildOfType(m1, PsiUpperSymbol.class).getText());
+        assertEquals(myTypes.A_VARIANT_NAME, ORUtil.findImmediateLastChildOfClass(m1, PsiUpperSymbol.class).getNode().getElementType());
         assertEquals("\"Partial\"", m1.getBody().getText());
 
         PsiPatternMatch m2 = patterns.get(1);

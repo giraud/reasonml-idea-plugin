@@ -267,6 +267,11 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
             return true;
         }
 
+        PsiElement underscore = ORUtil.findImmediateFirstChildOfType(this, myTypes.UNDERSCORE);
+        if (underscore != null) {
+            return true;
+        }
+
         PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
         return scope != null && !scope.isEmpty();
     }

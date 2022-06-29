@@ -122,7 +122,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     OclTypes.INSTANCE.PERCENT, OclTypes.INSTANCE.PIPE, OclTypes.INSTANCE.ARROBASE, OclTypes.INSTANCE.SHARP,
                     OclTypes.INSTANCE.SHARPSHARP, OclTypes.INSTANCE.QUESTION_MARK, OclTypes.INSTANCE.EXCLAMATION_MARK, OclTypes.INSTANCE.LT_OR_EQUAL,
                     OclTypes.INSTANCE.GT_OR_EQUAL, OclTypes.INSTANCE.AMPERSAND, OclTypes.INSTANCE.LEFT_ARROW,
-                    OclTypes.INSTANCE.RIGHT_ARROW, OclTypes.INSTANCE.COLON_EQ, OclTypes.INSTANCE.COLON_GT,
+                    OclTypes.INSTANCE.RIGHT_ARROW, OclTypes.INSTANCE.COLON_EQ, OclTypes.INSTANCE.COLON_GT, OclTypes.INSTANCE.STRING_CONCAT,
                     OclTypes.INSTANCE.GT, OclTypes.INSTANCE.GT_BRACE, OclTypes.INSTANCE.GT_BRACKET, OclTypes.INSTANCE.BRACKET_GT,
                     OclTypes.INSTANCE.BRACKET_LT, OclTypes.INSTANCE.BRACE_LT, OclTypes.INSTANCE.DOTDOT);
 

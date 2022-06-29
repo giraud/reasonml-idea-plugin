@@ -220,6 +220,7 @@ public class ResTypes extends ORTypes {
         SOME = new ORTokenElementType("SOME", ResLanguage.INSTANCE);
         STAR = new ORTokenElementType("STAR", ResLanguage.INSTANCE);
         STARDOT = new ORTokenElementType("STARDOT", ResLanguage.INSTANCE);
+        STRING_CONCAT = new ORTokenElementType("STRING_CONCAT", ResLanguage.INSTANCE);
         STRUCT = new ORTokenElementType("STRUCT", ResLanguage.INSTANCE);
         OP_STRUCT_DIFF = new ORTokenElementType("OP_STRUCT_DIFF", ResLanguage.INSTANCE);
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", ResLanguage.INSTANCE);

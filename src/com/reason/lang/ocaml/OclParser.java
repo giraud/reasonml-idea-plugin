@@ -80,6 +80,8 @@ public class OclParser extends CommonPsiParser {
                     parseNumber();
                 } else if (tokenType == myTypes.STRING_VALUE) {
                     parseStringValue();
+                } else if (tokenType == myTypes.STRING_CONCAT) {
+                    parseStringConcat();
                 } else if (tokenType == myTypes.LIDENT) {
                     parseLIdent();
                 } else if (tokenType == myTypes.UIDENT) {
@@ -213,6 +215,12 @@ public class OclParser extends CommonPsiParser {
                 } else {
                     myBuilder.advanceLexer();
                 }
+            }
+        }
+
+        private void parseStringConcat() {
+            if (strictlyIn(myTypes.C_FUN_CALL)) {
+                popEndUntilFoundIndex().popEnd();
             }
         }
 
@@ -696,7 +704,6 @@ public class OclParser extends CommonPsiParser {
                     popEndUntilStart().advance().
                             mark(myTypes.C_LET_BINDING);
                 }
-
             } else if (in(myTypes.C_MODULE_DECLARATION)) {
                 // module M |> = <| ...
                 popEndUntil(myTypes.C_MODULE_DECLARATION).advance()
@@ -746,9 +753,12 @@ public class OclParser extends CommonPsiParser {
             } else if (in(myTypes.C_CLASS_DECLARATION)) {
                 // class x |>(<| ...
                 markScope(myTypes.C_CLASS_CONSTR, myTypes.LPAREN);
-            } else if (inAny(myTypes.C_PARAM_DECLARATION, myTypes.C_PARAM, myTypes.C_SIG_ITEM, myTypes.C_NAMED_PARAM_DECLARATION)) {
+            } else if (inAny(myTypes.C_PARAM_DECLARATION, myTypes.C_PARAMETERS, myTypes.C_PARAM,
+                    myTypes.C_SIG_ITEM, myTypes.C_NAMED_PARAM_DECLARATION)) {
                 boolean isDeclaration = isFound(myTypes.C_PARAM_DECLARATION);
-                if (isDeclaration || isFound(myTypes.C_PARAM)) { // Start of a new parameter
+                if (isFound(myTypes.C_PARAMETERS)) {
+                    markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
+                } else if (isDeclaration || isFound(myTypes.C_PARAM)) { // Start of a new parameter
                     popEndUntilFoundIndex().popEnd()
                             .mark(isDeclaration ? myTypes.C_PARAM_DECLARATION : myTypes.C_PARAM);
                     if (lookAhead(1) == myTypes.LIDENT) {
@@ -991,8 +1001,9 @@ public class OclParser extends CommonPsiParser {
                         && !is(myTypes.C_CLASS_FIELD) && !in(myTypes.C_TYPE_BINDING) &&
                         !is(myTypes.C_PARAMETERS)
                 ) {
-                    if (nextTokenType == myTypes.LIDENT || nextTokenType == myTypes.INT_VALUE || nextTokenType == myTypes.FLOAT_VALUE) {
-                        if (is(myTypes.C_SCOPED_EXPR) || !in(myTypes.C_FUN_CALL)) { // a function call
+                    if (nextTokenType == myTypes.LIDENT || nextTokenType == myTypes.INT_VALUE || nextTokenType == myTypes.FLOAT_VALUE
+                            || nextTokenType == myTypes.STRING_VALUE) {
+                        if (isCurrent(myTypes.C_SCOPED_EXPR) || !in(myTypes.C_FUN_CALL, /*not*/myTypes.C_PARAMETERS)) { // a function call
                             // |>fn<| ...
                             mark(myTypes.C_FUN_CALL).wrapAtom(myTypes.CA_LOWER_SYMBOL)
                                     .mark(myTypes.C_PARAMETERS);
@@ -1058,7 +1069,8 @@ public class OclParser extends CommonPsiParser {
             } else {
                 IElementType nextToken = lookAhead(1);
 
-                if (((is(myTypes.C_PATTERN_MATCH_EXPR) || is(myTypes.C_LET_BINDING))) && nextToken != myTypes.DOT) { // Pattern matching a variant or using it
+                if (((in(myTypes.C_PATTERN_MATCH_EXPR, /*not*/myTypes.C_PATTERN_MATCH_BODY) || is(myTypes.C_LET_BINDING)))
+                        && nextToken != myTypes.DOT) { // Pattern matching a variant or using it
                     // match c with | |>X<| ... / let x = |>X<| ...
                     remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                     return;
