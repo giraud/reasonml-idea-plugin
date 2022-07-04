@@ -283,8 +283,7 @@
         <additionalLibraryRootsProvider implementation="com.reason.ide.library.OclLibraryRootProvider"/>
 
         <projectService serviceImplementation="com.reason.ide.settings.ORSettings"/>
-        <projectConfigurable id="settings.reason" groupId="language" displayName="OCaml / Reason"
-                             instance="com.reason.ide.settings.ORSettingsConfigurable"/>
+        <projectConfigurable id="settings.reason" groupId="language" instance="com.reason.ide.settings.ORSettingsConfigurable"/>
 
         <projectSdkSetupValidator implementation="com.reason.ide.library.OclSdkSetupValidator"/>
         <projectService serviceImplementation="com.reason.comp.ocaml.OpamProcess"/>
