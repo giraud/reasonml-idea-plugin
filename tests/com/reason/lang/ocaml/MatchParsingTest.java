@@ -30,12 +30,12 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertEquals("VtMeta -> let _ = x", match.getPatterns().get(0).getText());
     }
 
-    public void test_matchWithException() {
+    public void test_match_with_exception() {
         FileBase psiFile = parseCode("match x with | exception Failure -> Printf.printf");
         assertEquals(1, childrenCount(psiFile));
     }
 
-    public void test_complexMatch() {
+    public void test_complex_match() {
         FileBase file =
                 parseCode(
                         "begin match Repr.repr o with\n"
@@ -49,7 +49,7 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertInstanceOf(children[0], PsiScopedExpr.class);
     }
 
-    public void test_patternTokenType() {
+    public void test_pattern_token_type() {
         PsiFile psiFile = parseCode("let _ = match action with | Incr -> counter + 1");
 
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
@@ -62,7 +62,7 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertEquals("counter + 1", patternMatch.getBody().getText());
     }
 
-    public void test_patternMatch() {
+    public void test_pattern_match() {
         PsiFile psiFile = parseCode("let _ = match p with | Typedtree.Partial -> \"Partial\" | Total -> \"Total\"");
 
         PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
@@ -71,13 +71,14 @@ public class MatchParsingTest extends OclParsingTestCase {
 
         PsiPatternMatch m1 = patterns.get(0);
         assertEquals("Typedtree", PsiTreeUtil.findChildOfType(m1, PsiUpperSymbol.class).getText());
+        assertEquals(myTypes.A_VARIANT_NAME, ORUtil.findImmediateLastChildOfClass(m1, PsiUpperSymbol.class).getNode().getElementType());
         assertEquals("\"Partial\"", m1.getBody().getText());
 
         PsiPatternMatch m2 = patterns.get(1);
         assertEquals("\"Total\"", m2.getBody().getText());
     }
 
-    public void test_functionShortcut() {
+    public void test_function_shortcut() {
         PsiLet e = first(letExpressions(parseCode("let f x = function | Variant -> 1")));
 
         PsiFunction fun = (PsiFunction) e.getBinding().getFirstChild();
@@ -86,7 +87,7 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertEquals("1", PsiTreeUtil.findChildOfType(shortcut, PsiPatternMatchBody.class).getText());
     }
 
-    public void test_functionShortcutNoPipe() {
+    public void test_function_shortcut_no_pipe() {
         PsiLet e = first(letExpressions(parseCode("let f x = function Variant -> 1")));
 
         PsiFunction fun = (PsiFunction) e.getBinding().getFirstChild();

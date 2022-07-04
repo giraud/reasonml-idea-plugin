@@ -3,9 +3,7 @@ package com.reason.ide.doc;
 import com.intellij.lang.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.rescript.*;
 
 public class ShowDocRESTest extends ORBasePlatformTestCase {
@@ -15,13 +13,13 @@ public class ShowDocRESTest extends ORBasePlatformTestCase {
         FileBase doc = configureCode("Doc.res", "/** add 1 */\nlet fn = x => x + 1");
         FileBase a = configureCode("A.res", "Mod.fn(<caret>)");
 
-        PsiLowerIdentifier let = ORUtil.findImmediateFirstChildOfClass(doc.getQualifiedExpressions("Doc.fn", PsiLet.class).get(0), PsiLowerIdentifier.class);
-        assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let fn</i></p></div><div class=\"content\"><p>add 1</p></div>", getDocForElement(a, LANG, let));
+        PsiLet resolvedELement = doc.getQualifiedExpressions("Doc.fn", PsiLet.class).get(0);
+        assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let fn</i></p></div><div class=\"content\"><p>add 1</p></div>", getDocForElement(a, LANG, resolvedELement));
     }
 
     public void test_GH_156() {
         configureCode("Doc.res", "/** Doc for y */\nlet y = 1");
-        FileBase a = configureCode("A.res", "let x = Doc.y\nx<caret>");
+        FileBase a = configureCode("A.res", "let x = Doc.y\nlet z = x<caret>");
 
         assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let y</i></p></div><div class=\"content\"><p>Doc for y</p></div>", getDoc(a, LANG));
     }

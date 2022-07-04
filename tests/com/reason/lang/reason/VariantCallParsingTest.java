@@ -17,22 +17,35 @@ public class VariantCallParsingTest extends RmlParsingTestCase {
 
         assertEquals("Var", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
-        assertNull(PsiTreeUtil.findChildOfType(binding, PsiUpperIdentifier.class));
-        // assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding,
-        // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
-    public void test_withPath() {
+    public void test_params() {
+        PsiLetBinding binding = firstOfType(parseCode("let x = Var(a, b, c);"), PsiLet.class).getBinding();
+
+        assertEquals("Var(a, b, c)", binding.getText());
+        assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
+        assertNull(PsiTreeUtil.findChildOfType(binding, PsiSignatureItem.class));
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
+    }
+
+    public void test_with_path() {
         PsiLetBinding binding = firstOfType(parseCode("let x = A.Variant(1);"), PsiLet.class).getBinding();
 
         assertEquals("A.Variant(1)", binding.getText());
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
-        assertNull(PsiTreeUtil.findChildOfType(binding, PsiUpperIdentifier.class));
-        // assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding,
-        // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
+        ArrayList<PsiUpperSymbol> symbols = new ArrayList<>(PsiTreeUtil.findChildrenOfType(binding, PsiUpperSymbol.class));
+        assertEquals(myTypes.A_VARIANT_NAME, symbols.get(1).getNode().getElementType());
     }
 
-    public void test_withParam() {
+    public void test_pipe_first() {
+        PsiLetBinding e = firstOfType(parseCode("let _ = A.A1.(Variant->toString);"), PsiLet.class).getBinding();
+
+        PsiLocalOpen l = PsiTreeUtil.findChildOfType(e, PsiLocalOpen.class);
+        assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(l, PsiUpperSymbol.class).getNode().getElementType());
+    }
+
+    public void test_with_param() {
         PsiLetBinding binding = firstOfType(parseCode("let x = Var(1);"), PsiLet.class).getBinding();
 
         assertEquals("Var(1)", binding.getText());
@@ -41,7 +54,7 @@ public class VariantCallParsingTest extends RmlParsingTestCase {
         // PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
     }
 
-    public void test_patternMatch() {
+    public void test_pattern_match() {
         PsiSwitch e = firstOfType(parseCode("switch (action) { | UpdateDescription(desc) => ReasonReact.SideEffects.(_self => onDescriptionChange(desc)) };"), PsiSwitch.class);
 
         PsiPatternMatchBody body = PsiTreeUtil.findChildOfType(e, PsiPatternMatchBody.class);
@@ -50,8 +63,8 @@ public class VariantCallParsingTest extends RmlParsingTestCase {
         assertEquals("ReasonReact, SideEffects", Joiner.join(", ", uppers.stream().map(PsiElement::getText).collect(Collectors.toList())));
     }
 
-    public void test_inMethod() {
-        PsiFunction e = firstOfType(parseCode("(. fileName, data) => self.send(SetErrorMessage(fileName, data##message))"), PsiFunction.class);
+    public void test_in_method() {
+        PsiFunction e = firstOfType(parseCode("let _ = (. fileName, data) => self.send(SetErrorMessage(fileName, data##message))"), PsiFunction.class);
 
         PsiUpperSymbol upper = PsiTreeUtil.findChildOfType(e, PsiUpperSymbol.class);
         assertEquals("SetErrorMessage", upper.getText());

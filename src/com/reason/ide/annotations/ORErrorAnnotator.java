@@ -204,7 +204,8 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         }
 
         try {
-            FileUtil.writeToFile(sourceTempFile, psiFile.getText().getBytes());
+            String psiText = ReadAction.compute(psiFile::getText);
+            FileUtil.writeToFile(sourceTempFile, psiText.getBytes());
         } catch (IOException e) {
             // Sometimes, file is locked by another process, not a big deal, skip it
             LOG.trace("Write failed: " + e.getLocalizedMessage());

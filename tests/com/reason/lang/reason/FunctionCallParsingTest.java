@@ -14,6 +14,8 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         PsiLetBinding e = first(letExpressions(parseCode("let _ = string_of_int(1)"))).getBinding();
 
         PsiFunctionCall call = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(call, PsiLowerSymbol.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiParameterDeclaration.class));
         assertEquals("string_of_int(1)", call.getText());
         assertEquals(1, call.getParameters().size());
     }
@@ -22,12 +24,10 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let _ = Belt.Option.map(self.state.timerId^, Js.Global.clearInterval)")));
 
         PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
-        List<PsiParameter> parameters = fnCall.getParameters();
+        List<PsiParameterReference> parameters = fnCall.getParameters();
         assertEquals(2, parameters.size());
         assertEquals("self.state.timerId^", parameters.get(0).getText());
-        assertNull(PsiTreeUtil.getChildrenOfType(parameters.get(0), PsiLowerIdentifier.class));
         assertEquals("Js.Global.clearInterval", parameters.get(1).getText());
-        assertNull(PsiTreeUtil.getChildrenOfType(parameters.get(1), PsiLowerIdentifier.class));
     }
 
     public void test_call3() {
@@ -35,6 +35,15 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
 
         PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
         assertEmpty(fnCall.getParameters());
+    }
+
+    public void test_end_comma() {
+        PsiLet e = first(letExpressions(parseCode("let _ = style([ color(red), ])")));
+
+        assertEquals("style([ color(red), ])", e.getBinding().getText());
+        PsiFunctionCall f = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
+        assertNull(PsiTreeUtil.findChildOfType(f, PsiDeconstruction.class));
+        assertSize(1, f.getParameters());
     }
 
     public void test_unit_last() {
@@ -51,18 +60,19 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         assertSize(2, fnCall.getParameters());
     }
 
-    public void test_GH_120() {
-        PsiLet e = first(letExpressions(parseCode("let _ = f(x == U.I, 1)")));
-
-        PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
-        assertSize(2, fnCall.getParameters());
-    }
-
-    public void test_paramName() {
+    public void test_param_name() {
         List<PsiLet> expressions = letAllExpressions(parseCode("describe(\"context\", () => { test(\"should do something\", () => { let inner = 1; }) })"));
         PsiLet e = first(expressions);
 
         assertEquals("Dummy.describe[1].test[1].inner", e.getQualifiedName());
+    }
+
+    public void test_nested_parenthesis() {
+        PsiFunctionCall f = firstOfType(parseCode("set(x->keep(((y, z)) => y), xx);"), PsiFunctionCall.class);
+
+        assertEquals("set(x->keep(((y, z)) => y), xx)", f.getText());
+        assertEquals("x->keep(((y, z)) => y)", f.getParameters().get(0).getText());
+        assertEquals("xx", f.getParameters().get(1).getText());
     }
 
     public void test_body() {
@@ -70,5 +80,21 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
 
         PsiFunctionBody body = PsiTreeUtil.findChildOfType(e, PsiFunctionBody.class);
         assertEquals("{ M.{k: v} }", body.getText());
+    }
+
+    public void test_in_functor() {
+        //                                    0        |         |          |         |         |        |         |         |          |
+        PsiFunctor e = firstOfType(parseCode("module Make = (M: Intf) : Result => { let fn = target => (. store) => call(input, item => item); };"), PsiFunctor.class);
+
+        PsiFunctionCall fc = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertEquals("call(input, item => item)", fc.getText());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/120
+    public void test_GH_120() {
+        PsiLet e = first(letExpressions(parseCode("let _ = f(x == U.I, 1)")));
+
+        PsiFunctionCall fnCall = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertSize(2, fnCall.getParameters());
     }
 }

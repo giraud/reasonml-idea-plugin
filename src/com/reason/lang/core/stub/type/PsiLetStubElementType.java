@@ -15,8 +15,6 @@ import java.io.*;
 import java.util.*;
 
 public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet> {
-    public static final int VERSION = 14;
-
     public PsiLetStubElementType(@Nullable Language language) {
         super("C_LET_DECLARATION", language);
     }
@@ -37,7 +35,7 @@ public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet>
         if (psi.isDeconstruction()) {
             List<PsiElement> elements = psi.getDeconstructedElements();
             for (PsiElement element : elements) {
-                if (element instanceof PsiLowerIdentifier) {
+                if (element instanceof PsiLowerSymbol) {
                     deconstructedNames.add(element.getText());
                 }
             }

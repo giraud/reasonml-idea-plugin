@@ -7,20 +7,22 @@ import com.intellij.psi.stubs.*;
 import org.jetbrains.annotations.*;
 
 public class PsiTokenStub<T, P extends PsiElement, S extends StubElement<P>> extends StubBasedPsiElementBase<S> {
-    @NotNull protected final T m_types;
+    @NotNull protected final T myTypes;
 
     public PsiTokenStub(@NotNull T types, @NotNull ASTNode node) {
         super(node);
-        m_types = types;
+        myTypes = types;
     }
 
     public PsiTokenStub(@NotNull T types, @NotNull S stub, @NotNull IStubElementType nodeType) {
         super(stub, nodeType);
-        m_types = types;
+        myTypes = types;
     }
 
     @Override
     public String toString() {
-        return "ORElement(" + getElementType() + ")";
+        String className = getClass().getSimpleName();
+        boolean isImpl = className.endsWith("Impl");
+        return (isImpl ? className.substring(0, className.length() - 4) : className);
     }
 }

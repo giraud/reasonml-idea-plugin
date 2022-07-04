@@ -39,9 +39,7 @@ abstract class KeywordCompletionContributor extends com.intellij.codeInsight.com
                 }
 
                 if (originalPosition == null && parent instanceof FileBase) {
-                    if (prevNodeType != types.DOT
-                            && prevNodeType != types.SHARPSHARP
-                            && prevNodeType != types.C_LOWER_SYMBOL) {
+                    if (prevNodeType != types.DOT && prevNodeType != types.SHARPSHARP && prevNodeType != types.LIDENT) {
                         addFileKeywords(result);
                     }
                 }

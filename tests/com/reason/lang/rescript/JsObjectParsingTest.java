@@ -2,6 +2,7 @@ package com.reason.lang.rescript;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -22,7 +23,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
     }
 
     public void test_definition() {
-        PsiType e = first(typeExpressions(parseCode("type t = {\"a\": UUID.t, \"b\": int}")));
+        PsiType e = first(typeExpressions(parseCode("type t = {\n \"a\": UUID.t, \"b\": array<int>\n }")));
 
         PsiElement binding = e.getBinding();
         PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
@@ -33,10 +34,11 @@ public class JsObjectParsingTest extends ResParsingTestCase {
         assertEquals("a", fields.get(0).getName());
         assertEquals("UUID.t", fields.get(0).getSignature().getText());
         assertEquals("b", fields.get(1).getName());
-        assertEquals("int", fields.get(1).getSignature().getText());
+        assertEquals("array<int>", fields.get(1).getSignature().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiTagStart.class));
     }
 
-    public void test_inFunction() {
+    public void test_in_function() {
         PsiLet e = first(letExpressions(parseCode("let x = fn(~props={\"a\": id, \"b\": 0})")));
 
         PsiLetBinding binding = e.getBinding();
@@ -48,7 +50,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
         assertEquals("b", fields.get(1).getName());
     }
 
-    public void test_declaringOpen() {
+    public void test_declaring_open() {
         PsiLet e = first(letExpressions(parseCode(
                 "let style = {"
                         + "\"marginLeft\": marginLeft, \"marginRight\": marginRight,\"fontSize\": \"inherit\","
@@ -64,7 +66,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
         assertSize(0, PsiTreeUtil.findChildrenOfType(object, PsiSignature.class));
     }
 
-    public void test_moduleOpen() {
+    public void test_module_open() {
         PsiLet e = first(letExpressions(parseCode(
                 "let computingProperties = createStructuredSelector({ "
                         + "open ComputingReducers\n"
@@ -77,5 +79,14 @@ public class JsObjectParsingTest extends ResParsingTestCase {
         assertEquals("ComputingReducers", open.getPath());
         PsiJsObject jsObject = PsiTreeUtil.findChildOfType(call, PsiJsObject.class);
         assertNotNull(jsObject);
+    }
+
+    public void test_deep() {
+        PsiLet e = firstOfType(parseCode("let oo = {\"f1\": {\"f11\": 111}, \"f2\": o,\"f3\": {\"f33\": 333} }"), PsiLet.class);
+
+        PsiJsObject o = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiJsObject.class);
+        List<PsiObjectField> fields = new ArrayList<>(o.getFields());
+        assertSize(3, fields);
+        assertInstanceOf(fields.get(0).getValue(), PsiJsObject.class);
     }
 }

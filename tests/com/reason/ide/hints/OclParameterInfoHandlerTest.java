@@ -3,7 +3,7 @@ package com.reason.ide.hints;
 import com.intellij.psi.*;
 import com.intellij.testFramework.utils.parameterInfo.*;
 import com.reason.ide.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 public class OclParameterInfoHandlerTest extends ORBasePlatformTestCase {
     public void test_before() {

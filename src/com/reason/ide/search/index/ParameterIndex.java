@@ -12,7 +12,7 @@ import java.util.*;
 public class ParameterIndex extends StringStubIndexExtension<PsiParameter> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiParameterStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.PARAMETER;
     }
 
     @Override

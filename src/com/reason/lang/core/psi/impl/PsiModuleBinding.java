@@ -1,0 +1,11 @@
+package com.reason.lang.core.psi.impl;
+
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
+
+public class PsiModuleBinding extends ORCompositePsiElement<ORTypes> {
+    public PsiModuleBinding(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
+    }
+}

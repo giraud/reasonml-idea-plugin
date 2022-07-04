@@ -12,7 +12,7 @@ import java.util.*;
 public class OpenIndex extends StringStubIndexExtension<PsiOpen> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiOpenStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.OPEN;
     }
 
     @Override

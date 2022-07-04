@@ -4,7 +4,7 @@ import com.intellij.extapi.psi.*;
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.psi.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.dune.*;
 import org.jetbrains.annotations.*;
 

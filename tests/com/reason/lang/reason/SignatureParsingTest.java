@@ -31,9 +31,9 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         assertEquals(3, signature.getItems().size());
         assertEquals("(~v:length, ~h:length) => rule", signature.asText(getLangProps()));
         assertFalse(signature.getItems().get(0).isOptional());
-        assertEquals("v", signature.getItems().get(0).getNamedParam().getName());
+        assertEquals("v", signature.getItems().get(0).getName());
         assertFalse(signature.getItems().get(1).isOptional());
-        assertEquals("h", signature.getItems().get(1).getNamedParam().getName());
+        assertEquals("h", signature.getItems().get(1).getName());
     }
 
     public void test_optional_fun() {
@@ -49,12 +49,14 @@ public class SignatureParsingTest extends RmlParsingTestCase {
     }
 
     public void test_optional_fun_parameters() {
-        PsiLet let = first(letExpressions(parseCode("let x = (a:int, b:option(string), ~c:bool=false, ~d:float=?) => 3")));
+        PsiLet let = first(letExpressions(parseCode("let x = (a:Js.t, b:option(string), ~c:bool=false, ~d:float=?) => 3")));
 
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
 
+        assertSize(4, parameters);
         assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
+        assertEquals("Js.t", parameters.get(0).getSignature().getItems().get(0).getText());
         assertFalse(parameters.get(1).getSignature().getItems().get(0).isOptional());
         assertEquals("bool", parameters.get(2).getSignature().asText(getLangProps()));
         assertTrue(parameters.get(2).isOptional());
@@ -100,6 +102,15 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         assertEquals("string", signatureItems.get(1).getText());
         assertEquals("animationFrameID", signatureItems.get(2).getText());
         assertSize(3, signatureItems);
+    }
+
+    public void test_dot() {
+        PsiExternal e = firstOfType(parseCode("external getPlatformInformation: (. store) => platform = \"\""), PsiExternal.class);
+
+        List<PsiSignatureItem> items = e.getSignature().getItems();
+        assertSize(2, items);
+        assertEquals("store", items.get(0).getText());
+        assertEquals("platform", items.get(1).getText());
     }
 
     public void test_option() {

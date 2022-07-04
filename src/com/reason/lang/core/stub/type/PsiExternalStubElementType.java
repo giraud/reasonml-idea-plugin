@@ -13,8 +13,6 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStub, PsiExternal> {
-    public static final int VERSION = 9;
-
     public PsiExternalStubElementType(@Nullable Language language) {
         super("C_EXTERNAL_DECLARATION", language);
     }

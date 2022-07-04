@@ -93,17 +93,17 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         createOpamTab();
         createEsyTab();
 
-
-        mySwitchSelect.addItemListener(itemEvent -> {
-            if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                String version = (String) itemEvent.getItem();
-                clearEnv();
-                listLibraries(version);
-            }
-        });
-
-        myOpamLibraries.setBorder(BorderFactory.createLineBorder(JBUI.CurrentTheme.DefaultTabs.borderColor()));
-        listLibraries(mySettings.getSwitchName());
+        if (mySwitchSelect != null) { // buildSearchableOptions ??
+            mySwitchSelect.addItemListener(itemEvent -> {
+                if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+                    String version = (String) itemEvent.getItem();
+                    clearEnv();
+                    listLibraries(version);
+                }
+            });
+            myOpamLibraries.setBorder(BorderFactory.createLineBorder(JBUI.CurrentTheme.DefaultTabs.borderColor()));
+            listLibraries(mySettings.getSwitchName());
+        }
 
         return myRootPanel;
     }
@@ -287,8 +287,10 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
 
     private void createBsTab() {
         Project project = mySettings.getProject();
-        f_bsPlatformLocation.addBrowseFolderListener(BS_PLATFORM_LOCATION_LABEL, null, project,
-                FileChooserDescriptorFactory.createSingleFolderDescriptor());
+        if (f_bsPlatformLocation != null) { // buildSearchableOptions ??
+            f_bsPlatformLocation.addBrowseFolderListener(BS_PLATFORM_LOCATION_LABEL, null, project,
+                    FileChooserDescriptorFactory.createSingleFolderDescriptor());
+        }
     }
 
     private void detectSwitchSystem(@NotNull VirtualFile dir) {
@@ -344,8 +346,10 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
             }
         };
 
-        myOpamLocation.getTextField().addFocusListener(focusListener);
-        myOpamLocation.addBrowseFolderListener(browseListener);
+        if (myOpamLocation != null) { // buildSearchableOptions ???
+            myOpamLocation.getTextField().addFocusListener(focusListener);
+            myOpamLocation.addBrowseFolderListener(browseListener);
+        }
     }
 
     private VirtualFile findBinary(@Nullable VirtualFile dir) {
@@ -386,9 +390,11 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     }
 
     private void createEsyTab() {
-        Project project = mySettings.getProject();
-        f_esyExecutable.addBrowseFolderListener(ESY_EXECUTABLE_LABEL, null, project,
-                FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
+        if (f_esyExecutable != null) { // buildSearchableOptions ??
+            Project project = mySettings.getProject();
+            f_esyExecutable.addBrowseFolderListener(ESY_EXECUTABLE_LABEL, null, project,
+                    FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
+        }
     }
 
     private static @NotNull String sanitizeInput(@NotNull JTextField textField) {

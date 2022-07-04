@@ -15,7 +15,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
         assertSize(1, function.getParameters());
         assertEquals("item", first(function.getParameters()).getText());
-        assertInstanceOf(first(function.getParameters()).getNameIdentifier(), PsiLowerIdentifier.class);
+        assertInstanceOf(first(function.getParameters()).getNameIdentifier(), PsiLowerSymbol.class);
         assertEquals("value", function.getBody().getText());
     }
 
@@ -160,13 +160,26 @@ public class FunctionParsingTest extends RmlParsingTestCase {
     public void test_underscore() {
         PsiLet e = first(letExpressions(parseCode("let onCancel = _ => { setUpdatedAttribute(_ => initialAttribute); };")));
 
+        assertTrue(e.isFunction());
+        PsiFunction f1 = e.getFunction();
+        assertSize(1, f1.getParameters());
+        assertEquals("{ setUpdatedAttribute(_ => initialAttribute); }", f1.getBody().getText());
         assertEquals("_ => { setUpdatedAttribute(_ => initialAttribute); }", e.getBinding().getText());
-        assertEquals("(_ => initialAttribute)", PsiTreeUtil.findChildOfType(e.getBinding(), PsiParameters.class).getText());
+        PsiFunctionCall call = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCall.class);
+        PsiParameterReference callParam = call.getParameters().get(0);
+        PsiFunction f2 = PsiTreeUtil.findChildOfType(callParam, PsiFunction.class);
+        assertSize(1, f2.getParameters());
+        assertEquals("initialAttribute", f2.getBody().getText());
+    }
+
+    public void test_rollback() {
+        PsiFunction f = firstOfType(parseCode("let _ = { let x = 1; let y = 2; () => 3; };"), PsiFunction.class); // test infinite rollback
+        assertEquals("() => 3", f.getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/113
     public void test_GH_113() {
-        PsiFunction e = (PsiFunction) firstElement(parseCode("() => switch (isBuggy()) { | _ => \"buggy\" };"));
+        PsiFunction e = firstOfType(parseCode("let _ = () => switch (isBuggy()) { | _ => \"buggy\" };"), PsiFunction.class);
 
         assertSize(0, e.getParameters());
         PsiFunctionBody b = e.getBody();

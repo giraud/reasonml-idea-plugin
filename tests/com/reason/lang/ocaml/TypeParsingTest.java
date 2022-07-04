@@ -1,13 +1,16 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 import static com.intellij.psi.util.PsiTreeUtil.*;
 
@@ -23,12 +26,25 @@ public class TypeParsingTest extends OclParsingTestCase {
         assertEquals("tree", type.getName());
     }
 
+    public void test_path() {
+        PsiType e = first(typeExpressions(parseCode("type t = A.B.other")));
+
+        assertEquals("t", e.getName());
+        assertFalse(e.isAbstract());
+        assertEquals("A.B.other", e.getBinding().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiVariantDeclaration.class));
+        List<PsiUpperSymbol> modules = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiUpperSymbol.class);
+        assertSize(2, modules);
+        List<IElementType> es = modules.stream().map(u -> u.getNode().getElementType()).collect(Collectors.toList());
+        assertEquals(List.of(myTypes.A_MODULE_NAME, myTypes.A_MODULE_NAME), es);
+    }
+
     public void test_option() {
-        PsiType e = first(typeExpressions(parseCode("type t = int option")));
+        PsiType e = first(typeExpressions(parseCode("type t = string array option")));
 
         PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
         assertNotNull(option);
-        assertEquals("int option", option.getText());
+        assertEquals("string array option", option.getText());
     }
 
     public void test_bindingWithVariant() {
@@ -60,10 +76,10 @@ public class TypeParsingTest extends OclParsingTestCase {
         assertInstanceOf(b.getFirstChild(), PsiObject.class);
     }
 
-    public void test_bindingWithRecordAs() {
-        PsiTypeBinding typeBinding = first(findChildrenOfType(first(
-                        typeExpressions(parseCode("type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))),
-                PsiTypeBinding.class));
+    public void test_binding_with_record_as() {
+        PsiTypeBinding typeBinding = first(findChildrenOfType(first(typeExpressions(parseCode(
+                "type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))), PsiTypeBinding.class));
+
         PsiRecord record = PsiTreeUtil.findChildOfType(typeBinding, PsiRecord.class);
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
         assertEquals(2, fields.size());
@@ -71,8 +87,8 @@ public class TypeParsingTest extends OclParsingTestCase {
         assertEquals("pos", fields.get(1).getName());
     }
 
-    public void test_chainDef() {
-        FileBase file = parseCode("type 'branch_type branch_info = 'branch_type Vcs_.branch_info = { kind : [> `Master] as 'branch_type; root : id; pos  : id; }");
+    public void test_chain_definitions() {
+        FileBase file = parseCode("type 'branch_type branch_info = 'branch_type Vcs_.branch_info = { kind: [> `Master] as 'branch_type; root: id; pos: id; }");
 
         assertEquals(1, childrenCount(file));
     }
@@ -82,9 +98,6 @@ public class TypeParsingTest extends OclParsingTestCase {
 
         assertEquals("declaration_arity", e.getName());
         assertEquals("| RegularArity of 'a", e.getBinding().getText());
-
-        // zzz PsiTypeConstrName cname = e.getConstrName();
-        // assertTrue(cname.hasParameters());
     }
 
     public void test_apply_params() {

@@ -53,10 +53,10 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> RML_OPTIONS_TYPES =
             of(RmlTypes.INSTANCE.NONE, RmlTypes.INSTANCE.SOME);
 
-    private static final Set<IElementType> NS_KEYWORD_TYPES =
+    private static final Set<IElementType> RES_KEYWORD_TYPES =
             of(
                     ResTypes.INSTANCE.OPEN, ResTypes.INSTANCE.MODULE, ResTypes.INSTANCE.FUN, ResTypes.INSTANCE.LET,
-                    ResTypes.INSTANCE.TYPE, ResTypes.INSTANCE.INCLUDE, ResTypes.INSTANCE.EXTERNAL,
+                    ResTypes.INSTANCE.TYPE, ResTypes.INSTANCE.INCLUDE, ResTypes.INSTANCE.EXTERNAL, ResTypes.INSTANCE.LIST,
                     ResTypes.INSTANCE.IF, ResTypes.INSTANCE.ELSE, ResTypes.INSTANCE.ENDIF, ResTypes.INSTANCE.SWITCH,
                     ResTypes.INSTANCE.TRY, ResTypes.INSTANCE.RAISE, ResTypes.INSTANCE.FOR, ResTypes.INSTANCE.IN,
                     ResTypes.INSTANCE.TO, ResTypes.INSTANCE.BOOL_VALUE, ResTypes.INSTANCE.REF, ResTypes.INSTANCE.EXCEPTION,
@@ -71,7 +71,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     ResTypes.INSTANCE.DIRECTIVE_ELSE, ResTypes.INSTANCE.DIRECTIVE_ELIF, ResTypes.INSTANCE.DIRECTIVE_END,
                     ResTypes.INSTANCE.DIRECTIVE_ENDIF);
 
-    private static final Set<IElementType> NS_OPERATION_SIGN_TYPES =
+    private static final Set<IElementType> RES_OPERATION_SIGN_TYPES =
             of(
                     ResTypes.INSTANCE.L_AND, ResTypes.INSTANCE.L_OR, ResTypes.INSTANCE.SHORTCUT, ResTypes.INSTANCE.ARROW,
                     ResTypes.INSTANCE.PIPE_FORWARD, ResTypes.INSTANCE.EQEQEQ, ResTypes.INSTANCE.EQEQ, ResTypes.INSTANCE.EQ,
@@ -87,7 +87,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     ResTypes.INSTANCE.BRACKET_GT, ResTypes.INSTANCE.BRACKET_LT, ResTypes.INSTANCE.BRACE_LT,
                     ResTypes.INSTANCE.DOTDOT);
 
-    private static final Set<IElementType> NS_OPTIONS_TYPES =
+    private static final Set<IElementType> RES_OPTIONS_TYPES =
             of(ResTypes.INSTANCE.NONE, ResTypes.INSTANCE.SOME);
 
     private static final Set<IElementType> OCL_KEYWORD_TYPES =
@@ -122,7 +122,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     OclTypes.INSTANCE.PERCENT, OclTypes.INSTANCE.PIPE, OclTypes.INSTANCE.ARROBASE, OclTypes.INSTANCE.SHARP,
                     OclTypes.INSTANCE.SHARPSHARP, OclTypes.INSTANCE.QUESTION_MARK, OclTypes.INSTANCE.EXCLAMATION_MARK, OclTypes.INSTANCE.LT_OR_EQUAL,
                     OclTypes.INSTANCE.GT_OR_EQUAL, OclTypes.INSTANCE.AMPERSAND, OclTypes.INSTANCE.LEFT_ARROW,
-                    OclTypes.INSTANCE.RIGHT_ARROW, OclTypes.INSTANCE.COLON_EQ, OclTypes.INSTANCE.COLON_GT,
+                    OclTypes.INSTANCE.RIGHT_ARROW, OclTypes.INSTANCE.COLON_EQ, OclTypes.INSTANCE.COLON_GT, OclTypes.INSTANCE.STRING_CONCAT,
                     OclTypes.INSTANCE.GT, OclTypes.INSTANCE.GT_BRACE, OclTypes.INSTANCE.GT_BRACKET, OclTypes.INSTANCE.BRACKET_GT,
                     OclTypes.INSTANCE.BRACKET_LT, OclTypes.INSTANCE.BRACE_LT, OclTypes.INSTANCE.DOTDOT);
 
@@ -156,6 +156,8 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
     private static final TextAttributesKey[] TYPE_ARGUMENT_KEYS = new TextAttributesKey[]{TYPE_ARGUMENT_};
     private static final TextAttributesKey[] POLY_VARIANT_KEYS = new TextAttributesKey[]{POLY_VARIANT_};
+    //private static final TextAttributesKey[] VARIANT_NAME_KEYS = new TextAttributesKey[]{VARIANT_NAME_};
+    //private static final TextAttributesKey[] MODULE_NAME_KEYS = new TextAttributesKey[]{MODULE_NAME_};
     private static final TextAttributesKey[] BRACKET_KEYS = new TextAttributesKey[]{BRACKETS_};
     private static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACES_};
     private static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS_};
@@ -209,7 +211,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
             return POLY_VARIANT_KEYS;
         } else if (m_types.COMMA.equals(tokenType)) {
             return COMMA_KEYS;
-        } else if (m_types.TAG_AUTO_CLOSE.equals(tokenType) || m_types.TAG_LT_SLASH.equals(tokenType) || m_types.TAG_NAME.equals(tokenType)) {
+        } else if (m_types.TAG_AUTO_CLOSE.equals(tokenType) || m_types.TAG_LT_SLASH.equals(tokenType) || m_types.A_LOWER_TAG_NAME.equals(tokenType) || m_types.A_UPPER_TAG_NAME.equals(tokenType)) {
             return MARKUP_TAG_KEYS;
         } else if (m_types.SEMI.equals(tokenType) || m_types.SEMISEMI.equals(tokenType)) {
             return SEMICOLON_KEYS;
@@ -224,11 +226,11 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                 return OPTION_KEYS;
             }
         } else if (m_types == ResTypes.INSTANCE) {
-            if (NS_KEYWORD_TYPES.contains(tokenType)) {
+            if (RES_KEYWORD_TYPES.contains(tokenType)) {
                 return KEYWORD_KEYS;
-            } else if (NS_OPERATION_SIGN_TYPES.contains(tokenType)) {
+            } else if (RES_OPERATION_SIGN_TYPES.contains(tokenType)) {
                 return OPERATION_SIGN_KEYS;
-            } else if (NS_OPTIONS_TYPES.contains(tokenType)) {
+            } else if (RES_OPTIONS_TYPES.contains(tokenType)) {
                 return OPTION_KEYS;
             }
         } else if (m_types == OclTypes.INSTANCE) {

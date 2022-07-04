@@ -12,7 +12,7 @@ import java.util.*;
 public class RecordFieldIndex extends StringStubIndexExtension<PsiRecordField> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiRecordFieldStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.RECORD_FIELD;
     }
 
     @Override

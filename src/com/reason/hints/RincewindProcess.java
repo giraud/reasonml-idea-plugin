@@ -2,6 +2,7 @@ package com.reason.hints;
 
 import com.intellij.notification.*;
 import com.intellij.openapi.editor.*;
+import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.bs.*;
@@ -84,6 +85,10 @@ public class RincewindProcess {
 
                 runAfter.run(types);
             }
+        } catch (ProcessCanceledException e) {
+            //  Control-flow exceptions (like ProcessCanceledException) should never be logged:
+            //  ignore for explicitly started processes or rethrow to handle on the outer process level
+            throw e;
         } catch (Exception e) {
             LOG.error("An error occurred when reading types", e);
         } finally {

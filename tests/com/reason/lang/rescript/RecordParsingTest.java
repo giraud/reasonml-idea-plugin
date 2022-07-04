@@ -35,18 +35,33 @@ public class RecordParsingTest extends ResParsingTestCase {
         assertNull(fields.get(2).getSignature());
     }
 
-    public void test_usage_deep() {
-        PsiLet e = first(letExpressions(parseCode("let r = { a: { b: { c: 3 } } }")));
+    public void test_usage_with_sig() {
+        PsiLet e = first(letExpressions(parseCode("let r: M.t = {a: 1, b: 2, c: 3}")));
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
 
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
-        assertSize(1, fields);
+        assertSize(3, fields);
         assertEquals("a", fields.get(0).getName());
+        assertNull(fields.get(0).getSignature());
+        assertEquals("b", fields.get(1).getName());
+        assertNull(fields.get(1).getSignature());
+        assertEquals("c", fields.get(2).getName());
+        assertNull(fields.get(2).getSignature());
+    }
 
-        List<PsiRecordField> allFields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(record, PsiRecordField.class));
-        assertEquals("a", allFields.get(0).getName());
-        assertEquals("b", allFields.get(1).getName());
-        assertEquals("c", allFields.get(2).getName());
+    public void test_usage_deep() {
+        PsiLet e = first(letExpressions(parseCode("let r = { a: [ 1, 2 ], b: { b1: { b11: 3 } }, c: 4 }")));
+        PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
+
+        List<PsiRecordField> fields = new ArrayList<>(record.getFields());
+        assertSize(3, fields);
+        assertEquals("a", fields.get(0).getName());
+        assertEquals("b", fields.get(1).getName());
+        assertEquals("c", fields.get(2).getName());
+
+        List<PsiRecordField> allFields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fields.get(1), PsiRecordField.class));
+        assertEquals("b1", allFields.get(0).getName());
+        assertEquals("b11", allFields.get(1).getName());
     }
 
     public void test_mixin() {

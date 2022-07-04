@@ -7,7 +7,7 @@ import com.intellij.psi.stubs.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiKlass;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import icons.*;
@@ -30,7 +30,7 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerIdentifier.class);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Override
@@ -48,15 +48,23 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
 
     //region PsiQualifiedName
     @Override
-    public @Nullable String[] getPath() { // zzz stub
+    public @Nullable String[] getPath() {
+        PsiKlassStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
         return ORUtil.getQualifiedPath(this);
     }
 
     @Override
     public @NotNull String getQualifiedName() {
-        String[] path = getPath();
-        String name = getName();
-        return name == null ? "" : Joiner.join(".", path) + "." + name;
+        PsiKlassStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+
+        return ORUtil.getQualifiedName(this);
     }
     //endregion
 
@@ -76,8 +84,8 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
     }
 
     @Override
-    public @NotNull Collection<PsiClassParameters> getParameters() {
-        return PsiTreeUtil.findChildrenOfType(this, PsiClassParameters.class);
+    public @NotNull Collection<PsiParameters> getParameters() {
+        return PsiTreeUtil.findChildrenOfType(this, PsiParameters.class);
     }
 
     @Override
@@ -102,10 +110,5 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
                 return ORIcons.CLASS;
             }
         };
-    }
-
-    @Override
-    public @Nullable String toString() {
-        return "Class " + getQualifiedName();
     }
 }

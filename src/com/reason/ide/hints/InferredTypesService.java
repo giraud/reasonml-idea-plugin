@@ -14,7 +14,7 @@ import com.reason.hints.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -56,7 +56,6 @@ public class InferredTypesService {
                 InsightManager insightManager = project.getService(InsightManager.class);
 
                 // Find namespace if ocaml is compiled through dune
-                // zzz dune lib util ? + tests
                 final String[] namespace = {""};
                 ORResolvedCompiler<? extends Compiler> compiler = project.getService(ORCompilerManager.class).getCompiler(sourceFile);
                 if (compiler != null && compiler.getType() == DUNE) {

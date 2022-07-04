@@ -1,6 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.*;
+import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -49,9 +50,9 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals(3, signature.getItems().size());
         assertEquals("v:length -> h:length -> rule", signature.asText(getLangProps()));
         assertFalse(signature.getItems().get(0).isOptional());
-        assertEquals("v", signature.getItems().get(0).getNamedParam().getName());
+        assertEquals("v", signature.getItems().get(0).getName());
         assertFalse(signature.getItems().get(1).isOptional());
-        assertEquals("h", signature.getItems().get(1).getNamedParam().getName());
+        assertEquals("h", signature.getItems().get(1).getName());
     }
 
     public void test_optional_fun() {
@@ -75,6 +76,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
 
+        assertSize(4, parameters);
         assertFalse(parameters.get(0).isOptional());
         assertFalse(parameters.get(1).isOptional());
         assertTrue(parameters.get(2).isOptional());
@@ -117,7 +119,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals("()", parameters.get(1).getText());
     }
 
-    public void test_signatureItems() {
+    public void test_signature_items() {
         PsiLet e = first(letExpressions(parseCode("let createAction: < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element;")));
         PsiSignature signature = e.getSignature();
 
@@ -134,5 +136,19 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertSize(2, fields);
         assertEquals(fields.get(0).getName(), "a");
         assertEquals(fields.get(1).getName(), "b");
+    }
+
+    public void test_option() {
+        PsiVal e = firstOfType(parseCode("val x: string array option"), PsiVal.class);
+
+        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        assertEquals("string array option", option.getText());
+    }
+
+    public void test_option_named_params() {
+        PsiExternal e = firstOfType(parseCode("external add : x:int option -> int = \"\""), PsiExternal.class);
+
+        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        assertEquals("int option", option.getText());
     }
 }

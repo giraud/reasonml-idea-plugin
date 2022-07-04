@@ -24,7 +24,7 @@ public interface OclStubBasedElementTypes {
     IStubElementType<PsiIncludeStub, PsiInclude> C_INCLUDE = new PsiIncludeStubElementType(OclLanguage.INSTANCE);
     IStubElementType<PsiOpenStub, PsiOpen> C_OPEN = new PsiOpenStubElementType(OclLanguage.INSTANCE);
 
-    // ?
-    IStubElementType<PsiParameterStub, PsiParameter> C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", OclLanguage.INSTANCE);
+    IStubElementType<PsiParameterStub, PsiParameter> C_NAMED_PARAM_DECLARATION = new PsiParameterStubElementType("C_NAMED_PARAM_DECLARATION", OclLanguage.INSTANCE);
+    IStubElementType<PsiParameterStub, PsiParameter> C_PARAM_DECLARATION = new PsiParameterStubElementType("C_PARAM_DECLARATION", OclLanguage.INSTANCE);
     IStubElementType<PsiParameterStub, PsiParameter> C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", OclLanguage.INSTANCE);
 }

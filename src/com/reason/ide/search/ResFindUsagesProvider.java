@@ -14,8 +14,8 @@ public class ResFindUsagesProvider extends ORFindUsagesProvider {
         ORTypes types = ResTypes.INSTANCE;
         return new DefaultWordsScanner(
                 new ResLexer(), //
-                TokenSet.create(types.UIDENT, types.LIDENT, types.VARIANT_NAME), //
-                TokenSet.EMPTY, //
+                TokenSet.create(types.UIDENT, types.LIDENT), //
+                TokenSet.create(types.MULTI_COMMENT, types.SINGLE_COMMENT), //
                 TokenSet.create(types.FLOAT_VALUE, types.INT_VALUE, types.STRING_VALUE));
     }
 }

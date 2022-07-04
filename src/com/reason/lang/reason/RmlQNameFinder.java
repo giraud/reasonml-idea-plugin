@@ -35,7 +35,7 @@ public class RmlQNameFinder extends BaseQNameFinder {
 
         // Another parallel set of names that are resolved from aliases. We can't mix the two sets.
         // For module resolution, we don't want resolved names, but we want them for variants.
-        // We can't distinguished upper symbols here, so we keep two lists, and resolved set has a lower
+        // We can't distinguish upper symbols here, so we keep two lists, and resolved set has a lower
         // priority.
         Set<String> resolvedQualifiedNames = new ArrayListSet<>();
         String resolvedPath = path;
@@ -61,18 +61,14 @@ public class RmlQNameFinder extends BaseQNameFinder {
                     // This is a local module alias, we'll need to replace it in final paths
                     Pattern compile = Pattern.compile("(\\.?)(" + module.getModuleName() + ")(\\.?)");
                     String replace = "$1" + alias + "$3";
-                    resolvedQualifiedNames =
-                            resolvedQualifiedNames
-                                    .stream()
-                                    .map(
-                                            name -> {
-                                                Matcher matcher = compile.matcher(name);
-                                                if (matcher.find()) {
-                                                    return matcher.replaceAll(replace);
-                                                }
-                                                return name;
-                                            })
-                                    .collect(Collectors.toCollection(ArrayListSet::new));
+                    resolvedQualifiedNames = resolvedQualifiedNames.stream().map(name -> {
+                                Matcher matcher = compile.matcher(name);
+                                if (matcher.find()) {
+                                    return matcher.replaceAll(replace);
+                                }
+                                return name;
+                            })
+                            .collect(Collectors.toCollection(ArrayListSet::new));
                     resolvedPath = compile.matcher(resolvedPath).replaceAll(replace);
                     resolvedPathExtension = compile.matcher(resolvedPathExtension).replaceAll(replace);
                 }

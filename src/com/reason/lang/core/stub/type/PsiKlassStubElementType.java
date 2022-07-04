@@ -13,8 +13,6 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiKlassStubElementType extends ORStubElementType<PsiKlassStub, PsiKlass> {
-    public static final int VERSION = 2;
-
     public PsiKlassStubElementType(@Nullable Language language) {
         super("C_CLASS_DECLARATION", language);
     }

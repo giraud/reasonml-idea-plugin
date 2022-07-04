@@ -13,8 +13,6 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiOpenStubElementType extends ORStubElementType<PsiOpenStub, PsiOpen> {
-    public static final int VERSION = 2;
-
     public PsiOpenStubElementType(@Nullable Language language) {
         super("C_OPEN", language);
     }

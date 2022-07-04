@@ -14,24 +14,34 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class PsiFunctorCall extends CompositeTypePsiElement<ORTypes> {
+public class PsiFunctorCall extends ORCompositePsiElement<ORTypes> {
     protected PsiFunctorCall(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 
-    @NotNull
-    public String getFunctorName() {
-        String text = getText();
-
-        PsiParameters params = PsiTreeUtil.findChildOfType(this, PsiParameters.class);
-        if (params == null) {
-            return text;
-        }
-
-        return text.substring(0, params.getTextOffset() - getTextOffset());
+    private @Nullable PsiUpperSymbol getReferenceIdentifier() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
     }
 
-    public @NotNull Collection<PsiParameter> getParameters() {
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiUpperSymbol id = getReferenceIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiUpperSymbol id = getReferenceIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
+
+    @Override
+    public @NotNull String getName() {
+        PsiUpperSymbol name = getReferenceIdentifier();
+        return name == null ? "" : name.getText();
+    }
+
+    public @NotNull Collection<PsiElement> getParameters() {
         PsiParameters params = PsiTreeUtil.findChildOfType(this, PsiParameters.class);
         return params == null ? emptyList() : params.getParametersList();
     }
@@ -41,18 +51,6 @@ public class PsiFunctorCall extends CompositeTypePsiElement<ORTypes> {
         PsiUpperSymbolReference reference = uSymbol == null ? null : (PsiUpperSymbolReference) uSymbol.getReference();
         PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
 
-        if (resolvedElement instanceof PsiUpperIdentifier) {
-            PsiElement resolvedParent = resolvedElement.getParent();
-            if (resolvedParent instanceof PsiFunctor) {
-                return (PsiFunctor) resolvedParent;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Functor call";
+        return resolvedElement instanceof PsiFunctor ? (PsiFunctor) resolvedElement : null;
     }
 }

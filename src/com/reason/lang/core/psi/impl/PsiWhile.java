@@ -1,31 +1,20 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.CompositeTypePsiElement;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
-public class PsiWhile extends CompositeTypePsiElement<ORTypes> {
+public class PsiWhile extends ORCompositePsiElement<ORTypes> {
+    protected PsiWhile(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
+    }
 
-  protected PsiWhile(@NotNull ORTypes types, @NotNull IElementType elementType) {
-    super(types, elementType);
-  }
+    public @Nullable PsiBinaryCondition getCondition() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiBinaryCondition.class);
+    }
 
-  @Nullable
-  public PsiBinaryCondition getCondition() {
-    return ORUtil.findImmediateFirstChildOfClass(this, PsiBinaryCondition.class);
-  }
-
-  @Nullable
-  public PsiScopedExpr getBody() {
-    return ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
-  }
-
-  @NotNull
-  @Override
-  public String toString() {
-    return "While";
-  }
+    public @Nullable PsiScopedExpr getBody() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
+    }
 }

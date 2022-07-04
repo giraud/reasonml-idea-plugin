@@ -67,8 +67,8 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(10, strings);
         assertSameElements(strings, "exception", "external", "include", "let", "module", "open", "type", "A", "y", "x");
+        assertSize(10, strings);
     }
 
 }

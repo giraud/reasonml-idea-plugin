@@ -4,6 +4,7 @@ import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.xml.model.gotosymbol.*;
 import com.reason.ide.search.*;
@@ -41,10 +42,18 @@ public class PsiIncludeImpl extends PsiTokenStub<ORTypes, PsiInclude, PsiInclude
             return stub.getIncludePath();
         }
 
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        if (firstChild instanceof PsiFunctorCall) {
-            return ((PsiFunctorCall) firstChild).getFunctorName();
+
+        PsiElement firstModule = ORUtil.findImmediateFirstChildOfType(this, myTypes.A_MODULE_NAME);
+        PsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+        if (functorCall != null) {
+            String path = "";
+            if (firstModule != null) {
+                path = ORUtil.getTextUntilTokenType(firstModule, (IElementType) myTypes.C_FUNCTOR_CALL);
+            }
+            return path + functorCall.getName();
         }
+
+        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
         return firstChild == null ? "" : ORUtil.getTextUntilClass(firstChild, PsiConstraints.class);
     }
 
@@ -73,19 +82,19 @@ public class PsiIncludeImpl extends PsiTokenStub<ORTypes, PsiInclude, PsiInclude
 
     @Override
     public @Nullable PsiElement resolveModule() {
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        if (firstChild instanceof PsiFunctorCall) {
-            return ((PsiFunctorCall) firstChild).resolveFunctor();
-        } else if (firstChild instanceof PsiUpperSymbol) {
-            return ORUtil.resolveModuleSymbol((PsiUpperSymbol) firstChild);
+        PsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+        if (functorCall != null) {
+            return functorCall.resolveFunctor();
         }
-        return null;
+
+        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+        return ORUtil.resolveModuleSymbol((PsiUpperSymbol) firstChild);
     }
 
     @Override
     public boolean useFunctor() {
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        return firstChild instanceof PsiFunctorCall;
+        PsiElement firstChild = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+        return firstChild != null;
     }
 
     @Override

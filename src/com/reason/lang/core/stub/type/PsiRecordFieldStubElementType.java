@@ -13,8 +13,6 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiRecordFieldStubElementType extends ORStubElementType<PsiRecordFieldStub, PsiRecordField> {
-    public static final int VERSION = 5;
-
     public PsiRecordFieldStubElementType(@NotNull Language language) {
         super("C_RECORD_FIELD", language);
     }

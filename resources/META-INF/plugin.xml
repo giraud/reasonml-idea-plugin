@@ -122,20 +122,20 @@
         <!-- Reason -->
         <stubElementTypeHolder externalIdPrefix="Reason." class="com.reason.lang.core.stub.RmlStubBasedElementTypes"/>
         <lang.ast.factory language="Reason" implementationClass="com.reason.lang.reason.RmlASTFactory"/>
-        <lang.parserDefinition language="Reason" implementationClass="com.reason.lang.reason.RmlParserDefinition"/>
+        <lang.parserDefinition language="Reason" implementationClass="com.reason.lang.reason.RmlSafeParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Reason"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
         <!-- Rescript -->
         <stubElementTypeHolder externalIdPrefix="Rescript."
                                class="com.reason.lang.core.stub.RescriptStubBasedElementTypes"/>
         <lang.ast.factory language="Rescript" implementationClass="com.reason.lang.rescript.ResASTFactory"/>
-        <lang.parserDefinition language="Rescript" implementationClass="com.reason.lang.rescript.ResParserDefinition"/>
+        <lang.parserDefinition language="Rescript" implementationClass="com.reason.lang.rescript.ResSafeParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Rescript"
                                        implementationClass="com.reason.ide.highlight.ResSyntaxHighlighterFactory"/>
         <!-- OCaml -->
         <stubElementTypeHolder externalIdPrefix="OCaml." class="com.reason.lang.core.stub.OclStubBasedElementTypes"/>
         <lang.ast.factory language="OCaml" implementationClass="com.reason.lang.ocaml.OclASTFactory"/>
-        <lang.parserDefinition language="OCaml" implementationClass="com.reason.lang.ocaml.OclParserDefinition"/>
+        <lang.parserDefinition language="OCaml" implementationClass="com.reason.lang.ocaml.OclSafeParserDefinition"/>
         <lang.syntaxHighlighterFactory language="OCaml"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- OCamlP4 -->
@@ -335,11 +335,11 @@
         <quoteHandler fileType="OCAML_INTF" className="com.reason.ide.handlers.OclQuoteHandler"/>
 
         <lang.refactoringSupport language="OCaml"
-                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
+                                 implementationClass="com.reason.ide.refactor.ORRefactoringSupportProvider"/>
         <lang.refactoringSupport language="Reason"
-                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
+                                 implementationClass="com.reason.ide.refactor.ORRefactoringSupportProvider"/>
         <lang.refactoringSupport language="Rescript"
-                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
+                                 implementationClass="com.reason.ide.refactor.ORRefactoringSupportProvider"/>
 
         <iconProvider implementation="com.reason.ide.IconProvider"/>
 
@@ -374,7 +374,7 @@
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
         <languageInjector implementation="com.reason.ide.js.JsInjector"/>
-        <lang.elementManipulator forClass="com.reason.lang.core.psi.PsiLiteralExpression"
+        <lang.elementManipulator forClass="com.reason.lang.core.psi.impl.PsiLiteralExpression"
                                  implementationClass="com.reason.lang.core.LiteralStringManipulator"/>
 
         <!--

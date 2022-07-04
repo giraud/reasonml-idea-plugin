@@ -28,9 +28,6 @@ public interface PsiModule extends PsiQualifiedPathElement, NavigatablePsiElemen
     @Nullable
     String[] getQualifiedNameAsPath();
 
-    @Nullable
-    PsiFunctorCall getFunctorCall();
-
     @NotNull
     Collection<PsiNamedElement> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter);
 
@@ -42,12 +39,6 @@ public interface PsiModule extends PsiQualifiedPathElement, NavigatablePsiElemen
 
     @Nullable
     PsiLet getLetExpression(@Nullable String name);
-
-    @Nullable
-    PsiExternal getExternalExpression(@Nullable String name);
-
-    @Nullable
-    PsiVal getValExpression(@Nullable String name);
 
     @Nullable
     PsiElement getModuleType();

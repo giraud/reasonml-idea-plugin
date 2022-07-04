@@ -3,7 +3,7 @@ package com.reason.ide.hints;
 import com.intellij.lang.parameterInfo.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.rescript.*;
 import org.jetbrains.annotations.*;
 

@@ -12,7 +12,7 @@ import java.util.*;
 public class TypeFqnIndex extends IntStubIndexExtension<PsiType> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiTypeStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.TYPE;
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.reason.*;
 
 import java.util.*;
 
@@ -17,33 +18,39 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(1, modules.size());
         PsiInnerModule e = (PsiInnerModule) first(modules);
         assertEquals("M", e.getName());
+        assertEquals(OclTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
         assertEquals("Dummy.M", e.getQualifiedName());
         assertEquals("struct end", e.getBody().getText());
     }
 
     public void test_alias() {
-        PsiModule module = first(moduleExpressions(parseCode("module M = Y")));
+        PsiModule e = firstOfType(parseCode("module M = Y"), PsiModule.class);
 
-        assertEquals("M", module.getName());
-        assertEquals("Y", module.getAlias());
+        assertEquals("M", e.getName());
+        assertEquals("Y", e.getAlias());
+        assertEquals("Y", e.getAliasSymbol().getText());
+        assertEquals(myTypes.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
-    public void test_aliasPath() {
-        PsiModule module = first(moduleExpressions(parseCode("module M = Y.Z")));
+    public void test_alias_path() {
+        PsiModule e = firstOfType(parseCode("module M = Y.Z"), PsiModule.class);
 
-        assertEquals("M", module.getName());
-        assertEquals("Y.Z", module.getAlias());
+        assertEquals("M", e.getName());
+        assertEquals("Y.Z", e.getAlias());
+        assertEquals("Z", e.getAliasSymbol().getText());
+        assertEquals(myTypes.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
-    public void test_moduleType() {
+    public void test_module_type() {
         PsiModule e = first(moduleExpressions(parseCode("module type Intf = sig val x : bool end")));
 
         assertEquals("Intf", e.getName());
         assertTrue(e.isInterface());
-        assertNotNull(e.getValExpression("x"));
+        assertInstanceOf(e.getBody(), PsiModuleBinding.class);
+        assertEquals("bool", firstOfType(e, PsiVal.class).getSignature().getText());
     }
 
-    public void test_moduleSig() {
+    public void test_module_signature() {
         PsiFile file = parseCode("module Level : sig end\ntype t");
 
         assertEquals(2, expressions(file).size());
@@ -52,23 +59,13 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("sig end", module.getModuleType().getText());
     }
 
-    public void test_moduleSig2() {
-        PsiFile file = parseCode("module Constraint : Set.S with type elt = univ_constraint\ntype t");
-
-        assertEquals(2, expressions(file).size());
-        PsiInnerModule module = firstOfType(file, PsiInnerModule.class);
-        assertEquals("Constraint", module.getName());
-        PsiModuleType modType = module.getModuleType();
-        assertEquals("Set.S", modType.getText());
-    }
-
-    public void test_moduleChaining() {
+    public void test_module_chaining() {
         PsiFile file = parseCode("module A = sig type t end\nmodule B = struct end");
 
         assertEquals(2, moduleExpressions(file).size());
     }
 
-    public void test_signatureWithConstraints() {
+    public void test_signature_with_constraint() {
         // From coq: PCoq
         FileBase file = parseCode("module G : sig end with type 'a Entry.e = 'a Extend.entry = struct end");
 
@@ -79,7 +76,17 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("struct end", e.getBody().getText());
     }
 
-    public void test_moduleAliasBody() {
+    public void test_module_constraint() {
+        PsiFile file = parseCode("module Constraint : Set.S with type elt = univ_constraint\ntype t");
+
+        assertEquals(2, expressions(file).size());
+        PsiInnerModule module = firstOfType(file, PsiInnerModule.class);
+        assertEquals("Constraint", module.getName());
+        PsiModuleType modType = module.getModuleType();
+        assertEquals("Set.S", modType.getText());
+    }
+
+    public void test_module_alias_body() {
         PsiFile file = parseCode("module M = struct module O = B.Option let _ = O.m end");
 
         assertEquals(1, expressions(file).size());
@@ -89,7 +96,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertSize(2, expressions);
     }
 
-    public void test_recSig() {
+    public void test_rec_signature() {
         PsiFile file = parseCode("module rec A : sig type output = (Constr.constr * UState.t) option type task end = struct end");
 
         assertEquals(1, expressions(file).size());
@@ -108,7 +115,6 @@ public class ModuleParsingTest extends OclParsingTestCase {
         PsiInnerModule e = (PsiInnerModule) expressions(file).iterator().next();
         PsiModuleType modType = e.getModuleType();
         assertEquals("module type of Vcs_.Branch", modType.getText());
-        assertEmpty(PsiTreeUtil.findChildrenOfType(modType, PsiUpperIdentifier.class));
         assertNull(modType.getName());
     }
 }

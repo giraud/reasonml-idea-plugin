@@ -12,7 +12,7 @@ import java.util.*;
 public class ExternalIndex extends StringStubIndexExtension<PsiExternal> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiExternalStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.EXTERNAL;
     }
 
     @Override

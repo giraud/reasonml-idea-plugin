@@ -99,11 +99,6 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
         return ((FileBase) getContainingFile()).isInterface();
     }
 
-    @Override
-    public @Nullable PsiFunctorCall getFunctorCall() {
-        return null;
-    }
-
     public boolean isComponent() {
         PsiModuleStub greenStub = getGreenStub();
         if (greenStub != null) {
@@ -157,18 +152,6 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
     @Override
     public @Nullable PsiLet getLetExpression(@Nullable String name) {
         Collection<PsiLet> expressions = getExpressions(name, PsiLet.class);
-        return expressions.isEmpty() ? null : expressions.iterator().next();
-    }
-
-    @Override
-    public @Nullable PsiExternal getExternalExpression(@Nullable String name) {
-        Collection<PsiExternal> expressions = getExpressions(name, PsiExternal.class);
-        return expressions.isEmpty() ? null : expressions.iterator().next();
-    }
-
-    @Override
-    public @Nullable PsiVal getValExpression(@Nullable String name) {
-        Collection<PsiVal> expressions = getExpressions(name, PsiVal.class);
         return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 

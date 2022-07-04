@@ -4,7 +4,7 @@ import com.intellij.lang.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.*;
 import com.reason.ide.search.index.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
@@ -12,8 +12,6 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiVariantStubElementType extends ORStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> {
-    public static final int VERSION = 6;
-
     public PsiVariantStubElementType(@Nullable Language language) {
         super("C_VARIANT_DECLARATION", language);
     }
