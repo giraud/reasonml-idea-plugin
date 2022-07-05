@@ -29,6 +29,8 @@ public abstract class ORSyntaxAnnotator implements Annotator {
                 TextRange range = TextRange.create(element.getTextRange().getStartOffset(), nameIdentifier.getTextRange().getEndOffset());
                 enforceColor(holder, range, MARKUP_TAG_);
                 enforceColor(holder, element.getLastChild(), MARKUP_TAG_);
+            } else {
+                enforceColor(holder, element, MARKUP_TAG_);
             }
         } else if (elementType == myTypes.C_TAG_CLOSE) {
             enforceColor(holder, element, MARKUP_TAG_);
