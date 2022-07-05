@@ -31,16 +31,17 @@ public abstract class ORTypes {
     public ORCompositeType C_CLASS_METHOD;
     public ORCompositeType C_CLOSED_VARIANT;
     public ORCompositeType C_CONSTRAINTS;
-    public ORCompositeType C_CONSTRAINT;
+    public ORCompositeType C_TYPE_CONSTRAINT;
     public ORCompositeType C_CUSTOM_OPERATOR;
     public ORCompositeType C_DECONSTRUCTION;
     public ORCompositeType C_DEFAULT_VALUE;
     public ORCompositeType C_DIRECTIVE;
     public ORCompositeType C_DO_LOOP;
     public ORCompositeType C_FOR_LOOP;
-    public ORCompositeType C_FUN_CALL;
     public ORCompositeType C_FUN_EXPR;
-    public ORCompositeType C_FUN_BODY;
+    public ORCompositeType C_FUNCTION_BODY;
+    public ORCompositeType C_FUNCTION_CALL;
+    public ORCompositeType C_FUNCTION_EXPR;
     public ORCompositeType C_FUNCTOR_BINDING;
     public ORCompositeType C_FUNCTOR_CALL;
     public ORCompositeType C_FUNCTOR_RESULT;
@@ -53,8 +54,9 @@ public abstract class ORTypes {
     public ORCompositeType C_MACRO_EXPR;
     public ORCompositeType C_MACRO_NAME;
     public ORCompositeType C_MACRO_BODY;
-    public ORCompositeType C_MODULE_TYPE;
     public ORCompositeType C_MODULE_BINDING;
+    public ORCompositeType C_MODULE_TYPE;
+    public ORCompositeType C_MODULE_VALUE;
     public ORCompositeType C_JS_OBJECT;
     public ORCompositeType C_MATCH_EXPR;
     public ORCompositeType C_MIXIN_FIELD;
@@ -170,6 +172,7 @@ public abstract class ORTypes {
     public ORTokenElementType TO;
     public ORTokenElementType TRY;
     public ORTokenElementType TYPE;
+    public ORTokenElementType UNPACK; // rescript
     public ORTokenElementType VAL;
     public ORTokenElementType VIRTUAL;
     public ORTokenElementType WHEN;

@@ -119,6 +119,10 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return first(findChildrenOfType(element, aClass));
     }
 
+    protected <T extends PsiElement> List<T> children(PsiElement element, @NotNull Class<T> aClass) {
+        return new ArrayList<>(findChildrenOfType(element, aClass));
+    }
+
     @NotNull
     protected PsiFile parseFile(String name) throws IOException {
         String text = loadFile(name + "." + myFileExt);

@@ -117,4 +117,13 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("module type of Vcs_.Branch", modType.getText());
         assertNull(modType.getName());
     }
+
+    public void test_decode_first_class_module() {
+        PsiModule e = firstOfType(parseCode("module M = (val selectors)"), PsiModule.class);
+
+        assertFalse(e instanceof PsiFunctor);
+        assertEquals("M", e.getName());
+        assertEquals("(val selectors)", e.getBody().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiVal.class));
+    }
 }

@@ -18,7 +18,7 @@ public class PsiTag extends ORCompositePsiElement<ORTypes> {
         return tagStart == null ? null : ORUtil.getLongIdent(tagStart.getFirstChild().getNextSibling());
     }
 
-    public @NotNull Collection<PsiTagProperty> getProperties() {
+    public @NotNull List<PsiTagProperty> getProperties() {
         return ORUtil.findImmediateChildrenOfClass(getFirstChild(/*tag_start*/), PsiTagProperty.class);
     }
 

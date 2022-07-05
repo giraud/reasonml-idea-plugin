@@ -3,6 +3,7 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -123,8 +124,9 @@ public class LetParsingTest extends OclParsingTestCase {
         assertInstanceOf(binding.getFirstChild(), PsiFunction.class);
         PsiFunction function = (PsiFunction) binding.getFirstChild();
         assertEquals("{o_loc; o_name; o_items; _}", first(function.getParameters()).getText());
-        assertEquals("Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (join_list \", \" !o_items)",
-                function.getBody().getText());
+        assertEquals("Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (join_list \", \" !o_items)", function.getBody().getText());
+        PsiFunctionCall fc = ORUtil.findImmediateFirstChildOfClass(function.getBody(), PsiFunctionCall.class);
+        assertEquals("(format_location o_loc)", fc.getParameters().get(1).getText());
     }
 
     public void test_qualifiedName() {
@@ -173,6 +175,18 @@ public class LetParsingTest extends OclParsingTestCase {
         assertInstanceOf(names.get(1), PsiLowerSymbol.class);
         assertEquals("b", names.get(2).getText());
         assertInstanceOf(names.get(2), PsiLowerSymbol.class);
+    }
+
+    public void test_deconstruction_braces() {
+        PsiLet e = first(letExpressions(parseCode("let { a; b } = x")));
+
+        assertTrue(e.isDeconstruction());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(2, names);
+        assertEquals("a", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
+        assertEquals("b", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
     }
 
     public void test_List() {

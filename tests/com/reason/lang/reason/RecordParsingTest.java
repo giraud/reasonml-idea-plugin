@@ -67,7 +67,7 @@ public class RecordParsingTest extends RmlParsingTestCase {
 
         PsiRecord record = (PsiRecord) let.getBinding().getFirstChild();
         PsiRecordField field = record.getFields().iterator().next();
-        assertEquals(field.getName(), "otherField");
+        assertEquals("otherField", field.getName());
     }
 
     public void test_annotations() {
@@ -78,5 +78,13 @@ public class RecordParsingTest extends RmlParsingTestCase {
         assertSize(2, fields);
         assertEquals("key", fields.get(0).getName());
         assertEquals("ariaLabel", fields.get(1).getName());
+    }
+
+    public void test_inside_module() {
+        PsiModule e = firstOfType(parseCode("module M = { let _ = (x) => { ...x, }; };"), PsiModule.class);
+
+        PsiFunction ef = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
+        assertEquals("{ ...x, }", ef.getBody().getText());
+        assertEquals("{ let _ = (x) => { ...x, }; }", e.getBody().getText());
     }
 }

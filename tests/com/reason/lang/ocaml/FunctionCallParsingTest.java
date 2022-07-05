@@ -1,6 +1,5 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -87,5 +86,28 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertSize(2, ee);
         assertEquals("str \"xxx\"", ee.get(0).getText());
         assertEquals("str txt", ee.get(1).getText());
+    }
+
+    public void test_call_04() { // env.ml L39
+        PsiFunctionCall e = firstOfType(parseCode("let _ = Util.check_file_else ~dir:Coq_config.coqlibsuffix ~file:prelude"), PsiFunctionCall.class);
+
+        assertSize(2, e.getParameters());
+        PsiParameterReference p0 = e.getParameters().get(0);
+        assertEquals("~dir:Coq_config.coqlibsuffix", p0.getText());
+        assertEquals("dir", p0.getName());
+        assertEquals("Coq_config.coqlibsuffix",p0.getValue().getText());
+        PsiParameterReference p1 = e.getParameters().get(1);
+        assertEquals("~file:prelude", p1.getText());
+        assertEquals("file", p1.getName());
+        assertEquals("prelude", p1.getValue().getText());
+    }
+
+    public void test_call_05() {
+        PsiFunctionCall e = firstOfType(parseCode("let _ = f1 \"x\" (1)"), PsiFunctionCall.class);
+
+        List<PsiParameterReference> ps = e.getParameters();
+        assertSize(2, ps);
+        assertEquals("\"x\"", ps.get(0).getText());
+        assertEquals("(1)", ps.get(1).getText());
     }
 }

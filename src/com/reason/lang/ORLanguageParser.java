@@ -9,6 +9,7 @@ public abstract class ORLanguageParser<T extends ORTypes> extends ORParser<T> {
         super(types, builder, verbose);
     }
 
+    @Deprecated
     public @NotNull ORLanguageParser<T> markDummyParenthesisScope() {
         if (getTokenType() == myTypes.LPAREN) {
             markDummyScope(myTypes.H_PLACE_HOLDER, myTypes.LPAREN).advance();
@@ -16,10 +17,14 @@ public abstract class ORLanguageParser<T extends ORTypes> extends ORParser<T> {
         return this;
     }
 
-    public @NotNull ORLanguageParser<T> markParenthesisScope() {
+    public @NotNull ORLanguageParser<T> markParenthesisScope(boolean isDummy) {
         if (getTokenType() == myTypes.LPAREN) {
-            markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
-                    .advance().markHolder(myTypes.H_COLLECTION_ITEM);
+            if (isDummy) {
+                markDummyScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
+            } else {
+                markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
+            }
+            advance().markHolder(myTypes.H_COLLECTION_ITEM);
         }
         return this;
     }

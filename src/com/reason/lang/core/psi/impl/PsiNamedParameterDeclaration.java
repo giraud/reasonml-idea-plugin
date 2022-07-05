@@ -1,9 +1,7 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
-import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
-import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;

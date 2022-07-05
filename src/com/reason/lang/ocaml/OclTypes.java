@@ -31,13 +31,13 @@ public class OclTypes extends ORTypes {
 
         C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION", OclLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", OclLanguage.INSTANCE);
-        C_BINARY_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", OclLanguage.INSTANCE);
+        C_BINARY_CONDITION = new ORCompositeElementType("C_BINARY_CONDITION", OclLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", OclLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", OclLanguage.INSTANCE);
         C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
         C_CLOSED_VARIANT = new ORCompositeElementType("C_CLOSED_VARIANT", OclLanguage.INSTANCE);
         C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", OclLanguage.INSTANCE);
-        C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", OclLanguage.INSTANCE);
+        C_TYPE_CONSTRAINT = new ORCompositeElementType("C_TYPE_CONSTRAINT", OclLanguage.INSTANCE);
         C_CUSTOM_OPERATOR = new ORCompositeElementType("C_CUSTOM_OPERATOR", OclLanguage.INSTANCE);
         C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", OclLanguage.INSTANCE);
         C_DEFAULT_VALUE = new ORCompositeElementType("C_DEFAULT_VALUE", OclLanguage.INSTANCE);
@@ -45,9 +45,10 @@ public class OclTypes extends ORTypes {
         C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", OclLanguage.INSTANCE);
         C_FOR_LOOP = new ORCompositeElementType("C_FOR_LOOP", OclLanguage.INSTANCE);
         C_FIELD_VALUE = new ORCompositeElementType("C_FIELD_VALUE", OclLanguage.INSTANCE);
-        C_FUN_CALL = new ORCompositeElementType("C_FUN_CALL", OclLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", OclLanguage.INSTANCE);
-        C_FUN_BODY = new ORCompositeElementType("C_FUN_BODY", OclLanguage.INSTANCE);
+        C_FUNCTION_BODY = new ORCompositeElementType("C_FUNCTION_BODY", OclLanguage.INSTANCE);
+        C_FUNCTION_CALL = new ORCompositeElementType("C_FUNCTION_CALL", OclLanguage.INSTANCE);
+        C_FUNCTION_EXPR = new ORCompositeElementType("C_FUNCTION_EXPR", OclLanguage.INSTANCE);
         C_FUNCTOR_BINDING = new ORCompositeElementType("C_FUNCTOR_BINDING", OclLanguage.INSTANCE);
         C_FUNCTOR_CALL = new ORCompositeElementType("C_FUNCTOR_CALL", OclLanguage.INSTANCE);
         C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", OclLanguage.INSTANCE);
@@ -62,8 +63,9 @@ public class OclTypes extends ORTypes {
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", OclLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", OclLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);
-        C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", OclLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", OclLanguage.INSTANCE);
+        C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", OclLanguage.INSTANCE);
+        C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", OclLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", OclLanguage.INSTANCE);
         C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
@@ -230,6 +232,7 @@ public class OclTypes extends ORTypes {
         THEN = new ORTokenElementType("THEN", OclLanguage.INSTANCE);
         TRY = new ORTokenElementType("TRY", OclLanguage.INSTANCE);
         TYPE = new ORTokenElementType("TYPE", OclLanguage.INSTANCE);
+        UNPACK = new ORTokenElementType("UNPACK", OclLanguage.INSTANCE); // rescript
         UIDENT = new ORTokenElementType("UIDENT", OclLanguage.INSTANCE);
         UNIT = new ORTokenElementType("UNIT", OclLanguage.INSTANCE);
         VAL = new ORTokenElementType("VAL", OclLanguage.INSTANCE);

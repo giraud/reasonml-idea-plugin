@@ -26,9 +26,9 @@ public class PsiDeconstruction extends ORCompositePsiElement<ORTypes> {
                 result.addAll(((PsiDeconstruction) child).getDeconstructedElements());
             } else {
                 IElementType elementType = child.getNode().getElementType();
-                if (elementType != myTypes.LPAREN
-                        && elementType != myTypes.COMMA
-                        && elementType != myTypes.RPAREN
+                if (elementType != myTypes.LPAREN && elementType != myTypes.RPAREN
+                        && elementType != myTypes.LBRACE && elementType != myTypes.RBRACE
+                        && elementType != myTypes.COMMA && elementType != myTypes.SEMI
                         && elementType != myTypes.UNDERSCORE
                         && !(child instanceof PsiWhiteSpace)) {
                     result.add(child);

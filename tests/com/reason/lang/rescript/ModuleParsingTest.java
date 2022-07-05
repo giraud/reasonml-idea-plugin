@@ -104,4 +104,12 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("module M = {}", m.getText());
         assertEquals("@module", a.getName());
     }
+
+    public void test_decode_first_class_module() {
+        PsiModule e = firstOfType(parseCode("module M = (unpack selectors)"), PsiModule.class);
+
+        assertFalse(e instanceof PsiFunctor);
+        assertEquals("M", e.getName());
+        assertEquals("(unpack selectors)", e.getBody().getText());
+    }
 }

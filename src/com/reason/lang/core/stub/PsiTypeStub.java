@@ -10,14 +10,14 @@ public class PsiTypeStub extends PsiQualifiedNameStub<PsiType> {
     private final boolean myJsObject;
     private final boolean myRecord;
 
-    public PsiTypeStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String[] path, boolean isAbstract, boolean isJsObject, boolean record) {
+    public PsiTypeStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @Nullable String[] path, boolean isAbstract, boolean isJsObject, boolean record) {
         super(parent, elementType, name, path);
         myAbstract = isAbstract;
         myJsObject = isJsObject;
         myRecord = record;
     }
 
-    public PsiTypeStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @NotNull String[] path, boolean isAbstract, boolean isJsObject, boolean isRecord) {
+    public PsiTypeStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @Nullable String[] path, boolean isAbstract, boolean isJsObject, boolean isRecord) {
         super(parent, elementType, name, path);
         myAbstract = isAbstract;
         myJsObject = isJsObject;

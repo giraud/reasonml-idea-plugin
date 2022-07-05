@@ -6,7 +6,6 @@ import com.intellij.psi.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.psi.reference.*;
-import com.reason.lang.core.type.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 

@@ -66,6 +66,20 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         assertEquals("?", parameters.get(3).getDefaultValue().getText());
     }
 
+    public void test_optional_02() {
+        PsiLet let = firstOfType(parseCode("module Size: { let makeRecord: (~size: option(float)=?, unit) => t; };"), PsiLet.class);
+
+        PsiSignature s = let.getSignature();
+        List<PsiSignatureItem> si = s.getItems();
+
+        assertSize(3, si);
+        assertTrue(si.get(0).isOptional());
+        assertEquals("?", si.get(0).getDefaultValue().getText());
+        assertEquals("~size: option(float)=?", si.get(0).asText(getLangProps()));
+        assertFalse(si.get(1).isOptional());
+        assertEquals("unit",si.get(1).getText());
+    }
+
     public void test_unit_fun_parameter() {
         PsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1")));
 

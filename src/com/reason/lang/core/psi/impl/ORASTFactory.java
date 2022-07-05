@@ -47,11 +47,17 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == myTypes.C_FIELD_VALUE) {
             return new PsiFieldValue(myTypes, type);
         }
-        if (type == myTypes.C_FUN_CALL) {
+        if (type == myTypes.C_FUN_EXPR) {
+            return new PsiFunSwitch(myTypes, type);
+        }
+        if (type == myTypes.C_FUNCTION_BODY) {
+            return new PsiFunctionBody(myTypes, type);
+        }
+        if (type == myTypes.C_FUNCTION_CALL) {
             return new PsiFunctionCall(myTypes, type);
         }
-        if (type == myTypes.C_FUN_BODY) {
-            return new PsiFunctionBody(myTypes, type);
+        if (type == myTypes.C_FUNCTION_EXPR) {
+            return new PsiFunction(myTypes, type);
         }
         if (type == myTypes.C_SIG_ITEM) {
             return new PsiSignatureItemImpl(myTypes, type);
@@ -80,9 +86,6 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == myTypes.C_JS_OBJECT) {
             return new PsiJsObject(myTypes, type);
         }
-        if (type == myTypes.C_FUN_EXPR) {
-            return new PsiFunction(myTypes, type);
-        }
         if (type == myTypes.C_DECONSTRUCTION) {
             return new PsiDeconstruction(myTypes, type);
         }
@@ -92,11 +95,14 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == myTypes.C_RECORD_EXPR) {
             return new PsiRecord(myTypes, type);
         }
+        if (type == myTypes.C_MODULE_BINDING) {
+            return new PsiModuleBinding(myTypes, type);
+        }
         if (type == myTypes.C_MODULE_TYPE) {
             return new PsiModuleType(myTypes, type);
         }
-        if (type == myTypes.C_MODULE_BINDING) {
-            return new PsiModuleBinding(myTypes, type);
+        if (type == myTypes.C_MODULE_VALUE) {
+            return new PsiModuleValue(myTypes, type);
         }
         if (type == myTypes.C_ANNOTATION) {
             return new PsiAnnotation(myTypes, type);
@@ -110,8 +116,8 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == myTypes.C_CONSTRAINTS) {
             return new PsiConstraints(myTypes, type);
         }
-        if (type == myTypes.C_CONSTRAINT) {
-            return new PsiConstraint(myTypes, type);
+        if (type == myTypes.C_TYPE_CONSTRAINT) {
+            return new PsiTypeConstraint(myTypes, type);
         }
         if (type == myTypes.C_ASSERT_STMT) {
             return new PsiAssert(myTypes, type);

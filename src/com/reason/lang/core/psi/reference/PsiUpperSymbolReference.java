@@ -1,13 +1,11 @@
 package com.reason.lang.core.psi.reference;
 
-import com.intellij.lang.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;

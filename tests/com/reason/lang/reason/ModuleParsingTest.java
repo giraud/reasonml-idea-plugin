@@ -74,7 +74,19 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
         assertEquals("M", e.getName());
         assertEquals("MType", e.getModuleType().getText());
+        assertEquals(myTypes.A_MODULE_NAME, e.getModuleType().getFirstChild().getNode().getElementType());
         assertEquals("{ type t = int; }", e.getBody().getText());
+    }
+
+    public void test_interface_with_constraints() {
+        PsiInnerModule e = firstOfType(parseCode("module M: I with type t = X.t = {};"), PsiInnerModule.class);
+
+        assertEquals("M", e.getName());
+        assertEquals("I", e.getModuleType().getText());
+        assertEquals(myTypes.A_MODULE_NAME, e.getModuleType().getFirstChild().getNode().getElementType());
+        assertSize(1, e.getConstraints());
+        assertEquals("type t = X.t", e.getConstraints().get(0).getText());
+        assertEquals("{}", e.getBody().getText());
     }
 
     public void test_inline_interface_body() {
@@ -83,5 +95,13 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals("M", e.getName());
         assertEquals("{ type t; }", e.getModuleType().getText());
         assertEquals("{ type t = int; }", e.getBody().getText());
+    }
+
+    public void test_decode_first_class_module() {
+        PsiModule e = firstOfType(parseCode("module M = (val selectors);"), PsiModule.class);
+
+        assertFalse(e instanceof PsiFunctor);
+        assertEquals("M", e.getName());
+        assertEquals("(val selectors)", e.getBody().getText());
     }
 }

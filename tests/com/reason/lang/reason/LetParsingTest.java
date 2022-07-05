@@ -171,6 +171,18 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertInstanceOf(names.get(2), PsiLowerSymbol.class);
     }
 
+    public void test_deconstruction_braces() {
+        PsiLet e = first(letExpressions(parseCode("let {a, b, _} = x;")));
+
+        assertEquals("x", e.getBinding().getText());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(2, names);
+        assertEquals("a", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
+        assertEquals("b", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
+    }
+
     public void test_operator() {
         PsiLet e = first(letExpressions(parseCode("let (/): (path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c;")));
 

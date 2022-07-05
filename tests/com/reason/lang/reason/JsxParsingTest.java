@@ -26,6 +26,26 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertEquals("Comp", tag.getNameIdentifier().getText());
     }
 
+    public void test_tag_name_with_dot() {
+        PsiLet let = first(letExpressions(parseCode("let _ = <Container.Test></Container.Test>")));
+
+        PsiTag tag = first(PsiTreeUtil.findChildrenOfType(let, PsiTag.class));
+        assertEquals("Container.Test", tag.getName());
+        PsiTagStart tagStart = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
+        assertInstanceOf(tagStart.getNameIdentifier(), PsiUpperTagName.class);
+        assertEquals("Test", tagStart.getNameIdentifier().getText());
+        PsiElement nextSibling = tagStart.getFirstChild().getNextSibling();
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        nextSibling = nextSibling.getNextSibling().getNextSibling();
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+
+        PsiTagClose tagClose = first(PsiTreeUtil.findChildrenOfType(let, PsiTagClose.class));
+        nextSibling = tagClose.getFirstChild().getNextSibling();
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        nextSibling = nextSibling.getNextSibling().getNextSibling();
+        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+    }
+
     public void test_inner_closing_tag() {
         PsiTag e = (PsiTag) firstElement(parseCode("<div><div/></div>"));
 
@@ -59,24 +79,18 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertNotNull(jsx);
     }
 
-    public void test_tag_name_with_dot() {
-        PsiLet let = first(letExpressions(parseCode("let _ = <Container.Test></Container.Test>")));
+    public void test_option_prop() {
+        PsiTag e = firstOfType(parseCode("<div option=x prop=2/>"), PsiTag.class);
 
-        PsiTag tag = first(PsiTreeUtil.findChildrenOfType(let, PsiTag.class));
-        assertEquals("Container.Test", tag.getName());
-        PsiTagStart tagStart = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
-        assertInstanceOf(tagStart.getNameIdentifier(), PsiUpperTagName.class);
-        assertEquals("Test", tagStart.getNameIdentifier().getText());
-        PsiElement nextSibling = tagStart.getFirstChild().getNextSibling();
-        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
-        nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+        assertSize(2, e.getProperties());
+        assertEquals("option=x", e.getProperties().get(0).getText());
+    }
 
-        PsiTagClose tagClose = first(PsiTreeUtil.findChildrenOfType(let, PsiTagClose.class));
-        nextSibling = tagClose.getFirstChild().getNextSibling();
-        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
-        nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(myTypes.A_UPPER_TAG_NAME, nextSibling.getNode().getElementType());
+    public void test_match_prop() {
+        PsiTag e = firstOfType(parseCode("<App.Menu match=urlMatch prop=2 />"), PsiTag.class);
+
+        assertSize(2, e.getProperties());
+        assertEquals("match=urlMatch", e.getProperties().get(0).getText());
     }
 
     public void test_tag_prop_with_paren() {
@@ -92,7 +106,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
     public void test_tag_props_with_dot() {
         PsiTag e = (PsiTag) firstElement(parseCode("<a className=A.B.link onClick={C.call()} download=d></a>"));
 
-        List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
+        List<PsiTagProperty> props = e.getProperties();
         assertSize(3, props);
         assertEquals("className", props.get(0).getName());
         assertEquals("A.B.link", props.get(0).getValue().getText());
@@ -108,7 +122,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
     public void test_optional_prop() {
         PsiTag e = (PsiTag) firstElement(parseCode("<div ?layout ?style onClick=?cb ?other>x</div>"));
 
-        List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
+        List<PsiTagProperty> props = e.getProperties();
         assertSize(4, props);
         assertEquals("?layout", props.get(0).getText());
         assertEquals("layout", props.get(0).getName());
@@ -121,7 +135,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
     public void test_optional_prop_autoclose() {
         PsiTag e = (PsiTag) firstElement(parseCode("<div ?layout ?style onClick=?cb ?other/>"));
 
-        List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
+        List<PsiTagProperty> props = e.getProperties();
         assertSize(4, props);
         assertEquals("?layout", props.get(0).getText());
         assertEquals("layout", props.get(0).getName());
@@ -135,10 +149,17 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertNull(PsiTreeUtil.findChildOfType(e, PsiTernary.class));
     }
 
+    public void test_optional_prop_call() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<div style={fn(~margin?, ())} />"));
+
+        assertSize(1, e.getProperties());
+        assertEquals("{fn(~margin?, ())}", e.getProperties().get(0).getValue().getText());
+    }
+
     public void test_ternary_in_value() {
         PsiTag e = (PsiTag) firstElement(parseCode("<AppIcons.Trash colors={isSelected ? green : red} disabled=true/>"));
 
-        List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
+        List<PsiTagProperty> props = e.getProperties();
         assertSize(2, props);
         assertEquals("colors", props.get(0).getName());
         assertEquals("{isSelected ? green : red}", props.get(0).getValue().getText());
@@ -146,6 +167,19 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertEquals("isSelected", t.getCondition().getText());
         assertEquals("green", t.getThenExpression().getText());
         assertEquals("red", t.getElseExpression().getText());
+    }
+
+    public void test_ternary_in_value_function() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<div p1={fn(~x=a ? b : c)} disabled=true/>"));
+
+        List<PsiTagProperty> props = e.getProperties();
+        assertSize(2, props);
+        assertEquals("p1", props.get(0).getName());
+        assertEquals("{fn(~x=a ? b : c)}", props.get(0).getValue().getText());
+        PsiTernary t = PsiTreeUtil.findChildOfType(props.get(0), PsiTernary.class);
+        assertEquals("a", t.getCondition().getText());
+        assertEquals("b", t.getThenExpression().getText());
+        assertEquals("c", t.getElseExpression().getText());
     }
 
     public void test_tag_props_with_local_open() {
@@ -242,7 +276,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertSize(2, PsiTreeUtil.findChildrenOfType(f, PsiUpperSymbol.class));
     }
 
-    public void test_ternary_prop() {
+    public void test_ternary_01() {
         PsiTag e = firstOfType(parseCode(//
                 "<>\n" +
                         "  <div> {test ? React.null : <div> {(. x) => <div onClick={(e: option(string), _) => ()} />} </div>} </div>\n" +
@@ -254,10 +288,30 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertEquals("onClick={(e: option(string), _) => ()}", p0.getText());
     }
 
+    public void test_ternary_02() {
+        PsiTag e = firstOfType(parseCode("<div className={join(style, alignOnRight ? right : left)}/>"), PsiTag.class);
+
+        PsiTagPropertyValue v = PsiTreeUtil.findChildOfType(e, PsiTagPropertyValue.class);
+        PsiFunctionCall f = PsiTreeUtil.findChildOfType(v, PsiFunctionCall.class);
+        List<PsiParameterReference> ps = f.getParameters();
+        assertSize(2, ps);
+        assertEquals("style", ps.get(0).getText());
+        assertEquals("alignOnRight ? right : left", ps.get(1).getText());
+    }
+
+    public void test_ternary_03() {
+        PsiTag e = firstOfType(parseCode("<Comp myProp={ switch (cond) { | Var => flag ? false : true } } />"), PsiTag.class);
+
+        PsiTagPropertyValue v = PsiTreeUtil.findChildOfType(e, PsiTagPropertyValue.class);
+        PsiSwitch s = PsiTreeUtil.findChildOfType(v, PsiSwitch.class);
+        PsiPatternMatch p = s.getPatterns().get(0);
+        assertEquals("flag ? false : true", p.getBody().getText());
+    }
+
     public void test_ternary_in_option() {
         PsiTag e = firstOfType(parseCode("<div prop={(. p1) => " +
                 "map(p2 => " +
-                "  <div onClick={Some(cond ? Checked : NotChecked)}> </div>"+
+                "  <div onClick={Some(cond ? Checked : NotChecked)}> </div>" +
                 ")}/>"), PsiTag.class);
 
         PsiTagProperty p1 = e.getProperties().iterator().next();
@@ -274,5 +328,14 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertEquals("[|fn(`hv(pct(50.), pct(50.))),|]", v.getText());
         PsiFunctionCall f1 = PsiTreeUtil.findChildOfType(v, PsiFunctionCall.class);
         assertSize(1, f1.getParameters());
+    }
+
+    public void test_mutation() {
+        PsiTag e = firstOfType(parseCode("let _ = <Dashboard onRef={domRef => nodeRef.current = domRef->Js.Nullable.toOption} />"), PsiTag.class);
+
+        PsiTagPropertyValue v = PsiTreeUtil.findChildOfType(e, PsiTagPropertyValue.class);
+        assertEquals("{domRef => nodeRef.current = domRef->Js.Nullable.toOption}", v.getText());
+        PsiFunction f = PsiTreeUtil.findChildOfType(v, PsiFunction.class);
+        assertEquals("domRef", f.getParameters().get(0).getText());
     }
 }

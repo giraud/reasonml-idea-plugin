@@ -1,11 +1,9 @@
 package com.reason.ide.refactor;
 
-import com.intellij.lang.refactoring.RefactoringSupportProvider;
-import com.intellij.psi.PsiElement;
+import com.intellij.lang.refactoring.*;
+import com.intellij.psi.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 public class ORRefactoringSupportProvider extends RefactoringSupportProvider {
     @Override

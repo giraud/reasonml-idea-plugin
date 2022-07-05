@@ -28,7 +28,7 @@ public class FunctorParsingTest extends RmlParsingTestCase {
         assertEquals("M: Input", first(f.getParameters()).getText());
         assertEquals("S", f.getReturnType().getText());
 
-        List<PsiConstraint> constraints = new ArrayList<>(f.getConstraints());
+        List<PsiTypeConstraint> constraints = new ArrayList<>(f.getConstraints());
         assertEquals(2, constraints.size());
         assertEquals("type t('a) = M.t('a)", constraints.get(0).getText());
         assertEquals("type b = M.b", constraints.get(1).getText());

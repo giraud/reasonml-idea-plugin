@@ -4,7 +4,6 @@ import com.intellij.codeInsight.navigation.actions.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 

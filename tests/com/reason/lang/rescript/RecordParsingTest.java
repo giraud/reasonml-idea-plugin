@@ -91,4 +91,12 @@ public class RecordParsingTest extends ResParsingTestCase {
         assertEquals("{ key: string }", t.getBinding().getText());
         assertEquals("@module", a.getName());
     }
+
+    public void test_inside_module() {
+        PsiModule e = firstOfType(parseCode("module M = { let _ = (x) => { ...x, } }"), PsiModule.class);
+
+        PsiFunction ef = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
+        assertEquals("{ ...x, }", ef.getBody().getText());
+        assertEquals("{ let _ = (x) => { ...x, } }", e.getBody().getText());
+    }
 }

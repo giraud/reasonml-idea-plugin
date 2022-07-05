@@ -6,6 +6,8 @@ import com.intellij.psi.tree.*;
 import org.jetbrains.annotations.*;
 
 public abstract class CommonPsiParser implements PsiParser {
+    public static final int PARSE_MAX_TIME = 1_000; // 1s
+
     protected final boolean myIsSafe;
 
     protected CommonPsiParser(boolean isSafe) {

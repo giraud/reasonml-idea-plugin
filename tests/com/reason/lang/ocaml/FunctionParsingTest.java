@@ -29,8 +29,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
         PsiFunction function = e.getFunction();
         assertSize(2, function.getParameters());
         assertInstanceOf(first(function.getParameters()).getNameIdentifier(), PsiLowerSymbol.class);
-        assertInstanceOf(
-                second(function.getParameters()).getNameIdentifier(), PsiLowerSymbol.class);
+        assertInstanceOf(second(function.getParameters()).getNameIdentifier(), PsiLowerSymbol.class);
         assertNotNull(function.getBody());
     }
 

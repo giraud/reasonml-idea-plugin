@@ -1,6 +1,5 @@
 package com.reason.ide.insight.provider;
 
-import com.fasterxml.jackson.databind.node.*;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.*;
 import com.intellij.openapi.project.*;

@@ -5,6 +5,8 @@ import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.stub.*;
 import org.jetbrains.annotations.*;
 
+import java.util.*;
+
 public interface PsiInnerModule extends PsiModule, StubBasedPsiElement<PsiModuleStub> {
     boolean isComponent();
 
@@ -18,4 +20,7 @@ public interface PsiInnerModule extends PsiModule, StubBasedPsiElement<PsiModule
 
     @Nullable
     PsiElement getBody();
+
+    @NotNull
+    List<PsiTypeConstraint> getConstraints();
 }

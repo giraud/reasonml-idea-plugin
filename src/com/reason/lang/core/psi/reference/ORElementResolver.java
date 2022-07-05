@@ -48,7 +48,8 @@ public class ORElementResolver implements Disposable {
 
                     String includeModuleName = includeQPath[0];
 
-                    Set<Pair<String, String[]>> alternatePaths = topIncludedModules.get(resolvedPath[0]);
+                    String firstResolvedPath = resolvedPath == null ? null : resolvedPath[0];
+                    Set<Pair<String, String[]>> alternatePaths = topIncludedModules.get(firstResolvedPath);
                     if (alternatePaths != null) {
                         for (Pair<String, String[]> alternatePath : alternatePaths) {
                             String alternateKey = alternatePath.first;
@@ -308,9 +309,7 @@ public class ORElementResolver implements Disposable {
                 }
             }
 
-            for (Map.Entry<Integer, Integer> weightLevel : newWeights.entrySet()) {
-                myWeightPerLevel.put(weightLevel.getKey(), weightLevel.getValue());
-            }
+            myWeightPerLevel.putAll(newWeights);
         }
 
         public void udpateTerminalWeight(@NotNull String value) {

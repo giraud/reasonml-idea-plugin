@@ -132,6 +132,12 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     }
 
     @Override
+    public @NotNull List<PsiTypeConstraint> getConstraints() {
+        PsiConstraints constraints = ORUtil.findImmediateFirstChildOfClass(this, PsiConstraints.class);
+        return ORUtil.findImmediateChildrenOfClass(constraints, PsiTypeConstraint.class);
+    }
+
+    @Override
     public @Nullable PsiModuleType getModuleType() {
         PsiElement child = ORUtil.findImmediateFirstChildOfAnyClass(this, PsiModuleType.class, PsiScopedExpr.class);
         if (child instanceof PsiScopedExpr) {

@@ -8,12 +8,12 @@ import org.jetbrains.annotations.*;
 public class PsiExceptionStub extends PsiQualifiedNameStub<PsiException> {
     private final String myAlias;
 
-    public PsiExceptionStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String[] path, @Nullable String alias) {
+    public PsiExceptionStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @Nullable String[] path, @Nullable String alias) {
         super(parent, elementType, name, path);
         myAlias = alias;
     }
 
-    public PsiExceptionStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @NotNull String[] path, @Nullable String alias) {
+    public PsiExceptionStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @Nullable String[] path, @Nullable String alias) {
         super(parent, elementType, name, path);
         myAlias = alias;
     }

@@ -138,6 +138,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "to"          { return types.TO; }
     "try"         { return types.TRY; }
     "type"        { return types.TYPE; }
+    "unpack"      { return types.UNPACK; }
     "val"         { return types.VAL; }
     "virtual"     { return types.VIRTUAL; }
     "when"        { return types.WHEN; }

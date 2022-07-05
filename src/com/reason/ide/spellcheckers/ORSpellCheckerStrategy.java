@@ -5,7 +5,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.*;
 import com.intellij.spellchecker.tokenizer.*;
 import com.reason.lang.core.psi.impl.PsiLiteralExpression;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 

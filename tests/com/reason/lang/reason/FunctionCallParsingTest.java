@@ -53,6 +53,24 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         assertSize(2, fnCall.getParameters());
     }
 
+    public void test_optional_param() {
+        PsiFunctionCall e = firstOfType(parseCode("let _ = fn(~margin?, ());"), PsiFunctionCall.class);
+        assertSize(2, e.getParameters());
+        assertEquals("~margin?", e.getParameters().get(0).getText());
+        assertEquals("()", e.getParameters().get(1).getText());
+    }
+
+    public void test_inner_parenthesis() {
+        PsiLet e = first(letExpressions(parseCode("let _ = f(a, (b, c));")));
+
+        PsiFunctionCall call = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
+        assertSize(2, call.getParameters());
+        PsiParameterReference p1 = call.getParameters().get(1);
+        assertEquals("(b, c)", p1.getText());
+        assertNull(PsiTreeUtil.findChildOfType(p1, PsiParameters.class));
+        assertNull(PsiTreeUtil.findChildOfType(p1, PsiParameterReference.class));
+    }
+
     public void test_params() {
         FileBase f = parseCode("call(~decode=x => Ok(), ~task=() => y,);");
         PsiFunctionCall fnCall = ORUtil.findImmediateFirstChildOfClass(f, PsiFunctionCall.class);
@@ -88,6 +106,22 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
 
         PsiFunctionCall fc = PsiTreeUtil.findChildOfType(e, PsiFunctionCall.class);
         assertEquals("call(input, item => item)", fc.getText());
+    }
+
+    public void test_ternary_in_named_param() {
+        PsiFunctionCall e = firstOfType(parseCode("fn(~x=a ? b : c);"), PsiFunctionCall.class);
+
+        assertSize(1, e.getParameters());
+        PsiParameterReference p0 = e.getParameters().get(0);
+        assertEquals("x", p0.getName());
+        assertEquals("a ? b : c", p0.getValue().getText());
+        assertInstanceOf(p0.getValue().getFirstChild(), PsiTernary.class);
+    }
+
+    public void test_assignment() {
+        PsiFunctionCall e = firstOfType(parseCode("let _ = fn(x => myRef.current = x);"), PsiFunctionCall.class);
+
+        assertEquals("x => myRef.current = x", e.getParameters().get(0).getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/120

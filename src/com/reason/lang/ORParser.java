@@ -13,7 +13,7 @@ import java.util.*;
 public abstract class ORParser<T> {
     protected static final Log LOG = Log.create("parser");
 
-    protected T myTypes;
+    protected final T myTypes;
     protected final boolean myVerbose;
     protected final boolean myIsSafe;
     protected final PsiBuilder myBuilder;
@@ -202,7 +202,7 @@ public abstract class ORParser<T> {
         return false;
     }
 
-    public boolean isGrandParent(ORCompositeType composite) {
+    public boolean isRawGrandParent(@Nullable ORCompositeType composite) {
         if (myMarkers.size() >= 3) {
             return myMarkers.get(2).isCompositeType(composite);
         }
@@ -310,18 +310,6 @@ public abstract class ORParser<T> {
             }
         }
         myIndex = -1;
-        return false;
-    }
-
-    public boolean isOneOf(ORCompositeType @NotNull ... composites) {
-        Marker marker = getLatestMarker();
-        if (marker != null) {
-            for (ORCompositeType composite : composites) {
-                if (marker.isCompositeType(composite)) {
-                    return true;
-                }
-            }
-        }
         return false;
     }
 
@@ -458,8 +446,30 @@ public abstract class ORParser<T> {
         return popEndUntilIndex(index);
     }
 
+    public boolean hasScopeAtIndex(int index) {
+        Marker marker = null;
+        if (0 <= index && index < myMarkers.size()) {
+            marker = myMarkers.get(index);
+        }
+        return marker != null && marker.hasScope();
+    }
+
     public boolean rawHasScope() {
         Marker marker = getLatestMarker();
+        return marker != null && marker.hasScope();
+    }
+
+    public boolean rawParentHasScope() {
+        Marker marker = getPrevious();
+        return marker != null && marker.hasScope();
+    }
+
+    public boolean rawGrandParentHasScope() {
+        Marker marker = null;
+        if (myMarkers.size() > 2) {
+            marker = myMarkers.get(2);
+        }
+
         return marker != null && marker.hasScope();
     }
 
@@ -586,6 +596,7 @@ public abstract class ORParser<T> {
         return null;
     }
 
+    @Deprecated
     public @NotNull ORParser<T> rollbackToPos(int pos) {
         for (int i = 0; i < pos; i++) {
             myMarkers.pop();
@@ -600,15 +611,15 @@ public abstract class ORParser<T> {
         return this;
     }
 
-    public @NotNull ORParser<T> rollbackToFoundIndex() {
-        for (int i = 0; i < myIndex; i++) {
+    public @NotNull ORParser<T> rollbackToIndex(int index) {
+        for (int i = 0; i < index; i++) {
             myMarkers.pop();
         }
 
         Marker foundMarker = myMarkers.pop();
         foundMarker.rollbackTo();
         if (myVerbose) {
-            System.out.println("rollbacked to found: " + myBuilder.getCurrentOffset() + ", " + myBuilder.getTokenType() + "(" + myBuilder.getTokenText() + ")");
+            System.out.println("rollback to index: " + myBuilder.getCurrentOffset() + ", " + myBuilder.getTokenType() + "(" + myBuilder.getTokenText() + ")");
         }
 
         Marker marker = Marker.duplicate(foundMarker);
@@ -619,6 +630,12 @@ public abstract class ORParser<T> {
         }
         dontMove = true;
 
+        return this;
+    }
+
+    public @NotNull ORParser<T> rollbackToFoundIndex() {
+        rollbackToIndex(myIndex);
+        myIndex = -1;
         return this;
     }
 

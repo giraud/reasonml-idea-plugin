@@ -31,7 +31,7 @@ public class RincewindProcess {
 
         LOG.debug("Looking for types for file", sourceFile);
 
-        VirtualFile processDir = null;
+        VirtualFile processDir;
 
         boolean isDuneProject = ORProjectManager.isDuneProject(myProject);
         if (isDuneProject) {
