@@ -49,11 +49,11 @@ public abstract class OCamlExecutable {
         if (!WSLUtil.isSystemCompatible()) {
             return null;
         }
-        if (!path.startsWith(WSLDistribution.UNC_PREFIX)) {
+        if (!path.startsWith("\\\\wsl$\\")) {
             return null;
         }
 
-        path = StringUtil.trimStart(path, WSLDistribution.UNC_PREFIX);
+        path = StringUtil.trimStart(path,  "\\\\wsl$\\");
         int index = path.indexOf('\\');
         if (index == -1) {
             return null;

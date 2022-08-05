@@ -290,7 +290,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     }
 
     private void detectSwitchSystem(@NotNull VirtualFile dir) {
-        myIsWsl = dir.getPath().replace("/", "\\").startsWith(WSLDistribution.UNC_PREFIX);
+        myIsWsl = dir.getPath().replace("/", "\\").startsWith("\\\\wsl$\\");
         myCygwinBash = null;
         if (!myIsWsl && Platform.isWindows()) { // cygwin
             VirtualFile binDir = findBinary(dir);
