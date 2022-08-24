@@ -41,7 +41,7 @@ public class EsyToolWindowFactory extends ORToolWindowFactory {
         ActionToolbar toolbar = createToolbar(consoleView);
         panel.setToolbar(toolbar.getComponent());
 
-        Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", true);
+        Content content = ContentFactory.getInstance().createContent(panel, "", true);
 
         window.getContentManager().addContent(content);
 
