@@ -29,7 +29,6 @@ function Navbar() {
     siteConfig: {
       themeConfig: {
         navbar: {
-          title = '',
           items = [],
           hideOnScroll = false,
           style = undefined,
@@ -37,7 +36,6 @@ function Navbar() {
         colorMode: {disableSwitch: disableColorModeSwitch = false} = {},
       },
     },
-    isClient,
   } = useDocusaurusContext();
   const [sidebarShown, setSidebarShown] = useState(false);
   const [isSearchBarExpanded, setIsSearchBarExpanded] = useState(false);

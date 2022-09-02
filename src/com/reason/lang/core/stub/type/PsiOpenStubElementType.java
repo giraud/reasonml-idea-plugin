@@ -34,7 +34,8 @@ public class PsiOpenStubElementType extends ORStubElementType<PsiOpenStub, PsiOp
 
     @Override
     public void serialize(@NotNull PsiOpenStub stub, @NotNull StubOutputStream dataStream) throws IOException {
-        dataStream.writeUTFFast(stub.getOpenPath());
+        String openPath = stub.getOpenPath();
+        dataStream.writeUTFFast(openPath == null ? "" : openPath);
     }
 
     @Override
@@ -45,7 +46,10 @@ public class PsiOpenStubElementType extends ORStubElementType<PsiOpenStub, PsiOp
 
     @Override
     public void indexStub(@NotNull PsiOpenStub stub, @NotNull IndexSink sink) {
-        sink.occurrence(IndexKeys.OPENS, stub.getOpenPath());
+        String openPath = stub.getOpenPath();
+        if (openPath != null) {
+            sink.occurrence(IndexKeys.OPENS, openPath);
+        }
     }
 
     @Override

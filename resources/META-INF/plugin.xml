@@ -2,7 +2,7 @@
     <id>reasonml</id>
     <name>ReasonML</name>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
-    <description><![CDATA[Add support for ReasonML language. Also add support for OCaml and Dune.]]></description>
+    <description><![CDATA[Add support for Rescript, ReasonML, OCaml (and Dune) an Rescript.]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->

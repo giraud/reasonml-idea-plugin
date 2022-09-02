@@ -187,7 +187,7 @@ public abstract class ORParser<T> {
         // parent found, try type
         if (found && myMarkers.get(parentIndex).isCompositeType(expectedType)) {
             myIndex = parentIndex;
-            return found;
+            return true;
         }
 
         myIndex = -1;

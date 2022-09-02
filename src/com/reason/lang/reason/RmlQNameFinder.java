@@ -103,8 +103,8 @@ public class RmlQNameFinder extends BaseQNameFinder {
             } else if (item instanceof PsiLetBinding) {
                 // let a = { <caret> }
                 PsiLet let = PsiTreeUtil.getParentOfType(item, PsiLet.class);
-                if (let != null) {
-                    String letQName = let.getQualifiedName();
+                String letQName = let == null ? null : let.getQualifiedName();
+                if (letQName != null) {
                     qualifiedNames.addAll(extendPathWith(filePath, letQName, qualifiedNames));
                     qualifiedNames.add(letQName + pathExtension);
                     // Same for resolved elements

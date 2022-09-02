@@ -128,8 +128,10 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         InsightManager insightManager = project.getService(InsightManager.class);
         if (insightManager != null && !FileHelper.isInterface(sourceFile.getFileType())) {
             insightManager.queryTypes(sourceFile, cmtFile.toPath(), types -> {
-                LOG.debug("Updating signatures in user data cache for file", sourceFile);
-                InferredTypesService.getSignatures(sourceFile).putAll(types.signaturesByLines(lang));
+                if (types != null) {
+                    LOG.debug("Updating signatures in user data cache for file", sourceFile);
+                    InferredTypesService.getSignatures(sourceFile).putAll(types.signaturesByLines(lang));
+                }
             });
         }
     }

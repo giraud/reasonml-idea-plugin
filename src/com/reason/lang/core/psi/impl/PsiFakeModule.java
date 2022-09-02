@@ -86,7 +86,7 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStu
     }
 
     @Override
-    public @NotNull PsiElement getComponentNavigationElement() {
+    public @Nullable PsiElement getComponentNavigationElement() {
         return ((FileBase) getContainingFile()).getComponentNavigationElement();
     }
 
