@@ -26,7 +26,8 @@ public class PsiTypeStubElementType extends ORStubElementType<PsiTypeStub, PsiTy
     }
 
     public @NotNull PsiTypeStub createStub(@NotNull PsiType psi, StubElement parentStub) {
-        return new PsiTypeStub(parentStub, this, psi.getName(), psi.getPath(), psi.isAbstract(), psi.isJsObject(), psi.isRecord());
+        String[] path = psi.getPath();
+        return new PsiTypeStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.isAbstract(), psi.isJsObject(), psi.isRecord());
     }
 
     public void serialize(@NotNull PsiTypeStub stub, @NotNull StubOutputStream dataStream) throws IOException {
@@ -44,7 +45,7 @@ public class PsiTypeStubElementType extends ORStubElementType<PsiTypeStub, PsiTy
         boolean isAbstract = dataStream.readBoolean();
         boolean isJsObject = dataStream.readBoolean();
         boolean isRecord = dataStream.readBoolean();
-        return new PsiTypeStub(parentStub, this, name, path, isAbstract, isJsObject, isRecord);
+        return new PsiTypeStub(parentStub, this, name, path == null ? EMPTY_PATH : path, isAbstract, isJsObject, isRecord);
     }
 
     public void indexStub(@NotNull PsiTypeStub stub, @NotNull IndexSink sink) {

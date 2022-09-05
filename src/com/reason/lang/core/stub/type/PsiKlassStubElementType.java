@@ -43,7 +43,7 @@ public class PsiKlassStubElementType extends ORStubElementType<PsiKlassStub, Psi
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
 
-        return new PsiKlassStub(parentStub, this, name, path);
+        return new PsiKlassStub(parentStub, this, name, path == null ? EMPTY_PATH : path);
     }
 
     public void indexStub(@NotNull PsiKlassStub stub, @NotNull IndexSink sink) {

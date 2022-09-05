@@ -45,7 +45,7 @@ public class PsiExceptionStubElementType extends ORStubElementType<PsiExceptionS
         String[] path = SerializerUtil.readPath(dataStream);
         StringRef alias = dataStream.readName();
 
-        return new PsiExceptionStub(parentStub, this, name, path, alias == null ? null : alias.getString());
+        return new PsiExceptionStub(parentStub, this, name, path == null ? EMPTY_PATH : path, alias == null ? null : alias.getString());
     }
 
     public void indexStub(@NotNull PsiExceptionStub stub, @NotNull IndexSink sink) {

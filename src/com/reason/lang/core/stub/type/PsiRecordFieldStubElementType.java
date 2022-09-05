@@ -41,7 +41,7 @@ public class PsiRecordFieldStubElementType extends ORStubElementType<PsiRecordFi
     public PsiRecordFieldStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
-        return new PsiRecordFieldStub(parentStub, this, name, path);
+        return new PsiRecordFieldStub(parentStub, this, name, path == null ? EMPTY_PATH : path);
     }
 
     public void indexStub(@NotNull PsiRecordFieldStub stub, @NotNull IndexSink sink) {

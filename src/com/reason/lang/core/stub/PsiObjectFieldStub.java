@@ -6,11 +6,11 @@ import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 
 public class PsiObjectFieldStub extends PsiQualifiedNameStub<PsiObjectField> {
-    public PsiObjectFieldStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @Nullable String[] path) {
+    public PsiObjectFieldStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String[] path) {
         super(parent, elementType, name, path);
     }
 
-    public PsiObjectFieldStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @Nullable String[] path) {
+    public PsiObjectFieldStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @NotNull String[] path) {
         super(parent, elementType, name, path);
     }
 }

@@ -29,7 +29,8 @@ public class PsiValStubElementType extends ORStubElementType<PsiValStub, PsiVal>
 
     @NotNull
     public PsiValStub createStub(@NotNull PsiVal psi, StubElement parentStub) {
-        return new PsiValStub(parentStub, this, psi.getName(), psi.getPath(), psi.isFunction());
+        String[] path = psi.getPath();
+        return new PsiValStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.isFunction());
     }
 
     public void serialize(@NotNull PsiValStub stub, @NotNull StubOutputStream dataStream) throws IOException {
@@ -44,7 +45,7 @@ public class PsiValStubElementType extends ORStubElementType<PsiValStub, PsiVal>
         String[] path = SerializerUtil.readPath(dataStream);
         boolean isFunction = dataStream.readBoolean();
 
-        return new PsiValStub(parentStub, this, name, path, isFunction);
+        return new PsiValStub(parentStub, this, name, path == null ? EMPTY_PATH : path, isFunction);
     }
 
     public void indexStub(@NotNull PsiValStub stub, @NotNull IndexSink sink) {

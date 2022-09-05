@@ -10,15 +10,15 @@ public abstract class PsiQualifiedNameStub<T extends PsiNamedElement> extends Na
     private final @NotNull String[] myPath;
     private final String myQname;
 
-    PsiQualifiedNameStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @Nullable String[] path) {
+    PsiQualifiedNameStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String[] path) {
         super(parent, elementType, name);
-        myPath = path == null ? new String[]{""} : path;
+        myPath = path;
         myQname = Joiner.join(".", myPath) + "." + name;
     }
 
-    PsiQualifiedNameStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @Nullable String[] path) {
+    PsiQualifiedNameStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @NotNull String[] path) {
         super(parent, elementType, name);
-        myPath = path == null ? new String[]{""} : path;
+        myPath = path;
         myQname = Joiner.join(".", myPath) + "." + name;
     }
 

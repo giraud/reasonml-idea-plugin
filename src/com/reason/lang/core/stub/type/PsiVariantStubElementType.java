@@ -38,10 +38,10 @@ public class PsiVariantStubElementType extends ORStubElementType<PsiVariantDecla
 
     @NotNull
     public PsiVariantDeclarationStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
-        StringRef moduleName = dataStream.readName();
+        StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
 
-        return new PsiVariantDeclarationStub(parentStub, this, moduleName, path);
+        return new PsiVariantDeclarationStub(parentStub, this, name, path == null ? EMPTY_PATH : path);
     }
 
     public void indexStub(@NotNull final PsiVariantDeclarationStub stub, @NotNull final IndexSink sink) {

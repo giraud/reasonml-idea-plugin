@@ -45,7 +45,7 @@ public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStu
         String[] path = SerializerUtil.readPath(dataStream);
         boolean isFunction = dataStream.readBoolean();
 
-        return new PsiExternalStub(parentStub, this, name, path, isFunction);
+        return new PsiExternalStub(parentStub, this, name, path == null ? EMPTY_PATH : path, isFunction);
     }
 
     public void indexStub(@NotNull PsiExternalStub stub, @NotNull IndexSink sink) {

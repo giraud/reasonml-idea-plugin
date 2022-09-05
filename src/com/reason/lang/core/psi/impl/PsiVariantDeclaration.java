@@ -39,7 +39,7 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
     }
 
     @Override
-    public String getName() {
+    public @Nullable String getName() {
         PsiVariantDeclarationStub stub = getGreenStub();
         if (stub != null) {
             return stub.getName();
