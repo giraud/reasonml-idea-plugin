@@ -13,6 +13,10 @@
 ## Unreleased
 
 - :bug: [#379](https://github.com/giraud/reasonml-idea-plugin/issues/379) Plugin crashes with NoClassDefFoundError in WebStorm during any attempt to autocomplete
+- :house: reworked the parsers.
+
+Recurrent exceptions about stubs: `java.lang.RuntimeException: Broken stub format, most likely version of REASON_FILE (
+reason.FILE) was not updated after serialization changes`
 
 ## 0.106 - 2022/01/07
 
