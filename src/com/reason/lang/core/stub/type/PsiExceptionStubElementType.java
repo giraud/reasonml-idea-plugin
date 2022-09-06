@@ -13,22 +13,19 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiExceptionStubElementType extends ORStubElementType<PsiExceptionStub, PsiException> {
-    public PsiExceptionStubElementType(Language language) {
-        super("C_EXCEPTION_DECLARATION", language);
+    public PsiExceptionStubElementType(@NotNull String name, @NotNull Language language) {
+        super(name, language);
     }
 
-    @NotNull
-    public PsiException createPsi(@NotNull PsiExceptionStub stub) {
+    public @NotNull PsiException createPsi(@NotNull PsiExceptionStub stub) {
         return new PsiExceptionImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    @NotNull
-    public PsiException createPsi(@NotNull ASTNode node) {
+    public @NotNull PsiException createPsi(@NotNull ASTNode node) {
         return new PsiExceptionImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    @NotNull
-    public PsiExceptionStub createStub(@NotNull PsiException psi, StubElement parentStub) {
+    public @NotNull PsiExceptionStub createStub(@NotNull PsiException psi, @Nullable StubElement parentStub) {
         String[] path = psi.getPath();
         return new PsiExceptionStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.getAlias());
     }
@@ -39,8 +36,7 @@ public class PsiExceptionStubElementType extends ORStubElementType<PsiExceptionS
         dataStream.writeName(stub.getAlias());
     }
 
-    @NotNull
-    public PsiExceptionStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public @NotNull PsiExceptionStub deserialize(@NotNull StubInputStream dataStream, @Nullable StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
         StringRef alias = dataStream.readName();
@@ -58,8 +54,7 @@ public class PsiExceptionStubElementType extends ORStubElementType<PsiExceptionS
         sink.occurrence(IndexKeys.EXCEPTIONS_FQN, fqn.hashCode());
     }
 
-    @NotNull
-    public String getExternalId() {
+    public @NotNull String getExternalId() {
         return getLanguage().getID() + "." + super.toString();
     }
 }

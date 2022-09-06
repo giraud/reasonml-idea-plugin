@@ -12,32 +12,28 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiObjectFieldStubElementType extends ORStubElementType<PsiObjectFieldStub, PsiObjectField> {
-    public PsiObjectFieldStubElementType(@NotNull Language language) {
-        super("C_OBJECT_FIELD", language);
+    public PsiObjectFieldStubElementType(@NotNull String name, @NotNull Language language) {
+        super(name, language);
     }
 
-    @NotNull
-    public PsiObjectField createPsi(@NotNull PsiObjectFieldStub stub) {
+    public @NotNull PsiObjectField createPsi(@NotNull PsiObjectFieldStub stub) {
         return new PsiObjectField(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    @NotNull
-    public PsiObjectField createPsi(@NotNull ASTNode node) {
+    public @NotNull PsiObjectField createPsi(@NotNull ASTNode node) {
         return new PsiObjectField(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    @NotNull
-    public PsiObjectFieldStub createStub(@NotNull PsiObjectField psi, StubElement parentStub) {
+    public @NotNull PsiObjectFieldStub createStub(@NotNull PsiObjectField psi, @Nullable StubElement parentStub) {
         return new PsiObjectFieldStub(parentStub, this, psi.getName(), psi.getPath());
     }
 
-    public void serialize(@NotNull final PsiObjectFieldStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
+    public void serialize(@NotNull final PsiObjectFieldStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         SerializerUtil.writePath(dataStream, stub.getPath());
     }
 
-    @NotNull
-    public PsiObjectFieldStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
+    public @NotNull PsiObjectFieldStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
         return new PsiObjectFieldStub(parentStub, this, name, path == null ? EMPTY_PATH : path);
@@ -50,8 +46,7 @@ public class PsiObjectFieldStubElementType extends ORStubElementType<PsiObjectFi
         }
     }
 
-    @NotNull
-    public String getExternalId() {
+    public @NotNull String getExternalId() {
         return getLanguage().getID() + "." + super.toString();
     }
 }

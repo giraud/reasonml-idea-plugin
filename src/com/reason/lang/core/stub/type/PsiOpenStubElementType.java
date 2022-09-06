@@ -13,8 +13,8 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiOpenStubElementType extends ORStubElementType<PsiOpenStub, PsiOpen> {
-    public PsiOpenStubElementType(@Nullable Language language) {
-        super("C_OPEN", language);
+    public PsiOpenStubElementType(@NotNull String name, @Nullable Language language) {
+        super(name, language);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class PsiOpenStubElementType extends ORStubElementType<PsiOpenStub, PsiOp
     }
 
     @Override
-    public @NotNull PsiOpenStub createStub(@NotNull PsiOpen psi, StubElement parentStub) {
+    public @NotNull PsiOpenStub createStub(@NotNull PsiOpen psi, @Nullable StubElement parentStub) {
         return new PsiOpenStub(parentStub, this, psi.getPath());
     }
 
@@ -39,7 +39,7 @@ public class PsiOpenStubElementType extends ORStubElementType<PsiOpenStub, PsiOp
     }
 
     @Override
-    public @NotNull PsiOpenStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public @NotNull PsiOpenStub deserialize(@NotNull StubInputStream dataStream, @Nullable StubElement parentStub) throws IOException {
         String openPath = dataStream.readUTFFast();
         return new PsiOpenStub(parentStub, this, openPath);
     }

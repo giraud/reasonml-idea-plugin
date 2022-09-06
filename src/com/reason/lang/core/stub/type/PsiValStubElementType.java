@@ -13,22 +13,19 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiValStubElementType extends ORStubElementType<PsiValStub, PsiVal> {
-    public PsiValStubElementType(@Nullable Language language) {
-        super("C_VAL_DECLARATION", language);
+    public PsiValStubElementType(@NotNull String name, @Nullable Language language) {
+        super(name, language);
     }
 
-    @NotNull
-    public PsiValImpl createPsi(@NotNull ASTNode node) {
+    public @NotNull PsiValImpl createPsi(@NotNull ASTNode node) {
         return new PsiValImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    @NotNull
-    public PsiValImpl createPsi(@NotNull PsiValStub stub) {
+    public @NotNull PsiValImpl createPsi(@NotNull PsiValStub stub) {
         return new PsiValImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    @NotNull
-    public PsiValStub createStub(@NotNull PsiVal psi, StubElement parentStub) {
+    public @NotNull PsiValStub createStub(@NotNull PsiVal psi, @Nullable StubElement parentStub) {
         String[] path = psi.getPath();
         return new PsiValStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.isFunction());
     }
@@ -39,8 +36,7 @@ public class PsiValStubElementType extends ORStubElementType<PsiValStub, PsiVal>
         dataStream.writeBoolean(stub.isFunction());
     }
 
-    @NotNull
-    public PsiValStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public @NotNull PsiValStub deserialize(@NotNull StubInputStream dataStream, @Nullable StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
         boolean isFunction = dataStream.readBoolean();
@@ -58,8 +54,7 @@ public class PsiValStubElementType extends ORStubElementType<PsiValStub, PsiVal>
         sink.occurrence(IndexKeys.VALS_FQN, fqn.hashCode());
     }
 
-    @NotNull
-    public String getExternalId() {
+    public @NotNull String getExternalId() {
         return getLanguage().getID() + "." + super.toString();
     }
 }

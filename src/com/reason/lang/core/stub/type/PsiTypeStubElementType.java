@@ -13,8 +13,8 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiTypeStubElementType extends ORStubElementType<PsiTypeStub, PsiType> {
-    public PsiTypeStubElementType(@NotNull Language language) {
-        super("C_TYPE_DECLARATION", language);
+    public PsiTypeStubElementType(@NotNull String name, @NotNull Language language) {
+        super(name, language);
     }
 
     public @NotNull PsiTypeImpl createPsi(@NotNull PsiTypeStub stub) {
@@ -25,7 +25,7 @@ public class PsiTypeStubElementType extends ORStubElementType<PsiTypeStub, PsiTy
         return new PsiTypeImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    public @NotNull PsiTypeStub createStub(@NotNull PsiType psi, StubElement parentStub) {
+    public @NotNull PsiTypeStub createStub(@NotNull PsiType psi, @Nullable StubElement parentStub) {
         String[] path = psi.getPath();
         return new PsiTypeStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.isAbstract(), psi.isJsObject(), psi.isRecord());
     }
@@ -38,8 +38,7 @@ public class PsiTypeStubElementType extends ORStubElementType<PsiTypeStub, PsiTy
         dataStream.writeBoolean(stub.isRecord());
     }
 
-    @NotNull
-    public PsiTypeStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public @NotNull PsiTypeStub deserialize(@NotNull StubInputStream dataStream, @Nullable StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
         boolean isAbstract = dataStream.readBoolean();
@@ -58,8 +57,7 @@ public class PsiTypeStubElementType extends ORStubElementType<PsiTypeStub, PsiTy
         sink.occurrence(IndexKeys.TYPES_FQN, fqn.hashCode());
     }
 
-    @NotNull
-    public String getExternalId() {
+    public @NotNull String getExternalId() {
         return getLanguage().getID() + "." + super.toString();
     }
 }

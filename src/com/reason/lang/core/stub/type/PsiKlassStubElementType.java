@@ -13,22 +13,19 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiKlassStubElementType extends ORStubElementType<PsiKlassStub, PsiKlass> {
-    public PsiKlassStubElementType(@Nullable Language language) {
-        super("C_CLASS_DECLARATION", language);
+    public PsiKlassStubElementType(@NotNull String name, @Nullable Language language) {
+        super(name, language);
     }
 
-    @NotNull
-    public PsiKlassImpl createPsi(@NotNull PsiKlassStub stub) {
+    public @NotNull PsiKlassImpl createPsi(@NotNull PsiKlassStub stub) {
         return new PsiKlassImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    @NotNull
-    public PsiKlassImpl createPsi(@NotNull ASTNode node) {
+    public @NotNull PsiKlassImpl createPsi(@NotNull ASTNode node) {
         return new PsiKlassImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    @NotNull
-    public PsiKlassStub createStub(@NotNull PsiKlass psi, StubElement parentStub) {
+    public @NotNull PsiKlassStub createStub(@NotNull PsiKlass psi, @Nullable StubElement parentStub) {
         String[] path = psi.getPath();
         return new PsiKlassStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path);
     }
@@ -38,8 +35,7 @@ public class PsiKlassStubElementType extends ORStubElementType<PsiKlassStub, Psi
         SerializerUtil.writePath(dataStream, stub.getPath());
     }
 
-    @NotNull
-    public PsiKlassStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public @NotNull PsiKlassStub deserialize(@NotNull StubInputStream dataStream, @Nullable StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
 
@@ -51,8 +47,7 @@ public class PsiKlassStubElementType extends ORStubElementType<PsiKlassStub, Psi
         sink.occurrence(IndexKeys.CLASSES_FQN, fqn.hashCode());
     }
 
-    @NotNull
-    public String getExternalId() {
+    public @NotNull String getExternalId() {
         return getLanguage().getID() + "." + super.toString();
     }
 }

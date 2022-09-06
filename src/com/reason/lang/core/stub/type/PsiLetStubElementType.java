@@ -15,12 +15,11 @@ import java.io.*;
 import java.util.*;
 
 public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet> {
-    public PsiLetStubElementType(@Nullable Language language) {
-        super("C_LET_DECLARATION", language);
+    public PsiLetStubElementType(@NotNull String name, @Nullable Language language) {
+        super(name, language);
     }
 
-    @NotNull
-    public PsiLetImpl createPsi(@NotNull PsiLetStub stub) {
+    public @NotNull PsiLetImpl createPsi(@NotNull PsiLetStub stub) {
         return new PsiLetImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
@@ -29,8 +28,7 @@ public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet>
         return new PsiLetImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    @NotNull
-    public PsiLetStub createStub(@NotNull PsiLet psi, StubElement parentStub) {
+    public @NotNull PsiLetStub createStub(@NotNull PsiLet psi, @Nullable StubElement parentStub) {
         List<String> deconstructedNames = new ArrayList<>();
         if (psi.isDeconstruction()) {
             List<PsiElement> elements = psi.getDeconstructedElements();
@@ -63,8 +61,7 @@ public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet>
         }
     }
 
-    @NotNull
-    public PsiLetStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public @NotNull PsiLetStub deserialize(@NotNull StubInputStream dataStream, @Nullable StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
         boolean isFunction = dataStream.readBoolean();

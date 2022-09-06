@@ -16,8 +16,8 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub, PsiInclude> {
-    public PsiIncludeStubElementType(@Nullable Language language) {
-        super("C_INCLUDE", language);
+    public PsiIncludeStubElementType(@NotNull String name, @Nullable Language language) {
+        super(name, language);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub,
     }
 
     @Override
-    public @NotNull PsiIncludeStub createStub(@NotNull PsiInclude psi, StubElement parentStub) {
+    public @NotNull PsiIncludeStub createStub(@NotNull PsiInclude psi, @Nullable StubElement parentStub) {
         return new PsiIncludeStub(parentStub, this, ((FileBase) psi.getContainingFile()).getModuleName(), psi.getIncludePath(), psi.getQualifiedPath(), psi.getResolvedPath());
     }
 
@@ -44,7 +44,7 @@ public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub,
     }
 
     @Override
-    public @NotNull PsiIncludeStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public @NotNull PsiIncludeStub deserialize(@NotNull StubInputStream dataStream, @Nullable StubElement parentStub) throws IOException {
         StringRef fileModule = dataStream.readName();
         String includePath = dataStream.readUTFFast();
         String[] qualifiedPath = SerializerUtil.readPath(dataStream);
