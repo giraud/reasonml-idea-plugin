@@ -2,7 +2,6 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -15,7 +14,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
 
         assertTrue(e.isFunction());
         PsiFunction function = e.getFunction();
-        List<PsiParameter> parameters = function.getParameters();
+        List<PsiParameterDeclaration> parameters = function.getParameters();
         assertSize(1, parameters);
         assertInstanceOf(first(parameters).getNameIdentifier(), PsiLowerSymbol.class);
         assertEquals("Dummy.fn[x]", first(parameters).getQualifiedName());
@@ -66,7 +65,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertTrue(e.isFunction());
         assertEquals("fun x y -> x + y", e.getBinding().getText());
         PsiFunction f = e.getFunction();
-        List<PsiParameter> p = f.getParameters();
+        List<PsiParameterDeclaration> p = f.getParameters();
         assertSize(2, p);
         assertEquals("x", p.get(0).getText());
         assertEquals("y", p.get(1).getText());

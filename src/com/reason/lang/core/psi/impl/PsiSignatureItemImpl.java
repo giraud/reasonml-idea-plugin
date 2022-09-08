@@ -13,12 +13,13 @@ public class PsiSignatureItemImpl extends ORCompositePsiElement<ORTypes> impleme
         super(types, elementType);
     }
 
-    public @Nullable PsiNamedParameterDeclaration getNamedParam() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiNamedParameterDeclaration.class);
+    public @Nullable PsiParameterDeclaration getNamedParam() {
+        PsiParameterDeclaration parameter = ORUtil.findImmediateFirstChildOfClass(this, PsiParameterDeclaration.class);
+        return parameter != null && parameter.isNamed() ? parameter : null;
     }
 
     public @Nullable String getName() {
-        PsiNamedParameterDeclaration param = getNamedParam();
+        PsiParameterDeclaration param = getNamedParam();
         return param == null ? null : param.getName();
     }
 
@@ -29,18 +30,18 @@ public class PsiSignatureItemImpl extends ORCompositePsiElement<ORTypes> impleme
 
     @Override
     public boolean isOptional() {
-        PsiNamedParameterDeclaration namedParam = getNamedParam();
+        PsiParameterDeclaration namedParam = getNamedParam();
         return namedParam != null && namedParam.isOptional();
     }
 
     @Override
     public @Nullable PsiElement getSignature() {
-        PsiNamedParameterDeclaration param = ORUtil.findImmediateFirstChildOfClass(this, PsiNamedParameterDeclaration.class);
+        PsiParameterDeclaration param = getNamedParam();
         return param == null ? null : param.getSignature();
     }
 
     @Override public PsiElement getDefaultValue() {
-        PsiNamedParameterDeclaration param = ORUtil.findImmediateFirstChildOfClass(this, PsiNamedParameterDeclaration.class);
+        PsiParameterDeclaration param = getNamedParam();
         return param == null ? null : param.getDefaultValue();
     }
 

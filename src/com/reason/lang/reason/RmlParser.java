@@ -222,12 +222,16 @@ public class RmlParser extends CommonPsiParser {
             IElementType nextType = rawLookup(1);
             if (nextType == myTypes.LIDENT) {
                 if (isCurrent(myTypes.C_PARAM_DECLARATION)) {
-                    updateComposite(myTypes.C_NAMED_PARAM_DECLARATION).advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                    markBefore(0, myTypes.C_PARAM_DECLARATION)
+                            .updateComposite(myTypes.H_NAMED_PARAM_DECLARATION).updateToHolder()
+                            .advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 } else if (isCurrent(myTypes.C_SIG_ITEM)) {
-                    mark(myTypes.C_NAMED_PARAM_DECLARATION).advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                    mark(myTypes.C_PARAM_DECLARATION)
+                            .markHolder(myTypes.H_NAMED_PARAM_DECLARATION)
+                            .advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 } else {
                     if (isCurrent(myTypes.C_PARAMETERS) && in(myTypes.C_FUNCTION_EXPR)) {
-                        mark(myTypes.C_NAMED_PARAM_DECLARATION);
+                        mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
                     } else if (isCurrent(myTypes.C_PARAM)) {
                         updateComposite(myTypes.C_NAMED_PARAM);
                     } else {
@@ -415,7 +419,7 @@ public class RmlParser extends CommonPsiParser {
                     return;
                 }
 
-                if (isFound(myTypes.C_SIG_ITEM)) {
+                if (isFound(myTypes.C_SIG_ITEM) || (isFound(myTypes.C_PARAM_DECLARATION) && isAtIndex(getIndex() + 1, myTypes.C_SIG_ITEM))) {
                     popEndUntilFoundIndex();
                     if (isRawParent(myTypes.H_COLLECTION_ITEM)) {
                         // ( ... |>,<|
@@ -426,7 +430,7 @@ public class RmlParser extends CommonPsiParser {
                     }
 
                     // double sig ? ~x:int,
-                    if (in(myTypes.C_NAMED_PARAM_DECLARATION, /*not*/myTypes.C_SCOPED_EXPR)) {
+                    if (in(myTypes.C_PARAM_DECLARATION, /*not*/myTypes.C_SCOPED_EXPR)) {
                         popEndUntilFoundIndex().popEnd();
                     }
                     popEnd();
@@ -664,11 +668,11 @@ public class RmlParser extends CommonPsiParser {
             }
             //
             else if (inScopeOrAny(
-                    myTypes.C_NAMED_PARAM_DECLARATION, myTypes.C_PARAM_DECLARATION, myTypes.C_NAMED_PARAM,
+                    myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_PARAM_DECLARATION, myTypes.C_NAMED_PARAM,
                     myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.C_TERNARY
             )) {
 
-                if (isFound(myTypes.C_NAMED_PARAM_DECLARATION) || isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.C_NAMED_PARAM)) {
+                if (isFound(myTypes.H_NAMED_PARAM_DECLARATION) || isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.C_NAMED_PARAM)) {
                     // let x = (~y |> : <| ...
                     advance().mark(myTypes.C_SIG_EXPR);
                     markParenthesisScope(true).
@@ -1054,6 +1058,13 @@ public class RmlParser extends CommonPsiParser {
                     }
                 } else if (isCurrent(myTypes.C_TAG_PROP_VALUE)) {
                     popEndUntilFoundIndex().popEnd();
+                } else if (is(myTypes.C_SCOPED_EXPR) && nextTokenType == myTypes.ARROW && !inAny(myTypes.C_SIG_EXPR, myTypes.C_PATTERN_MATCH_EXPR)) {
+                    // a missed function expression
+                    rollbackToPos(0)
+                            .mark(myTypes.C_FUNCTION_EXPR)
+                            .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN)
+                            .markHolder(myTypes.H_COLLECTION_ITEM)
+                            .advance();
                 }
             }
         }
@@ -1065,7 +1076,7 @@ public class RmlParser extends CommonPsiParser {
             } else if (isCurrent(myTypes.C_MODULE_DECLARATION) || isRawParent(myTypes.C_MODULE_DECLARATION)) {
                 // module M |> =<| ...
                 advance().mark(myTypes.C_MODULE_BINDING);
-            } else if (isParent(myTypes.C_NAMED_PARAM_DECLARATION) || isParent(myTypes.C_NAMED_PARAM)) {
+            } else if (isParent(myTypes.C_PARAM_DECLARATION) || isParent(myTypes.C_NAMED_PARAM)) {
                 // ( ~x |> =<| ...
                 popEndUntilFoundIndex()
                         .advance().mark(myTypes.C_DEFAULT_VALUE)
@@ -1084,7 +1095,7 @@ public class RmlParser extends CommonPsiParser {
 
                 if (isFound(myTypes.C_SIG_EXPR)) {
                     popEndUntil(myTypes.C_SIG_EXPR).popEnd();
-                    if (inAny(myTypes.C_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM)) {
+                    if (inAny(myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM)) {
                         advance().mark(myTypes.C_DEFAULT_VALUE);
                     } else if (in(myTypes.C_LET_DECLARATION)) {
                         parseLetBinding();
@@ -1212,12 +1223,8 @@ public class RmlParser extends CommonPsiParser {
                             .mark(myTypes.C_PARAMETERS);
                 } else if (isFound(myTypes.C_FIELD_VALUE)) {
                     // function parameters ::  |>x<| => ...
-                    rollbackToPos(getIndex()).mark(myTypes.C_FIELD_VALUE)
-                            .mark(myTypes.C_FUNCTION_EXPR)
-                            .mark(myTypes.C_PARAMETERS);
-                } else if (isFound(myTypes.C_FUNCTION_BODY)) {
-                    // x => x |>=><| ..
-                    rollbackToFoundIndex()
+                    rollbackToPos(getIndex())
+                            .mark(myTypes.C_FIELD_VALUE)
                             .mark(myTypes.C_FUNCTION_EXPR)
                             .mark(myTypes.C_PARAMETERS);
                 } else if (isFound(myTypes.C_PARAMETERS) || isFound(myTypes.C_FUNCTION_EXPR)) {

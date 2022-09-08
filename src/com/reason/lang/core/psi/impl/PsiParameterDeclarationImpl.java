@@ -6,23 +6,24 @@ import com.intellij.psi.stubs.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
+import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
+import com.reason.lang.ocaml.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiParameterDeclaration extends PsiTokenStub<ORTypes, PsiParameter, PsiParameterStub> implements PsiParameter {
+public class PsiParameterDeclarationImpl extends PsiTokenStub<ORTypes, PsiParameterDeclaration, PsiParameterDeclarationStub> implements PsiParameterDeclaration {
     // region Constructors
-    public PsiParameterDeclaration(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public PsiParameterDeclarationImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public PsiParameterDeclaration(@NotNull ORTypes types, @NotNull PsiParameterStub stub, @NotNull IStubElementType nodeType) {
+    public PsiParameterDeclarationImpl(@NotNull ORTypes types, @NotNull PsiParameterDeclarationStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
@@ -48,7 +49,7 @@ public class PsiParameterDeclaration extends PsiTokenStub<ORTypes, PsiParameter,
 
     @Override
     public @Nullable String getName() {
-        PsiParameterStub stub = getGreenStub();
+        PsiParameterDeclarationStub stub = getGreenStub();
         if (stub != null) {
             return stub.getName();
         }
@@ -83,7 +84,7 @@ public class PsiParameterDeclaration extends PsiTokenStub<ORTypes, PsiParameter,
     //region PsiQualifiedName
     @Override
     public String @Nullable [] getPath() {
-        PsiParameterStub stub = getGreenStub();
+        PsiParameterDeclarationStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();
         }
@@ -95,7 +96,7 @@ public class PsiParameterDeclaration extends PsiTokenStub<ORTypes, PsiParameter,
 
     @Override
     public @NotNull String getQualifiedName() {
-        PsiParameterStub stub = getGreenStub();
+        PsiParameterDeclarationStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();
         }
@@ -113,11 +114,39 @@ public class PsiParameterDeclaration extends PsiTokenStub<ORTypes, PsiParameter,
 
     @Override
     public @Nullable PsiDefaultValue getDefaultValue() {
-        return null;
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiDefaultValue.class);
     }
 
     @Override
     public boolean isOptional() {
         return getDefaultValue() != null;
+    }
+
+    public boolean isNamed() {
+        if (getLanguage() == OclLanguage.INSTANCE) {
+            // a signature ?
+            return ORUtil.findImmediateFirstChildOfClass(this, PsiSignature.class) != null;
+        }
+
+        PsiElement firstChild = getFirstChild();
+        return firstChild != null && firstChild.getNode().getElementType() == myTypes.TILDE;
+    }
+
+    @Override public @NotNull String asText(@Nullable ORLanguageProperties toLang) {
+        StringBuilder convertedText = null;
+        Language fromLang = getLanguage();
+
+        if (fromLang != toLang && isNamed()) {
+            if (fromLang == OclLanguage.INSTANCE) {
+                convertedText = new StringBuilder();
+                convertedText.append("~").append(getName());
+                PsiSignature signature = getSignature();
+                if (signature != null) {
+                    convertedText.append(":").append(signature.asText(toLang));
+                }
+            }
+        }
+
+        return convertedText == null ? getText() : convertedText.toString();
     }
 }

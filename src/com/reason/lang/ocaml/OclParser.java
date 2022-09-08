@@ -221,12 +221,21 @@ public class OclParser extends CommonPsiParser {
 
         private void parseTilde() {
             if (is(myTypes.C_PARAMETERS)) {
-                boolean isCall = in(myTypes.C_FUNCTION_CALL);
-                mark(isCall ? myTypes.C_NAMED_PARAM : myTypes.C_NAMED_PARAM_DECLARATION);
+                if (in(myTypes.C_FUNCTION_CALL)) {
+                    mark(myTypes.C_NAMED_PARAM);
+                } else {
+                    mark(myTypes.C_PARAM_DECLARATION)
+                            .markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
+                }
             } else if (strictlyIn(myTypes.C_DEFAULT_VALUE)) {
                 popEndUntil(myTypes.C_PARAMETERS);
                 boolean isCall = in(myTypes.C_FUNCTION_CALL);
-                mark(isCall ? myTypes.C_NAMED_PARAM : myTypes.C_NAMED_PARAM_DECLARATION);
+                if (isCall) {
+                    mark(myTypes.C_NAMED_PARAM);
+                } else {
+                    mark(myTypes.C_PARAM_DECLARATION)
+                            .markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
+                }
             }
         }
 
@@ -360,7 +369,7 @@ public class OclParser extends CommonPsiParser {
                 markDummyParenthesisScope().mark(myTypes.C_SIG_ITEM);
             } else if (strictlyIn(myTypes.C_SIG_ITEM)) {
                 popEndUntilFoundIndex().popEnd();
-                if (in(myTypes.C_NAMED_PARAM_DECLARATION)) { // can't have an arrow in a named param signature
+                if (in(myTypes.H_NAMED_PARAM_DECLARATION)) { // can't have an arrow in a named param signature
                     // let fn x:int |>-><| y:int
                     popEnd().popEndUntil(myTypes.C_SIG_EXPR);
                 }
@@ -605,7 +614,7 @@ public class OclParser extends CommonPsiParser {
             if (is(myTypes.C_FUNCTOR_DECLARATION)) {
                 // module M (...) |> :<| ...
                 advance().mark(myTypes.C_FUNCTOR_RESULT);
-            } else if (isRawParent(myTypes.C_NAMED_PARAM_DECLARATION)) {
+            } else if (isRawParent(myTypes.H_NAMED_PARAM_DECLARATION)) {
                 advance();
                 if (getTokenType() == myTypes.LPAREN) {
                     // ?x : |>(<| ...
@@ -647,11 +656,13 @@ public class OclParser extends CommonPsiParser {
         private void parseQuestionMark() {
             if (is(myTypes.C_PARAMETERS) && isRawParent(myTypes.C_FUNCTION_EXPR)) { // First param
                 // let f |>?<| ( x ...
-                mark(myTypes.C_NAMED_PARAM_DECLARATION);
+                mark(myTypes.C_PARAM_DECLARATION)
+                        .markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
             } else if (in(myTypes.C_PARAM_DECLARATION) && !rawHasScope()) { // Start of a new optional parameter
                 // let f x |>?<|(y ...
                 popEndUntil(myTypes.C_PARAM_DECLARATION).popEnd()
-                        .mark(myTypes.C_NAMED_PARAM_DECLARATION);
+                        .mark(myTypes.C_PARAM_DECLARATION)
+                        .markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
             } else if (is(myTypes.C_BINARY_CONDITION) && !isRawParent(myTypes.C_MATCH_EXPR)) { // Condition ?
                 // ... |>?<| ... : ...
                 IElementType nextType = rawLookup(1);
@@ -683,7 +694,7 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseEq() {
-            if (in(myTypes.C_NAMED_PARAM_DECLARATION)) {
+            if (in(myTypes.H_NAMED_PARAM_DECLARATION)) {
                 // let fn ?(x |> = <| ...
                 advance().mark(myTypes.C_DEFAULT_VALUE);
             } else if (in(myTypes.C_RECORD_FIELD)) {
@@ -760,7 +771,7 @@ public class OclParser extends CommonPsiParser {
             } else if (is(myTypes.C_PARAMETERS) && isRawParent(myTypes.C_FUNCTION_CALL)) { // Start of the first parameter
                 // fn |>(<| ...
                 markScope(myTypes.C_PARAM, myTypes.LPAREN);
-            } else if (is(myTypes.C_NAMED_PARAM_DECLARATION)) { // A named param with default value
+            } else if (is(myTypes.H_NAMED_PARAM_DECLARATION)) { // A named param with default value
                 // let fn ?|>(<| x ... )
                 updateScopeToken(myTypes.LPAREN);
             } else if (in(myTypes.C_CLASS_DECLARATION)) {
@@ -772,8 +783,7 @@ public class OclParser extends CommonPsiParser {
                     advance(); // skip 'val' in a first class module decoding
                 }
             } else if (inAny(//
-                    myTypes.C_PARAM_DECLARATION, myTypes.C_PARAMETERS, myTypes.C_PARAM, myTypes.C_SIG_ITEM,
-                    myTypes.C_NAMED_PARAM_DECLARATION
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_PARAMETERS, myTypes.C_PARAM, myTypes.C_SIG_ITEM
             )) {
                 boolean isDeclaration = isFound(myTypes.C_PARAM_DECLARATION);
                 int foundIndex = getIndex();
@@ -839,7 +849,7 @@ public class OclParser extends CommonPsiParser {
             } else {
                 popEnd();
 
-                if (is(myTypes.C_NAMED_PARAM_DECLARATION) && nextToken != myTypes.EQ) {
+                if (is(myTypes.H_NAMED_PARAM_DECLARATION) && nextToken != myTypes.EQ) {
                     popEnd();
                 } else if (scope.isCompositeType(myTypes.C_SCOPED_EXPR) && is(myTypes.C_LET_DECLARATION) && nextToken != myTypes.EQ) { // This is a custom infix operator
                     mark(myTypes.C_PARAMETERS);
@@ -1021,7 +1031,7 @@ public class OclParser extends CommonPsiParser {
 
                 if (nextTokenType == myTypes.COLON && is(myTypes.C_SIG_ITEM)) {
                     // let fn: |>x<| : ...
-                    mark(myTypes.C_NAMED_PARAM_DECLARATION);
+                    mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
                 } else if (!in(myTypes.C_SIG_ITEM) && !is(myTypes.C_TYPE_VARIABLE) && !is(myTypes.C_TYPE_CONSTRAINT)
                         && !is(myTypes.C_BINARY_CONDITION) && !is(myTypes.C_CLASS_FIELD) && !in(myTypes.C_TYPE_BINDING)
                         && !is(myTypes.C_PARAMETERS) && !strictlyIn(myTypes.C_DEFAULT_VALUE)) {

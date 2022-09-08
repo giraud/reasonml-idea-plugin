@@ -335,19 +335,20 @@ public class ResParser extends CommonPsiParser {
         private void parseTilde() {
             if (is(myTypes.C_PARAMETERS)) {
                 mark(myTypes.C_PARAM_DECLARATION)
-                        .mark(myTypes.C_NAMED_PARAM_DECLARATION).advance()
-                        .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                        .mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION)
+                        .advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (strictlyIn(myTypes.C_SIG_EXPR) && !is(myTypes.C_SIG_ITEM)) {
                 mark(myTypes.C_SIG_ITEM)
-                        .mark(myTypes.C_NAMED_PARAM_DECLARATION).advance()
-                        .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                        .mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION)
+                        .advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (isCurrent(myTypes.C_PARAM)) {
                 updateComposite(myTypes.C_NAMED_PARAM);
             } else if (isCurrent(myTypes.C_PARAM_DECLARATION)) {
-                updateComposite(myTypes.C_NAMED_PARAM_DECLARATION);
+                markBefore(0, myTypes.C_PARAM_DECLARATION)
+                        .updateComposite(myTypes.H_NAMED_PARAM_DECLARATION).updateToHolder();
             } else {
-                mark(myTypes.C_NAMED_PARAM_DECLARATION).advance()
-                        .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION)
+                        .advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
             }
         }
 
@@ -394,17 +395,15 @@ public class ResParser extends CommonPsiParser {
             }
             // Same priority
             else if (inScopeOrAny(
-                    myTypes.C_PARAM_DECLARATION, myTypes.C_PARAM, myTypes.C_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM,
-                    myTypes.C_DECONSTRUCTION, myTypes.C_RECORD_FIELD, myTypes.C_MIXIN_FIELD,
-                    myTypes.C_OBJECT_FIELD, myTypes.H_COLLECTION_ITEM
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_PARAM, myTypes.C_NAMED_PARAM, myTypes.C_DECONSTRUCTION,
+                    myTypes.C_RECORD_FIELD, myTypes.C_MIXIN_FIELD, myTypes.C_OBJECT_FIELD, myTypes.H_COLLECTION_ITEM
             )) {
 
                 if (isFound(myTypes.H_COLLECTION_ITEM)) {
                     popEndUntilFoundIndex().popEnd()
                             .advance().markHolder(myTypes.H_COLLECTION_ITEM);
-                } else if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.C_NAMED_PARAM_DECLARATION) ||
-                        isFound(myTypes.C_PARAM) || isFound(myTypes.C_NAMED_PARAM)) {
-                    boolean isDeclaration = isAtIndex(getIndex(), myTypes.C_PARAM_DECLARATION) || isAtIndex(getIndex(), myTypes.C_NAMED_PARAM_DECLARATION);
+                } else if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.C_PARAM) || isFound(myTypes.C_NAMED_PARAM)) {
+                    boolean isDeclaration = isAtIndex(getIndex(), myTypes.C_PARAM_DECLARATION) || isAtIndex(getIndex(), myTypes.H_NAMED_PARAM_DECLARATION);
                     popEndUntilFoundIndex().popEnd();
                     if (is(myTypes.H_COLLECTION_ITEM) && isHold()) {
                         popEnd();
@@ -536,10 +535,10 @@ public class ResParser extends CommonPsiParser {
                 //        .advance();
             } else if (strictlyInAny(
                     myTypes.C_MODULE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_EXTERNAL_DECLARATION,
-                    myTypes.C_PARAM_DECLARATION, myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.C_NAMED_PARAM_DECLARATION,
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.H_NAMED_PARAM_DECLARATION,
                     myTypes.C_IF_THEN_SCOPE)) {
 
-                if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.C_NAMED_PARAM_DECLARATION)) {
+                if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.H_NAMED_PARAM_DECLARATION)) {
                     // let x = (y |> :<| ...
                     // let x = (~y |> :<| ...
                     advance()
@@ -982,7 +981,7 @@ public class ResParser extends CommonPsiParser {
         private void parseEq() {
             if (strictlyInAny(
                     myTypes.C_TYPE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_MODULE_TYPE, myTypes.C_MODULE_DECLARATION,
-                    myTypes.C_TAG_PROPERTY, myTypes.C_SIG_EXPR, myTypes.C_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM
+                    myTypes.C_TAG_PROPERTY, myTypes.C_SIG_EXPR, myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM
             )) {
 
                 if (isFound(myTypes.C_TYPE_DECLARATION)) {
@@ -1008,7 +1007,7 @@ public class ResParser extends CommonPsiParser {
                             .markHolder(myTypes.H_PLACE_HOLDER);
                 } else if (isFound(myTypes.C_SIG_EXPR)) {
                     popEndUntilFoundIndex();
-                    if (isRawGrandParent(myTypes.C_NAMED_PARAM_DECLARATION)) {
+                    if (isRawGrandParent(myTypes.H_NAMED_PARAM_DECLARATION)) {
                         popEndUntilIndex(2)
                                 .advance().mark(myTypes.C_DEFAULT_VALUE);
                     } else if (isRawParent(myTypes.C_LET_DECLARATION)) {
@@ -1018,7 +1017,7 @@ public class ResParser extends CommonPsiParser {
                     } else {
                         end();
                     }
-                } else if (isFound(myTypes.C_NAMED_PARAM_DECLARATION) || isFound(myTypes.C_NAMED_PARAM)) {
+                } else if (isFound(myTypes.H_NAMED_PARAM_DECLARATION) || isFound(myTypes.C_NAMED_PARAM)) {
                     // ( ~x |> =<| ...
                     popEndUntilFoundIndex()
                             .advance().mark(myTypes.C_DEFAULT_VALUE)

@@ -1,6 +1,5 @@
 package com.reason.lang.rescript;
 
-import com.intellij.openapi.util.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
@@ -147,7 +146,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         PsiLet e = firstOfType(parseCode("let make = (x: array<int>) => x"), PsiLet.class);
 
         assertNull(PsiTreeUtil.findChildOfType(e, PsiUpperTagName.class));
-        PsiParameter param = e.getFunction().getParameters().get(0);
+        PsiParameterDeclaration param = e.getFunction().getParameters().get(0);
         PsiSignatureItem sigItem = param.getSignature().getItems().get(0);
         assertEquals("array<int>", sigItem.getText());
     }

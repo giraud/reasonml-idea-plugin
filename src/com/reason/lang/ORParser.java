@@ -222,7 +222,7 @@ public abstract class ORParser<T> {
         int stop = Math.min(size, maxDepth);
         for (int i = 0; i < stop; i++) {
             Marker marker = myMarkers.get(i);
-            if (marker.isUnset()) { // not dropped or done
+            if (marker.isUnset() || marker.isHold()) { // not dropped or done
                 if (marker.isCompositeType(excluded)) {
                     myIndex = -1;
                     return false;
@@ -258,7 +258,7 @@ public abstract class ORParser<T> {
     public boolean strictlyInAny(@NotNull ORCompositeType... composite) {
         for (int i = 0; i < myMarkers.size(); i++) {
             Marker marker = myMarkers.get(i);
-            if (marker.isUnset()) { // not dropped or done
+            if (marker.isUnset() || marker.isHold()) { // not dropped or done
                 if (marker.isCompositeIn(composite)) {
                     myIndex = i;
                     return true;
@@ -496,6 +496,14 @@ public abstract class ORParser<T> {
         return this;
     }
 
+    public @NotNull ORParser<T> updateToHolder() {
+        Marker marker = getCurrentMarker();
+        if (marker != null) {
+            marker.hold();
+        }
+        return this;
+    }
+
     public @NotNull ORParser<T> advance() {
         myBuilder.advanceLexer();
         dontMove = true;
@@ -675,14 +683,6 @@ public abstract class ORParser<T> {
             if (marker.isHold()) {
                 marker.resetStatus();
             }
-        }
-        return this;
-    }
-
-    protected ORParser<T> dropActive() {
-        Marker marker = getActiveMarker();
-        if (marker != null) {
-            marker.drop();
         }
         return this;
     }

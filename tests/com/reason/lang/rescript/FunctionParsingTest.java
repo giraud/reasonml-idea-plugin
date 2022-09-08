@@ -43,7 +43,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
 
         assertSize(1, function.getParameters());
-        assertInstanceOf(first(function.getParameters()), PsiParameter.class);
+        assertInstanceOf(first(function.getParameters()), PsiParameterDeclaration.class);
         assertNotNull(function.getBody());
     }
 
@@ -98,7 +98,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let make = (~id:string, ~values: option<'a>, children) => null")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
         assertSize(3, parameters);
 
         assertEquals("id", parameters.get(0).getName());
@@ -148,7 +148,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let make = (id, values, children) => null;")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
         assertSize(3, parameters);
 
         assertEquals("id", parameters.get(0).getName());
@@ -184,7 +184,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     public void test_first_class_module() {
         PsiFunction e = firstOfType(parseCode("let make = (~selectors: (module SelectorsIntf)=(module Selectors)) => {}"), PsiFunction.class);
 
-        PsiParameter p0 = e.getParameters().get(0);
+        PsiParameterDeclaration p0 = e.getParameters().get(0);
         PsiSignature s = p0.getSignature();
         PsiSignatureItem s0 = s.getItems().get(0);
         assertEquals("(module SelectorsIntf)", s0.getText());
@@ -197,7 +197,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     public void test_signature() {
         PsiFunction e = firstOfType(parseCode("let _ = (~p: (option(string), option(int)) => unit) => p;"), PsiFunction.class);
 
-        PsiParameter p0 = e.getParameters().get(0);
+        PsiParameterDeclaration p0 = e.getParameters().get(0);
         assertEquals("(option(string), option(int)) => unit", p0.getSignature().getText());
         //assertEquals("option(string)", p0.getSignature().getItems().get(0).getText());       ??
         //assertEquals("option(int)", p0.getSignature().getItems().get(1).getText());
@@ -231,7 +231,11 @@ public class FunctionParsingTest extends ResParsingTestCase {
         PsiFunction f = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
         assertEquals("p", f.getParameters().get(0).getText());
         assertEquals("(. p1) => { let _ = a let _ = x => x }", f.getBody().getText());
+    }
 
+    public void test_rollback_04() {
+        PsiFunction e = firstOfType(parseCode("let fn = () => { let _ = 1\n (x) => 2 }"), PsiFunction.class);
+        assertEquals("{ let _ = 1\n (x) => 2 }", e.getBody().getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/113

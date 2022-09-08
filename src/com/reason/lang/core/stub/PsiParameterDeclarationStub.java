@@ -5,19 +5,19 @@ import com.intellij.util.io.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
-public class PsiParameterStub extends NamedStubBase<PsiParameter> {
+public class PsiParameterDeclarationStub extends NamedStubBase<PsiParameterDeclaration> {
     private final String[] myPath;
     private final String myQname;
     private final boolean myIsNamed;
 
-    public PsiParameterStub(StubElement parent, @NotNull IStubElementType elementType, String name, String[] path, String qName, boolean isNamed) {
+    public PsiParameterDeclarationStub(StubElement parent, @NotNull IStubElementType elementType, String name, String[] path, String qName, boolean isNamed) {
         super(parent, elementType, name);
         myPath = path;
         myQname = qName;
         myIsNamed = isNamed;
     }
 
-    public PsiParameterStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String[] path, String qname, boolean isNamed) {
+    public PsiParameterDeclarationStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String[] path, String qname, boolean isNamed) {
         super(parent, elementType, name);
         myPath = path;
         myQname = qname;

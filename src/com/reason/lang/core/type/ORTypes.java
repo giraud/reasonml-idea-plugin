@@ -12,7 +12,6 @@ public abstract class ORTypes {
     public ORCompositeType C_INCLUDE;
     public ORCompositeType C_LET_DECLARATION;
     public ORCompositeType C_MODULE_DECLARATION;
-    public ORCompositeType C_NAMED_PARAM_DECLARATION;
     public ORCompositeType C_OBJECT_FIELD;
     public ORCompositeType C_OPEN;
     public ORCompositeType C_PARAM_DECLARATION;
@@ -109,6 +108,7 @@ public abstract class ORTypes {
 
     public ORCompositeType H_PLACE_HOLDER;
     public ORCompositeType H_COLLECTION_ITEM;
+    public ORCompositeType H_NAMED_PARAM_DECLARATION;
 
     // Token element types
 

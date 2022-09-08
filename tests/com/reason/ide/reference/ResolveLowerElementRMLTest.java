@@ -2,9 +2,8 @@ package com.reason.ide.reference;
 
 import com.intellij.psi.*;
 import com.reason.ide.*;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
 public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
@@ -149,7 +148,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_param_parenLess() {
         configureCode("A.re", "let add10 = x => x<caret> + 10;");
 
-        PsiParameter e = (PsiParameter) myFixture.getElementAtCaret();
+        PsiParameterDeclaration e = (PsiParameterDeclaration) myFixture.getElementAtCaret();
         assertEquals("A.add10[x]", e.getQualifiedName());
     }
 

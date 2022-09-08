@@ -1,14 +1,11 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.*;
-import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctorCallParsingTest extends OclParsingTestCase {

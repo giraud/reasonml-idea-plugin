@@ -35,7 +35,7 @@ public class ComponentJsx3ParsingTest extends ResParsingTestCase {
     public void test_optional_property() {
         PsiLet e = firstOfType(parseCode("@react.component let make = (~layout=?) => <div/>"), PsiLet.class);
 
-        List<PsiParameter> params = e.getFunction().getParameters();
+        List<PsiParameterDeclaration> params = e.getFunction().getParameters();
         assertSize(1, params);
         assertEquals("layout", params.get(0).getName());
         assertTrue(params.get(0).isOptional());

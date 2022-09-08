@@ -1,7 +1,6 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.*;
-import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -53,6 +52,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals("v", signature.getItems().get(0).getName());
         assertFalse(signature.getItems().get(1).isOptional());
         assertEquals("h", signature.getItems().get(1).getName());
+        assertEquals("rule", signature.getItems().get(2).getText());
     }
 
     public void test_optional_fun() {
@@ -74,7 +74,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let x a b ?(c= false)  ?(d= 1.)  = 3")));
 
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
-        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(4, parameters);
         assertFalse(parameters.get(0).isOptional());
@@ -91,28 +91,28 @@ public class SignatureParsingTest extends OclParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let x (a : int) (b : string option) ?c:((c : bool)= false)  ?d:((d : float)=1.) = 3")));
 
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
-        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(4, parameters);
-        assertFalse(parameters.get(0).isOptional());
         assertEquals("Dummy.x[a]", parameters.get(0).getQualifiedName());
-        assertFalse(parameters.get(1).isOptional());
+        assertFalse(parameters.get(0).isOptional());
         assertEquals("Dummy.x[b]", parameters.get(1).getQualifiedName());
-        assertTrue(parameters.get(2).isOptional());
+        assertFalse(parameters.get(1).isOptional());
         assertEquals("Dummy.x[c]", parameters.get(2).getQualifiedName());
         assertEquals("bool", parameters.get(2).getSignature().asText(getLangProps()));
         assertEquals("false", parameters.get(2).getDefaultValue().getText());
-        assertTrue(parameters.get(3).isOptional());
+        assertTrue(parameters.get(2).isOptional());
         assertEquals("Dummy.x[d]", parameters.get(3).getQualifiedName());
         assertEquals("float", parameters.get(3).getSignature().asText(getLangProps()));
         assertEquals("1.", parameters.get(3).getDefaultValue().getText());
+        assertTrue(parameters.get(3).isOptional());
     }
 
     public void test_unitFunParameter() {
         PsiLet e = first(letExpressions(parseCode("let x (a : int) () = a")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(2, parameters);
         assertEquals("(a : int)", parameters.get(0).getText());

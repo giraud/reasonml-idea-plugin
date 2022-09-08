@@ -1,11 +1,9 @@
 package com.reason.lang.reason;
 
-import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
@@ -37,7 +35,7 @@ public class ComponentJsx3ParsingTest extends RmlParsingTestCase {
     public void test_optional_property() {
         PsiLet e = firstOfType(parseCode("[@react.component] let make = (~layout=?) => <div/>;"), PsiLet.class);
 
-        List<PsiParameter> parameters = e.getFunction().getParameters();
+        List<PsiParameterDeclaration> parameters = e.getFunction().getParameters();
         List<ComponentPropertyAdapter> params = parameters.stream().map(ComponentPropertyAdapter::new).collect(Collectors.toList());
         assertSize(1, params);
         assertFalse(params.get(0).isMandatory());

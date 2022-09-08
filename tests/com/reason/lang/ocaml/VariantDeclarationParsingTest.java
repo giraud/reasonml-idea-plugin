@@ -1,6 +1,6 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -68,7 +68,7 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         PsiVariantDeclaration e = firstOfType(parseCode("type cases_pattern_expr_r = | CPatRecord of (qualid * cases_pattern_expr) list"), PsiVariantDeclaration.class);
 
         assertEquals("CPatRecord of (qualid * cases_pattern_expr) list", e.getText());
-        PsiParameter p = e.getParameterList().iterator().next();
+        PsiParameterDeclaration p = e.getParameterList().iterator().next();
         assertEquals("(qualid * cases_pattern_expr) list", p.getText());
     }
 }

@@ -12,30 +12,29 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-public class PsiParameterStubElementType extends ORStubElementType<PsiParameterStub, PsiParameter> {
-    public PsiParameterStubElementType(@NotNull String name, @NotNull Language language) {
+public class PsiParameterDeclarationStubElementType extends ORStubElementType<PsiParameterDeclarationStub, PsiParameterDeclaration> {
+    public PsiParameterDeclarationStubElementType(@NotNull String name, @NotNull Language language) {
         super(name, language);
     }
 
     @NotNull
-    public PsiParameterDeclaration createPsi(@NotNull PsiParameterStub stub) {
+    public PsiParameterDeclaration createPsi(@NotNull PsiParameterDeclarationStub stub) {
         ORTypes types = ORTypesUtil.getInstance(getLanguage());
-        return stub.isNamed() ? new PsiNamedParameterDeclaration(types, stub, this) : new PsiParameterDeclaration(types, stub, this);
+        return new PsiParameterDeclarationImpl(types, stub, this);
     }
 
     @NotNull
     public PsiParameterDeclaration createPsi(@NotNull ASTNode node) {
         ORTypes types = ORTypesUtil.getInstance(getLanguage());
-        boolean isNamed = node.getElementType() == types.C_NAMED_PARAM_DECLARATION;
-        return isNamed ? new PsiNamedParameterDeclaration(types, node) : new PsiParameterDeclaration(types, node);
+        return new PsiParameterDeclarationImpl(types, node);
     }
 
     @NotNull
-    public PsiParameterStub createStub(@NotNull PsiParameter psi, StubElement parentStub) {
-        return new PsiParameterStub(parentStub, this, psi.getName(), psi.getPath(), psi.getQualifiedName(), psi instanceof PsiNamedParameterDeclaration);
+    public PsiParameterDeclarationStub createStub(@NotNull PsiParameterDeclaration psi, StubElement parentStub) {
+        return new PsiParameterDeclarationStub(parentStub, this, psi.getName(), psi.getPath(), psi.getQualifiedName(), psi.isNamed());
     }
 
-    public void serialize(@NotNull PsiParameterStub stub, @NotNull StubOutputStream dataStream) throws IOException {
+    public void serialize(@NotNull PsiParameterDeclarationStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         SerializerUtil.writePath(dataStream, stub.getPath());
         dataStream.writeUTFFast(stub.getQualifiedName());
@@ -43,15 +42,15 @@ public class PsiParameterStubElementType extends ORStubElementType<PsiParameterS
     }
 
     @NotNull
-    public PsiParameterStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public PsiParameterDeclarationStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
         String qname = dataStream.readUTFFast();
         boolean isNamed = dataStream.readBoolean();
-        return new PsiParameterStub(parentStub, this, name, path, qname, isNamed);
+        return new PsiParameterDeclarationStub(parentStub, this, name, path, qname, isNamed);
     }
 
-    public void indexStub(@NotNull PsiParameterStub stub, @NotNull IndexSink sink) {
+    public void indexStub(@NotNull PsiParameterDeclarationStub stub, @NotNull IndexSink sink) {
         String name = stub.getName();
         if (name != null) {
             sink.occurrence(IndexKeys.PARAMETERS, name);

@@ -2,7 +2,6 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -50,7 +49,7 @@ public class FunctorParsingTest extends RmlParsingTestCase {
         PsiFunctor f = first(functors);
         assertEquals("GlobalBindings", f.getName());
         assertEquals("Dummy.GlobalBindings", f.getQualifiedName());
-        Collection<PsiParameter> parameters = f.getParameters();
+        Collection<PsiParameterDeclaration> parameters = f.getParameters();
         assertSize(1, parameters);
         assertEquals("M", first(parameters).getName());
         assertNotNull(f.getBody());

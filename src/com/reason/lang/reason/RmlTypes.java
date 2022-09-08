@@ -17,7 +17,6 @@ public class RmlTypes extends ORTypes {
         C_INCLUDE = (ORCompositeType) RmlStubBasedElementTypes.C_INCLUDE;
         C_LET_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_LET_DECLARATION;
         C_MODULE_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_MODULE_DECLARATION;
-        C_NAMED_PARAM_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_NAMED_PARAM_DECLARATION;
         C_OBJECT_FIELD = (ORCompositeType) RmlStubBasedElementTypes.C_OBJECT_FIELD;
         C_OPEN = (ORCompositeType) RmlStubBasedElementTypes.C_OPEN;
         C_PARAM_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_PARAM_DECLARATION;
@@ -114,6 +113,7 @@ public class RmlTypes extends ORTypes {
 
         H_PLACE_HOLDER = new ORCompositeElementType("H_PLACE_HOLDER", RmlLanguage.INSTANCE);
         H_COLLECTION_ITEM = new ORCompositeElementType("H_COLLECTION_ITEM", RmlLanguage.INSTANCE);
+        H_NAMED_PARAM_DECLARATION = new ORCompositeElementType("H_NAMED_PARAM_DECLARATION", RmlLanguage.INSTANCE);
 
         // Token element types
 

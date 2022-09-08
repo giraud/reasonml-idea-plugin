@@ -7,7 +7,6 @@ import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -71,7 +70,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         Collection<PsiExternal> externals = ExternalIndex.getElements(myReferenceName, project, scope);
         Collection<PsiRecordField> recordFields = RecordFieldIndex.getElements(myReferenceName, project, scope);
         Collection<PsiObjectField> objectFields = ObjectFieldIndex.getElements(myReferenceName, project, scope);
-        Collection<PsiParameter> parameters = ParameterIndex.getElements(myReferenceName, project, scope);
+        Collection<PsiParameterDeclaration> parameters = ParameterIndex.getElements(myReferenceName, project, scope);
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("  indexes: types=" + types.size() + ", vals=" + vals.size() + ", lets=" + lets.size() +

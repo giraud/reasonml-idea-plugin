@@ -6,10 +6,18 @@ import com.reason.lang.core.psi.impl.*;
 @SuppressWarnings("ConstantConditions")
 public class ExternalParsingTest extends RmlParsingTestCase {
     public void test_signature() {
-        PsiExternal e = externalExpression(parseCode("external props : (string) => string;"), "props");
+        PsiExternal e = firstOfType(parseCode("external props : (string) => string;"), PsiExternal.class);
 
         PsiSignature signature = e.getSignature();
         assertEquals("(string) => string", signature.getText());
+        assertTrue(e.isFunction());
+    }
+
+    public void test_named_param() {
+        PsiExternal e = firstOfType(parseCode("external props : (~value:string) => string;"), PsiExternal.class);
+
+        PsiSignature signature = e.getSignature();
+        assertEquals("(~value:string) => string", signature.getText());
         assertTrue(e.isFunction());
     }
 

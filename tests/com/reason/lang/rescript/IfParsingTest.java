@@ -4,7 +4,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.impl.PsiIfStatement;
 import com.reason.lang.core.psi.impl.*;
 
@@ -131,7 +130,7 @@ public class IfParsingTest extends ResParsingTestCase {
     //public void test_ternary_functor_parameters() {
     //    PsiParameters e = firstOfType(parseCode("module M = Make( x ? a : b, y ? c : d  )"), PsiParameters.class);
     //
-    //    assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameter.class));
+    //    assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameterDeclaration.class));
     //    List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
     //    assertEquals("x ? a : b", ts.get(0).getText());
     //    assertEquals("y ? c : d", ts.get(1).getText());

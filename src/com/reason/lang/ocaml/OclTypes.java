@@ -18,7 +18,6 @@ public class OclTypes extends ORTypes {
         C_INCLUDE = (ORCompositeType) OclStubBasedElementTypes.C_INCLUDE;
         C_LET_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_LET_DECLARATION;
         C_MODULE_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_MODULE_DECLARATION;
-        C_NAMED_PARAM_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_NAMED_PARAM_DECLARATION;
         C_OBJECT_FIELD = (ORCompositeType) OclStubBasedElementTypes.C_OBJECT_FIELD;
         C_OPEN = (ORCompositeType) OclStubBasedElementTypes.C_OPEN;
         C_PARAM_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_PARAM_DECLARATION;
@@ -116,6 +115,7 @@ public class OclTypes extends ORTypes {
 
         H_PLACE_HOLDER = new ORCompositeElementType("H_PLACE_HOLDER", OclLanguage.INSTANCE);
         H_COLLECTION_ITEM = new ORCompositeElementType("H_COLLECTION_ITEM", OclLanguage.INSTANCE);
+        H_NAMED_PARAM_DECLARATION = new ORCompositeElementType("H_NAMED_PARAM_DECLARATION", OclLanguage.INSTANCE);
 
         // Token element types
 

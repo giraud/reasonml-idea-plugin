@@ -3,7 +3,7 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
@@ -14,9 +14,9 @@ public class PsiFunction extends ORCompositePsiElement<ORTypes> implements PsiEl
         super(types, elementType);
     }
 
-    public @NotNull List<PsiParameter> getParameters() {
+    public @NotNull List<PsiParameterDeclaration> getParameters() {
         PsiParameters parameters = ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class);
-        return ORUtil.findImmediateChildrenOfClass(parameters, PsiParameter.class);
+        return ORUtil.findImmediateChildrenOfClass(parameters, PsiParameterDeclaration.class);
     }
 
     public @Nullable PsiFunctionBody getBody() {

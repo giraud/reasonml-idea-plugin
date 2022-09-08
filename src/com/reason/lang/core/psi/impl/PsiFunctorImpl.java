@@ -6,7 +6,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
@@ -206,9 +205,9 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     }
 
     @Override
-    public @NotNull Collection<PsiParameter> getParameters() {
+    public @NotNull Collection<PsiParameterDeclaration> getParameters() {
         return ORUtil.findImmediateChildrenOfClass(
-                ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameter.class);
+                ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameterDeclaration.class);
     }
 
     @Override

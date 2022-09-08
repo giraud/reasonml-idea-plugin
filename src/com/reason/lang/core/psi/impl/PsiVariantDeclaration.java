@@ -6,7 +6,6 @@ import com.intellij.psi.stubs.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
@@ -89,10 +88,10 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
     }
 
     @NotNull
-    public Collection<com.reason.lang.core.psi.PsiParameter> getParameterList() {
+    public Collection<PsiParameterDeclaration> getParameterList() {
         PsiParameters parameters = ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class);
         return parameters == null
                 ? emptyList()
-                : ORUtil.findImmediateChildrenOfClass(parameters, PsiParameter.class);
+                : ORUtil.findImmediateChildrenOfClass(parameters, PsiParameterDeclaration.class);
     }
 }

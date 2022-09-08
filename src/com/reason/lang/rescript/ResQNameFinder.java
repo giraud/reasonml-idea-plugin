@@ -5,7 +5,6 @@ import com.intellij.psi.util.*;
 import com.intellij.util.containers.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.psi.reference.*;
@@ -120,7 +119,7 @@ public class ResQNameFinder extends BaseQNameFinder {
                 if (parent != null) {
                     String parentQName = parent.getQualifiedName();
                     // Register all parameters of function
-                    for (PsiParameter parameter : ((PsiFunction) item).getParameters()) {
+                    for (PsiParameterDeclaration parameter : ((PsiFunction) item).getParameters()) {
                         String paramQName = parentQName + "[" + parameter.getName() + "]";
                         qualifiedNames.add(paramQName);
                         // Same for resolved elements

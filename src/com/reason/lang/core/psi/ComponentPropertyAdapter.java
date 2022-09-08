@@ -28,7 +28,7 @@ public class ComponentPropertyAdapter {
         }
     }
 
-    public ComponentPropertyAdapter(@NotNull PsiParameter parameter) {
+    public ComponentPropertyAdapter(@NotNull PsiParameterDeclaration parameter) {
         myPsiElement = parameter;
         myName = parameter.getName();
         PsiSignature signature = parameter.getSignature();

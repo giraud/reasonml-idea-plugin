@@ -18,7 +18,6 @@ public class ResTypes extends ORTypes {
         C_MODULE_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_MODULE_DECLARATION;
         C_OBJECT_FIELD = (ORCompositeType) RescriptStubBasedElementTypes.C_OBJECT_FIELD;
         C_VAL_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_VAL_DECLARATION;
-        C_NAMED_PARAM_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_NAMED_PARAM_DECLARATION;
         C_PARAM_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_PARAM_DECLARATION;
         C_FUNCTOR_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_FUNCTOR_DECLARATION;
         C_RECORD_FIELD = (ORCompositeType) RescriptStubBasedElementTypes.C_RECORD_FIELD;
@@ -114,6 +113,7 @@ public class ResTypes extends ORTypes {
 
         H_PLACE_HOLDER = new ORCompositeElementType("H_PLACE_HOLDER", ResLanguage.INSTANCE);
         H_COLLECTION_ITEM = new ORCompositeElementType("H_COLLECTION_ITEM", ResLanguage.INSTANCE);
+        H_NAMED_PARAM_DECLARATION = new ORCompositeElementType("H_NAMED_PARAM_DECLARATION", ResLanguage.INSTANCE);
 
         // Token element types from lexer
 

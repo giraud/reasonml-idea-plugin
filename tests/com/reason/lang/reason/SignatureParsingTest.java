@@ -34,6 +34,7 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         assertEquals("v", signature.getItems().get(0).getName());
         assertFalse(signature.getItems().get(1).isOptional());
         assertEquals("h", signature.getItems().get(1).getName());
+        assertEquals("rule", signature.getItems().get(2).getText());
     }
 
     public void test_optional_fun() {
@@ -52,7 +53,7 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let x = (a:Js.t, b:option(string), ~c:bool=false, ~d:float=?) => 3")));
 
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
-        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(4, parameters);
         assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
@@ -84,7 +85,7 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(3, parameters);
     }

@@ -3,7 +3,6 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -18,7 +17,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         PsiFunctor f = (PsiFunctor) e;
         assertEquals("struct end", f.getBody().getText());
         assertEquals("S", f.getReturnType().getText());
-        PsiParameter p = f.getParameters().iterator().next();
+        PsiParameterDeclaration p = f.getParameters().iterator().next();
         assertEquals(OclTypes.INSTANCE.C_PARAM_DECLARATION, p.getNode().getElementType());
         List<IElementType> uTypes =
                 PsiTreeUtil.findChildrenOfType(e, PsiUpperSymbol.class)
@@ -78,7 +77,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         PsiFunctor functor = first(functors);
         assertEquals("GlobalBindings", functor.getName());
         assertEquals("Dummy.GlobalBindings", functor.getQualifiedName());
-        Collection<PsiParameter> parameters = functor.getParameters();
+        Collection<PsiParameterDeclaration> parameters = functor.getParameters();
         assertSize(1, parameters);
         assertEquals("M", first(parameters).getName());
         assertNotNull(functor.getBody());
