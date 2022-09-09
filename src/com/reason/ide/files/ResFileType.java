@@ -1,18 +1,35 @@
 package com.reason.ide.files;
 
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.lang.rescript.ResLanguage;
-import icons.ORIcons;
+import com.intellij.openapi.fileTypes.*;
+import com.intellij.openapi.fileTypes.ex.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.vfs.newvfs.*;
+import com.reason.lang.rescript.*;
+import icons.*;
+import jpsplugin.com.reason.*;
+import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-import org.jetbrains.annotations.NotNull;
-
-public class ResFileType extends LanguageFileType {
+public class ResFileType extends LanguageFileType implements FileTypeIdentifiableByVirtualFile {
     public static final ResFileType INSTANCE = new ResFileType();
+    //private static final Log LOG = Log.create("fileType");
 
     private ResFileType() {
         super(ResLanguage.INSTANCE);
+    }
+
+    @Override public boolean isMyFileType(@NotNull VirtualFile file) {
+        if (!file.isDirectory() && "res".equals(file.getExtension())) {
+            // must protect from resources .res files found in jar files
+            VirtualFileSystem entryFileSystem = file.getFileSystem();
+            if (entryFileSystem instanceof ArchiveFileSystem) {
+                //LOG.info("FOUND res file inside archive: " + file);
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -27,7 +44,7 @@ public class ResFileType extends LanguageFileType {
 
     @Override
     public @NotNull String getDefaultExtension() {
-        return "res";
+        return "";
     }
 
     @Override

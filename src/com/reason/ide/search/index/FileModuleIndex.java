@@ -1,10 +1,7 @@
 package com.reason.ide.search.index;
 
-import com.intellij.openapi.vfs.*;
 import com.intellij.util.indexing.*;
 import com.intellij.util.io.*;
-import com.reason.comp.bs.*;
-import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -66,35 +63,36 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
     public DataIndexer<String, FileModuleData, FileContent> getIndexer() {
         return inputData -> {
             Map<String, FileModuleData> map = new HashMap<>();
-            String namespace = "";
-            FileBase psiFile = (FileBase) inputData.getPsiFile();
-
-            VirtualFile bsconfigFile = BsPlatform.findBsConfig(inputData.getProject(), inputData.getFile());
-            if (bsconfigFile != null) {
-                VirtualFile parent = bsconfigFile.getParent();
-                boolean useExternalAsSource = "bs-platform".equals(parent.getName());
-                BsConfig bsConfig = BsConfigReader.read(bsconfigFile, useExternalAsSource);
-                if (!bsConfig.isInSources(inputData.getFile())) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsconfigFile);
-                    }
-                    return Collections.emptyMap();
-                }
-
-                namespace = bsConfig.getNamespace();
-            }
-            String moduleName = psiFile.getModuleName();
-
-            FileModuleData value =
-                    new FileModuleData(inputData.getFile(), namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()), psiFile.isInterface(), psiFile.isComponent());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("indexing " + Platform.getRelativePathToModule(inputData.getPsiFile()) + ": " + value);
-            }
-
-            map.put(moduleName, value);
-            if (!namespace.isEmpty()) {
-                map.put(namespace + "." + moduleName, value);
-            }
+            // TODO: commented until we fixed problems with rollback
+            //String namespace = "";
+            //FileBase psiFile = (FileBase) inputData.getPsiFile();
+            //
+            //VirtualFile bsconfigFile = BsPlatform.findBsConfig(inputData.getProject(), inputData.getFile());
+            //if (bsconfigFile != null) {
+            //    VirtualFile parent = bsconfigFile.getParent();
+            //    boolean useExternalAsSource = "bs-platform".equals(parent.getName());
+            //    BsConfig bsConfig = BsConfigReader.read(bsconfigFile, useExternalAsSource);
+            //    if (!bsConfig.isInSources(inputData.getFile())) {
+            //        if (LOG.isDebugEnabled()) {
+            //            LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsconfigFile);
+            //        }
+            //        return Collections.emptyMap();
+            //    }
+            //
+            //    namespace = bsConfig.getNamespace();
+            //}
+            //String moduleName = psiFile.getModuleName();
+            //
+            //FileModuleData value =
+            //        new FileModuleData(inputData.getFile(), namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()), psiFile.isInterface(), psiFile.isComponent());
+            //if (LOG.isDebugEnabled()) {
+            //    LOG.debug("indexing " + Platform.getRelativePathToModule(inputData.getPsiFile()) + ": " + value);
+            //}
+            //
+            //map.put(moduleName, value);
+            //if (!namespace.isEmpty()) {
+            //    map.put(namespace + "." + moduleName, value);
+            //}
 
             return map;
         };
@@ -114,10 +112,11 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
     @NotNull
     @Override
     public FileBasedIndex.InputFilter getInputFilter() {
-        return new DefaultFileTypeSpecificInputFilter(
-                RmlFileType.INSTANCE, RmlInterfaceFileType.INSTANCE,
-                OclFileType.INSTANCE, OclInterfaceFileType.INSTANCE,
-                ResFileType.INSTANCE, ResInterfaceFileType.INSTANCE);
+        return file -> false;
+        //return new DefaultFileTypeSpecificInputFilter(
+        //        RmlFileType.INSTANCE, RmlInterfaceFileType.INSTANCE,
+        //        OclFileType.INSTANCE, OclInterfaceFileType.INSTANCE,
+        //        ResFileType.INSTANCE, ResInterfaceFileType.INSTANCE);
     }
 
     @Override

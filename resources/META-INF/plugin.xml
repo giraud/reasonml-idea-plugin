@@ -72,8 +72,7 @@
         <!-- Rescript -->
         <fileType extensions="resi" name="RESCRIPT_INTF" fieldName="INSTANCE" language="Rescript"
                   implementationClass="com.reason.ide.files.ResInterfaceFileType"/>
-        <fileType extensions="res" name="RESCRIPT" fieldName="INSTANCE" language="Rescript"
-                  implementationClass="com.reason.ide.files.ResFileType"/>
+        <fileType name="RESCRIPT" fieldName="INSTANCE" language="Rescript" implementationClass="com.reason.ide.files.ResFileType"/>
         <!-- OCaml -->
         <fileType extensions="mli" name="OCAML_INTF" fieldName="INSTANCE" language="OCaml"
                   implementationClass="com.reason.ide.files.OclInterfaceFileType"/>
