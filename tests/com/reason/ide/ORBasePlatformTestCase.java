@@ -22,7 +22,7 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
     protected FileBase configureCode(@NotNull String fileName, @NotNull String code) {
         PsiFile file = myFixture.configureByText(fileName, code);
         System.out.println("» " + fileName + " " + this.getClass());
-        System.out.println(DebugUtil.psiToString(file, true, true));
+        System.out.println(DebugUtil.psiToString(file, false, true));
 
         return (FileBase) file;
     }

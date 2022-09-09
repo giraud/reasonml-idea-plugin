@@ -310,15 +310,15 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     public void test_ternary_in_option() {
         PsiTag e = firstOfType(parseCode("<div prop={(. p1) => " +
-                "map(p2 => " +
-                "  <div onClick={Some(cond ? Checked : NotChecked)}> </div>" +
+                "map(p2 =>" +
+                " <div onClick={Some(cond ? Checked : NotChecked)}></div>" +
                 ")}/>"), PsiTag.class);
 
         PsiTagProperty p1 = e.getProperties().iterator().next();
         PsiFunction f1 = PsiTreeUtil.findChildOfType(p1.getValue(), PsiFunction.class);
 
         PsiFunction f2 = PsiTreeUtil.findChildOfType(f1.getBody(), PsiFunction.class);
-        assertEquals("p2 =>   <div onClick={Some(cond ? Checked : NotChecked)}> </div>", f2.getText());
+        assertEquals("p2 => <div onClick={Some(cond ? Checked : NotChecked)}></div>", f2.getText());
     }
 
     public void test_function_call() {

@@ -146,7 +146,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     protected DuneFile parseDuneCode(@NotNull String code) {
         myFile = createFile("jbuild", code);
         System.out.println("» " + this.getClass());
-        System.out.println(DebugUtil.psiToString(myFile, true, true));
+        System.out.println(DebugUtil.psiToString(myFile, false, true));
         return (DuneFile) myFile;
     }
 

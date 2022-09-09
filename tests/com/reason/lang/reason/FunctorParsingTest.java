@@ -37,9 +37,9 @@ public class FunctorParsingTest extends RmlParsingTestCase {
     public void test_signature() {
         Collection<PsiFunctor> functors = functorExpressions(parseCode(
                 "module GlobalBindings = (M: {\n" +
-                        "    let relation_classes: list(string)\n" +
-                        "    let morphisms: list(string)\n" +
-                        "    let arrow: evars => evars\n" +
+                        "    let relation_classes: list(string);\n" +
+                        "    let morphisms: list(string);\n" +
+                        "    let arrow: evars => evars;\n" +
                         "  },\n" +
                         ") => {\n" +
                         "  open M\n" +

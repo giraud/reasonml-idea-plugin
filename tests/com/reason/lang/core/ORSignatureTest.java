@@ -92,7 +92,7 @@ public class ORSignatureTest extends LightJavaCodeInsightTestCase {
     private @NotNull PsiSignature makeSignature(@NotNull Language lang, String sig) {
         PsiFileFactory instance = PsiFileFactory.getInstance(getProject());
         PsiFile psiFile = instance.createFileFromText("Dummy." + lang.getAssociatedFileType().getDefaultExtension(), lang, "let x:" + sig);
-        System.out.println(DebugUtil.psiToString(psiFile, true, true));
+        System.out.println(DebugUtil.psiToString(psiFile, false, true));
 
         return PsiTreeUtil.findChildOfType(psiFile, PsiSignature.class);
     }
