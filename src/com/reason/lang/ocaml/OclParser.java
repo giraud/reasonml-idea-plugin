@@ -774,6 +774,9 @@ public class OclParser extends CommonPsiParser {
             } else if (is(myTypes.H_NAMED_PARAM_DECLARATION)) { // A named param with default value
                 // let fn ?|>(<| x ... )
                 updateScopeToken(myTypes.LPAREN);
+            } else if (isRawParent(myTypes.H_NAMED_PARAM_DECLARATION)) {
+                popEnd();
+                markParenthesisScope(false);
             } else if (in(myTypes.C_CLASS_DECLARATION)) {
                 // class x |>(<| ...
                 markScope(myTypes.C_CLASS_CONSTR, myTypes.LPAREN);
@@ -826,17 +829,17 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseRParen() {
-            Marker scope = popEndUntilScopeToken(myTypes.LPAREN);
-            if (scope == null) {
+            Marker lParen = popEndUntilScopeToken(myTypes.LPAREN);
+            if (lParen == null) {
                 return;
             }
 
             advance();
 
-            int scopeLength = scope.getLength();
+            int scopeLength = lParen.getLength();
             if (scopeLength <= 3 && isRawParent(myTypes.C_LET_DECLARATION)) {
                 // unit ::  let ()
-                scope.updateCompositeType(myTypes.C_UNIT);
+                lParen.updateCompositeType(myTypes.C_UNIT);
             }
 
             IElementType nextToken = getTokenType();
@@ -849,15 +852,18 @@ public class OclParser extends CommonPsiParser {
             } else {
                 popEnd();
 
-                if (is(myTypes.H_NAMED_PARAM_DECLARATION) && nextToken != myTypes.EQ) {
+                if (lParen.isCompositeType(myTypes.H_NAMED_PARAM_DECLARATION) && nextToken != myTypes.EQ) {
                     popEnd();
-                } else if (scope.isCompositeType(myTypes.C_SCOPED_EXPR) && is(myTypes.C_LET_DECLARATION) && nextToken != myTypes.EQ) { // This is a custom infix operator
+                    if (is(myTypes.C_PARAM_DECLARATION)) {
+                        popEnd();
+                    }
+                } else if (lParen.isCompositeType(myTypes.C_SCOPED_EXPR) && is(myTypes.C_LET_DECLARATION) && nextToken != myTypes.EQ) { // This is a custom infix operator
                     mark(myTypes.C_PARAMETERS);
                 } else if (is(myTypes.C_OPTION)) {
                     advance().popEnd();
-                } else if (nextToken == myTypes.RIGHT_ARROW && scope.isCompositeType(myTypes.C_SIG_ITEM)) {
+                } else if (nextToken == myTypes.RIGHT_ARROW && lParen.isCompositeType(myTypes.C_SIG_ITEM)) {
                     advance().mark(myTypes.C_SIG_ITEM);
-                } else if (is(myTypes.C_PARAM_DECLARATION) && isRawParent(myTypes.C_VARIANT_CONSTRUCTOR) && !scope.isCompositeType(myTypes.C_TUPLE)) {
+                } else if (is(myTypes.C_PARAM_DECLARATION) && isRawParent(myTypes.C_VARIANT_CONSTRUCTOR) && !lParen.isCompositeType(myTypes.C_TUPLE)) {
                     popEnd();
                 } else if (is(myTypes.C_PARAM)) {
                     popEnd();

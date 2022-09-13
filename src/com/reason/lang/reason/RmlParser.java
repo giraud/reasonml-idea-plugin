@@ -1203,17 +1203,6 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseArrow() {
-            //    if (is(myTypes.C_SIG_EXPR)) {           zzz
-            //        advance().mark(myTypes.C_SIG_ITEM);
-            //    }
-            //    else if (in(myTypes.C_SIG_ITEM, /*not*/ myTypes.C_SCOPED_EXPR)) {
-            //        popEndUntil(myTypes.C_SIG_ITEM).popEnd().advance()
-            //                .mark(myTypes.C_SIG_ITEM);
-            //    } else if (in(myTypes.C_FUNCTOR_RESULT)) {
-            //        // module Make = (M) : R |>=><| ...
-            //        popEndUntilFoundIndex().popEnd()
-            //                .advance().mark(myTypes.C_FUNCTOR_BINDING);
-            //    } else
             if (inScopeOrAny(
                     myTypes.C_SIG_EXPR, myTypes.C_SIG_ITEM, myTypes.C_FUNCTOR_RESULT, myTypes.C_PATTERN_MATCH_EXPR,
                     myTypes.C_FUNCTION_EXPR, myTypes.C_PARAMETERS, myTypes.C_PARAM_DECLARATION

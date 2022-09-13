@@ -238,6 +238,16 @@ public class ResParser extends CommonPsiParser {
             if (is(myTypes.C_PARAMETERS)) {
                 boolean inCall = isParent(myTypes.C_FUNCTION_CALL) || isParent(myTypes.C_FUNCTOR_CALL);
                 mark(inCall ? myTypes.C_PARAM : myTypes.C_PARAM_DECLARATION);
+            } else {
+                IElementType nextElementType = lookAhead(1);
+                if (nextElementType == myTypes.ARROW && strictlyInAny(
+                        myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE
+                )) {
+                    // A paren-less function definition ::  |>_<| =>
+                    popIfHold().mark(myTypes.C_FUNCTION_EXPR)
+                            .mark(myTypes.C_PARAMETERS).mark(myTypes.C_PARAM_DECLARATION)
+                            .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                }
             }
         }
 
@@ -390,8 +400,8 @@ public class ResParser extends CommonPsiParser {
             if (strictlyIn(myTypes.C_SCOPED_EXPR) && isAtIndex(getIndex() + 1, myTypes.C_LET_DECLARATION)) {
                 // It must be a deconstruction ::  let ( a |>,<| b ) = ...
                 // We need to do it again because lower symbols must be wrapped with identifiers
-                rollbackToPos(getIndex())
-                        .markScope(myTypes.C_DECONSTRUCTION, myTypes.LPAREN).advance();
+                rollbackToFoundIndex()
+                        .updateComposite(myTypes.C_DECONSTRUCTION);
             }
             // Same priority
             else if (inScopeOrAny(
@@ -530,9 +540,7 @@ public class ResParser extends CommonPsiParser {
 
         private void parseColon() {
             if (is(myTypes.C_SCOPED_EXPR) && isRawParent(myTypes.C_FIELD_VALUE)) {
-                //rollbackToPos(getIndex())
-                //        .markScope(myTypes.C_RECORD_EXPR, myTypes.LBRACE)
-                //        .advance();
+                // ...
             } else if (strictlyInAny(
                     myTypes.C_MODULE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_EXTERNAL_DECLARATION,
                     myTypes.C_PARAM_DECLARATION, myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.H_NAMED_PARAM_DECLARATION,
@@ -709,6 +717,14 @@ public class ResParser extends CommonPsiParser {
                 } else if (is(myTypes.C_SIG_EXPR) || (isScope(myTypes.LPAREN) && isRawParent(myTypes.C_SIG_EXPR))) {
                     mark(myTypes.C_SIG_ITEM)
                             .wrapAtom(myTypes.CA_LOWER_SYMBOL).popEnd();
+                } else if (nextElementType == myTypes.ARROW && strictlyInAny(
+                        myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE, myTypes.C_SCOPED_EXPR
+                )) {
+                    // A paren-less function definition ::  |>x<| =>
+                    mark(myTypes.C_FUNCTION_EXPR)
+                            .mark(myTypes.C_PARAMETERS)
+                            .mark(myTypes.C_PARAM_DECLARATION)
+                            .wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 } else {
                     wrapAtom(myTypes.CA_LOWER_SYMBOL).popEnd();
                 }
@@ -931,27 +947,38 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseRParen() {
-            Marker scope = popEndUntilScopeToken(myTypes.LPAREN);
+            Marker lParen = popEndUntilScopeToken(myTypes.LPAREN);
             advance();
 
-            IElementType tokenType = getTokenType();
+            IElementType nextTokenType = getTokenType();
             if (is(myTypes.C_BINARY_CONDITION)) {
                 end();
-                if (isRawParent(myTypes.C_IF) && tokenType != myTypes.LBRACE) {
+                if (isRawParent(myTypes.C_IF) && nextTokenType != myTypes.LBRACE) {
                     // if ( x ) |><| ...
                     mark(myTypes.C_IF_THEN_SCOPE);
                 }
-            } else if (scope != null) {
-                if (isRawParent(myTypes.C_FUNCTOR_DECLARATION)) {
+            } else if (lParen != null) {
+                if (nextTokenType == myTypes.ARROW && !isParent(myTypes.C_FUNCTION_EXPR) && !inAny(myTypes.C_SIG_EXPR, myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_FUNCTOR_DECLARATION)) {
+                    // a missed function expression
+                    rollbackToIndex(0)
+                            .markBefore(0, myTypes.C_FUNCTION_EXPR);
+                    if (lParen.isCompositeType(myTypes.C_PARAM)) {
+                        markBefore(1, myTypes.C_PARAM);
+                    }
+                    updateComposite(myTypes.C_PARAMETERS)
+                            .markHolder(myTypes.H_COLLECTION_ITEM);
+                } else if (nextTokenType == myTypes.ARROW && in(myTypes.C_PATTERN_MATCH_EXPR)) {
+                    popEndUntil(myTypes.C_PATTERN_MATCH_EXPR);
+                } else if (isRawParent(myTypes.C_FUNCTOR_DECLARATION)) {
                     popEnd();
-                    if (tokenType == myTypes.COLON) {
+                    if (nextTokenType == myTypes.COLON) {
                         // module M = (P) |> :<| R ...
                         advance();
                         if (getTokenType() == myTypes.LPAREN) {
                             markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
                         }
                         mark(myTypes.C_FUNCTOR_RESULT);
-                    } else if (tokenType == myTypes.ARROW) {
+                    } else if (nextTokenType == myTypes.ARROW) {
                         // module M = (P) |>=><| ...
                         advance().mark(myTypes.C_FUNCTOR_BINDING);
                     }
@@ -960,18 +987,11 @@ public class ResParser extends CommonPsiParser {
                     if (isRawGrandParent(myTypes.C_FUNCTION_CALL)) {
                         popEnd().popEnd().popEnd();
                     }
-                } else if (is(myTypes.C_SCOPED_EXPR) && tokenType == myTypes.ARROW && !inAny(myTypes.C_SIG_EXPR, myTypes.C_PATTERN_MATCH_EXPR)) {
-                    // a missed function expression
-                    rollbackToPos(0)
-                            .mark(myTypes.C_FUNCTION_EXPR)
-                            .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN)
-                            .markHolder(myTypes.H_COLLECTION_ITEM)
-                            .advance();
                 } else {
                     popEnd();
                     if (is(myTypes.C_ANNOTATION)) {
                         popEnd();
-                    } else if (strictlyIn(myTypes.C_TAG_PROP_VALUE)) {// && !hasScopeToken()) {
+                    } else if (strictlyIn(myTypes.C_TAG_PROP_VALUE)) {
                         popEndUntil(myTypes.C_TAG_PROPERTY).popEnd();
                     }
                 }
@@ -1147,58 +1167,49 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseArrow() {
-            if (isDone(myTypes.C_PARAMETERS) && isRawParent(myTypes.C_FUNCTION_EXPR)) {
-                advance().mark(myTypes.C_FUNCTION_BODY);
-            } else if (strictlyIn(myTypes.C_PARAMETERS) && !hasScopeAtIndex(getIndex()) && isAtIndex(getIndex() + 1, myTypes.C_FUNCTION_EXPR)) { // parenless param
-                // x |>=><| ...
-                popEndUntil(myTypes.C_PARAMETERS).end()
-                        .advance().mark(myTypes.C_FUNCTION_BODY)
-                        .markHolder(myTypes.H_PLACE_HOLDER);
-            } else if (inScopeOrAny(
-                    myTypes.C_LET_BINDING, myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_FIELD_VALUE, myTypes.C_FUNCTION_EXPR,
-                    myTypes.C_PARAM_DECLARATION, myTypes.C_SIG_ITEM, myTypes.C_SIG_EXPR, myTypes.C_TAG_PROP_VALUE,
+            //if (isDone(myTypes.C_PARAMETERS) && isRawParent(myTypes.C_FUNCTION_EXPR)) {
+            //    advance().mark(myTypes.C_FUNCTION_BODY);
+            //} else if (strictlyIn(myTypes.C_PARAMETERS) && !hasScopeAtIndex(getIndex()) && isAtIndex(getIndex() + 1, myTypes.C_FUNCTION_EXPR)) { // parenless param
+            //    // x |>=><| ...
+            //    popEndUntil(myTypes.C_PARAMETERS).end()
+            //            .advance().mark(myTypes.C_FUNCTION_BODY)
+            //            .markHolder(myTypes.H_PLACE_HOLDER);
+            //} else
+            if (inScopeOrAny(
+                    myTypes.C_PATTERN_MATCH_EXPR,
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_PARAMETERS,
+                    myTypes.C_SIG_EXPR, myTypes.C_SIG_ITEM,
+                    //        myTypes.C_LET_BINDING,
+                    //        myTypes.C_FIELD_VALUE, myTypes.C_FUNCTION_EXPR,
+                    //        , myTypes.C_TAG_PROP_VALUE,
                     myTypes.C_FUNCTOR_RESULT
             )) {
-
-                if (isFound(myTypes.C_LET_BINDING)) {
-                    // let x = .?. |>=><| ...
-                    rollbackToFoundIndex()
-                            .mark(myTypes.C_FUNCTION_EXPR)
-                            .mark(myTypes.C_PARAMETERS);
+                if (isFound(myTypes.C_PARAMETERS) || isFound(myTypes.C_FUNCTION_EXPR)) {
+                    popEndUntilOneOf(myTypes.C_PARAMETERS, myTypes.C_FUNCTION_EXPR);
+                    if (isRawParent(myTypes.C_FUNCTION_EXPR) || isRawParent(myTypes.C_FUNCTION_CALL)) {
+                        popEnd();
+                    }
+                    advance().mark(myTypes.C_FUNCTION_BODY)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_SIG_EXPR)) {
+                    advance().mark(myTypes.C_SIG_ITEM);
+                } else if (isFound(myTypes.C_SIG_ITEM)) {
+                    popEndUntilFoundIndex().popEnd();
+                    advance().mark(myTypes.C_SIG_ITEM);
                 } else if (isFound(myTypes.C_PATTERN_MATCH_EXPR)) {
                     // switch ( ... ) { | ... |>=><| ... }
                     popEndUntilFoundIndex().advance()
                             .markScope(myTypes.C_PATTERN_MATCH_BODY, myTypes.ARROW)
                             .markHolder(myTypes.H_PLACE_HOLDER);
-                } else if (isFound(myTypes.C_FIELD_VALUE)) {
-                    // { x : .?. |>=><| ...
-                    rollbackToPos(getIndex())
-                            .mark(myTypes.C_FIELD_VALUE)
-                            .mark(myTypes.C_FUNCTION_EXPR)
-                            .mark(myTypes.C_PARAMETERS);
-                } else if (isFound(myTypes.C_SIG_ITEM)) {
-                    popEndUntilFoundIndex().popEnd();
-                    advance().mark(myTypes.C_SIG_ITEM);
-                } else if (isFound(myTypes.C_SIG_EXPR)) {
-                    advance().mark(myTypes.C_SIG_ITEM);
                 } else if (isFound(myTypes.C_PARAM_DECLARATION)) { // anonymous function
                     // x( y |>=><| ... )
-                    rollbackToFoundIndex()
-                            .mark(myTypes.C_PARAM_DECLARATION)
-                            .mark(myTypes.C_FUNCTION_EXPR)
-                            .mark(myTypes.C_PARAMETERS);
+                    popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
+                            .mark(myTypes.C_FUNCTION_BODY)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
                 } else if (isFound(myTypes.C_FUNCTOR_RESULT)) {
                     // module Make = (M) : R |>=><| ...
                     popEndUntilFoundIndex().popEnd()
                             .advance().mark(myTypes.C_FUNCTOR_BINDING);
-                } else if (isHold() && !in(myTypes.C_SIG_ITEM)) {
-                    // by default, a function
-                    rollbackToPos(0);
-                    if (isCurrent(myTypes.C_PARAMETERS)) {
-                        mark(isParent(myTypes.C_FUNCTION_EXPR) ? myTypes.C_PARAM_DECLARATION : myTypes.C_PARAM);
-                    }
-                    mark(myTypes.C_FUNCTION_EXPR)
-                            .mark(myTypes.C_PARAMETERS);
                 }
             }
         }
