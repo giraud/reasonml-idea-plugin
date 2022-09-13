@@ -51,7 +51,7 @@ public class OclMllParserDefinition implements ParserDefinition {
 
   @NotNull
   public PsiParser createParser(Project project) {
-    return new OclParser();
+    return new OclParser(true);
   }
 
   @NotNull

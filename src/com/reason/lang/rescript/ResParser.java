@@ -7,1157 +7,1253 @@ import com.reason.lang.*;
 import org.jetbrains.annotations.*;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.*;
-import static com.reason.lang.ParserScopeEnum.*;
 
-public class ResParser extends CommonParser<ResTypes> {
-
-    ResParser() {
-        super(ResTypes.INSTANCE);
+public class ResParser extends CommonPsiParser {
+    ResParser(boolean isSafe) {
+        super(isSafe);
     }
 
     @Override
-    protected void parseFile(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        IElementType tokenType = null;
-        state.previousElementType1 = null;
+    protected ORParser<ResTypes> getORParser(@NotNull PsiBuilder builder) {
+        return new ResParserState(builder, myIsSafe);
+    }
 
-        // long parseStart = System.currentTimeMillis();
+    static class ResParserState extends ORLanguageParser<ResTypes> {
+        public ResParserState(@NotNull PsiBuilder builder, boolean isSafe) {
+            super(ResTypes.INSTANCE, builder, isSafe);
+        }
 
-        while (true) {
-            // long parseTime = System.currentTimeMillis();
-            // if (5 < parseTime - parseStart) {
-            // Protection: abort the parsing if too much time spent
-            // break;
-            // }
+        @Override
+        public void parse() {
+            IElementType tokenType;
 
-            state.previousElementType2 = state.previousElementType1;
-            state.previousElementType1 = tokenType;
-            tokenType = builder.getTokenType();
-            if (tokenType == null) {
-                break;
-            }
+            long parseStart = System.currentTimeMillis();
+            int parseCount = 0;
 
-            // Special analyse when inside an interpolation string
-            if (state.is(m_types.C_INTERPOLATION_EXPR)
-                    || state.is(m_types.C_INTERPOLATION_PART)
-                    || state.is(m_types.C_INTERPOLATION_REF)) {
-                if (tokenType == m_types.JS_STRING_OPEN) {
-                    state.popEndUntil(m_types.C_INTERPOLATION_EXPR).advance().popEnd();
-                } else if (tokenType == m_types.DOLLAR) {
-                    if (state.is(m_types.C_INTERPOLATION_PART)) {
-                        state.popEnd();
-                    }
-                    state.advance();
-                    IElementType nextElement = state.getTokenType();
-                    if (nextElement == m_types.LBRACE) {
-                        state.advance().markScope(m_types.C_INTERPOLATION_REF, m_types.LBRACE);
-                    }
-                } else if (state.is(m_types.C_INTERPOLATION_REF) && tokenType == m_types.RBRACE) {
-                    state.popEnd().advance();
-                    if (state.getTokenType() != m_types.JS_STRING_OPEN) {
-                        state.mark(m_types.C_INTERPOLATION_PART);
+            while (!myBuilder.eof()) {
+                parseCount++;
+                if (parseCount > 100) {
+                    parseCount = 0;
+                    long parseTime = System.currentTimeMillis();
+                    if (PARSE_MAX_TIME < parseTime - parseStart) {
+                        if (myIsSafe) { // Don't do that in tests
+                            error("Parsing cancelled, you should create a github issue with the source code");
+                            break;
+                        }
                     }
                 }
-            } else {
-                // EOL is a statement separator
-                if (tokenType == m_types.EOL) {
-                    // We identify it at the lexer level, because We try to detect current construction that can't have
-                    // EOL in it ; but we don't want to have it in the parsed tree, we change it to a whitespace
-                    builder.remapCurrentToken(TokenType.WHITE_SPACE);
 
-                    if (state.is(m_types.C_FUNCTOR_CALL/*PsiOpen is potential functor call*/) && state.isPrevious(m_types.C_OPEN)) {
-                        state.popEnd().popEnd();
-                    } else if (state.isPrevious(m_types.C_ANNOTATION) && !state.is(m_types.C_SCOPED_EXPR)) {
-                        // inside an annotation
-                        state.popEnd().popEnd();
-                    } else if (state.is(m_types.C_LET_BINDING)) {
-                        // simple let with no scope
-                        state.popEnd().popEnd();
-                    }
-                } else if (tokenType == m_types.SEMI) {
-                    parseSemi(state);
-                } else if (tokenType == m_types.EQ) {
-                    parseEq(state);
-                } else if (tokenType == m_types.ARROW) {
-                    parseArrow(state);
-                } else if (tokenType == m_types.REF) {
-                    parseRef(state);
-                } else if (tokenType == m_types.OPTION) {
-                    parseOption(state);
-                } else if (tokenType == m_types.SOME) {
-                    parseSome(state);
-                } else if (tokenType == m_types.NONE) {
-                    parseNone(state);
-                } else if (tokenType == m_types.TRY) {
-                    parseTry(state);
-                } else if (tokenType == m_types.CATCH) {
-                    parseCatch(state);
-                } else if (tokenType == m_types.SWITCH) {
-                    parseSwitch(state);
-                } else if (tokenType == m_types.LIDENT) {
-                    parseLIdent(state);
-                } else if (tokenType == m_types.UIDENT) {
-                    parseUIdent(state);
-                } else if (tokenType == m_types.POLY_VARIANT) {
-                    parsePolyVariant(state);
-                } else if (tokenType == m_types.ARROBASE) {
-                    parseArrobase(state);
-                } else if (tokenType == m_types.PERCENT) {
-                    parsePercent(state);
-                } else if (tokenType == m_types.COLON) {
-                    parseColon(state);
-                } else if (tokenType == m_types.STRING_VALUE) {
-                    parseStringValue(state);
-                } else if (tokenType == m_types.PIPE) {
-                    parsePipe(state);
-                } else if (tokenType == m_types.COMMA) {
-                    parseComma(state);
-                } else if (tokenType == m_types.AND) {
-                    parseAnd(state);
-                } else if (tokenType == m_types.ASSERT) {
-                    parseAssert(state);
-                } else if (tokenType == m_types.IF) {
-                    parseIf(state);
-                } else if (tokenType == m_types.DOTDOTDOT) {
-                    parseDotDotDot(state);
-                } else if (tokenType == m_types.WITH) {
-                    parseWith(state);
-                } else if (tokenType == m_types.EQEQ) {
-                    parseEqEq(state);
-                } else if (tokenType == m_types.QUESTION_MARK) {
-                    parseQuestionMark(state);
-                } else if (tokenType == m_types.TILDE) {
-                    parseTilde(state);
-                }
-                // ( ... )
-                else if (tokenType == m_types.LPAREN) {
-                    parseLParen(state);
-                } else if (tokenType == m_types.RPAREN) {
-                    parseRParen(state);
-                }
-                // { ... }
-                else if (tokenType == m_types.LBRACE) {
-                    parseLBrace(state);
-                } else if (tokenType == m_types.RBRACE) {
-                    parseRBrace(state);
-                }
-                // [ ... ]
-                //// [> ... ]
-                else if (tokenType == m_types.LBRACKET) {
-                    parseLBracket(state);
-                } else if (tokenType == m_types.BRACKET_GT) {
-                    parseBracketGt(state);
-                } else if (tokenType == m_types.RBRACKET) {
-                    parseRBracket(state);
-                }
-                // < ... >
-                else if (tokenType == m_types.LT) {
-                    parseLt(state);
-                } else if (tokenType == m_types.TAG_LT_SLASH) {
-                    parseLtSlash(state);
-                } else if (tokenType == m_types.GT) {
-                    parseGt(state);
-                } else if (tokenType == m_types.TAG_AUTO_CLOSE) {
-                    parseGtAutoClose(state);
-                }
-                // j` ... `
-                else if (tokenType == m_types.JS_STRING_OPEN) {
-                    parseTemplateStringOpen(state);
-                }
-                // Starts an expression
-                else if (tokenType == m_types.OPEN) {
-                    parseOpen(state);
-                } else if (tokenType == m_types.INCLUDE) {
-                    parseInclude(state);
-                } else if (tokenType == m_types.EXTERNAL) {
-                    parseExternal(state);
-                } else if (tokenType == m_types.TYPE) {
-                    parseType(state);
-                } else if (tokenType == m_types.MODULE) {
-                    parseModule(state);
-                } else if (tokenType == m_types.LET) {
-                    parseLet(state);
-                } else if (tokenType == m_types.EXCEPTION) {
-                    parseException(state);
-                }
-            }
+                tokenType = myBuilder.getTokenType();
 
-            if (state.dontMove) {
-                state.dontMove = false;
-                // revert
-                tokenType = state.previousElementType1;
-                state.previousElementType1 = state.previousElementType2;
-            } else {
-                builder.advanceLexer();
-            }
-        }
-
-        endLikeSemi(state);
-    }
-
-    private void parseRef(@NotNull ParserState state) {
-        if (state.is(m_types.C_TAG_START)) {
-            state.remapCurrentToken(m_types.PROPERTY_NAME).mark(m_types.C_TAG_PROPERTY);
-        }
-    }
-
-    private void parseOption(@NotNull ParserState state) {
-        state.mark(m_types.C_OPTION);
-    }
-
-    private void parseSome(@NotNull ParserState state) {
-        if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
-            // Defining a pattern match ::  switch (c) { | |>Some<| .. }
-            state.remapCurrentToken(m_types.VARIANT_NAME)
-                    .wrapWith(m_types.C_VARIANT)
-                    .resolution(patternMatchVariant);
-        }
-    }
-
-    private void parseNone(@NotNull ParserState state) {
-        if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
-            // Defining a pattern match ::  switch (c) { | |>None<| .. }
-            state.remapCurrentToken(m_types.VARIANT_NAME)
-                    .wrapWith(m_types.C_VARIANT)
-                    .resolution(patternMatchVariant);
-        }
-    }
-
-    /*
-    private void parseRaw(@NotNull ParserState state) {
-        if (state.is(m_types.C_MACRO_EXPR)) {
-            state.mark(m_types.C_MACRO_NAME);
-        }
-    }
-    */
-
-    private void parseIf(@NotNull ParserState state) {
-        state.mark(m_types.C_IF).advance().mark(m_types.C_BINARY_CONDITION);
-    }
-
-    private void parseDotDotDot(@NotNull ParserState state) {
-        if (state.previousElementType1 == m_types.LBRACE) {
-            // Mixin ::  ... { |>...<| x ...
-            state.updateCurrentCompositeElementType(m_types.C_RECORD_EXPR)
-                    .mark(m_types.C_MIXIN_FIELD);
-        }
-    }
-
-    private void parseWith(@NotNull ParserState state) {
-        if (state.is(m_types.C_FUNCTOR_RESULT)) {
-            // module M (X) : ( S |>with<| ... ) = ...
-            state.popEnd().mark(m_types.C_CONSTRAINTS);
-        }
-    }
-
-    private void parseEqEq(@NotNull ParserState _state) {
-        //if (!state.in(m_types.C_BINARY_CONDITION)) {
-        //      state.precedeMark(m_types.C_BINARY_CONDITION);
-        //}
-    }
-
-    private void parseQuestionMark(@NotNull ParserState state) {
-        if (state.previousElementType1 == m_types.EQ) {
-            // x=|>?<| ...
-            return;
-        }
-
-        if (state.is(m_types.C_TAG_START)) {
-            // <jsx |>?<|prop ...
-            state
-                    .mark(m_types.C_TAG_PROPERTY)
-                    .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace(state))
-                    .advance()
-                    .remapCurrentToken(m_types.PROPERTY_NAME);
-        } else if (state.is(m_types.C_BINARY_CONDITION)) {
-            state.popEnd();
-        }
-    }
-
-    private void parseTilde(@NotNull ParserState state) {
-        if (state.is(m_types.C_SIG_ITEM) && state.isPrevious(m_types.C_SCOPED_EXPR)) {
-            // must be the signature of a function definition
-            state.updatePreviousComposite(m_types.C_FUN_EXPR);
-        }
-
-        state.mark(m_types.C_NAMED_PARAM);
-    }
-
-    private void parseAssert(@NotNull ParserState state) {
-        // |>assert<| ...
-        state.mark(m_types.C_ASSERT_STMT);
-    }
-
-    private void parseAnd(@NotNull ParserState state) {
-        if (state.is(m_types.C_CONSTRAINT)) {
-            // module M = (X) : ( S with ... |>and<| ... ) = ...
-            state.popEnd();
-        } else {
-            ParserScope latestScope = state.getLatestCompletedScope();
-            if (latestScope == null) {
-                state.popEndUntilStart();
-                latestScope = state.getLatestScope();
-                state.popEnd().advance();
-            }
-
-            if (latestScope != null) {
-                if (isTypeResolution(latestScope)) {
-                    state.mark(m_types.C_TYPE_DECLARATION).setStart();
-                } else if (latestScope.isCompositeType(m_types.C_LET_DECLARATION)) {
-                    state.mark(m_types.C_LET_DECLARATION).setStart();
-                } else if (isModuleResolution(latestScope)) {
-                    state.mark(m_types.C_MODULE_DECLARATION).setStart();
-                }
-            }
-        }
-    }
-
-    private void parseComma(@NotNull ParserState state) {
-        ParserScope latestScope = state.popEndUntilScope();
-
-        if (latestScope.isCompositeType(m_types.C_SIG_ITEM)) {
-            state.advance();
-            IElementType nextToken = state.getTokenType();
-            if (nextToken != m_types.RPAREN) {
-                state.mark(m_types.C_SIG_ITEM);
-            }
-        } else if (state.is(m_types.C_RECORD_FIELD) || state.is(m_types.C_MIXIN_FIELD)) {
-            state.popEnd().advance();
-            IElementType nextToken = state.getTokenType();
-            if (nextToken != m_types.RBRACE) {
-                state.mark(m_types.C_RECORD_FIELD);
-            }
-        } else if (state.is(m_types.C_OBJECT_FIELD) || state.isCurrentResolution(fieldNamed)) {
-            boolean isJsObject = state.isCurrentCompositeElementType(m_types.C_OBJECT_FIELD);
-            state.popEnd().advance();
-            IElementType nextToken = state.getTokenType();
-            if (nextToken != m_types.RBRACE) {
-                state.mark(isJsObject ? m_types.C_OBJECT_FIELD : m_types.C_RECORD_FIELD).resolution(field);
-            }
-        } else if (state.isCurrentResolution(signatureScope)) {
-            state.advance().mark(m_types.C_SIG_ITEM);
-        } else if (state.is(m_types.C_FUN_CALL_PARAMS) || state.is(m_types.C_FUN_PARAMS)) {
-            state.advance();
-            IElementType nextTokenType = state.getTokenType();
-            if (nextTokenType != m_types.RPAREN) {
-                // not at the end of a list: ie not => (p1, p2<,> )
-                state.mark(m_types.C_FUN_PARAM);
-            }
-        }
-    }
-
-    private void parsePipe(@NotNull ParserState state) {
-        // Remove intermediate constructions
-        if (state.is(m_types.C_FUN_BODY)) {
-            // a function is part of something else, close it first
-            state.popEnd().popEnd();
-        }
-
-        if (state.is(m_types.C_VARIANT_DECLARATION)) {
-            state.popEnd();
-        } else if (state.is(m_types.C_FUN_PARAM) && state.isPrevious(m_types.C_VARIANT_CONSTRUCTOR)) {
-            state.popEndUntil(m_types.C_TYPE_BINDING);
-        } else if (!state.isCurrentResolution(switchBody) /*nested switch*/
-                && state.in(m_types.C_PATTERN_MATCH_BODY)) {
-            state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
-            state.popEnd().popEnd();
-        }
-
-        if (state.is(m_types.C_TYPE_BINDING)) {
-            // type x = |>|<| ...
-            state.advance().mark(m_types.C_VARIANT_DECLARATION);
-        } else if (state.isCurrentResolution(switchBody)) {
-            // switch x { |>|<| ... }
-            state.advance().mark(m_types.C_PATTERN_MATCH_EXPR);
-        } else if (state.is(m_types.C_TRY_HANDLERS)) {
-            // Start of a try handler ::  try (...) { |>|<| ... }
-            state.mark(m_types.C_TRY_HANDLER);
-        } else {
-            if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
-                // pattern grouping ::  | X |>|<| Y => ...
-                state.popEnd();
-            } else if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
-                // can be a switchBody or a 'fun'
-                state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
-                state.popEnd().popEnd();
-            }
-            // By default, a pattern match
-            state.advance().mark(m_types.C_PATTERN_MATCH_EXPR);
-        }
-    }
-
-    private void parseStringValue(@NotNull ParserState state) {
-        if (state.isCurrentResolution(maybeRecord)) {
-            IElementType nextToken = state.lookAhead(1);
-            if (nextToken == m_types.COLON) {
-                state
-                        .updateCurrentCompositeElementType(m_types.C_JS_OBJECT)
-                        .mark(m_types.C_OBJECT_FIELD)
-                        .resolution(field);
-            }
-        } else if (state.is(m_types.C_JS_OBJECT)) {
-            state.mark(m_types.C_OBJECT_FIELD);
-        }
-    }
-
-    private void parseTemplateStringOpen(@NotNull ParserState state) {
-        // |>`<| ...
-        state.markScope(m_types.C_INTERPOLATION_EXPR, m_types.JS_STRING_OPEN)
-                .advance();
-        if (state.getTokenType() != m_types.DOLLAR) {
-            state.mark(m_types.C_INTERPOLATION_PART);
-        }
-    }
-
-    private void parseLet(@NotNull ParserState state) {
-        if (!state.is(m_types.C_PATTERN_MATCH_BODY)) {
-            endLikeSemi(state);
-        }
-        state.mark(m_types.C_LET_DECLARATION).setStart();
-    }
-
-    private void parseModule(@NotNull ParserState state) {
-        if (!state.is(m_types.C_MACRO_NAME)) {
-            endLikeSemi(state);
-            state.mark(m_types.C_MODULE_DECLARATION).setStart();
-        }
-    }
-
-    private void parseException(@NotNull ParserState state) {
-        endLikeSemi(state);
-        state.mark(m_types.C_EXCEPTION_DECLARATION).setStart();
-    }
-
-    private void parseType(@NotNull ParserState state) {
-        if (state.is(m_types.C_CONSTRAINTS)) {
-            // module M = (X) : ( S with |>type<| ... ) = ...
-            state.mark(m_types.C_CONSTRAINT);
-        } else if (!state.is(m_types.C_MODULE_DECLARATION)) {
-            endLikeSemi(state);
-            state.mark(m_types.C_TYPE_DECLARATION).setStart();
-        }
-    }
-
-    private void parseExternal(@NotNull ParserState state) {
-        endLikeSemi(state);
-        state.mark(m_types.C_EXTERNAL_DECLARATION).setStart();
-    }
-
-    private void parseOpen(@NotNull ParserState state) {
-        endLikeSemi(state);
-        state.mark(m_types.C_OPEN);
-    }
-
-    private void parseInclude(@NotNull ParserState state) {
-        endLikeSemi(state);
-        state.mark(m_types.C_INCLUDE);
-    }
-
-    private void parsePercent(@NotNull ParserState state) {
-        // |>%<| raw ...
-        state.mark(m_types.C_MACRO_EXPR).mark(m_types.C_MACRO_NAME).advance();
-        if (state.getTokenType() == m_types.PERCENT) {
-            // %|>%<| raw ...
-            state.advance();
-        }
-    }
-
-    private void parseColon(@NotNull ParserState state) {
-        if (state.isCurrentResolution(maybeRecord)) {
-            // yes it is a record, rollback and remove the maybe
-            ParserScope startScope = state.getLatestScope();
-            if (startScope != null) {
-                startScope.rollbackTo();
-                state.pop();
-                state.markScope(m_types.C_RECORD_EXPR, m_types.LBRACE)
-                        .advance()
-                        .mark(m_types.C_RECORD_FIELD);
-            }
-            return;
-        }
-
-        if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
-            // external x |> :<| ...
-            state.advance()
-                    .mark(m_types.C_SIG_EXPR)
-                    .markOptionalParenDummyScope(m_types)
-                    .mark(m_types.C_SIG_ITEM);
-        } else if (state.is(m_types.C_LET_DECLARATION)) {
-            // let x |> :<| ...
-            state.advance()
-                    .mark(m_types.C_SIG_EXPR)
-                    .markOptionalParenDummyScope(m_types)
-                    .mark(m_types.C_SIG_ITEM);
-        } else if (state.is(m_types.C_MODULE_DECLARATION)) {
-            // module M |> :<| ...
-            state.advance()
-                    .mark(m_types.C_MODULE_TYPE);
-        } else if (state.is(m_types.C_FUNCTOR_DECLARATION)) {
-            // module M = (X:Y) |> :<| ...
-            state.resolution(functorNamedEqColon).advance();
-            IElementType tokenType = state.getTokenType();
-            if (tokenType == m_types.LPAREN) {
-                // module M = (X:Y) : |>(<| S ... ) = ...
-                state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).dummy().advance();
-            }
-            state.mark(m_types.C_FUNCTOR_RESULT);
-        } else if (state.is(m_types.C_RECORD_FIELD) || state.is(m_types.C_OBJECT_FIELD)) {
-            state.complete().advance();
-            if (state.in(m_types.C_TYPE_BINDING)) {
-                state.mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
-            }
-        } else if (state.isCurrentResolution(field)) {
-            state.resolution(fieldNamed);
-        } else if (state.is(m_types.C_FUN_PARAM)) {
-            state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
-        } else if (state.is(m_types.C_NAMED_PARAM)) {
-            state.advance()
-                    .mark(m_types.C_SIG_EXPR)
-                    .mark(m_types.C_SIG_ITEM);
-        }
-    }
-
-    private void parseArrobase(@NotNull ParserState state) {
-        endLikeSemi(state);
-        state.mark(m_types.C_ANNOTATION).mark(m_types.C_MACRO_NAME);
-    }
-
-    private void parseLt(@NotNull ParserState state) {
-        if (state.is(m_types.C_OPTION) || state.is(m_types.C_SIG_ITEM)) {
-            state.markScope(m_types.C_SCOPED_EXPR, m_types.LT);
-        } else if (state.is(m_types.C_TYPE_DECLARATION)) {
-            // type parameters ::  type t |> < <| 'a >
-            state.markScope(m_types.C_PARAMETERS, m_types.LT);
-        } else if (!(state.is(m_types.C_SIG_ITEM) || state.is(m_types.C_TYPE_BINDING))) {
-            // Can be a symbol or a JSX tag
-            IElementType nextTokenType = state.rawLookup(1);
-            if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT || nextTokenType == m_types.OPTION) {
-                // Note that option is a ReasonML keyword but also a JSX keyword !
-                // Surely a tag
-                state
-                        .remapCurrentToken(m_types.TAG_LT)
-                        .mark(m_types.C_TAG)
-                        .markScope(m_types.C_TAG_START, m_types.TAG_LT)
-                        .advance()
-                        .remapCurrentToken(m_types.TAG_NAME)
-                        .wrapWith(nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
-            } else if (nextTokenType == m_types.GT) {
-                // a React fragment start
-                state
-                        .remapCurrentToken(m_types.TAG_LT)
-                        .mark(m_types.C_TAG)
-                        .mark(m_types.C_TAG_START)
-                        .advance()
-                        .remapCurrentToken(m_types.TAG_GT)
-                        .advance()
-                        .popEnd();
-            }
-        }
-    }
-
-    private void parseGt(@NotNull ParserState state) {
-        // ?prop=value |> > <| ...
-        if (state.is(m_types.C_TAG_PROP_VALUE)) {
-            state.popEnd().popEnd();
-        }
-        // ?prop |> > <| ...
-        else if (state.is(m_types.C_TAG_PROPERTY)) {
-            state.popEnd();
-        }
-
-        if (state.is(m_types.C_TAG_START)) {
-            state.remapCurrentToken(m_types.TAG_GT).advance().popEnd().mark(m_types.C_TAG_BODY);
-        } else if (state.is(m_types.C_TAG_CLOSE)) {
-            state.remapCurrentToken(m_types.TAG_GT).advance().popEnd().popEnd();
-        } else if (state.is(m_types.C_PARAMETERS)) {
-            state.advance().popEnd();
-        } else if (state.is(m_types.C_SCOPED_EXPR)) {
-            if (state.isPrevious(m_types.C_OPTION)) {
-                // option < ... |> > <| ...
-                state.advance().popEnd().popEnd();
-            } else if (state.isPrevious(m_types.C_SIG_ITEM)) {
-                // : ... < ... |> ><| ...
-                state.advance().popEnd();
-            }
-        }
-    }
-
-    private void parseGtAutoClose(@NotNull ParserState state) {
-        // ?prop=value |> /> <| ...
-        if (state.is(m_types.C_TAG_PROP_VALUE)) {
-            state.popEnd().popEnd();
-        }
-        // ?prop |> /> <| ...
-        else if (state.is(m_types.C_TAG_PROPERTY)) {
-            state.popEnd();
-        }
-
-        state.advance().popEnd().popEnd();
-    }
-
-    private void parseLtSlash(@NotNull ParserState state) {
-        IElementType nextTokenType = state.rawLookup(1);
-        // Note that option is a ReasonML keyword but also a JSX keyword !
-        if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT || nextTokenType == m_types.OPTION) {
-            // A closing tag
-            if (state.is(m_types.C_TAG_BODY)) {
-                state.popEnd();
-            }
-
-            state.remapCurrentToken(m_types.TAG_LT_SLASH)
-                    .mark(m_types.C_TAG_CLOSE)
-                    .advance()
-                    .remapCurrentToken(m_types.TAG_NAME)
-                    .wrapWith(nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
-        } else if (nextTokenType == m_types.GT) {
-            // a React fragment end
-            state.remapCurrentToken(m_types.TAG_LT_SLASH)
-                    .mark(m_types.C_TAG_CLOSE)
-                    .advance()
-                    .remapCurrentToken(m_types.TAG_GT)
-                    .advance()
-                    .popEnd();
-        }
-    }
-
-    private void parseLIdent(@NotNull ParserState state) {
-        //if (state.is(m_types.C_MACRO_NAME)) {
-        // Must stop annotation if no dot/@ before
-        //if (state.previousElementType1 != m_types.DOT && state.previousElementType1 != m_types.ARROBASE) {
-        //    state.popEnd().popEnd();
-        //}
-        //}
-
-        // external |>x<| ...
-        if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
-            state.wrapWith(m_types.C_LOWER_IDENTIFIER);
-        }
-        // let |>x<| ...
-        else if (state.is(m_types.C_LET_DECLARATION)) {
-            state.wrapWith(m_types.C_LOWER_IDENTIFIER);
-        }
-        // type |>x<| ...
-        else if (state.is(m_types.C_TYPE_DECLARATION)) {
-            state.wrapWith(m_types.C_LOWER_IDENTIFIER);
-        }
-        // @ |>x<| ...
-        else if (state.is(m_types.C_MACRO_NAME)) {
-            IElementType nextElementType = state.rawLookup(1);
-            if (nextElementType == TokenType.WHITE_SPACE) {
-                state.advance().popEnd().popEnd();
-            }
-        }
-        // not an identifier
-        else {
-            // This is a property
-            if (state.is(m_types.C_TAG_START)) {
-                state
-                        .remapCurrentToken(m_types.PROPERTY_NAME)
-                        .mark(m_types.C_TAG_PROPERTY)
-                        .setWhitespaceSkippedCallback(
-                                (type, start, end) -> {
-                                    if (state.is(m_types.C_TAG_PROPERTY)
-                                            || (state.is(m_types.C_TAG_PROP_VALUE) && !state.hasScopeToken())) {
-                                        if (state.is(m_types.C_TAG_PROP_VALUE)) {
-                                            state.popEnd();
-                                        }
-                                        state.popEnd();
-                                        state.setWhitespaceSkippedCallback(null);
-                                    }
-                                });
-            } else if (state.is(m_types.C_RECORD_EXPR)) {
-                state.mark(m_types.C_RECORD_FIELD);
-            } else {
-                IElementType nextElementType = state.lookAhead(1);
-
-                // Single (paren less) function parameters ::  |>x<| => ...
-                if (!state.is(m_types.C_SIG_ITEM) && nextElementType == m_types.ARROW) {
-                    state.mark(m_types.C_FUN_EXPR).mark(m_types.C_FUN_PARAMS).mark(m_types.C_FUN_PARAM);
-                }
-                // a ternary ::  |>x<| ? ...
-                else if (nextElementType == m_types.QUESTION_MARK && !state.in(m_types.C_TAG_START)) {
-                    state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
-                }
-            }
-
-            if (state.is(m_types.C_DECONSTRUCTION) || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS))
-                    || state.is(m_types.C_NAMED_PARAM) || state.is(m_types.C_RECORD_FIELD)) {
-                state.wrapWith(m_types.C_LOWER_IDENTIFIER);
-            } else if (!state.is(m_types.C_TAG_PROPERTY)) {
-                state.wrapWith(m_types.C_LOWER_SYMBOL);
-            }
-        }
-    }
-
-    private void parseLBracket(@NotNull ParserState state) {
-        // Local open  ::  M.|> [ <| ... ]
-        if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
-            state.markScope(m_types.C_LOCAL_OPEN, m_types.LBRACKET);
-        } else {
-            IElementType nextType = state.rawLookup(1);
-
-            // Lower bound type constraint  ::  |> [ <| > ... ]
-            if (nextType == m_types.GT) {
-                state.markScope(m_types.C_LOWER_BOUND_CONSTRAINT, m_types.LBRACKET).advance();
-            }
-            // Upper bound type constraint  ::  |> [ <| < ... ]
-            else if (nextType == m_types.LT) {
-                state.markScope(m_types.C_UPPER_BOUND_CONSTRAINT, m_types.LBRACKET).advance();
-            }
-            // Generic scope
-            else {
-                state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET);
-            }
-        }
-    }
-
-    private void parseBracketGt(@NotNull ParserState state) {
-        state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET);
-    }
-
-    private void parseRBracket(@NotNull ParserState state) {
-        ParserScope scope = state.popEndUntilOneOfElementType(m_types.LBRACKET);
-        state.advance();
-
-        if (scope != null) {
-            state.popEnd();
-        }
-    }
-
-    private void parseLBrace(@NotNull ParserState state) {
-        if (state.previousElementType1 == m_types.DOT && state.previousElementType2 == m_types.UIDENT) {
-            // Local open a js object ::  Xxx.|>{<| "y" : ... }
-            state.mark(m_types.C_LOCAL_OPEN);
-            IElementType nextElementType = state.lookAhead(1);
-            if (nextElementType == m_types.LIDENT) {
-                state
-                        .markScope(m_types.C_RECORD_EXPR, m_types.LBRACE)
-                        .advance()
-                        .mark(m_types.C_RECORD_FIELD)
-                        .resolution(field);
-            } else {
-                state
-                        .markScope(m_types.C_JS_OBJECT, m_types.LBRACE)
-                        .advance()
-                        .mark(m_types.C_OBJECT_FIELD)
-                        .resolution(field);
-            }
-        } else if (state.is(m_types.C_TYPE_BINDING)) {
-            boolean isJsObject = state.lookAhead(1) == m_types.STRING_VALUE;
-            state.markScope(isJsObject ? m_types.C_JS_OBJECT : m_types.C_RECORD_EXPR, m_types.LBRACE);
-            if (isJsObject) {
-                state.advance().mark(m_types.C_OBJECT_FIELD).resolution(field);
-            }
-        } else if (state.is(m_types.C_MODULE_TYPE)) {
-            // module M : |>{<| ...
-            state.updateScopeToken(m_types.LBRACE);
-        } else if (state.is(m_types.C_TRY_BODY) || state.is(m_types.C_TRY_EXPR)) {
-            // A try expression ::  try ... |>{<| ... }
-            state.popEndUntil(m_types.C_TRY_EXPR)
-                    .markScope(m_types.C_TRY_HANDLERS, m_types.LBRACE);
-        } else if (state.is(m_types.C_LET_BINDING)) {
-            state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(maybeRecord);
-        } else if (state.is(m_types.C_BINARY_CONDITION)) {
-            state.popEnd();
-            if (state.is(m_types.C_IF)) {
-                // if x |>{<| ... }
-                state.markScope(m_types.C_IF_THEN_SCOPE, m_types.LBRACE);
-            } else if (state.is(m_types.C_SWITCH_EXPR)) {
-                // switch x |>{<| ... }
-                state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(switchBody);
-            }
-        } else if (state.is(m_types.C_SWITCH_EXPR)) {
-            // switch (x) |>{<| ... }
-            state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(switchBody);
-        } else if (state.is(m_types.C_TAG_PROP_VALUE)) {
-            // A scoped property
-            state.updateScopeToken(m_types.LBRACE);
-        } else {
-            // it might be a js object
-            IElementType nextElement = state.lookAhead(1);
-            if (nextElement == m_types.STRING_VALUE || nextElement == m_types.DOT) {
-                boolean hasDot = nextElement == m_types.DOT;
-                // js object detected ::  |>{<| ./"x" ___ }
-                state.markScope(m_types.C_JS_OBJECT, m_types.LBRACE)
-                        .advance();
-                if (hasDot) {
-                    state.advance();
-                }
-                state.mark(m_types.C_OBJECT_FIELD)
-                        .resolution(field);
-            } else if (nextElement == m_types.DOTDOTDOT) {
-                // record usage ::  x  => |>{<| ...
-                state.markScope(m_types.C_RECORD_EXPR, m_types.LBRACE)
-                        .advance()
-                        .mark(m_types.C_MIXIN_FIELD);
-            } else if (state.is(m_types.C_FUN_BODY) && !state.hasScopeToken()) {
-                state.updateScopeToken(m_types.LBRACE);
-            } else if (state.is(m_types.C_RECORD_FIELD)) {
-                state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(maybeRecord);
-            } else {
-                state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE);
-            }
-        }
-    }
-
-    private void parseRBrace(@NotNull ParserState state) {
-        ParserScope scope = state.popEndUntilOneOfElementType(m_types.LBRACE, m_types.RECORD, m_types.SWITCH);
-        state.advance();
-        if (scope != null) {
-            state.popEnd();
-        }
-
-        if (state.is(m_types.C_LOCAL_OPEN)) {
-            state.popEnd();
-        } else if (state.is(m_types.C_TAG_PROPERTY)) {
-            state.popEnd();
-        } else if (scope != null && scope.isCompositeType(m_types.C_RECORD_EXPR) && state.is(m_types.C_TYPE_BINDING)) {
-            // Record type, end the type itself
-            state.popEndUntil(m_types.C_TYPE_DECLARATION).popEndComplete();
-        } else if (state.isPrevious(m_types.C_MODULE_DECLARATION)) {  // missing module binding?
-            // end module
-            state.popEnd().popEndComplete();
-        }
-    }
-
-    private void parseLParen(@NotNull ParserState state) {
-        if (state.is(m_types.C_MACRO_NAME) && state.isPrevious(m_types.C_ANNOTATION)) {
-            // @ann |>(<| ... )
-            state
-                    .popEnd()
-                    .markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN);
-        } else if (state.is(m_types.C_SIG_ITEM) && state.previousElementType1 != m_types.LIDENT) {
-            if (state.isPrevious(m_types.C_SIG_EXPR)) {
-                state
-                        .resolution(signatureScope)
-                        .updateCurrentCompositeElementType(m_types.C_SCOPED_EXPR)
-                        .updateScopeToken(m_types.LPAREN)
-                        .advance()
-                        .mark(m_types.C_SIG_ITEM);
-            } else {
-                state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(signatureScope);
-            }
-        } else if (state.is(m_types.C_MACRO_NAME)) {
-            // %raw |>(<| ...
-            state.popEnd()
-                    .markOptionalParenDummyScope(m_types)
-                    .mark(m_types.C_MACRO_RAW_BODY);
-        } else if (state.isCurrentResolution(moduleBinding)
-                && state.previousElementType1 != m_types.UIDENT) {
-            // This is a functor ::  module M = |>(<| ... )
-            state.popCancel() // remove previous module binding
-                    .updateCurrentCompositeElementType(m_types.C_FUNCTOR_DECLARATION)
-                    .markScope(m_types.C_FUNCTOR_PARAMS, m_types.LPAREN)
-                    .advance()
-                    .mark(m_types.C_FUNCTOR_PARAM);
-        } else if (isOptionalFunctorCall(state)) {
-            // We know now that it is really a functor call
-            //  module M = X |>(<| ... )
-            //  open X |>(<| ... )
-            state.complete()
-                    .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
-                    .advance()
-                    .mark(m_types.C_FUN_PARAM);
-        } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
-            // Variant constructor ::  type t = | Variant |>(<| .. )
-            state
-                    .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN) // C_PARAMETERS
-                    .advance()
-                    .mark(m_types.C_FUN_PARAM);
-        } else if (state.isCurrentResolution(patternMatchVariant)) {
-            // It's a constructor in a pattern match ::  switch x { | Variant |>(<| ... ) => ... }
-            state.markScope(m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN);
-        } else if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
-            // A tuple in a pattern match ::  | |>(<| .. ) => ..
-            state
-                    .resolution(patternMatchValue)
-                    .markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN)
-                    .resolution(patternMatchValue);
-        } else if (state.previousElementType2 == m_types.UIDENT
-                && state.previousElementType1 == m_types.DOT) {
-            // Local open ::  M. |>(<| ... )
-            state.markScope(m_types.C_LOCAL_OPEN, m_types.LPAREN);
-        } else if (state.is(m_types.C_LET_DECLARATION)) {
-            // Deconstructing a term ::  let |>(<| a, b ) =
-            state.markScope(m_types.C_DECONSTRUCTION, m_types.LPAREN);
-        } else if (state.previousElementType1 == m_types.LIDENT) {
-            // Calling a function
-            state.markScope(m_types.C_FUN_CALL_PARAMS, m_types.LPAREN)
-                    .advance();
-            IElementType nextTokenType = state.getTokenType();
-            if (nextTokenType != m_types.RPAREN) {
-                state.mark(m_types.C_FUN_PARAM);
-            }
-        } else if (state.is(m_types.C_BINARY_CONDITION)) {
-            state.updateScopeToken(m_types.LPAREN);
-        } else if (state.is(m_types.C_TAG_PROP_VALUE) && !state.hasScopeToken()) {
-            // <div prop=|>(<| ...
-            state.updateScopeToken(m_types.LPAREN);
-        } else {
-            IElementType nextTokenType = state.lookAhead(1);
-
-            if (!state.in(m_types.C_SIG_ITEM)) {
-                if (nextTokenType == m_types.DOT || nextTokenType == m_types.TILDE) {
-                    // A function
-                    // |>(<| .  OR  |>(<| ~
-                    state.mark(m_types.C_FUN_EXPR).markScope(m_types.C_FUN_PARAMS, m_types.LPAREN).advance();
-                    if (nextTokenType == m_types.DOT) {
-                        state.advance();
-                    }
-                    state.mark(m_types.C_FUN_PARAM);
-                } else if (nextTokenType == m_types.RPAREN) {
-                    IElementType nexNextTokenType = state.lookAhead(2);
-                    if (nexNextTokenType == m_types.ARROW) {
-                        // Function with unit parameter ::  |>(<| ) => ...
-                        state.mark(m_types.C_FUN_EXPR).mark(m_types.C_FUN_PARAMS).advance().advance().popEnd();
-                    } else {
-                        state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
+                // Special analyse when inside an interpolation string
+                if (is(myTypes.C_INTERPOLATION_EXPR)
+                        || is(myTypes.C_INTERPOLATION_PART)
+                        || is(myTypes.C_INTERPOLATION_REF)) {
+                    if (tokenType == myTypes.JS_STRING_OPEN) {
+                        popEndUntil(myTypes.C_INTERPOLATION_EXPR).advance().popEnd();
+                    } else if (tokenType == myTypes.DOLLAR) {
+                        if (is(myTypes.C_INTERPOLATION_PART)) {
+                            popEnd();
+                        }
+                        advance();
+                        IElementType nextElement = getTokenType();
+                        if (nextElement == myTypes.LBRACE) {
+                            advance().markScope(myTypes.C_INTERPOLATION_REF, myTypes.LBRACE);
+                        }
+                    } else if (is(myTypes.C_INTERPOLATION_REF) && tokenType == myTypes.RBRACE) {
+                        popEnd().advance();
+                        if (getTokenType() != myTypes.JS_STRING_OPEN) {
+                            mark(myTypes.C_INTERPOLATION_PART);
+                        }
                     }
                 } else {
-                    state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
+                    // EOL is a statement separator
+                    if (tokenType == myTypes.EOL) {
+                        // We identify it at the lexer level, because We try to detect current construction that can't have
+                        // EOL in it ; but we don't want to have it in the parsed tree, we change it to a whitespace
+                        myBuilder.remapCurrentToken(TokenType.WHITE_SPACE);
+
+                        if (is(myTypes.C_FUNCTOR_CALL/*PsiOpen is potential functor call*/) && isRawParent(myTypes.C_OPEN)) {
+                            popEnd().popEnd();
+                        } else if (isRawParent(myTypes.C_ANNOTATION) && !is(myTypes.C_SCOPED_EXPR)) {
+                            // inside an annotation
+                            popEnd().popEnd();
+                        } else if (is(myTypes.C_LET_BINDING)) {
+                            // simple let with no scope
+                            popEnd().popEnd();
+                        }
+                    } else if (tokenType == myTypes.EQ) {
+                        parseEq();
+                    } else if (tokenType == myTypes.SOME) {
+                        parseSome();
+                    } else if (tokenType == myTypes.WITH) {
+                        parseWith();
+                    } else if (tokenType == myTypes.ARROW) {
+                        parseArrow();
+                    } else if (tokenType == myTypes.REF) {
+                        parseRef();
+                    } else if (tokenType == myTypes.OPTION) {
+                        parseOption();
+                    } else if (tokenType == myTypes.MATCH) {
+                        parseMatch();
+                    } else if (tokenType == myTypes.TRY) {
+                        parseTry();
+                    } else if (tokenType == myTypes.CATCH) {
+                        parseCatch();
+                    } else if (tokenType == myTypes.SWITCH) {
+                        parseSwitch();
+                    } else if (tokenType == myTypes.LIDENT) {
+                        parseLIdent();
+                    } else if (tokenType == myTypes.UIDENT) {
+                        parseUIdent();
+                    } else if (tokenType == myTypes.POLY_VARIANT) {
+                        parsePolyVariant();
+                    } else if (tokenType == myTypes.UNIT) {
+                        parseUnit();
+                    } else if (tokenType == myTypes.ARROBASE) {
+                        parseArrobase();
+                    } else if (tokenType == myTypes.PERCENT) {
+                        parsePercent();
+                    } else if (tokenType == myTypes.COLON) {
+                        parseColon();
+                    } else if (tokenType == myTypes.STRING_VALUE) {
+                        parseStringValue();
+                    } else if (tokenType == myTypes.PIPE) {
+                        parsePipe();
+                    } else if (tokenType == myTypes.COMMA) {
+                        parseComma();
+                    } else if (tokenType == myTypes.AND) {
+                        parseAnd();
+                    } else if (tokenType == myTypes.ASSERT) {
+                        parseAssert();
+                    } else if (tokenType == myTypes.DOTDOTDOT) {
+                        parseDotDotDot();
+                    } else if (tokenType == myTypes.QUESTION_MARK) {
+                        parseQuestionMark();
+                    } else if (tokenType == myTypes.TILDE) {
+                        parseTilde();
+                    } else if (tokenType == myTypes.UNDERSCORE) {
+                        parseUnderscore();
+                    } else if (tokenType == myTypes.INT_VALUE || tokenType == myTypes.FLOAT_VALUE) {
+                        parseNumeric();
+                    }
+                    // if ... else
+                    else if (tokenType == myTypes.IF) {
+                        parseIf();
+                    } else if (tokenType == myTypes.ELSE) {
+                        parseElse();
+                    }
+                    // ( ... )
+                    else if (tokenType == myTypes.LPAREN) {
+                        parseLParen();
+                    } else if (tokenType == myTypes.RPAREN) {
+                        parseRParen();
+                    }
+                    // { ... }
+                    // list{ ... }
+                    else if (tokenType == myTypes.LBRACE) {
+                        parseLBrace();
+                    } else if (tokenType == myTypes.LIST) {
+                        parseList();
+                    } else if (tokenType == myTypes.RBRACE) {
+                        parseRBrace();
+                    }
+                    // [ ... ]
+                    else if (tokenType == myTypes.LBRACKET) {
+                        parseLBracket();
+                    } else if (tokenType == myTypes.RBRACKET) {
+                        parseRBracket();
+                    }
+                    // < ... >
+                    else if (tokenType == myTypes.LT) {
+                        parseLt();
+                    } else if (tokenType == myTypes.TAG_LT_SLASH) {
+                        parseLtSlash();
+                    } else if (tokenType == myTypes.GT) {
+                        parseGt();
+                    } else if (tokenType == myTypes.TAG_AUTO_CLOSE) {
+                        parseGtAutoClose();
+                    }
+                    // j` ... `
+                    else if (tokenType == myTypes.JS_STRING_OPEN) {
+                        parseTemplateStringOpen();
+                    }
+                    // Starts an expression
+                    else if (tokenType == myTypes.OPEN) {
+                        parseOpen();
+                    } else if (tokenType == myTypes.INCLUDE) {
+                        parseInclude();
+                    } else if (tokenType == myTypes.EXTERNAL) {
+                        parseExternal();
+                    } else if (tokenType == myTypes.TYPE) {
+                        parseType();
+                    } else if (tokenType == myTypes.MODULE) {
+                        parseModule();
+                    } else if (tokenType == myTypes.LET) {
+                        parseLet();
+                    } else if (tokenType == myTypes.EXCEPTION) {
+                        parseException();
+                    }
+                }
+
+                if (dontMove) {
+                    dontMove = false;
+                } else {
+                    myBuilder.advanceLexer();
+                }
+            }
+        }
+
+        private void parseUnit() {
+            if (!is(myTypes.C_SIG_ITEM)) {
+                mark(myTypes.C_SIG_ITEM);
+            }
+        }
+
+        private void parseSome() {
+            advance();
+            if (getTokenType() == myTypes.LPAREN) {
+                markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                        .markHolder(myTypes.H_COLLECTION_ITEM);
+            }
+        }
+
+        private void parseList() {
+            if (lookAhead(1) == myTypes.LBRACE) {
+                // |>list<| { ... }
+                markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACE)
+                        .advance().advance()
+                        .markHolder(myTypes.H_COLLECTION_ITEM); // Needed to rollback to individual item in collection
+            }
+        }
+
+        private void parseNumeric() {
+            if (is(myTypes.C_PARAMETERS)) {
+                boolean inCall = in(myTypes.C_FUNCTION_CALL) || in(myTypes.C_FUNCTOR_CALL);
+                mark(inCall ? myTypes.C_PARAM : myTypes.C_PARAM_DECLARATION);
+            }
+        }
+
+        private void parseUnderscore() {
+            if (is(myTypes.C_PARAMETERS)) {
+                boolean inCall = isParent(myTypes.C_FUNCTION_CALL) || isParent(myTypes.C_FUNCTOR_CALL);
+                mark(inCall ? myTypes.C_PARAM : myTypes.C_PARAM_DECLARATION);
+            } else {
+                IElementType nextElementType = lookAhead(1);
+                if (nextElementType == myTypes.ARROW && strictlyInAny(
+                        myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE
+                )) {
+                    // A paren-less function definition ::  |>_<| =>
+                    popIfHold().mark(myTypes.C_FUNCTION_EXPR)
+                            .mark(myTypes.C_PARAMETERS).mark(myTypes.C_PARAM_DECLARATION)
+                            .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                }
+            }
+        }
+
+        private void parseRef() {
+            if (is(myTypes.C_RECORD_EXPR)) {
+                // { |>x<| ...
+                mark(myTypes.C_RECORD_FIELD).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (strictlyIn(myTypes.C_TAG_START)) {
+                remapCurrentToken(myTypes.PROPERTY_NAME).mark(myTypes.C_TAG_PROPERTY);
+            }
+        }
+
+
+        private void generateJsxPropertyName() {
+            remapCurrentToken(myTypes.PROPERTY_NAME)
+                    .mark(myTypes.C_TAG_PROPERTY)
+                    .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace());
+        }
+
+        private void parseOption() {
+            if (strictlyIn(myTypes.C_TAG_START)) {
+                generateJsxPropertyName();
+            } else {
+                mark(myTypes.C_OPTION).advance();
+                if (getTokenType() == myTypes.LPAREN) {
+                    updateScopeToken(myTypes.LPAREN).advance();
+                }
+            }
+        }
+
+        private void parseMatch() {
+            if (strictlyIn(myTypes.C_TAG_START)) {
+                generateJsxPropertyName();
+            }
+        }
+
+        private void parseIf() {
+            mark(myTypes.C_IF)
+                    .advance().mark(myTypes.C_BINARY_CONDITION);
+        }
+
+        private void parseElse() {
+            // if ... |>else<| ...
+            popEndUntil(myTypes.C_IF)
+                    .advance().mark(myTypes.C_IF_THEN_SCOPE);
+        }
+
+        private void parseDotDotDot() {
+            if (previousElementType(1) == myTypes.LBRACE) { // Mixin
+                // ... { |>...<| x ...
+                updateComposite(myTypes.C_RECORD_EXPR)
+                        .mark(myTypes.C_MIXIN_FIELD);
+            }
+        }
+
+        private void parseQuestionMark() {
+            if (strictlyInAny(myTypes.C_TAG_START, myTypes.C_TAG_PROP_VALUE)) {
+                // <jsx |>?<|prop ...
+                if (isFound(myTypes.C_TAG_START)) {
+                    mark(myTypes.C_TAG_PROPERTY)
+                            .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace())
+                            .advance()
+                            .remapCurrentToken(myTypes.PROPERTY_NAME);
+                }
+            } else if (isDone(myTypes.C_BINARY_CONDITION) || strictlyIn(myTypes.C_BINARY_CONDITION)) { // a ternary in progress
+                // ... |>?<| ...
+                popEndUntilFoundIndex().end()
+                        .advance()
+                        .mark(myTypes.C_IF_THEN_SCOPE);
+            } else if (!inAny(myTypes.C_TERNARY) && previousElementType(1) != myTypes.EQ) {
+                if (inScopeOrAny(myTypes.H_PLACE_HOLDER, myTypes.H_COLLECTION_ITEM)) { // a new ternary
+                    parseTernary();
+                }
+            }
+        }
+
+        private void parseTernary() {
+            int foundPos = getIndex();
+            if (isAtIndex(foundPos, myTypes.H_PLACE_HOLDER)) {
+                // «placeHolder» ... |>?<| ...
+                markBefore(foundPos, myTypes.C_TERNARY)
+                        .updateCompositeAt(foundPos, myTypes.C_BINARY_CONDITION)
+                        .popEndUntilIndex(foundPos).end()
+                        .advance().mark(myTypes.C_IF_THEN_SCOPE)
+                        .markHolder(myTypes.H_PLACE_HOLDER);
+            } else if (isAtIndex(foundPos, myTypes.H_COLLECTION_ITEM)) {
+                markHolderBefore(foundPos, myTypes.H_COLLECTION_ITEM);
+                markBefore(foundPos, myTypes.C_TERNARY)
+                        .updateCompositeAt(foundPos, myTypes.C_BINARY_CONDITION)
+                        .popEndUntilIndex(foundPos).end()
+                        .advance().mark(myTypes.C_IF_THEN_SCOPE);
+            }
+        }
+
+        private void parseTilde() {
+            if (is(myTypes.C_PARAMETERS)) {
+                mark(myTypes.C_PARAM_DECLARATION)
+                        .mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION)
+                        .advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (strictlyIn(myTypes.C_SIG_EXPR) && !is(myTypes.C_SIG_ITEM)) {
+                mark(myTypes.C_SIG_ITEM)
+                        .mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION)
+                        .advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (isCurrent(myTypes.C_PARAM)) {
+                updateComposite(myTypes.C_NAMED_PARAM);
+            } else if (isCurrent(myTypes.C_PARAM_DECLARATION)) {
+                markBefore(0, myTypes.C_PARAM_DECLARATION)
+                        .updateComposite(myTypes.H_NAMED_PARAM_DECLARATION).updateToHolder();
+            } else {
+                mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION)
+                        .advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            }
+        }
+
+        private void parseAssert() {
+            mark(myTypes.C_ASSERT_STMT);
+        }
+
+        private void parseAnd() {
+            if (in(myTypes.C_TYPE_CONSTRAINT)) {
+                // module M = (X) : ( S with ... |>and<| ... ) = ...
+                popEndUntilFoundIndex().popEnd();
+            } else if (strictlyIn(myTypes.C_TYPE_DECLARATION)) {
+                popEndUntilFoundIndex().popEnd()
+                        .advance()
+                        .mark(myTypes.C_TYPE_DECLARATION);
+            } else if (strictlyIn(myTypes.C_MODULE_DECLARATION)) {
+                popEndUntilFoundIndex().popEnd()
+                        .advance()
+                        .mark(myTypes.C_MODULE_DECLARATION);
+            } else if (strictlyIn(myTypes.C_LET_DECLARATION)) {
+                popEndUntilFoundIndex().popEnd()
+                        .advance()
+                        .mark(myTypes.C_LET_DECLARATION);
+            }
+        }
+
+        private void parseComma() {
+            if (strictlyIn(myTypes.C_SIG_EXPR)) {  // remove intermediate signatures
+                if (isAtIndex(getIndex() - 1, myTypes.C_SCOPED_EXPR)) { // a dummy scope
+                    popEndUntilIndex(getIndex() - 1);
+                } else {
+                    popEndUntilFoundIndex();
+                }
+                if (strictlyIn(myTypes.C_SIG_ITEM)) {
+                    popEndUntilFoundIndex().popEnd();
+                }
+            }
+
+            if (strictlyIn(myTypes.C_SCOPED_EXPR) && isAtIndex(getIndex() + 1, myTypes.C_LET_DECLARATION)) {
+                // It must be a deconstruction ::  let ( a |>,<| b ) = ...
+                // We need to do it again because lower symbols must be wrapped with identifiers
+                rollbackToFoundIndex()
+                        .updateComposite(myTypes.C_DECONSTRUCTION);
+            }
+            // Same priority
+            else if (inScopeOrAny(
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_PARAM, myTypes.C_NAMED_PARAM, myTypes.C_DECONSTRUCTION,
+                    myTypes.C_RECORD_FIELD, myTypes.C_MIXIN_FIELD, myTypes.C_OBJECT_FIELD, myTypes.H_COLLECTION_ITEM
+            )) {
+
+                if (isFound(myTypes.H_COLLECTION_ITEM)) {
+                    popEndUntilFoundIndex().popEnd()
+                            .advance().markHolder(myTypes.H_COLLECTION_ITEM);
+                } else if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.C_PARAM) || isFound(myTypes.C_NAMED_PARAM)) {
+                    boolean isDeclaration = isAtIndex(getIndex(), myTypes.C_PARAM_DECLARATION) || isAtIndex(getIndex(), myTypes.H_NAMED_PARAM_DECLARATION);
+                    popEndUntilFoundIndex().popEnd();
+                    if (is(myTypes.H_COLLECTION_ITEM) && isHold()) {
+                        popEnd();
+                    }
+                    advanceSkipEOL();
+                    if (getTokenType() != myTypes.RPAREN) {
+                        // not at the end of a list: ie not => (p1, p2<,> )
+                        markHolder(myTypes.H_COLLECTION_ITEM)
+                                .mark(isDeclaration ? myTypes.C_PARAM_DECLARATION : myTypes.C_PARAM)
+                                .markHolder(myTypes.H_PLACE_HOLDER);
+                    }
+                } else if (isFound(myTypes.C_DECONSTRUCTION)) {
+                    popEndUntilScope();
+                } else if (isFound(myTypes.C_RECORD_FIELD) || isFound(myTypes.C_MIXIN_FIELD) || isFound(myTypes.C_OBJECT_FIELD)) {
+                    popEndUntilFoundIndex().popEnd();
+                }
+            }
+        }
+
+        private void parsePipe() {
+            if (is(myTypes.C_TYPE_BINDING)) {
+                // type x = |>|<| ...
+                advance().mark(myTypes.C_VARIANT_DECLARATION);
+            } else if (is(myTypes.C_TRY_HANDLERS)) { // Start of a try handler
+                // try (...) { |>|<| ... }
+                advance().mark(myTypes.C_TRY_HANDLER);
+            } else if (is(myTypes.C_SWITCH_BODY)) {
+                // switch x { |>|<| ... }
+                advance().mark(myTypes.C_PATTERN_MATCH_EXPR);
+            } else if (strictlyIn(myTypes.C_PATTERN_MATCH_BODY)) {
+                // can be a switchBody or a 'fun'
+                popEndUntil(myTypes.C_PATTERN_MATCH_EXPR).popEnd()
+                        .advance()
+                        .mark(myTypes.C_PATTERN_MATCH_EXPR);
+            } else if (strictlyIn(myTypes.C_PATTERN_MATCH_EXPR)) { // pattern grouping
+                // | X |>|<| Y => ...
+                popEndUntilFoundIndex().popEnd()
+                        .advance()
+                        .mark(myTypes.C_PATTERN_MATCH_EXPR);
+            } else if (strictlyIn(myTypes.C_VARIANT_DECLARATION)) {
+                // type t = | X |>|<| Y ...
+                popEndUntil(myTypes.C_VARIANT_DECLARATION).popEnd()
+                        .advance()
+                        .mark(myTypes.C_VARIANT_DECLARATION);
+            }
+        }
+
+        private void parseStringValue() {
+            if (is(myTypes.C_JS_OBJECT)) {
+                mark(myTypes.C_OBJECT_FIELD);
+            }
+        }
+
+        private void parseTemplateStringOpen() {
+            // |>`<| ...
+            markScope(myTypes.C_INTERPOLATION_EXPR, myTypes.JS_STRING_OPEN).advance();
+            if (getTokenType() != myTypes.DOLLAR) {
+                mark(myTypes.C_INTERPOLATION_PART);
+            }
+        }
+
+        private void parseLet() {
+            popIfHold();
+            if (!isCurrent(myTypes.C_PATTERN_MATCH_BODY)) {
+                popEndUntilScope();
+            }
+            mark(myTypes.C_LET_DECLARATION);
+        }
+
+        private void parseModule() {
+            if (currentHasScope() && isParent(myTypes.C_SIG_ITEM)) {
+                // let fn = (~x : ( |>module<| ... ) ...
+                popEndUntil(myTypes.C_SCOPED_EXPR).dropLatest()
+                        .mark(myTypes.C_MODULE_VALUE);
+            } else if (in(myTypes.C_DEFAULT_VALUE)) {
+                // let fn = (~x:(module X)= ( |>module<| ... ) ...
+                popIfHold()
+                        .updateLatestComposite(myTypes.H_PLACE_HOLDER).dropLatest()
+                        .mark(myTypes.C_MODULE_VALUE);
+            } else if (!is(myTypes.C_MACRO_NAME)) {
+                popEndUntilScope();
+                mark(myTypes.C_MODULE_DECLARATION);
+            }
+        }
+
+        private void parseException() {
+            popEndUntilScope();
+            mark(myTypes.C_EXCEPTION_DECLARATION);
+        }
+
+        private void parseType() {
+            if (is(myTypes.C_CONSTRAINTS)) {
+                // module M = (X) : ( S with |>type<| ... ) = ...
+                mark(myTypes.C_TYPE_CONSTRAINT);
+            } else if (!is(myTypes.C_MODULE_DECLARATION)) {
+                popEndUntilScope();
+                mark(myTypes.C_TYPE_DECLARATION);
+            }
+        }
+
+        private void parseExternal() {
+            popEndUntilScope();
+            mark(myTypes.C_EXTERNAL_DECLARATION);
+        }
+
+        private void parseOpen() {
+            popEndUntilScope();
+            mark(myTypes.C_OPEN);
+        }
+
+        private void parseInclude() {
+            popEndUntilScope();
+            mark(myTypes.C_INCLUDE);
+        }
+
+        private void parsePercent() {
+            // |>%<| raw ...
+            mark(myTypes.C_MACRO_EXPR).mark(myTypes.C_MACRO_NAME).advance();
+            if (getTokenType() == myTypes.PERCENT) {
+                // %|>%<| raw ...
+                advance();
+            }
+        }
+
+        private void parseColon() {
+            if (is(myTypes.C_SCOPED_EXPR) && isRawParent(myTypes.C_FIELD_VALUE)) {
+                // ...
+            } else if (strictlyInAny(
+                    myTypes.C_MODULE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_EXTERNAL_DECLARATION,
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.H_NAMED_PARAM_DECLARATION,
+                    myTypes.C_IF_THEN_SCOPE)) {
+
+                if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.H_NAMED_PARAM_DECLARATION)) {
+                    // let x = (y |> :<| ...
+                    // let x = (~y |> :<| ...
+                    advance()
+                            .mark(myTypes.C_SIG_EXPR)
+                            .mark(myTypes.C_SIG_ITEM);
+                } else if (isFound(myTypes.C_MODULE_DECLARATION)) {
+                    // module M |> :<| ...
+                    popEndUntilFoundIndex().advance()
+                            .mark(myTypes.C_MODULE_TYPE);
+                } else if (isFound(myTypes.C_EXTERNAL_DECLARATION) || isFound(myTypes.C_LET_DECLARATION)) {
+                    // external/let x |> :<| ...
+                    popEndUntilFoundIndex().advance().mark(myTypes.C_SIG_EXPR);
+                    if (getTokenType() == myTypes.LPAREN) {
+                        // external/let x : |>(<| ...
+                        markDummyScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
+                                .advance().markHolder(myTypes.H_COLLECTION_ITEM);
+                        if (getTokenType() == myTypes.DOT) {
+                            // external/let : ( |>.<| ...
+                            advance();
+                        }
+                    }
+                    mark(myTypes.C_SIG_ITEM);
+                } else if (isFound(myTypes.C_RECORD_FIELD) || isFound(myTypes.C_OBJECT_FIELD)) {
+                    advance();
+                    if (in(myTypes.C_TYPE_BINDING)) {
+                        mark(myTypes.C_SIG_EXPR)
+                                .mark(myTypes.C_SIG_ITEM);
+                    } else {
+                        mark(myTypes.C_FIELD_VALUE);
+                    }
+                } else if (isFound(myTypes.C_IF_THEN_SCOPE)) {
+                    popEndUntilFoundIndex().popEnd()
+                            .advance()
+                            .mark(myTypes.C_IF_THEN_SCOPE);
+                }
+
+            }
+        }
+
+        private void parseArrobase() {
+            popEndUntilScope();
+            mark(myTypes.C_ANNOTATION).mark(myTypes.C_MACRO_NAME);
+        }
+
+        private void parseLt() {
+            if (is(myTypes.C_OPTION) || in(myTypes.C_SIG_ITEM)) {
+                markScope(myTypes.C_SCOPED_EXPR, myTypes.LT);
+            } else if (strictlyIn(myTypes.C_TYPE_DECLARATION)) { // type parameters
+                // type t |> < <| 'a >
+                markScope(myTypes.C_PARAMETERS, myTypes.LT);
+            } else {
+                // Can be a symbol or a JSX tag
+                IElementType nextTokenType = rawLookup(1);
+                if (nextTokenType == myTypes.LIDENT || nextTokenType == myTypes.UIDENT || nextTokenType == myTypes.OPTION) {
+                    // Note that option is a keyword but also a JSX keyword !
+                    mark(myTypes.C_TAG)
+                            .markScope(myTypes.C_TAG_START, myTypes.LT);
+                } else if (nextTokenType == myTypes.GT) {
+                    // a React fragment start
+                    mark(myTypes.C_TAG)
+                            .mark(myTypes.C_TAG_START)
+                            .advance()
+                            .advance()
+                            .popEnd();
+                }
+            }
+        }
+
+        private void parseGt() {
+            if (isCurrent(myTypes.C_TAG_PROP_VALUE)) {
+                // ?prop=value |> > <| ...
+                popEndUntil(myTypes.C_TAG_PROP_VALUE).popEnd().popEnd();
+            } else if (is(myTypes.C_TAG_PROPERTY)) {
+                // ?prop |> > <| ...
+                popEnd();
+            }
+
+            // else
+            if (strictlyIn(myTypes.C_TAG_START)) {
+                advance().popEndUntilFoundIndex().end();
+                mark(myTypes.C_TAG_BODY);
+            } else if (strictlyIn(myTypes.C_TAG_CLOSE)) {
+                advance().popEndUntil(myTypes.C_TAG).end();
+            } else if (strictlyIn(myTypes.C_PARAMETERS)) {
+                popEndUntilFoundIndex().advance().end();
+            } else if (in(myTypes.C_SCOPED_EXPR) && isFoundScope(myTypes.LT)) {
+                popEndUntilFoundIndex().advance().popEnd();
+                if (isRawParent(myTypes.C_OPTION)) {
+                    // option < ... |> > <| ...
+                    popEnd();
+                }
+            }
+        }
+
+        private void parseGtAutoClose() {
+            if (is(myTypes.C_TAG_PROP_VALUE)) {
+                // ?prop=value |> /> <| ...
+                popEndUntil(myTypes.C_TAG_PROPERTY).popEnd();
+            } else if (is(myTypes.C_TAG_PROPERTY)) {
+                // ?prop |> /> <| ...
+                popEnd();
+            }
+
+            if (strictlyIn(myTypes.C_TAG_START)) {
+                popEndUntilFoundIndex()
+                        .advance().popEnd()
+                        .end();
+            }
+        }
+
+        private void parseLtSlash() {
+            if (in(myTypes.C_TAG)) {
+                if (in(myTypes.C_TAG_BODY)) {
+                    popEndUntilFoundIndex().end();
+                }
+                remapCurrentToken(myTypes.TAG_LT_SLASH)
+                        .mark(myTypes.C_TAG_CLOSE);
+            }
+        }
+
+        private void parseLIdent() {
+            // Must stop annotation if no dot/@ before
+            if (is(myTypes.C_MACRO_NAME)) {
+                IElementType previousElementType = previousElementType(1);
+                if (previousElementType != myTypes.DOT && previousElementType != myTypes.ARROBASE) {
+                    popEnd().popEnd();
+                }
+            }
+
+            if (is(myTypes.C_EXTERNAL_DECLARATION)) {
+                // external |>x<| ...
+                wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (is(myTypes.C_LET_DECLARATION)) {
+                // let |>x<| ...
+                wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (is(myTypes.C_TYPE_DECLARATION)) {
+                // type |>x<| ...
+                wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (is(myTypes.C_FUNCTION_EXPR)) {
+                mark(myTypes.C_PARAMETERS)
+                        .mark(myTypes.C_PARAM_DECLARATION).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (isCurrent(myTypes.C_PARAMETERS) && (isParent(myTypes.C_FUNCTION_EXPR) || isParent(myTypes.C_FUNCTION_CALL))) {
+                mark(myTypes.C_PARAM_DECLARATION).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (is(myTypes.C_RECORD_EXPR)) {
+                // { |>x<| ...
+                mark(myTypes.C_RECORD_FIELD)
+                        .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (is(myTypes.C_TAG_START)) {
+                // tag name
+                remapCurrentToken(myTypes.A_LOWER_TAG_NAME).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (is(myTypes.C_DECONSTRUCTION)) {
+                wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else if (strictlyIn(myTypes.C_TAG_START) && !isCurrent(myTypes.C_TAG_PROP_VALUE)) { // no scope
+                // This is a property
+                generateJsxPropertyName();
+            } else {
+                IElementType nextElementType = lookAhead(1);
+
+                if (is(myTypes.C_SCOPED_EXPR) && isScope(myTypes.LBRACE) && nextElementType == myTypes.COLON) {
+                    // this is a record usage ::  { |>x<| : ...
+                    updateComposite(myTypes.C_RECORD_EXPR)
+                            .mark(myTypes.C_RECORD_FIELD)
+                            .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                } else if (nextElementType == myTypes.LPAREN && !is(myTypes.C_MACRO_NAME)) { // a function call
+                    // |>x<| ( ...
+                    endLikeSemi2();
+                    mark(myTypes.C_FUNCTION_CALL).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                } else if (is(myTypes.C_SIG_EXPR) || (isScope(myTypes.LPAREN) && isRawParent(myTypes.C_SIG_EXPR))) {
+                    mark(myTypes.C_SIG_ITEM)
+                            .wrapAtom(myTypes.CA_LOWER_SYMBOL).popEnd();
+                } else if (nextElementType == myTypes.ARROW && strictlyInAny(
+                        myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE, myTypes.C_SCOPED_EXPR
+                )) {
+                    // A paren-less function definition ::  |>x<| =>
+                    mark(myTypes.C_FUNCTION_EXPR)
+                            .mark(myTypes.C_PARAMETERS)
+                            .mark(myTypes.C_PARAM_DECLARATION)
+                            .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                } else {
+                    wrapAtom(myTypes.CA_LOWER_SYMBOL).popEnd();
+                }
+            }
+        }
+
+        private void parseLBracket() {
+            if (previousElementType(2) == myTypes.A_MODULE_NAME && previousElementType(1) == myTypes.DOT) { // Local open
+                // M. |>[ <| ...
+                markScope(myTypes.C_LOCAL_OPEN, myTypes.LBRACKET);
+            } else {
+                IElementType nextType = rawLookup(1);
+
+                if (nextType == myTypes.GT) {
+                    // |> [ <| > ... ]
+                    markScope(myTypes.C_OPEN_VARIANT, myTypes.LBRACKET).advance().advance();
+                    if (getTokenType() != myTypes.RBRACKET) {
+                        mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    }
+                } else if (nextType == myTypes.LT) {
+                    // |> [ <| < ... ]
+                    markScope(myTypes.C_CLOSED_VARIANT, myTypes.LBRACKET).advance().advance();
+                    if (getTokenType() != myTypes.RBRACKET) {
+                        mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    }
+                } else {
+                    markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACKET).advance();
+                    if (getTokenType() != myTypes.PIPE && getTokenType() != myTypes.POLY_VARIANT) {
+                        markHolder(myTypes.H_COLLECTION_ITEM); // Needed to rollback to individual item in collection
+                    }
+                }
+            }
+        }
+
+        private void parseRBracket() {
+            Marker scope = popEndUntilScopeToken(myTypes.LBRACKET);
+            advance();
+
+            if (scope != null) {
+                popEnd();
+            }
+        }
+
+        private void parseLBrace() {
+            if (previousElementType(1) == myTypes.DOT && previousElementType(2) == myTypes.A_MODULE_NAME) { // Local open a js object or a record
+                // Xxx.|>{<| ... }
+                mark(myTypes.C_LOCAL_OPEN);
+                IElementType nextElementType = lookAhead(1);
+                if (nextElementType == myTypes.LIDENT) {
+                    markScope(myTypes.C_RECORD_EXPR, myTypes.LBRACE);
+                } else {
+                    markScope(myTypes.C_JS_OBJECT, myTypes.LBRACE);
+                }
+            } else if (is(myTypes.C_LET_DECLARATION)) {
+                // let |>{<| ..
+                markScope(myTypes.C_DECONSTRUCTION, myTypes.LBRACE);
+            } else if (is(myTypes.C_TYPE_BINDING)) {
+                boolean isJsObject = lookAheadSkipEOL() == myTypes.STRING_VALUE;
+                markScope(isJsObject ? myTypes.C_JS_OBJECT : myTypes.C_RECORD_EXPR, myTypes.LBRACE);
+            } else if (is(myTypes.C_MODULE_BINDING)) {
+                // module M = |>{<| ...
+                updateScopeToken(myTypes.LBRACE);
+            } else if (is(myTypes.C_FUNCTOR_BINDING)) {
+                // module M = (...) => |>{<| ...
+                updateScopeToken(myTypes.LBRACE);
+            } else if (isCurrent(myTypes.C_TAG_PROP_VALUE) || isCurrent(myTypes.C_TAG_BODY)) {
+                // A scoped property
+                popIfHold().markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACE)
+                        .advance().markHolder(myTypes.H_PLACE_HOLDER);
+            } else if (is(myTypes.C_MODULE_TYPE)) {
+                // module M : |>{<| ...
+                updateScopeToken(myTypes.LBRACE);
+            } else if (isDone(myTypes.C_TRY_BODY)) { // A try expression
+                // try ... |>{<| ... }
+                markScope(myTypes.C_TRY_HANDLERS, myTypes.LBRACE);
+            } else if (isDone(myTypes.C_BINARY_CONDITION) && isRawParent(myTypes.C_IF)) {
+                // if x |>{<| ... }
+                markScope(myTypes.C_IF_THEN_SCOPE, myTypes.LBRACE);
+            } else if (isDone(myTypes.C_BINARY_CONDITION) && isRawParent(myTypes.C_SWITCH_EXPR)) {
+                // switch (x) |>{<| ... }
+                markScope(myTypes.C_SWITCH_BODY, myTypes.LBRACE);
+            } else if (strictlyIn(myTypes.C_BINARY_CONDITION)) {
+                popEndUntilFoundIndex().end();
+                if (strictlyIn(myTypes.C_SWITCH_EXPR)) {
+                    // switch x |>{<| ... }
+                    markScope(myTypes.C_SWITCH_BODY, myTypes.LBRACE);
                 }
             } else {
-                state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
+                // it might be a js object
+                IElementType nextElement = lookAhead(1);
+                if (nextElement == myTypes.STRING_VALUE || nextElement == myTypes.DOT) {
+                    boolean hasDot = nextElement == myTypes.DOT;
+                    // js object detected ::  |>{<| ./"x" ___ }
+                    markScope(myTypes.C_JS_OBJECT, myTypes.LBRACE).advance();
+                    if (hasDot) {
+                        advance();
+                    }
+                } else {
+                    markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACE);
+                }
             }
         }
-    }
 
-    private void parseRParen(@NotNull ParserState state) {
-        ParserScope lparenScope = state.peekUntilScopeToken(m_types.LPAREN);
-        if (lparenScope != null && lparenScope.isResolution(genericExpression)) {
-            IElementType aheadType = state.lookAhead(1);
-            if (aheadType == m_types.ARROW && !state.in(m_types.C_SIG_ITEM)) {
-                // if current resolution is UNKNOWN and next item is an arrow, it means we are processing a
-                // function definition,
-                // we must rollback to the start of the scope and start the parsing again, but this time
-                // with exact information!
-                ParserScope startScope = state.popEndUntilOneOfElementType(m_types.LPAREN);
-                if (startScope != null) {
-                    startScope.rollbackTo();
-                    state.pop();
-                    state
-                            .mark(m_types.C_FUN_EXPR)
-                            .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
+        @Nullable private IElementType lookAheadSkipEOL() {
+            IElementType elementType = lookAhead(1);
+            if (elementType == myTypes.EOL) {
+                elementType = lookAhead(2);
+            }
+            return elementType;
+        }
+
+        private void parseRBrace() {
+            Marker scope = popEndUntilOneOfElementType(myTypes.LBRACE, myTypes.RECORD, myTypes.SWITCH);
+            advance();
+
+            if (scope != null) {
+                popEnd();
+
+                if (is(myTypes.C_LOCAL_OPEN) && !rawHasScope()) {
+                    // X.{ ... |>}<|
+                    popEnd();
+                } else if (is(myTypes.C_TAG_PROP_VALUE)) {
+                    popEndUntil(myTypes.C_TAG_PROPERTY).popEnd();
+                } else if (scope.isCompositeType(myTypes.C_RECORD_EXPR) && is(myTypes.C_TYPE_BINDING)) {
+                    // Record type, end the type itself
+                    popEndUntil(myTypes.C_TYPE_DECLARATION).popEnd();
+                }
+            }
+        }
+
+        private void parseLParen() {
+            if (previousElementType(2) == myTypes.A_MODULE_NAME && previousElementType(1) == myTypes.DOT) { // Local open
+                // M. |>(<| ... )
+                markScope(myTypes.C_LOCAL_OPEN, myTypes.LPAREN);
+            } else if (is(myTypes.C_MODULE_BINDING) && !in(myTypes.C_FUNCTOR_DECLARATION)) {
+                if (myBuilder.lookAhead(1) == myTypes.UNPACK) {
+                    // module M = |>(<| unpack .. )
+                    markDummyParenthesisScope();
+                } else {
+                    // This is a functor
+                    // module M = |>(<| .. )
+                    int moduleIndex = indexOfComposite(myTypes.C_MODULE_DECLARATION);
+                    dropLatest()
+                            .popEndUntilIndex(moduleIndex)
+                            .updateComposite(myTypes.C_FUNCTOR_DECLARATION)
+                            .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                            .mark(myTypes.C_PARAM_DECLARATION)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
+                }
+            } else if (is(myTypes.C_FUNCTION_EXPR)) { // A function
+                // |>(<| .  OR  |>(<| ~
+                markScope(myTypes.C_PARAMETERS, myTypes.LPAREN);
+            } else if (isCurrent(myTypes.C_FUNCTION_CALL)) {
+                // x |>(<| ...
+                markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance();
+                markHolder(myTypes.H_COLLECTION_ITEM);
+                if (getTokenType() != myTypes.RPAREN) {
+                    mark(myTypes.C_PARAM)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
+                }
+            } else if (isCurrent(myTypes.C_PARAM_DECLARATION) || isCurrent(myTypes.C_PARAM)) {
+                popIfHold();
+                if (!currentHasScope()) {
+                    updateScopeToken(myTypes.LPAREN);
+                } else {
+                    markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
+                }
+                advance().markHolder(myTypes.H_COLLECTION_ITEM);
+            } else if (isCurrent(myTypes.C_PARAMETERS)) {
+                if (!currentHasScope()) {
+                    // |>(<| ... ) => ...
+                    updateScopeToken(myTypes.LPAREN).advance()
+                            .markHolder(myTypes.H_COLLECTION_ITEM);
+                } else {
+                    // ( |>(<| ... ) , ... ) => ...
+                    mark(myTypes.C_PARAM_DECLARATION)
+                            .markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
+                }
+            } else if (is(myTypes.C_MACRO_NAME) && isRawParent(myTypes.C_ANNOTATION)) {
+                // @ann |>(<| ... )
+                popEnd()
+                        .markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
+            } else if (is(myTypes.C_MACRO_NAME)) {
+                // %raw |>(<| ...
+                popEnd()
+                        .markDummyScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
+                        .advance()
+                        .mark(myTypes.C_MACRO_BODY);
+            } else if (is(myTypes.C_BINARY_CONDITION)) {
+                updateScopeToken(myTypes.LPAREN);
+            } else if (is(myTypes.C_DECONSTRUCTION) && isRawParent(myTypes.C_LET_DECLARATION)) {
+                // let ((x |>,<| ...
+                markScope(myTypes.C_DECONSTRUCTION, myTypes.LPAREN);
+            }
+            //
+            else if (strictlyInAny(
+                    myTypes.C_OPEN, myTypes.C_INCLUDE, myTypes.C_FUNCTOR_DECLARATION, myTypes.C_FUNCTOR_RESULT
+            )) {
+
+                if (isFound(myTypes.C_OPEN) || isFound(myTypes.C_INCLUDE)) { // Functor call
+                    // open M |>(<| ...
+                    markBefore(0, myTypes.C_FUNCTOR_CALL)
+                            .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance();
+                } else if (isFound(myTypes.C_FUNCTOR_DECLARATION)) {
+                    // module M = |>(<| ...
+                    // module M = ( ... ) : |>(<| ...
+                    boolean isCall = isFound(myTypes.C_FUNCTOR_CALL);
+                    markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                            .mark(isCall ? myTypes.C_PARAM : myTypes.C_PARAM_DECLARATION);
+                }
+            } else {
+                Marker marker = getActiveMarker();
+                if (marker != null && marker.isCompositeType(myTypes.C_LET_BINDING) && !marker.hasScope()) {
+                    endLikeSemi2();
+                }
+                markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance()
+                        .markHolder(myTypes.H_COLLECTION_ITEM);
+            }
+        }
+
+        private void parseRParen() {
+            Marker lParen = popEndUntilScopeToken(myTypes.LPAREN);
+            advance();
+
+            IElementType nextTokenType = getTokenType();
+            if (is(myTypes.C_BINARY_CONDITION)) {
+                end();
+                if (isRawParent(myTypes.C_IF) && nextTokenType != myTypes.LBRACE) {
+                    // if ( x ) |><| ...
+                    mark(myTypes.C_IF_THEN_SCOPE);
+                }
+            } else if (lParen != null) {
+                if (nextTokenType == myTypes.ARROW && !isParent(myTypes.C_FUNCTION_EXPR) && !inAny(myTypes.C_SIG_EXPR, myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_FUNCTOR_DECLARATION)) {
+                    // a missed function expression
+                    rollbackToIndex(0)
+                            .markBefore(0, myTypes.C_FUNCTION_EXPR);
+                    if (lParen.isCompositeType(myTypes.C_PARAM)) {
+                        markBefore(1, myTypes.C_PARAM);
+                    }
+                    updateComposite(myTypes.C_PARAMETERS)
+                            .markHolder(myTypes.H_COLLECTION_ITEM);
+                } else if (nextTokenType == myTypes.ARROW && in(myTypes.C_PATTERN_MATCH_EXPR)) {
+                    popEndUntil(myTypes.C_PATTERN_MATCH_EXPR);
+                } else if (isRawParent(myTypes.C_FUNCTOR_DECLARATION)) {
+                    popEnd();
+                    if (nextTokenType == myTypes.COLON) {
+                        // module M = (P) |> :<| R ...
+                        advance();
+                        if (getTokenType() == myTypes.LPAREN) {
+                            markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
+                        }
+                        mark(myTypes.C_FUNCTOR_RESULT);
+                    } else if (nextTokenType == myTypes.ARROW) {
+                        // module M = (P) |>=><| ...
+                        advance().mark(myTypes.C_FUNCTOR_BINDING);
+                    }
+                } else if (is(myTypes.C_PARAMETERS)) {
+                    end();
+                    if (isRawGrandParent(myTypes.C_FUNCTION_CALL)) {
+                        popEnd().popEnd().popEnd();
+                    }
+                } else {
+                    popEnd();
+                    if (is(myTypes.C_ANNOTATION)) {
+                        popEnd();
+                    } else if (strictlyIn(myTypes.C_TAG_PROP_VALUE)) {
+                        popEndUntil(myTypes.C_TAG_PROPERTY).popEnd();
+                    }
+                }
+            }
+        }
+
+        private void parseEq() {
+            if (strictlyInAny(
+                    myTypes.C_TYPE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_MODULE_TYPE, myTypes.C_MODULE_DECLARATION,
+                    myTypes.C_TAG_PROPERTY, myTypes.C_SIG_EXPR, myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM
+            )) {
+
+                if (isFound(myTypes.C_TYPE_DECLARATION)) {
+                    // type t |> = <| ...
+                    popEndUntilFoundIndex().advance()
+                            .mark(myTypes.C_TYPE_BINDING);
+                } else if (isFound(myTypes.C_LET_DECLARATION)) {
+                    // let x |> = <| ...
+                    popEndUntilFoundIndex().advance()
+                            .mark(myTypes.C_LET_BINDING)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_MODULE_TYPE)) {
+                    // module M : T |> = <| ...
+                    popEndUntilFoundIndex().end()
                             .advance()
-                            .mark(m_types.C_FUN_PARAM);
-                    return;
+                            .mark(myTypes.C_MODULE_BINDING);
+                } else if (isFound(myTypes.C_MODULE_DECLARATION)) {
+                    // module M |> = <| ...
+                    advance().mark(myTypes.C_MODULE_BINDING);
+                } else if (isFound(myTypes.C_TAG_PROPERTY)) {
+                    // <Comp prop |> = <| ...
+                    advance().mark(myTypes.C_TAG_PROP_VALUE)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_SIG_EXPR)) {
+                    popEndUntilFoundIndex();
+                    if (isRawGrandParent(myTypes.H_NAMED_PARAM_DECLARATION)) {
+                        popEndUntilIndex(2)
+                                .advance().mark(myTypes.C_DEFAULT_VALUE);
+                    } else if (isRawParent(myTypes.C_LET_DECLARATION)) {
+                        // let x : M.t |> =<| ...
+                        end().popEndUntilFoundIndex()
+                                .advance().mark(myTypes.C_LET_BINDING);
+                    } else {
+                        end();
+                    }
+                } else if (isFound(myTypes.H_NAMED_PARAM_DECLARATION) || isFound(myTypes.C_NAMED_PARAM)) {
+                    // ( ~x |> =<| ...
+                    popEndUntilFoundIndex()
+                            .advance().mark(myTypes.C_DEFAULT_VALUE)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
+                }
+
+            }
+        }
+
+        private void parseUIdent() {
+            if (DUMMY_IDENTIFIER_TRIMMED.equals(getTokenText())) {
+                return;
+            }
+
+            if (is(myTypes.C_MODULE_DECLARATION)) {
+                // module |>M<| ...
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_MODULE_BINDING)) {
+                IElementType nextElement = lookAhead(1);
+                if (nextElement == myTypes.LPAREN) {
+                    // functor call ::  |>X<| ( ...
+                    // functor call with path :: A.B.|>X<| ( ...
+                    mark(myTypes.C_FUNCTOR_CALL)
+                            .remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL)
+                            .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                            .mark(myTypes.C_PARAM);
+                } else {
+                    // module M = |>X<|
+                    // module M = X.|>Y<|
+                    remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                    if (nextElement != myTypes.DOT) {
+                        popEndUntil(myTypes.C_MODULE_DECLARATION).popEnd();
+                    }
+                }
+            } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
+                // exception |>E<| ...
+                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_TAG_START) || isCurrent(myTypes.C_TAG_CLOSE)) {
+                // tag name
+                remapCurrentToken(myTypes.A_UPPER_TAG_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_OPEN)) { // It is a module name/path, or maybe a functor call
+                // open |>M<| ...
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                IElementType nextToken = getTokenType();
+                if (nextToken != myTypes.LPAREN && nextToken != myTypes.DOT) {
+                    popEndUntil(myTypes.C_OPEN).popEnd();
+                }
+            } else if (isCurrent(myTypes.C_INCLUDE)) { // It is a module name/path, or maybe a functor call
+                // include |>M<| ...
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                IElementType nextToken = getTokenType();
+                if (nextToken != myTypes.LPAREN && nextToken != myTypes.DOT) {
+                    popEndUntil(myTypes.C_INCLUDE).popEnd();
+                }
+            } else if (is(myTypes.C_VARIANT_DECLARATION)) { // Declaring a variant
+                // type t = | |>X<| ..
+                remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                if (getTokenType() == myTypes.LPAREN) {
+                    markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                            .mark(myTypes.C_PARAM_DECLARATION);
+                }
+            } else if (is(myTypes.C_TYPE_BINDING)) {
+                IElementType nextToken = lookAhead(1);
+                if (nextToken == myTypes.DOT) { // a path
+                    remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                } else { // We are declaring a variant without a pipe before
+                    // type t = |>X<| | ...
+                    // type t = |>X<| (...) | ...
+                    mark(myTypes.C_VARIANT_DECLARATION)
+                            .remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                    if (getTokenType() == myTypes.LPAREN) {
+                        markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                                .mark(myTypes.C_PARAM_DECLARATION);
+                    }
+                }
+            } else {
+                IElementType nextToken = lookAhead(1);
+
+                if (((isCurrent(myTypes.C_PATTERN_MATCH_EXPR) || isCurrent(myTypes.C_LET_BINDING))) && nextToken != myTypes.DOT) { // Pattern matching a variant or using it
+                    // switch c { | |>X<| ... / let x = |>X<| ...
+                    remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                    if (getTokenType() == myTypes.LPAREN) {
+                        markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                                .markHolder(myTypes.H_COLLECTION_ITEM);
+                    }
+                } else {
+                    endLikeSemi2();
+                    remapCurrentToken(nextToken == myTypes.RIGHT_ARROW ? myTypes.A_VARIANT_NAME : myTypes.A_MODULE_NAME)
+                            .wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
             }
         }
 
-        lparenScope = state.popEndUntilOneOfElementType(m_types.LPAREN);
-        state.advance();
-        IElementType nextTokenType = state.getTokenType();
-
-        if (lparenScope != null) {
-            if (nextTokenType == m_types.QUESTION_MARK && !state.isPrevious(m_types.C_TERNARY)) {
-                // ( ... |>)<| ? ...
-                state
-                        .precedeScope(m_types.C_TERNARY)
-                        .updateCurrentCompositeElementType(m_types.C_BINARY_CONDITION);
+        private void parsePolyVariant() {
+            if (isRawParent(myTypes.C_TYPE_BINDING)) {
+                // type t = [ |>#xxx<| ...
+                mark(myTypes.C_VARIANT_DECLARATION);
             }
+            advance();
+            markParenthesisScope(false);
+        }
 
-            state.popEnd();
+        private void parseSwitch() {
+            mark(myTypes.C_SWITCH_EXPR)
+                    .advance()
+                    .mark(myTypes.C_BINARY_CONDITION);
+        }
 
-            if (state.is(m_types.C_VARIANT_DECLARATION)) {
-                state.popEndUntil(m_types.C_TYPE_BINDING);
-            } else if (state.is(m_types.C_ANNOTATION)) {
-                state.popEnd();
-            } else if (state.is(m_types.C_TAG_PROP_VALUE) && !state.hasScopeToken()) {
-                state.popEnd().popEnd();
-            } else if (state.is(m_types.C_TAG_PROPERTY)) {
-                state.popEnd();
-            } else if (nextTokenType == m_types.ARROW && (lparenScope.isCompositeType(m_types.C_SIG_ITEM) || (lparenScope.isCompositeType(m_types.C_DUMMY) && state.is(m_types.C_SIG_EXPR)))) {
-                state.advance().mark(m_types.C_SIG_ITEM);
+        private void parseTry() {
+            popEndUntilScope();
+            mark(myTypes.C_TRY_EXPR).advance()
+                    .mark(myTypes.C_TRY_BODY);
+        }
+
+        private void parseCatch() {
+            if (strictlyIn(myTypes.C_TRY_BODY)) {
+                popEndUntilFoundIndex().end();
             }
         }
-    }
 
-    private void parseEq(@NotNull ParserState state) {
-        // Intermediate constructions
-        if (state.in(m_types.C_SIG_EXPR)) {
-            state.popEndUntil(m_types.C_SIG_EXPR).popEnd();
-        }
-
-        // type t |> = <| ...
-        if (state.is(m_types.C_TYPE_DECLARATION)) {
-            state.advance().mark(m_types.C_TYPE_BINDING);
-        }
-        // let x  |> = <| ...
-        else if (state.is(m_types.C_LET_DECLARATION)) {
-            state.advance().mark(m_types.C_LET_BINDING);
-        }
-        //
-        else if (state.is(m_types.C_TAG_PROPERTY)) {
-            state.advance().mark(m_types.C_TAG_PROP_VALUE);
-        }
-        // module M |> = <| ...
-        else if (state.is(m_types.C_MODULE_DECLARATION)) {
-            state.advance().mark(m_types.C_DUMMY).dummy().resolution(moduleBinding);
-        }
-        // module M : T |> =<| ...
-        else if (state.is(m_types.C_MODULE_TYPE)) {
-            state.popEnd();
-            state.advance().mark(m_types.C_DUMMY).dummy().resolution(moduleBinding);
-        }
-        // ~x |> =<| ...
-        else if (state.is(m_types.C_NAMED_PARAM)) {
-            state.advance().mark(m_types.C_DEFAULT_VALUE);
-        }
-    }
-
-    private void parseSemi(@NotNull ParserState state) {
-        if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
-            state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
-        }
-
-        if (!state.is(m_types.C_PATTERN_MATCH_BODY)) {
-            // Don't pop the scopes
-            state.popEndUntilScope();
-        }
-    }
-
-    private void parseUIdent(@NotNull ParserState state) {
-        if (DUMMY_IDENTIFIER_TRIMMED.equals(state.getTokenText())) {
-            return;
-        }
-        if (state.is(m_types.C_MODULE_DECLARATION)) {
-            // module |>M<| ...
-            state.wrapWith(m_types.C_UPPER_IDENTIFIER);
-            return;
-        }
-        if (state.is(m_types.C_EXCEPTION_DECLARATION)) {
-            // exception |>E<| ...
-            state.wrapWith(m_types.C_UPPER_IDENTIFIER);
-            return;
-        }
-
-        if (state.is(m_types.C_OPEN)) {
-            // It is a module name/path, or maybe a functor call ::  open |>M<| ...
-            state.markOptional(m_types.C_FUNCTOR_CALL);
-        } else if (state.is(m_types.C_INCLUDE)) {
-            // It is a module name/path, or maybe a functor call ::  include |>M<| ...
-            state.markOptional(m_types.C_FUNCTOR_CALL);
-        } else if (state.isCurrentResolution(moduleBinding)) {
-            // it might be a module functor call ::  module M = |>X<| ( ... )
-            state.markOptional(m_types.C_FUNCTOR_CALL);
-        } else if ((state.is(m_types.C_TAG_START) || state.is(m_types.C_TAG_CLOSE))
-                && state.previousElementType1 == m_types.DOT) {
-            // a namespaced custom component
-            state.remapCurrentToken(m_types.TAG_NAME);
-        } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
-            // Declaring a variant ::  type t = | |>X<| ..
-            state.wrapWith(m_types.C_UPPER_IDENTIFIER);
-            return;
-        } else if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
-            IElementType nextElementType = state.lookAhead(1);
-            if (nextElementType != m_types.DOT) {
-                // Defining a pattern match ::  switch (c) { | |>X<| .. }
-                state
-                        .remapCurrentToken(m_types.VARIANT_NAME)
-                        .wrapWith(m_types.C_VARIANT)
-                        .resolution(patternMatchVariant);
-
-                return;
+        private void parseWith() {
+            if (strictlyInAny(myTypes.C_FUNCTOR_RESULT, myTypes.C_MODULE_TYPE)) {
+                // module M (X) : ( S |>with<| ... ) = ...
+                popEndUntilFoundIndex().popEnd().advance()
+                        .mark(myTypes.C_CONSTRAINTS);
             }
-        } else {
-            IElementType nextElementType = state.lookAhead(1);
+        }
 
-            if (state.is(m_types.C_MODULE_TYPE)) {
-                // a module with a signature type ::  module M : |>T<| ...
-                state.mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
-            } else if (state.is(m_types.C_TYPE_BINDING)
-                    && (nextElementType == m_types.PIPE || nextElementType == m_types.LPAREN)) {
-                // We are declaring a variant without a pipe before
-                // type t = |>X<| | ...
-                // type t = |>X<| (...) | ...
-                state
-                        .remapCurrentToken(m_types.VARIANT_NAME)
-                        .mark(m_types.C_VARIANT_DECLARATION)
-                        .wrapWith(m_types.C_UPPER_IDENTIFIER);
-                return;
-            } else if (!isOptionalFunctorCall(state)) {
-                if (nextElementType == m_types.LPAREN) {
-                    state.remapCurrentToken(m_types.VARIANT_NAME);
-                    state.wrapWith(m_types.C_VARIANT);
-                    return;
-                } else if (nextElementType != m_types.DOT) {
-                    // Must be a variant call
-                    state.remapCurrentToken(m_types.VARIANT_NAME).wrapWith(m_types.C_VARIANT);
-                    return;
+        private void parseArrow() {
+            //if (isDone(myTypes.C_PARAMETERS) && isRawParent(myTypes.C_FUNCTION_EXPR)) {
+            //    advance().mark(myTypes.C_FUNCTION_BODY);
+            //} else if (strictlyIn(myTypes.C_PARAMETERS) && !hasScopeAtIndex(getIndex()) && isAtIndex(getIndex() + 1, myTypes.C_FUNCTION_EXPR)) { // parenless param
+            //    // x |>=><| ...
+            //    popEndUntil(myTypes.C_PARAMETERS).end()
+            //            .advance().mark(myTypes.C_FUNCTION_BODY)
+            //            .markHolder(myTypes.H_PLACE_HOLDER);
+            //} else
+            if (inScopeOrAny(
+                    myTypes.C_PATTERN_MATCH_EXPR,
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_PARAMETERS,
+                    myTypes.C_SIG_EXPR, myTypes.C_SIG_ITEM,
+                    //        myTypes.C_LET_BINDING,
+                    //        myTypes.C_FIELD_VALUE, myTypes.C_FUNCTION_EXPR,
+                    //        , myTypes.C_TAG_PROP_VALUE,
+                    myTypes.C_FUNCTOR_RESULT
+            )) {
+                if (isFound(myTypes.C_PARAMETERS) || isFound(myTypes.C_FUNCTION_EXPR)) {
+                    popEndUntilOneOf(myTypes.C_PARAMETERS, myTypes.C_FUNCTION_EXPR);
+                    if (isRawParent(myTypes.C_FUNCTION_EXPR) || isRawParent(myTypes.C_FUNCTION_CALL)) {
+                        popEnd();
+                    }
+                    advance().mark(myTypes.C_FUNCTION_BODY)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_SIG_EXPR)) {
+                    advance().mark(myTypes.C_SIG_ITEM);
+                } else if (isFound(myTypes.C_SIG_ITEM)) {
+                    popEndUntilFoundIndex().popEnd();
+                    advance().mark(myTypes.C_SIG_ITEM);
+                } else if (isFound(myTypes.C_PATTERN_MATCH_EXPR)) {
+                    // switch ( ... ) { | ... |>=><| ... }
+                    popEndUntilFoundIndex().advance()
+                            .markScope(myTypes.C_PATTERN_MATCH_BODY, myTypes.ARROW)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_PARAM_DECLARATION)) { // anonymous function
+                    // x( y |>=><| ... )
+                    popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
+                            .mark(myTypes.C_FUNCTION_BODY)
+                            .markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_FUNCTOR_RESULT)) {
+                    // module Make = (M) : R |>=><| ...
+                    popEndUntilFoundIndex().popEnd()
+                            .advance().mark(myTypes.C_FUNCTOR_BINDING);
                 }
             }
         }
 
-        state.wrapWith(m_types.C_UPPER_SYMBOL);
-    }
-
-    private void parsePolyVariant(@NotNull ParserState state) {
-        if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
-            IElementType nextElementType = state.lookAhead(1);
-            if (nextElementType == m_types.LPAREN) {
-                state.wrapWith(m_types.C_VARIANT);
-                state.resolution(patternMatchVariant);
+        // Languages with no delimiter are so bad for parsers
+        private void endLikeSemi2() {
+            IElementType previousType = previousElementType(1);
+            if (previousType != myTypes.EQ
+                    && previousType != myTypes.EQEQ
+                    && previousType != myTypes.EQEQEQ
+                    && previousType != myTypes.NOT_EQ
+                    && previousType != myTypes.NOT_EQEQ
+                    && previousType != myTypes.DOT
+                    && previousType != myTypes.ARROW
+                    && previousType != myTypes.PIPE
+                    && previousType != myTypes.RIGHT_ARROW
+                    && previousType != myTypes.TRY
+                    && previousType != myTypes.SEMI
+                    && previousType != myTypes.THEN
+                    && previousType != myTypes.ELSE
+                    && previousType != myTypes.IN
+                    && previousType != myTypes.LPAREN
+                    && previousType != myTypes.LBRACE
+                    && previousType != myTypes.LBRACKET
+                    && previousType != myTypes.DO
+                    && previousType != myTypes.STRUCT
+                    && previousType != myTypes.SIG
+                    && previousType != myTypes.COLON
+                    && previousType != myTypes.COMMA
+                    && previousType != myTypes.L_OR
+            ) {
+                Marker marker = getActiveMarker();
+                boolean end = marker == null || !marker.isCompositeType(myTypes.C_BINARY_CONDITION);
+                if (end) {
+                    popEndUntilScope();
+                }
             }
         }
-    }
 
-    private void parseSwitch(@NotNull ParserState state) {
-        boolean inScope = state.isScopeTokenElementType(m_types.LBRACE);
-        state
-                .mark(m_types.C_SWITCH_EXPR)
-                .setStart(inScope)
-                .advance()
-                .mark(m_types.C_BINARY_CONDITION);
-    }
-
-    private void parseTry(@NotNull ParserState state) {
-        endLikeSemi(state);
-        state
-                .mark(m_types.C_TRY_EXPR)
-                .advance()
-                .mark(m_types.C_TRY_BODY);
-    }
-
-    private void parseCatch(@NotNull ParserState state) {
-        if (state.is(m_types.C_TRY_BODY)) {
-            state.popEnd();
-        }
-    }
-
-    private void parseArrow(@NotNull ParserState state) {
-        if (state.is(m_types.C_FUN_EXPR) || state.is(m_types.C_FUN_PARAM)) {
-            // param(s) |>=><| body
-            state.popEndUntilOneOf(m_types.C_FUN_EXPR, m_types.C_FUN_CALL_PARAMS);
-            state.advance().mark(m_types.C_FUN_BODY);
-        } else if (state.is(m_types.C_SIG_EXPR)) {
-            state.advance().mark(m_types.C_SIG_ITEM);
-        } else if (state.is(m_types.C_SIG_ITEM)) {
-            state.popEnd();
-            //if (!state.isCurrentResolution(signatureScope)) {
-            //    state.popEndUntil(m_types.C_SIG_EXPR);
-            //}
-            state.advance().mark(m_types.C_SIG_ITEM);
-        } else if (state.is(m_types.C_FUNCTOR_DECLARATION)
-                || state.isCurrentResolution(functorNamedEqColon)
-                || state.is(m_types.C_FUNCTOR_RESULT)) {
-            // module Make = (M) : R |>=><| ...
-            if (state.is(m_types.C_FUNCTOR_RESULT)) {
-                state.popEnd();
+        private void advanceSkipEOL() {
+            advance();
+            while (getTokenType() == myTypes.EOL) {
+                advance();
             }
-            state.advance().mark(m_types.C_FUNCTOR_BINDING);
-        } else if (state.isCurrentResolution(patternMatchVariant)
-                || state.is(m_types.C_VARIANT_CONSTRUCTOR)
-                || state.isCurrentResolution(patternMatchValue)) {
-            // switch ( ... ) { | ... |>=><| ... }
-            state.advance().mark(m_types.C_PATTERN_MATCH_BODY).setStart();
         }
-    }
-
-    private void endLikeSemi(@NotNull ParserState state) {
-        state.popEndUntilScope();
-    }
-
-    private boolean isOptionalFunctorCall(@NotNull ParserState state) {
-        return state.is(m_types.C_FUNCTOR_CALL) && state.isOptional();
     }
 }

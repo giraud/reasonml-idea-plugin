@@ -2,6 +2,8 @@ package com.reason.ide.reference;
 
 import com.intellij.usageView.*;
 import com.reason.ide.*;
+import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 
@@ -13,5 +15,12 @@ public class FindUIdentUsagesOCLTest extends ORBasePlatformTestCase {
         Collection<UsageInfo> usages = myFixture.testFindUsages("A.ml");
         assertSize(1, usages);
         assertEquals("raise ExceptionName", usages.iterator().next().getElement().getParent().getText());
+    }
+
+    public void test_module() {
+        configureCode("A.ml", "module M<caret>\n let x = M.x");
+
+        List<UsageInfo> usages = findUsages("A.ml");
+        assertEquals("M.x", usages.get(0).getElement().getParent().getText());
     }
 }

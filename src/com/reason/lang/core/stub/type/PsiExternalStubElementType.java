@@ -13,24 +13,19 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStub, PsiExternal> {
-    public static final int VERSION = 9;
-
-    public PsiExternalStubElementType(@Nullable Language language) {
-        super("C_EXTERNAL_DECLARATION", language);
+    public PsiExternalStubElementType(@NotNull String name, @Nullable Language language) {
+        super(name, language);
     }
 
-    @NotNull
-    public PsiExternalImpl createPsi(@NotNull PsiExternalStub stub) {
+    public @NotNull PsiExternalImpl createPsi(@NotNull PsiExternalStub stub) {
         return new PsiExternalImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    @NotNull
-    public PsiExternalImpl createPsi(@NotNull ASTNode node) {
+    public @NotNull PsiExternalImpl createPsi(@NotNull ASTNode node) {
         return new PsiExternalImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    @NotNull
-    public PsiExternalStub createStub(@NotNull PsiExternal psi, StubElement parentStub) {
+    public @NotNull PsiExternalStub createStub(@NotNull PsiExternal psi, @Nullable StubElement parentStub) {
         String[] path = psi.getPath();
         return new PsiExternalStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.isFunction());
     }
@@ -41,13 +36,12 @@ public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStu
         dataStream.writeBoolean(stub.isFunction());
     }
 
-    @NotNull
-    public PsiExternalStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public @NotNull PsiExternalStub deserialize(@NotNull StubInputStream dataStream, @Nullable StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
         boolean isFunction = dataStream.readBoolean();
 
-        return new PsiExternalStub(parentStub, this, name, path, isFunction);
+        return new PsiExternalStub(parentStub, this, name, path == null ? EMPTY_PATH : path, isFunction);
     }
 
     public void indexStub(@NotNull PsiExternalStub stub, @NotNull IndexSink sink) {
@@ -57,8 +51,7 @@ public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStu
         }
     }
 
-    @NotNull
-    public String getExternalId() {
+    public @NotNull String getExternalId() {
         return getLanguage().getID() + "." + super.toString();
     }
 }

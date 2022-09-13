@@ -9,15 +9,16 @@ import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 public final class ORTypesUtil {
+    private ORTypesUtil() {
+    }
 
-  @NotNull
-  public static ORTypes getInstance(@NotNull Language language) {
-    if (language instanceof OclLanguage) {
-      return OclTypes.INSTANCE;
+    public static @NotNull ORTypes getInstance(@NotNull Language language) {
+        if (language instanceof OclLanguage) {
+            return OclTypes.INSTANCE;
+        }
+        if (language instanceof ResLanguage) {
+            return ResTypes.INSTANCE;
+        }
+        return RmlTypes.INSTANCE;
     }
-    if (language instanceof ResLanguage) {
-      return ResTypes.INSTANCE;
-    }
-    return RmlTypes.INSTANCE;
-  }
 }

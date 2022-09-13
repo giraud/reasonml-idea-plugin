@@ -51,8 +51,6 @@ function Feature({imageUrl, title, placement, description}) {
 }
 
 function Home() {
-  const context = useDocusaurusContext();
-  const {siteConfig = {}} = context;
   return (
     <Layout
       description="Description will go into a meta tag in <head />">

@@ -21,8 +21,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         PsiBinaryCondition condition = ORUtil.findImmediateFirstChildOfClass(switch_, PsiBinaryCondition.class);
         assertEquals("x", condition.getText());
 
-        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(switch_, PsiScopedExpr.class);
-        List<PsiPatternMatch> patterns = ORUtil.findImmediateChildrenOfClass(scope, PsiPatternMatch.class);
+        List<PsiPatternMatch> patterns = switch_.getPatterns();
         assertSize(2, patterns);
 
         assertEmpty(PsiTreeUtil.findChildrenOfType(switch_, PsiVariantDeclaration.class));
@@ -49,11 +48,10 @@ public class SwitchParsingTest extends ResParsingTestCase {
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
         assertNotNull(switch_);
 
-        PsiBinaryCondition condition = ORUtil.findImmediateFirstChildOfClass(switch_, PsiBinaryCondition.class);
+        PsiBinaryCondition condition = switch_.getCondition();
         assertEquals("x", condition.getText());
 
-        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(switch_, PsiScopedExpr.class);
-        List<PsiPatternMatch> patterns = ORUtil.findImmediateChildrenOfClass(scope, PsiPatternMatch.class);
+        List<PsiPatternMatch> patterns = switch_.getPatterns();
         assertSize(2, patterns);
 
         assertEmpty(PsiTreeUtil.findChildrenOfType(switch_, PsiVariantDeclaration.class));
@@ -89,7 +87,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         FileBase f = parseCode("switch p { | Typedtree.Partial => \"Partial\" | Total => \"Total\" }");
         PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
 
-        List<PsiPatternMatch> patterns = new ArrayList<>(ORUtil.findImmediateChildrenOfClass(ORUtil.findImmediateFirstChildOfClass(e, PsiScopedExpr.class), PsiPatternMatch.class));
+        List<PsiPatternMatch> patterns = e.getPatterns();
         assertSize(2, patterns);
 
         PsiPatternMatch m1 = patterns.get(0);
@@ -104,18 +102,14 @@ public class SwitchParsingTest extends ResParsingTestCase {
         FileBase f = parseCode("let greeting = name => switch name { | FirstName(fn) => \"hello \" ++ fn | LastName(ln) => \"hello \" ++ ln }");
         PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
 
-        List<PsiPatternMatch> patterns =
-                new ArrayList<>(
-                        ORUtil.findImmediateChildrenOfClass(
-                                ORUtil.findImmediateFirstChildOfClass(e, PsiScopedExpr.class),
-                                PsiPatternMatch.class));
+        List<PsiPatternMatch> patterns = e.getPatterns();
         assertSize(2, patterns);
     }
 
     public void test_let() {
         PsiLet e = first(letExpressions(parseCode("let makeId = () => switch id { | None => text | Some(i) => i }")));
 
-        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+        PsiFunction function = e.getFunction();
         assertEquals("switch id { | None => text | Some(i) => i }", function.getBody().getText());
     }
 
@@ -160,11 +154,9 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertEquals("Unknown => None", patterns.get(3).getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/275
+    // https://github.com/giraud/reasonml-idea-plugin/issues/275
     public void test_GH_275() {
-        PsiFunction e = firstOfType(
-                parseCode("items->Belt.Array.map(i => switch (i: t) { | Value => 1 })"),
-                PsiFunction.class);
+        PsiFunction e = firstOfType(parseCode("items->Belt.Array.map(i => switch (i: t) { | Value => 1 })"), PsiFunction.class);
 
         assertEquals("i => switch (i: t) { | Value => 1 }", e.getText());
         PsiSwitch s = (PsiSwitch) e.getBody().getFirstChild();

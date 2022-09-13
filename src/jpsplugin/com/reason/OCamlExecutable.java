@@ -11,7 +11,6 @@ import com.intellij.openapi.vfs.impl.wsl.*;
 import com.intellij.util.containers.*;
 import org.jetbrains.annotations.*;
 
-import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 

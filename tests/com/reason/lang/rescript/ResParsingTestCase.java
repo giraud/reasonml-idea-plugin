@@ -7,7 +7,7 @@ import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 
 abstract class ResParsingTestCase extends BaseParsingTestCase {
-    public ORTypes m_types = ResTypes.INSTANCE;
+    public ORTypes myTypes = ResTypes.INSTANCE;
 
     protected ResParsingTestCase() {
         super("", "res", new ResParserDefinition());

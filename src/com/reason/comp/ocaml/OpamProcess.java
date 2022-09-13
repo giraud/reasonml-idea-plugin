@@ -6,7 +6,6 @@ import com.intellij.execution.process.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.text.StringUtil;
-import com.reason.comp.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 

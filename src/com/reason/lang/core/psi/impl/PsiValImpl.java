@@ -30,7 +30,7 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implem
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerSymbol.class, PsiScopedExpr.class);
     }
 
     @Override
@@ -73,6 +73,18 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implem
     //endregion
 
     @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
+
+    @Override
     public boolean isFunction() {
         PsiValStub stub = getGreenStub();
         if (stub != null) {
@@ -113,10 +125,5 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implem
                 return ORIcons.VAL;
             }
         };
-    }
-
-    @Override
-    public @Nullable String toString() {
-        return "Val " + getQualifiedName();
     }
 }

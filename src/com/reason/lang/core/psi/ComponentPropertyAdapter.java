@@ -2,6 +2,7 @@ package com.reason.lang.core.psi;
 
 import com.intellij.psi.*;
 import com.reason.lang.*;
+import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -27,7 +28,7 @@ public class ComponentPropertyAdapter {
         }
     }
 
-    public ComponentPropertyAdapter(@NotNull PsiParameter parameter) {
+    public ComponentPropertyAdapter(@NotNull PsiParameterDeclaration parameter) {
         myPsiElement = parameter;
         myName = parameter.getName();
         PsiSignature signature = parameter.getSignature();

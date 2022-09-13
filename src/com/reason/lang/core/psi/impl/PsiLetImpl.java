@@ -9,7 +9,6 @@ import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiLiteralExpression;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.core.stub.*;
@@ -36,7 +35,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class, PsiLiteralExpression.class/*rescript custom operator*/, PsiUnit.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerSymbol.class, PsiScopedExpr.class, PsiDeconstruction.class, PsiLiteralExpression.class/*rescript custom operator*/, PsiUnit.class);
     }
 
     @Override
@@ -48,16 +47,35 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
 
         PsiElement nameIdentifier = getNameIdentifier();
         IElementType nameType = nameIdentifier == null ? null : nameIdentifier.getNode().getElementType();
-        return nameType == null || nameType == m_types.UNDERSCORE || nameType == m_types.C_UNIT
+        return nameType == null || nameType == myTypes.UNDERSCORE || nameType == myTypes.C_UNIT
                 ? null
                 : nameIdentifier.getText();
     }
 
     @Override
     public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        PsiElement id = getNameIdentifier();
+        PsiElement newId = ORCodeFactory.createLetName(getProject(), name);
+        // deconstruction ???
+        if (id != null && newId != null) {
+            id.replace(newId);
+        }
+
         return this;
     }
     // endregion
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
 
     //region PsiQualifiedName
     @Override
@@ -98,7 +116,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
         PsiElement scope = ORUtil.findImmediateFirstChildOfClass(this, PsiDeconstruction.class);
         if (scope != null) {
             for (PsiElement element : scope.getChildren()) {
-                if (element.getNode().getElementType() != m_types.COMMA) {
+                if (element.getNode().getElementType() != myTypes.COMMA) {
                     result.add(element);
                 }
             }
@@ -152,7 +170,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
             }
         }
 
-        if (m_types instanceof RmlTypes) {
+        if (myTypes instanceof RmlTypes) {
             PsiLetBinding binding = findChildByClass(PsiLetBinding.class);
             return binding != null && binding.getFirstChild() instanceof PsiFunction;
         }
@@ -249,6 +267,11 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
             return true;
         }
 
+        PsiElement underscore = ORUtil.findImmediateFirstChildOfType(this, myTypes.UNDERSCORE);
+        if (underscore != null) {
+            return true;
+        }
+
         PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
         return scope != null && !scope.isEmpty();
     }
@@ -290,9 +313,9 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
     }
     // endregion
 
-    @Nullable
+
     @Override
     public String toString() {
-        return "Let " + getQualifiedName();
+        return "PsiLet:" + getName();
     }
 }

@@ -13,12 +13,6 @@ class OCamlModuleWizardStep extends ModuleWizardStep {
     private JPanel c_rootPanel;
     private @Nullable JdkComboBox c_sdk;
 
-    private final WizardContext m_context;
-
-    public OCamlModuleWizardStep(WizardContext context) {
-        m_context = context;
-    }
-
     public JComponent getComponent() {
         return c_rootPanel;
     }

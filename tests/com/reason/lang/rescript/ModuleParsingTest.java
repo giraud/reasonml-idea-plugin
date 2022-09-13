@@ -1,36 +1,53 @@
 package com.reason.lang.rescript;
 
 import com.intellij.psi.*;
+import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.reason.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ModuleParsingTest extends ResParsingTestCase {
     public void test_empty() {
-        Collection<PsiModule> modules = moduleExpressions(parseCode("module M = {}"));
+        PsiModule e = firstOfType(parseCode("module M = {}"), PsiModule.class);
 
-        assertEquals(1, modules.size());
-        PsiInnerModule e = (PsiInnerModule) first(modules);
         assertEquals("M", e.getName());
+        assertEquals(ResTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
         assertEquals("{}", e.getBody().getText());
     }
 
     public void test_alias() {
-        PsiModule module = firstOfType(parseCode("module M = Y"), PsiInnerModule.class);
+        PsiModule e = firstOfType(parseCode("module M = Y"), PsiModule.class);
 
-        assertEquals("M", module.getName());
-        assertEquals("Y", module.getAlias());
+        assertEquals("M", e.getName());
+        assertEquals("Y", e.getAlias());
+        assertEquals("Y", e.getAliasSymbol().getText());
+        assertEquals(myTypes.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
-    public void test_aliasPath() {
-        PsiModule module = first(moduleExpressions(parseCode("module M = Y.Z")));
+    public void test_alias_path() {
+        PsiModule e = firstOfType(parseCode("module M = Y.Z"), PsiModule.class);
 
-        assertEquals("M", module.getName());
-        assertEquals("Y.Z", module.getAlias());
+        assertEquals("M", e.getName());
+        assertEquals("Y.Z", e.getAlias());
+        assertEquals("Z", e.getAliasSymbol().getText());
+        assertEquals(myTypes.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
+    }
+
+    public void test_alias_inner() {
+        PsiModule e = firstOfType(parseCode("module A = { module B = C.D }"), PsiModule.class);
+
+        PsiModule ee = PsiTreeUtil.findChildOfType(e.getBody(), PsiModule.class);
+        assertEquals("B", ee.getName());
+        assertEquals("C.D", ee.getBody().getText());
+        assertEquals("C.D", ee.getAlias());
+        assertEquals("D", ee.getAliasSymbol().getText());
+        assertEquals(myTypes.A_MODULE_NAME, ee.getAliasSymbol().getNode().getElementType());
     }
 
     public void test_module_type() {
@@ -57,6 +74,9 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("Router", module.getName());
         assertEquals("{ let watchUrl: (url => unit) => watcherID }", module.getModuleType().getText());
         assertNull(module.getBody());
+        assertNull(PsiTreeUtil.findChildOfType(file, PsiScopedExpr.class));
+        PsiLet let = PsiTreeUtil.findChildOfType(file, PsiLet.class);
+        assertEquals("(url => unit) => watcherID", let.getSignature().getText());
     }
 
     public void test_interface_sig_body() {
@@ -75,11 +95,6 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("{ type t = int }", e.getBody().getText());
     }
 
-    public void test_moduleOpenVariant() {
-        FileBase file = parseCode("ModelActions.UserCapabilitiesLoaded.( UserCapabilitiesBuilder.( ) ),");
-        assertEquals(6, childrenCount(file));
-    }
-
     public void test_annotation_after() {
         FileBase e = parseCode("module M = {}\n@module(\"x\")");
 
@@ -88,5 +103,13 @@ public class ModuleParsingTest extends ResParsingTestCase {
 
         assertEquals("module M = {}", m.getText());
         assertEquals("@module", a.getName());
+    }
+
+    public void test_decode_first_class_module() {
+        PsiModule e = firstOfType(parseCode("module M = (unpack selectors)"), PsiModule.class);
+
+        assertFalse(e instanceof PsiFunctor);
+        assertEquals("M", e.getName());
+        assertEquals("(unpack selectors)", e.getBody().getText());
     }
 }

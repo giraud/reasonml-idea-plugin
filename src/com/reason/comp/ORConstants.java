@@ -18,4 +18,7 @@ public class ORConstants {
     public static final String RESCRIPT_DIR = "rescript";
 
     public static final String BS_DIR = "bs-platform";
+
+    private ORConstants() {
+    }
 }

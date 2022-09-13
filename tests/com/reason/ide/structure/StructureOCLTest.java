@@ -20,6 +20,15 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertEquals("x", pres.getPresentableText());
     }
 
+    public void test_let_underscore() {
+        FileBase a = configureCode("A.ml", "let _ = ()");
+        StructureViewModel model = new ORStructureViewModel(a);
+
+        TreeElement e = model.getRoot().getChildren()[0];
+        ItemPresentation pres = e.getPresentation();
+        assertEquals("_", pres.getPresentableText());
+    }
+
     public void test_deconstruction() {
         FileBase a = configureCode("A.ml", "let (a, b) = x");
         StructureViewModel model = new ORStructureViewModel(a);
@@ -79,10 +88,10 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         TreeElement e = model.getRoot().getChildren()[0];
         assertPresentation("X", "", ORIcons.INNER_MODULE, e.getPresentation());
         TreeElement ee = e.getChildren()[0];
-// zzz        assertPresentation("A.Vcs.Branch", "", ORIcons.MODULE_TYPE, ee.getPresentation());
+        assertPresentation("A.Vcs.Branch", "", ORIcons.MODULE_TYPE, ee.getPresentation());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/274
+    // https://github.com/giraud/reasonml-idea-plugin/issues/274
     // omit () in structure panel
     public void test_GH_274() {
         FileBase a = configureCode("A.ml", "let () = 1 + 2");
@@ -91,7 +100,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertEmpty(model.getRoot().getChildren());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/190
+    // https://github.com/giraud/reasonml-idea-plugin/issues/190
     // nested functions
     public void test_GH_190() {
         FileBase e = configureCode("A.ml", "let fn a b = let open Pp in let fn1 = 1 in let fn2 = 2");

@@ -13,37 +13,31 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 
 public class PsiRecordFieldStubElementType extends ORStubElementType<PsiRecordFieldStub, PsiRecordField> {
-    public static final int VERSION = 5;
-
-    public PsiRecordFieldStubElementType(@NotNull Language language) {
-        super("C_RECORD_FIELD", language);
+    public PsiRecordFieldStubElementType(@NotNull String name, @NotNull Language language) {
+        super(name, language);
     }
 
-    @NotNull
-    public PsiRecordFieldImpl createPsi(@NotNull PsiRecordFieldStub stub) {
+    public @NotNull PsiRecordFieldImpl createPsi(@NotNull PsiRecordFieldStub stub) {
         return new PsiRecordFieldImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    @NotNull
-    public PsiRecordFieldImpl createPsi(@NotNull ASTNode node) {
+    public @NotNull PsiRecordFieldImpl createPsi(@NotNull ASTNode node) {
         return new PsiRecordFieldImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    @NotNull
-    public PsiRecordFieldStub createStub(@NotNull PsiRecordField psi, StubElement parentStub) {
+    public @NotNull PsiRecordFieldStub createStub(@NotNull PsiRecordField psi, @Nullable StubElement parentStub) {
         return new PsiRecordFieldStub(parentStub, this, psi.getName(), psi.getPath());
     }
 
-    public void serialize(@NotNull final PsiRecordFieldStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
+    public void serialize(@NotNull final PsiRecordFieldStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         SerializerUtil.writePath(dataStream, stub.getPath());
     }
 
-    @NotNull
-    public PsiRecordFieldStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
+    public @NotNull PsiRecordFieldStub deserialize(@NotNull StubInputStream dataStream, @Nullable StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
-        return new PsiRecordFieldStub(parentStub, this, name, path);
+        return new PsiRecordFieldStub(parentStub, this, name, path == null ? EMPTY_PATH : path);
     }
 
     public void indexStub(@NotNull PsiRecordFieldStub stub, @NotNull IndexSink sink) {
@@ -53,8 +47,7 @@ public class PsiRecordFieldStubElementType extends ORStubElementType<PsiRecordFi
         }
     }
 
-    @NotNull
-    public String getExternalId() {
+    public @NotNull String getExternalId() {
         return getLanguage().getID() + "." + super.toString();
     }
 }

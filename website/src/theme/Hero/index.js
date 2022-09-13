@@ -22,7 +22,7 @@ function Hero() {
                 <p className={clsx("hero__subtitle", styles.subtitle)} dangerouslySetInnerHTML={{__html: siteConfig.tagline}} />
 
                 <div className={styles.badges}>
-                  <a href=""><img alt="Build Status" src="https://github.com/reasonml-editor/reasonml-idea-plugin/workflows/Build%20Status/badge.svg" /></a>
+                  <a href=""><img alt="Build Status" src="https://github.com/giraud/reasonml-idea-plugin/workflows/Build%20Status/badge.svg" /></a>
                   <a href="https://plugins.jetbrains.com/plugin/9440-reasonml">
                     <img alt="JetBrains IntelliJ plugins" src="https://img.shields.io/jetbrains/plugin/d/9440-reasonml.svg" />
                   </a>

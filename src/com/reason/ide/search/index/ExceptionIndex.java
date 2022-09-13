@@ -12,7 +12,7 @@ import java.util.*;
 public class ExceptionIndex extends StringStubIndexExtension<PsiException> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiExceptionStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.EXCEPTION;
     }
 
     @Override

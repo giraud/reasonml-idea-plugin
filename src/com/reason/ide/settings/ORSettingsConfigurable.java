@@ -76,7 +76,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     @Nls
     @Override
     public String getDisplayName() {
-        return "OCaml / Reason";
+        return "OCaml(Reason) / Rescript";
     }
 
     @NotNull
@@ -94,7 +94,6 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         createOpamTab();
         createEsyTab();
 
-
         mySwitchSelect.addItemListener(itemEvent -> {
             if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
                 String version = (String) itemEvent.getItem();
@@ -102,7 +101,6 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
                 listLibraries(version);
             }
         });
-
         myOpamLibraries.setBorder(BorderFactory.createLineBorder(JBUI.CurrentTheme.DefaultTabs.borderColor()));
         listLibraries(mySettings.getSwitchName());
 

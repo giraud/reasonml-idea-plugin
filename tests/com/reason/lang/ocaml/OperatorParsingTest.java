@@ -5,7 +5,7 @@ import com.reason.lang.core.psi.*;
 import java.util.*;
 
 public class OperatorParsingTest extends OclParsingTestCase {
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/314
+    // https://github.com/giraud/reasonml-idea-plugin/issues/314
     public void test_GH_314_structural_difference() {
         List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode("let is_traced () = !debug <> DebugOff\n let name_vfun () = ()")));
 

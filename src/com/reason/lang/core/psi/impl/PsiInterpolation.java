@@ -1,16 +1,11 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.impl.source.tree.*;
 import com.intellij.psi.tree.*;
+import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiInterpolation extends CompositePsiElement {
-    protected PsiInterpolation(IElementType type) {
-        super(type);
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Interpolation";
+public class PsiInterpolation extends ORCompositePsiElement<ORTypes> {
+    protected PsiInterpolation(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 }
