@@ -12,11 +12,13 @@
 
 ## Unreleased
 
+- :nail_care: fix missing color for fragment tag
 - :bug: [#379](https://github.com/giraud/reasonml-idea-plugin/issues/379) Plugin crashes with NoClassDefFoundError in WebStorm during any attempt to autocomplete
 - :house: reworked the parsers.
 
-Recurrent exceptions about stubs: `java.lang.RuntimeException: Broken stub format, most likely version of REASON_FILE (
-reason.FILE) was not updated after serialization changes`
+Some resources files (potentially in binary form) inside jars are using the .res extension, 
+but there is no possibility to detect they are not rescript files.
+The plugin now do not index files inside a jar archive. 
 
 ## 0.106 - 2022/01/07
 
