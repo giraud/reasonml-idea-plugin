@@ -35,7 +35,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
             return operatorOverride;
         }
 
-        return findChildByClass(PsiLowerIdentifier.class);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Override
@@ -82,12 +82,24 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
     //endregion
 
     @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
+
+    @Override
     public @Nullable PsiSignature getSignature() {
         return findChildByClass(PsiSignature.class);
     }
 
     private @NotNull String getRealName() {
-        PsiElement name = findChildByType(m_types.STRING_VALUE);
+        PsiElement name = findChildByType(myTypes.STRING_VALUE);
         return name == null ? "" : name.getText();
     }
 
@@ -104,9 +116,9 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
 
     @Override
     public @NotNull String getExternalName() {
-        PsiElement eq = ORUtil.findImmediateFirstChildOfType(this, m_types.EQ);
+        PsiElement eq = ORUtil.findImmediateFirstChildOfType(this, myTypes.EQ);
         if (eq != null) {
-            PsiElement next = ORUtil.nextSiblingWithTokenType(eq, m_types.STRING_VALUE);
+            PsiElement next = ORUtil.nextSiblingWithTokenType(eq, myTypes.STRING_VALUE);
             if (next != null) {
                 String text = next.getText();
                 return 2 < text.length() ? text.substring(1, text.length() - 1) : "";
@@ -144,10 +156,5 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExter
                 return ORIcons.EXTERNAL;
             }
         };
-    }
-
-    @Override
-    public @Nullable String toString() {
-        return "external " + getQualifiedName();
     }
 }

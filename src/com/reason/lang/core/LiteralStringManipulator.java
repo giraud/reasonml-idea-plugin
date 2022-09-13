@@ -4,7 +4,7 @@ import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.text.*;
 import com.intellij.psi.*;
 import com.intellij.util.*;
-import com.reason.lang.core.psi.PsiLiteralExpression;
+import com.reason.lang.core.psi.impl.PsiLiteralExpression;
 import org.jetbrains.annotations.*;
 
 // com.intellij.psi.impl.source.resolve.reference.impl.manipulators.StringLiteralManipulator

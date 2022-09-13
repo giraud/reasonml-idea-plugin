@@ -6,7 +6,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
@@ -32,7 +31,7 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     // region PsiNamedElement
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
     }
 
     @Override
@@ -73,6 +72,18 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
         return ORUtil.getQualifiedName(this);
     }
     //endregion
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
 
     @Override public @Nullable String[] getQualifiedNameAsPath() {
         return ORUtil.getQualifiedNameAsPath(this);
@@ -116,11 +127,6 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     public @NotNull String getModuleName() {
         String name = getName();
         return name == null ? "" : name;
-    }
-
-    @Override
-    public @Nullable PsiFunctorCall getFunctorCall() {
-        return null;
     }
 
     @Override
@@ -187,18 +193,6 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     }
 
     @Override
-    public @Nullable PsiExternal getExternalExpression(@Nullable String name) {
-        if (name != null) {
-            ExpressionFilter expressionFilter = element -> element instanceof PsiExternal && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
-            if (!expressions.isEmpty()) {
-                return (PsiExternal) expressions.iterator().next();
-            }
-        }
-        return null;
-    }
-
-    @Override
     public @Nullable PsiLet getLetExpression(@Nullable String name) {
         if (name != null) {
             ExpressionFilter expressionFilter = element -> element instanceof PsiLet && name.equals(element.getName());
@@ -211,34 +205,29 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
     }
 
     @Override
-    public @Nullable PsiVal getValExpression(@Nullable String name) {
-        if (name != null) {
-            ExpressionFilter expressionFilter =
-                    element -> element instanceof PsiVal && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions =
-                    getExpressions(ExpressionScope.all, expressionFilter);
-            if (!expressions.isEmpty()) {
-                return (PsiVal) expressions.iterator().next();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public @NotNull Collection<PsiParameter> getParameters() {
+    public @NotNull Collection<PsiParameterDeclaration> getParameters() {
         return ORUtil.findImmediateChildrenOfClass(
-                ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameter.class);
+                ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameterDeclaration.class);
     }
 
     @Override
     public @Nullable PsiFunctorResult getReturnType() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorResult.class);
+        PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, myTypes.COLON);
+        PsiElement element = ORUtil.nextSibling(colon);
+
+        return element instanceof PsiFunctorResult ? (PsiFunctorResult) element : ORUtil.findImmediateFirstChildOfClass(element, PsiFunctorResult.class);
     }
 
     @Override
-    public @NotNull Collection<PsiConstraint> getConstraints() {
+    public @NotNull Collection<PsiTypeConstraint> getConstraints() {
         PsiConstraints constraints = ORUtil.findImmediateFirstChildOfClass(this, PsiConstraints.class);
-        return ORUtil.findImmediateChildrenOfClass(constraints, PsiConstraint.class);
+        if (constraints == null) {
+            PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, myTypes.COLON);
+            PsiElement element = ORUtil.nextSibling(colon);
+            constraints = element instanceof PsiConstraints ? (PsiConstraints) element : ORUtil.findImmediateFirstChildOfClass(element, PsiConstraints.class);
+        }
+
+        return constraints == null ? Collections.emptyList() : ORUtil.findImmediateChildrenOfClass(constraints, PsiTypeConstraint.class);
     }
 
     public ItemPresentation getPresentation() {
@@ -261,10 +250,5 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleSt
                 return ORIcons.FUNCTOR;
             }
         };
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Functor";
     }
 }

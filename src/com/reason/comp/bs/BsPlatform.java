@@ -28,28 +28,25 @@ public class BsPlatform {
      * @param sourceFile starting point for search
      * @return `bsconfig.json` file, if found
      */
-    public static @NotNull Optional<VirtualFile> findBsConfig(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return Optional.ofNullable(ORFileUtils.findAncestor(project, BS_CONFIG_FILENAME, sourceFile));
+    public static @Nullable VirtualFile findBsConfig(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        return ORFileUtils.findAncestor(project, BS_CONFIG_FILENAME, sourceFile);
     }
 
-    public static @NotNull Optional<VirtualFile> findContentRoot(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsConfig(project, sourceFile).map(VirtualFile::getParent);
+    public static @Nullable VirtualFile findContentRoot(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        VirtualFile bsConfig = findBsConfig(project, sourceFile);
+        return bsConfig == null ? null : bsConfig.getParent();
     }
 
-    public static @NotNull Optional<VirtualFile> findBsbExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsConfig(project, sourceFile)
-                .flatMap(bsConfig -> {
-                    VirtualFile binDir = ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSB_EXE_NAME);
-                    return Optional.ofNullable(binDir == null ? null : ORPlatform.findBinary(binDir, BSB_EXE_NAME));
-                });
+    public static @Nullable VirtualFile findBsbExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        VirtualFile bsConfig = findBsConfig(project, sourceFile);
+        VirtualFile binDir = bsConfig == null ? null : ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSB_EXE_NAME);
+        return binDir == null ? null : ORPlatform.findBinary(binDir, BSB_EXE_NAME);
     }
 
     public static @Nullable VirtualFile findBscExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsConfig(project, sourceFile)
-                .flatMap(bsConfig -> {
-                    VirtualFile binDir = ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSC_EXE_NAME);
-                    return Optional.ofNullable(binDir == null ? null : ORPlatform.findBinary(binDir, BSC_EXE_NAME));
-                }).orElse(null);
+        VirtualFile bsConfig = findBsConfig(project, sourceFile);
+        VirtualFile binDir = bsConfig == null ? null : ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSC_EXE_NAME);
+        return binDir == null ? null : ORPlatform.findBinary(binDir, BSC_EXE_NAME);
     }
 
     public static Optional<VirtualFile> findEsyExecutable(@NotNull Project project) {
@@ -61,9 +58,8 @@ public class BsPlatform {
     }
 
     public static @Nullable VirtualFile findRefmtExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        VirtualFile bsPlatformDir = findBsConfig(project, sourceFile)
-                .flatMap(bsConfig -> Optional.ofNullable(ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSC_EXE_NAME)))
-                .orElse(null);
+        VirtualFile bsConfig = findBsConfig(project, sourceFile);
+        VirtualFile bsPlatformDir = bsConfig == null ? null : ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSC_EXE_NAME);
         if (bsPlatformDir == null) {
             return null;
         }

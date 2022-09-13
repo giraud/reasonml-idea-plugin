@@ -29,6 +29,12 @@ public class PsiObjectField extends PsiTokenStub<ORTypes, PsiObjectField, PsiObj
 
     @Override
     public @NotNull String getName() {
+        PsiObjectFieldStub stub = getGreenStub();
+        if (stub != null) {
+            String name = stub.getName();
+            return name == null ? "" : name;
+        }
+
         PsiElement nameElement = getNameIdentifier();
         return nameElement == null ? "" : nameElement.getText().replaceAll("\"", "");
     }
@@ -98,13 +104,11 @@ public class PsiObjectField extends PsiTokenStub<ORTypes, PsiObjectField, PsiObj
 
     @Nullable
     public PsiElement getValue() {
-        PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, m_types.COLON);
-        return colon == null ? null : ORUtil.nextSiblingNode(colon.getNode()).getPsi();
-    }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "ObjectField";
+        PsiFieldValue fieldValue = ORUtil.findImmediateFirstChildOfClass(this, PsiFieldValue.class);
+        if (fieldValue != null) {
+            return fieldValue.getFirstChild();
+        } else {
+            return ORUtil.findImmediateFirstChildOfClass(this, PsiSignature.class);  // ?
+        }
     }
 }

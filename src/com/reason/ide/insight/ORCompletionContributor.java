@@ -31,11 +31,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
 
                         if (LOG.isTraceEnabled()) {
                             LOG.debug("»» Completion: position: " + position + ", " + position.getText());
-                            LOG.debug(
-                                    "               original: "
-                                            + originalPosition
-                                            + ", "
-                                            + (originalPosition == null ? null : originalPosition.getText()));
+                            LOG.debug("               original: " + originalPosition + ", " + (originalPosition == null ? null : originalPosition.getText()));
                             LOG.debug("                element: " + element);
                             LOG.debug("                 parent: " + parent);
                             LOG.debug("           grand-parent: " + grandParent);
@@ -90,7 +86,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
 
                         // Jsx
                         //IElementType elementType = element.getNode().getElementType();
-                        if (element instanceof PsiLeafTagName) {
+                        if (element instanceof PsiUpperTagName) {
                             LOG.debug("Previous element type is TAG_NAME");
                             JsxNameCompletionProvider.addCompletions(types, element, result);
                             return;

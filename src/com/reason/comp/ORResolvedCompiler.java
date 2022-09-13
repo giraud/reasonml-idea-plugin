@@ -1,6 +1,7 @@
 package com.reason.comp;
 
 import com.intellij.openapi.vfs.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 /**

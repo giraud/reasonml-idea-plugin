@@ -68,7 +68,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
     }
 
     private void foldType(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiType typeExpression) {
-        PsiElement constrName = ORUtil.findImmediateFirstChildOfClass(typeExpression, PsiLowerIdentifier.class);
+        PsiElement constrName = ORUtil.findImmediateFirstChildOfClass(typeExpression, PsiLowerSymbol.class);
         if (constrName != null) {
             PsiElement binding = typeExpression.getBinding();
             if (binding != null && binding.getTextLength() > 5) {
@@ -121,7 +121,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
             int endOffset = element.getTextRange().getEndOffset();
             if (startOffset < endOffset) {
                 TextRange textRange = TextRange.create(startOffset, endOffset);
-                descriptors.add(new FoldingDescriptor(element, textRange));
+                descriptors.add(new FoldingDescriptor((PsiElement) element, textRange));
             }
         }
     }

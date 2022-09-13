@@ -12,7 +12,7 @@ import java.util.*;
 public class ModuleTopLevelIndex extends StringStubIndexExtension<PsiFakeModule> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiFakeModuleStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.MODULE;
     }
 
     @Override

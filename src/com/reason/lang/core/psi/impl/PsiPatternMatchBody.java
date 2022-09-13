@@ -1,18 +1,11 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.impl.source.tree.CompositePsiElement;
-import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
-public class PsiPatternMatchBody extends CompositePsiElement {
-
-  protected PsiPatternMatchBody(IElementType type) {
-    super(type);
-  }
-
-  @NotNull
-  @Override
-  public String toString() {
-    return "Pattern match body";
-  }
+public class PsiPatternMatchBody extends ORCompositePsiElement<ORTypes> {
+    protected PsiPatternMatchBody(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
+    }
 }

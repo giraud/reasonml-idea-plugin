@@ -13,23 +13,20 @@ import java.util.*;
 import static com.reason.ide.hints.CodeLens.*;
 
 public class OREditorLinePainter extends EditorLinePainter {
-  @Override
-  public @Nullable Collection<LineExtensionInfo> getLineExtensions(@NotNull Project project, @NotNull VirtualFile file, int lineNumber) {
-    // long start = System.currentTimeMillis();
-    Collection<LineExtensionInfo> result = null;
+    @Override
+    public @Nullable Collection<LineExtensionInfo> getLineExtensions(@NotNull Project project, @NotNull VirtualFile file, int lineNumber) {
+        Collection<LineExtensionInfo> result = null;
 
-    CodeLens signatures = file.getUserData(CODE_LENS);
-    if (signatures != null) {
-      String signature = signatures.get(lineNumber);
-      if (signature != null) {
-        EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
-        TextAttributes codeLens = globalScheme.getAttributes(ORSyntaxHighlighter.CODE_LENS_);
-        result = Collections.singletonList(new LineExtensionInfo("  " + signature, codeLens));
-      }
+        CodeLens signatures = file.getUserData(CODE_LENS);
+        if (signatures != null) {
+            String signature = signatures.get(lineNumber);
+            if (signature != null) {
+                EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
+                TextAttributes codeLens = globalScheme.getAttributes(ORSyntaxHighlighter.CODE_LENS_);
+                result = Collections.singletonList(new LineExtensionInfo("  " + signature, codeLens));
+            }
+        }
+
+        return result;
     }
-
-    // long end = System.currentTimeMillis();
-    // System.out.println("line extensions in " + (end - start) + "ms");
-    return result;
-  }
 }

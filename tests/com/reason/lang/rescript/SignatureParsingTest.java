@@ -1,5 +1,6 @@
 package com.reason.lang.rescript;
 
+import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -30,9 +31,9 @@ public class SignatureParsingTest extends ResParsingTestCase {
         assertEquals(3, signature.getItems().size());
         assertEquals("(~v:length, ~h:length) => rule", signature.asText(getLangProps()));
         assertFalse(signature.getItems().get(0).isOptional());
-        assertEquals("v", signature.getItems().get(0).getNamedParam().getName());
+        assertEquals("v", signature.getItems().get(0).getName());
         assertFalse(signature.getItems().get(1).isOptional());
-        assertEquals("h", signature.getItems().get(1).getNamedParam().getName());
+        assertEquals("h", signature.getItems().get(1).getName());
     }
 
     public void test_optional_fun() {
@@ -47,13 +48,28 @@ public class SignatureParsingTest extends ResParsingTestCase {
         assertSize(3, items);
     }
 
+    public void test_optional_02() {
+        PsiLet let = firstOfType(parseCode("module Size: { let makeRecord: (~size: option<float> =?, unit) => t }"), PsiLet.class);
+
+        PsiSignature s = let.getSignature();
+        List<PsiSignatureItem> si = s.getItems();
+
+        assertSize(3, si);
+        assertTrue(si.get(0).isOptional());
+        assertEquals("?", si.get(0).getDefaultValue().getText());
+        assertEquals("~size: option<float> =?", si.get(0).asText(getLangProps()));
+        assertFalse(si.get(1).isOptional());
+        assertEquals("unit", si.get(1).getText());
+    }
+
     public void test_optional_fun_parameters() {
-        PsiLet let = first(letExpressions(parseCode("let x = (a:int, b:option<string>, ~c:bool=false, ~d:float=?) => 3")));
+        PsiLet let = first(letExpressions(parseCode("let x = (a:Js.t, b:option<string>, ~c:bool=false, ~d:float=?) => 3")));
 
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
-        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
+        assertEquals("Js.t", parameters.get(0).getSignature().getItems().get(0).getText());
         assertFalse(parameters.get(1).getSignature().getItems().get(0).isOptional());
         assertEquals("bool", parameters.get(2).getSignature().asText(getLangProps()));
         assertTrue(parameters.get(2).isOptional());
@@ -67,7 +83,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(3, parameters);
     }
@@ -101,6 +117,15 @@ public class SignatureParsingTest extends ResParsingTestCase {
         assertSize(3, signatureItems);
     }
 
+    public void test_dot() {
+        PsiExternal e = firstOfType(parseCode("external getPlatformInformation: (. store) => platform = \"\""), PsiExternal.class);
+
+        List<PsiSignatureItem> items = e.getSignature().getItems();
+        assertSize(2, items);
+        assertEquals("store", items.get(0).getText());
+        assertEquals("platform", items.get(1).getText());
+    }
+
     public void test_option() {
         PsiExternal e = first(externalExpressions(parseCode("external e: option<show> = \"\"")));
 
@@ -113,6 +138,12 @@ public class SignatureParsingTest extends ResParsingTestCase {
         PsiSignature signature = let.getSignature();
         // assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
         // signature.asString(getLangProps()));
+    }
+
+    public void test_no_tag() {
+        PsiExternal e = firstOfType(parseCode("external make: (. Js.Dict.t<Js.Json.t>) => string"), PsiExternal.class);
+
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiTag.class));
     }
 
     // TODO later

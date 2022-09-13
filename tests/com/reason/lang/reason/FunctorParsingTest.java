@@ -1,7 +1,7 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.*;
-import com.reason.lang.core.psi.PsiParameter;
+import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
@@ -13,8 +13,9 @@ public class FunctorParsingTest extends RmlParsingTestCase {
         PsiNamedElement e = first(expressions(parseCode("module Make = (M: Def): S => {}")));
 
         PsiFunctor f = (PsiFunctor) e;
-        assertEquals("{}", f.getBody().getText());
         assertEquals("S", f.getReturnType().getText());
+        assertEquals("{}", f.getBody().getText());
+        assertNull(PsiTreeUtil.findChildOfType(f.getBody(), PsiScopedExpr.class));
     }
 
     public void test_withConstraints() {
@@ -26,7 +27,7 @@ public class FunctorParsingTest extends RmlParsingTestCase {
         assertEquals("M: Input", first(f.getParameters()).getText());
         assertEquals("S", f.getReturnType().getText());
 
-        List<PsiConstraint> constraints = new ArrayList<>(f.getConstraints());
+        List<PsiTypeConstraint> constraints = new ArrayList<>(f.getConstraints());
         assertEquals(2, constraints.size());
         assertEquals("type t('a) = M.t('a)", constraints.get(0).getText());
         assertEquals("type b = M.b", constraints.get(1).getText());
@@ -36,21 +37,22 @@ public class FunctorParsingTest extends RmlParsingTestCase {
     public void test_signature() {
         Collection<PsiFunctor> functors = functorExpressions(parseCode(
                 "module GlobalBindings = (M: {\n" +
-                        "    let relation_classes: list(string)\n" +
-                        "    let morphisms: list(string)\n" +
-                        "    let arrow: evars => evars\n" +
+                        "    let relation_classes: list(string);\n" +
+                        "    let morphisms: list(string);\n" +
+                        "    let arrow: evars => evars;\n" +
                         "  },\n" +
                         ") => {\n" +
                         "  open M\n" +
                         "}"));
 
         assertEquals(1, functors.size());
-        PsiFunctor functor = first(functors);
-        assertEquals("GlobalBindings", functor.getName());
-        assertEquals("Dummy.GlobalBindings", functor.getQualifiedName());
-        Collection<PsiParameter> parameters = functor.getParameters();
+        PsiFunctor f = first(functors);
+        assertEquals("GlobalBindings", f.getName());
+        assertEquals("Dummy.GlobalBindings", f.getQualifiedName());
+        Collection<PsiParameterDeclaration> parameters = f.getParameters();
         assertSize(1, parameters);
         assertEquals("M", first(parameters).getName());
-        assertNotNull(functor.getBody());
+        assertNotNull(f.getBody());
+        assertNull(PsiTreeUtil.findChildOfType(f.getBody(), PsiScopedExpr.class));
     }
 }

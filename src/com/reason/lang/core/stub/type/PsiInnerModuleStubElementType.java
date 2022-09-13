@@ -8,17 +8,15 @@ import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 public class PsiInnerModuleStubElementType extends PsiModuleStubElementType implements ORCompositeType {
-    public PsiInnerModuleStubElementType(@Nullable Language language) {
-        super("C_MODULE_DECLARATION", language);
+    public PsiInnerModuleStubElementType(@NotNull String name, @Nullable Language language) {
+        super(name, language);
     }
 
-    @NotNull
-    public PsiInnerModule createPsi(@NotNull ASTNode node) {
+    public @NotNull PsiInnerModule createPsi(@NotNull ASTNode node) {
         return new PsiInnerModuleImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    @NotNull
-    public PsiInnerModule createPsi(@NotNull PsiModuleStub stub) {
+    public @NotNull PsiInnerModule createPsi(@NotNull PsiModuleStub stub) {
         return new PsiInnerModuleImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 }

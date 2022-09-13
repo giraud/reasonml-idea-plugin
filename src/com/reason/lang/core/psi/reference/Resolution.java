@@ -47,10 +47,6 @@ class Resolution implements Comparable<Resolution> {
         return null;
     }
 
-    public @Nullable Integer getCurrentWeight() {
-        return myLevel >= 0 ? myWeights[myLevel] : null;
-    }
-
     public @Nullable Integer getWeight(int level) {
         return myWeights != null && 0 <= level && level < myPath.length ? myWeights[level] : null;
     }
@@ -92,7 +88,8 @@ class Resolution implements Comparable<Resolution> {
     }
 
     public String getTopModuleName() {
-        return myAlternatePath == null ? myPath[0] : myAlternatePath[0];
+        String[] path = myAlternatePath == null ? myPath : myAlternatePath;
+        return path.length > 0 ? path[0] : "";
     }
 
     @Override

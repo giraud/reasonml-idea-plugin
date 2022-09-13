@@ -1,10 +1,13 @@
 package com.reason.lang.reason;
 
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends RmlParsingTestCase {
@@ -14,15 +17,50 @@ public class TypeParsingTest extends RmlParsingTestCase {
         assertTrue(e.isAbstract());
     }
 
+    public void test_simple_binding() {
+        PsiType e = first(typeExpressions(parseCode("type t = int;")));
+
+        assertEquals("t", e.getName());
+        assertFalse(e.isAbstract());
+        assertEquals("int", e.getBinding().getText());
+    }
+
+    public void test_path() {
+        PsiType e = first(typeExpressions(parseCode("type t = A.B.other")));
+
+        assertEquals("t", e.getName());
+        assertFalse(e.isAbstract());
+        assertEquals("A.B.other", e.getBinding().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiVariantDeclaration.class));
+        List<PsiUpperSymbol> modules = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiUpperSymbol.class);
+        assertSize(2, modules);
+        List<IElementType> es = modules.stream().map(u -> u.getNode().getElementType()).collect(Collectors.toList());
+        assertEquals(List.of(myTypes.A_MODULE_NAME, myTypes.A_MODULE_NAME), es);
+    }
+
+    public void test_option() {
+        PsiType e = first(typeExpressions(parseCode("type t = option(array(string))")));
+
+        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        assertNotNull(option);
+        assertEquals("option(array(string))", option.getText());
+    }
+
     public void test_recursive_type() {
         PsiType e = first(typeExpressions(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));")));
         assertEquals("tree", e.getName());
-        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCall.class));
     }
 
     public void test_type_binding_with_variant() {
         PsiType e = first(typeExpressions(parseCode("type t = | Tick;")));
         assertNotNull(e.getBinding());
+    }
+
+    public void test_poly_variant() {
+        PsiType e = first(typeExpressions(parseCode("type t = [ | `visible | `hidden | `collapse ];")));
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiPatternMatch.class));
+        assertSize(3, PsiTreeUtil.findChildrenOfType(e, PsiVariantDeclaration.class));
     }
 
     public void test_type_binding_with_record() {
@@ -34,12 +72,11 @@ public class TypeParsingTest extends RmlParsingTestCase {
     }
 
     public void test_type_special_props() {
-        PsiType e = first(typeExpressions(
-                parseCode(
-                        "type props = { "
-                                + "string: string, "
-                                + "ref: Js.nullable(Dom.element) => unit, "
-                                + "method: string };")));
+        PsiType e = first(typeExpressions(parseCode(
+                "type props = { "
+                        + "string: string, "
+                        + "ref: Js.nullable(Dom.element) => unit, "
+                        + "method: string };")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
         Collection<PsiRecordField> fields = record.getFields();
@@ -73,11 +110,10 @@ public class TypeParsingTest extends RmlParsingTestCase {
         assertEquals("reactClass", items.get(0).getText());
         assertEquals("~props: Js.t({..})=?", items.get(1).getText());
         assertTrue(items.get(1).isNamedItem());
-        PsiNamedParam namedParam = items.get(1).getNamedParam();
-        assertEquals("props", namedParam.getName());
-        assertEquals("Js.t({..})", namedParam.getSignature().getText());
-        assertTrue(namedParam.isOptional());
-        assertEquals("?", namedParam.getDefaultValue());
+        assertEquals("props", items.get(1).getName());
+        assertEquals("Js.t({..})", items.get(1).getSignature().getText());
+        assertTrue(items.get(1).isOptional());
+        assertEquals("?", items.get(1).getDefaultValue().getText());
         assertEquals("array(reactElement)", items.get(2).getText());
         assertEquals("reactElement", items.get(3).getText());
     }
@@ -94,7 +130,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
     public void test_apply_params() {
         PsiType e = first(typeExpressions(parseCode("type t('value) = Belt.Map.t(key, 'value, Comparator.identity);")));
 
-        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCall.class));
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/326

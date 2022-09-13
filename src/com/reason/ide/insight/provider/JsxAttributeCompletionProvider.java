@@ -32,8 +32,8 @@ public class JsxAttributeCompletionProvider {
 
             if (tag.getNameIdentifier() instanceof PsiUpperSymbol) {
                 // Additional attributes for UpperSymbol => only key and ref
-                attributes.add(PsiTagStartImpl.createProp("key", "string=?"));
-                attributes.add(PsiTagStartImpl.createProp("ref", "Js.nullable(Dom.element) => unit=?"));
+                attributes.add(PsiTagStart.createProp("key", "string=?"));
+                attributes.add(PsiTagStart.createProp("ref", "Js.nullable(Dom.element) => unit=?"));
             }
 
             if (LOG.isDebugEnabled()) {

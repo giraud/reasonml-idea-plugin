@@ -13,8 +13,4 @@ public class RescriptConsoleView extends ConsoleViewImpl {
     public Filter @NotNull [] getFilters() {
         return new Filter[]{new RescriptOCamlConsoleFilter(getProject())};
     }
-
-    public void disableBuild() {
-        // TODO implement method
-    }
 }

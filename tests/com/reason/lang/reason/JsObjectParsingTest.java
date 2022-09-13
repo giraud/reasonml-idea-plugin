@@ -37,7 +37,7 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
         assertEquals("int", fields.get(1).getSignature().getText());
     }
 
-    public void test_inFunction() {
+    public void test_in_function() {
         PsiLet e = first(letExpressions(parseCode("let x = fn(~props={\"a\": id, \"b\": 0});")));
 
         PsiLetBinding binding = e.getBinding();
@@ -49,10 +49,12 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
         assertEquals("b", fields.get(1).getName());
     }
 
-    public void test_declaringOpen() {
+    public void test_declaring_open() {
         PsiLet e = first(letExpressions(parseCode(
                 "let style = {"
-                        + "\"marginLeft\": marginLeft, \"marginRight\": marginRight,\"fontSize\": \"inherit\","
+                        + "\"marginLeft\": marginLeft, "
+                        + "\"marginRight\": marginRight,"
+                        + "\"fontSize\": \"inherit\","
                         + "\"fontWeight\": bold ? \"bold\" : \"inherit\","
                         + "\"textTransform\": transform == \"uc\" ? \"uppercase\" : \"unset\",};")));
 
@@ -65,16 +67,25 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
         assertSize(0, PsiTreeUtil.findChildrenOfType(object, PsiSignature.class));
     }
 
-    public void test_moduleOpen() {
+    public void test_module_open() {
         PsiLet e = first(letExpressions(parseCode(
                 "let computingProperties = createStructuredSelector("
                         + "    ComputingReducers.{ \"lastUpdate\": selectors.getLastUpdate },\n"
                         + "  );")));
 
         PsiLetBinding binding = e.getBinding();
-        PsiFunctionCallParams call = PsiTreeUtil.findChildOfType(binding, PsiFunctionCallParams.class);
+        PsiParameters call = PsiTreeUtil.findChildOfType(binding, PsiParameters.class);
         PsiLocalOpen open = PsiTreeUtil.findChildOfType(call, PsiLocalOpen.class);
         PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(open, PsiJsObject.class);
         assertNotNull(jsObject);
+    }
+
+    public void test_deep() {
+        PsiLet e = firstOfType(parseCode("let oo = {\"f1\": {\"f11\": 111}, \"f2\": o,\"f3\": {\"f33\": 333} }"), PsiLet.class);
+
+        PsiJsObject o = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiJsObject.class);
+        List<PsiObjectField> fields = new ArrayList<>(o.getFields());
+        assertSize(3, fields);
+        assertInstanceOf(fields.get(0).getValue(), PsiJsObject.class);
     }
 }

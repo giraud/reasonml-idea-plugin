@@ -4,6 +4,7 @@ import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.xml.model.gotosymbol.*;
 import com.reason.lang.core.*;
@@ -27,30 +28,38 @@ public class PsiOpenImpl extends PsiTokenStub<ORTypes, PsiOpen, PsiOpenStub> imp
     public @NotNull String getPath() {
         PsiOpenStub stub = getGreenStub();
         if (stub != null) {
-            return stub.getOpenPath();
+            String openPath = stub.getOpenPath();
+            return openPath == null ? "" : openPath;
+        }
+
+        PsiElement firstModule = ORUtil.findImmediateFirstChildOfType(this, myTypes.A_MODULE_NAME);
+        PsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+        if (functorCall != null) {
+            String path = "";
+            if (firstModule != null) {
+                path = ORUtil.getTextUntilTokenType(firstModule, (IElementType) myTypes.C_FUNCTOR_CALL);
+            }
+            return path + functorCall.getName();
         }
 
         // Skip `let` and `open`
         PsiElement firstChild = getFirstChild();
-        if (firstChild != null && firstChild.getNode().getElementType() == m_types.LET) { // `let open` in OCaml
+        if (firstChild != null && firstChild.getNode().getElementType() == myTypes.LET) { // `let open` in OCaml
             firstChild = ORUtil.nextSibling(firstChild);
         }
         // Skip force open
         PsiElement child = PsiTreeUtil.skipWhitespacesForward(firstChild);
-        if (child != null && child.getNode().getElementType() == m_types.EXCLAMATION_MARK) {
+        if (child != null && child.getNode().getElementType() == myTypes.EXCLAMATION_MARK) {
             child = PsiTreeUtil.skipWhitespacesForward(child);
         }
 
-        if (child instanceof PsiFunctorCall) {
-            return ((PsiFunctorCall) child).getFunctorName();
-        }
         return child == null ? "" : ORUtil.getTextUntilTokenType(child, null);
     }
 
     @Override
     public boolean useFunctor() {
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        return firstChild instanceof PsiFunctorCall;
+        PsiElement firstChild = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+        return firstChild != null;
     }
 
     @Override
@@ -59,12 +68,7 @@ public class PsiOpenImpl extends PsiTokenStub<ORTypes, PsiOpen, PsiOpenStub> imp
     }
 
     @Override
-    public ItemPresentation getPresentation() {
+    public @NotNull ItemPresentation getPresentation() {
         return new GoToSymbolProvider.BaseNavigationItem(this, getPath(), ORIcons.OPEN);
-    }
-
-    @Override
-    public @Nullable String toString() {
-        return "Open " + getPath();
     }
 }

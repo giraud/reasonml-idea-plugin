@@ -30,8 +30,8 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected Collection<PsiNamedElement> expressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getExpressions(file, ExpressionScope.all, null);
+    protected List<PsiNamedElement> expressions(@NotNull PsiFile file) {
+        return new ArrayList<>(PsiFileHelper.getExpressions(file, ExpressionScope.all, null));
     }
 
     @NotNull
@@ -83,8 +83,8 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected Collection<PsiVal> valExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getValExpressions(file);
+    protected Collection<PsiVal> valExpressions(@NotNull PsiElement root) {
+        return findChildrenOfType(root, PsiVal.class);
     }
 
     @NotNull
@@ -119,6 +119,10 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return first(findChildrenOfType(element, aClass));
     }
 
+    protected <T extends PsiElement> List<T> children(PsiElement element, @NotNull Class<T> aClass) {
+        return new ArrayList<>(findChildrenOfType(element, aClass));
+    }
+
     @NotNull
     protected PsiFile parseFile(String name) throws IOException {
         String text = loadFile(name + "." + myFileExt);
@@ -134,7 +138,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     protected PsiFile parseRawCode(@NotNull String code) {
         myFile = createPsiFile("dummy", code);
         System.out.println("» " + this.getClass());
-        System.out.println(DebugUtil.psiToString(myFile, true, true));
+        System.out.println(DebugUtil.psiToString(myFile, false, true));
         return myFile;
     }
 
@@ -142,7 +146,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     protected DuneFile parseDuneCode(@NotNull String code) {
         myFile = createFile("jbuild", code);
         System.out.println("» " + this.getClass());
-        System.out.println(DebugUtil.psiToString(myFile, true, true));
+        System.out.println(DebugUtil.psiToString(myFile, false, true));
         return (DuneFile) myFile;
     }
 

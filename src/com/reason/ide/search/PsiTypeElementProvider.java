@@ -2,41 +2,41 @@ package com.reason.ide.search;
 
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
-import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
+import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiTypeElementProvider {
-
-  @Nullable
-  public static String getType(@NotNull PsiElement element) {
-    PsiElement parent = element.getParent();
-    if (element instanceof PsiUpperIdentifier) {
-      if (parent instanceof PsiModule) {
-        return "module";
-      }
-      if (parent instanceof PsiVariantDeclaration) {
-        return "variant";
-      }
-    } else if (element instanceof PsiLowerIdentifier) {
-      if (parent instanceof PsiLet) {
-        return "let";
-      }
-      if (parent instanceof PsiVal) {
-        return "val";
-      }
-      if (parent instanceof PsiExternal) {
-        return "external";
-      }
-      if (parent instanceof PsiType) {
-        return "type";
-      }
-      if (parent instanceof PsiParameter) {
-        return "parameter";
-      }
+    private PsiTypeElementProvider() {
     }
 
-    return null;
-  }
+    @Nullable
+    public static String getType(@NotNull PsiElement element) {
+        if (element instanceof PsiModule) {
+            return "module";
+        }
+        if (element instanceof PsiException) {
+            return "exception";
+        }
+        if (element instanceof PsiLet) {
+            return "let";
+        }
+        if (element instanceof PsiVal) {
+            return "val";
+        }
+        if (element instanceof PsiType) {
+            return "type";
+        }
+        if (element instanceof PsiExternal) {
+            return "external";
+        }
+        if (element instanceof PsiVariantDeclaration) {
+            return "variant";
+        }
+        if (element instanceof PsiParameterDeclaration) {
+            return "parameter";
+        }
+
+        return null;
+    }
 }

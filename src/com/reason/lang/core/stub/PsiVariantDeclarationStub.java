@@ -2,7 +2,7 @@ package com.reason.lang.core.stub;
 
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 
 public class PsiVariantDeclarationStub extends PsiQualifiedNameStub<PsiVariantDeclaration> {

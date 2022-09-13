@@ -1,21 +1,16 @@
 package com.reason.ide.search.index;
 
 import com.intellij.psi.stubs.*;
-import com.intellij.util.indexing.*;
-import com.reason.ide.search.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 
 public class IndexKeys {
-
     @FunctionalInterface
     public
     interface ProcessElement<T> {
         void process(@NotNull T element);
     }
-
-    public static final ID<String, FileModuleData> FILE_MODULE = ID.create("reason.index.fileModule");
 
     public static final StubIndexKey<String, PsiFakeModule> MODULES_TOP_LEVEL = StubIndexKey.createIndexKey("reason.module.toplevel");
     public static final StubIndexKey<String, PsiModule> MODULES_COMP = StubIndexKey.createIndexKey("reason.module.comp");
@@ -39,8 +34,8 @@ public class IndexKeys {
     public static final StubIndexKey<String, PsiRecordField> RECORD_FIELDS = StubIndexKey.createIndexKey("reason.record_field");
     public static final StubIndexKey<String, PsiException> EXCEPTIONS = StubIndexKey.createIndexKey("reason.exception");
     public static final StubIndexKey<Integer, PsiException> EXCEPTIONS_FQN = StubIndexKey.createIndexKey("reason.exception.fqn");
-    public static final StubIndexKey<String, PsiParameter> PARAMETERS = StubIndexKey.createIndexKey("reason.parameter");
-    public static final StubIndexKey<Integer, PsiParameter> PARAMETERS_FQN = StubIndexKey.createIndexKey("reason.parameter.fqn");
+    public static final StubIndexKey<String, PsiParameterDeclaration> PARAMETERS = StubIndexKey.createIndexKey("reason.parameter");
+    public static final StubIndexKey<Integer, PsiParameterDeclaration> PARAMETERS_FQN = StubIndexKey.createIndexKey("reason.parameter.fqn");
     public static final StubIndexKey<String, PsiInclude> INCLUDES = StubIndexKey.createIndexKey("reason.include");
     public static final StubIndexKey<String, PsiOpen> OPENS = StubIndexKey.createIndexKey("reason.open");
 

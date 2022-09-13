@@ -1,8 +1,6 @@
-// TODO ? https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.2.1'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.9.0'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
@@ -40,9 +38,10 @@ intellij {
         changeNotes = """
                 <ul>
                     <li>#379 - Plugin crashes with NoClassDefFoundError in WebStorm during any attempt to autocomplete</li>
-                    <li>#378 - NPE in macro
+                    <li>fix missing color for fragment tag</li>
+                    <li>reworked the parsers</li>
                 </ul>
-                <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
+                <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
                 <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
             """.stripIndent()

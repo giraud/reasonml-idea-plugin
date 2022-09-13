@@ -10,12 +10,13 @@ import com.reason.lang.core.psi.impl.*;
 import java.util.*;
 
 import static com.reason.lang.core.ExpressionFilterConstants.*;
-import static com.reason.lang.core.psi.ExpressionScope.*;
+import static com.reason.lang.core.psi.impl.ExpressionScope.*;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends RmlParsingTestCase {
     public void test_constant() {
         PsiLet let = first(letExpressions(parseCode("let x = 1;")));
+
         assertEquals("x", let.getName());
         assertFalse(let.isFunction());
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
@@ -76,15 +77,12 @@ public class LetParsingTest extends RmlParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let typeScale = {one: 1.375, two: 1.0};")));
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-        assertNotNull(binding);
         PsiRecord record = PsiTreeUtil.findChildOfType(binding, PsiRecord.class);
-        assertNotNull(record);
         assertSize(2, record.getFields());
     }
 
     public void test_signature() {
-        PsiLet let =
-                first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
+        PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
 
         assertEquals("(style, style) => style", let.getSignature().getText());
         assertEquals("(a, b) => { }", let.getBinding().getText());
@@ -95,9 +93,7 @@ public class LetParsingTest extends RmlParsingTestCase {
 
         assertNull(PsiTreeUtil.findChildOfType(let, PsiFunction.class));
         assertEquals("M1.y => M2.z", let.getSignature().getText());
-        List<PsiSignatureItem> items =
-                new ArrayList<>(
-                        PsiTreeUtil.findChildrenOfType(let.getSignature(), PsiSignatureItem.class));
+        List<PsiSignatureItem> items = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let.getSignature(), PsiSignatureItem.class));
         assertEquals("M1.y", items.get(0).getText());
     }
 
@@ -105,8 +101,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let x: {. a:string, b:int } => unit;")));
 
         assertEquals("{. a:string, b:int } => unit", let.getSignature().getText());
-        List<PsiObjectField> fields =
-                new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, PsiObjectField.class));
+        List<PsiObjectField> fields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, PsiObjectField.class));
         assertEquals("a:string", fields.get(0).getText());
         assertEquals("b:int", fields.get(1).getText());
     }
@@ -129,8 +124,7 @@ public class LetParsingTest extends RmlParsingTestCase {
 
     public void test_let_and_in_module() {
         FileBase file = parseCode("module M = { let f1 = x => x and f2 = y => y; };");
-        Collection<PsiNamedElement> es =
-                PsiFileHelper.getModuleExpressions(file).iterator().next().getExpressions(pub, FILTER_LET);
+        Collection<PsiNamedElement> es = PsiFileHelper.getModuleExpressions(file).iterator().next().getExpressions(pub, FILTER_LET);
 
         assertSize(2, es);
         assertEquals("f2 = y => y", second(es).getText());
@@ -143,6 +137,14 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("M1.M2.y", e.getAlias());
     }
 
+    public void test_variant() {
+        PsiLet e = first(letExpressions(parseCode("let x = MyVar;")));
+
+        assertEquals("x", e.getName());
+        assertEquals("MyVar", e.getAlias());
+        assertEquals(RmlTypes.INSTANCE.A_VARIANT_NAME, e.getBinding().getFirstChild().getNode().getElementType());
+    }
+
     public void test_deconstruction() {
         PsiLet e = first(letExpressions(parseCode("let (a, b) = x;")));
 
@@ -150,10 +152,35 @@ public class LetParsingTest extends RmlParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
-        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
         assertEquals("b", names.get(1).getText());
-        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
-        assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiLowerIdentifier.class));
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
+    }
+
+    public void test_deconstruction_nested() { // belt_Map offset 2272
+        PsiLet e = firstOfType(parseCode("let ((l, r), b) = Dict.split(~cmp, m.data, x);"), PsiLet.class);
+
+        assertTrue(e.isDeconstruction());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(3, names);
+        assertEquals("l", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
+        assertEquals("r", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
+        assertEquals("b", names.get(2).getText());
+        assertInstanceOf(names.get(2), PsiLowerSymbol.class);
+    }
+
+    public void test_deconstruction_braces() {
+        PsiLet e = first(letExpressions(parseCode("let {a, b, _} = x;")));
+
+        assertEquals("x", e.getBinding().getText());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(2, names);
+        assertEquals("a", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
+        assertEquals("b", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
     }
 
     public void test_operator() {

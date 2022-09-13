@@ -41,7 +41,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         FileBase containingFile = (FileBase) element.getContainingFile();
         boolean isInterface = containingFile.isInterface();
 
-        if (element instanceof PsiLowerIdentifier) {
+        if (element instanceof PsiLowerSymbol) {
             if (parent instanceof PsiLet) {
                 String qNameLet = ((PsiLetImpl) parent).getQualifiedName();
                 if (((PsiLet) parent).isDeconstruction()) {
@@ -103,7 +103,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                             );
                 }
             }
-        } else if (element instanceof PsiUpperIdentifier) {
+        } else if (element instanceof PsiUpperSymbol) {
             if (parent instanceof PsiInnerModule) {
                 extractRelatedExpressions(
                         element.getFirstChild(),
@@ -163,7 +163,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 .setTooltipText(tooltip)
                 .setAlignment(GutterIconRenderer.Alignment.RIGHT)
                 .setTargets(Collections.singleton(relatedElement))
-                .createLineMarkerInfo(psiSource instanceof PsiLowerIdentifier ? psiSource.getFirstChild() : psiSource);
+                .createLineMarkerInfo(psiSource);
     }
 
     @Nullable

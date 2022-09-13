@@ -7,8 +7,8 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.psi.PsiDuneField;
-import com.reason.lang.core.psi.PsiStanza;
+import com.reason.lang.core.psi.impl.PsiDuneField;
+import com.reason.lang.core.psi.impl.PsiStanza;
 import com.reason.lang.dune.DuneTypes;
 import org.jetbrains.annotations.NotNull;
 

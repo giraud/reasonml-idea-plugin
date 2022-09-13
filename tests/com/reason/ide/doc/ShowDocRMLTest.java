@@ -15,8 +15,8 @@ public class ShowDocRMLTest extends ORBasePlatformTestCase {
         FileBase doc = configureCode("Doc.re", "/** add 1 */\nlet fn = x => x + 1;");
         FileBase a = configureCode("A.re", "Mod.fn(<caret>);");
 
-        PsiLowerIdentifier let = ORUtil.findImmediateFirstChildOfClass(doc.getQualifiedExpressions("Doc.fn", PsiLet.class).get(0), PsiLowerIdentifier.class);
-        assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let fn</i></p></div><div class=\"content\"><p>add 1</p></div>", getDocForElement(a, LANG, let));
+        PsiLet resolvedElement = doc.getQualifiedExpressions("Doc.fn", PsiLet.class).get(0);
+        assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let fn</i></p></div><div class=\"content\"><p>add 1</p></div>", getDocForElement(a, LANG, resolvedElement));
     }
 
     public void test_GH_156() {

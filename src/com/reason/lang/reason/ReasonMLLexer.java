@@ -2,9 +2,9 @@
 
 package com.reason.lang.reason;
 
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.type.ORTypes;
-import com.intellij.lexer.FlexLexer;
+import com.intellij.lexer.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.type.*;
 
 import static com.intellij.psi.TokenType.*;
 

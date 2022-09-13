@@ -3,7 +3,7 @@ package com.reason.ide.search.index;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.stub.type.*;
 import org.jetbrains.annotations.*;
 
@@ -14,7 +14,7 @@ import static java.util.Collections.*;
 public class VariantFqnIndex extends IntStubIndexExtension<PsiVariantDeclaration> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiVariantStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.VARIANT;
     }
 
     @Override

@@ -1,34 +1,29 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.CompositeTypePsiElement;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiConditional;
-import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
-public class PsiIfStatement extends CompositeTypePsiElement<ORTypes> implements PsiConditional {
+public class PsiIfStatement extends ORCompositePsiElement<ORTypes> implements PsiConditional {
+    protected PsiIfStatement(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
+    }
 
-  protected PsiIfStatement(@NotNull ORTypes types, @NotNull IElementType elementType) {
-    super(types, elementType);
-  }
+    @Nullable
+    public PsiBinaryCondition getCondition() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiBinaryCondition.class);
+    }
 
-  @Nullable
-  public PsiBinaryCondition getCondition() {
-    return findChildByClass(PsiBinaryCondition.class);
-  }
+    @Override
+    public @Nullable PsiElement getThenExpression() {
+        return ORUtil.findImmediateFirstChildOfType(this, myTypes.C_IF_THEN_SCOPE);
+    }
 
-  @Override
-  public @Nullable PsiElement getThenExpression() {
-    PsiBinaryCondition condition = getCondition();
-    return condition == null ? null : ORUtil.nextSibling(condition);
-  }
-
-  @Override
-  public @Nullable PsiElement getElseExpression() {
-    PsiElement else_ = ORUtil.findImmediateFirstChildOfType(this, m_types.ELSE);
-    return else_ == null ? null : ORUtil.nextSibling(else_);
-  }
+    @Override
+    public @Nullable PsiElement getElseExpression() {
+        return ORUtil.findImmediateLastChildOfType(this, myTypes.C_IF_THEN_SCOPE);
+    }
 }

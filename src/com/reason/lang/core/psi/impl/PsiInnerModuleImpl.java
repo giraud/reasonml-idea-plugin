@@ -23,7 +23,7 @@ import java.util.*;
 import static com.reason.lang.core.ORFileType.*;
 import static java.util.Collections.*;
 
-public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStub> implements PsiInnerModule {
+public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStub> implements PsiInnerModule, PsiNameIdentifierOwner {
     // region Constructors
     public PsiInnerModuleImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
@@ -35,8 +35,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     // endregion
 
     // region NamedElement
-    private @Nullable PsiElement getNameIdentifier() {
-        return findChildByClass(PsiUpperIdentifier.class);
+    public @Nullable PsiElement getNameIdentifier() {
+        return findChildByClass(PsiUpperSymbol.class);
     }
 
     @Override
@@ -78,6 +78,19 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     }
     //endregion
 
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
+
     @Override public @Nullable String[] getQualifiedNameAsPath() {
         PsiModuleStub stub = getGreenStub();
         if (stub != null) {
@@ -105,22 +118,32 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
         }
 
         PsiElement psiElement = ORUtil.nextSibling(getFirstChild());
-        return psiElement != null && psiElement.getNode().getElementType() == m_types.TYPE;
+        return psiElement != null && psiElement.getNode().getElementType() == myTypes.TYPE;
     }
 
     @Override
     public @Nullable PsiFunctorCall getFunctorCall() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+        return ORUtil.findImmediateFirstChildOfClass(getBody(), PsiFunctorCall.class);
     }
 
     @Override
     public @Nullable PsiElement getBody() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiScopedExpr.class, PsiStruct.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiModuleBinding.class, PsiSignature.class);
+    }
+
+    @Override
+    public @NotNull List<PsiTypeConstraint> getConstraints() {
+        PsiConstraints constraints = ORUtil.findImmediateFirstChildOfClass(this, PsiConstraints.class);
+        return ORUtil.findImmediateChildrenOfClass(constraints, PsiTypeConstraint.class);
     }
 
     @Override
     public @Nullable PsiModuleType getModuleType() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiModuleType.class);
+        PsiElement child = ORUtil.findImmediateFirstChildOfAnyClass(this, PsiModuleType.class, PsiScopedExpr.class);
+        if (child instanceof PsiScopedExpr) {
+            child = ORUtil.findImmediateFirstChildOfClass(child, PsiModuleType.class);
+        }
+        return child instanceof PsiModuleType ? (PsiModuleType) child : null;
     }
 
     @Override
@@ -166,8 +189,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             if (moduleType == null) {
                 PsiElement body = getBody();
                 if (body == null) {
-                    PsiFunctorCall functorCall =
-                            ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+                    PsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
                     if (functorCall != null) {
                         result = new ArrayList<>();
                         // Include all expressions from functor
@@ -175,23 +197,17 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
 
                         Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorCall);
                         for (String potentialPath : potentialPaths) {
-                            Set<PsiModule> modules =
-                                    psiFinder.findModulesFromQn(
-                                            potentialPath + "." + functorCall.getFunctorName(),
-                                            true,
-                                            interfaceOrImplementation
-                                    );
+                            Set<PsiModule> modules = psiFinder.findModulesFromQn(
+                                    potentialPath + "." + functorCall.getName(),
+                                    true,
+                                    interfaceOrImplementation
+                            );
                             for (PsiModule module : modules) {
                                 result.addAll(module.getExpressions(eScope, filter));
                             }
                         }
 
-                        Set<PsiModule> modules =
-                                psiFinder.findModulesFromQn(
-                                        functorCall.getFunctorName(),
-                                        true,
-                                        interfaceOrImplementation
-                                );
+                        Set<PsiModule> modules = psiFinder.findModulesFromQn(functorCall.getName(), true, interfaceOrImplementation);
                         for (PsiModule module : modules) {
                             result.addAll(module.getExpressions(eScope, filter));
                         }
@@ -224,20 +240,6 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     }
 
     @Override
-    public @Nullable PsiExternal getExternalExpression(@Nullable String name) {
-        PsiElement body = name == null ? null : getBody();
-        if (body != null) {
-            ExpressionFilter expressionFilter = element -> element instanceof PsiExternal && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
-            if (!expressions.isEmpty()) {
-                return (PsiExternal) expressions.iterator().next();
-            }
-        }
-
-        return null;
-    }
-
-    @Override
     public @Nullable PsiLet getLetExpression(@Nullable String name) {
         PsiElement body = name == null ? null : getBody();
         if (body != null) {
@@ -251,42 +253,26 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
         return null;
     }
 
-    @Override
-    public @Nullable PsiVal getValExpression(@Nullable String name) {
-        PsiElement body = name == null ? null : getBody();
-        if (body != null) {
-            ExpressionFilter expressionFilter =
-                    element -> element instanceof PsiVal && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions =
-                    getExpressions(ExpressionScope.all, expressionFilter);
-            if (!expressions.isEmpty()) {
-                return (PsiVal) expressions.iterator().next();
-            }
-        }
-
-        return null;
-    }
-
     private boolean isModuleTypeOf() {
         PsiElement nextSibling = ORUtil.nextSibling(getFirstChild());
         PsiElement nextNextSibling = ORUtil.nextSibling(nextSibling);
         return nextSibling != null
                 && nextNextSibling != null
-                && nextSibling.getNode().getElementType() == m_types.TYPE
-                && nextNextSibling.getNode().getElementType() == m_types.OF;
+                && nextSibling.getNode().getElementType() == myTypes.TYPE
+                && nextNextSibling.getNode().getElementType() == myTypes.OF;
     }
 
     private @Nullable PsiModule findReferencedModuleTypeOf() {
-        PsiElement of = ORUtil.findImmediateFirstChildOfType(this, m_types.OF);
+        PsiElement of = ORUtil.findImmediateFirstChildOfType(this, myTypes.OF);
 
         if (of != null) {
             // find latest module name
-            PsiElement module = ORUtil.nextSiblingWithTokenType(of, m_types.C_UPPER_SYMBOL);
+            PsiElement module = ORUtil.nextSiblingWithTokenType(of, myTypes.A_MODULE_NAME);
             PsiElement moduleNextSibling = module == null ? null : module.getNextSibling();
             while (moduleNextSibling != null
-                    && moduleNextSibling.getNode().getElementType() == m_types.DOT) {
+                    && moduleNextSibling.getNode().getElementType() == myTypes.DOT) {
                 PsiElement element = moduleNextSibling.getNextSibling();
-                if (element != null && element.getNode().getElementType() == m_types.C_UPPER_SYMBOL) {
+                if (element != null && element.getNode().getElementType() == myTypes.A_MODULE_NAME) {
                     module = element;
                     moduleNextSibling = module.getNextSibling();
                 } else {
@@ -297,51 +283,13 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             if (module != null) {
                 PsiReference reference = module.getReference();
                 PsiElement resolvedElement = reference == null ? null : reference.resolve();
-                if (resolvedElement instanceof PsiUpperIdentifier) {
-                    PsiElement resolvedModule = resolvedElement.getParent();
-                    if (resolvedModule instanceof PsiModule) {
-                        return (PsiModule) resolvedModule;
-                    }
+                if (resolvedElement instanceof PsiModule) {
+                    return (PsiModule) resolvedElement;
                 }
             }
         }
 
         return null;
-    }
-
-    public ItemPresentation getPresentation() {
-        boolean isModuleTypeOf = isModuleTypeOf();
-        PsiModule referencedModuleType = isModuleTypeOf ? findReferencedModuleTypeOf() : null;
-
-        return new ItemPresentation() {
-            @Override
-            public @Nullable String getPresentableText() {
-                if (isModuleTypeOf) {
-                    if (referencedModuleType == null) {
-                        PsiElement of =
-                                ORUtil.findImmediateFirstChildOfType(PsiInnerModuleImpl.this, m_types.OF);
-                        assert of != null;
-                        return getText().substring(of.getStartOffsetInParent() + 3);
-                    }
-                    return referencedModuleType.getName();
-                }
-                return getName();
-            }
-
-            @Override
-            public @NotNull String getLocationString() {
-                return referencedModuleType == null
-                        ? ""
-                        : referencedModuleType.getContainingFile().getName();
-            }
-
-            @Override
-            public @NotNull Icon getIcon(boolean unused) {
-                return isInterface()
-                        ? ORIcons.MODULE_TYPE
-                        : (isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE);
-            }
-        };
     }
 
     @Override
@@ -361,7 +309,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             return stub.isFunctorCall();
         }
 
-        return ORUtil.findImmediateFirstChildOfType(this, m_types.C_FUNCTOR_CALL) != null;
+        return ORUtil.findImmediateFirstChildOfType(getBody(), myTypes.C_FUNCTOR_CALL) != null;
     }
 
     @Override
@@ -377,7 +325,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
     }
 
     public @Nullable PsiUpperSymbol getAliasSymbol() {
-        return ORUtil.findImmediateLastChildOfClass(this, PsiUpperSymbol.class);
+        PsiModuleBinding binding = ORUtil.findImmediateFirstChildOfClass(this, PsiModuleBinding.class);
+        return binding == null ? null : ORUtil.findImmediateLastChildOfClass(binding, PsiUpperSymbol.class);
     }
 
     @Override
@@ -387,16 +336,48 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModu
             return stub.getAlias();
         }
 
-        PsiElement eq = findChildByType(m_types.EQ);
-        if (eq != null) {
-            return ORUtil.computeAlias(eq.getNextSibling(), getLanguage(), false);
+        PsiModuleBinding binding = ORUtil.findImmediateFirstChildOfClass(this, PsiModuleBinding.class);
+        if (binding != null) {
+            return ORUtil.computeAlias(binding.getFirstChild(), getLanguage(), false);
         }
 
         return null;
     }
 
+    public ItemPresentation getPresentation() {
+        boolean isModuleTypeOf = isModuleTypeOf();
+        PsiModule referencedModuleType = isModuleTypeOf ? findReferencedModuleTypeOf() : null;
+
+        return new ItemPresentation() {
+            @Override
+            public @Nullable String getPresentableText() {
+                if (isModuleTypeOf) {
+                    if (referencedModuleType == null) {
+                        PsiElement of = ORUtil.findImmediateFirstChildOfType(PsiInnerModuleImpl.this, myTypes.OF);
+                        assert of != null;
+                        return getText().substring(of.getStartOffsetInParent() + 3);
+                    }
+                    return referencedModuleType.getName();
+                }
+                return getName();
+            }
+
+            @Override
+            public @NotNull String getLocationString() {
+                return referencedModuleType == null ? "" : referencedModuleType.getContainingFile().getName();
+            }
+
+            @Override
+            public @NotNull Icon getIcon(boolean unused) {
+                return isInterface()
+                        ? ORIcons.MODULE_TYPE
+                        : (isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE);
+            }
+        };
+    }
+
     @Override
-    public @NotNull String toString() {
-        return "Module " + getQualifiedName();
+    public String toString() {
+        return "PsiModule:" + getModuleName();
     }
 }

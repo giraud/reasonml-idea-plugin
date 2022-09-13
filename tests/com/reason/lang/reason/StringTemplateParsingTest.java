@@ -14,13 +14,13 @@ public class StringTemplateParsingTest extends RmlParsingTestCase {
         PsiLetBinding binding = e.getBinding();
         PsiInterpolation inter = (PsiInterpolation) binding.getFirstChild();
 
-        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, m_types.C_INTERPOLATION_PART);
+        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, myTypes.C_INTERPOLATION_PART);
         assertSize(2, parts);
         PsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, PsiInterpolationReference.class);
         assertEquals("var", ref.getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/353
+    // https://github.com/giraud/reasonml-idea-plugin/issues/353
     public void test_GH_353() {
         PsiLet e = first(letExpressions(parseCode("let _ = {j|$rowStart / $colStart|j}")));
         PsiLetBinding binding = e.getBinding();

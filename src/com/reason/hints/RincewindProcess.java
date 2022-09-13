@@ -2,9 +2,12 @@ package com.reason.hints;
 
 import com.intellij.notification.*;
 import com.intellij.openapi.editor.*;
+import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.bs.*;
+import com.reason.comp.dune.*;
+import com.reason.ide.*;
 import com.reason.ide.hints.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -21,20 +24,29 @@ public class RincewindProcess {
         myProject = project;
     }
 
-    public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
-        LOG.debug("Looking for types for file", sourceFile);
-
-        Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(myProject, sourceFile);
-        if (contentRoot.isEmpty()) {
-            return;
-        }
-
+    public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmtPath, @NotNull ORProcessTerminated<InferredTypes> runAfter) {
         if (!new File(rincewindBinary).exists()) {
             return;
         }
 
-        ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
-        processBuilder.directory(new File(contentRoot.get().getPath()));
+        LOG.debug("Looking for types for file", sourceFile);
+
+        VirtualFile processDir;
+
+        boolean isDuneProject = ORProjectManager.isDuneProject(myProject);
+        if (isDuneProject) {
+            processDir = DunePlatform.findContentRoot(myProject, sourceFile);
+        } else {
+            processDir = BsPlatform.findContentRoot(myProject, sourceFile);
+        }
+
+        if (processDir == null) {
+            LOG.trace("no content root found");
+            return;
+        }
+
+        ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmtPath);
+        processBuilder.directory(new File(processDir.getPath()));
 
         Process rincewind = null;
         try {
@@ -73,6 +85,10 @@ public class RincewindProcess {
 
                 runAfter.run(types);
             }
+        } catch (ProcessCanceledException e) {
+            //  Control-flow exceptions (like ProcessCanceledException) should never be logged:
+            //  ignore for explicitly started processes or rethrow to handle on the outer process level
+            throw e;
         } catch (Exception e) {
             LOG.error("An error occurred when reading types", e);
         } finally {
@@ -114,12 +130,23 @@ public class RincewindProcess {
     }
 
     public void dumper(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile, @NotNull String arg, @NotNull DumpVisitor visitor) {
-        Optional<VirtualFile> contentRoot = BsPlatform.findContentRoot(myProject, cmtFile);
-        if (contentRoot.isPresent()) {
+        if (!new File(rincewindBinary).exists()) {
+            LOG.debug("File doesn't exists", rincewindBinary);
+            return;
+        }
+
+        VirtualFile contentRoot;
+        if (ORProjectManager.isDuneProject(myProject)) {
+            contentRoot = DunePlatform.findContentRoot(myProject, cmtFile);
+        } else {
+            contentRoot = BsPlatform.findContentRoot(myProject, cmtFile);
+        }
+
+        if (contentRoot != null) {
             Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 
             ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, arg, cmtPath.toString());
-            processBuilder.directory(new File(contentRoot.get().getPath()));
+            processBuilder.directory(new File(contentRoot.getPath()));
 
             Process rincewind = null;
             try {
