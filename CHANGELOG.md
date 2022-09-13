@@ -11,7 +11,8 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
 ## Unreleased
-         
+
+NOTE: minimal version supported is 2021.3
 
 ## 0.107 - 2022/09/13
 
