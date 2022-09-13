@@ -12,7 +12,7 @@ import java.util.*;
 public class ObjectFieldIndex extends StringStubIndexExtension<PsiObjectField> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiObjectFieldStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.OBJECT_FIELD;
     }
 
     @Override

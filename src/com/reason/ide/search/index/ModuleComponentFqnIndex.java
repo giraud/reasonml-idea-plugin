@@ -12,7 +12,7 @@ import java.util.*;
 public class ModuleComponentFqnIndex extends IntStubIndexExtension<PsiModule> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiModuleStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.MODULE;
     }
 
     @Override

@@ -62,7 +62,7 @@ public class DuneCompiler implements Compiler {
         return "Dune ( OCaml:" + version + " )";
         */
         ORSettings settings = myProject.getService(ORSettings.class);
-        return "Dune (Switch: " + settings.getSwitchName() + ")";
+        return "Dune (OCaml:" + settings.getSwitchName() + ")";
     }
 
     @Override

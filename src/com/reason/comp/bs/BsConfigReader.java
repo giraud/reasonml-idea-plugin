@@ -16,8 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BsConfigReader {
-
   private static final Pattern NORMALIZE = Pattern.compile(",$");
+
+  private BsConfigReader() {
+  }
 
   @NotNull
   public static BsConfig read(@NotNull VirtualFile bsConfigFile) {

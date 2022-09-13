@@ -2,7 +2,7 @@ package com.reason.lang.rescript;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.impl.*;
 

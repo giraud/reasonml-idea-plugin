@@ -12,7 +12,6 @@ import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
-import java.util.*;
 
 import static com.intellij.notification.NotificationType.*;
 
@@ -64,18 +63,18 @@ public final class BsProcess {
 
     @Nullable
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType) {
-        Optional<VirtualFile> bsContentRootOptional = BsPlatform.findContentRoot(myProject, sourceFile);
-        if (bsContentRootOptional.isEmpty()) {
+        VirtualFile bsContentRoot = BsPlatform.findContentRoot(myProject, sourceFile);
+        if (bsContentRoot == null) {
             BsNotification.showWorkingDirectoryNotFound();
             return null;
         }
-        String bsContentRoot = bsContentRootOptional.get().getPath();
-        Optional<VirtualFile> bsbExecutable = BsPlatform.findBsbExecutable(myProject, sourceFile);
-        if (bsbExecutable.isEmpty()) {
-            BsNotification.showBsbNotFound(bsContentRoot);
+        String bsContentRootPath = bsContentRoot.getPath();
+        VirtualFile bsbExecutable = BsPlatform.findBsbExecutable(myProject, sourceFile);
+        if (bsbExecutable == null) {
+            BsNotification.showBsbNotFound(bsContentRootPath);
             return null;
         }
-        String bsbPath = bsbExecutable.get().getPath();
+        String bsbPath = bsbExecutable.getPath();
         GeneralCommandLine cli;
         switch (cliType) {
             case MAKE:
@@ -87,7 +86,7 @@ public final class BsProcess {
             default:
                 cli = new GeneralCommandLine(bsbPath);
         }
-        cli.withWorkDirectory(bsContentRoot);
+        cli.withWorkDirectory(bsContentRootPath);
         cli.withEnvironment("NINJA_ANSI_FORCED", "1");
         return cli;
     }

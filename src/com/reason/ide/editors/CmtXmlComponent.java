@@ -14,7 +14,7 @@ import javax.swing.event.*;
 public class CmtXmlComponent extends BorderLayoutPanel implements ChangeListener {
     private final Project myProject;
     private final String myXmlDump;
-    private boolean childrenAdded = false;
+    private boolean myChildrenAdded = false;
 
     public CmtXmlComponent(@NotNull Project project, @NotNull TabbedPaneWrapper rootTabbedPane, @NotNull String xmlDump) {
         myProject = project;
@@ -24,9 +24,9 @@ public class CmtXmlComponent extends BorderLayoutPanel implements ChangeListener
 
     @Override
     public void stateChanged(@NotNull ChangeEvent changeEvent) {
-        if (!childrenAdded) {
+        if (!myChildrenAdded) {
             addChildren();
-            childrenAdded = true;
+            myChildrenAdded = true;
         }
     }
 

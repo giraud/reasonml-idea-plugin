@@ -2,6 +2,7 @@ package com.reason.ide.reference;
 
 import com.intellij.usageView.*;
 import com.reason.ide.*;
+import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
 
@@ -22,5 +23,14 @@ public class FindLIdentUsagesOCLTest extends ORBasePlatformTestCase {
         assertSize(1, usages);
         UsageInfo usageInfo = usages.get(0);
         assertEquals("x + 1", usageInfo.getElement().getParent().getText());
+    }
+
+    public void test_val() {
+        configureCode("A.mli", "val x<caret>: int");
+        configureCode("B.ml", "let y = A.x + 2");
+
+        List<UsageInfo> usages = findUsages("A.mli");
+        assertSize(1, usages);
+        assertInstanceOf(usages.get(0).getElement().getParent(), PsiLetBinding.class);
     }
 }

@@ -1,19 +1,11 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.CompositeTypePsiElement;
-import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
-public class PsiConstraints extends CompositeTypePsiElement<ORTypes> {
-
-  protected PsiConstraints(@NotNull ORTypes types, @NotNull IElementType elementType) {
-    super(types, elementType);
-  }
-
-  @NotNull
-  @Override
-  public String toString() {
-    return "Constraints";
-  }
+public class PsiConstraints extends ORCompositePsiElement<ORTypes> {
+    protected PsiConstraints(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
+    }
 }

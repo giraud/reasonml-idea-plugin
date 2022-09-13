@@ -12,7 +12,7 @@ import java.util.*;
 public class ValFqnIndex extends IntStubIndexExtension<PsiVal> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiValStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.VAL;
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -102,8 +101,8 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<PsiLea
             if (referencedElement instanceof PsiLet) {
                 PsiFunction function = ((PsiLet) referencedElement).getFunction();
                 if (function != null) {
-                    List<PsiParameter> parameters = function.getParameters();
-                    for (PsiParameter parameter : parameters) {
+                    List<PsiParameterDeclaration> parameters = function.getParameters();
+                    for (PsiParameterDeclaration parameter : parameters) {
                         if (propertyName.equals(parameter.getName())) {
                             myReferencedIdentifier = parameter;
                             break;

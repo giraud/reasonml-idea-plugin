@@ -22,7 +22,7 @@ public class BsNotification {
                 + workingDirectory
                 + "'.\n"
                 + "Be sure that bsb is installed and reachable from that directory, "
-                + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>."
+                + "see <a href=\"https://github.com/giraud/reasonml-idea-plugin#bucklescript\">github</a>."
                 + "</html>",
             ERROR,
             URL_OPENING_LISTENER));

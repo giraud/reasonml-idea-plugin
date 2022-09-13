@@ -42,7 +42,7 @@ public class ObjectCompletionProvider {
                 LOG.debug(" -> resolved to", resolvedElement == null ? null : resolvedElement.getParent());
             }
 
-            if (resolvedElement instanceof PsiLowerIdentifier) {
+            if (resolvedElement != null) {
                 Collection<PsiObjectField> fields = getFields(qnameFinder, resolvedElement);
 
                 if (fields == null) {
@@ -61,9 +61,8 @@ public class ObjectCompletionProvider {
     }
 
     private static @Nullable Collection<PsiObjectField> getFields(@NotNull QNameFinder qnameFinder, @NotNull PsiElement resolvedElement) {
-        PsiElement resolvedParent = resolvedElement.getParent();
-        if (resolvedParent instanceof PsiLet) {
-            PsiLet let = (PsiLet) resolvedParent;
+        if (resolvedElement instanceof PsiLet) {
+            PsiLet let = (PsiLet) resolvedElement;
             if (let.isJsObject()) {
                 PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(let.getBinding(), PsiJsObject.class);
                 return jsObject == null ? null : jsObject.getFields();
@@ -74,14 +73,18 @@ public class ObjectCompletionProvider {
                     return jsObject == null ? null : jsObject.getFields();
                 }
             }
-        } else if (resolvedParent instanceof PsiObjectField) {
-            PsiObjectField field = (PsiObjectField) resolvedParent;
-            PsiElement value = field.getValue();
+        } else if (resolvedElement instanceof PsiObjectField) {
+            PsiElement value = ((PsiObjectField) resolvedElement).getValue();
             if (value instanceof PsiJsObject) {
                 return ((PsiJsObject) value).getFields();
-            } else {
+            } else if (value instanceof PsiLowerSymbol) {
                 // Must be an object defined outside
-                PsiLowerSymbol lSymbol = ORUtil.findImmediateLastChildOfClass(field, PsiLowerSymbol.class);
+                PsiLowerSymbolReference valueReference = (PsiLowerSymbolReference) value.getReference();
+                PsiElement valueResolvedElement = valueReference == null ? null : valueReference.resolveInterface();
+                return valueResolvedElement == null ? null : getFields(qnameFinder, valueResolvedElement);
+            } else if (value instanceof PsiUpperSymbol) {
+                // Must be a path of an object defined outside
+                PsiElement lSymbol = ORUtil.nextSiblingWithTokenType(value, ORUtil.getTypes(resolvedElement.getLanguage()).LIDENT);
                 PsiLowerSymbolReference valueReference = lSymbol == null ? null : (PsiLowerSymbolReference) lSymbol.getReference();
                 PsiElement valueResolvedElement = valueReference == null ? null : valueReference.resolveInterface();
                 return valueResolvedElement == null ? null : getFields(qnameFinder, valueResolvedElement);

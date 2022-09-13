@@ -8,17 +8,15 @@ import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 public class PsiFunctorModuleStubElementType extends PsiModuleStubElementType {
-    public PsiFunctorModuleStubElementType(Language language) {
-        super("C_FUNCTOR_DECLARATION", language);
+    public PsiFunctorModuleStubElementType(@NotNull String name, @NotNull Language language) {
+        super(name, language);
     }
 
-    @NotNull
-    public PsiFunctor createPsi(@NotNull final PsiModuleStub stub) {
+    public @NotNull PsiFunctor createPsi(@NotNull PsiModuleStub stub) {
         return new PsiFunctorImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    @NotNull
-    public PsiFunctor createPsi(@NotNull ASTNode node) {
+    public @NotNull PsiFunctor createPsi(@NotNull ASTNode node) {
         return new PsiFunctorImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 }

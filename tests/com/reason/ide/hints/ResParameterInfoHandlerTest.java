@@ -3,7 +3,7 @@ package com.reason.ide.hints;
 import com.intellij.psi.*;
 import com.intellij.testFramework.utils.parameterInfo.*;
 import com.reason.ide.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 public class ResParameterInfoHandlerTest extends ORBasePlatformTestCase {
     public void test_basic() {
@@ -48,14 +48,14 @@ public class ResParameterInfoHandlerTest extends ORBasePlatformTestCase {
         ResParameterInfoHandler handler = new ResParameterInfoHandler();
         MockCreateParameterInfoContext infoContext = new MockCreateParameterInfoContext(myFixture.getEditor(), myFixture.getFile());
 
-        PsiFunctionCallParams paramsOwner = handler.findElementForParameterInfo(infoContext);
+        PsiParameters paramsOwner = handler.findElementForParameterInfo(infoContext);
         handler.showParameterInfo(paramsOwner, infoContext);
 
         MockParameterInfoUIContext<PsiElement> context = new MockParameterInfoUIContext<>(paramsOwner);
         handler.updateUI((RmlParameterInfoHandler.ArgumentsDescription) infoContext.getItemsToShow()[0], context);
 
         MockUpdateParameterInfoContext updateContext = new MockUpdateParameterInfoContext(myFixture.getEditor(), myFixture.getFile());
-        PsiFunctionCallParams updateParamsOwner = handler.findElementForUpdatingParameterInfo(updateContext);
+        PsiParameters updateParamsOwner = handler.findElementForUpdatingParameterInfo(updateContext);
         updateContext.setParameterOwner(updateParamsOwner);
         handler.updateParameterInfo(updateParamsOwner, updateContext);
 

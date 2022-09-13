@@ -10,6 +10,7 @@ import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -47,7 +48,8 @@ public class ORElementResolver implements Disposable {
 
                     String includeModuleName = includeQPath[0];
 
-                    Set<Pair<String, String[]>> alternatePaths = topIncludedModules.get(resolvedPath[0]);
+                    String firstResolvedPath = resolvedPath == null ? null : resolvedPath[0];
+                    Set<Pair<String, String[]>> alternatePaths = topIncludedModules.get(firstResolvedPath);
                     if (alternatePaths != null) {
                         for (Pair<String, String[]> alternatePath : alternatePaths) {
                             String alternateKey = alternatePath.first;
@@ -141,9 +143,8 @@ public class ORElementResolver implements Disposable {
                         sourcePath = newPath;
                     }
 
-                    String first = sourcePath[0];
-                    Map<String, Resolution> resolutionsPerQName = myResolutionsPerTopModule.get(first);
-                    //noinspection Java8MapApi
+                    String first = sourcePath.length > 0 ? sourcePath[0] : null;
+                    Map<String, Resolution> resolutionsPerQName = first == null ? null : myResolutionsPerTopModule.get(first);
                     if (resolutionsPerQName == null) {
                         resolutionsPerQName = new HashMap<>();
                         myResolutionsPerTopModule.put(first, resolutionsPerQName);
@@ -179,13 +180,14 @@ public class ORElementResolver implements Disposable {
             for (Map.Entry<String, Map<String, Resolution>> entry : myResolutionsPerTopModule.entrySet()) {
                 String first = entry.getKey();
                 Collection<Resolution> resolutions = entry.getValue().values();
-
-                Collection<PsiModule> aliases = ModuleAliasedIndex.getElements(first, project, GlobalSearchScope.allScope(project));
-                for (PsiModule alias : aliases) {
-                    String[] aliasPath = alias.getQualifiedNameAsPath();
-                    for (Resolution resolution : resolutions) {
-                        Resolution aliasResolution = Resolution.createAlternate(resolution, aliasPath);
-                        aliasResolutions.add(aliasResolution);
+                if (first != null) {
+                    Collection<PsiModule> aliases = ModuleAliasedIndex.getElements(first, project, GlobalSearchScope.allScope(project));
+                    for (PsiModule alias : aliases) {
+                        String[] aliasPath = alias.getQualifiedNameAsPath();
+                        for (Resolution resolution : resolutions) {
+                            Resolution aliasResolution = Resolution.createAlternate(resolution, aliasPath);
+                            aliasResolutions.add(aliasResolution);
+                        }
                     }
                 }
             }
@@ -307,9 +309,7 @@ public class ORElementResolver implements Disposable {
                 }
             }
 
-            for (Map.Entry<Integer, Integer> weightLevel : newWeights.entrySet()) {
-                myWeightPerLevel.put(weightLevel.getKey(), weightLevel.getValue());
-            }
+            myWeightPerLevel.putAll(newWeights);
         }
 
         public void udpateTerminalWeight(@NotNull String value) {
@@ -332,7 +332,7 @@ public class ORElementResolver implements Disposable {
             for (Map<String, com.reason.lang.core.psi.reference.Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
                 topModuleEntry.values().removeIf(resolution -> {
                     String name = resolution.getCurrentName();
-                    return name != null && Character.isUpperCase(name.charAt(0));
+                    return name != null && !name.isEmpty() && Character.isUpperCase(name.charAt(0));
                 });
             }
         }

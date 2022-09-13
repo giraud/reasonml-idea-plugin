@@ -43,7 +43,7 @@ public class JsxNameCompletionProvider {
                 LOG.debug(" -> resolved to", resolvedElement);
 
                 // A component is resolved to the make function
-                if (resolvedElement instanceof PsiLowerIdentifier) {
+                if (resolvedElement != null) {
                     PsiElement resolvedModule = PsiTreeUtil.getStubOrPsiParentOfType(resolvedElement, PsiModule.class);
                     if (resolvedModule == null) {
                         resolvedModule = resolvedElement.getContainingFile();

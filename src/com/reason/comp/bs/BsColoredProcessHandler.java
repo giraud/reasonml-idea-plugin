@@ -4,7 +4,7 @@ import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
 import com.intellij.openapi.util.*;
-import com.reason.comp.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 class BsColoredProcessHandler extends KillableProcessHandler implements AnsiEscapeDecoder.ColoredTextAcceptor {

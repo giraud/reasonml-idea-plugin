@@ -1,34 +1,32 @@
-// This is a generated file. Not intended for manual editing.
 package com.reason.lang.ocamlyacc;
 
 import com.intellij.lang.*;
-import com.intellij.psi.tree.*;
 import com.reason.lang.*;
 import org.jetbrains.annotations.*;
 
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-
-public class OclYaccParser extends CommonParser<OclYaccTypes> {
+public class OclYaccParser extends CommonPsiParser {
     protected OclYaccParser() {
-        super(OclYaccTypes.INSTANCE);
+        super(true);
     }
 
-    @Override protected void parseFile(@NotNull PsiBuilder builder, ParserState parserState) {
-        IElementType tokenType;
-        int c = current_position_(builder);
-        while (true) {
-            tokenType = builder.getTokenType();
-            if (tokenType == null) {
-                break;
+    @Override protected ORParser<OclYaccTypes> getORParser(@NotNull PsiBuilder builder) {
+        return new OclYaccParserState(builder, !myIsSafe);
+    }
+
+    static class OclYaccParserState extends ORParser<OclYaccTypes> {
+        protected OclYaccParserState(@NotNull PsiBuilder builder, boolean verbose) {
+            super(OclYaccTypes.INSTANCE, builder, verbose);
+        }
+
+        @Override
+        public void parse() {
+            while (!myBuilder.eof()) {
+                myBuilder.advanceLexer();
             }
+        }
 
-            builder.advanceLexer();
-
-            if (!empty_element_parsed_guard_(builder, "oclYaccFile", c)) {
-                break;
-            }
-
-            c = builder.rawTokenIndex();
+        @Override
+        public void eof() {
         }
     }
 }

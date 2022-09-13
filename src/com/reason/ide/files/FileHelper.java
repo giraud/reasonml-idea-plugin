@@ -43,6 +43,10 @@ public class FileHelper {
         return file != null && "build.ninja".equals(file.getName());
     }
 
+    public static boolean isCmt(@Nullable VirtualFile file) {
+        return file != null && "cmt".equals(file.getExtension());
+    }
+
     public static boolean isInterface(@Nullable FileType fileType) {
         return fileType instanceof RmlInterfaceFileType
                 || fileType instanceof ResInterfaceFileType

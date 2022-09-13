@@ -1,11 +1,9 @@
 package com.reason.lang.rescript;
 
 import com.reason.lang.core.psi.*;
-import com.reason.lang.reason.*;
 
 import java.util.*;
 
-@SuppressWarnings("unchecked")
 public class AndParsingTest extends ResParsingTestCase {
     public void test_let_chaining() {
         List<PsiLet> lets = letExpressions(parseCode("let rec lx = x => x + 1 and ly = y => 3 + lx(y)"));

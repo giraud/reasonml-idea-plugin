@@ -13,7 +13,7 @@ You can find them in `Project settings | Languages & Frameworks | Reason`:
 
 ![](../../static/img/settings.png)
 
-See also: [Project Types - BuckleScript Projects](https://github.com/reasonml-editor/reasonml-idea-plugin/wiki/Project-Types#bucklescript-projects)
+See also: [Project Types - BuckleScript Projects](https://github.com/giraud/reasonml-idea-plugin/wiki/Project-Types#bucklescript-projects)
 
 ### Working Directory Resolution
 The working directory is no longer specified via settings. Instead, 

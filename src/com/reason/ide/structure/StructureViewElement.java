@@ -265,7 +265,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                         if (let.isScopeIdentifier()) {
                             // it's a tuple! add each element of the tuple separately.
                             for (PsiElement child : let.getScopeChildren()) {
-                                if (child instanceof PsiLowerIdentifier) {
+                                if (child instanceof PsiLowerSymbol) {
                                     m_treeElements.add(new StructureViewElement(child, element, true, m_elementLevel));
                                 }
                             }

@@ -26,8 +26,9 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiException, PsiExc
     // endregion
 
     //region PsiNamedElement
-    @Override public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
+    @Override
+    public @Nullable PsiElement getNameIdentifier() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
     }
 
     @Override
@@ -69,6 +70,19 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiException, PsiExc
     }
     //endregion
 
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? this : id;
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
+    }
+
     @Override
     public @Nullable String getAlias() {
         PsiExceptionStub stub = getGreenStub();
@@ -76,7 +90,7 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiException, PsiExc
             return stub.getQualifiedName();
         }
 
-        PsiElement eq = findChildByType(m_types.EQ);
+        PsiElement eq = findChildByType(myTypes.EQ);
         return eq == null ? null : ORUtil.computeAlias(eq.getNextSibling(), getLanguage(), false);
     }
 
@@ -102,6 +116,6 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiException, PsiExc
 
     @Override
     public @NotNull String toString() {
-        return "Exception " + getName();
+        return "PsiException:" + getName();
     }
 }

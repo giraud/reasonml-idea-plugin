@@ -1,11 +1,10 @@
 package com.reason.comp;
 
-import com.intellij.codeInsight.daemon.*;
 import com.intellij.execution.process.*;
 import com.intellij.openapi.application.*;
-import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
+import com.intellij.psi.*;
 import com.reason.ide.annotations.*;
 import com.reason.ide.hints.*;
 import jpsplugin.com.reason.*;
@@ -47,10 +46,12 @@ public class CompilerOutputListener implements ProcessListener {
                             // When build is done, we need to refresh editors to be notified of the latest
                             // modifications
                             if (!myProject.isDisposed()) {
-                                LOG.debug("Refresh editors / inferred types");
-                                InferredTypesService.queryForSelectedTextEditor(myProject);
-                                DaemonCodeAnalyzer.getInstance(myProject).restart();
-                                EditorFactory.getInstance().refreshAllEditors();
+                                LOG.debug("Compilation done: read new types");
+                                PsiFile selectedFile = InferredTypesService.getPsiFile(myProject);
+                                if (selectedFile != null) {
+                                    selectedFile.putUserData(SignatureProvider.SIGNATURES_CONTEXT, null); // reset
+                                    InferredTypesService.queryTypes(myProject, selectedFile);
+                                }
                             }
                         },
                         ModalityState.NON_MODAL);
