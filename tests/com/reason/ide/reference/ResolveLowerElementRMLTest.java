@@ -5,13 +5,18 @@ import com.reason.ide.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     @Override
     protected String getTestDataPath() {
         return "testData/com/reason/ide/reference";
     }
 
+    @Test
     public void test_let_basic() {
         configureCode("A.re", "let x = 1; let z = x<caret> + 1;");
 
@@ -19,6 +24,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.x", e.getQualifiedName());
     }
 
+    @Test
     public void test_let_in_module_binding() {
         configureCode("A.re", "let foo = 2; module X = { let foo = 1; let z = foo<caret>; };");
 
@@ -26,6 +32,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.X.foo", e.getQualifiedName());
     }
 
+    @Test
     public void test_let_inner_scope() {
         configureCode("A.re", "let x = 1; let a = { let x = 2; x<caret> + 10 };");
 
@@ -33,6 +40,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.a.x", e.getQualifiedName());
     }
 
+    @Test
     public void test_inner_scope_in_function() {
         configureCode("A.re", "let x = 1; let fn = { let x = 2; fn1(x<caret>); };");
 
@@ -40,6 +48,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.fn.x", e.getQualifiedName());
     }
 
+    @Test
     public void test_inner_scope_in_impl() {
         configureCode("A.rei", "let x:int;");
         configureCode("A.re", "let x = 1; let fn = { let foo = 2; fn1(foo<caret>); };");
@@ -49,6 +58,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.re", e.getContainingFile().getName());
     }
 
+    @Test
     public void test_let_local_module_alias() {
         configureCode("A.rei", "let x:int;");
         configureCode("B.re", "let x = 1; module X = A; X.x<caret>");
@@ -57,6 +67,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.x", e.getQualifiedName());
     }
 
+    @Test
     public void test_alias_path() {
         configureCode("A.re", "module W = { module X = { module Y = { module Z = { let z = 1; }; }; }; };");
         configureCode("B.re", "module C = A.W.X; module D = C.Y.Z; D.z<caret>");
@@ -65,6 +76,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.W.X.Y.Z.z", e.getQualifiedName());
     }
 
+    @Test
     public void test_alias_x() {
         configureCode("A.re", "module Mode = { type t; };");
         configureCode("B.re", "module B1 = { module Mode = A.Mode; };");
@@ -74,6 +86,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.Mode.t", e.getQualifiedName());
     }
 
+    @Test
     public void test_open() {
         configureCode("B.re", "let x = 1;");
         configureCode("A.re", "let x = 2; open B; x<caret>");
@@ -82,6 +95,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("B.x", e.getQualifiedName());
     }
 
+    @Test
     public void test_alias_open() {
         configureCode("B.re", "let x = 1;");
         configureCode("A.re", "let x = 2; module C = B; open C; x<caret>");
@@ -90,6 +104,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("B.x", e.getQualifiedName());
     }
 
+    @Test
     public void test_let_local_open_parens() {
         configureCode("A.re", "module A1 = { let a = 1; };");
         configureCode("B.re", "let a = 2; let b = A.(A1.a<caret>);");
@@ -98,6 +113,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.A1.a", e.getQualifiedName());
     }
 
+    @Test
     public void test_let_local_open_parens_2() {
         configureCode("A.re", "module A1 = { let a = 3; };");
         configureCode("B.re", "let a = A.A1.(a<caret>);");
@@ -106,6 +122,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.A1.a", e.getQualifiedName());
     }
 
+    @Test
     public void test_type() {
         configureCode("A.re", "type t; type t' = t<caret>;");
 
@@ -114,6 +131,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertTrue(e.isAbstract());
     }
 
+    @Test
     public void test_type_with_path() {
         configureCode("A.re", "type t;");
         configureCode("B.re", "type t = A.t<caret>;");
@@ -122,6 +140,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.t", e.getQualifiedName());
     }
 
+    @Test
     public void test_type_with_path_2() {
         configureCode("A.re", "type t; type y = X.Y.t<caret>");
 
@@ -130,6 +149,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         });
     }
 
+    @Test
     public void test_function() {
         configureCode("A.re", "module B = { let bb = 1; }; module C = { let cc = x => x; }; let z = C.cc(B.bb<caret>);");
 
@@ -137,6 +157,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.B.bb", e.getQualifiedName());
     }
 
+    @Test
     public void test_function_open() {
         configureCode("B.re", "module C = { let make = x => x; let convert = x => x; }");
         configureCode("A.re", "open B; C.make([| C.convert<caret> |]);");
@@ -145,6 +166,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("B.C.convert", e.getQualifiedName());
     }
 
+    @Test
     public void test_param_parenLess() {
         configureCode("A.re", "let add10 = x => x<caret> + 10;");
 
@@ -152,6 +174,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.add10[x]", e.getQualifiedName());
     }
 
+    @Test
     public void test_local_open_parens() {
         configureCode("A.re", "module A1 = { external a : int = \"\"; };");
         configureCode("B.re", "let b = A.(A1.a<caret>);");
@@ -160,6 +183,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.A1.a", e.getQualifiedName());
     }
 
+    @Test
     public void test_local_open_parens_2() {
         configureCode("A.re", "module A1 = { external a : int = \"\"; };");
         configureCode("B.re", "let a = A.A1.(a<caret>);");
@@ -168,6 +192,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.A1.a", e.getQualifiedName());
     }
 
+    @Test
     public void test_local_open_parens_3() {
         configureCode("A.re", "module A1 = { type t = | Variant; let toString = x => x; };");
         configureCode("B.re", "A.A1.(Variant->toString<caret>);");
@@ -176,6 +201,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.A1.toString", e.getQualifiedName());
     }
 
+    @Test
     public void test_include() {
         configureCode("A.re", "module B = { type t; }; module C = B; include C; type x = t<caret>;");
 
@@ -183,6 +209,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.B.t", e.getQualifiedName());
     }
 
+    @Test
     public void test_include_2() {
         configureCode("Css_AtomicTypes.rei", "module Visibility: { type t = [ | `visible | `hidden | `collapse]; };");
         configureCode("Css_Legacy_Core.re", "module Types = Css_AtomicTypes;");
@@ -193,6 +220,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Css_AtomicTypes.Visibility.t", e.getQualifiedName());
     }
 
+    @Test
     public void test_include_qualified() {
         configureCode("A.re", "module B = { module C = { type t; }; }; module D = B; include D.C;");
         configureCode("C.re", "type t = A.t<caret>;");
@@ -201,6 +229,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.B.C.t", e.getQualifiedName());
     }
 
+    @Test
     public void test_module_signature() {
         configureCode("A.re", "module B: { type t; let toString: t => string; }; module C: { type t; let toString: t<caret> => string; };");
 
@@ -208,6 +237,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.C.t", e.getQualifiedName());
     }
 
+    @Test
     public void test_let_Local_open_pipe_first() {
         configureCode("A.re", "module A1 = { let add = x => x + 3; };");
         configureCode("B.re", "let x = A.A1.(x->add<caret>);");
@@ -216,6 +246,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.A1.add", e.getQualifiedName());
     }
 
+    @Test
     public void test_external_local_open_pipe_first() {
         configureCode("A.re", "module A1 = { external add : int => int = \"\"; };");
         configureCode("B.re", "let x = A.A1.(x->add<caret>);");
@@ -224,6 +255,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.A1.add", e.getQualifiedName());
     }
 
+    @Test
     public void test_pipe_first() {
         configureCode("Css.mli", "val px: int => string;");
         configureCode("A.re", "Dimensions.spacing.small->Css.px<caret>");
@@ -232,6 +264,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Css.px", e.getQualifiedName());
     }
 
+    @Test
     public void test_pipe_first_open() {
         configureCode("Css.mli", "val px: int => string;");
         configureCode("A.re", "let make = () => { open Css; Dimensions.spacing.small->px<caret>; }");
@@ -240,6 +273,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Css.px", e.getQualifiedName());
     }
 
+    @Test
     public void test_pipe_first_open_2() {
         configureCode("Core.re", "module Async = { let get = x => x; };");
         configureCode("A.re", "open Core.Async; request->get<caret>(\"windows/settings\")");
@@ -248,6 +282,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Core.Async.get", e.getQualifiedName());
     }
 
+    @Test
     public void test_pipe_first_open_with_path() {
         configureCode("Css.mli", "module Rule = { val px: int => string; };");
         configureCode("A.re", "let make = () => { open Css; Dimensions.spacing.small->Rule.px<caret>; }");
@@ -256,6 +291,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Css.Rule.px", e.getQualifiedName());
     }
 
+    @Test
     public void test_multiple_module() {
         configureCode("Command.re", "module Settings = { module Action = { let convert = x => x; }; };");
         configureCode("A.re", "module C = Y; open Command; Settings.Action.convert<caret>");
@@ -264,6 +300,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Command.Settings.Action.convert", e.getQualifiedName());
     }
 
+    @Test
     public void test_variant_constructor() {
         configureCode("B.re", "let convert = x => x;");
         configureCode("A.re", "X.Variant(B.convert<caret>())");
@@ -272,6 +309,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("B.convert", e.getQualifiedName());
     }
 
+    @Test
     public void test_variant_constructor_tuple() {
         configureCode("B.re", "type t('a) = | Variant('a, 'b);");
         configureCode("A.re", "let x = 1; B.Variant(X.Y, x<caret>)");
@@ -280,6 +318,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.x", e.getQualifiedName());
     }
 
+    @Test
     public void test_open_include() {
         configureCode("Css_Core.re", "let fontStyle = x => x;");
         configureCode("Css.re", "include Css_Core;");
@@ -289,6 +328,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Css_Core.fontStyle", e.getQualifiedName());
     }
 
+    @Test
     public void test_open_include_deep() {
         configureCode("Css_Rule.re", "let fontStyle = x => x;");
         configureCode("Css_Core.re", "module Rules = { include Css_Rule; }");
@@ -299,6 +339,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Css_Rule.fontStyle", e.getQualifiedName());
     }
 
+    @Test
     public void test_resolution_1() {
         configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
         configureCode("Belt_Map.ml", "module String = Belt_MapString;");
@@ -310,6 +351,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Belt_Option.flatMap", e.getQualifiedName());
     }
 
+    @Test
     public void test_resolution_2() {
         configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
         configureCode("Belt_Map.ml", "module String = Belt_MapString;");
@@ -348,6 +390,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     }
     */
 
+    @Test
     public void test_path_functor() {
         configureCode("pervasives.mli", "external compare : 'a -> 'a -> int = \"%compare\"");
         configureCode("A.re", "module B = X.Functor({ let cmp = Pervasives.compare<caret>; })");
@@ -357,6 +400,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     }
 
     //region record
+    @Test
     public void test_record() {
         configureCode("B.re", "let b = { a: 1, b: 2 }; b<caret>");
 
@@ -364,6 +408,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("B.b", e.getQualifiedName());
     }
 
+    @Test
     public void test_record_l1() {
         configureCode("B.re", "let b = { a: 1, b: 2 }; b.b<caret>");
 
@@ -371,6 +416,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("B.b.b", e.getQualifiedName());
     }
 
+    @Test
     public void test_record_l3() {
         configureCode("A.re", "let a = { b: { c: { d: 1 } } }; a.b.c.d<caret>");
 
@@ -380,6 +426,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     //endregion
 
     //region object
+    @Test
     public void test_object_l1() {
         configureCode("A.re", "let a = { \"b\": 1, \"c\": 2 }; a##b<caret>");
 
@@ -387,6 +434,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.a.b", e.getQualifiedName());
     }
 
+    @Test
     public void test_object_l3() {
         configureCode("A.re", "let a = { \"b\": { \"c\": { \"d\": 1 } } }; a##b##c##d<caret>");
 
@@ -395,6 +443,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     }
     //endregion
 
+    @Test
     public void test_GH_167_deconstruction_first() {
         configureCode("A.re", "let (count, setCount) = React.useState(() => 0); count<caret>(1);");
 
@@ -402,6 +451,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals(5, elementAtCaret.getTextOffset());
     }
 
+    @Test
     public void test_GH_167_deconstruction_second() {
         configureCode("A.re", "let (count, setCount) = React.useState(() => 0); setCount<caret>(1);");
 
@@ -409,6 +459,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals(12, elementAtCaret.getTextOffset());
     }
 
+    @Test
     public void test_GH_303() {
         configureCode("B.re", "type t1 = {bar: string};");
         configureCode("A.re", "type t = {bar: string}; let bar = item => item.bar<caret>;");
@@ -417,6 +468,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.t.bar", e.getQualifiedName());
     }
 
+    @Test
     public void test_GH_303_2() {
         configureCode("B.re", "type t1 = {bar:string};");
         configureCode("A.re", "type t = {bar: string}; let bar<caret> = item => item.bar;");

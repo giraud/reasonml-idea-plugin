@@ -1,11 +1,16 @@
 package com.reason.ide.completion;
 
 import com.reason.ide.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
+    @Test
     public void test_basic() {
         configureCode("JsObj.re", "let oo = {\"asd\": 1, \"qwe\": 2}");
         configureCode("Dummy.re", "open JsObj; oo##<caret>");
@@ -18,6 +23,7 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "asd", "qwe");
     }
 
+    @Test
     public void test_deep() {
         configureCode("JsObj.re", "let oo = {\"first\": {\"deep\": true},\"deep\": {\"other\": {\"asd\": 1} } }");
         configureCode("Dummy.re", "open JsObj; oo##deep##other##<caret>");
@@ -30,6 +36,7 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "asd");
     }
 
+    @Test
     public void test_deepJsField() {
         configureCode("JsObj.re", "let o = {\"asd\": 1};\nlet oo = {\"deep\": o};");
         configureCode("Dummy.re", "open JsObj; oo##<caret>");
@@ -42,6 +49,7 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "deep");
     }
 
+    @Test
     public void test_deepJsFieldCompletionOrder() {
         configureCode("JsObj.re", "let oo = {\"first\": {\"deep\": true},\"deep\": {\"asd\": 1} }");
         configureCode("Dummy.re", "open JsObj; oo##first##<caret>");
@@ -53,6 +61,7 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "deep");
     }
 
+    @Test
     public void test_composed() {
         configureCode("A.re", "let o = {\"f22\": 222}; let oo = {\"f1\": {\"f11\": 111}, \"f2\": o,\"f3\": {\"f33\": 333} }");
         configureCode("B.re", "open A; let oo = {\"f1\": {\"f11\": 111}, \"f2\": o, \"f3\": {\"f33\": 333} }");
@@ -65,6 +74,7 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "f22");
     }
 
+    @Test
     public void test_composed_2() {
         configureCode("JsObj2.re", "let o = {\"f22\": 222}; let oo = {\"f1\": {\"f11\": 111}, \"f2\": o,\"f3\": {\"f33\": 333} }");
         configureCode("JsObj.re", "let oo = {\"f1\": {\"f11\": 111}, \"f2\": JsObj2.o,\"f3\": {\"f33\": 333} }");
@@ -77,6 +87,7 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         assertSize(1, elements);
     }
 
+    @Test
     public void test_composed_3() {
         configureCode("JsObj.re", "let o = {\"ooo\": o, \"f22\": 222}; let oo = {\"f1\": o, \"f2\": o,\"f3\": {\"f33\": 333} }");
         configureCode("Dummy.re", "open JsObj; oo##f2##<caret>");
@@ -88,6 +99,7 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "ooo", "f22");
     }
 
+    @Test
     public void test_path() {
         configureCode("A.re", "let o = {\"oo\": 1};");
         configureCode("B.re", "let o = {\"oooo\": 1};");
@@ -100,6 +112,7 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "oo");
     }
 
+    @Test
     public void test_alias() {
         configureCode("A.re", "let o = {\"oo\": 1};");
         configureCode("Alias.re", "module AA = A;");
@@ -112,6 +125,7 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "oo");
     }
 
+    @Test
     public void test_with_type() {
         configureCode("A.re", "type t = {. \"a\": int };");
         configureCode("B.re", "open A; let y:t = x; y##<caret>");

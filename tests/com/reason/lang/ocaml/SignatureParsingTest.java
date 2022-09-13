@@ -3,11 +3,13 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class SignatureParsingTest extends OclParsingTestCase {
+    @Test
     public void test_let() {
         PsiLet e = first(letExpressions(parseCode("let x:int = 1")));
 
@@ -16,6 +18,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertFalse(signature.getItems().get(0).isOptional());
     }
 
+    @Test
     public void test_OCamlBeforeDirective() {
         PsiVal e = first(valExpressions(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end")));
 
@@ -23,6 +26,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals("string -> bool option", signature.asText(getLangProps()));
     }
 
+    @Test
     public void test_val() {
         PsiVal e = first(valExpressions(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option")));
 
@@ -34,6 +38,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertFalse(items.get(2).isOptional());
     }
 
+    @Test
     public void test_trimming() {
         PsiLet let = first(letExpressions(
                 parseCode("let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  )\n")));
@@ -42,6 +47,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asText(getLangProps()));
     }
 
+    @Test
     public void test_parsing_named_params() {
         PsiLet let = first(letExpressions(parseCode("let padding: v:length -> h:length -> rule")));
 
@@ -55,6 +61,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals("rule", signature.getItems().get(2).getText());
     }
 
+    @Test
     public void test_optional_fun() {
         PsiLet let = first(letExpressions(parseCode("let x: int -> string option -> string = fun a  -> fun b  -> c")));
 
@@ -70,6 +77,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertSize(3, items);
     }
 
+    @Test
     public void test_optional_fun_parameters() {
         PsiLet let = first(letExpressions(parseCode("let x a b ?(c= false)  ?(d= 1.)  = 3")));
 
@@ -87,6 +95,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals("1.", parameters.get(3).getDefaultValue().getText());
     }
 
+    @Test
     public void test_optional_fun_parameters_typed() {
         PsiLet let = first(letExpressions(parseCode("let x (a : int) (b : string option) ?c:((c : bool)= false)  ?d:((d : float)=1.) = 3")));
 
@@ -108,6 +117,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertTrue(parameters.get(3).isOptional());
     }
 
+    @Test
     public void test_unitFunParameter() {
         PsiLet e = first(letExpressions(parseCode("let x (a : int) () = a")));
 
@@ -119,6 +129,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals("()", parameters.get(1).getText());
     }
 
+    @Test
     public void test_signature_items() {
         PsiLet e = first(letExpressions(parseCode("let createAction: < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element;")));
         PsiSignature signature = e.getSignature();
@@ -126,6 +137,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals(2, signature.getItems().size());
     }
 
+    @Test
     public void test_jsObject() {
         PsiLet e = first(letExpressions(parseCode("let x: < a: string; b: 'a > Js.t -> string")));
         PsiSignature signature = e.getSignature();
@@ -138,6 +150,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals(fields.get(1).getName(), "b");
     }
 
+    @Test
     public void test_option() {
         PsiVal e = firstOfType(parseCode("val x: string array option"), PsiVal.class);
 
@@ -145,6 +158,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals("string array option", option.getText());
     }
 
+    @Test
     public void test_option_named_params() {
         PsiExternal e = firstOfType(parseCode("external add : x:int option -> int = \"\""), PsiExternal.class);
 

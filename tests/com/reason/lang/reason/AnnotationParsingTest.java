@@ -2,22 +2,26 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.*;
 import com.reason.lang.core.psi.impl.PsiAnnotation;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class AnnotationParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_annotation_name() {
         assertEquals("@bs.module", ((PsiAnnotation) firstElement(parseCode("[@bs.module]"))).getName());
         assertEquals("@bs.val", ((PsiAnnotation) firstElement(parseCode("[@bs.val]"))).getName());
     }
 
+    @Test
     public void test_annotation_with_string() {
         PsiAnnotation annotation = (PsiAnnotation) firstElement(parseCode("[@bs.module \"xyz\"]"));
 
         assertEquals("@bs.module", annotation.getName());
     }
 
+    @Test
     public void test_chaining() {
         List<PsiNamedElement> es = new ArrayList<>(expressions(parseCode("[@bs.module \"xyz\"] [@react.component]")));
 

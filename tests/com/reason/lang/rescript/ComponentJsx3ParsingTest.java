@@ -5,24 +5,28 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ComponentJsx3ParsingTest extends ResParsingTestCase {
+    @Test
     public void test_file_component() {
         FileBase e = parseCode("@react.component\nlet make = () => <div/>");
 
         assertTrue(e.isComponent());
     }
 
+    @Test
     public void test_inner_component() {
         PsiInnerModule e = firstOfType(parseCode("module X = {\n @react.component\n let make = (~name) => <div/>\n }"), PsiInnerModule.class);
 
         assertTrue(e.isComponent());
     }
 
+    @Test
     public void test_mandatory_property() {
         PsiLet e = firstOfType(parseCode("@react.component let make = (~name, ~other:option<string>) => <div/>"), PsiLet.class);
 
@@ -32,6 +36,7 @@ public class ComponentJsx3ParsingTest extends ResParsingTestCase {
         assertTrue(params.get(1).isMandatory());
     }
 
+    @Test
     public void test_optional_property() {
         PsiLet e = firstOfType(parseCode("@react.component let make = (~layout=?) => <div/>"), PsiLet.class);
 
@@ -41,6 +46,7 @@ public class ComponentJsx3ParsingTest extends ResParsingTestCase {
         assertTrue(params.get(0).isOptional());
     }
 
+    @Test
     public void test_close() {
         PsiLet e = firstOfType(parseCode("@react.component let make = () => { <A><B><span>{\"X\"->React.string}</span></B><C></C></A> }"), PsiLet.class);
 

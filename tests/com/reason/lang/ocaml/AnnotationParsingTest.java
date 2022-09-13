@@ -5,9 +5,11 @@ import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.impl.PsiLetBinding;
+import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class AnnotationParsingTest extends OclParsingTestCase {
+    @Test
     public void test_algebraic_let() {
         PsiLet e = firstOfType(parseCode("let find_reference = Coqlib.find_reference [@ocaml.warning \"-3\"]"), PsiLet.class);
 
@@ -17,6 +19,7 @@ public class AnnotationParsingTest extends OclParsingTestCase {
         assertEquals("@ocaml.warning", attribute.getName());
     }
 
+    @Test
     public void test_block_let() {
         PsiLet e = firstOfType(parseCode("let val_to_int (x:t) = (Obj.magic x : int) [@@ocaml.inline always]"), PsiLet.class);
 
@@ -26,6 +29,7 @@ public class AnnotationParsingTest extends OclParsingTestCase {
         assertEquals("@@ocaml.inline", attribute.getName());
     }
 
+    @Test
     public void test_floating_let() {
         FileBase f = parseCode("let prefix_small_string = 0x20\n [@@@ocaml.warning \"-32\"]");
 

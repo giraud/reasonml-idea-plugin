@@ -4,15 +4,18 @@ import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.impl.PsiExternalImpl;
 import com.reason.lang.core.psi.impl.PsiLowerSymbol;
 import com.reason.lang.core.psi.impl.PsiScopedExpr;
+import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ExternalParsingTest extends OclParsingTestCase {
+    @Test
     public void test_qualifiedName() {
         PsiExternal e = firstOfType(parseCode("external ee : int = \"\""), PsiExternal.class);
 
         assertEquals("Dummy.ee", e.getQualifiedName());
     }
 
+    @Test
     public void test_with_string() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass : ReasonReact.reactClass = \"FormattedMessage\""), PsiExternal.class);
 
@@ -21,6 +24,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertEquals("FormattedMessage", e.getExternalName());
     }
 
+    @Test
     public void test_empty_string() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"\""), PsiExternal.class);
 
@@ -29,6 +33,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertEquals("", e.getExternalName());
     }
 
+    @Test
     public void test_string() {
         PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external string : string -> reactElement = \"%identity\""), PsiExternal.class);
 
@@ -39,6 +44,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertEquals("%identity", e.getExternalName());
     }
 
+    @Test
     public void test_array() {
         PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external array : reactElement array -> reactElement = \"%identity\""), PsiExternal.class);
 
@@ -49,6 +55,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertEquals("%identity", e.getExternalName());
     }
 
+    @Test
     public void test_raise() {
         PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external raise : exn -> 'a = \"%raise\""), PsiExternal.class);
 
@@ -59,6 +66,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertEquals("%raise", e.getExternalName());
     }
 
+    @Test
     public void test_operator1() {
         PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external ( = ) : 'a -> 'a -> bool = \"%equal\""), PsiExternal.class);
 
@@ -68,6 +76,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertEquals("%equal", e.getExternalName());
     }
 
+    @Test
     public void test_operator2() {
         PsiExternalImpl e = firstOfType(parseCode("external ( <> ) : 'a -> 'a -> bool = \"%notequal\""), PsiExternalImpl.class);
 
@@ -77,6 +86,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertEquals("%notequal", e.getExternalName());
     }
 
+    @Test
     public void test_operator3() {
         PsiExternalImpl e = firstOfType(parseCode("external ( < ) : 'a -> 'a -> bool = \"%lessthan\""), PsiExternalImpl.class);
 
@@ -86,6 +96,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertEquals("%lessthan", e.getExternalName());
     }
 
+    @Test
     public void test_operator4() {
         PsiExternalImpl e = firstOfType(parseCode("external ( > ) : 'a -> 'a -> bool = \"%greaterthan\""), PsiExternalImpl.class);
 
@@ -95,6 +106,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertEquals("%greaterthan", e.getExternalName());
     }
 
+    @Test
     public void test_operator5() {
         PsiExternalImpl e = firstOfType(parseCode("external ( <= ) : 'a -> 'a -> bool = \"%lessequal\""), PsiExternalImpl.class);
 
@@ -104,6 +116,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertEquals("%lessequal", e.getExternalName());
     }
 
+    @Test
     public void test_operator6() {
         PsiExternalImpl e = firstOfType(parseCode("external ( >= ) : 'a -> 'a -> bool = \"%greaterequal\""), PsiExternalImpl.class);
 

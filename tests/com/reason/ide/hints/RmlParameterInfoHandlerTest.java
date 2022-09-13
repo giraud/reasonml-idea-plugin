@@ -4,8 +4,13 @@ import com.intellij.psi.*;
 import com.intellij.testFramework.utils.parameterInfo.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class RmlParameterInfoHandlerTest extends ORBasePlatformTestCase {
+    @Test
     public void test_basic() {
         configureCode("A.rei", "let add : (int, int) => int;");
         configureCode("B.re", "A.add(<caret>)");
@@ -15,6 +20,7 @@ public class RmlParameterInfoHandlerTest extends ORBasePlatformTestCase {
         assertEquals(0, context.currentParam);
     }
 
+    @Test
     public void test_intf_impl() {
         configureCode("A.rei", "let add : (int, int) => int;");
         configureCode("A.re", "let add = (x, y) => x + y;");
@@ -25,6 +31,7 @@ public class RmlParameterInfoHandlerTest extends ORBasePlatformTestCase {
         assertEquals(0, context.currentParam);
     }
 
+    @Test
     public void test_empty() {
         configureCode("A.rei", "let fn : unit => string;");
         configureCode("B.re", "A.fn(<caret>)");
@@ -34,6 +41,7 @@ public class RmlParameterInfoHandlerTest extends ORBasePlatformTestCase {
         assertEquals(0, context.currentParam);
     }
 
+    @Test
     public void test_item() {
         configureCode("A.rei", "let add : (int, int) => int;");
         configureCode("B.re", "A.add(1, <caret>)");

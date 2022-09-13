@@ -5,12 +5,14 @@ import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends ResParsingTestCase {
+    @Test
     public void test_abstract_type() {
         PsiType e = first(typeExpressions(parseCode("type t")));
 
@@ -18,6 +20,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertTrue(e.isAbstract());
     }
 
+    @Test
     public void test_simple_binding() {
         PsiType e = first(typeExpressions(parseCode("type t = int")));
 
@@ -26,6 +29,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals("int", e.getBinding().getText());
     }
 
+    @Test
     public void test_path() {
         PsiType e = first(typeExpressions(parseCode("type t = A.B.other")));
 
@@ -39,6 +43,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals(List.of(myTypes.A_MODULE_NAME, myTypes.A_MODULE_NAME), es);
     }
 
+    @Test
     public void test_option() {
         PsiType e = first(typeExpressions(parseCode("type t = option<array<string>>")));
 
@@ -47,6 +52,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals("option<array<string>>", option.getText());
     }
 
+    @Test
     public void test_recursive_type() {
         PsiType e = first(typeExpressions(parseCode("type rec tree<'a> = Leaf('a) | Tree(tree<'a>, tree<'a>)")));
 
@@ -54,18 +60,21 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCall.class));
     }
 
+    @Test
     public void test_type_binding_with_variant() {
         PsiType e = first(typeExpressions(parseCode("type t = | Tick")));
 
         assertNotNull(e.getBinding());
     }
 
+    @Test
     public void test_poly_variant() {
         PsiType e = first(typeExpressions(parseCode("type t = [#visible | #hidden | #collapse]")));
         assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiPatternMatch.class));
         assertSize(3, PsiTreeUtil.findChildrenOfType(e, PsiVariantDeclaration.class));
     }
 
+    @Test
     public void test_type_binding_with_record() {
         PsiType e = first(typeExpressions(parseCode("type t = {count: int, @optional key: string => unit,}")));
 
@@ -74,6 +83,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals(2, fields.size());
     }
 
+    @Test
     public void test_type_special_props() {
         PsiType e = first(typeExpressions(parseCode("type props = { "
                 + "string: string, "
@@ -85,6 +95,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals(3, fields.size());
     }
 
+    @Test
     public void test_binding_with_record_as() {
         PsiType e = first(typeExpressions(parseCode("type branch_info<'branch_type> = {kind: [> #Master] as 'branch_type, pos: [< #Other ] as 'id}")));
 
@@ -96,6 +107,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals("pos", fields.get(1).getName());
     }
 
+    @Test
     public void test_parameterized() {
         PsiType e = first(typeExpressions(parseCode("type declaration_arity<'a, 'b> = RegularArity<'a>")));
 
@@ -104,6 +116,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals("RegularArity<'a>", e.getBinding().getText());
     }
 
+    @Test
     public void test_scope() {
         PsiExternal e = first(externalExpressions(parseCode("external createElement : (reactClass, ~props: {..}=?, array<reactElement>,) => reactElement = \"createElement\"")));
 
@@ -121,6 +134,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals("reactElement", items.get(3).getText());
     }
 
+    @Test
     public void test_JsObject() {
         PsiType e = first(typeExpressions(parseCode("type t = {\"a\": string}")));
 
@@ -130,18 +144,21 @@ public class TypeParsingTest extends ResParsingTestCase {
         assertEquals("string", f.getSignature().getText());
     }
 
+    @Test
     public void test_apply_params() {
         PsiType e = first(typeExpressions(parseCode("type t<'value> = Belt.Map.t<key, 'value, Comparator.identity>")));
 
         assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCall.class));
     }
 
+    @Test
     public void test_abstract_annotation() {
         PsiType t = first(typeExpressions(parseCode("type t\n@module")));
 
         assertEquals("type t", t.getText());
     }
 
+    @Test
     public void test_not_a_tag() {
         PsiLet e = firstOfType(parseCode("let make = (x: array<int>) => x"), PsiLet.class);
 
@@ -152,6 +169,7 @@ public class TypeParsingTest extends ResParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/326
+    @Test
     public void test_GH_326() {
         PsiType e = firstOfType(parseCode("type t = {buffer: GText.buffer, mutable breakpoints: list<breakpoint>}"), PsiType.class);
 

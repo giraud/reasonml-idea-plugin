@@ -4,11 +4,13 @@ import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class OpenParsingTest extends ResParsingTestCase {
+    @Test
     public void test_one() {
         PsiOpen e = firstOfType(parseCode("open Belt"), PsiOpen.class);
 
@@ -17,6 +19,7 @@ public class OpenParsingTest extends ResParsingTestCase {
         assertEquals("Belt", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
+    @Test
     public void test_path() {
         PsiOpen e = firstOfType(parseCode("open Belt.Array"), PsiOpen.class);
 
@@ -24,6 +27,7 @@ public class OpenParsingTest extends ResParsingTestCase {
         assertEquals("Array", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
+    @Test
     public void test_functor() {
         PsiOpen e = first(openExpressions(parseCode("open Make({ type t })")));
 
@@ -34,6 +38,7 @@ public class OpenParsingTest extends ResParsingTestCase {
         assertEquals("Make", e.getPath());
     }
 
+    @Test
     public void test_functor_with_path() {
         PsiOpen e = first(openExpressions(parseCode("open A.Make({ type t })")));
 
@@ -42,6 +47,7 @@ public class OpenParsingTest extends ResParsingTestCase {
         assertEquals("A.Make", e.getPath());
     }
 
+    @Test
     public void test_many() {
         List<PsiOpen> es = openExpressions(parseCode("open Belt\n open Css"));
 
@@ -50,6 +56,7 @@ public class OpenParsingTest extends ResParsingTestCase {
         assertEquals("Css", es.get(1).getPath());
     }
 
+    @Test
     public void test_many_paths() {
         List<PsiOpen> es = openExpressions(parseCode("open Belt.Array\n open Css.Types"));
 
@@ -57,6 +64,7 @@ public class OpenParsingTest extends ResParsingTestCase {
         assertEquals("Css.Types", es.get(1).getPath());
     }
 
+    @Test
     public void test_chaining() {
         PsiOpen e = firstOfType(parseCode("open Css.Rules\n fontStyle"), PsiOpen.class);
 

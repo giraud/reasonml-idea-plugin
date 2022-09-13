@@ -2,9 +2,11 @@ package com.reason.lang.reason;
 
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ExternalParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_signature() {
         PsiExternal e = firstOfType(parseCode("external props : (string) => string;"), PsiExternal.class);
 
@@ -13,6 +15,7 @@ public class ExternalParsingTest extends RmlParsingTestCase {
         assertTrue(e.isFunction());
     }
 
+    @Test
     public void test_named_param() {
         PsiExternal e = firstOfType(parseCode("external props : (~value:string) => string;"), PsiExternal.class);
 
@@ -21,6 +24,7 @@ public class ExternalParsingTest extends RmlParsingTestCase {
         assertTrue(e.isFunction());
     }
 
+    @Test
     public void test_with_string() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"FormattedMessage\""), PsiExternal.class);
 
@@ -29,6 +33,7 @@ public class ExternalParsingTest extends RmlParsingTestCase {
         assertEquals("FormattedMessage", e.getExternalName());
     }
 
+    @Test
     public void test_with_empty_string() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"\""), PsiExternal.class);
 
@@ -37,6 +42,7 @@ public class ExternalParsingTest extends RmlParsingTestCase {
         assertEquals("", e.getExternalName());
     }
 
+    @Test
     public void test_string() {
         PsiExternal e = firstOfType(parseCode("external string : string => reactElement = \"%identity\""), PsiExternal.class);
 
@@ -46,6 +52,7 @@ public class ExternalParsingTest extends RmlParsingTestCase {
         assertEquals("%identity", e.getExternalName());
     }
 
+    @Test
     public void test_array() {
         PsiExternal e = firstOfType(parseCode("external array : array(reactElement) => reactElement = \"%identity\""), PsiExternal.class);
 

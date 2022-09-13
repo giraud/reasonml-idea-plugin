@@ -3,12 +3,14 @@ package com.reason.lang.ocaml;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ChainingParsingTest extends OclParsingTestCase {
     // env.ml L33
+    @Test
     public void test_let_semi_colon() {
         PsiLet e = firstOfType(parseCode("let fail s = Format.eprintf \"%s@\\n%!\" fail_msg; exit 1\n"), PsiLet.class);
 

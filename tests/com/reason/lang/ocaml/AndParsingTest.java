@@ -6,11 +6,13 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class AndParsingTest extends OclParsingTestCase {
+    @Test
     public void test_let_chaining() {
         List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode("let rec lx x = x + 1 and ly y = 3 + (lx y)")));
 
@@ -19,6 +21,7 @@ public class AndParsingTest extends OclParsingTestCase {
         assertEquals("ly", lets.get(1).getName());
     }
 
+    @Test
     public void test_let_chaining_in_function() {
         List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode("let fn x = let ax = Instance.to_array x and ay = Instance.to_array y")));
 
@@ -26,6 +29,7 @@ public class AndParsingTest extends OclParsingTestCase {
         assertEquals("fn", lets.get(0).getName());
     }
 
+    @Test
     public void test_module_chaining() {
         PsiFile file = parseCode("module rec X : sig end = struct end and Y : sig end = struct end");
         List<PsiModule> mods = new ArrayList<>(moduleExpressions(file));
@@ -35,6 +39,7 @@ public class AndParsingTest extends OclParsingTestCase {
         assertEquals("Y", mods.get(1).getName());
     }
 
+    @Test
     public void test_pattern_chaining() {
         PsiFile file = parseCode("match optsign with | Some sign -> let mtb1 = 1 and mtb2 = 2");
         Collection<PsiNamedElement> exps = expressions(file);
@@ -47,6 +52,7 @@ public class AndParsingTest extends OclParsingTestCase {
         assertSize(2, lets);
     }
 
+    @Test
     public void test_type_chaining() {
         Collection<PsiType> types = typeExpressions(parseCode("type update = | NoUpdate and 'state self = {state: 'state;}"));
 
@@ -56,6 +62,7 @@ public class AndParsingTest extends OclParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/135
+    @Test
     public void test_GH_135() {
         List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode("let f1 = function | _ -> ()\nand missing = ()")));
 
@@ -65,6 +72,7 @@ public class AndParsingTest extends OclParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/175
+    @Test
     public void test_GH_175() {
         List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode("let f1 = let f11 = function | _ -> \"\" in ()\n and f2 = let f21 = function | _ -> \"\" in ()\n and f3 = ()\n")));
 
@@ -75,6 +83,7 @@ public class AndParsingTest extends OclParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/271
+    @Test
     public void test_GH_271() {
         List<PsiLet> lets = new ArrayList<>(letExpressions(parseCode("let parser_of_token_list a = \nlet loop x = () in \n() \nand parser_of_symbol b = ()")));
 
@@ -84,6 +93,7 @@ public class AndParsingTest extends OclParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/272
+    @Test
     public void test_GH_272() {
         FileBase file = parseCode("let x = match xx with | Y -> let fn y = 1 in () and z = 1 ");
         List<PsiLet> exps = letExpressions(file);

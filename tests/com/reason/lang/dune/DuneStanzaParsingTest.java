@@ -5,6 +5,7 @@ import com.reason.ide.files.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
@@ -14,6 +15,7 @@ public class DuneStanzaParsingTest extends BaseParsingTestCase {
         super("", "", new DuneParserDefinition());
     }
 
+    @Test
     public void test_stanza() {
         DuneFile e = parseDuneCode("(library (name x)) (version 1)");
 
@@ -23,6 +25,7 @@ public class DuneStanzaParsingTest extends BaseParsingTestCase {
         assertEquals("version", e.getStanza("version").getName());
     }
 
+    @Test
     public void test_stanza_fields() {
         PsiStanza e = parseDuneCode("(library (name x) (wrapped true))").getStanza("library");
 
@@ -36,6 +39,7 @@ public class DuneStanzaParsingTest extends BaseParsingTestCase {
         assertEquals("true", e.getField("wrapped").getValue());
     }
 
+    @Test
     public void test_chain() {
         PsiFile e = parseRawCode("(library (name x)) (version 1)");
 

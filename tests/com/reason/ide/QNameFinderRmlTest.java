@@ -7,21 +7,27 @@ import com.reason.lang.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class QNameFinderRmlTest extends ORBasePlatformTestCase {
     private final QNameFinder qNameFinder = RmlQNameFinder.INSTANCE;
 
-    public void testLetBinding() {
+    @Test
+    public void test_let_binding() {
         FileBase f = configureCode("A.re", "let make = { increase<caret>(); }");
 
         List<String> paths = extractPotentialPaths(getFromCaret(f));
         assertEquals(makePaths("A.make", "A", "", "Pervasives"), paths);
     }
 
+    @Test
     public void test_local_open_list() {
         FileBase f = configureCode("A.re", "let item = Css.[ margin<caret>");
 
@@ -29,6 +35,7 @@ public class QNameFinderRmlTest extends ORBasePlatformTestCase {
         assertEquals(makePaths("A", "A.item", "A.item.Css", "A.Css", "Css", "", "Pervasives"), paths);
     }
 
+    @Test
     public void test_local_open() {
         FileBase f = configureCode("A.re", "let item = Css.( margin<caret>");
 
@@ -37,13 +44,15 @@ public class QNameFinderRmlTest extends ORBasePlatformTestCase {
     }
 
     // Local module alias must be resolved/replaced in the qname finder
-    public void testLocalModuleAliasResolution() {
+    @Test
+    public void test_local_module_alias_resolution() {
         FileBase f = configureCode("A.re", "module B = Belt; module M = { module O = B.Option; O.m<caret>");
 
         List<String> paths = extractPotentialPaths(getFromCaret(f));
         assertEquals(makePaths("A.O", "O", "A.M.O", "A.M.Belt.Option", "A.Belt.Option", "Belt.Option", "", "Pervasives"), paths);
     }
 
+    @Test
     public void test_in_module_binding() {
         FileBase f = configureCode("A.re", "module X = { let foo = 1; let z = foo<caret>; };");
 
@@ -51,6 +60,7 @@ public class QNameFinderRmlTest extends ORBasePlatformTestCase {
         assertEquals(makePaths("A.X.z", "A.X", "A", "", "Pervasives"), paths);
     }
 
+    @Test
     public void test_component() {
         FileBase f = configureCode("A.re", "open X; <Comp <caret> />;");
 
@@ -58,6 +68,7 @@ public class QNameFinderRmlTest extends ORBasePlatformTestCase {
         assertEquals(makePaths("X.Comp", "A.Comp", "Comp", "", "Pervasives"), paths);
     }
 
+    @Test
     public void test_component_path() {
         FileBase f = configureCode("A.re", "open X; <B.C.Comp <caret> />;");
 
@@ -65,6 +76,7 @@ public class QNameFinderRmlTest extends ORBasePlatformTestCase {
         assertEquals(makePaths("X.B.C.Comp", "A.B.C.Comp", "B.C.Comp", "", "Pervasives"), paths);
     }
 
+    @Test
     public void test_component_path_from_tagname() {
         FileBase f = configureCode("A.re", "open X; <B.C.Comp />;");
 

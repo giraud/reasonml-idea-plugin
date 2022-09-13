@@ -6,10 +6,12 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 public class PolyVariantParsingTest extends OclParsingTestCase {
+    @Test
     public void test_basic_LIdent() {
         PsiLet e = first(letExpressions(parseCode("let x = `red")));
         PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
@@ -17,6 +19,7 @@ public class PolyVariantParsingTest extends OclParsingTestCase {
         assertEquals("`red", variant.getText());
     }
 
+    @Test
     public void test_basic_UIdent() {
         PsiLet e = first(letExpressions(parseCode("let x = `Red")));
         PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
@@ -24,6 +27,7 @@ public class PolyVariantParsingTest extends OclParsingTestCase {
         assertEquals("`Red", variant.getText());
     }
 
+    @Test
     public void test_pattern_match_constant() {
         PsiFile psiFile = parseCode("let unwrapValue = fun | `String s -> toJsUnsafe s | `bool b -> toJsUnsafe (Js.Boolean.to_js_boolean b)");
 
@@ -34,6 +38,7 @@ public class PolyVariantParsingTest extends OclParsingTestCase {
         assertEquals(2, matches.size());
     }
 
+    @Test
     public void test_open_variant() {
         PsiType e = firstOfType(parseCode("type t = [> `a | Other.t | `c ]"), PsiType.class);
 
@@ -42,6 +47,7 @@ public class PolyVariantParsingTest extends OclParsingTestCase {
         assertSize(3, PsiTreeUtil.findChildrenOfType(c, PsiVariantDeclaration.class));
     }
 
+    @Test
     public void test_closed_variant() {
         PsiType e = firstOfType(parseCode("type t = [< `a | Other.t | `c ]"), PsiType.class);
 
@@ -50,6 +56,7 @@ public class PolyVariantParsingTest extends OclParsingTestCase {
         assertSize(3, PsiTreeUtil.findChildrenOfType(c, PsiVariantDeclaration.class));
     }
 
+    @Test
     public void test_with_path() {
         PsiPolyVariantConstraint e = firstOfType(parseCode("let visibility: [< Css.Types.Length.t | Css.Types.Visibility.t ] => layoutRule"), PsiPolyVariantConstraint.class);
 

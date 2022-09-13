@@ -6,11 +6,13 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiIfStatement;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class IfParsingTest extends OclParsingTestCase {
+    @Test
     public void test_basic() {
         PsiFile psiFile = parseCode("let _ = if x then ()");
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
@@ -22,6 +24,7 @@ public class IfParsingTest extends OclParsingTestCase {
         assertEquals("()", ifScope.getText());
     }
 
+    @Test
     public void test_basic_then_else() {
         PsiFile psiFile = parseCode("let _ = if x then 1 else 2");
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
@@ -34,6 +37,7 @@ public class IfParsingTest extends OclParsingTestCase {
         assertEquals("2", scopes.get(1).getText());
     }
 
+    @Test
     public void test_with_in() {
         FileBase file = parseCode("let _ = if x then let init = y in let data = z");
 
@@ -41,6 +45,7 @@ public class IfParsingTest extends OclParsingTestCase {
         assertNotNull(firstOfType(file, PsiIfStatement.class));
     }
 
+    @Test
     public void test_function() {
         PsiLet e = firstOfType(parseCode("let init l f = if l = 0 then [||] else x"), PsiLet.class);
 
@@ -50,7 +55,7 @@ public class IfParsingTest extends OclParsingTestCase {
         assertEquals("x", i.getElseExpression().getText());
     }
 
-    /*
+    /*  zzz ternary
     public void test_ternary_lident() {
       PsiLet e = firstOfType(parseCode("let _ = a ? b : c"), PsiLet.class);
       PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiTernary.class);

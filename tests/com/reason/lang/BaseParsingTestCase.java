@@ -11,6 +11,8 @@ import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.io.*;
 import java.util.*;
@@ -19,6 +21,7 @@ import java.util.stream.*;
 import static com.intellij.psi.util.PsiTreeUtil.*;
 import static com.reason.lang.core.ExpressionFilterConstants.*;
 
+@RunWith(JUnit4.class)
 public abstract class BaseParsingTestCase extends ParsingTestCase {
     protected BaseParsingTestCase(@NotNull String dataPath, @NotNull String fileExt, @NotNull ParserDefinition... definitions) {
         super(dataPath, fileExt, definitions);

@@ -8,11 +8,13 @@ import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ModuleParsingTest extends ResParsingTestCase {
+    @Test
     public void test_empty() {
         PsiModule e = firstOfType(parseCode("module M = {}"), PsiModule.class);
 
@@ -21,6 +23,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("{}", e.getBody().getText());
     }
 
+    @Test
     public void test_alias() {
         PsiModule e = firstOfType(parseCode("module M = Y"), PsiModule.class);
 
@@ -30,6 +33,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals(myTypes.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
+    @Test
     public void test_alias_path() {
         PsiModule e = firstOfType(parseCode("module M = Y.Z"), PsiModule.class);
 
@@ -39,6 +43,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals(myTypes.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
+    @Test
     public void test_alias_inner() {
         PsiModule e = firstOfType(parseCode("module A = { module B = C.D }"), PsiModule.class);
 
@@ -50,6 +55,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals(myTypes.A_MODULE_NAME, ee.getAliasSymbol().getNode().getElementType());
     }
 
+    @Test
     public void test_module_type() {
         PsiInnerModule module = firstOfType(parseCode("module type RedFlagsSig = {}"), PsiInnerModule.class);
 
@@ -57,6 +63,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertTrue(module.isInterface());
     }
 
+    @Test
     public void test_module() {
         PsiFile file = parseCode("module Styles = { open Css\n let y = 1 }");
         PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(file));
@@ -66,6 +73,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("{ open Css\n let y = 1 }", module.getBody().getText());
     }
 
+    @Test
     public void test_inline_interface() {
         PsiFile file = parseCode("module Router: { let watchUrl: (url => unit) => watcherID }");
         PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(file));
@@ -79,6 +87,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("(url => unit) => watcherID", let.getSignature().getText());
     }
 
+    @Test
     public void test_interface_sig_body() {
         PsiInnerModule e = firstOfType(parseCode("module M: MType = { type t = int }"), PsiInnerModule.class);
 
@@ -87,6 +96,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("{ type t = int }", e.getBody().getText());
     }
 
+    @Test
     public void test_inline_interface_body() {
         PsiInnerModule e = firstOfType(parseCode("module M: { type t } = { type t = int }"), PsiInnerModule.class);
 
@@ -95,6 +105,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("{ type t = int }", e.getBody().getText());
     }
 
+    @Test
     public void test_annotation_after() {
         FileBase e = parseCode("module M = {}\n@module(\"x\")");
 
@@ -105,6 +116,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         assertEquals("@module", a.getName());
     }
 
+    @Test
     public void test_decode_first_class_module() {
         PsiModule e = firstOfType(parseCode("module M = (unpack selectors)"), PsiModule.class);
 

@@ -6,12 +6,17 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.rescript.*;
 import org.jetbrains.annotations.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class QNameFinderRsTest extends ORBasePlatformTestCase {
+    @Test
     public void testLetBinding() {
         FileBase f = configureCode("A.res", "let make = { increase<caret>(); }");
 
@@ -19,7 +24,7 @@ public class QNameFinderRsTest extends ORBasePlatformTestCase {
         assertEquals(makePaths("A.make", "A", "", "Pervasives"), paths);
     }
 
-  /*
+  /*   zzz
   public void testLocalOpenList() {
     FileBase f = configureCode("A.re", "let item = Css.[ margin<caret>");
 
@@ -38,6 +43,7 @@ public class QNameFinderRsTest extends ORBasePlatformTestCase {
   }
   */
 
+    @Test
     public void test_in_module_binding() {
         FileBase f = configureCode("A.res", "module X = { let foo = 1; let z = foo<caret>; };");
 
@@ -45,6 +51,7 @@ public class QNameFinderRsTest extends ORBasePlatformTestCase {
         assertEquals(makePaths("A.X.z", "A.X", "A", "", "Pervasives"), paths);
     }
 
+    @Test
     public void test_component() {
         FileBase f = configureCode("A.res", "open X; <Comp <caret> />;");
 
@@ -52,6 +59,7 @@ public class QNameFinderRsTest extends ORBasePlatformTestCase {
         assertEquals(makePaths("X.Comp", "A.Comp", "Comp", "", "Pervasives"), paths);
     }
 
+    @Test
     public void test_component_path() {
         FileBase f = configureCode("A.res", "open X; <B.C.Comp <caret> />;");
 
@@ -59,6 +67,7 @@ public class QNameFinderRsTest extends ORBasePlatformTestCase {
         assertEquals(makePaths("X.B.C.Comp", "A.B.C.Comp", "B.C.Comp", "", "Pervasives"), paths);
     }
 
+    @Test
     public void test_component_path_from_tagname() {
         FileBase f = configureCode("A.res", "open X; <B.C.Comp />;");
 

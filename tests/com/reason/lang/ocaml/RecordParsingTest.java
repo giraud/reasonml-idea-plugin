@@ -3,11 +3,13 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class RecordParsingTest extends OclParsingTestCase {
+    @Test
     public void test_declaration() {
         PsiType e = first(typeExpressions(parseCode("type r = { a: int; b: string list }")));
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
@@ -19,6 +21,7 @@ public class RecordParsingTest extends OclParsingTestCase {
         assertEquals("string list", fields.get(1).getSignature().asText(getLangProps()));
     }
 
+    @Test
     public void test_usage() {
         PsiLet e = first(letExpressions(parseCode("let r = { a = 1; b = 2; c = 3 }")));
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
@@ -33,6 +36,7 @@ public class RecordParsingTest extends OclParsingTestCase {
         assertNull(fields.get(2).getSignature());
     }
 
+    @Test
     public void test_usage_deep() {
         PsiLet e = first(letExpressions(parseCode("let r = { a = [| 1; 2 |]; b = { b1 = { b11 = 3 } }; c = 4 }")));
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
@@ -48,7 +52,7 @@ public class RecordParsingTest extends OclParsingTestCase {
         assertEquals("b11", allFields.get(1).getName());
     }
 
-    //public void test_mixin() {
+    //public void test_mixin() {   zzz
     //    PsiLet let = first(letExpressions(parseCode("let x = { component with otherField = 1 }")));
     //
     //    PsiRecord record = (PsiRecord) let.getBinding().getFirstChild();

@@ -7,10 +7,15 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class ShowDocRMLTest extends ORBasePlatformTestCase {
     public static final Language LANG = RmlLanguage.INSTANCE;
 
+    @Test
     public void test_GH_155() {
         FileBase doc = configureCode("Doc.re", "/** add 1 */\nlet fn = x => x + 1;");
         FileBase a = configureCode("A.re", "Mod.fn(<caret>);");
@@ -19,6 +24,7 @@ public class ShowDocRMLTest extends ORBasePlatformTestCase {
         assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let fn</i></p></div><div class=\"content\"><p>add 1</p></div>", getDocForElement(a, LANG, resolvedElement));
     }
 
+    @Test
     public void test_GH_156() {
         configureCode("Doc.re", "/** Doc for y */\nlet y = 1;");
         FileBase a = configureCode("A.re", "let x = Doc.y;\nx<caret>");
@@ -26,6 +32,7 @@ public class ShowDocRMLTest extends ORBasePlatformTestCase {
         assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let y</i></p></div><div class=\"content\"><p>Doc for y</p></div>", getDoc(a, LANG));
     }
 
+    @Test
     public void test_GH_359() {
         FileBase a = configureCode("A.re", "module InnerComp = {\n" +
                 "  /**\n" +

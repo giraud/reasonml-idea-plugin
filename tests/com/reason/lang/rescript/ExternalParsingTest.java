@@ -2,9 +2,11 @@ package com.reason.lang.rescript;
 
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ExternalParsingTest extends ResParsingTestCase {
+    @Test
     public void test_basic() {
         PsiExternal e = firstOfType(parseCode("external global : t = \"global\""), PsiExternal.class);
 
@@ -13,6 +15,7 @@ public class ExternalParsingTest extends ResParsingTestCase {
         assertEquals("global", e.getExternalName());
     }
 
+    @Test
     public void test_signature_function() {
         PsiExternal e = externalExpression(parseCode("external props : string => string = \"\""), "props");
 
@@ -21,6 +24,7 @@ public class ExternalParsingTest extends ResParsingTestCase {
         assertTrue(e.isFunction());
     }
 
+    @Test
     public void test_with_string() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"FormattedMessage\""), PsiExternal.class);
 
@@ -29,6 +33,7 @@ public class ExternalParsingTest extends ResParsingTestCase {
         assertEquals("FormattedMessage", e.getExternalName());
     }
 
+    @Test
     public void test_with_empty_string() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"\""), PsiExternal.class);
 
@@ -37,6 +42,7 @@ public class ExternalParsingTest extends ResParsingTestCase {
         assertEquals("", e.getExternalName());
     }
 
+    @Test
     public void test_named_param() {
         PsiExternal e = firstOfType(parseCode("external props : (~value:string) => string = \"\""), PsiExternal.class);
 
@@ -45,6 +51,7 @@ public class ExternalParsingTest extends ResParsingTestCase {
         assertTrue(e.isFunction());
     }
 
+    @Test
     public void test_string() {
         PsiExternal e = firstOfType(parseCode("external string: string => reactElement = \"%identity\""), PsiExternal.class);
 
@@ -54,6 +61,7 @@ public class ExternalParsingTest extends ResParsingTestCase {
         assertEquals("%identity", e.getExternalName());
     }
 
+    @Test
     public void test_array() {
         PsiExternal e = firstOfType(parseCode("external array: array<reactElement> => reactElement = \"%identity\""), PsiExternal.class);
 

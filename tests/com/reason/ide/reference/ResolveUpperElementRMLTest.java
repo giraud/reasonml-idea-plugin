@@ -4,8 +4,13 @@ import com.intellij.psi.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
+    @Test
     public void test_basic_file() {
         configureCode("Dimensions.re", "let space = 5;");
         configureCode("Comp.re", "Dimensions<caret>");
@@ -14,6 +19,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Dimensions.re", ((PsiQualifiedNamedElement) e).getName());
     }
 
+    @Test
     public void test_interface_implementation() {
         configureCode("A.rei", "type t;");
         configureCode("A.re", "type t;");
@@ -23,6 +29,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.re", ((PsiNamedElement) e).getName());
     }
 
+    @Test
     public void test_let_alias() {
         configureCode("Dimensions.re", "let space = 5;");
         configureCode("Comp.re", "let s = Dimensions<caret>.space");
@@ -31,6 +38,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Dimensions.re", ((PsiQualifiedNamedElement) elementAtCaret).getName());
     }
 
+    @Test
     public void test_alias() {
         configureCode("A1.re", "module A11 = {};");
         configureCode("A.re", "module A1 = {};");
@@ -40,6 +48,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.A1", e.getQualifiedName());
     }
 
+    @Test
     public void test_alias_path_no_resolution() {
         configureCode("A.re", "module X = { module Y = { let z = 1; }; };");
         configureCode("B.re", "module C = A.X; C<caret>.Y");
@@ -48,6 +57,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("B.C", e.getQualifiedName());
     }
 
+    @Test
     public void test_alias_path_resolution() {
         configureCode("A.re", "module X = { module Y = { let z = 1; }; };");
         configureCode("B.re", "module C = A.X; C.Y<caret>");
@@ -56,6 +66,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.X.Y", e.getQualifiedName());
     }
 
+    @Test
     public void test_local_alias() {
         configureCode("Belt.re", "let x = 1;");
         configureCode("A.re", "module B = Belt; B<caret>");
@@ -64,6 +75,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.B", e.getQualifiedName());
     }
 
+    @Test
     public void test_alias_interface() {
         configureCode("C.rei", "module A1 = {};");
         configureCode("D.re", "module X = C; X.A1<caret>;");
@@ -72,6 +84,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("C.A1", e.getQualifiedName());
     }
 
+    @Test
     public void test_open() {
         configureCode("Belt.re", "module Option = {}");
         configureCode("Dummy.re", "open Belt.Option<caret>;");
@@ -81,6 +94,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Belt.re", e.getContainingFile().getName());
     }
 
+    @Test
     public void test_include_path() {
         configureCode("Css_Core.rei", "let display: string => rule");
         configureCode("Css.re", "include Css_Core<caret>; include Css_Core.Make({})");
@@ -89,6 +103,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Css_Core", e.getQualifiedName());
     }
 
+    @Test
     public void test_include_alias() {
         configureCode("Css_AtomicTypes.rei", "module Color = { type t; };");
         configureCode("Css_Core.rei", "module Types = Css_AtomicTypes;");
@@ -99,6 +114,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
     }
 
+    @Test
     public void test_variant_with_path() {
         configureCode("A.re", "type a = | Variant;");
         configureCode("B.re", "type b = | Variant;");
@@ -108,6 +124,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.a.Variant", e.getQualifiedName());
     }
 
+    @Test
     public void test_variant_module_alias() {
         configureCode("Aaa.re", "type t = | Test;");
         configureCode("Bbb.re", "module A = Aaa; A.Test<caret>");
@@ -116,6 +133,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Aaa.t.Test", e.getQualifiedName());
     }
 
+    @Test
     public void test_variant_module_alias_inner() {
         configureCode("Aaa.re", "module Option = { type t = | Test; }");
         configureCode("Bbb.re", "module A = Aaa; A.Option.Test<caret>");
@@ -124,6 +142,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Aaa.Option.t.Test", e.getQualifiedName());
     }
 
+    @Test
     public void test_variant_constructor() {
         configureCode("A.re", "type a = | Variant(int);");
         configureCode("B.re", "let _ = A.Variant<caret>(1)");
@@ -132,6 +151,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.a.Variant", e.getQualifiedName());
     }
 
+    @Test
     public void test_exception() {
         myFixture.configureByText("A.re", "exception ExceptionName; raise(ExceptionName<caret>);");
 
@@ -139,6 +159,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.ExceptionName", e.getQualifiedName());
     }
 
+    @Test
     public void test_belt_alias() {
         configureCode("String.re", "type t;");
         configureCode("Belt_MapString.re", "type t;");
@@ -150,6 +171,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Belt_Map.String", e.getQualifiedName());
     }
 
+    @Test
     public void test_open_belt_alias() {
         configureCode("String.re", "type t;");
         configureCode("Belt_MapString.re", "type t;");
@@ -161,6 +183,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Belt_Map.String", e.getQualifiedName());
     }
 
+    @Test
     public void test_pipe_first() {
         configureCode("X.re", "let fn = () => ();");
         configureCode("B.re", "module C = { module X = { let fn = () => (); }; };");
@@ -170,6 +193,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("X", e.getQualifiedName());
     }
 
+    @Test
     public void test_pipe_last() {
         configureCode("A.re", "module X = {};");
         configureCode("B.re", "module C = { module X = { let fn = () => (); }; };");
@@ -179,6 +203,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.X", e.getQualifiedName());
     }
 
+    @Test
     public void test_no_resolution_1() {
         configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
         configureCode("Belt_Map.ml", "module String = Belt_MapString;");
@@ -190,6 +215,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Belt.Option", e.getQualifiedName());
     }
 
+    @Test
     public void test_no_resolution_2() {
         configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
         configureCode("Belt_Map.ml", "module String = Belt_MapString;");
@@ -201,6 +227,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Belt.Map", e.getQualifiedName());
     }
 
+    @Test
     public void test_functor_inside() {
         configureCode("F.re", "module type S = {module X: {};};\n" +
                 "module M = () : S => { module X = {}; };\n" +

@@ -4,9 +4,11 @@ import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class OpenParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_one() {
         PsiOpen e = firstOfType(parseCode("open Belt;"), PsiOpen.class);
 
@@ -15,6 +17,7 @@ public class OpenParsingTest extends RmlParsingTestCase {
         assertEquals("Belt", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
+    @Test
     public void test_path() {
         PsiOpen e = firstOfType(parseCode("open Belt.Array;"), PsiOpen.class);
 
@@ -22,6 +25,7 @@ public class OpenParsingTest extends RmlParsingTestCase {
         assertEquals("Array", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
+    @Test
     public void test_functor() {
         PsiOpen e = first(openExpressions(parseCode("open Make({ type t; })")));
 
@@ -30,6 +34,7 @@ public class OpenParsingTest extends RmlParsingTestCase {
         assertEquals("Make", e.getPath());
     }
 
+    @Test
     public void test_functor_with_path() {
         PsiOpen e = first(openExpressions(parseCode("open A.Make({ type t; })")));
 

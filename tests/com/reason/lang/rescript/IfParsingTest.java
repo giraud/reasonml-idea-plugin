@@ -6,11 +6,13 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiIfStatement;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class IfParsingTest extends ResParsingTestCase {
+    @Test
     public void test_basic_if() {
         PsiFile psiFile = parseCode("if (x) { () }");
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
@@ -21,6 +23,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("{ () }", e.getThenExpression().getText());
     }
 
+    @Test
     public void test_if_else() {
         PsiFile psiFile = parseCode("let test = x => if (x) { 1 } else { 2 }");
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
@@ -31,6 +34,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("{ 2 }", e.getElseExpression().getText());
     }
 
+    @Test
     public void test_if_else_noBrace() {
         PsiFile psiFile = parseCode("let test = x => if (x) 1 else 2");
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
@@ -40,6 +44,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("2", e.getElseExpression().getText());
     }
 
+    @Test
     public void test_ternary_lident() {
         PsiFile psiFile = parseCode("let _ = a ? b : c");
         PsiTernary e = firstOfType(psiFile, PsiTernary.class);
@@ -51,6 +56,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("c", e.getElseExpression().getText());
     }
 
+    @Test
     public void test_ternary_parens() {
         PsiFile psiFile = parseCode("let _ = (a) ? b : c");
         PsiTernary e = firstOfType(psiFile, PsiTernary.class);
@@ -62,6 +68,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("c", e.getElseExpression().getText());
     }
 
+    @Test
     public void test_ternary_cond() {
         PsiFile psiFile = parseCode("let _ = a == a' || (x < y) ? b : c");
         PsiTernary e = firstOfType(psiFile, PsiTernary.class);
@@ -73,6 +80,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("c", e.getElseExpression().getText());
     }
 
+    @Test
     public void test_ternary_call() {
         PsiFile psiFile = parseCode("let _ = fn(a) ? b : c");
         PsiTernary e = firstOfType(psiFile, PsiTernary.class);
@@ -84,6 +92,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("c", e.getElseExpression().getText());
     }
 
+    @Test
     public void test_ternary_fun_record() {
         PsiRecord e = firstOfType(parseCode("let x = (x) => {a: [ X.y ? true : false ] }"), PsiRecord.class);
 
@@ -94,6 +103,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("false", t.getElseExpression().getText());
     }
 
+    @Test
     public void test_ternary_array() {
         PsiScopedExpr e = firstOfType(parseCode("let x = [ x ? a : b, y ? c : d  ]"), PsiScopedExpr.class);
 
@@ -102,6 +112,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("y ? c : d", ts.get(1).getText());
     }
 
+    @Test
     public void test_ternary_list() {
         PsiScopedExpr e = firstOfType(parseCode("let x = list{ x ? a : b, y ? c : d  }"), PsiScopedExpr.class);
 
@@ -110,6 +121,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("y ? c : d", ts.get(1).getText());
     }
 
+    @Test
     public void test_ternary_tuple() {
         PsiScopedExpr e = firstOfType(parseCode("let x = ( x ? a : b, y ? c : d  );"), PsiScopedExpr.class);
 
@@ -118,6 +130,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("y ? c : d", ts.get(1).getText());
     }
 
+    @Test
     public void test_ternary_function_parameters() {
         PsiParameters e = firstOfType(parseCode("let x = fn( x ? a : b, y ? c : d  )"), PsiParameters.class);
 
@@ -127,7 +140,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("y ? c : d", ts.get(1).getText());
     }
 
-    //public void test_ternary_functor_parameters() {
+    //public void test_ternary_functor_parameters() {      zzz functor
     //    PsiParameters e = firstOfType(parseCode("module M = Make( x ? a : b, y ? c : d  )"), PsiParameters.class);
     //
     //    assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameterDeclaration.class));
@@ -136,6 +149,7 @@ public class IfParsingTest extends ResParsingTestCase {
     //    assertEquals("y ? c : d", ts.get(1).getText());
     //}
 
+    @Test
     public void test_ternary_switch() {
         PsiLet e = firstOfType(parseCode("let compare = switch index { | 0 => appliedCount > appliedCount' ? (-1) : 0 }"), PsiLet.class);
 
@@ -143,6 +157,7 @@ public class IfParsingTest extends ResParsingTestCase {
         assertEquals("appliedCount > appliedCount' ? (-1) : 0", ts.get(0).getText());
     }
 
+    @Test
     public void test_ternary_fun() {
         PsiLet e = firstOfType(parseCode("let fn = x => x ? Some(x) : None"), PsiLet.class);
 

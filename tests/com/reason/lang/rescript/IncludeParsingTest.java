@@ -4,11 +4,13 @@ import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class IncludeParsingTest extends ResParsingTestCase {
+    @Test
     public void test_one() {
         PsiInclude e = first(includeExpressions(parseCode("include Belt")));
 
@@ -17,6 +19,7 @@ public class IncludeParsingTest extends ResParsingTestCase {
         assertEquals("Belt", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
+    @Test
     public void test_path() {
         PsiInclude e = first(includeExpressions(parseCode("include Belt.Array")));
 
@@ -24,6 +27,7 @@ public class IncludeParsingTest extends ResParsingTestCase {
         assertEquals("Array", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
+    @Test
     public void test_functor() {
         PsiInclude e = firstOfType(parseCode("include Make({ type t })"), PsiInclude.class);
 
@@ -34,6 +38,7 @@ public class IncludeParsingTest extends ResParsingTestCase {
         assertEquals("Make", e.getIncludePath());
     }
 
+    @Test
     public void test_functor_with_path() {
         PsiInclude e = firstOfType(parseCode("include A.Make({ type t })"), PsiInclude.class);
 
@@ -42,6 +47,7 @@ public class IncludeParsingTest extends ResParsingTestCase {
         assertEquals("A.Make", e.getIncludePath());
     }
 
+    @Test
     public void test_chaining() {
         Collection<PsiInclude> includes = includeExpressions(parseCode("include Belt include Js"));
 

@@ -6,11 +6,13 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ClassParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_basic() {
         Collection<PsiKlass> classes = classExpressions(parseCode("class foo = { as _; }"));
 
@@ -19,6 +21,7 @@ public class ClassParsingTest extends RmlParsingTestCase {
         assertEquals("{ as _; }", first(classes).getClassBody().getText());
     }
 
+    @Test
     public void test_classType() {
         Collection<PsiKlass> classes = classExpressions(parseCode("class type restricted_point_type = { pub get_x: int; pub bump: unit; }"));
 
@@ -26,6 +29,7 @@ public class ClassParsingTest extends RmlParsingTestCase {
         assertEquals("restricted_point_type", first(classes).getName());
     }
 
+    @Test
     public void test_fields() {
         Collection<PsiKlass> classes = classExpressions(parseCode("class foo = { as _; val mutable a = []; val b = 2; }"));
 
@@ -34,6 +38,7 @@ public class ClassParsingTest extends RmlParsingTestCase {
         assertEquals(fields.size(), 2);
     }
 
+    @Test
     public void test_methods() {
         Collection<PsiKlass> classes = classExpressions(parseCode("class foo = { as _; pub get_x = x; pub get_y = y; }"));
 
@@ -42,6 +47,7 @@ public class ClassParsingTest extends RmlParsingTestCase {
         assertEquals(methods.size(), 2);
     }
 
+    @Test
     public void test_both() {
         Collection<PsiKlass> classes = classExpressions(parseCode(
                 "class foo = { as _; val mutable x = []; pub get_x = x; }"));
@@ -51,6 +57,7 @@ public class ClassParsingTest extends RmlParsingTestCase {
         assertEquals(clazz.getMethods().size(), 1);
     }
 
+    @Test
     public void test_classConstruct() {
         Collection<PsiKlass> classes = classExpressions(parseCode(
                 "class c (m: int) = { as self; pub m = m; initializer (all_c := [(self :> c), ...all_c^]); }"));
@@ -61,6 +68,7 @@ public class ClassParsingTest extends RmlParsingTestCase {
         assertSize(1, PsiTreeUtil.findChildrenOfType(clazz, PsiClassConstructor.class));
     }
 
+    @Test
     public void test_classConstraint() {
         Collection<PsiKlass> classes = classExpressions(parseCode(
                 "class circle ('a) (c: 'a) = { as _; constraint 'a = #point; val mutable center = c; pub set_center = c => center = c; pub move = center#move; }"));
@@ -74,6 +82,7 @@ public class ClassParsingTest extends RmlParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/310
+    @Test
     public void test_GH_310() {
         FileBase file = parseCode(
                 "class type control = { pub detach: unit => unit; };\n" +

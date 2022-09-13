@@ -3,9 +3,11 @@ package com.reason.lang.rescript;
 import com.intellij.openapi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class MacroParsingTest extends ResParsingTestCase {
+    @Test
     public void test_basic() {
         PsiLet expression = first(letExpressions(parseCode("let _ = %raw(\"xxx\")")));
 
@@ -17,6 +19,7 @@ public class MacroParsingTest extends ResParsingTestCase {
         assertEquals(new TextRange(1, 4), rawMacroBody.getMacroTextRange());
     }
 
+    @Test
     public void test_rootRaw() {
         PsiMacro e = firstOfType(parseCode("%%raw(\"xxx\")"), PsiMacro.class);
 
@@ -25,6 +28,7 @@ public class MacroParsingTest extends ResParsingTestCase {
         assertEquals("\"xxx\"", e.getContent().getText());
     }
 
+    @Test
     public void test_multiLine() {
         PsiLet expression = first(letExpressions(parseCode("let _ = %raw(\"function (a) {}\")")));
 

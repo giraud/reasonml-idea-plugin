@@ -3,11 +3,16 @@ package com.reason.ide.reference;
 import com.intellij.usageView.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class FindLIdentUsagesRESTest extends ORBasePlatformTestCase {
+    @Test
     public void test_from_module() {
         configureCode("FLIA.res", "let x<caret> = 1");
         configureCode("FLIB.res", "let y = FLIA.x + 2");
@@ -16,6 +21,7 @@ public class FindLIdentUsagesRESTest extends ORBasePlatformTestCase {
         assertSize(1, usages);
     }
 
+    @Test
     public void test_same_module() {
         configureCode("FLIC.res", "let x<caret> = 1\n let y = x + 1");
 
@@ -25,6 +31,7 @@ public class FindLIdentUsagesRESTest extends ORBasePlatformTestCase {
         assertEquals("x + 1", usageInfo.getElement().getParent().getText());
     }
 
+    @Test
     public void test_module_signature() {
         configureCode("A.resi", "module B: { type t<caret>\n let toString: t => string\n }\n module C: { type t\n let toString: t => string\n }");
 

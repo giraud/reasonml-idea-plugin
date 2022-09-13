@@ -5,11 +5,13 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionParsingTest extends ResParsingTestCase {
+    @Test
     public void test_anonymous_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = Belt.map(items, (. item) => value)")));
 
@@ -20,6 +22,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("value", function.getBody().getText());
     }
 
+    @Test
     public void test_brace_function() {
         PsiLet e = first(letExpressions(parseCode("let x = (x, y) => { x + y }")));
 
@@ -29,6 +32,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertNotNull(function.getBody());
     }
 
+    @Test
     public void test_destructuration() {
         PsiLet e = first(letExpressions(parseCode("let _ = (a, {b, _}) => b")));
 
@@ -36,6 +40,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertSize(2, e.getFunction().getParameters());
     }
 
+    @Test
     public void test_parenless_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = x => x + 10")));
 
@@ -47,6 +52,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertNotNull(function.getBody());
     }
 
+    @Test
     public void test_dot_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = (. x) => x")));
 
@@ -58,6 +64,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("x", function.getBody().getText());
     }
 
+    @Test
     public void test_inner_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = error => Belt.Array.mapU(errors, (. error) => error[\"message\"])")));
 
@@ -68,6 +75,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("error[\"message\"]", functionInner.getBody().getText());
     }
 
+    @Test
     public void test_inner_function_braces() {
         PsiLet e = first(letExpressions(parseCode("let _ = error => { Belt.Array.mapU(errors, (. error) => error[\"message\"]) }")));
 
@@ -78,6 +86,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("error[\"message\"]", functionInner.getBody().getText());
     }
 
+    @Test
     public void test_inner_function_no_parens() {
         PsiLet e = first(letExpressions(parseCode("let _ = funcall(result => 2)")));
 
@@ -85,6 +94,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("2", functionInner.getBody().getText());
     }
 
+    @Test
     public void test_parameter_anon_function() {
         FileBase e = parseCode("describe('a', () => test('b', () => true))");
 
@@ -94,6 +104,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("() => true", funcs.get(1).getText());
     }
 
+    @Test
     public void test_parameters_named_symbols() {
         PsiLet e = first(letExpressions(parseCode("let make = (~id:string, ~values: option<'a>, children) => null")));
 
@@ -106,6 +117,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("children", parameters.get(2).getName());
     }
 
+    @Test
     public void test_parameters_named_symbols2() {
         PsiLet e = first(letExpressions(parseCode(
                 "let make = (~text, ~id=?, ~values=?, ~className=\"\", ~tag=\"span\", ~transform=\"unset\", ~marginLeft=\"0\", ~onClick=?, ~onKeyPress=?, _children, ) => {}")));
@@ -115,6 +127,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
     }
 
+    @Test
     public void test_parameters_named_symbols3() {
         PsiLet e = firstOfType(parseCode("let fn = (~a:t, ~b=2, ~c) => ();"), PsiLet.class);
 
@@ -122,6 +135,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertSize(3, function.getParameters());
     }
 
+    @Test
     public void test_paren_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = (x,y) => x + y")));
 
@@ -134,6 +148,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("x + y", function.getBody().getText());
     }
 
+    @Test
     public void test_unit_function() {
         PsiLet e = first(letExpressions(parseCode("let _ = () => 1")));
 
@@ -144,6 +159,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("1", function.getBody().getText());
     }
 
+    @Test
     public void test_parameters_LIdent() {
         PsiLet e = first(letExpressions(parseCode("let make = (id, values, children) => null;")));
 
@@ -156,6 +172,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("children", parameters.get(2).getName());
     }
 
+    @Test
     public void test_record_function() {
         PsiLet e = first(letExpressions(parseCode("let make = (children) => { ...component, render: self => <div/>, }")));
         PsiFunctionBody body = e.getFunction().getBody();
@@ -166,6 +183,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("<div/>", innerFunction.getBody().getText());
     }
 
+    @Test
     public void test_underscore() {
         PsiLet e = first(letExpressions(parseCode("let onCancel = _ => setUpdatedAttribute(_ => initialAttribute)")));
 
@@ -181,6 +199,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("initialAttribute", f2.getBody().getText());
     }
 
+    @Test
     public void test_first_class_module() {
         PsiFunction e = firstOfType(parseCode("let make = (~selectors: (module SelectorsIntf)=(module Selectors)) => {}"), PsiFunction.class);
 
@@ -194,6 +213,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertNull(ORUtil.findImmediateFirstChildOfType(PsiTreeUtil.findChildOfType(s0, PsiModuleValue.class), myTypes.A_VARIANT_NAME));
     }
 
+    @Test
     public void test_signature() {
         PsiFunction e = firstOfType(parseCode("let _ = (~p: (option(string), option(int)) => unit) => p;"), PsiFunction.class);
 
@@ -204,6 +224,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         //assertEquals("unit", p0.getSignature().getItems().get(2).getText());
     }
 
+    @Test
     public void test_curry_uncurry() {
         PsiFunction e = firstOfType(parseCode("let fn = p => (. p1) => p + p1"), PsiFunction.class);
 
@@ -211,17 +232,20 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("(. p1) => p + p1", e.getBody().getText());
     }
 
+    @Test
     public void test_rollback_01() {
         PsiFunction f = firstOfType(parseCode("let _ = { let x = 1\n let y = 2\n () => 3 }"), PsiFunction.class); // test infinite rollback
         assertEquals("() => 3", f.getText());
     }
 
+    @Test
     public void test_rollback_02() {
         List<PsiFunction> es = children(parseCode("let _ = (() => 1, () => 2);"), PsiFunction.class); // test infinite rollback
         assertEquals("() => 1", es.get(0).getText());
         assertEquals("() => 2", es.get(1).getText());
     }
 
+    @Test
     public void test_rollback_03() {
         PsiInnerModule e = firstOfType(parseCode("module M: I with type t = t = {" +
                 " let fn = p => (. p1) => { let _ = a let _ = x => x } " +
@@ -233,12 +257,14 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("(. p1) => { let _ = a let _ = x => x }", f.getBody().getText());
     }
 
+    @Test
     public void test_rollback_04() {
         PsiFunction e = firstOfType(parseCode("let fn = () => { let _ = 1\n (x) => 2 }"), PsiFunction.class);
         assertEquals("{ let _ = 1\n (x) => 2 }", e.getBody().getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/113
+    @Test
     public void test_GH_113() {
         PsiFunction e = firstOfType(parseCode("let x = () => switch isBuggy() { | _ => \"buggy\" }"), PsiFunction.class);
 

@@ -4,8 +4,13 @@ import com.intellij.psi.*;
 import com.intellij.testFramework.utils.parameterInfo.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class OclParameterInfoHandlerTest extends ORBasePlatformTestCase {
+    @Test
     public void test_before() {
         configureCode("A.mli", "val add: int -> int -> int");
         configureCode("B.ml", "A.add <caret> 1");
@@ -15,6 +20,7 @@ public class OclParameterInfoHandlerTest extends ORBasePlatformTestCase {
         assertEquals(-1, context.currentParam);
     }
 
+    @Test
     public void test_basic() {
         configureCode("A.mli", "val add: int -> int -> int");
         configureCode("B.ml", "A.add 1<caret> 1");
@@ -24,6 +30,7 @@ public class OclParameterInfoHandlerTest extends ORBasePlatformTestCase {
         assertEquals(0, context.currentParam);
     }
 
+    @Test
     public void test_eof() {
         configureCode("A.mli", "val add: int -> int -> int");
         configureCode("B.ml", "A.add 1<caret>");
@@ -33,6 +40,7 @@ public class OclParameterInfoHandlerTest extends ORBasePlatformTestCase {
         assertEquals(0, context.currentParam);
     }
 
+    @Test
     public void test_whitespace() {
         configureCode("A.mli", "val add: int -> int -> int");
         configureCode("B.ml", "A.add 1 <caret>");
@@ -42,6 +50,7 @@ public class OclParameterInfoHandlerTest extends ORBasePlatformTestCase {
         assertEquals(0/*1?*/, context.currentParam);
     }
 
+    @Test
     public void test_intf_impl() {
         configureCode("A.mli", "val add: int -> int -> int");
         configureCode("A.ml", "let add x y = x + y");

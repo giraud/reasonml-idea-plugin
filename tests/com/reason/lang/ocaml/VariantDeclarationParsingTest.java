@@ -3,11 +3,13 @@ package com.reason.lang.ocaml;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class VariantDeclarationParsingTest extends OclParsingTestCase {
+    @Test
     public void test_basic() {
         PsiType e = first(typeExpressions(parseCode("type t = | Black | White")));
 
@@ -19,6 +21,7 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
     }
 
+    @Test
     public void test_no_pipe_first() {
         PsiType e = first(typeExpressions(parseCode("type t = V1 | V2")));
 
@@ -30,6 +33,7 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
     }
 
+    @Test
     public void test_no_pipe_first_constructor() {
         PsiType e = first(typeExpressions(parseCode("type t = V1 of string | V2")));
 
@@ -40,6 +44,7 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         assertEquals("V2", declarations.get(1).getVariant().getText());
     }
 
+    @Test
     public void test_constructor() {
         PsiType e = first(typeExpressions(parseCode("type t = | Hex of string | Rgb of int * int * int")));
 
@@ -53,6 +58,7 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
+    @Test
     public void test_mixed() {
         PsiType e = first(typeExpressions(parseCode("type t = | Cannot of reason | Loose | Strict")));
 
@@ -64,6 +70,7 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         assertEquals("Strict", declarations.get(2).getVariant().getText());
     }
 
+    @Test
     public void test_generic() {
         PsiVariantDeclaration e = firstOfType(parseCode("type cases_pattern_expr_r = | CPatRecord of (qualid * cases_pattern_expr) list"), PsiVariantDeclaration.class);
 

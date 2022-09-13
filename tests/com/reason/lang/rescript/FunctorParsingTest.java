@@ -4,11 +4,13 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctorParsingTest extends ResParsingTestCase {
+    @Test
     public void test_basic() {
         PsiNamedElement e = first(expressions(parseCode("module Make = (M: Def): S => {}")));
 
@@ -18,6 +20,7 @@ public class FunctorParsingTest extends ResParsingTestCase {
         assertNull(PsiTreeUtil.findChildOfType(f.getBody(), PsiScopedExpr.class));
     }
 
+    @Test
     public void test_withConstraints() {
         Collection<PsiNamedElement> expressions = expressions(parseCode("module Make = (M: Input) : (S with type t<'a> = M.t<'a> and type b = M.b) => {}"));
 
@@ -34,6 +37,7 @@ public class FunctorParsingTest extends ResParsingTestCase {
         assertEquals("{}", f.getBody().getText());
     }
 
+    @Test
     public void test_signature() {
         Collection<PsiFunctor> functors = functorExpressions(parseCode(
                 "module GlobalBindings = (M: {\n" +

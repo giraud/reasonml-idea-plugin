@@ -6,6 +6,7 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
@@ -13,6 +14,7 @@ import static com.reason.lang.core.ExpressionFilterConstants.*;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends OclParsingTestCase {
+    @Test
     public void test_constant() {
         FileBase file = parseCode("let x = 1 let y = 2");
         List<PsiLet> lets = new ArrayList<>(letExpressions(file));
@@ -23,12 +25,14 @@ public class LetParsingTest extends OclParsingTestCase {
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(lets.get(0), PsiLetBinding.class)));
     }
 
+    @Test
     public void test_underscore() {
         PsiLet e = firstOfType(parseCode("let _ = ()"), PsiLet.class);
         assertNull(e.getName());
         assertNotNull(e.getNavigationElement());
     }
 
+    @Test
     public void test_binding() {
         PsiLet let = first(letExpressions(parseCode("let obj = [%bs.obj { a = \"b\" }];")));
 
@@ -36,6 +40,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
+    @Test
     public void test_binding_with_function() {
         PsiLet e = first(letExpressions(parseCode("let add x y = x + y")));
 
@@ -43,6 +48,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("x y = x + y", e.getBinding().getText());
     }
 
+    @Test
     public void test_scope_with_some() {
         PsiLet let = first(letExpressions(
                 parseCode("let l = (p) => { switch (a) { | Some(a) => a; (); | None => () }; Some(z); };")));
@@ -51,6 +57,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertNotNull(binding);
     }
 
+    @Test
     public void test_scope_with_lIdent() {
         PsiLet e = first(letExpressions(parseCode("let fn p = Js.log p; returnObj")));
 
@@ -58,6 +65,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("fn", e.getName());
     }
 
+    @Test
     public void test_record() {
         PsiLet let = first(letExpressions(parseCode("let r = { one = 1; two = 2 }")));
 
@@ -72,6 +80,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("two = 2", itFields.next().getText());
     }
 
+    @Test
     public void test_rec() {
         PsiLet let = first(letExpressions(parseCode("let rec lx x = x + 1")));
 
@@ -79,6 +88,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("lx", let.getName());
     }
 
+    @Test
     public void test_in_do_loop() {
         FileBase file = parseCode("let x l = for i = 0 to l - 1 do let x = 1 done");
         PsiLet let = first(letExpressions(file));
@@ -87,6 +97,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("l = for i = 0 to l - 1 do let x = 1 done", let.getBinding().getText());
     }
 
+    @Test
     public void test_with_semi_separator() {
         FileBase file = parseCode("let rec read_num = Printf.printf; let l = 1");
         Collection<PsiLet> lets = letExpressions(file);
@@ -94,12 +105,14 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals(1, lets.size());
     }
 
+    @Test
     public void test_like_local_open() {
         PsiOpen open = first(openExpressions(parseCode("let open Univ")));
 
         assertEquals("let open Univ", open.getText());
     }
 
+    @Test
     public void test_like_module() {
         FileBase file = parseCode("let module Repr = (val repr : S)");
         PsiModule module = first(moduleExpressions(file));
@@ -108,6 +121,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("Repr", module.getName());
     }
 
+    @Test
     public void test_chaining() {
         FileBase file = parseCode("let visit_vo f = let segments = [| a; b; |] in let repr = x");
         Collection<PsiLet> lets = letExpressions(file);
@@ -115,6 +129,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals(1, lets.size());
     }
 
+    @Test
     public void test_case1() {
         FileBase file = parseCode("let format_open {o_loc; o_name; o_items; _} = "
                 + "Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (join_list \", \" !o_items)");
@@ -129,6 +144,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("(format_location o_loc)", fc.getParameters().get(1).getText());
     }
 
+    @Test
     public void test_qualifiedName() {
         PsiLet root = first(letExpressions(parseCode("let root = x")));
         PsiLet inner = PsiTreeUtil.findChildOfType(first(letExpressions(parseCode("let root = let inner = x in inner"))), PsiLet.class);
@@ -139,6 +155,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions(ExpressionScope.all, NO_FILTER).iterator().next()).getQualifiedName());
     }
 
+    @Test
     public void test_deconstruction() {
         PsiLet e = first(letExpressions(parseCode("let (a, b) = x")));
 
@@ -151,6 +168,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertInstanceOf(names.get(1), PsiLowerSymbol.class);
     }
 
+    @Test
     public void test_deconstruction_parenless() {
         PsiLet e = first(letExpressions(parseCode("let a, b = x")));
 
@@ -163,6 +181,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertInstanceOf(names.get(1), PsiLowerSymbol.class);
     }
 
+    @Test
     public void test_deconstruction_nested() { // belt_Map offset 2272
         PsiLet e = firstOfType(parseCode("let (l,r),b = Dict.split ~cmp m.data x"), PsiLet.class);
 
@@ -177,6 +196,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertInstanceOf(names.get(2), PsiLowerSymbol.class);
     }
 
+    @Test
     public void test_deconstruction_braces() {
         PsiLet e = first(letExpressions(parseCode("let { a; b } = x")));
 
@@ -189,12 +209,14 @@ public class LetParsingTest extends OclParsingTestCase {
         assertInstanceOf(names.get(1), PsiLowerSymbol.class);
     }
 
+    @Test
     public void test_List() {
         PsiLet e = first(letExpressions(parseCode("let tokens = [ \"bullet\"; \"string\"; \"unicode_id_part\"; ]")));
 
         assertEquals("[ \"bullet\"; \"string\"; \"unicode_id_part\"; ]", e.getBinding().getText());
     }
 
+    @Test
     public void test_optional_param() {
         PsiLet e = first(letExpressions(parseCode("let prod_to_str ?(plist=false) prod = String.concat \" \" (prod_to_str_r plist prod)")));
 
@@ -202,6 +224,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("?(plist=false) prod = String.concat \" \" (prod_to_str_r plist prod)", e.getBinding().getText());
     }
 
+    @Test
     public void test_comparison() {
         PsiLet e = firstOfType(parseCode("let lt x y = (x lxor 0x4) < (y lxor 0x4)\ntype t"), PsiLet.class);
         PsiFunctionBody b = e.getFunction().getBody();
@@ -209,12 +232,14 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("(x lxor 0x4) < (y lxor 0x4)", b.getText());
     }
 
+    @Test
     public void test_semi() {
         PsiLet e = firstOfType(parseCode("let _ = for i = 0 to len - 1 do done; get_data p"), PsiLet.class);
 
         assertEquals("for i = 0 to len - 1 do done; get_data p", e.getBinding().getText());
     }
 
+    @Test
     public void test_name_unit() {
         PsiLet e = firstOfType(parseCode("let () = 1 + 2"), PsiLet.class);
 
@@ -224,6 +249,7 @@ public class LetParsingTest extends OclParsingTestCase {
 
     // should it be parsed like a function ?
     // https://github.com/giraud/reasonml-idea-plugin/issues/309
+    @Test
     public void test_infix_operator() {
         PsiLet e = firstOfType(parseCode("let (|?) m (key, cb) = m |> Ext_json.test key cb"), PsiLet.class);
 
@@ -233,6 +259,7 @@ public class LetParsingTest extends OclParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/105
+    @Test
     public void test_GH_105() {
         FileBase file = parseCode("let string = \"x\"");
         PsiLet e = first(letExpressions(file));
@@ -241,6 +268,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("string", e.getName());
     }
 
+    @Test
     public void test_GH_105a() {
         FileBase file = parseCode("let string s = \"x\"");
         PsiLet e = first(letExpressions(file));
@@ -249,6 +277,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("string", e.getName());
     }
 
+    @Test
     public void test_GH_105b() {
         FileBase file = parseCode("let int = 1");
         PsiLet e = first(letExpressions(file));
@@ -257,6 +286,7 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("int", e.getName());
     }
 
+    @Test
     public void test_GH_105c() {
         FileBase file = parseCode("let bool = 1");
         PsiLet e = first(letExpressions(file));
@@ -266,6 +296,7 @@ public class LetParsingTest extends OclParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/116
+    @Test
     public void test_GH_116() {
         FileBase file = parseCode("let ((), proofview, _, _) = Proofview.apply (Global.env ()) tac pr.proofview");
         PsiLet e = first(letExpressions(file));
@@ -276,6 +307,7 @@ public class LetParsingTest extends OclParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/121
+    @Test
     public void test_GH_121() {
         Collection<PsiLet> lets = letExpressions(parseCode("let rec f x y = match x with | [] -> return y\n let x =  1"));
 
@@ -284,6 +316,7 @@ public class LetParsingTest extends OclParsingTestCase {
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/270
     // https://caml.inria.fr/pub/docs/manual-ocaml/polymorphism.html#ss:explicit-polymorphism
+    @Test
     public void test_GH_270() {
         PsiLet e = firstOfType(parseCode("let rec parser_of_tree : type s tr r. s ty_entry -> int -> int -> (s, tr, r) ty_tree -> r parser_t =\n"
                 + "  fun entry nlevn alevn -> ()"), PsiLet.class);
@@ -294,6 +327,7 @@ public class LetParsingTest extends OclParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/278
+    @Test
     public void test_GH_278() {
         PsiLet e = first(letExpressions(parseCode("let (//) = Ext_path.combine")));
 

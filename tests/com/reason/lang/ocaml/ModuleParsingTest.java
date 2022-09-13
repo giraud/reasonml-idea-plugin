@@ -7,11 +7,13 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ModuleParsingTest extends OclParsingTestCase {
+    @Test
     public void test_empty() {
         Collection<PsiModule> modules = moduleExpressions(parseCode("module M = struct end"));
 
@@ -23,6 +25,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("struct end", e.getBody().getText());
     }
 
+    @Test
     public void test_alias() {
         PsiModule e = firstOfType(parseCode("module M = Y"), PsiModule.class);
 
@@ -32,6 +35,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(myTypes.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
+    @Test
     public void test_alias_path() {
         PsiModule e = firstOfType(parseCode("module M = Y.Z"), PsiModule.class);
 
@@ -41,6 +45,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(myTypes.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
+    @Test
     public void test_module_type() {
         PsiModule e = first(moduleExpressions(parseCode("module type Intf = sig val x : bool end")));
 
@@ -50,6 +55,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("bool", firstOfType(e, PsiVal.class).getSignature().getText());
     }
 
+    @Test
     public void test_module_signature() {
         PsiFile file = parseCode("module Level : sig end\ntype t");
 
@@ -59,12 +65,14 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("sig end", module.getModuleType().getText());
     }
 
+    @Test
     public void test_module_chaining() {
         PsiFile file = parseCode("module A = sig type t end\nmodule B = struct end");
 
         assertEquals(2, moduleExpressions(file).size());
     }
 
+    @Test
     public void test_signature_with_constraint() {
         // From coq: PCoq
         FileBase file = parseCode("module G : sig end with type 'a Entry.e = 'a Extend.entry = struct end");
@@ -76,6 +84,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("struct end", e.getBody().getText());
     }
 
+    @Test
     public void test_module_constraint() {
         PsiFile file = parseCode("module Constraint : Set.S with type elt = univ_constraint\ntype t");
 
@@ -86,6 +95,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("Set.S", modType.getText());
     }
 
+    @Test
     public void test_module_alias_body() {
         PsiFile file = parseCode("module M = struct module O = B.Option let _ = O.m end");
 
@@ -96,6 +106,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertSize(2, expressions);
     }
 
+    @Test
     public void test_rec_signature() {
         PsiFile file = parseCode("module rec A : sig type output = (Constr.constr * UState.t) option type task end = struct end");
 
@@ -106,7 +117,18 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("struct end", e.getBody().getText());
     }
 
+    @Test
+    public void test_decode_first_class_module() {
+        PsiModule e = firstOfType(parseCode("module M = (val selectors)"), PsiModule.class);
+
+        assertFalse(e instanceof PsiFunctor);
+        assertEquals("M", e.getName());
+        assertEquals("(val selectors)", e.getBody().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiVal.class));
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/91
+    @Test
     public void test_GH_91() {
         FileBase file = parseCode("module Branch : (module type of Vcs_.Branch with type t = Vcs_.Branch.t)\ntype id");
 
@@ -116,14 +138,5 @@ public class ModuleParsingTest extends OclParsingTestCase {
         PsiModuleType modType = e.getModuleType();
         assertEquals("module type of Vcs_.Branch", modType.getText());
         assertNull(modType.getName());
-    }
-
-    public void test_decode_first_class_module() {
-        PsiModule e = firstOfType(parseCode("module M = (val selectors)"), PsiModule.class);
-
-        assertFalse(e instanceof PsiFunctor);
-        assertEquals("M", e.getName());
-        assertEquals("(val selectors)", e.getBody().getText());
-        assertNull(PsiTreeUtil.findChildOfType(e, PsiVal.class));
     }
 }

@@ -6,6 +6,7 @@ import com.reason.ide.files.*;
 import com.reason.lang.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
@@ -14,6 +15,7 @@ import static com.reason.lang.core.psi.impl.ExpressionScope.*;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_constant() {
         PsiLet let = first(letExpressions(parseCode("let x = 1;")));
 
@@ -22,6 +24,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
+    @Test
     public void test_function_let_binding() {
         PsiLet let = first(letExpressions(parseCode("let getAttributes = node => { node; };")));
 
@@ -29,6 +32,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
+    @Test
     public void test_unit_function() {
         PsiLet e = first(letExpressions(parseCode("let x = () => 1;")));
 
@@ -37,12 +41,14 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("1", function.getBody().getText());
     }
 
+    @Test
     public void test_binding() {
         PsiLet let = first(letExpressions(parseCode("let x = {\"u\": \"r\", \"l\": \"lr\"};")));
         assertFalse(let.isFunction());
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
+    @Test
     public void test_binding_with_jsx() {
         PsiFile file = parseCode("let make = p => { render: x => { <div/>; } }");
         PsiElement[] children = file.getChildren();
@@ -52,12 +58,14 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertSize(1, expressions(file));
     }
 
+    @Test
     public void test_scope_with_some() {
         PsiLet let = first(letExpressions(parseCode("let l = (p) => { switch (a) { | Some(a) => a; (); | None => () }; Some(z); };")));
 
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
+    @Test
     public void test_scope_with_LIdent() {
         PsiLet let = first(letExpressions(parseCode("let l = (p) => { Js.log(p); returnObj; };")));
 
@@ -65,6 +73,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertNotNull(binding);
     }
 
+    @Test
     public void test_local_scope() {
         PsiLet let = first(letExpressions(parseCode("let x = { let y = 1; y + 3; }")));
 
@@ -73,6 +82,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiRecord.class));
     }
 
+    @Test
     public void test_record() {
         PsiLet let = first(letExpressions(parseCode("let typeScale = {one: 1.375, two: 1.0};")));
 
@@ -81,6 +91,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertSize(2, record.getFields());
     }
 
+    @Test
     public void test_signature() {
         PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
 
@@ -88,6 +99,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("(a, b) => { }", let.getBinding().getText());
     }
 
+    @Test
     public void test_signature_dot() {
         PsiLet let = first(letExpressions(parseCode("let x: M1.y => M2.z;")));
 
@@ -97,6 +109,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("M1.y", items.get(0).getText());
     }
 
+    @Test
     public void test_signature_JsObject() {
         PsiLet let = first(letExpressions(parseCode("let x: {. a:string, b:int } => unit;")));
 
@@ -106,6 +119,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("b:int", fields.get(1).getText());
     }
 
+    @Test
     public void test_rec() {
         PsiLet let = first(letExpressions(parseCode("let rec lx = x => x + 1")));
 
@@ -113,6 +127,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("lx", let.getName());
     }
 
+    @Test
     public void test_signatureB() {
         FileBase file = parseCode("let watchUrl: (url => unit) => watcherID;");
         PsiLet e = first(letExpressions(file));
@@ -122,6 +137,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("(url => unit) => watcherID", e.getSignature().getText());
     }
 
+    @Test
     public void test_let_and_in_module() {
         FileBase file = parseCode("module M = { let f1 = x => x and f2 = y => y; };");
         Collection<PsiNamedElement> es = PsiFileHelper.getModuleExpressions(file).iterator().next().getExpressions(pub, FILTER_LET);
@@ -130,6 +146,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("f2 = y => y", second(es).getText());
     }
 
+    @Test
     public void test_alias() {
         PsiLet e = first(letExpressions(parseCode("let x = M1.M2.y;")));
 
@@ -137,6 +154,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("M1.M2.y", e.getAlias());
     }
 
+    @Test
     public void test_variant() {
         PsiLet e = first(letExpressions(parseCode("let x = MyVar;")));
 
@@ -145,6 +163,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals(RmlTypes.INSTANCE.A_VARIANT_NAME, e.getBinding().getFirstChild().getNode().getElementType());
     }
 
+    @Test
     public void test_deconstruction() {
         PsiLet e = first(letExpressions(parseCode("let (a, b) = x;")));
 
@@ -157,6 +176,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertInstanceOf(names.get(1), PsiLowerSymbol.class);
     }
 
+    @Test
     public void test_deconstruction_nested() { // belt_Map offset 2272
         PsiLet e = firstOfType(parseCode("let ((l, r), b) = Dict.split(~cmp, m.data, x);"), PsiLet.class);
 
@@ -171,6 +191,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertInstanceOf(names.get(2), PsiLowerSymbol.class);
     }
 
+    @Test
     public void test_deconstruction_braces() {
         PsiLet e = first(letExpressions(parseCode("let {a, b, _} = x;")));
 
@@ -183,6 +204,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertInstanceOf(names.get(1), PsiLowerSymbol.class);
     }
 
+    @Test
     public void test_operator() {
         PsiLet e = first(letExpressions(parseCode("let (/): (path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c;")));
 
@@ -192,6 +214,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         // signature.asString(myLanguage));
     }
 
+    @Test
     public void test_private() {
         PsiLet e = first(letExpressions(parseCode("let x%private = 1;")));
 
@@ -199,6 +222,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertTrue(e.isPrivate());
     }
 
+    @Test
     public void test_function_record() {
         List<PsiLet> es = letExpressions(parseCode("let x = y(M.{i: 1}); let z=2;"));
 
@@ -208,6 +232,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertEquals("{i: 1}", PsiTreeUtil.findChildOfType(es.get(0), PsiRecord.class).getText());
     }
 
+    @Test
     public void test_braces() {
         PsiLet e = first(letExpressions(parseCode("let x = p => { test ? { call(Some(a)); } : b };")));
 
@@ -218,6 +243,7 @@ public class LetParsingTest extends RmlParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/105
+    @Test
     public void test_GH_105() {
         FileBase file = parseCode("let string = \"x\"");
         PsiLet e = first(letExpressions(file));
@@ -227,6 +253,7 @@ public class LetParsingTest extends RmlParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/105
+    @Test
     public void test_GH_105a() {
         FileBase file = parseCode("let int = 1");
         PsiLet e = first(letExpressions(file));
@@ -236,6 +263,7 @@ public class LetParsingTest extends RmlParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/105
+    @Test
     public void test_GH_105b() {
         FileBase file = parseCode("let bool = 1");
         PsiLet e = first(letExpressions(file));
@@ -245,6 +273,7 @@ public class LetParsingTest extends RmlParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/278
+    @Test
     public void test_GH_278() {
         PsiLet e = first(letExpressions(parseCode("let (/\\/) = Ext_path.combine")));
 

@@ -2,11 +2,13 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionCallParsingTest extends OclParsingTestCase {
+    @Test
     public void test_call() {
         PsiLetBinding e = first(letExpressions(parseCode("let _ = string_of_int 1"))).getBinding();
 
@@ -16,6 +18,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertEquals("1", call.getParameters().get(0).getText());
     }
 
+    @Test
     public void test_call_ints() {
         PsiFunctionCall e = PsiTreeUtil.findChildOfType(parseCode("add 1 2"), PsiFunctionCall.class);
 
@@ -25,6 +28,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertEquals("2", e.getParameters().get(1).getText());
     }
 
+    @Test
     public void test_call_floats() {
         PsiFunctionCall e = PsiTreeUtil.findChildOfType(parseCode("add 1. 2."), PsiFunctionCall.class);
 
@@ -34,6 +38,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertEquals("2.", e.getParameters().get(1).getText());
     }
 
+    @Test
     public void test_call_many() {
         PsiLetBinding e = first(letExpressions(parseCode("let _ = fn a b c"))).getBinding();
 
@@ -45,6 +50,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertEquals("c", call.getParameters().get(2).getText());
     }
 
+    @Test
     public void test_inner_call() {
         PsiLetBinding e = first(letExpressions(parseCode("let _ = fn a (b \"{\" c) d"))).getBinding();
 
@@ -62,6 +68,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertEquals("c", f1.getParameters().get(1).getText());
     }
 
+    @Test
     public void test_call_02() {
         PsiFunctionCall e = firstOfType(parseCode("let _ = hov 0 (anomaly_string () ++ str \"xxx\")"), PsiFunctionCall.class);
 
@@ -75,6 +82,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertEquals("str \"xxx\"", ee.get(1).getText());
     }
 
+    @Test
     public void test_call_03() {
         PsiFunctionCall e = firstOfType(parseCode("let _ = hov 0 (str \"xxx\" ++ str txt)"), PsiFunctionCall.class);
 
@@ -88,6 +96,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertEquals("str txt", ee.get(1).getText());
     }
 
+    @Test
     public void test_call_04() { // env.ml L39
         PsiFunctionCall e = firstOfType(parseCode("let _ = Util.check_file_else ~dir:Coq_config.coqlibsuffix ~file:prelude"), PsiFunctionCall.class);
 
@@ -102,6 +111,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertEquals("prelude", p1.getValue().getText());
     }
 
+    @Test
     public void test_call_05() {
         PsiFunctionCall e = firstOfType(parseCode("let _ = f1 \"x\" (1)"), PsiFunctionCall.class);
 

@@ -6,11 +6,13 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class SwitchParsingTest extends ResParsingTestCase {
+    @Test
     public void test_pattern_variant() {
         FileBase f = parseCode("switch x { | Variant1(x) => x\n () | Variant2 => () }");
 
@@ -41,6 +43,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         // assertNotNull(ORUtil.findImmediateFirstChildOfClass(p1Body, PsiUnit.class));
     }
 
+    @Test
     public void test_pattern_option() {
         FileBase f = parseCode("switch x { | Some(x) => x\n () | None => () }");
 
@@ -69,6 +72,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         // assertNotNull(ORUtil.findImmediateFirstChildOfClass(p2Body, PsiUnit.class));
     }
 
+    @Test
     public void test_pattern_token_type() {
         PsiFile psiFile = parseCode("switch action { | Incr => counter + 1 }");
 
@@ -83,6 +87,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertEquals("counter + 1", psiPatternMatch.getBody().getText());
     }
 
+    @Test
     public void test_pattern_match() {
         FileBase f = parseCode("switch p { | Typedtree.Partial => \"Partial\" | Total => \"Total\" }");
         PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
@@ -98,6 +103,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertEquals("\"Total\"", m2.getBody().getText());
     }
 
+    @Test
     public void test_pattern_match_2() {
         FileBase f = parseCode("let greeting = name => switch name { | FirstName(fn) => \"hello \" ++ fn | LastName(ln) => \"hello \" ++ ln }");
         PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
@@ -106,6 +112,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertSize(2, patterns);
     }
 
+    @Test
     public void test_let() {
         PsiLet e = first(letExpressions(parseCode("let makeId = () => switch id { | None => text | Some(i) => i }")));
 
@@ -113,6 +120,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertEquals("switch id { | None => text | Some(i) => i }", function.getBody().getText());
     }
 
+    @Test
     public void test_react() {
         FileBase psiFile = parseCode("switch reasonStateUpdate { | NoUpdate => (None, curTotalState) | Update(nextReasonState) => (None, {\"reasonState\": nextReasonState}) }");
 
@@ -123,6 +131,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertSize(2, e.getPatterns());
     }
 
+    @Test
     public void test_tuple() {
         PsiSwitch e = firstOfType(parseCode("switch (a, b, c) { | (None, Some(x), _) => do(. z) | (_, _, _) => let x = 1\n () }"), PsiSwitch.class);
 
@@ -132,6 +141,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertEquals("(_, _, _) => let x = 1\n ()", patterns.get(1).getText());
     }
 
+    @Test
     public void test_switch_of_switch() {
         PsiSwitch e = firstOfType(parseCode("switch a { | None => switch b { | X => 1 | Y => 2 } | Some => 3 }"), PsiSwitch.class);
 
@@ -143,6 +153,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertSize(2, inner.getPatterns());
     }
 
+    @Test
     public void test_group() {
         PsiSwitch e = firstOfType(parseCode("switch x { | V1(y) => Some(y) | V2(_) | Empty | Unknown => None }"), PsiSwitch.class);
 
@@ -155,6 +166,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/275
+    @Test
     public void test_GH_275() {
         PsiFunction e = firstOfType(parseCode("items->Belt.Array.map(i => switch (i: t) { | Value => 1 })"), PsiFunction.class);
 
@@ -164,6 +176,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertEquals("Value => 1", s.getPatterns().get(0).getText());
     }
 
+    @Test
     public void test_GH_275b() {
         PsiSwitch e = firstOfType(parseCode("switch (a, b) { | (Some(a'), Some(b')) => let _ = switch x { | None => None } }"), PsiSwitch.class);
 

@@ -5,11 +5,13 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionCallParsingTest extends ResParsingTestCase {
+    @Test
     public void test_call() {
         PsiLet e = first(letExpressions(parseCode("let _ = string_of_int(1)")));
 
@@ -20,6 +22,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertEquals(1, call.getParameters().size());
     }
 
+    @Test
     public void test_call2() {
         PsiLet e = first(letExpressions(parseCode("let _ = Belt.Option.map(self.state.timerId.contents, Js.Global.clearInterval)")));
 
@@ -30,6 +33,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertEquals("Js.Global.clearInterval", parameters.get(1).getText());
     }
 
+    @Test
     public void test_call3() {
         PsiLet e = first(letExpressions(parseCode("let _ = subscriber->Topic.unsubscribe()")));
 
@@ -37,6 +41,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertEmpty(call.getParameters());
     }
 
+    @Test
     public void test_end_comma() {
         PsiLet e = first(letExpressions(parseCode("let _ = style([ color(red), ])")));
 
@@ -46,6 +51,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertSize(1, f.getParameters());
     }
 
+    @Test
     public void test_unit_last() {
         PsiLet e = first(letExpressions(parseCode("let _ = f(1, ())")));
 
@@ -53,6 +59,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertSize(2, call.getParameters());
     }
 
+    @Test
     public void test_optional_param() {
         PsiFunctionCall e = firstOfType(parseCode("let _ = fn(~margin?, ())"), PsiFunctionCall.class);
         assertSize(2, e.getParameters());
@@ -60,6 +67,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertEquals("()", e.getParameters().get(1).getText());
     }
 
+    @Test
     public void test_inner_parenthesis() {
         PsiLet e = first(letExpressions(parseCode("let _ = f(a, (b, c))")));
 
@@ -71,6 +79,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertNull(PsiTreeUtil.findChildOfType(p1, PsiParameterReference.class));
     }
 
+    @Test
     public void test_params() {
         FileBase f = parseCode("call(~decode=x => Ok(), ~task=() => y)");
         PsiFunctionCall e = ORUtil.findImmediateFirstChildOfClass(f, PsiFunctionCall.class);
@@ -78,6 +87,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertSize(2, e.getParameters());
     }
 
+    @Test
     public void test_param_name() {
         List<PsiLet> expressions = letAllExpressions(parseCode("describe(\"context\", () => { test(\"should do something\", () => { let inner = 1 }) })"));
         PsiLet e = first(expressions);
@@ -85,6 +95,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertEquals("Dummy.describe[1].test[1].inner", e.getQualifiedName());
     }
 
+    @Test
     public void test_nested_parenthesis() {
         PsiFunctionCall f = firstOfType(parseCode("set(x->keep(((y, z)) => y), xx)"), PsiFunctionCall.class);
 
@@ -93,6 +104,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertEquals("xx", f.getParameters().get(1).getText());
     }
 
+    @Test
     public void test_body() {
         PsiLet e = first(letExpressions(parseCode("let _ = x => { open M\n {k: v} }")));
 
@@ -100,6 +112,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertEquals("{ open M\n {k: v} }", body.getText());
     }
 
+    @Test
     public void test_ternary_in_named_param() {
         PsiFunctionCall e = firstOfType(parseCode("fn(~x=a ? b : c);"), PsiFunctionCall.class);
 
@@ -110,12 +123,14 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertInstanceOf(p0.getValue().getFirstChild(), PsiTernary.class);
     }
 
+    @Test
     public void test_assignment() {
         PsiFunctionCall e = firstOfType(parseCode("let _ = fn(x => myRef.current = x)"), PsiFunctionCall.class);
 
         assertEquals("x => myRef.current = x", e.getParameters().get(0).getText());
     }
 
+    @Test
     public void test_GH_120() {
         PsiLet e = first(letExpressions(parseCode("let _ = f(x == U.I, 1)")));
 

@@ -4,11 +4,13 @@ import com.intellij.psi.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class StringTemplateParsingTest extends ResParsingTestCase {
+    @Test
     public void test_basic() {
         List<PsiLet> es = letExpressions(parseCode("let x = `this is a ${var} Template string`\nlet y = 1"));
 
@@ -24,6 +26,7 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
         assertEquals(ref.getText(), "var");
     }
 
+    @Test
     public void test_ref_only() {
         PsiLetBinding b = first(letExpressions(parseCode("let x = `${var}`"))).getBinding();
 
@@ -37,6 +40,7 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/353
+    @Test
     public void test_GH_353() {
         PsiLet e = first(letExpressions(parseCode("let _ = `${rowStart} / ${colStart}`")));
         PsiLetBinding binding = e.getBinding();

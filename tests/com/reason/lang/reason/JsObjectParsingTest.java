@@ -6,11 +6,13 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class JsObjectParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_basic() {
         PsiLet e = first(letExpressions(parseCode("let x = {\"a\": 1, \"b\": 0};")));
 
@@ -22,6 +24,7 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
         assertEquals(2, fields.size());
     }
 
+    @Test
     public void test_definition() {
         PsiType e = first(typeExpressions(parseCode("type t = {. \"a\": UUID.t, \"b\": int};")));
 
@@ -37,6 +40,7 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
         assertEquals("int", fields.get(1).getSignature().getText());
     }
 
+    @Test
     public void test_in_function() {
         PsiLet e = first(letExpressions(parseCode("let x = fn(~props={\"a\": id, \"b\": 0});")));
 
@@ -49,6 +53,7 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
         assertEquals("b", fields.get(1).getName());
     }
 
+    @Test
     public void test_declaring_open() {
         PsiLet e = first(letExpressions(parseCode(
                 "let style = {"
@@ -67,6 +72,7 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
         assertSize(0, PsiTreeUtil.findChildrenOfType(object, PsiSignature.class));
     }
 
+    @Test
     public void test_module_open() {
         PsiLet e = first(letExpressions(parseCode(
                 "let computingProperties = createStructuredSelector("
@@ -80,6 +86,7 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
         assertNotNull(jsObject);
     }
 
+    @Test
     public void test_deep() {
         PsiLet e = firstOfType(parseCode("let oo = {\"f1\": {\"f11\": 111}, \"f2\": o,\"f3\": {\"f33\": 333} }"), PsiLet.class);
 

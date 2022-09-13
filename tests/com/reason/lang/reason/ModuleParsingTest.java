@@ -4,11 +4,13 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ModuleParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_empty() {
         Collection<PsiModule> modules = moduleExpressions(parseCode("module M = {};"));
 
@@ -19,6 +21,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals("{}", e.getBody().getText());
     }
 
+    @Test
     public void test_alias() {
         PsiModule e = firstOfType(parseCode("module M = Y;"), PsiModule.class);
 
@@ -28,6 +31,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals(RmlTypes.INSTANCE.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
+    @Test
     public void test_alias_path() {
         PsiModule e = firstOfType(parseCode("module M = Y.Z;"), PsiModule.class);
 
@@ -37,6 +41,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals(RmlTypes.INSTANCE.A_MODULE_NAME, e.getAliasSymbol().getNode().getElementType());
     }
 
+    @Test
     public void test_module_type() {
         PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module type Intf = { let x: bool; };")));
 
@@ -46,6 +51,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
     }
 
+    @Test
     public void test_module() {
         PsiFile file = parseCode(" module Styles = { open Css; let y = 1 }");
         PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(file));
@@ -56,6 +62,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertNull(PsiTreeUtil.findChildOfType(file, PsiScopedExpr.class));
     }
 
+    @Test
     public void test_inline_interface() {
         PsiFile file = parseCode("module Router: { let watchUrl: (url => unit) => watcherID; }");
         PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(file));
@@ -69,6 +76,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals("(url => unit) => watcherID", let.getSignature().getText());
     }
 
+    @Test
     public void test_interface_sig_body() {
         PsiInnerModule e = firstOfType(parseCode("module M: MType = { type t = int; };"), PsiInnerModule.class);
 
@@ -78,6 +86,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals("{ type t = int; }", e.getBody().getText());
     }
 
+    @Test
     public void test_interface_with_constraints() {
         PsiInnerModule e = firstOfType(parseCode("module M: I with type t = X.t = {};"), PsiInnerModule.class);
 
@@ -89,6 +98,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals("{}", e.getBody().getText());
     }
 
+    @Test
     public void test_inline_interface_body() {
         PsiInnerModule e = firstOfType(parseCode("module M: { type t; } = { type t = int; };"), PsiInnerModule.class);
 
@@ -97,6 +107,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals("{ type t = int; }", e.getBody().getText());
     }
 
+    @Test
     public void test_decode_first_class_module() {
         PsiModule e = firstOfType(parseCode("module M = (val selectors);"), PsiModule.class);
 

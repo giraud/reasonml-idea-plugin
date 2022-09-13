@@ -4,11 +4,13 @@ import com.intellij.psi.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class StringTemplateParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_basic() {
         PsiLet e = first(letExpressions(parseCode("let _ = {j|this is a $var Template string|j}")));
         PsiLetBinding binding = e.getBinding();
@@ -21,6 +23,7 @@ public class StringTemplateParsingTest extends RmlParsingTestCase {
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/353
+    @Test
     public void test_GH_353() {
         PsiLet e = first(letExpressions(parseCode("let _ = {j|$rowStart / $colStart|j}")));
         PsiLetBinding binding = e.getBinding();

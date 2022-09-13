@@ -1,9 +1,12 @@
 package com.reason.hints;
 
 import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import static org.junit.Assert.*;
 
+@RunWith(JUnit4.class)
 public class RincewindTest {
     @Test
     public void test_bucklescript() {

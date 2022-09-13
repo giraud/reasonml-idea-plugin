@@ -3,11 +3,13 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class LoopParsingTest extends OclParsingTestCase {
+    @Test
     public void test_for() {
         PsiLetBinding e = firstOfType(parseCode("let _ = for i = 1 to pred l do unsafe_set rest i (f i) done"), PsiLet.class).getBinding();
 
@@ -16,6 +18,7 @@ public class LoopParsingTest extends OclParsingTestCase {
     }
 
     // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/176
+    @Test
     public void test_GH_176() {
         PsiLet e = first(letExpressions(parseCode("let x = while true do match x with | _ -> () done")));
         PsiWhile while_ = (PsiWhile) e.getBinding().getFirstChild();
@@ -24,6 +27,7 @@ public class LoopParsingTest extends OclParsingTestCase {
     }
 
     // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/189
+    @Test
     public void test_GH_189() {
         Collection<PsiLet> es = letExpressions(parseCode("let utf8_length s = while !p < len do () done; ()\nlet foo x = x"));
         PsiWhile while_ = (PsiWhile) ((PsiFunction) first(es).getBinding().getFirstChild()).getBody().getFirstChild();

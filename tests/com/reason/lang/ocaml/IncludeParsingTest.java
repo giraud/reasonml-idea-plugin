@@ -4,9 +4,11 @@ import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class IncludeParsingTest extends OclParsingTestCase {
+    @Test
     public void test_one() {
         PsiInclude e = first(includeExpressions(parseCode("include Belt")));
 
@@ -15,6 +17,7 @@ public class IncludeParsingTest extends OclParsingTestCase {
         assertEquals("Belt", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
+    @Test
     public void test_path() {
         PsiInclude e = first(includeExpressions(parseCode("include Belt.Array")));
 
@@ -22,7 +25,7 @@ public class IncludeParsingTest extends OclParsingTestCase {
         assertEquals("Array", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
-
+    @Test
     public void test_functor() {
         PsiInclude e = firstOfType(parseCode("include Make(struct type t end)"), PsiInclude.class);
 
@@ -33,6 +36,7 @@ public class IncludeParsingTest extends OclParsingTestCase {
         assertEquals("Make", e.getIncludePath());
     }
 
+    @Test
     public void test_functor_path() {
         PsiInclude e = firstOfType(parseCode("include A.Make(struct type t end)"), PsiInclude.class);
 
@@ -40,6 +44,7 @@ public class IncludeParsingTest extends OclParsingTestCase {
         assertEquals("A.Make", e.getIncludePath());
     }
 
+    @Test
     public void test_with_type() {
         PsiInclude e = first(includeExpressions(parseCode("include S with type t = Tok.t")));
 
@@ -47,6 +52,7 @@ public class IncludeParsingTest extends OclParsingTestCase {
         assertEquals("include S with type t = Tok.t", e.getText());
     }
 
+    @Test
     public void test_with_path_type() {
         PsiInclude e = first(includeExpressions(parseCode("include Grammar.S with type te = Tok.t and type 'c pattern = 'c Tok.p\ntype t"))); // Coq: pcoq.ml
 

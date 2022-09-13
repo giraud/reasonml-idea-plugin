@@ -1,11 +1,12 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.core.psi.*;
+import org.junit.*;
 
 import java.util.*;
 
-@SuppressWarnings("unchecked")
 public class AndParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_let_chaining() {
         List<PsiLet> lets = letExpressions(parseCode("let rec lx = x => x + 1 and ly = y => 3 + lx(y)"));
 
@@ -14,6 +15,7 @@ public class AndParsingTest extends RmlParsingTestCase {
         assertEquals("ly", lets.get(1).getName());
     }
 
+    @Test
     public void test_module_chaining() {
         List<PsiModule> mods = moduleExpressions(parseCode("module rec X: {} = {} and Y: {} = {};"));
 
@@ -23,6 +25,7 @@ public class AndParsingTest extends RmlParsingTestCase {
     }
 
     /* type update = | NoUpdate and 'state self = {state: 'state;}*/
+    @Test
     public void test_and() {
         List<PsiType> types = typeExpressions(parseCode("type update = | NoUpdate and self('state) = {state: 'state};"));
 

@@ -4,11 +4,13 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiLowerSymbol;
 import com.reason.lang.core.psi.impl.PsiScopedExpr;
 import com.reason.lang.core.psi.impl.PsiValImpl;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ValParsingTest extends OclParsingTestCase {
+    @Test
     public void test_qualified_name() {
         PsiVal e = first(valExpressions(parseCode("val x : int")));
 
@@ -18,6 +20,7 @@ public class ValParsingTest extends OclParsingTestCase {
         assertEquals("int", signature.getText());
     }
 
+    @Test
     public void test_name() {
         PsiVal e = first(valExpressions(parseCode("val x : int")));
 
@@ -25,6 +28,7 @@ public class ValParsingTest extends OclParsingTestCase {
         assertEquals("x", e.getName());
     }
 
+    @Test
     public void test_special_name() {
         PsiVal e = first(valExpressions(parseCode("val (>>=) : 'a -> 'a t")));
 
@@ -32,6 +36,7 @@ public class ValParsingTest extends OclParsingTestCase {
         assertEquals("(>>=)", e.getName());
     }
 
+    @Test
     public void test_function() {
         PsiVal e = first(valExpressions(parseCode("val init: int -> (int -> 'a) -> 'a array")));
 

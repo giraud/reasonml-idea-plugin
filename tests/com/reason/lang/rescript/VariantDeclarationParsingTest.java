@@ -5,11 +5,13 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class VariantDeclarationParsingTest extends ResParsingTestCase {
+    @Test
     public void test_basic() {
         PsiType e = first(typeExpressions(parseCode("type color = | Black | White")));
 
@@ -21,6 +23,7 @@ public class VariantDeclarationParsingTest extends ResParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
     }
 
+    @Test
     public void test_basic2() {
         PsiType e = first(typeExpressions(parseCode("type t = Black | White")));
 
@@ -30,6 +33,7 @@ public class VariantDeclarationParsingTest extends ResParsingTestCase {
         assertEquals("White", declarations.get(1).getVariant().getText());
     }
 
+    @Test
     public void test_constructor() {
         PsiType e = first(typeExpressions(parseCode("type t = | Hex(string) | Rgb(int, int, int)")));
 
@@ -43,6 +47,7 @@ public class VariantDeclarationParsingTest extends ResParsingTestCase {
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
+    @Test
     public void test_constructor2() {
         PsiType e = first(typeExpressions(parseCode("type t = Hex(string) | Rgb(int, int, int)")));
 
@@ -55,6 +60,7 @@ public class VariantDeclarationParsingTest extends ResParsingTestCase {
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
+    @Test
     public void test_mixed() {
         PsiType e = first(typeExpressions(parseCode("type t = | Cannot(reason) | Loose | Strict")));
 

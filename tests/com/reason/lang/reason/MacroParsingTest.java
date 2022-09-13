@@ -5,9 +5,11 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class MacroParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_basic() {
         PsiLet expression = first(letExpressions(parseCode("let _ = [%raw \"xxx\"]")));
 
@@ -20,6 +22,7 @@ public class MacroParsingTest extends RmlParsingTestCase {
         assertEquals(new TextRange(1, 4), rawMacroBody.getMacroTextRange());
     }
 
+    @Test
     public void test_rootRaw() {
         PsiMacro e = firstOfType(parseCode("%raw \"xxx\";"), PsiMacro.class);
 
@@ -27,6 +30,7 @@ public class MacroParsingTest extends RmlParsingTestCase {
         assertEquals("\"xxx\"", e.getContent().getText());
     }
 
+    @Test
     public void test_multiLine() {
         PsiLet expression = first(letExpressions(parseCode("let _ = [%raw {|function (a) {}|}]")));
 

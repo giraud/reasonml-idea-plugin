@@ -4,9 +4,11 @@ import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class IncludeParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_one() {
         PsiInclude e = firstOfType(parseCode("include Belt;"), PsiInclude.class);
 
@@ -15,6 +17,7 @@ public class IncludeParsingTest extends RmlParsingTestCase {
         assertEquals("Belt", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
+    @Test
     public void test_path() {
         PsiInclude e = firstOfType(parseCode("include Belt.Array;"), PsiInclude.class);
 
@@ -22,6 +25,7 @@ public class IncludeParsingTest extends RmlParsingTestCase {
         assertEquals("Array", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
+    @Test
     public void test_functor() {
         PsiInclude e = firstOfType(parseCode("include Make({ type t; })"), PsiInclude.class);
 
@@ -32,6 +36,7 @@ public class IncludeParsingTest extends RmlParsingTestCase {
         assertEquals("Make", e.getIncludePath());
     }
 
+    @Test
     public void test_functor_with_path() {
         PsiInclude e = firstOfType(parseCode("include A.Make({ type t; })"), PsiInclude.class);
 

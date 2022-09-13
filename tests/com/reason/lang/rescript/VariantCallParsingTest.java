@@ -6,12 +6,14 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
+import org.junit.*;
 
 import java.util.*;
 import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
 public class VariantCallParsingTest extends ResParsingTestCase {
+    @Test
     public void test_basic() {
         PsiLetBinding binding = firstOfType(parseCode("let x = Var"), PsiLet.class).getBinding();
 
@@ -20,6 +22,7 @@ public class VariantCallParsingTest extends ResParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
+    @Test
     public void test_params() {
         PsiLetBinding binding = firstOfType(parseCode("let x = Var(a, b, c)"), PsiLet.class).getBinding();
 
@@ -29,6 +32,7 @@ public class VariantCallParsingTest extends ResParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
+    @Test
     public void test_with_path() {
         PsiLetBinding binding = firstOfType(parseCode("let x = A.Variant(1)"), PsiLet.class).getBinding();
 
@@ -36,6 +40,7 @@ public class VariantCallParsingTest extends ResParsingTestCase {
         assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
     }
 
+    @Test
     public void test_pipe_first() {
         PsiLetBinding e = firstOfType(parseCode("let _ = A.A1.(Variant->toString)"), PsiLet.class).getBinding();
 
@@ -43,6 +48,7 @@ public class VariantCallParsingTest extends ResParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(l, PsiUpperSymbol.class).getNode().getElementType());
     }
 
+    @Test
     public void test_with_param() {
         PsiLetBinding binding = firstOfType(parseCode("let x = Var(1)"), PsiLet.class).getBinding();
 
@@ -50,6 +56,7 @@ public class VariantCallParsingTest extends ResParsingTestCase {
         assertNull(ORUtil.findImmediateFirstChildOfClass(binding, PsiVariantDeclaration.class));
     }
 
+    @Test
     public void test_pattern_match() {
         PsiSwitch e = firstOfType(parseCode("switch action { | UpdateDescription(desc) => ReasonReact.SideEffects.(_self => onDescriptionChange(desc)) }"), PsiSwitch.class);
 
@@ -59,6 +66,7 @@ public class VariantCallParsingTest extends ResParsingTestCase {
         assertEquals("ReasonReact, SideEffects", Joiner.join(", ", uppers.stream().map(PsiElement::getText).collect(Collectors.toList())));
     }
 
+    @Test
     public void test_in_method() {
         PsiFunction e = firstOfType(parseCode("let _ = (. fileName, data) => self.send(SetErrorMessage(fileName, data[\"message\"]))"), PsiFunction.class);
 

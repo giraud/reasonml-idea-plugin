@@ -4,11 +4,13 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionParsingTest extends OclParsingTestCase {
+    @Test
     public void test_single_param() {
         PsiLet e = first(letExpressions(parseCode("let fn x = x")));
 
@@ -21,6 +23,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertNotNull(function.getBody());
     }
 
+    @Test
     public void test_multiple_params() {
         PsiLet e = first(letExpressions(parseCode("let add x y = x + y")));
 
@@ -32,6 +35,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertNotNull(function.getBody());
     }
 
+    @Test
     public void test_let_binding() {
         PsiLet e = first(letExpressions(parseCode("let getAttributes node = let attr = \"r\" in attr")));
 
@@ -41,6 +45,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertNotNull(function.getBody());
     }
 
+    @Test
     public void test_let_binding_2() {
         PsiLet e = first(letExpressions(parseCode("let visit_vo f = Printf.printf \"a\"; Printf.printf \"b\"")));
 
@@ -49,6 +54,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertEquals("Printf.printf \"a\"; Printf.printf \"b\"", function.getBody().getText());
     }
 
+    @Test
     public void test_fun() {
         PsiLet e = first(letExpressions(parseCode("let _ = fun (_, info as ei) -> x")));
 
@@ -59,6 +65,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertEquals("x", function.getBody().getText());
     }
 
+    @Test
     public void test_fun_signature() {
         PsiLet e = first(letExpressions(parseCode("let _: int -> int = fun x y -> x + y")));
 
@@ -72,6 +79,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertEquals("x + y", f.getBody().getText());
     }
 
+    @Test
     public void test_complex_params() {
         Collection<PsiNamedElement> expressions = expressions(parseCode(
                 "let resolve_morphism env ?(fnewt=fun x -> x) args' (b,cstr) = let x = 1"));
@@ -83,12 +91,14 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertEquals("let x = 1", let.getFunction().getBody().getText());
     }
 
+    @Test
     public void test_rollback() {
         PsiFunction f = firstOfType(parseCode("let _ = let x = 1 in let y = 2 in fun () -> 3"), PsiFunction.class); // test infinite rollback
         assertEquals("fun () -> 3", f.getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/291
+    @Test
     public void test_GH_291() {
         PsiLet e = first(letExpressions(parseCode("let fn = function | OpenedModule -> true | _ -> false")));
 

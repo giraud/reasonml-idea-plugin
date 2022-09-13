@@ -1,9 +1,11 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class TryParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_try_structure() {
         PsiTry e = (PsiTry) firstElement(parseCode("try (x) { | Not_found => () };"));
 

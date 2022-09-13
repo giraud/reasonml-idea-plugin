@@ -5,12 +5,14 @@ import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctorParsingTest extends OclParsingTestCase {
+    @Test
     public void test_basic() {
         PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) : S = struct end")));
 
@@ -27,6 +29,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertDoesntContain(uTypes, myTypes.A_VARIANT_NAME);
     }
 
+    @Test
     public void test_struct() {
         PsiNamedElement e = first(expressions(parseCode("module Make (struct type t end) : S = struct end")));
 
@@ -41,6 +44,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertDoesntContain(uTypes, myTypes.A_VARIANT_NAME);
     }
 
+    @Test
     public void test_implicit_result() {
         PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) = struct end")));
 
@@ -48,6 +52,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertEquals("struct end", f.getBody().getText());
     }
 
+    @Test
     public void test_with_constraints() {
         Collection<PsiNamedElement> expressions = expressions(parseCode(
                 "module Make (M: Input) : S with type +'a t = 'a M.t and type b = M.b = struct end"));
@@ -65,6 +70,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertEquals("struct end", f.getBody().getText());
     }
 
+    @Test
     public void test_signature() {
         Collection<PsiFunctor> functors = functorExpressions(parseCode( //
                 "module GlobalBindings (M : sig\n" + //

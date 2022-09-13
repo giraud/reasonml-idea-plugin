@@ -6,11 +6,13 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class VariantDeclarationParsingTest extends RmlParsingTestCase {
+    @Test
     public void test_basic() {
         PsiType e = first(typeExpressions(parseCode("type color = | Black | White;")));
 
@@ -22,6 +24,7 @@ public class VariantDeclarationParsingTest extends RmlParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
     }
 
+    @Test
     public void test_basic2() {
         PsiType e = first(typeExpressions(parseCode("type color = Black | White;")));
 
@@ -31,6 +34,7 @@ public class VariantDeclarationParsingTest extends RmlParsingTestCase {
         assertEquals("White", declarations.get(1).getVariant().getText());
     }
 
+    @Test
     public void test_constructor() {
         PsiType e = first(typeExpressions(parseCode("type color = | Hex(string) | Rgb(int, int, int);")));
 
@@ -44,6 +48,7 @@ public class VariantDeclarationParsingTest extends RmlParsingTestCase {
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
+    @Test
     public void test_constructor2() {
         PsiType e = first(typeExpressions(parseCode("type color = Hex(string) | Rgb(int, int, int, );")));
 
@@ -56,6 +61,7 @@ public class VariantDeclarationParsingTest extends RmlParsingTestCase {
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
+    @Test
     public void test_mixed() {
         PsiType e = first(typeExpressions(parseCode("type unfocusable = | Cannot(reason) | Loose | Strict;")));
 

@@ -4,12 +4,16 @@ import com.intellij.psi.*;
 import com.reason.ide.files.*;
 import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 import java.util.stream.*;
 
+@RunWith(JUnit4.class)
 public class QNameFinderOclTest extends ORBasePlatformTestCase {
-
+    @Test
     public void test_letBinding() {
         FileBase f = configureCode("A.ml", "let make = increase<caret>()");
 
@@ -18,6 +22,7 @@ public class QNameFinderOclTest extends ORBasePlatformTestCase {
     }
 
     // Local module alias can be resolved/replaced in the qname finder
+    @Test
     public void test_localModuleAliasResolution() {
         FileBase f = configureCode("A.ml", "module B = Belt\n module M = struct module O = B.Option let _ = O.m<caret>");
 
@@ -25,6 +30,7 @@ public class QNameFinderOclTest extends ORBasePlatformTestCase {
         // TODO: assertEquals(makePaths("A.O", "O", "A.Belt.Option", "Belt.Option", "", "Pervasives"), paths);
     }
 
+    @Test
     public void test_parameter() {
         FileBase f = configureCode("A.ml", "let add x y = x<caret> + y");
 

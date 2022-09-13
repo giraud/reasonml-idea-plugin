@@ -6,12 +6,14 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
+import org.junit.*;
 
 import java.util.*;
 import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
 public class VariantCallParsingTest extends OclParsingTestCase {
+    @Test
     public void test_basic() {
         PsiLetBinding binding = firstOfType(parseCode("let x = Var"), PsiLet.class).getBinding();
 
@@ -20,6 +22,7 @@ public class VariantCallParsingTest extends OclParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
+    @Test
     public void test_params() {
         PsiLetBinding binding = firstOfType(parseCode("let x = Var(a, b, c)"), PsiLet.class).getBinding();
 
@@ -29,6 +32,7 @@ public class VariantCallParsingTest extends OclParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
+    @Test
     public void test_with_param() {
         PsiLetBinding binding = firstOfType(parseCode("let x = Var(1)"), PsiLet.class).getBinding();
 
@@ -37,6 +41,7 @@ public class VariantCallParsingTest extends OclParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getNode().getElementType());
     }
 
+    @Test
     public void test_pattern_match() {
         PsiSwitch e = firstOfType(parseCode(
                 "let _ = match action with | UpdateDescription(desc) -> let open ReasonReact.SideEffects in (fun _self -> onDescriptionChange desc)"), PsiSwitch.class);
