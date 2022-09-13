@@ -11,6 +11,9 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
 ## Unreleased
+         
+
+## 0.107 - 2022/09/13
 
 - :nail_care: fix missing color for fragment tag
 - :bug: [#379](https://github.com/giraud/reasonml-idea-plugin/issues/379) Plugin crashes with NoClassDefFoundError in WebStorm during any attempt to autocomplete
