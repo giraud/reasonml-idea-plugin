@@ -7,6 +7,7 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.impl.wsl.*;
 import com.intellij.util.containers.*;
 import org.jetbrains.annotations.*;
 
@@ -48,11 +49,11 @@ public abstract class OCamlExecutable {
         if (!WSLUtil.isSystemCompatible()) {
             return null;
         }
-        if (!path.startsWith(WSLDistribution.UNC_PREFIX)) {
+        if (!path.startsWith(WslConstants.UNC_PREFIX)) {
             return null;
         }
 
-        path = StringUtil.trimStart(path, WSLDistribution.UNC_PREFIX);
+        path = StringUtil.trimStart(path, WslConstants.UNC_PREFIX);
         int index = path.indexOf('\\');
         if (index == -1) {
             return null;

@@ -1,6 +1,6 @@
 package com.reason.ide.search;
 
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.application.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.indexing.*;
@@ -24,7 +24,7 @@ public class FileModuleIndexService {
     }
 
     public static FileModuleIndexService getService() {
-        return ServiceManager.getService(FileModuleIndexService.class);
+        return ApplicationManager.getApplication().getService(FileModuleIndexService.class);
     }
 
     @NotNull

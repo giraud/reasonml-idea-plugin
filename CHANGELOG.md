@@ -23,8 +23,11 @@ Some resources files (potentially in binary form) inside jars are using the .res
 but there is no possibility to detect they are not rescript files.
 The plugin now do not index files inside a jar archive. 
 
-## 0.106 - 2022/01/07
+## 0.106.1 - 2022/05/02
 
+- :bug: [#379](https://github.com/giraud/reasonml-idea-plugin/issues/379) Plugin crashes with NoClassDefFoundError in
+  WebStorm during any attempt to autocomplete
+- :bug: [#378](https://github.com/giraud/reasonml-idea-plugin/issues/378) NPE in macro
 - :boom: :rocket: New opam configuration, should allow other IDE to use dune projects. Dune facet is removed.
 - :bug: [#364](https://github.com/giraud/reasonml-idea-plugin/issues/364) StringIndexOutOfBoundsException
 

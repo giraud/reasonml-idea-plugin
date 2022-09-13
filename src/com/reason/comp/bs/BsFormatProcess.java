@@ -13,7 +13,6 @@ import java.io.*;
 import static jpsplugin.com.reason.Platform.*;
 
 public class BsFormatProcess {
-
     private static final Log LOG = Log.create("format.refmt");
 
     private final Project m_project;

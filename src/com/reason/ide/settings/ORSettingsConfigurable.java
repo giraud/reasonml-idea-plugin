@@ -12,6 +12,7 @@ import com.intellij.openapi.roots.libraries.ui.*;
 import com.intellij.openapi.roots.libraries.ui.impl.*;
 import com.intellij.openapi.ui.*;
 import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.vfs.impl.wsl.*;
 import com.intellij.util.ui.*;
 import com.intellij.workspaceModel.ide.impl.legacyBridge.library.*;
 import com.reason.comp.dune.*;
@@ -290,7 +291,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     }
 
     private void detectSwitchSystem(@NotNull VirtualFile dir) {
-        myIsWsl = dir.getPath().replace("/", "\\").startsWith(WSLDistribution.UNC_PREFIX);
+        myIsWsl = dir.getPath().replace("/", "\\").startsWith(WslConstants.UNC_PREFIX);
         myCygwinBash = null;
         if (!myIsWsl && Platform.isWindows()) { // cygwin
             VirtualFile binDir = findBinary(dir);
