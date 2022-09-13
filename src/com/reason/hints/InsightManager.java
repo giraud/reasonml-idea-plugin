@@ -2,21 +2,16 @@ package com.reason.hints;
 
 import com.intellij.openapi.vfs.*;
 import com.reason.ide.hints.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.nio.file.*;
 import java.util.*;
 
 public interface InsightManager {
-
-    @FunctionalInterface
-    interface ProcessTerminated {
-        void run(@NotNull InferredTypes types);
-    }
-
     void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile);
 
-    void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path path, @NotNull ProcessTerminated callback);
+    void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path path, @NotNull ORProcessTerminated<InferredTypes> callback);
 
     @NotNull
     List<String> dumpMeta(@NotNull VirtualFile cmtFile);

@@ -3,6 +3,7 @@ package com.reason.ide.reference;
 import com.intellij.psi.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
     public void test_basic_file() {
@@ -13,15 +14,14 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Dimensions.re", ((PsiQualifiedNamedElement) e).getName());
     }
 
-    // TODO: Fail sometimes ?
-    //public void test_interface_implementation() {
-    //    configureCode("A.rei", "type t;");
-    //    configureCode("A.re", "type t;");
-    //    configureCode("B.re", "A<caret>");
-    //
-    //    PsiElement e = myFixture.getElementAtCaret();
-    //    assertEquals("A.re", ((PsiNamedElement) e).getName());
-    //}
+    public void test_interface_implementation() {
+        configureCode("A.rei", "type t;");
+        configureCode("A.re", "type t;");
+        configureCode("B.re", "A<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.re", ((PsiNamedElement) e).getName());
+    }
 
     public void test_let_alias() {
         configureCode("Dimensions.re", "let space = 5;");
@@ -36,57 +36,57 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module A1 = {};");
         configureCode("B.re", "module X = A; X.A1<caret>;");
 
-        PsiElement elementAtCaret = myFixture.getElementAtCaret();
-        assertEquals("A.A1", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("A.A1", e.getQualifiedName());
     }
 
     public void test_alias_path_no_resolution() {
         configureCode("A.re", "module X = { module Y = { let z = 1; }; };");
         configureCode("B.re", "module C = A.X; C<caret>.Y");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("B.C", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("B.C", e.getQualifiedName());
     }
 
     public void test_alias_path_resolution() {
         configureCode("A.re", "module X = { module Y = { let z = 1; }; };");
         configureCode("B.re", "module C = A.X; C.Y<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.X.Y", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("A.X.Y", e.getQualifiedName());
     }
 
     public void test_local_alias() {
         configureCode("Belt.re", "let x = 1;");
         configureCode("A.re", "module B = Belt; B<caret>");
 
-        PsiElement elementAtCaret = myFixture.getElementAtCaret();
-        assertEquals("A.B", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("A.B", e.getQualifiedName());
     }
 
     public void test_alias_interface() {
         configureCode("C.rei", "module A1 = {};");
         configureCode("D.re", "module X = C; X.A1<caret>;");
 
-        PsiElement elementAtCaret = myFixture.getElementAtCaret();
-        assertEquals("C.A1", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("C.A1", e.getQualifiedName());
     }
 
     public void test_open() {
         configureCode("Belt.re", "module Option = {}");
         configureCode("Dummy.re", "open Belt.Option<caret>;");
 
-        PsiElement elementAtCaret = myFixture.getElementAtCaret();
-        assertEquals("Belt.Option", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
-        assertEquals("Belt.re", elementAtCaret.getContainingFile().getName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("Belt.Option", e.getQualifiedName());
+        assertEquals("Belt.re", e.getContainingFile().getName());
     }
 
     public void test_include_path() {
         configureCode("Css_Core.rei", "let display: string => rule");
         configureCode("Css.re", "include Css_Core<caret>; include Css_Core.Make({})");
 
-        PsiElement elementAtCaret = myFixture.getElementAtCaret();
-        assertEquals("Css_Core", ((PsiQualifiedNamedElement) elementAtCaret).getQualifiedName());
+        PsiQualifiedNamedElement e = (PsiQualifiedNamedElement) myFixture.getElementAtCaret();
+        assertEquals("Css_Core", e.getQualifiedName());
     }
 
     public void test_include_alias() {
@@ -95,8 +95,8 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Css.re", "include Css_Core;");
         configureCode("A.re", "Css.Types.Color<caret>");
 
-        PsiElement elementAtCaret = myFixture.getElementAtCaret();
-        assertEquals("Css_AtomicTypes.Color", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
     }
 
     public void test_variant_with_path() {
@@ -104,39 +104,39 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "type b = | Variant;");
         configureCode("C.re", "A.Variant<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.a.Variant", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
+        PsiVariantDeclaration e = (PsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.a.Variant", e.getQualifiedName());
     }
 
     public void test_variant_module_alias() {
         configureCode("Aaa.re", "type t = | Test;");
         configureCode("Bbb.re", "module A = Aaa; A.Test<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Aaa.t.Test", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
+        PsiVariantDeclaration e = (PsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.t.Test", e.getQualifiedName());
     }
 
     public void test_variant_module_alias_inner() {
         configureCode("Aaa.re", "module Option = { type t = | Test; }");
         configureCode("Bbb.re", "module A = Aaa; A.Option.Test<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Aaa.Option.t.Test", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
+        PsiVariantDeclaration e = (PsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.Option.t.Test", e.getQualifiedName());
     }
 
     public void test_variant_constructor() {
         configureCode("A.re", "type a = | Variant(int);");
         configureCode("B.re", "let _ = A.Variant<caret>(1)");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.a.Variant", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
+        PsiVariantDeclaration e = (PsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.a.Variant", e.getQualifiedName());
     }
 
     public void test_exception() {
         myFixture.configureByText("A.re", "exception ExceptionName; raise(ExceptionName<caret>);");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.ExceptionName", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiException e = (PsiException) myFixture.getElementAtCaret();
+        assertEquals("A.ExceptionName", e.getQualifiedName());
     }
 
     public void test_belt_alias() {
@@ -146,8 +146,8 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Belt.re", "module Map = Belt_Map;");
         configureCode("A.re", "Belt.Map.String<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Belt_Map.String", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("Belt_Map.String", e.getQualifiedName());
     }
 
     public void test_open_belt_alias() {
@@ -157,8 +157,8 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Belt.re", "module Map = Belt_Map;");
         configureCode("A.re", "open Belt; open Map; String<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Belt_Map.String", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("Belt_Map.String", e.getQualifiedName());
     }
 
     public void test_pipe_first() {
@@ -166,8 +166,8 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "module C = { module X = { let fn = () => (); }; };");
         configureCode("D.re", "B.C.X.fn()->X<caret>.fn");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("X", ((PsiQualifiedNamedElement) e).getQualifiedName());
+        PsiQualifiedNamedElement e = (PsiQualifiedNamedElement) myFixture.getElementAtCaret();
+        assertEquals("X", e.getQualifiedName());
     }
 
     public void test_pipe_last() {
@@ -175,8 +175,8 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "module C = { module X = { let fn = () => (); }; };");
         configureCode("D.re", "B.C.X.fn() |> A.X<caret>.fn");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.X", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiQualifiedNamedElement e = (PsiQualifiedNamedElement) myFixture.getElementAtCaret();
+        assertEquals("A.X", e.getQualifiedName());
     }
 
     public void test_no_resolution_1() {
@@ -186,8 +186,8 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Belt.re", "module Option = Belt_Option; module Map = Belt_Map;");
         configureCode("A.re", "let x = (dict, locale) => locale->Belt.Option<caret>.flatMap(dict->Belt.Map.String.get);");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Belt.Option", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("Belt.Option", e.getQualifiedName());
     }
 
     public void test_no_resolution_2() {
@@ -197,11 +197,10 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Belt.re", "module Option = Belt_Option; module Map = Belt_Map;");
         configureCode("A.re", "let x = (dict, locale) => locale->Belt.Option.flatMap(dict->Belt.Map<caret>.String.get);");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Belt.Map", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("Belt.Map", e.getQualifiedName());
     }
 
-    /*
     public void test_functor_inside() {
         configureCode("F.re", "module type S = {module X: {};};\n" +
                 "module M = () : S => { module X = {}; };\n" +
@@ -209,18 +208,19 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
                 "module X2 = { module X1 = { module X = {}; }; };\n" +
                 "module V = A.X<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("F.S.X", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("F.S.X", e.getQualifiedName());
     }
 
+    /* zzz functor
     public void test_functor_outside() {
         configureCode("F.re", "module type S = {module X: {};};\n" +
                 "module M = () : S => { module X = {}; };\n" +
                 "module A = M({});");
         configureCode("B.re", "module X2 = { module X1 = { module X = {}; }; }; module V = F.A.X<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("F.S.X", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        assertEquals("F.S.X", e.getQualifiedName());
     }
     */
 }

@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.reference;
 
-import com.intellij.lang.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
@@ -8,7 +7,6 @@ import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -34,14 +32,14 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        if (myElement instanceof PsiLowerIdentifier) {
+        PsiElement parent = myElement.getParent();
+        if (parent instanceof PsiLet || parent instanceof PsiVal || parent instanceof PsiType || parent instanceof PsiExternal) {
             return ResolveResult.EMPTY_ARRAY;
         }
 
         long startAll = System.currentTimeMillis();
 
         LOG.debug("Find reference for lower symbol", myReferenceName);
-
 
         // Gather instructions from element up to the file root
         Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, myTypes);
@@ -72,7 +70,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         Collection<PsiExternal> externals = ExternalIndex.getElements(myReferenceName, project, scope);
         Collection<PsiRecordField> recordFields = RecordFieldIndex.getElements(myReferenceName, project, scope);
         Collection<PsiObjectField> objectFields = ObjectFieldIndex.getElements(myReferenceName, project, scope);
-        Collection<PsiParameter> parameters = ParameterIndex.getElements(myReferenceName, project, scope);
+        Collection<PsiParameterDeclaration> parameters = ParameterIndex.getElements(myReferenceName, project, scope);
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("  indexes: types=" + types.size() + ", vals=" + vals.size() + ", lets=" + lets.size() +
@@ -153,24 +151,12 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = ORCodeFactory.createLetName(myElement.getProject(), newName);
-
-        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
-        if (newNameNode != null) {
-            PsiElement nameIdentifier = myElement.getFirstChild();
-            if (nameIdentifier == null) {
-                myElement.getNode().addChild(newNameNode);
-            } else {
-                ASTNode oldNameNode = nameIdentifier.getNode();
-                myElement.getNode().replaceChild(oldNameNode, newNameNode);
-            }
-        }
-
-        return myElement;
+        PsiElement newId = ORCodeFactory.createLetName(myElement.getProject(), newName);
+        return newId == null ? myElement : myElement.replace(newId);
     }
 
     public static class LowerResolveResult implements ResolveResult {
-        private final @NotNull PsiElement m_referencedIdentifier;
+        private final @NotNull PsiElement myReferencedIdentifier;
 
         public LowerResolveResult(@NotNull PsiElement referencedElement, String sourceName) {
             if (referencedElement instanceof PsiLet && ((PsiLet) referencedElement).isDeconstruction()) {
@@ -181,16 +167,15 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
                         break;
                     }
                 }
-                m_referencedIdentifier = identifierElement;
+                myReferencedIdentifier = identifierElement;
             } else {
-                PsiLowerIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiLowerIdentifier.class);
-                m_referencedIdentifier = identifier == null ? referencedElement : identifier;
+                myReferencedIdentifier = referencedElement;
             }
         }
 
         @Override
         public @Nullable PsiElement getElement() {
-            return m_referencedIdentifier;
+            return myReferencedIdentifier;
         }
 
         @Override
@@ -199,7 +184,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         }
 
         public boolean isInterface() {
-            return FileHelper.isInterface(m_referencedIdentifier.getContainingFile().getFileType());
+            return FileHelper.isInterface(myReferencedIdentifier.getContainingFile().getFileType());
         }
     }
 }

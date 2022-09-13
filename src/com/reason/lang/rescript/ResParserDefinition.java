@@ -28,7 +28,7 @@ public class ResParserDefinition implements ParserDefinition {
     }
 
     public @NotNull PsiParser createParser(Project project) {
-        return new ResParser();
+        return new ResParser(false);
     }
 
     @Override

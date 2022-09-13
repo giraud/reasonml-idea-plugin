@@ -1,25 +1,16 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.impl.source.tree.CompositePsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.ORUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
-public class PsiPatternMatch extends CompositePsiElement {
+public class PsiPatternMatch extends ORCompositePsiElement<ORTypes> {
+    protected PsiPatternMatch(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
+    }
 
-  protected PsiPatternMatch(IElementType type) {
-    super(type);
-  }
-
-  @Nullable
-  public PsiPatternMatchBody getBody() {
-    return ORUtil.findImmediateFirstChildOfClass(this, PsiPatternMatchBody.class);
-  }
-
-  @NotNull
-  @Override
-  public String toString() {
-    return "Pattern match";
-  }
+    public @Nullable PsiPatternMatchBody getBody() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiPatternMatchBody.class);
+    }
 }

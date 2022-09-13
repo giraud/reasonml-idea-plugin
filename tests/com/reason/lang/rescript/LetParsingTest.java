@@ -10,12 +10,13 @@ import com.reason.lang.core.psi.impl.*;
 import java.util.*;
 
 import static com.reason.lang.core.ExpressionFilterConstants.*;
-import static com.reason.lang.core.psi.ExpressionScope.*;
+import static com.reason.lang.core.psi.impl.ExpressionScope.*;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends ResParsingTestCase {
     public void test_constant() {
         PsiLet let = first(letExpressions(parseCode("let x = 1")));
+
         assertEquals("x", let.getName());
         assertFalse(let.isFunction());
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
@@ -38,6 +39,7 @@ public class LetParsingTest extends ResParsingTestCase {
 
     public void test_binding() {
         PsiLet let = first(letExpressions(parseCode("let x = {\"u\": \"r\", \"l\": \"lr\"}")));
+
         assertFalse(let.isFunction());
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
@@ -147,10 +149,36 @@ public class LetParsingTest extends ResParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
-        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
         assertEquals("b", names.get(1).getText());
-        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
-        assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiLowerIdentifier.class));
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
+    }
+
+    public void test_deconstruction_nested() { // belt_Map offset 2272
+        PsiLet e = firstOfType(parseCode("let ((l, r), b) = Dict.split(~cmp, m.data, x)"), PsiLet.class);
+
+        assertTrue(e.isDeconstruction());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(3, names);
+        assertEquals("l", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
+        assertEquals("r", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
+        assertEquals("b", names.get(2).getText());
+        assertInstanceOf(names.get(2), PsiLowerSymbol.class);
+    }
+
+    public void test_deconstruction_braces() {
+        PsiLet e = first(letExpressions(parseCode("let {a, b, _} = x")));
+
+        assertEquals("x", e.getBinding().getText());
+        assertTrue(e.isDeconstruction());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(2, names);
+        assertEquals("a", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerSymbol.class);
+        assertEquals("b", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerSymbol.class);
     }
 
     public void test_operator() {
@@ -178,6 +206,23 @@ public class LetParsingTest extends ResParsingTestCase {
         assertTrue(e.isFunction());
         PsiFunction f = e.getFunction();
         assertEquals("{ test ? { call(Some(a)) } : b }", f.getBody().getText());
+    }
+
+    public void test_chaining_1() {
+        FileBase e = parseCode("let x = cond ? yes : no\n console(. any)");
+        PsiLet l = firstOfType(e, PsiLet.class);
+        PsiFunctionCall f = firstOfType(e, PsiFunctionCall.class);
+
+        assertEquals("x", l.getName());
+        assertEquals("cond ? yes : no", l.getBinding().getText());
+        assertEquals("console", f.getName());
+    }
+
+    public void test_chaining_call() {
+        PsiLet e = first(letExpressions(parseCode("let x = Doc.y\n test()")));
+
+        assertEquals("x", e.getName());
+        assertEquals("Doc.y", e.getBinding().getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/105

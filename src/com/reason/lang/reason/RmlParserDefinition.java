@@ -28,7 +28,7 @@ public class RmlParserDefinition implements ParserDefinition {
     }
 
     public @NotNull PsiParser createParser(Project project) {
-        return new RmlParser();
+        return new RmlParser(false);
     }
 
     @Override

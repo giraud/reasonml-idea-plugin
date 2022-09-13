@@ -18,13 +18,11 @@ public class SwitchParsingTest extends RmlParsingTestCase {
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
         assertNotNull(switch_);
 
-        PsiBinaryCondition condition =
-                ORUtil.findImmediateFirstChildOfClass(switch_, PsiBinaryCondition.class);
+        PsiBinaryCondition condition = ORUtil.findImmediateFirstChildOfClass(switch_, PsiBinaryCondition.class);
         assertEquals("(x)", condition.getText());
 
-        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(switch_, PsiScopedExpr.class);
-        List<PsiPatternMatch> patterns =
-                ORUtil.findImmediateChildrenOfClass(scope, PsiPatternMatch.class);
+        PsiSwitchBody scope = ORUtil.findImmediateFirstChildOfClass(switch_, PsiSwitchBody.class);
+        List<PsiPatternMatch> patterns = ORUtil.findImmediateChildrenOfClass(scope, PsiPatternMatch.class);
         assertSize(2, patterns);
 
         assertEmpty(PsiTreeUtil.findChildrenOfType(switch_, PsiVariantDeclaration.class));
@@ -51,13 +49,11 @@ public class SwitchParsingTest extends RmlParsingTestCase {
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
         assertNotNull(switch_);
 
-        PsiBinaryCondition condition =
-                ORUtil.findImmediateFirstChildOfClass(switch_, PsiBinaryCondition.class);
+        PsiBinaryCondition condition = ORUtil.findImmediateFirstChildOfClass(switch_, PsiBinaryCondition.class);
         assertEquals("(x)", condition.getText());
 
-        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(switch_, PsiScopedExpr.class);
-        List<PsiPatternMatch> patterns =
-                ORUtil.findImmediateChildrenOfClass(scope, PsiPatternMatch.class);
+        PsiSwitchBody scope = ORUtil.findImmediateFirstChildOfClass(switch_, PsiSwitchBody.class);
+        List<PsiPatternMatch> patterns = ORUtil.findImmediateChildrenOfClass(scope, PsiPatternMatch.class);
         assertSize(2, patterns);
 
         assertEmpty(PsiTreeUtil.findChildrenOfType(switch_, PsiVariantDeclaration.class));
@@ -79,13 +75,11 @@ public class SwitchParsingTest extends RmlParsingTestCase {
         PsiFile psiFile = parseCode("switch (action) { | Incr => counter + 1 }");
 
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
-        Collection<PsiPatternMatch> patterns =
-                PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);
+        Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);
         assertSize(1, patterns);
         PsiPatternMatch psiPatternMatch = patterns.iterator().next();
         PsiPatternMatch patternMatch = patterns.iterator().next();
-        PsiUpperSymbol variant =
-                ORUtil.findImmediateFirstChildOfClass(patternMatch, PsiUpperSymbol.class);
+        PsiUpperSymbol variant = ORUtil.findImmediateFirstChildOfClass(patternMatch, PsiUpperSymbol.class);
         // assertTrue(variant.isVariant());
         assertEquals("Incr", variant.getText());
         assertEquals("counter + 1", psiPatternMatch.getBody().getText());
@@ -95,7 +89,7 @@ public class SwitchParsingTest extends RmlParsingTestCase {
         FileBase f = parseCode("switch (p) { | Typedtree.Partial => \"Partial\" | Total => \"Total\" }");
         PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
 
-        List<PsiPatternMatch> patterns = new ArrayList<>(ORUtil.findImmediateChildrenOfClass(ORUtil.findImmediateFirstChildOfClass(e, PsiScopedExpr.class), PsiPatternMatch.class));
+        List<PsiPatternMatch> patterns = new ArrayList<>(ORUtil.findImmediateChildrenOfClass(ORUtil.findImmediateFirstChildOfClass(e, PsiSwitchBody.class), PsiPatternMatch.class));
         assertSize(2, patterns);
 
         PsiPatternMatch m1 = patterns.get(0);
@@ -110,11 +104,7 @@ public class SwitchParsingTest extends RmlParsingTestCase {
         FileBase f = parseCode("let greeting = name => switch (name) { | FirstName(fn) => \"hello \" ++ fn | LastName(ln) => \"hello \" ++ ln };");
         PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
 
-        List<PsiPatternMatch> patterns =
-                new ArrayList<>(
-                        ORUtil.findImmediateChildrenOfClass(
-                                ORUtil.findImmediateFirstChildOfClass(e, PsiScopedExpr.class),
-                                PsiPatternMatch.class));
+        List<PsiPatternMatch> patterns = e.getPatterns();
         assertSize(2, patterns);
     }
 
@@ -126,8 +116,7 @@ public class SwitchParsingTest extends RmlParsingTestCase {
     }
 
     public void test_react() {
-        FileBase psiFile =
-                parseCode("switch (reasonStateUpdate) { | NoUpdate => (None, curTotalState) | Update(nextReasonState) => ( None, {\"reasonState\": nextReasonState}, ) }");
+        FileBase psiFile = parseCode("switch (reasonStateUpdate) { | NoUpdate => (None, curTotalState) | Update(nextReasonState) => ( None, {\"reasonState\": nextReasonState}, ) }");
 
         assertEquals(1, childrenCount(psiFile));
         PsiSwitch e = (PsiSwitch) psiFile.getChildren()[0];
@@ -137,9 +126,7 @@ public class SwitchParsingTest extends RmlParsingTestCase {
     }
 
     public void test_tuple() {
-        PsiSwitch e = firstOfType(
-                parseCode("switch (a, b, c) { | (None, Some(x), _) => do(. z) | (_, _, _) => let x = 1; () }"),
-                PsiSwitch.class);
+        PsiSwitch e = firstOfType(parseCode("switch (a, b, c) { | (None, Some(x), _) => do(. z) | (_, _, _) => let x = 1; () }"), PsiSwitch.class);
 
         List<PsiPatternMatch> patterns = e.getPatterns();
         assertSize(2, patterns);
@@ -148,9 +135,7 @@ public class SwitchParsingTest extends RmlParsingTestCase {
     }
 
     public void test_switch_of_switch() {
-        PsiSwitch e = firstOfType(
-                parseCode("switch (a) { | None => switch (b) { | X => 1 | Y => 2 } | Some => 3 }"),
-                PsiSwitch.class);
+        PsiSwitch e = firstOfType(parseCode("switch (a) { | None => switch (b) { | X => 1 | Y => 2 } | Some => 3 }"), PsiSwitch.class);
 
         List<PsiPatternMatch> patterns = e.getPatterns();
         assertSize(2, patterns);
@@ -161,9 +146,7 @@ public class SwitchParsingTest extends RmlParsingTestCase {
     }
 
     public void test_group() {
-        PsiSwitch e = firstOfType(
-                parseCode("switch (x) { | V1(y) => Some(y) | V2(_) | Empty | Unknown => None }"),
-                PsiSwitch.class);
+        PsiSwitch e = firstOfType(parseCode("switch (x) { | V1(y) => Some(y) | V2(_) | Empty | Unknown => None }"), PsiSwitch.class);
 
         List<PsiPatternMatch> patterns = e.getPatterns();
         assertSize(4, patterns);
@@ -173,11 +156,9 @@ public class SwitchParsingTest extends RmlParsingTestCase {
         assertEquals("Unknown => None", patterns.get(3).getText());
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/275
+    // https://github.com/giraud/reasonml-idea-plugin/issues/275
     public void test_GH_275() {
-        PsiFunction e = firstOfType(
-                parseCode("items->Belt.Array.map(i => switch ((i: t)) { | Value => 1 });"),
-                PsiFunction.class);
+        PsiFunction e = firstOfType(parseCode("items->Belt.Array.map(i => switch ((i: t)) { | Value => 1 });"), PsiFunction.class);
 
         assertEquals("i => switch ((i: t)) { | Value => 1 }", e.getText());
         PsiSwitch s = (PsiSwitch) e.getBody().getFirstChild();
@@ -186,9 +167,7 @@ public class SwitchParsingTest extends RmlParsingTestCase {
     }
 
     public void test_GH_275b() {
-        PsiSwitch e = firstOfType(
-                parseCode("switch (a, b) { | (Some(a'), Some(b')) => let _ = { switch (x) { | None => None }; }; };"),
-                PsiSwitch.class);
+        PsiSwitch e = firstOfType(parseCode("switch (a, b) { | (Some(a'), Some(b')) => let _ = { switch (x) { | None => None }; }; };"), PsiSwitch.class);
 
         assertEquals("switch (a, b) { | (Some(a'), Some(b')) => let _ = { switch (x) { | None => None }; }; }", e.getText());
         assertEquals("let _ = { switch (x) { | None => None }; };", e.getPatterns().get(0).getBody().getText());

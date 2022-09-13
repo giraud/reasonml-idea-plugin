@@ -9,8 +9,8 @@ import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
 import com.intellij.util.messages.*;
-import com.reason.comp.*;
 import com.reason.hints.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
@@ -55,8 +55,10 @@ public final class OREditorTracker implements Disposable {
                 VirtualFile newFile = event.getNewFile();
                 FileType fileType = newFile == null ? null : newFile.getFileType();
                 if (FileHelper.isCompilable(fileType)) {
-                    InferredTypesService.queryForSelectedTextEditor(event.getManager().getProject());
-                    EditorFactory.getInstance().refreshAllEditors();
+                    PsiFile psiFile = InferredTypesService.getPsiFile(project);
+                    if (psiFile != null) {
+                        InferredTypesService.queryTypes(project, psiFile);
+                    }
                 }
             }
         });

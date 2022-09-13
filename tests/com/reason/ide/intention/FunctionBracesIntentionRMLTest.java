@@ -31,7 +31,7 @@ public class FunctionBracesIntentionRMLTest extends ORBasePlatformTestCase {
         myFixture.checkResult("let make = (children) => { ...component, render: self => { <div/>; }, };");
     }
 
-    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/67
+    // https://github.com/giraud/reasonml-idea-plugin/issues/67
     public void test_GH_67() {
         configureCode("A.re", "Js.Promise.( Api.all() |> then_(result => <caret>Js.log(result)) );");
         IntentionAction bracesAction = myFixture.getAvailableIntention(ADD_BRACES);

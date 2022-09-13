@@ -118,6 +118,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "initializer" { return types.INITIALIZER; }
     "lazy"        { return types.LAZY; }
     "let"         { return types.LET; }
+    "list"        { return types.LIST; }
     "module"      { return types.MODULE;}
     "mutable"     { return types.MUTABLE; }
     "new"         { return types.NEW; }
@@ -137,6 +138,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "to"          { return types.TO; }
     "try"         { return types.TRY; }
     "type"        { return types.TYPE; }
+    "unpack"      { return types.UNPACK; }
     "val"         { return types.VAL; }
     "virtual"     { return types.VIRTUAL; }
     "when"        { return types.WHEN; }

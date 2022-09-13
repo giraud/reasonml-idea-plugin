@@ -10,7 +10,6 @@ import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
 public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen> {
-
     @Nls
     @NotNull
     @Override
@@ -46,7 +45,7 @@ public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen
         StringBuilder modulePath = new StringBuilder();
         PsiElement sibling = PsiTreeUtil.prevVisibleLeaf(parentElement);
         while (sibling != null
-                && (sibling.getNode().getElementType() == types.UIDENT
+                && (sibling.getNode().getElementType() == types.A_MODULE_NAME
                 || sibling.getNode().getElementType() == types.DOT)) {
             ASTNode currentNode = sibling.getNode();
             if ((modulePath.length() > 0) || currentNode.getElementType() != types.DOT) {
@@ -57,9 +56,7 @@ public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen
         }
 
         String text = parentElement.getText();
-        PsiElement newOpen =
-                ORCodeFactory.createExpression(
-                        project, "{ open " + modulePath + "; " + text.substring(1, text.length() - 1) + "; }");
+        PsiElement newOpen = ORCodeFactory.createExpression(project, "{ open " + modulePath + "; " + text.substring(1, text.length() - 1) + "; }");
         if (newOpen != null) {
             grandParentElement.getNode().replaceChild(parentElement.getNode(), newOpen.getNode());
         }

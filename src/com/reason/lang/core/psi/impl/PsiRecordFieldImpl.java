@@ -30,7 +30,7 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, Ps
     // region PsiNamedElement
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiLowerIdentifier.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiLowerSymbol.class);
     }
 
     @Override
@@ -95,10 +95,5 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, Ps
                 return ORIcons.VAL;
             }
         };
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Record field " + getQualifiedName();
     }
 }

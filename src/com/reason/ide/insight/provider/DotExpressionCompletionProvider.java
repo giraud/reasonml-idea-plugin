@@ -8,12 +8,11 @@ import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.psi.reference.*;
-import com.reason.lang.core.signature.*;
 import com.reason.lang.reason.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -43,11 +42,8 @@ public class DotExpressionCompletionProvider {
             LOG.debug(" -> resolved to", resolvedElement);
 
             Collection<PsiNamedElement> expressions = new ArrayList<>();
-            if (resolvedElement instanceof PsiUpperIdentifier) {
-                PsiElement resolvedParent = resolvedElement.getParent();
-                if (resolvedParent instanceof PsiInnerModule) {
-                    addInnerModuleExpressions((PsiInnerModule) resolvedParent, expressions);
-                }
+            if (resolvedElement instanceof PsiInnerModule) {
+                addInnerModuleExpressions((PsiInnerModule) resolvedElement, expressions);
             } else if (resolvedElement instanceof FileBase) {
                 addFileExpressions((FileBase) resolvedElement, expressions);
             }
@@ -71,15 +67,12 @@ public class DotExpressionCompletionProvider {
                 LOG.debug(" -> resolved to", resolvedElement == null ? null : resolvedElement.getParent());
             }
 
-            if (resolvedElement instanceof PsiLowerIdentifier) {
-                PsiElement resolvedParent = resolvedElement.getParent();
-                if (resolvedParent instanceof PsiVar) {
-                    for (PsiRecordField recordField : ((PsiVar) resolvedParent).getRecordFields()) {
-                        resultSet.addElement(
-                                LookupElementBuilder.create(recordField)
-                                        .withTypeText(PsiSignatureUtil.getSignature(recordField, ORLanguageProperties.cast(element.getLanguage())))
-                                        .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
-                    }
+            if (resolvedElement instanceof PsiVar) {
+                for (PsiRecordField recordField : ((PsiVar) resolvedElement).getRecordFields()) {
+                    resultSet.addElement(
+                            LookupElementBuilder.create(recordField)
+                                    .withTypeText(PsiSignatureUtil.getSignature(recordField, ORLanguageProperties.cast(element.getLanguage())))
+                                    .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
                 }
             }
         }
@@ -147,17 +140,6 @@ public class DotExpressionCompletionProvider {
         }
     }
 
-    private static void addChildren(@Nullable PsiElement body, @NotNull Collection<PsiNamedElement> expressions) {
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiLet.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiVal.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiModule.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiFunctor.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiKlass.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiException.class));
-    }
-
     private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNamedElement> expressions, @Nullable ORLanguageProperties language) {
         for (PsiNamedElement expression : expressions) {
             if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
@@ -187,5 +169,16 @@ public class DotExpressionCompletionProvider {
                 }
             }
         }
+    }
+
+    private static void addChildren(@Nullable PsiElement body, @NotNull Collection<PsiNamedElement> expressions) {
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiLet.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiVal.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiModule.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiFunctor.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiKlass.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiException.class));
     }
 }

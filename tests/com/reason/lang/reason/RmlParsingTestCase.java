@@ -7,10 +7,10 @@ import com.reason.lang.core.stub.RmlStubBasedElementTypes;
 import com.reason.lang.core.type.ORTypes;
 
 abstract class RmlParsingTestCase extends BaseParsingTestCase {
-    public ORTypes m_types = RmlTypes.INSTANCE;
+    public ORTypes myTypes = RmlTypes.INSTANCE;
 
     protected RmlParsingTestCase() {
-        super("testData/com/reason/lang", "re", new RmlParserDefinition());
+        super("", "re", new RmlParserDefinition());
     }
 
     @Override

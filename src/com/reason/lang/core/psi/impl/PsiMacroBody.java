@@ -6,11 +6,10 @@ import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.*;
 import com.intellij.psi.tree.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiMacroBody extends CompositeTypePsiElement<ORTypes> implements PsiLanguageInjectionHost {
+public class PsiMacroBody extends ORCompositePsiElement<ORTypes> implements PsiLanguageInjectionHost {
     protected PsiMacroBody(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
@@ -42,7 +41,7 @@ public class PsiMacroBody extends CompositeTypePsiElement<ORTypes> implements Ps
     public @Nullable TextRange getMacroTextRange() {
         ASTNode firstChildNode = getNode().getFirstChildNode();
         IElementType elementType = firstChildNode == null ? null : firstChildNode.getElementType();
-        if (elementType == m_types.STRING_VALUE || elementType == m_types.ML_STRING_VALUE) {
+        if (elementType == myTypes.STRING_VALUE || elementType == myTypes.ML_STRING_VALUE) {
             int max = getTextLength() - 1;
             if (1 <= max) {
                 return new TextRange(1, max);
@@ -55,10 +54,5 @@ public class PsiMacroBody extends CompositeTypePsiElement<ORTypes> implements Ps
         }
 
         return null;
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "PsiMacroBody";
     }
 }

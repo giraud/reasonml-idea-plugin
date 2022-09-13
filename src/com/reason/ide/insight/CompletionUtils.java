@@ -9,6 +9,9 @@ import org.jetbrains.annotations.Nullable;
 public class CompletionUtils {
   public static final int KEYWORD_PRIORITY = 10;
 
+  private CompletionUtils() {
+  }
+
   @Nullable
   static IElementType getPrevNodeType(@NotNull PsiElement element) {
     PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(element);

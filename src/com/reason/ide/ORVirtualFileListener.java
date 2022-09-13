@@ -50,6 +50,7 @@ class ORVirtualFileListener implements AsyncFileListener {
         private static <E extends VFileEvent> void handleEvent(@NotNull E event) {
             if (event instanceof VFileContentChangeEvent) {
                 handleFileContentChangeEvent((VFileContentChangeEvent) event);
+                showHideToolWindowsForConfigurationFiles(event);
             } else if (event instanceof VFileCreateEvent || event instanceof VFileDeleteEvent) {
                 showHideToolWindowsForConfigurationFiles(event);
             } else if (event instanceof VFilePropertyChangeEvent && ((VFilePropertyChangeEvent) event).isRename()) {
@@ -87,8 +88,6 @@ class ORVirtualFileListener implements AsyncFileListener {
                     project.getService(BsCompiler.class).refreshNinjaBuild();
                 }
             }
-
-            showHideToolWindowsForConfigurationFiles(event);
         }
 
         private static void handleBsConfigContentChange(@NotNull VirtualFile bsConfigFile) {

@@ -8,7 +8,7 @@ import com.reason.comp.bs.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 

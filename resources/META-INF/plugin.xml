@@ -2,7 +2,7 @@
     <id>reasonml</id>
     <name>ReasonML</name>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
-    <description><![CDATA[Add support for ReasonML language. Also add support for OCaml and Dune.]]></description>
+    <description><![CDATA[Add support for Rescript, ReasonML, OCaml (and Dune) an Rescript.]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -72,8 +72,7 @@
         <!-- Rescript -->
         <fileType extensions="resi" name="RESCRIPT_INTF" fieldName="INSTANCE" language="Rescript"
                   implementationClass="com.reason.ide.files.ResInterfaceFileType"/>
-        <fileType extensions="res" name="RESCRIPT" fieldName="INSTANCE" language="Rescript"
-                  implementationClass="com.reason.ide.files.ResFileType"/>
+        <fileType name="RESCRIPT" fieldName="INSTANCE" language="Rescript" implementationClass="com.reason.ide.files.ResFileType"/>
         <!-- OCaml -->
         <fileType extensions="mli" name="OCAML_INTF" fieldName="INSTANCE" language="OCaml"
                   implementationClass="com.reason.ide.files.OclInterfaceFileType"/>
@@ -109,7 +108,7 @@
 
         <fileEditorProvider implementation="com.reason.ide.editors.CmtFileEditorProvider"/>
 
-        <!-- https://github.com/reasonml-editor/reasonml-idea-plugin/issues/247 -->
+        <!-- https://github.com/giraud/reasonml-idea-plugin/issues/247 -->
         <!-- internalFileTemplate name="OCaml Interface" -->
         <!-- internalFileTemplate name="OCaml Module" -->
         <!-- internalFileTemplate name="Reason Interface" -->
@@ -122,20 +121,20 @@
         <!-- Reason -->
         <stubElementTypeHolder externalIdPrefix="Reason." class="com.reason.lang.core.stub.RmlStubBasedElementTypes"/>
         <lang.ast.factory language="Reason" implementationClass="com.reason.lang.reason.RmlASTFactory"/>
-        <lang.parserDefinition language="Reason" implementationClass="com.reason.lang.reason.RmlParserDefinition"/>
+        <lang.parserDefinition language="Reason" implementationClass="com.reason.lang.reason.RmlSafeParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Reason"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
         <!-- Rescript -->
         <stubElementTypeHolder externalIdPrefix="Rescript."
                                class="com.reason.lang.core.stub.RescriptStubBasedElementTypes"/>
         <lang.ast.factory language="Rescript" implementationClass="com.reason.lang.rescript.ResASTFactory"/>
-        <lang.parserDefinition language="Rescript" implementationClass="com.reason.lang.rescript.ResParserDefinition"/>
+        <lang.parserDefinition language="Rescript" implementationClass="com.reason.lang.rescript.ResSafeParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Rescript"
                                        implementationClass="com.reason.ide.highlight.ResSyntaxHighlighterFactory"/>
         <!-- OCaml -->
         <stubElementTypeHolder externalIdPrefix="OCaml." class="com.reason.lang.core.stub.OclStubBasedElementTypes"/>
         <lang.ast.factory language="OCaml" implementationClass="com.reason.lang.ocaml.OclASTFactory"/>
-        <lang.parserDefinition language="OCaml" implementationClass="com.reason.lang.ocaml.OclParserDefinition"/>
+        <lang.parserDefinition language="OCaml" implementationClass="com.reason.lang.ocaml.OclSafeParserDefinition"/>
         <lang.syntaxHighlighterFactory language="OCaml"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- OCamlP4 -->
@@ -283,8 +282,7 @@
         <additionalLibraryRootsProvider implementation="com.reason.ide.library.OclLibraryRootProvider"/>
 
         <projectService serviceImplementation="com.reason.ide.settings.ORSettings"/>
-        <projectConfigurable id="settings.reason" groupId="language" displayName="OCaml / Reason"
-                             instance="com.reason.ide.settings.ORSettingsConfigurable"/>
+        <projectConfigurable id="settings.reason" groupId="language" instance="com.reason.ide.settings.ORSettingsConfigurable"/>
 
         <projectSdkSetupValidator implementation="com.reason.ide.library.OclSdkSetupValidator"/>
         <projectService serviceImplementation="com.reason.comp.ocaml.OpamProcess"/>
@@ -335,11 +333,11 @@
         <quoteHandler fileType="OCAML_INTF" className="com.reason.ide.handlers.OclQuoteHandler"/>
 
         <lang.refactoringSupport language="OCaml"
-                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
+                                 implementationClass="com.reason.ide.refactor.ORRefactoringSupportProvider"/>
         <lang.refactoringSupport language="Reason"
-                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
+                                 implementationClass="com.reason.ide.refactor.ORRefactoringSupportProvider"/>
         <lang.refactoringSupport language="Rescript"
-                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
+                                 implementationClass="com.reason.ide.refactor.ORRefactoringSupportProvider"/>
 
         <iconProvider implementation="com.reason.ide.IconProvider"/>
 
@@ -374,7 +372,7 @@
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
         <languageInjector implementation="com.reason.ide.js.JsInjector"/>
-        <lang.elementManipulator forClass="com.reason.lang.core.psi.PsiLiteralExpression"
+        <lang.elementManipulator forClass="com.reason.lang.core.psi.impl.PsiLiteralExpression"
                                  implementationClass="com.reason.lang.core.LiteralStringManipulator"/>
 
         <!--
@@ -430,6 +428,8 @@
                                    implementationClass="com.reason.ide.hints.RmlParameterInfoHandler"/>
         <codeInsight.parameterInfo language="Rescript"
                                    implementationClass="com.reason.ide.hints.ResParameterInfoHandler"/>
+        <codeInsight.parameterInfo language="OCaml"
+                                   implementationClass="com.reason.ide.hints.OclParameterInfoHandler"/>
 
         <consoleFilterProvider implementation="com.reason.ide.console.ORConsoleFilterProvider"/>
         <editorFactoryListener implementation="com.reason.ide.OREditorFactoryListener"/>

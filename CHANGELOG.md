@@ -11,6 +11,17 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
 ## Unreleased
+         
+
+## 0.107 - 2022/09/13
+
+- :nail_care: fix missing color for fragment tag
+- :bug: [#379](https://github.com/giraud/reasonml-idea-plugin/issues/379) Plugin crashes with NoClassDefFoundError in WebStorm during any attempt to autocomplete
+- :house: reworked the parsers.
+
+Some resources files (potentially in binary form) inside jars are using the .res extension, 
+but there is no possibility to detect they are not rescript files.
+The plugin now do not index files inside a jar archive. 
 
 ## 0.106.1 - 2022/05/02
 

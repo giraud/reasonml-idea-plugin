@@ -5,7 +5,6 @@ import com.intellij.psi.util.*;
 import com.intellij.util.containers.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.psi.reference.*;
@@ -35,7 +34,7 @@ public class RmlQNameFinder extends BaseQNameFinder {
 
         // Another parallel set of names that are resolved from aliases. We can't mix the two sets.
         // For module resolution, we don't want resolved names, but we want them for variants.
-        // We can't distinguished upper symbols here, so we keep two lists, and resolved set has a lower
+        // We can't distinguish upper symbols here, so we keep two lists, and resolved set has a lower
         // priority.
         Set<String> resolvedQualifiedNames = new ArrayListSet<>();
         String resolvedPath = path;
@@ -61,18 +60,14 @@ public class RmlQNameFinder extends BaseQNameFinder {
                     // This is a local module alias, we'll need to replace it in final paths
                     Pattern compile = Pattern.compile("(\\.?)(" + module.getModuleName() + ")(\\.?)");
                     String replace = "$1" + alias + "$3";
-                    resolvedQualifiedNames =
-                            resolvedQualifiedNames
-                                    .stream()
-                                    .map(
-                                            name -> {
-                                                Matcher matcher = compile.matcher(name);
-                                                if (matcher.find()) {
-                                                    return matcher.replaceAll(replace);
-                                                }
-                                                return name;
-                                            })
-                                    .collect(Collectors.toCollection(ArrayListSet::new));
+                    resolvedQualifiedNames = resolvedQualifiedNames.stream().map(name -> {
+                                Matcher matcher = compile.matcher(name);
+                                if (matcher.find()) {
+                                    return matcher.replaceAll(replace);
+                                }
+                                return name;
+                            })
+                            .collect(Collectors.toCollection(ArrayListSet::new));
                     resolvedPath = compile.matcher(resolvedPath).replaceAll(replace);
                     resolvedPathExtension = compile.matcher(resolvedPathExtension).replaceAll(replace);
                 }
@@ -107,8 +102,8 @@ public class RmlQNameFinder extends BaseQNameFinder {
             } else if (item instanceof PsiLetBinding) {
                 // let a = { <caret> }
                 PsiLet let = PsiTreeUtil.getParentOfType(item, PsiLet.class);
-                if (let != null) {
-                    String letQName = let.getQualifiedName();
+                String letQName = let == null ? null : let.getQualifiedName();
+                if (letQName != null) {
                     qualifiedNames.addAll(extendPathWith(filePath, letQName, qualifiedNames));
                     qualifiedNames.add(letQName + pathExtension);
                     // Same for resolved elements
@@ -120,7 +115,7 @@ public class RmlQNameFinder extends BaseQNameFinder {
                 if (parent != null) {
                     String parentQName = parent.getQualifiedName();
                     // Register all parameters of function
-                    for (PsiParameter parameter : ((PsiFunction) item).getParameters()) {
+                    for (PsiParameterDeclaration parameter : ((PsiFunction) item).getParameters()) {
                         String paramQName = parentQName + "[" + parameter.getName() + "]";
                         qualifiedNames.add(paramQName);
                         // Same for resolved elements

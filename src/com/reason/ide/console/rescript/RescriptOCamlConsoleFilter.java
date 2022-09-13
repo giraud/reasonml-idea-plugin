@@ -12,7 +12,7 @@ import static java.lang.Integer.*;
 /**
  * Filter consoles output to add hyperlink to file reference.
  * <p>
- * OCaml (from https://github.com/Chris00/tuareg/blob/master/compilation.txt)
+ * OCaml (from <a href="https://github.com/Chris00/tuareg/blob/master/compilation.txt">https://github.com/Chris00/tuareg/blob/master/compilation.txt</a>)
  * File "xxx.ml", line x, characters x-y:
  * File "xxx.ml", lines x-y, characters x-y:
  */

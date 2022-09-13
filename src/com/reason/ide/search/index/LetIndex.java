@@ -12,7 +12,7 @@ import java.util.*;
 public class LetIndex extends StringStubIndexExtension<PsiLet> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiLetStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.LET;
     }
 
     @Override

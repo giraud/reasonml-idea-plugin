@@ -12,7 +12,7 @@ import java.util.*;
 public class ModuleAliasesIndex extends StringStubIndexExtension<PsiModule> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiModuleStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.MODULE;
     }
 
     @Override

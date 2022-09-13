@@ -9,11 +9,11 @@ import java.util.*;
 
 public interface PsiFunctor extends PsiNameIdentifierOwner, PsiModule, StubBasedPsiElement<PsiModuleStub> {
     @NotNull
-    Collection<PsiParameter> getParameters();
+    Collection<PsiParameterDeclaration> getParameters();
 
     @Nullable
     PsiFunctorResult getReturnType();
 
     @NotNull
-    Collection<PsiConstraint> getConstraints();
+    Collection<PsiTypeConstraint> getConstraints();
 }

@@ -11,6 +11,9 @@ public class RescriptOutputAnalyzerTest extends ORBasePlatformTestCase {
       C:\bla\bla\src\InputTest.res:1:11-12            syntaxError -> syntaxErrorLocation
                                                       syntaxErrorLocation -> syntaxErrorSourceCode
       1 │ let x = 1 +                                 -
+      2 │                                             -
+      3 │ start of line...                            -
+        │ ...end of line                              -
                                                       syntaxErrorSourceCode -> syntaxErrorMessage
       Did you forget to write an expression here?     -
 

@@ -1,14 +1,45 @@
 package com.reason.lang.rescript;
 
+import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
 import java.util.*;
 
+@SuppressWarnings("ConstantConditions")
 public class OpenParsingTest extends ResParsingTestCase {
     public void test_one() {
-        PsiOpen e = first(openExpressions(parseCode("open Belt")));
+        PsiOpen e = firstOfType(parseCode("open Belt"), PsiOpen.class);
 
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class));
         assertEquals("Belt", e.getPath());
+        assertEquals("Belt", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
+    }
+
+    public void test_path() {
+        PsiOpen e = firstOfType(parseCode("open Belt.Array"), PsiOpen.class);
+
+        assertEquals("Belt.Array", e.getPath());
+        assertEquals("Array", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
+    }
+
+    public void test_functor() {
+        PsiOpen e = first(openExpressions(parseCode("open Make({ type t })")));
+
+        assertTrue(e.useFunctor());
+        PsiFunctorCall c = PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class);
+        assertEquals("Make", c.getName());
+        assertEquals(myTypes.A_MODULE_NAME, c.getNavigationElement().getNode().getElementType());
+        assertEquals("Make", e.getPath());
+    }
+
+    public void test_functor_with_path() {
+        PsiOpen e = first(openExpressions(parseCode("open A.Make({ type t })")));
+
+        assertTrue(e.useFunctor());
+        assertEquals("Make", PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class).getName());
+        assertEquals("A.Make", e.getPath());
     }
 
     public void test_many() {
@@ -19,12 +50,6 @@ public class OpenParsingTest extends ResParsingTestCase {
         assertEquals("Css", es.get(1).getPath());
     }
 
-    public void test_path() {
-        PsiOpen e = first(openExpressions(parseCode("open Belt.Array")));
-
-        assertEquals("Belt.Array", e.getPath());
-    }
-
     public void test_many_paths() {
         List<PsiOpen> es = openExpressions(parseCode("open Belt.Array\n open Css.Types"));
 
@@ -32,12 +57,9 @@ public class OpenParsingTest extends ResParsingTestCase {
         assertEquals("Css.Types", es.get(1).getPath());
     }
 
-    /* GH_328 ?
-    public void test_functor() {
-        PsiOpen e = first(openExpressions(parseCode("open A.Make({ type t; })")));
+    public void test_chaining() {
+        PsiOpen e = firstOfType(parseCode("open Css.Rules\n fontStyle"), PsiOpen.class);
 
-        assertTrue(e.useFunctor());
-        assertEquals("A.Make", e.getPath());
+        assertEquals("Css.Rules", e.getPath());
     }
-    */
 }

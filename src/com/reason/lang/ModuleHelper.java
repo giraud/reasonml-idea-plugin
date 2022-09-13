@@ -2,7 +2,7 @@ package com.reason.lang;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 

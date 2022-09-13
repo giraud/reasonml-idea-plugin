@@ -12,7 +12,7 @@ import java.util.*;
 public class IncludeIndex extends StringStubIndexExtension<PsiInclude> {
     @Override
     public int getVersion() {
-        return super.getVersion() + PsiIncludeStubElementType.VERSION;
+        return super.getVersion() + ORStubVersions.INCLUDE;
     }
 
     @Override

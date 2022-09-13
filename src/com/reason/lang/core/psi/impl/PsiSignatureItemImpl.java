@@ -8,18 +8,18 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class PsiSignatureItemImpl extends CompositeTypePsiElement<ORTypes> implements PsiSignatureItem {
+public class PsiSignatureItemImpl extends ORCompositePsiElement<ORTypes> implements PsiSignatureItem {
     protected PsiSignatureItemImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 
-    @Override
-    public @Nullable PsiNamedParam getNamedParam() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiNamedParam.class);
+    public @Nullable PsiParameterDeclaration getNamedParam() {
+        PsiParameterDeclaration parameter = ORUtil.findImmediateFirstChildOfClass(this, PsiParameterDeclaration.class);
+        return parameter != null && parameter.isNamed() ? parameter : null;
     }
 
     public @Nullable String getName() {
-        PsiNamedParam param = getNamedParam();
+        PsiParameterDeclaration param = getNamedParam();
         return param == null ? null : param.getName();
     }
 
@@ -30,8 +30,19 @@ public class PsiSignatureItemImpl extends CompositeTypePsiElement<ORTypes> imple
 
     @Override
     public boolean isOptional() {
-        PsiNamedParam namedParam = getNamedParam();
+        PsiParameterDeclaration namedParam = getNamedParam();
         return namedParam != null && namedParam.isOptional();
+    }
+
+    @Override
+    public @Nullable PsiElement getSignature() {
+        PsiParameterDeclaration param = getNamedParam();
+        return param == null ? null : param.getSignature();
+    }
+
+    @Override public PsiElement getDefaultValue() {
+        PsiParameterDeclaration param = getNamedParam();
+        return param == null ? null : param.getDefaultValue();
     }
 
     @Override
@@ -41,10 +52,5 @@ public class PsiSignatureItemImpl extends CompositeTypePsiElement<ORTypes> imple
             return ((PsiLanguageConverter) firstChild).asText(toLang);
         }
         return getText();
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "Signature item";
     }
 }

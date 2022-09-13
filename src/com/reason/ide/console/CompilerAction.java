@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
