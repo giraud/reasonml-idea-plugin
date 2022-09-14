@@ -18,9 +18,7 @@ public class ORConsoleFilterProvider extends ConsoleDependentFilterProvider {
     @Override
     public Filter @NotNull [] getDefaultFilters(@NotNull ConsoleView consoleView, @NotNull Project project, @NotNull GlobalSearchScope scope) {
         if (consoleView instanceof RescriptConsoleView) {
-            return project.getService(ORSettings.class).isUseSuperErrors()
-                    ? super.getDefaultFilters(project)
-                    : ((RescriptConsoleView) consoleView).getFilters();
+            return ((RescriptConsoleView) consoleView).getFilters();
         }
         if (consoleView instanceof DuneConsoleView) {
             return ((DuneConsoleView) consoleView).getFilters();
