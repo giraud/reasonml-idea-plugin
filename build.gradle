@@ -37,9 +37,7 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#379 - Plugin crashes with NoClassDefFoundError in WebStorm during any attempt to autocomplete</li>
-                    <li>fix missing color for fragment tag</li>
-                    <li>reworked the parsers</li>
+                    <li>#358 - Incorrect resolution with module in pattern</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

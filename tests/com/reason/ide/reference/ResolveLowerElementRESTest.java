@@ -10,11 +10,6 @@ import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
 public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
-    @Override
-    protected String getTestDataPath() {
-        return "testData/com/reason/ide/reference";
-    }
-
     @Test
     public void test_let_in_module_binding() {
         configureCode("A.res", "let foo = 2\n module X = { let foo = 1\n let z = foo<caret> }");
@@ -390,6 +385,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     }
 
     //region record
+    @Test
     public void test_record() {
         configureCode("B.res", "let b = { a: 1, b: 2 }\n b<caret>");
 
@@ -397,6 +393,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals("B.b", e.getQualifiedName());
     }
 
+    @Test
     public void test_record_l1() {
         configureCode("B.res", "let b = { a: 1, b: 2 }\n b.b<caret>");
 
@@ -404,6 +401,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals("B.b.b", e.getQualifiedName());
     }
 
+    @Test
     public void test_record_l3() {
         configureCode("A.res", "let a = { b: { c: { d: 1 } } }\n a.b.c.d<caret>");
 
@@ -420,14 +418,14 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals(12, elementAtCaret.getTextOffset());
     }
 
-    // zzz later
-    //public void test_GH_303() {
-    //    configureCode("B.res", "type t1 = {bar: string}");
-    //    configureCode("A.res", "type t = {bar: string}\n let bar = item => item.bar<caret>");
-    //
-    //    PsiElement e = myFixture.getElementAtCaret();
-    //    assertEquals("A.t.bar", e.getQualifiedName());
-    //}
+    @Test
+    public void test_GH_303() {
+        configureCode("B.res", "type t1 = {bar: string}");
+        configureCode("A.res", "type t = {bar: string}\n let bar = item => item.bar<caret>");
+
+        PsiRecordField e = (PsiRecordField) myFixture.getElementAtCaret();
+        assertEquals("A.t.bar", e.getQualifiedName());
+    }
 
     @Test
     public void test_GH_303_2() {
@@ -436,5 +434,16 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
 
         PsiLet e = (PsiLet) myFixture.getElementAtCaret();
         assertEquals("A.bar", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/358
+    @Test
+    public void test_GH_358() {
+        configureCode("A.re", "let clearPath = () => ()\n " +
+                "module Xxx = { type t = | ClearPath\n let clearPath = () => () }\n " +
+                "let reducer = x => switch x { | Xxx.ClearPath => clearPath<caret>() }");
+
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.clearPath", e.getQualifiedName());
     }
 }

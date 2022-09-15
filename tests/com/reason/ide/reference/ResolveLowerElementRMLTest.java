@@ -11,11 +11,6 @@ import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
 public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
-    @Override
-    protected String getTestDataPath() {
-        return "testData/com/reason/ide/reference";
-    }
-
     @Test
     public void test_let_basic() {
         configureCode("A.re", "let x = 1; let z = x<caret> + 1;");
@@ -145,7 +140,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "type t; type y = X.Y.t<caret>");
 
         assertThrows(AssertionError.class, "element not found in file A.re", () -> {
-            PsiElement e = myFixture.getElementAtCaret();
+            @SuppressWarnings("unused") PsiElement e = myFixture.getElementAtCaret();
         });
     }
 
@@ -363,7 +358,8 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Belt_MapString.get", e.getQualifiedName());
     }
 
-    /* zzz functor
+    /* zzz functors
+    @Test
     public void test_functor_body() {
         configureCode("A.re", "module Make = (M:I) => { let a = 3; };");
         configureCode("B.re", "module Instance = A.Make({}); let b = Instance.a<caret>;");
@@ -372,6 +368,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.Make.a", e.getQualifiedName());
     }
 
+    @Test
     public void test_file_include_functor() {
         configureCode("A.re", "module Make = (M:I) => { let a = 3; }; include Make({})");
         configureCode("B.re", "let b = A.a<caret>;");
@@ -380,6 +377,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.Make.a", e.getQualifiedName());
     }
 
+    @Test
     public void test_functor_result_with_alias() {
         configureCode("A.re", "module type Result = { let a: int; };");
         configureCode("B.re", "module T = A; module Make = (M:Intf): T.Result => { let b = 3; };");
@@ -475,5 +473,16 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
 
         PsiLet e = (PsiLet) myFixture.getElementAtCaret();
         assertEquals("A.bar", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/358
+    @Test
+    public void test_GH_358() {
+        configureCode("A.re", "let clearPath = () => ();\n " +
+                "module Xxx = { type t = | ClearPath; let clearPath = () => (); };\n " +
+                "let reducer = fun | Xxx.ClearPath => clearPath<caret>();");
+
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.clearPath", e.getQualifiedName());
     }
 }

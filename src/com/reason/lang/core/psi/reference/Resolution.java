@@ -101,7 +101,7 @@ class Resolution implements Comparable<Resolution> {
                 if (i > 0) {
                     sb.append(", ");
                 }
-                sb.append(item).append("-").append(getWeight(i));
+                sb.append(item).append("=").append(getWeight(i));
             }
         }
 

@@ -112,7 +112,7 @@ public class ORElementResolver implements Disposable {
      */
     private class ResolutionsImpl implements Resolutions {
         private final Map<Integer, Integer> myWeightPerLevel = new HashMap<>();
-        private final Map<String, Map<String, com.reason.lang.core.psi.reference.Resolution>> myResolutionsPerTopModule = new HashMap<>();
+        private final Map<String, Map<String, Resolution>> myResolutionsPerTopModule = new HashMap<>();
 
         @Override
         public void add(@NotNull Collection<? extends PsiQualifiedPathElement> elements, boolean includeSource) {
@@ -283,8 +283,8 @@ public class ORElementResolver implements Disposable {
         public void updateWeight(@Nullable String value, @Nullable Set<String> alternateNames) {
             Map<Integer, Integer> newWeights = new HashMap<>();
 
-            for (Map<String, com.reason.lang.core.psi.reference.Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
-                for (com.reason.lang.core.psi.reference.Resolution resolution : topModuleEntry.values()) {
+            for (Map<String, Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
+                for (Resolution resolution : topModuleEntry.values()) {
                     String name = resolution.getCurrentName();
                     if (name != null) {
                         if (value == null || value.equals(name)) {
@@ -313,8 +313,8 @@ public class ORElementResolver implements Disposable {
         }
 
         public void udpateTerminalWeight(@NotNull String value) {
-            for (Map<String, com.reason.lang.core.psi.reference.Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
-                for (com.reason.lang.core.psi.reference.Resolution resolution : topModuleEntry.values()) {
+            for (Map<String, Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
+                for (Resolution resolution : topModuleEntry.values()) {
                     String name = resolution.getCurrentName();
                     if (value.equals(name) && resolution.isLastLevel()) {
                         // terminal
@@ -329,7 +329,7 @@ public class ORElementResolver implements Disposable {
         }
 
         public void removeUpper() {
-            for (Map<String, com.reason.lang.core.psi.reference.Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
+            for (Map<String, Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
                 topModuleEntry.values().removeIf(resolution -> {
                     String name = resolution.getCurrentName();
                     return name != null && !name.isEmpty() && Character.isUpperCase(name.charAt(0));
@@ -339,7 +339,7 @@ public class ORElementResolver implements Disposable {
 
         // all resolutions must be complete
         public void removeIfNotFound(@NotNull String value, @Nullable Set<String> alternateNames) {
-            for (Map<String, com.reason.lang.core.psi.reference.Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
+            for (Map<String, Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
                 topModuleEntry.values().removeIf(resolution -> {
                     String currentName = resolution.getCurrentName();
                     return !value.equals(currentName) && (alternateNames == null || !alternateNames.contains(currentName));
@@ -348,20 +348,20 @@ public class ORElementResolver implements Disposable {
         }
 
         public void removeIncomplete() {
-            for (Map<String, com.reason.lang.core.psi.reference.Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
+            for (Map<String, Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
                 topModuleEntry.values().removeIf(resolution -> !resolution.myIsComplete);
             }
         }
 
         public @NotNull Collection<PsiQualifiedPathElement> resolvedElements() {
-            List<com.reason.lang.core.psi.reference.Resolution> allResolutions = new ArrayList<>();
+            List<Resolution> allResolutions = new ArrayList<>();
 
             // flatten elements
-            for (Map<String, com.reason.lang.core.psi.reference.Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
+            for (Map<String, Resolution> topModuleEntry : myResolutionsPerTopModule.values()) {
                 allResolutions.addAll(topModuleEntry.values());
             }
 
-            allResolutions.sort(com.reason.lang.core.psi.reference.Resolution::compareTo);
+            allResolutions.sort(Resolution::compareTo);
 
             return allResolutions.isEmpty() ? emptyList() : allResolutions.get(0).myElements;
         }

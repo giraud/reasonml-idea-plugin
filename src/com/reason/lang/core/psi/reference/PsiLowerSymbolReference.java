@@ -95,7 +95,15 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
 
         // Now that everything is resolved, we can use the stack of instructions to add weight to the paths
 
+        List<String> modulesInScope = new ArrayList<>();
         for (CodeInstruction instruction : resolvedInstructions) {
+            if (instruction.mySource instanceof PsiInnerModule) {
+                // if the module is not in scope, we skip that resolution
+                if (!modulesInScope.contains(((PsiInnerModule) instruction.mySource).getQualifiedName())) {
+                    continue;
+                }
+            }
+
             if (instruction.mySource instanceof FileBase) {
                 resolutions.udpateTerminalWeight(((FileBase) instruction.mySource).getModuleName());
             } else if (instruction.mySource instanceof PsiLowerSymbol) {
@@ -106,9 +114,16 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
                 String value = instruction.getFirstValue();
                 resolutions.removeIfNotFound(value, instruction.myAlternateValues);
                 resolutions.updateWeight(value, instruction.myAlternateValues);
-            } else if (instruction.myValues != null) {
-                for (String value : instruction.myValues) {
-                    resolutions.updateWeight(value, instruction.myAlternateValues);
+            } else {
+                if (instruction.mySource instanceof PsiOpen) {
+                    // adding a module in scope
+                    modulesInScope.add(((PsiOpen) instruction.mySource).getPath());
+                }
+
+                if (instruction.myValues != null) {
+                    for (String value : instruction.myValues) {
+                        resolutions.updateWeight(value, instruction.myAlternateValues);
+                    }
                 }
             }
         }

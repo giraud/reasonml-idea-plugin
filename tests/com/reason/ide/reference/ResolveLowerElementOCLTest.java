@@ -258,4 +258,18 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         PsiLet e = (PsiLet) myFixture.getElementAtCaret();
         assertEquals("A.bar", e.getQualifiedName());
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/358
+    @Test
+    public void test_GH_358() {
+        configureCode("A.ml", "let clearPath () = ()\n " +
+                "module Xxx = struct\n" +
+                "  type t = | ClearPath\n let clearPath () = ()\n" +
+                "end\n " +
+                "let reducer = function | Xxx.ClearPath -> clearPath<caret>()");
+
+        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.clearPath", e.getQualifiedName());
+    }
+
 }

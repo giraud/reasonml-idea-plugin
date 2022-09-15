@@ -89,6 +89,7 @@ public class ORReferenceAnalyzer {
         }
         PsiElement item = prevItem == null ? sourceElement.getParent() : prevItem;
         Deque<PsiElement> instructions = new LinkedList<>();
+        boolean skipLet = false;
 
         while (item != null) {
             if (item instanceof PsiPath) {
@@ -96,8 +97,7 @@ public class ORReferenceAnalyzer {
                 for (int i = uppers.size() - 1; i >= 0; i--) {
                     instructions.push(new ORUpperSymbolWithResolution(uppers.get(i)));
                 }
-            }
-            if (item instanceof PsiUpperSymbol || item instanceof PsiLowerSymbol) {
+            } else if (item instanceof PsiUpperSymbol || item instanceof PsiLowerSymbol) {
                 // only add if it's from a local path
                 //   can be a real path from a record : a.b.c
                 //   or a simulated path from a js object field : a##b##c
@@ -118,7 +118,10 @@ public class ORReferenceAnalyzer {
             } else if (item instanceof PsiOpen) {
                 instructions.push(item);
             } else if (item instanceof PsiLet) {
-                instructions.push(item);
+                if (!skipLet) {
+                    instructions.push(item);
+                }
+                skipLet = false;
             } else if (item instanceof PsiType) {
                 instructions.push(item);
             } else if (item instanceof PsiTagStart) {
@@ -126,6 +129,18 @@ public class ORReferenceAnalyzer {
             } else if (item instanceof FileBase) {
                 instructions.push(item);
                 break;
+            } else if (item instanceof PsiLetBinding) {
+                // equivalent to a PsiLet
+                instructions.push(item);
+                skipLet = true;
+            } else if (item instanceof PsiModuleBinding) {
+                // equivalent to a PsiModule
+                instructions.push(item);
+                item = item.getParent();
+            } else if (item instanceof PsiModuleType) {
+                // equivalent to a PsiModule also
+                instructions.push(item);
+                item = item.getParent();
             }
 
             prevItem = ORUtil.prevSibling(item);
@@ -154,6 +169,8 @@ public class ORReferenceAnalyzer {
                 IElementType itemType = item.getNode().getElementType();
                 PsiElement parent = item.getParent();
                 startPath = itemType == types.LPAREN && parent instanceof PsiLocalOpen;
+            } else if (item instanceof PsiPatternMatchBody) {
+                startPath = false;
             }
 
             item = prevItem == null ? item.getParent() : prevItem;
@@ -228,6 +245,15 @@ public class ORReferenceAnalyzer {
                 }
             } else if (psiElement instanceof PsiLowerSymbol) {
                 resolvedInstructions.push(new CodeInstruction(psiElement, psiElement.getText()));
+            } else if (psiElement instanceof PsiLetBinding) {
+                // inside a let, just resolve to itself
+                resolvedInstructions.push(new CodeInstruction(psiElement, ((PsiLet) psiElement.getParent()).getName()));
+            } else if (psiElement instanceof PsiModuleBinding) {
+                // inside a module, just resolve to itself
+                resolvedInstructions.push(new CodeInstruction(psiElement, ((PsiInnerModule) psiElement.getParent()).getModuleName()));
+            } else if (psiElement instanceof PsiModuleType) {
+                // inside a module signature, just resolve to itself
+                resolvedInstructions.push(new CodeInstruction(psiElement, ((PsiInnerModule) psiElement.getParent()).getModuleName()));
             } else if (psiElement instanceof PsiInnerModule) {
                 String alias = ((PsiInnerModule) psiElement).getAlias();
                 if (alias == null) {

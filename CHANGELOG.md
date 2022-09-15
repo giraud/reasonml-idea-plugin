@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: [#358](https://github.com/giraud/reasonml-idea-plugin/issues/358) Incorrect resolution with module in pattern
+
 NOTE: minimal version supported is 2021.3
 
 ## 0.107 - 2022/09/13
