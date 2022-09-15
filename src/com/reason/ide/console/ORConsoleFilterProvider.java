@@ -7,12 +7,11 @@ import com.intellij.psi.search.*;
 import com.reason.ide.console.dune.*;
 import com.reason.ide.console.esy.*;
 import com.reason.ide.console.rescript.*;
-import com.reason.ide.settings.*;
 import org.jetbrains.annotations.*;
 
 /**
  * Provide a filter for console output, for ex to extract specific file location for linking.
- * Default implementation extract basic url, like C:\xxx\source.re:row:col
+ * Default implementation extract basic url, like C:\xxx\source.re:row:col  <- GenericFileFilter ?
  */
 public class ORConsoleFilterProvider extends ConsoleDependentFilterProvider {
     @Override

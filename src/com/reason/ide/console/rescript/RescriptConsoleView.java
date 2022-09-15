@@ -11,6 +11,6 @@ public class RescriptConsoleView extends ConsoleViewImpl {
     }
 
     public Filter @NotNull [] getFilters() {
-        return new Filter[]{new UrlFilter(), new RescriptOCamlConsoleFilter(getProject())};
+        return new Filter[]{new RescriptOCamlConsoleFilter(getProject())};
     }
 }
