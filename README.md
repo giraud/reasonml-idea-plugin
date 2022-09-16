@@ -40,7 +40,7 @@ development is in pause.
 | JSX Support           |     ✅     |     ✅     |      ✅       |
 | JS Language Injection |     ✅     |     ✅     |      ✅       |
 | Line & Block Comments |     ✅     |     ✅     |      ✅       |
-| Type Annotations      |     ✅     |     ✅     |      ✅       |
+| Type Annotations      |           |     ✅     |      ✅       |
 | Code Intentions       |     ✅     |     ✅     |      ✅       |
 | Pair Braces Matching  |     ✅     |     ✅     |      ✅       |
 
