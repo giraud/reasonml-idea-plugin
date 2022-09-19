@@ -6,12 +6,14 @@ import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.stub.type.*;
 import com.reason.lang.rescript.*;
 
-public interface RescriptStubBasedElementTypes {
+public interface ResStubBasedElementTypes {
     IStubElementType<PsiModuleStub, PsiModule> C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", ResLanguage.INSTANCE);
     IStubElementType<PsiModuleStub, PsiModule> C_FUNCTOR_DECLARATION = new PsiFunctorModuleStubElementType("C_FUNCTOR_DECLARATION", ResLanguage.INSTANCE);
     IStubElementType<PsiModuleStub, PsiModule> C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", ResLanguage.INSTANCE);
 
-    IStubElementType<PsiKlassStub, PsiKlass> C_CLASS_DECLARATION = new PsiKlassStubElementType("C_CLASS_DECLARATION", ResLanguage.INSTANCE);
+    IStubElementType<RsiClassStub, RsiClass> C_CLASS_DECLARATION = new RsiClassStubElementType("C_CLASS_DECLARATION", ResLanguage.INSTANCE);
+    IStubElementType<RsiClassMethodStub, RsiClassMethod> C_CLASS_METHOD = new RsiClassMethodStubElementType("C_CLASS_METHOD", ResLanguage.INSTANCE);
+
     IStubElementType<PsiExceptionStub, PsiException> C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", ResLanguage.INSTANCE);
     IStubElementType<PsiTypeStub, PsiType> C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", ResLanguage.INSTANCE);
     IStubElementType<PsiExternalStub, PsiExternal> C_EXTERNAL_DECLARATION = new PsiExternalStubElementType("C_EXTERNAL_DECLARATION", ResLanguage.INSTANCE);

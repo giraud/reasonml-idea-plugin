@@ -126,7 +126,7 @@
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
         <!-- Rescript -->
         <stubElementTypeHolder externalIdPrefix="Rescript."
-                               class="com.reason.lang.core.stub.RescriptStubBasedElementTypes"/>
+                               class="com.reason.lang.core.stub.ResStubBasedElementTypes"/>
         <lang.ast.factory language="Rescript" implementationClass="com.reason.lang.rescript.ResASTFactory"/>
         <lang.parserDefinition language="Rescript" implementationClass="com.reason.lang.rescript.ResSafeParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Rescript"
@@ -232,7 +232,8 @@
         <stubIndex implementation="com.reason.ide.search.index.ModuleIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleAliasedIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleAliasesIndex"/>
-        <stubIndex implementation="com.reason.ide.search.index.KlassFqnIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ClassFqnIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ClassMethodFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ValIndex"/>

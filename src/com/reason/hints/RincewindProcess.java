@@ -59,6 +59,7 @@ public class RincewindProcess {
             StringBuilder msgBuffer = new StringBuilder();
             if (errReader.ready()) {
                 errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
+                LOG.warn("Error when processing types");
                 LOG.warn(msgBuffer.toString());
             } else {
                 final InferredTypesImplementation types = new InferredTypesImplementation();

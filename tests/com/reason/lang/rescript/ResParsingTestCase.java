@@ -17,7 +17,7 @@ abstract class ResParsingTestCase extends BaseParsingTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         StubElementTypeHolderEP stubElementTypeHolderEP = new StubElementTypeHolderEP();
-        stubElementTypeHolderEP.holderClass = RescriptStubBasedElementTypes.class.getName();
+        stubElementTypeHolderEP.holderClass = ResStubBasedElementTypes.class.getName();
         registerExtension(StubElementTypeHolderEP.EP_NAME, stubElementTypeHolderEP);
         LanguageASTFactory.INSTANCE.addExplicitExtension(ResLanguage.INSTANCE, new ResASTFactory());
     }

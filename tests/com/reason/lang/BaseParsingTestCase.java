@@ -63,7 +63,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected Collection<PsiKlass> classExpressions(@NotNull PsiFile file) {
+    protected Collection<RsiClass> classExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getClassExpressions(file);
     }
 

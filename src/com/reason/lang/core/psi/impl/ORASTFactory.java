@@ -132,13 +132,10 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new PsiOption(myTypes, type);
         }
         if (type == myTypes.C_CLASS_CONSTR) {
-            return new PsiClassConstructor(myTypes, type);
+            return new RsiClassConstructor(myTypes, type);
         }
         if (type == myTypes.C_CLASS_FIELD) {
-            return new PsiClassField(myTypes, type);
-        }
-        if (type == myTypes.C_CLASS_METHOD) {
-            return new PsiClassMethod(myTypes, type);
+            return new RsiClassField(myTypes, type);
         }
         if (type == myTypes.C_SWITCH_BODY) {
             return new PsiSwitchBody(myTypes, type);

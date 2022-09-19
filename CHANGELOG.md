@@ -13,6 +13,7 @@
 ## Unreleased
 
 - :bug: [#358](https://github.com/giraud/reasonml-idea-plugin/issues/358) Incorrect resolution with module in pattern
+- :bug: [#323](https://github.com/giraud/reasonml-idea-plugin/issues/323) Method declarations in .ml files should link to their implementations
 
 NOTE: minimal version supported is 2021.3
 

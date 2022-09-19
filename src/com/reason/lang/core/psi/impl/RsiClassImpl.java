@@ -16,13 +16,13 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> implements PsiKlass {
+public class RsiClassImpl extends PsiTokenStub<ORTypes, RsiClass, RsiClassStub> implements RsiClass {
     // region Constructors
-    public PsiKlassImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RsiClassImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public PsiKlassImpl(@NotNull ORTypes types, @NotNull PsiKlassStub stub, @NotNull IStubElementType nodeType) {
+    public RsiClassImpl(@NotNull ORTypes types, @NotNull RsiClassStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
@@ -44,11 +44,10 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
     }
     // endregion
 
-
     //region PsiQualifiedName
     @Override
     public @Nullable String[] getPath() {
-        PsiKlassStub stub = getGreenStub();
+        RsiClassStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();
         }
@@ -58,7 +57,7 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
 
     @Override
     public @NotNull String getQualifiedName() {
-        PsiKlassStub stub = getGreenStub();
+        RsiClassStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();
         }
@@ -73,13 +72,13 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
     }
 
     @Override
-    public @NotNull Collection<PsiClassField> getFields() {
-        return PsiTreeUtil.findChildrenOfType(getClassBody(), PsiClassField.class);
+    public @NotNull Collection<RsiClassField> getFields() {
+        return PsiTreeUtil.findChildrenOfType(getClassBody(), RsiClassField.class);
     }
 
     @Override
-    public @NotNull Collection<PsiClassMethod> getMethods() {
-        return PsiTreeUtil.findChildrenOfType(getClassBody(), PsiClassMethod.class);
+    public @NotNull Collection<RsiClassMethod> getMethods() {
+        return PsiTreeUtil.findChildrenOfType(getClassBody(), RsiClassMethod.class);
     }
 
     @Override
@@ -88,8 +87,8 @@ public class PsiKlassImpl extends PsiTokenStub<ORTypes, PsiKlass, PsiKlassStub> 
     }
 
     @Override
-    public @Nullable PsiClassConstructor getConstructor() {
-        return findChildByClass(PsiClassConstructor.class);
+    public @Nullable RsiClassConstructor getConstructor() {
+        return findChildByClass(RsiClassConstructor.class);
     }
 
     public ItemPresentation getPresentation() {

@@ -148,8 +148,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             treeElements = buildFunctorStructure((PsiFunctor) m_element);
         } else if (m_element instanceof PsiType) {
             treeElements = buildTypeStructure((PsiType) m_element);
-        } else if (m_element instanceof PsiKlass) {
-            treeElements = buildClassStructure((PsiKlass) m_element);
+        } else if (m_element instanceof RsiClass) {
+            treeElements = buildClassStructure((RsiClass) m_element);
         } else if (m_element instanceof PsiStanza) {
             treeElements = buildStanzaStructure((PsiStanza) m_element);
         } else if (m_element instanceof PsiLet) {
@@ -212,7 +212,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return treeElements;
     }
 
-    private @NotNull List<TreeElement> buildClassStructure(@NotNull PsiKlass classElement) {
+    private @NotNull List<TreeElement> buildClassStructure(@NotNull RsiClass classElement) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement rootElement = classElement.getClassBody();

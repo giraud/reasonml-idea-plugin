@@ -19,7 +19,8 @@ public class IndexKeys {
     public static final StubIndexKey<String, PsiModule> MODULES_ALIASED = StubIndexKey.createIndexKey("reason.module.aliased");
     public static final StubIndexKey<String, PsiModule> MODULES_ALIASES = StubIndexKey.createIndexKey("reason.module.aliases");
     public static final StubIndexKey<Integer, PsiModule> MODULES_FQN = StubIndexKey.createIndexKey("reason.module.fqn");
-    public static final StubIndexKey<Integer, PsiKlass> CLASSES_FQN = StubIndexKey.createIndexKey("reason.class.fqn");
+    public static final StubIndexKey<Integer, RsiClass> CLASSES_FQN = StubIndexKey.createIndexKey("reason.class.fqn");
+    public static final StubIndexKey<Integer, RsiClassMethod> CLASS_METHODS_FQN = StubIndexKey.createIndexKey("reason.method.fqn");
     public static final StubIndexKey<String, PsiVariantDeclaration> VARIANTS = StubIndexKey.createIndexKey("reason.variant");
     public static final StubIndexKey<Integer, PsiVariantDeclaration> VARIANTS_FQN = StubIndexKey.createIndexKey("reason.variant.fqn");
     public static final StubIndexKey<String, PsiLet> LETS = StubIndexKey.createIndexKey("reason.let");

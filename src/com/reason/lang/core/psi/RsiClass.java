@@ -8,19 +8,19 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 // Using a K to avoid confusion with PsiClass from IntelliJ
-public interface PsiKlass extends PsiQualifiedPathElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiKlassStub> {
+public interface RsiClass extends PsiQualifiedPathElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<RsiClassStub> {
     @Nullable
     PsiElement getClassBody();
 
     @NotNull
-    Collection<PsiClassField> getFields();
+    Collection<RsiClassField> getFields();
 
     @NotNull
-    Collection<PsiClassMethod> getMethods();
+    Collection<RsiClassMethod> getMethods();
 
     @NotNull
     Collection<PsiParameters> getParameters();
 
     @Nullable
-    PsiClassConstructor getConstructor();
+    RsiClassConstructor getConstructor();
 }

@@ -10,6 +10,7 @@ public class RmlTypes extends ORTypes {
         // Stub element types
 
         C_CLASS_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_CLASS_DECLARATION;
+        C_CLASS_METHOD = (ORCompositeType) RmlStubBasedElementTypes.C_CLASS_METHOD;
         C_EXCEPTION_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_EXCEPTION_DECLARATION;
         C_EXTERNAL_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_EXTERNAL_DECLARATION;
         C_FAKE_MODULE = (ORCompositeType) RmlStubBasedElementTypes.C_FAKE_MODULE;
@@ -33,7 +34,6 @@ public class RmlTypes extends ORTypes {
         C_BINARY_CONDITION = new ORCompositeElementType("C_BINARY_CONDITION", RmlLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", RmlLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", RmlLanguage.INSTANCE);
-        C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", RmlLanguage.INSTANCE);
         C_CLOSED_VARIANT = new ORCompositeElementType("C_CLOSED_VARIANT", RmlLanguage.INSTANCE);
         C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", RmlLanguage.INSTANCE);
         C_TYPE_CONSTRAINT = new ORCompositeElementType("C_TYPE_CONSTRAINT", RmlLanguage.INSTANCE);

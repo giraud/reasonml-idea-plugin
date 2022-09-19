@@ -9,21 +9,22 @@ public class ResTypes extends ORTypes {
     private ResTypes() {
         // Stub element types
 
-        C_CLASS_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_CLASS_DECLARATION;
-        C_FAKE_MODULE = (ORCompositeType) RescriptStubBasedElementTypes.C_FAKE_MODULE;
-        C_EXCEPTION_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_EXCEPTION_DECLARATION;
-        C_TYPE_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_TYPE_DECLARATION;
-        C_EXTERNAL_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_EXTERNAL_DECLARATION;
-        C_LET_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_LET_DECLARATION;
-        C_MODULE_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_MODULE_DECLARATION;
-        C_OBJECT_FIELD = (ORCompositeType) RescriptStubBasedElementTypes.C_OBJECT_FIELD;
-        C_VAL_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_VAL_DECLARATION;
-        C_PARAM_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_PARAM_DECLARATION;
-        C_FUNCTOR_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_FUNCTOR_DECLARATION;
-        C_RECORD_FIELD = (ORCompositeType) RescriptStubBasedElementTypes.C_RECORD_FIELD;
-        C_VARIANT_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_VARIANT_DECLARATION;
-        C_INCLUDE = (ORCompositeType) RescriptStubBasedElementTypes.C_INCLUDE;
-        C_OPEN = (ORCompositeType) RescriptStubBasedElementTypes.C_OPEN;
+        C_CLASS_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_CLASS_DECLARATION;
+        C_CLASS_METHOD = (ORCompositeType) ResStubBasedElementTypes.C_CLASS_METHOD;
+        C_FAKE_MODULE = (ORCompositeType) ResStubBasedElementTypes.C_FAKE_MODULE;
+        C_EXCEPTION_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_EXCEPTION_DECLARATION;
+        C_TYPE_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_TYPE_DECLARATION;
+        C_EXTERNAL_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_EXTERNAL_DECLARATION;
+        C_LET_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_LET_DECLARATION;
+        C_MODULE_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_MODULE_DECLARATION;
+        C_OBJECT_FIELD = (ORCompositeType) ResStubBasedElementTypes.C_OBJECT_FIELD;
+        C_VAL_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_VAL_DECLARATION;
+        C_PARAM_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_PARAM_DECLARATION;
+        C_FUNCTOR_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_FUNCTOR_DECLARATION;
+        C_RECORD_FIELD = (ORCompositeType) ResStubBasedElementTypes.C_RECORD_FIELD;
+        C_VARIANT_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_VARIANT_DECLARATION;
+        C_INCLUDE = (ORCompositeType) ResStubBasedElementTypes.C_INCLUDE;
+        C_OPEN = (ORCompositeType) ResStubBasedElementTypes.C_OPEN;
 
         // Composite element types
 
@@ -33,7 +34,6 @@ public class ResTypes extends ORTypes {
         C_BINARY_CONDITION = new ORCompositeElementType("C_BINARY_CONDITION", ResLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", ResLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", ResLanguage.INSTANCE);
-        C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", ResLanguage.INSTANCE);
         C_CLOSED_VARIANT = new ORCompositeElementType("C_CLOSED_VARIANT", ResLanguage.INSTANCE);
         C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", ResLanguage.INSTANCE);
         C_TYPE_CONSTRAINT = new ORCompositeElementType("C_TYPE_CONSTRAINT", ResLanguage.INSTANCE);

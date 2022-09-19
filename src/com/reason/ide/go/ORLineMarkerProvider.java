@@ -82,26 +82,33 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                         .ifPresent(psiTarget ->
                                 result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiTarget.getContainingFile(), psiTarget))
                         );
-            } else {
-                if (parent instanceof PsiType) {
-                    String valQName = ((PsiTypeImpl) parent).getQualifiedName();
-                    Collection<PsiType> elements = TypeFqnIndex.getElements(valQName.hashCode(), project, scope);
-                    elements.stream()
-                            .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
-                            .findFirst()
-                            .ifPresent(psiTarget ->
-                                    result.add(createGutterIcon(element, isInterface, "type", (FileBase) psiTarget.getContainingFile(), psiTarget))
-                            );
-                } else if (parent instanceof PsiKlass) {
-                    String qName = ((PsiKlassImpl) parent).getQualifiedName();
-                    Collection<PsiKlass> elements = KlassFqnIndex.getElements(qName.hashCode(), project, scope);
-                    elements.stream()
-                            .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
-                            .findFirst()
-                            .ifPresent(psiTarget ->
-                                    result.add(createGutterIcon(element, isInterface, "class", (FileBase) psiTarget.getContainingFile(), psiTarget))
-                            );
-                }
+            } else if (parent instanceof PsiType) {
+                String valQName = ((PsiTypeImpl) parent).getQualifiedName();
+                Collection<PsiType> elements = TypeFqnIndex.getElements(valQName.hashCode(), project, scope);
+                elements.stream()
+                        .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
+                        .findFirst()
+                        .ifPresent(psiTarget ->
+                                result.add(createGutterIcon(element, isInterface, "type", (FileBase) psiTarget.getContainingFile(), psiTarget))
+                        );
+            } else if (parent instanceof RsiClass) {
+                String qName = ((RsiClassImpl) parent).getQualifiedName();
+                Collection<RsiClass> elements = ClassFqnIndex.getElements(qName.hashCode(), project, scope);
+                elements.stream()
+                        .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
+                        .findFirst()
+                        .ifPresent(psiTarget ->
+                                result.add(createGutterIcon(element, isInterface, "class", (FileBase) psiTarget.getContainingFile(), psiTarget))
+                        );
+            } else if (parent instanceof RsiClassMethodImpl) {
+                String qName = ((RsiClassMethodImpl) parent).getQualifiedName();
+                Collection<RsiClassMethod> elements = ClassMethodFqnIndex.getElements(qName.hashCode(), project, scope);
+                elements.stream()
+                        .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
+                        .findFirst()
+                        .ifPresent(psiTarget ->
+                                result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiTarget.getContainingFile(), psiTarget))
+                        );
             }
         } else if (element instanceof PsiUpperSymbol) {
             if (parent instanceof PsiInnerModule) {
