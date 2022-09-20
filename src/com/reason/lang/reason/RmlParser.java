@@ -698,7 +698,6 @@ public class RmlParser extends CommonPsiParser {
                             .advance().mark(myTypes.C_IF_THEN_SCOPE);
                     markHolder(myTypes.H_PLACE_HOLDER);
                 }
-
             }
         }
 

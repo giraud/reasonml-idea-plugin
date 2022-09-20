@@ -39,6 +39,7 @@ intellij {
                 <ul>
                     <li>#358 - Incorrect resolution with module in pattern</li>
                     <li>#323 - Method declarations in .ml files should link to their implementations</li>
+                    <li>Parse ternary if in OCaml</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

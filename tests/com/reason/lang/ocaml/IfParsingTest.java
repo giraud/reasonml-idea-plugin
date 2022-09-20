@@ -3,6 +3,7 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiIfStatement;
 import com.reason.lang.core.psi.impl.*;
@@ -55,36 +56,39 @@ public class IfParsingTest extends OclParsingTestCase {
         assertEquals("x", i.getElseExpression().getText());
     }
 
-    /*  zzz ternary
+    @Test
     public void test_ternary_lident() {
-      PsiLet e = firstOfType(parseCode("let _ = a ? b : c"), PsiLet.class);
-      PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiTernary.class);
+        PsiLet e = firstOfType(parseCode("let _ = a ? b : c"), PsiLet.class);
+        PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiTernary.class);
 
-      assertEquals("a", t.getCondition().getText());
-      assertEquals("b", t.getThenExpression().getText());
-      assertEquals("c", t.getElseExpression().getText());
+        assertEquals("a", t.getCondition().getText());
+        assertEquals("b", t.getThenExpression().getText());
+        assertEquals("c", t.getElseExpression().getText());
     }
 
+    @Test
     public void test_ternary_parens() {
-      PsiLet e = firstOfType(parseCode("let _ = (a) ? b : c"), PsiLet.class);
-      PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiTernary.class);
+        PsiLet e = firstOfType(parseCode("let _ = (a) ? b : c"), PsiLet.class);
+        PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiTernary.class);
 
-      assertEquals("(a)", t.getCondition().getText());
-      assertEquals("b", t.getThenExpression().getText());
-      assertEquals("c", t.getElseExpression().getText());
+        assertEquals("(a)", t.getCondition().getText());
+        assertEquals("b", t.getThenExpression().getText());
+        assertEquals("c", t.getElseExpression().getText());
     }
 
-     public void test_ternary_cond() {
-       PsiFile psiFile = parseCode("let _ = a == a' || (x < y) ? b : c");
-       PsiTernary e = firstOfType(psiFile, PsiTernary.class);
+    @Test
+    public void test_ternary_cond() {
+        PsiFile psiFile = parseCode("let _ = a == a' || (x < y) ? b : c");
+        PsiTernary e = firstOfType(psiFile, PsiTernary.class);
 
-       assertNotNull(e);
-       assertNotNull(e.getCondition());
-       assertEquals("a == a' || (x < y)", e.getCondition().getText());
-       assertEquals("b", e.getThenExpression().getText());
-       assertEquals("c", e.getElseExpression().getText());
-     }
+        assertNotNull(e);
+        assertNotNull(e.getCondition());
+        assertEquals("a == a' || (x < y)", e.getCondition().getText());
+        assertEquals("b", e.getThenExpression().getText());
+        assertEquals("c", e.getElseExpression().getText());
+    }
 
+    @Test
     public void test_ternary_call() {
         PsiLet e = firstOfType(parseCode("let _ = fn(a) ? b : c"), PsiLet.class);
         PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiTernary.class);
@@ -93,5 +97,4 @@ public class IfParsingTest extends OclParsingTestCase {
         assertEquals("b", t.getThenExpression().getText());
         assertEquals("c", t.getElseExpression().getText());
     }
-    */
 }
