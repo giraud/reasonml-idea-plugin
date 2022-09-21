@@ -94,14 +94,13 @@ public class LetParsingTest extends ResParsingTestCase {
         assertSize(2, record.getFields());
     }
 
-    /* GH_328 ? zzz
+    @Test
     public void test_signature() {
-        PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
+        PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { }")));
 
         assertEquals("(style, style) => style", let.getSignature().getText());
         assertEquals("(a, b) => { }", let.getBinding().getText());
     }
-    */
 
     @Test
     public void test_signature_dot() {
