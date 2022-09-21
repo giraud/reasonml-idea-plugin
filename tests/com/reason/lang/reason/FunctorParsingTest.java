@@ -12,16 +12,16 @@ import java.util.*;
 public class FunctorParsingTest extends RmlParsingTestCase {
     @Test
     public void test_basic() {
-        PsiNamedElement e = first(expressions(parseCode("module Make = (M: Def): S => {}")));
+        PsiFunctor e = firstOfType(parseCode("module Make = (M: Def): S => {}"), PsiFunctor.class);
 
-        PsiFunctor f = (PsiFunctor) e;
-        assertEquals("S", f.getReturnType().getText());
-        assertEquals("{}", f.getBody().getText());
-        assertNull(PsiTreeUtil.findChildOfType(f.getBody(), PsiScopedExpr.class));
+        assertEquals("S", e.getReturnType().getText());
+        assertEquals("{}", e.getBody().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e.getBody(), PsiScopedExpr.class));
+        assertDoesntContain(extractUpperSymbolTypes(e), myTypes.A_VARIANT_NAME);
     }
 
     @Test
-    public void test_withConstraints() {
+    public void test_with_constraints() {
         Collection<PsiNamedElement> expressions = expressions(parseCode("module Make = (M: Input) : (S with type t('a) = M.t('a) and type b = M.b) => {}"));
 
         assertEquals(1, expressions.size());

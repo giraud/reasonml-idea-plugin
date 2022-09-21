@@ -240,9 +240,10 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
     }
 
     /* zzz functor
+    @Test
     public void test_functor_outside() {
-        configureCode("F.re", "module type S = {module X: {};};\n" +
-                "module M = () : S => { module X = {}; };\n" +
+        configureCode("F.re", "module type S = {module X: {};};" +
+                "module M = () : S => { module X = {}; };" +
                 "module A = M({});");
         configureCode("B.re", "module X2 = { module X1 = { module X = {}; }; }; module V = F.A.X<caret>");
 

@@ -2,13 +2,11 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
-import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctorParsingTest extends OclParsingTestCase {
@@ -21,12 +19,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertEquals("S", f.getReturnType().getText());
         PsiParameterDeclaration p = f.getParameters().iterator().next();
         assertEquals(OclTypes.INSTANCE.C_PARAM_DECLARATION, p.getNode().getElementType());
-        List<IElementType> uTypes =
-                PsiTreeUtil.findChildrenOfType(e, PsiUpperSymbol.class)
-                        .stream()
-                        .map(psi -> psi.getNode().getElementType())
-                        .collect(Collectors.toList());
-        assertDoesntContain(uTypes, myTypes.A_VARIANT_NAME);
+        assertDoesntContain(extractUpperSymbolTypes(e), myTypes.A_VARIANT_NAME);
     }
 
     @Test
@@ -36,11 +29,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         PsiFunctor f = (PsiFunctor) e;
         assertEquals("struct end", f.getBody().getText());
         assertEquals("S", f.getReturnType().getText());
-        List<IElementType> uTypes =
-                PsiTreeUtil.findChildrenOfType(e, PsiUpperSymbol.class)
-                        .stream()
-                        .map(psi -> psi.getNode().getElementType())
-                        .collect(Collectors.toList());
+        List<IElementType> uTypes = extractUpperSymbolTypes(e);
         assertDoesntContain(uTypes, myTypes.A_VARIANT_NAME);
     }
 

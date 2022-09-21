@@ -1157,8 +1157,17 @@ public class RmlParser extends CommonPsiParser {
                 return;
             }
 
-            if (is(myTypes.C_MODULE_DECLARATION) || is(myTypes.C_FUNCTOR_DECLARATION) || is(myTypes.C_MODULE_VALUE)) {
+            if (is(myTypes.C_MODULE_DECLARATION) || is(myTypes.C_MODULE_VALUE)) {
                 // module |>M<| ...
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_PARAM_DECLARATION) && in(myTypes.C_FUNCTOR_DECLARATION)) {
+                // module M = ( |>P<| ...
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_FUNCTOR_RESULT)) {
+                // module M = ( .. ) : |>R<| ...
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_SIG_ITEM) && in(myTypes.C_FUNCTOR_DECLARATION, /*not*/myTypes.C_FUNCTOR_BINDING)) {
+                // module M = (P: |>S<| ...
                 remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_VARIANT_DECLARATION)) {
                 // type t = | |>X<| ..

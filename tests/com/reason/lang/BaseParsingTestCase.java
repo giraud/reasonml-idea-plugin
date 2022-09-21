@@ -3,6 +3,7 @@ package com.reason.lang;
 import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.*;
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.testFramework.*;
 import com.reason.ide.files.*;
@@ -125,6 +126,14 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     protected <T extends PsiElement> List<T> children(PsiElement element, @NotNull Class<T> aClass) {
         return new ArrayList<>(findChildrenOfType(element, aClass));
     }
+
+    @NotNull protected List<IElementType> extractUpperSymbolTypes(PsiElement e) {
+        return PsiTreeUtil.findChildrenOfType(e, PsiUpperSymbol.class)
+                .stream()
+                .map(psi -> psi.getNode().getElementType())
+                .collect(Collectors.toList());
+    }
+
 
     @NotNull
     protected PsiFile parseFile(String name) throws IOException {
