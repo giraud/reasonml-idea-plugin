@@ -148,8 +148,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             treeElements = buildFunctorStructure((PsiFunctor) m_element);
         } else if (m_element instanceof PsiType) {
             treeElements = buildTypeStructure((PsiType) m_element);
-        } else if (m_element instanceof RsiClass) {
-            treeElements = buildClassStructure((RsiClass) m_element);
+        } else if (m_element instanceof RPsiClass) {
+            treeElements = buildClassStructure((RPsiClass) m_element);
         } else if (m_element instanceof PsiStanza) {
             treeElements = buildStanzaStructure((PsiStanza) m_element);
         } else if (m_element instanceof PsiLet) {
@@ -212,7 +212,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return treeElements;
     }
 
-    private @NotNull List<TreeElement> buildClassStructure(@NotNull RsiClass classElement) {
+    private @NotNull List<TreeElement> buildClassStructure(@NotNull RPsiClass classElement) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement rootElement = classElement.getClassBody();
@@ -275,7 +275,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                     m_treeElements.add(new StructureViewElement(element, m_elementLevel));
                 }
             } else if (element instanceof PsiRecord) {
-                for (PsiRecordField field : ((PsiRecord) element).getFields()) {
+                for (RPsiRecordField field : ((PsiRecord) element).getFields()) {
                     m_treeElements.add(new StructureViewElement(field, m_elementLevel));
                 }
             } else if (element instanceof PsiScopedExpr && m_elementLevel < 2) {

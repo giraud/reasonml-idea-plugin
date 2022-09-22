@@ -12,8 +12,8 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class RsiClassField extends ORCompositePsiElement<ORTypes> implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
-    protected RsiClassField(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiClassField extends ORCompositePsiElement<ORTypes> implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
+    protected RPsiClassField(@NotNull ORTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

@@ -1,4 +1,4 @@
-package com.reason.lang.core.psi.reference;
+package com.reason.ide.search.reference;
 
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
@@ -68,7 +68,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         Collection<PsiVal> vals = ValIndex.getElements(myReferenceName, project, scope);
         Collection<PsiLet> lets = LetIndex.getElements(myReferenceName, project, scope);
         Collection<PsiExternal> externals = ExternalIndex.getElements(myReferenceName, project, scope);
-        Collection<PsiRecordField> recordFields = RecordFieldIndex.getElements(myReferenceName, project, scope);
+        Collection<RPsiRecordField> recordFields = RecordFieldIndex.getElements(myReferenceName, project, scope);
         Collection<PsiObjectField> objectFields = ObjectFieldIndex.getElements(myReferenceName, project, scope);
         Collection<PsiParameterDeclaration> parameters = ParameterIndex.getElements(myReferenceName, project, scope);
 

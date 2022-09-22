@@ -73,9 +73,9 @@ public class LetParsingTest extends OclParsingTestCase {
         assertNotNull(binding);
         PsiRecord record = PsiTreeUtil.findChildOfType(binding, PsiRecord.class);
         assertNotNull(record);
-        Collection<PsiRecordField> fields = record.getFields();
+        Collection<RPsiRecordField> fields = record.getFields();
         assertSize(2, fields);
-        Iterator<PsiRecordField> itFields = fields.iterator();
+        Iterator<RPsiRecordField> itFields = fields.iterator();
         assertEquals("one = 1", itFields.next().getText());
         assertEquals("two = 2", itFields.next().getText());
     }

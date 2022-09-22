@@ -5,6 +5,6 @@ import com.reason.lang.core.stub.*;
 import org.jetbrains.annotations.*;
 
 // Using a K to avoid confusion with PsiClass from IntelliJ
-public interface RsiClassMethod extends PsiQualifiedPathElement, NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement, StubBasedPsiElement<RsiClassMethodStub> {
+public interface RPsiClassMethod extends PsiQualifiedPathElement, NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement, StubBasedPsiElement<RsiClassMethodStub> {
     @Nullable PsiSignature getSignature();
 }

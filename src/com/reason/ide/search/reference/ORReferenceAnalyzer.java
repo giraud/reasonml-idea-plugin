@@ -1,4 +1,4 @@
-package com.reason.lang.core.psi.reference;
+package com.reason.ide.search.reference;
 
 import com.intellij.lang.*;
 import com.intellij.openapi.project.*;

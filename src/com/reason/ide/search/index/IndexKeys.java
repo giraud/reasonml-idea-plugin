@@ -19,8 +19,8 @@ public class IndexKeys {
     public static final StubIndexKey<String, PsiModule> MODULES_ALIASED = StubIndexKey.createIndexKey("reason.module.aliased");
     public static final StubIndexKey<String, PsiModule> MODULES_ALIASES = StubIndexKey.createIndexKey("reason.module.aliases");
     public static final StubIndexKey<Integer, PsiModule> MODULES_FQN = StubIndexKey.createIndexKey("reason.module.fqn");
-    public static final StubIndexKey<Integer, RsiClass> CLASSES_FQN = StubIndexKey.createIndexKey("reason.class.fqn");
-    public static final StubIndexKey<Integer, RsiClassMethod> CLASS_METHODS_FQN = StubIndexKey.createIndexKey("reason.method.fqn");
+    public static final StubIndexKey<Integer, RPsiClass> CLASSES_FQN = StubIndexKey.createIndexKey("reason.class.fqn");
+    public static final StubIndexKey<Integer, RPsiClassMethod> CLASS_METHODS_FQN = StubIndexKey.createIndexKey("reason.method.fqn");
     public static final StubIndexKey<String, PsiVariantDeclaration> VARIANTS = StubIndexKey.createIndexKey("reason.variant");
     public static final StubIndexKey<Integer, PsiVariantDeclaration> VARIANTS_FQN = StubIndexKey.createIndexKey("reason.variant.fqn");
     public static final StubIndexKey<String, PsiLet> LETS = StubIndexKey.createIndexKey("reason.let");
@@ -32,7 +32,7 @@ public class IndexKeys {
     public static final StubIndexKey<String, PsiType> TYPES = StubIndexKey.createIndexKey("reason.type");
     public static final StubIndexKey<Integer, PsiType> TYPES_FQN = StubIndexKey.createIndexKey("reason.type.fqn");
     public static final StubIndexKey<String, PsiObjectField> OBJECT_FIELDS = StubIndexKey.createIndexKey("reason.object_field");
-    public static final StubIndexKey<String, PsiRecordField> RECORD_FIELDS = StubIndexKey.createIndexKey("reason.record_field");
+    public static final StubIndexKey<String, RPsiRecordField> RECORD_FIELDS = StubIndexKey.createIndexKey("reason.record_field");
     public static final StubIndexKey<String, PsiException> EXCEPTIONS = StubIndexKey.createIndexKey("reason.exception");
     public static final StubIndexKey<Integer, PsiException> EXCEPTIONS_FQN = StubIndexKey.createIndexKey("reason.exception.fqn");
     public static final StubIndexKey<String, PsiParameterDeclaration> PARAMETERS = StubIndexKey.createIndexKey("reason.parameter");

@@ -6,7 +6,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
-import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
@@ -15,33 +14,28 @@ import icons.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
+import java.util.*;
 
-public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, PsiRecordFieldStub> implements PsiRecordField {
+public class RPsiClassImpl extends PsiTokenStub<ORTypes, RPsiClass, RsiClassStub> implements RPsiClass {
     // region Constructors
-    public PsiRecordFieldImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiClassImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public PsiRecordFieldImpl(@NotNull ORTypes types, @NotNull PsiRecordFieldStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiClassImpl(@NotNull ORTypes types, @NotNull RsiClassStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
 
     // region PsiNamedElement
-    @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiLowerSymbol.class);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Override
     public @Nullable String getName() {
-        PsiRecordFieldStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.getName();
-        }
-
-        PsiElement nameElement = getNameIdentifier();
-        return nameElement == null ? "" : nameElement.getText().replaceAll("\"", "");
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
     @Override
@@ -52,8 +46,8 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, Ps
 
     //region PsiQualifiedName
     @Override
-    public String @NotNull [] getPath() {
-        PsiRecordFieldStub stub = getGreenStub();
+    public @Nullable String[] getPath() {
+        RsiClassStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();
         }
@@ -63,7 +57,7 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, Ps
 
     @Override
     public @NotNull String getQualifiedName() {
-        PsiRecordFieldStub stub = getGreenStub();
+        RsiClassStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();
         }
@@ -72,11 +66,31 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, Ps
     }
     //endregion
 
-    public @Nullable PsiSignature getSignature() {
-        return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
+    @Override
+    public @Nullable PsiElement getClassBody() {
+        return PsiTreeUtil.findChildOfType(this, PsiObject.class);
     }
 
     @Override
+    public @NotNull Collection<RPsiClassField> getFields() {
+        return PsiTreeUtil.findChildrenOfType(getClassBody(), RPsiClassField.class);
+    }
+
+    @Override
+    public @NotNull Collection<RPsiClassMethod> getMethods() {
+        return PsiTreeUtil.findChildrenOfType(getClassBody(), RPsiClassMethod.class);
+    }
+
+    @Override
+    public @NotNull Collection<PsiParameters> getParameters() {
+        return PsiTreeUtil.findChildrenOfType(this, PsiParameters.class);
+    }
+
+    @Override
+    public @Nullable RPsiClassConstructor getConstructor() {
+        return findChildByClass(RPsiClassConstructor.class);
+    }
+
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Override
@@ -86,13 +100,12 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordField, Ps
 
             @Override
             public @Nullable String getLocationString() {
-                PsiSignature signature = getSignature();
-                return signature == null ? null : signature.asText(ORLanguageProperties.cast(getLanguage()));
+                return null;
             }
 
             @Override
             public @NotNull Icon getIcon(boolean unused) {
-                return ORIcons.VAL;
+                return ORIcons.CLASS;
             }
         };
     }

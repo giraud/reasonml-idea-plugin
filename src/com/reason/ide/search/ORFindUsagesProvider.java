@@ -14,7 +14,7 @@ public abstract class ORFindUsagesProvider implements FindUsagesProvider {
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
         return element instanceof PsiModule || element instanceof PsiException ||
                 element instanceof PsiLet || element instanceof PsiVal ||
-                element instanceof PsiType || element instanceof PsiExternal ||
+                element instanceof PsiType || element instanceof PsiExternal || element instanceof RPsiRecordField ||
                 element instanceof PsiVariantDeclaration || element instanceof PsiParameterDeclaration;
     }
 

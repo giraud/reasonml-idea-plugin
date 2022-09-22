@@ -4,10 +4,10 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.containers.*;
 import com.reason.ide.files.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.psi.reference.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

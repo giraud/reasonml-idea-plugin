@@ -144,6 +144,14 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         });
     }
 
+    @Test // TODO Ocl/Res
+    public void test_record_field() {
+        configureCode("A.re", "type t = { f1: bool, f2: int }; let x = { f1: true, f2<caret>: 421 };");
+
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
+        assertEquals("A.t.f2", e.getQualifiedName());
+    }
+
     @Test
     public void test_function() {
         configureCode("A.re", "module B = { let bb = 1; }; module C = { let cc = x => x; }; let z = C.cc(B.bb<caret>);");
@@ -410,7 +418,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_record_l1() {
         configureCode("B.re", "let b = { a: 1, b: 2 }; b.b<caret>");
 
-        PsiRecordField e = (PsiRecordField) myFixture.getElementAtCaret();
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("B.b.b", e.getQualifiedName());
     }
 
@@ -418,7 +426,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_record_l3() {
         configureCode("A.re", "let a = { b: { c: { d: 1 } } }; a.b.c.d<caret>");
 
-        PsiRecordField e = (PsiRecordField) myFixture.getElementAtCaret();
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.a.b.c.d", e.getQualifiedName());
     }
     //endregion
@@ -462,7 +470,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "type t1 = {bar: string};");
         configureCode("A.re", "type t = {bar: string}; let bar = item => item.bar<caret>;");
 
-        PsiRecordField e = (PsiRecordField) myFixture.getElementAtCaret();
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.t.bar", e.getQualifiedName());
     }
 

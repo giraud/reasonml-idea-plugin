@@ -1,6 +1,7 @@
 package com.reason.lang.core.psi.reference;
 
 import com.intellij.testFramework.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
@@ -36,7 +37,7 @@ public class ResolutionTest extends LightPlatformTestCase {
         altResolution.updateCurrentWeight(1);
         assertEquals("X", altResolution.getCurrentName());
         altResolution.updateCurrentWeight(1);
-        assertTrue(altResolution.myIsComplete);
+        assertTrue(altResolution.isComplete());
     }
 
     @Test

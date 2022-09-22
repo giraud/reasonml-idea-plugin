@@ -14,7 +14,7 @@ public class OclFindUsagesProvider extends ORFindUsagesProvider {
         ORTypes types = OclTypes.INSTANCE;
         return new DefaultWordsScanner(
                 new OclLexer(), //
-                TokenSet.create(types.UIDENT, types.LIDENT), //
+                TokenSet.create(types.UIDENT, types.LIDENT, types.A_MODULE_NAME, types.A_VARIANT_NAME), //
                 TokenSet.create(types.MULTI_COMMENT), //
                 TokenSet.create(types.FLOAT_VALUE, types.INT_VALUE, types.STRING_VALUE));
     }

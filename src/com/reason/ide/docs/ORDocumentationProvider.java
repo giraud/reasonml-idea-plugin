@@ -7,13 +7,13 @@ import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
 import com.reason.ide.search.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.psi.impl.PsiAnnotation;
-import com.reason.lang.core.psi.reference.*;
+import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
 import jpsplugin.com.reason.*;
@@ -147,7 +147,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
 
                 String sig = inferredType == null ? null : DocFormatter.escapeCodeForHtml(inferredType);
                 if (resolvedElement instanceof PsiVariantDeclaration) {
-                    sig = "type " + ((PsiType) resolvedElement.getParent().getParent()).getName();
+                    PsiType type = PsiTreeUtil.getParentOfType(resolvedElement, PsiType.class);
+                    sig = "type " + (type == null ? "unknown" : type.getName());
                 }
 
                 return createQuickDocTemplate(path, elementType, desc, resolvedElement instanceof PsiModule ? null : sig);

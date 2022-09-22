@@ -69,4 +69,14 @@ public class FindLIdentUsagesRMLTest extends ORBasePlatformTestCase {
         assertEquals("t", usageInfo.getElement().getParent().getText());
         assertEquals("A.B.toString", ((PsiQualifiedPathElement) usageInfo.getElement().getParent().getParent().getParent()).getQualifiedName());
     }
+
+    @Test // TODO Ocl/Res
+    public void test_record() {
+        configureCode("A.re", "type t = { f1: bool, f2<caret>: int }; let x = { f1: true, f2: 421 };");
+
+        List<UsageInfo> usages = findUsages("A.re");
+        assertSize(1, usages);
+        UsageInfo usageInfo = usages.get(0);
+        assertEquals("A.x.f2", ((PsiQualifiedPathElement) usageInfo.getElement().getParent()).getQualifiedName());
+    }
 }

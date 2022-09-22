@@ -3,9 +3,9 @@ package com.reason.ide.hints;
 import com.intellij.lang.parameterInfo.*;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.psi.reference.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 

@@ -12,5 +12,5 @@ public interface PsiVar {
     boolean isFunction();
 
     @NotNull
-    Collection<PsiRecordField> getRecordFields();
+    Collection<RPsiRecordField> getRecordFields();
 }

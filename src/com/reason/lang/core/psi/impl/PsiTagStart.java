@@ -7,10 +7,10 @@ import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.search.index.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
@@ -99,7 +99,7 @@ public class PsiTagStart extends ORCompositePsiElement<ORTypes> implements PsiNa
                     if (binding != null) {
                         PsiRecord record = PsiTreeUtil.getStubChildOfType(binding, PsiRecord.class);
                         if (record != null) {
-                            for (PsiRecordField field : record.getFields()) {
+                            for (RPsiRecordField field : record.getFields()) {
                                 result.add(new ComponentPropertyAdapter(field, ORUtil.prevAnnotations(field)));
                             }
                         }

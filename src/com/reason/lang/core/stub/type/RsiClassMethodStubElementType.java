@@ -12,20 +12,20 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-public class RsiClassMethodStubElementType extends ORStubElementType<RsiClassMethodStub, RsiClassMethod> {
+public class RsiClassMethodStubElementType extends ORStubElementType<RsiClassMethodStub, RPsiClassMethod> {
     public RsiClassMethodStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);
     }
 
-    public @NotNull RsiClassMethodImpl createPsi(@NotNull RsiClassMethodStub stub) {
-        return new RsiClassMethodImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    public @NotNull RPsiClassMethodImpl createPsi(@NotNull RsiClassMethodStub stub) {
+        return new RPsiClassMethodImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    public @NotNull RsiClassMethodImpl createPsi(@NotNull ASTNode node) {
-        return new RsiClassMethodImpl(ORTypesUtil.getInstance(getLanguage()), node);
+    public @NotNull RPsiClassMethodImpl createPsi(@NotNull ASTNode node) {
+        return new RPsiClassMethodImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    public @NotNull RsiClassMethodStub createStub(@NotNull RsiClassMethod psi, @Nullable StubElement parentStub) {
+    public @NotNull RsiClassMethodStub createStub(@NotNull RPsiClassMethod psi, @Nullable StubElement parentStub) {
         String[] path = psi.getPath();
         return new RsiClassMethodStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path);
     }

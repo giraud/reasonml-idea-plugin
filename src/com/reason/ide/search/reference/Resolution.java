@@ -1,4 +1,4 @@
-package com.reason.lang.core.psi.reference;
+package com.reason.ide.search.reference;
 
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-class Resolution implements Comparable<Resolution> {
+public class Resolution implements Comparable<Resolution> {
     final List<PsiQualifiedPathElement> myElements = new ArrayList<>();
     private final String[] myPath;
     private String[] myAlternatePath;
@@ -145,7 +145,7 @@ class Resolution implements Comparable<Resolution> {
         if (myElements.size() == 1 && myElements.size() == o.myElements.size()) {
             PsiQualifiedPathElement myElement = myElements.get(0);
             PsiQualifiedPathElement otherElement = o.myElements.get(0);
-            if (otherElement instanceof PsiRecordField && myElement instanceof PsiLet) {
+            if (otherElement instanceof RPsiRecordField && myElement instanceof PsiLet) {
                 return -1;
             }
         }

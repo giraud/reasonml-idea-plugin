@@ -101,7 +101,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
         PsiType psiType = first(typeExpressions(parseCode("type props = {@optional dangerouslySetInnerHTML: {\"__html\": string}}")));
 
         PsiRecord record = (PsiRecord) psiType.getBinding().getFirstChild();
-        List<PsiRecordField> fields = new ArrayList<>(record.getFields());
+        List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
 
         assertEquals(1, fields.size());
         assertEquals("{\"__html\": string}", fields.get(0).getSignature().asText(getLangProps()));

@@ -246,7 +246,7 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         configureCode("B.ml", "type t1 = {bar: string}");
         configureCode("A.ml", "type t = {bar: string} let bar item = item.bar<caret>");
 
-        PsiRecordField e = (PsiRecordField) myFixture.getElementAtCaret();
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.t.bar", e.getQualifiedName());
     }
 

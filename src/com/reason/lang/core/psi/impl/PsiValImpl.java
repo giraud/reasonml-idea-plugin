@@ -96,8 +96,8 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implem
     }
 
     @Override
-    public @NotNull Collection<PsiRecordField> getRecordFields() {
-        return PsiTreeUtil.findChildrenOfType(this, PsiRecordField.class);
+    public @NotNull Collection<RPsiRecordField> getRecordFields() {
+        return PsiTreeUtil.findChildrenOfType(this, RPsiRecordField.class);
     }
 
     @Override

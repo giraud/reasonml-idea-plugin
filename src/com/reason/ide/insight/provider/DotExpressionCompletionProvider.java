@@ -6,13 +6,13 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.files.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.impl.PsiAnnotation;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.reason.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -68,7 +68,7 @@ public class DotExpressionCompletionProvider {
             }
 
             if (resolvedElement instanceof PsiVar) {
-                for (PsiRecordField recordField : ((PsiVar) resolvedElement).getRecordFields()) {
+                for (RPsiRecordField recordField : ((PsiVar) resolvedElement).getRecordFields()) {
                     resultSet.addElement(
                             LookupElementBuilder.create(recordField)
                                     .withTypeText(PsiSignatureUtil.getSignature(recordField, ORLanguageProperties.cast(element.getLanguage())))
@@ -117,7 +117,7 @@ public class DotExpressionCompletionProvider {
         modules.remove(modules.size() - 1); // remove fake module
         expressions.addAll(modules);
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiFunctor.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, RsiClass.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiClass.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiExternal.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiException.class));
     }
@@ -177,7 +177,7 @@ public class DotExpressionCompletionProvider {
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiVal.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiModule.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiFunctor.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RsiClass.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiClass.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiException.class));
     }

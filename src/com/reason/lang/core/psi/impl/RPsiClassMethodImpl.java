@@ -4,7 +4,6 @@ import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
-import com.intellij.psi.tree.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
@@ -15,13 +14,13 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class RsiClassMethodImpl extends PsiTokenStub<ORTypes, RsiClassMethod, RsiClassMethodStub> implements RsiClassMethod {
+public class RPsiClassMethodImpl extends PsiTokenStub<ORTypes, RPsiClassMethod, RsiClassMethodStub> implements RPsiClassMethod {
     // region Constructors
-    public RsiClassMethodImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiClassMethodImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RsiClassMethodImpl(@NotNull ORTypes types, @NotNull RsiClassMethodStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiClassMethodImpl(@NotNull ORTypes types, @NotNull RsiClassMethodStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

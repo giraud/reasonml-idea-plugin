@@ -5,7 +5,7 @@ import com.intellij.util.io.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
-public class RsiClassMethodStub extends PsiQualifiedNameStub<RsiClassMethod> {
+public class RsiClassMethodStub extends PsiQualifiedNameStub<RPsiClassMethod> {
     public RsiClassMethodStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String[] path) {
         super(parent, elementType, name, path);
     }

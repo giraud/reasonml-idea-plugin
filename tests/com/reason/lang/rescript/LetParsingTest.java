@@ -215,7 +215,7 @@ public class LetParsingTest extends ResParsingTestCase {
 
         assertSize(2, es);
         assertNull(PsiTreeUtil.findChildOfType(es.get(0), PsiScopedExpr.class));
-        assertEquals("i", PsiTreeUtil.findChildOfType(es.get(0), PsiRecordField.class).getName());
+        assertEquals("i", PsiTreeUtil.findChildOfType(es.get(0), RPsiRecordField.class).getName());
         assertEquals("{i: 1}", PsiTreeUtil.findChildOfType(es.get(0), PsiRecord.class).getText());
     }
 

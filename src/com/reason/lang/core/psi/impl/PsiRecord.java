@@ -14,16 +14,16 @@ public class PsiRecord extends ORCompositePsiElement<ORTypes> {
         super(types, elementType);
     }
 
-    public @NotNull List<PsiRecordField> getFields() {
+    public @NotNull List<RPsiRecordField> getFields() {
         PsiElement[] children = getChildren();
         if (children.length == 0) {
             return ContainerUtil.emptyList();
         }
 
-        List<PsiRecordField> result = new ArrayList<>(children.length);
+        List<RPsiRecordField> result = new ArrayList<>(children.length);
         for (PsiElement child : children) {
-            if (child instanceof PsiRecordField) {
-                result.add((PsiRecordField) child);
+            if (child instanceof RPsiRecordField) {
+                result.add((RPsiRecordField) child);
             }
         }
 

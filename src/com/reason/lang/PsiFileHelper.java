@@ -109,8 +109,8 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static List<RsiClass> getClassExpressions(@Nullable PsiFile file) {
-        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, RsiClass.class);
+    public static List<RPsiClass> getClassExpressions(@Nullable PsiFile file) {
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, RPsiClass.class);
     }
 
     @NotNull

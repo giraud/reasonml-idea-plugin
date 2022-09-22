@@ -397,7 +397,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     public void test_record_l1() {
         configureCode("B.res", "let b = { a: 1, b: 2 }\n b.b<caret>");
 
-        PsiRecordField e = (PsiRecordField) myFixture.getElementAtCaret();
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("B.b.b", e.getQualifiedName());
     }
 
@@ -405,7 +405,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     public void test_record_l3() {
         configureCode("A.res", "let a = { b: { c: { d: 1 } } }\n a.b.c.d<caret>");
 
-        PsiRecordField e = (PsiRecordField) myFixture.getElementAtCaret();
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.a.b.c.d", e.getQualifiedName());
     }
     //endregion
@@ -423,7 +423,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         configureCode("B.res", "type t1 = {bar: string}");
         configureCode("A.res", "type t = {bar: string}\n let bar = item => item.bar<caret>");
 
-        PsiRecordField e = (PsiRecordField) myFixture.getElementAtCaret();
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.t.bar", e.getQualifiedName());
     }
 

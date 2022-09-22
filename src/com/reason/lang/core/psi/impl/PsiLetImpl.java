@@ -7,10 +7,10 @@ import com.intellij.psi.stubs.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.reason.*;
@@ -201,8 +201,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLet, PsiLetStub> implem
     }
 
     @Override
-    public @NotNull Collection<PsiRecordField> getRecordFields() {
-        return PsiTreeUtil.findChildrenOfType(this, PsiRecordField.class);
+    public @NotNull Collection<RPsiRecordField> getRecordFields() {
+        return PsiTreeUtil.findChildrenOfType(this, RPsiRecordField.class);
     }
 
     private boolean isRecursive() {

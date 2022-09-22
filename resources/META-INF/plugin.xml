@@ -258,7 +258,7 @@
         <applicationService serviceImplementation="com.reason.ide.search.FileModuleIndexService"/>
 
         <projectService serviceImplementation="com.reason.ide.search.PsiFinder"/>
-        <projectService serviceImplementation="com.reason.lang.core.psi.reference.ORElementResolver"/>
+        <projectService serviceImplementation="com.reason.ide.search.reference.ORElementResolver"/>
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.findUsagesProvider language="Rescript"

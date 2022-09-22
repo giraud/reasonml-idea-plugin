@@ -36,6 +36,9 @@ public class PsiTypeElementProvider {
         if (element instanceof PsiParameterDeclaration) {
             return "parameter";
         }
+        if (element instanceof RPsiRecordField) {
+            return "record field";
+        }
 
         return null;
     }

@@ -76,7 +76,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
         PsiType e = first(typeExpressions(parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n};")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
-        Collection<PsiRecordField> fields = record.getFields();
+        Collection<RPsiRecordField> fields = record.getFields();
         assertEquals(2, fields.size());
     }
 
@@ -89,7 +89,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
                         + "method: string };")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
-        Collection<PsiRecordField> fields = record.getFields();
+        Collection<RPsiRecordField> fields = record.getFields();
         assertEquals(3, fields.size());
     }
 
@@ -98,7 +98,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
         PsiType e = first(typeExpressions(parseCode("type branch_info('branch_type) = { kind: [> | `Master] as 'branch_type, pos: id, };")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
-        List<PsiRecordField> fields = new ArrayList<>(record.getFields());
+        List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
 
         assertEquals(2, fields.size());
         assertEquals("kind", fields.get(0).getName());
@@ -154,7 +154,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
         PsiType e = firstOfType(parseCode("type t = { buffer: GText.buffer, mutable breakpoints: list(breakpoint) }"), PsiType.class);
 
         PsiRecord r = (PsiRecord) e.getBinding().getFirstChild();
-        List<PsiRecordField> f = r.getFields();
+        List<RPsiRecordField> f = r.getFields();
         assertSize(2, f);
         assertEquals("buffer", f.get(0).getName());
         assertEquals("breakpoints", f.get(1).getName());

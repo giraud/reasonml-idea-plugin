@@ -14,8 +14,8 @@ public interface OclStubBasedElementTypes {
     IStubElementType<PsiModuleStub, PsiModule> C_FUNCTOR_DECLARATION = new PsiFunctorModuleStubElementType("C_FUNCTOR_DECLARATION", OclLanguage.INSTANCE);
     IStubElementType<PsiModuleStub, PsiModule> C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", OclLanguage.INSTANCE);
 
-    IStubElementType<RsiClassStub, RsiClass> C_CLASS_DECLARATION = new RsiClassStubElementType("C_CLASS_DECLARATION", OclLanguage.INSTANCE);
-    IStubElementType<RsiClassMethodStub, RsiClassMethod> C_CLASS_METHOD = new RsiClassMethodStubElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
+    IStubElementType<RsiClassStub, RPsiClass> C_CLASS_DECLARATION = new RsiClassStubElementType("C_CLASS_DECLARATION", OclLanguage.INSTANCE);
+    IStubElementType<RsiClassMethodStub, RPsiClassMethod> C_CLASS_METHOD = new RsiClassMethodStubElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
 
     IStubElementType<PsiExceptionStub, PsiException> C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", OclLanguage.INSTANCE);
     IStubElementType<PsiTypeStub, PsiType> C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", OclLanguage.INSTANCE);
@@ -25,6 +25,6 @@ public interface OclStubBasedElementTypes {
     IStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> C_VARIANT_DECLARATION = new PsiVariantStubElementType("C_VARIANT_DECLARATION", OclLanguage.INSTANCE);
     IStubElementType<PsiParameterDeclarationStub, PsiParameterDeclaration> C_PARAM_DECLARATION = new PsiParameterDeclarationStubElementType("C_PARAM_DECLARATION", OclLanguage.INSTANCE);
 
-    IStubElementType<PsiRecordFieldStub, PsiRecordField> C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", OclLanguage.INSTANCE);
+    IStubElementType<RsiRecordFieldStub, RPsiRecordField> C_RECORD_FIELD = new RsiRecordFieldStubElementType("C_RECORD_FIELD", OclLanguage.INSTANCE);
     IStubElementType<PsiObjectFieldStub, PsiObjectField> C_OBJECT_FIELD = new PsiObjectFieldStubElementType("C_OBJECT_FIELD", OclLanguage.INSTANCE);
 }

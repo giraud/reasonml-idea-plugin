@@ -91,7 +91,7 @@ public class TypeParsingTest extends OclParsingTestCase {
                 "type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))), PsiTypeBinding.class));
 
         PsiRecord record = PsiTreeUtil.findChildOfType(typeBinding, PsiRecord.class);
-        List<PsiRecordField> fields = new ArrayList<>(record.getFields());
+        List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
         assertEquals(2, fields.size());
         assertEquals("kind", fields.get(0).getName());
         assertEquals("pos", fields.get(1).getName());
@@ -144,7 +144,7 @@ public class TypeParsingTest extends OclParsingTestCase {
         PsiType e = firstOfType(parseCode("type t = { buffer: GText.buffer; mutable breakpoints: breakpoint list }"), PsiType.class);
 
         PsiRecord r = (PsiRecord) e.getBinding().getFirstChild();
-        List<PsiRecordField> f = r.getFields();
+        List<RPsiRecordField> f = r.getFields();
         assertSize(2, f);
         assertEquals("buffer", f.get(0).getName());
         assertEquals("breakpoints", f.get(1).getName());

@@ -14,7 +14,7 @@ public class ComponentPropertyAdapter {
     private final PsiElement myPsiElement;
     private boolean myMandatory;
 
-    public ComponentPropertyAdapter(@NotNull PsiRecordField field, @NotNull List<PsiAnnotation> annotations) {
+    public ComponentPropertyAdapter(@NotNull RPsiRecordField field, @NotNull List<PsiAnnotation> annotations) {
         myPsiElement = field;
         myName = field.getName();
         PsiSignature signature = field.getSignature();

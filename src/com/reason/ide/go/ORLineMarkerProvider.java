@@ -91,18 +91,18 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                         .ifPresent(psiTarget ->
                                 result.add(createGutterIcon(element, isInterface, "type", (FileBase) psiTarget.getContainingFile(), psiTarget))
                         );
-            } else if (parent instanceof RsiClass) {
-                String qName = ((RsiClassImpl) parent).getQualifiedName();
-                Collection<RsiClass> elements = ClassFqnIndex.getElements(qName.hashCode(), project, scope);
+            } else if (parent instanceof RPsiClass) {
+                String qName = ((RPsiClassImpl) parent).getQualifiedName();
+                Collection<RPsiClass> elements = ClassFqnIndex.getElements(qName.hashCode(), project, scope);
                 elements.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                         .findFirst()
                         .ifPresent(psiTarget ->
                                 result.add(createGutterIcon(element, isInterface, "class", (FileBase) psiTarget.getContainingFile(), psiTarget))
                         );
-            } else if (parent instanceof RsiClassMethodImpl) {
-                String qName = ((RsiClassMethodImpl) parent).getQualifiedName();
-                Collection<RsiClassMethod> elements = ClassMethodFqnIndex.getElements(qName.hashCode(), project, scope);
+            } else if (parent instanceof RPsiClassMethodImpl) {
+                String qName = ((RPsiClassMethodImpl) parent).getQualifiedName();
+                Collection<RPsiClassMethod> elements = ClassMethodFqnIndex.getElements(qName.hashCode(), project, scope);
                 elements.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                         .findFirst()

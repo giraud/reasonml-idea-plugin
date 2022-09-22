@@ -14,7 +14,7 @@ public class RmlFindUsagesProvider extends ORFindUsagesProvider {
         ORTypes types = RmlTypes.INSTANCE;
         return new DefaultWordsScanner(
                 new RmlLexer(), //
-                TokenSet.create(types.UIDENT, types.LIDENT), //
+                TokenSet.create(types.UIDENT, types.LIDENT, types.A_MODULE_NAME, types.A_VARIANT_NAME), //
                 TokenSet.create(types.MULTI_COMMENT, types.SINGLE_COMMENT), //
                 TokenSet.create(types.FLOAT_VALUE, types.INT_VALUE, types.STRING_VALUE));
     }
