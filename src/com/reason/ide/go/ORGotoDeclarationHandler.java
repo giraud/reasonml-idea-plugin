@@ -11,7 +11,7 @@ public class ORGotoDeclarationHandler extends GotoDeclarationHandlerBase {
     @Override
     public @Nullable PsiElement getGotoDeclarationTarget(@Nullable PsiElement sourceElement, Editor editor) {
         PsiElement parent = sourceElement == null ? null : sourceElement.getParent();
-        if (parent instanceof PsiUpperSymbol || parent instanceof PsiLowerSymbol) {
+        if (parent instanceof RPsiUpperSymbol || parent instanceof RPsiLowerSymbol) {
             return resolveInterface(parent.getReference());
         }
         return null;

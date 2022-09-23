@@ -33,9 +33,9 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
         Project project = parameters.getProject();
         GlobalSearchScope scope = parameters.getSearchScope();
 
-        for (PsiModule psiModule : project.getService(PsiFinder.class).findModulesbyName(name, ORFileType.both, null)) {
+        for (RPsiModule psiModule : project.getService(PsiFinder.class).findModulesbyName(name, ORFileType.both, null)) {
             NavigationItem element = psiModule;
-            if (psiModule instanceof PsiInnerModule) {
+            if (psiModule instanceof RPsiInnerModule) {
                 Icon icon = psiModule.isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE;
 
                 element = new ModuleDelegatePresentation(

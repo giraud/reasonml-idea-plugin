@@ -34,7 +34,7 @@ public class ORElementResolver implements Disposable {
 
             StubIndex stubIndex = StubIndex.getInstance();
             stubIndex.processAllKeys(IndexKeys.INCLUDES, myProject, includePath -> {
-                stubIndex.processElements(IndexKeys.INCLUDES, includePath, myProject, null, PsiInclude.class, psiInclude -> {
+                stubIndex.processElements(IndexKeys.INCLUDES, includePath, myProject, null, RPsiInclude.class, psiInclude -> {
                     String[] includeQPath = psiInclude.getQualifiedPath();
                     String[] resolvedPath = psiInclude.getResolvedPath();
                     if (Arrays.equals(resolvedPath, includeQPath)) {
@@ -90,7 +90,7 @@ public class ORElementResolver implements Disposable {
     }
 
     interface Resolutions {
-        void add(@NotNull Collection<? extends PsiQualifiedPathElement> elements, boolean includeSource);
+        void add(@NotNull Collection<? extends RPsiQualifiedPathElement> elements, boolean includeSource);
 
         void addIncludesEquivalence();
 
@@ -104,7 +104,7 @@ public class ORElementResolver implements Disposable {
 
         void removeIncomplete();
 
-        @NotNull Collection<PsiQualifiedPathElement> resolvedElements();
+        @NotNull Collection<RPsiQualifiedPathElement> resolvedElements();
     }
 
     /*
@@ -115,12 +115,12 @@ public class ORElementResolver implements Disposable {
         private final Map<String, Map<String, Resolution>> myResolutionsPerTopModule = new HashMap<>();
 
         @Override
-        public void add(@NotNull Collection<? extends PsiQualifiedPathElement> elements, boolean includeSource) {
+        public void add(@NotNull Collection<? extends RPsiQualifiedPathElement> elements, boolean includeSource) {
             if (elements.isEmpty()) {
                 return;
             }
 
-            for (PsiQualifiedPathElement source : elements) {
+            for (RPsiQualifiedPathElement source : elements) {
                 String sourceName = source.getName();
                 if (sourceName == null) {
                     continue;
@@ -137,7 +137,7 @@ public class ORElementResolver implements Disposable {
                         sourcePath = newPath;
                     }
                     // Remove type name in case of variants
-                    if (source instanceof PsiVariantDeclaration) {
+                    if (source instanceof RPsiVariantDeclaration) {
                         String[] newPath = new String[sourcePath.length - 1];
                         System.arraycopy(sourcePath, 0, newPath, 0, newPath.length);
                         sourcePath = newPath;
@@ -181,8 +181,8 @@ public class ORElementResolver implements Disposable {
                 String first = entry.getKey();
                 Collection<Resolution> resolutions = entry.getValue().values();
                 if (first != null) {
-                    Collection<PsiModule> aliases = ModuleAliasedIndex.getElements(first, project, GlobalSearchScope.allScope(project));
-                    for (PsiModule alias : aliases) {
+                    Collection<RPsiModule> aliases = ModuleAliasedIndex.getElements(first, project, GlobalSearchScope.allScope(project));
+                    for (RPsiModule alias : aliases) {
                         String[] aliasPath = alias.getQualifiedNameAsPath();
                         for (Resolution resolution : resolutions) {
                             Resolution aliasResolution = Resolution.createAlternate(resolution, aliasPath);
@@ -201,8 +201,8 @@ public class ORElementResolver implements Disposable {
                     myResolutionsPerTopModule.put(topModuleName, resolutionsPerQName);
                 }
 
-                PsiQualifiedPathElement aliasElement = aliasResolution.myElements.get(0);
-                String aliasQName = aliasResolution.joinPath() + (aliasElement instanceof PsiModule ? "" : "." + aliasElement.getName());
+                RPsiQualifiedPathElement aliasElement = aliasResolution.myElements.get(0);
+                String aliasQName = aliasResolution.joinPath() + (aliasElement instanceof RPsiModule ? "" : "." + aliasElement.getName());
 
                 resolutionsPerQName.put(aliasQName, aliasResolution);
             }
@@ -233,8 +233,8 @@ public class ORElementResolver implements Disposable {
                     myResolutionsPerTopModule.put(topModuleName, resolutionsPerQName);
                 }
 
-                PsiQualifiedPathElement includeElement = includeResolution.myElements.get(0);
-                String includeQName = includeResolution.joinPath() + (includeElement instanceof PsiModule ? "" : "." + includeElement.getName());
+                RPsiQualifiedPathElement includeElement = includeResolution.myElements.get(0);
+                String includeQName = includeResolution.joinPath() + (includeElement instanceof RPsiModule ? "" : "." + includeElement.getName());
 
                 // try to find duplicates
                 Resolution resolution = resolutionsPerQName.get(includeQName);
@@ -353,7 +353,7 @@ public class ORElementResolver implements Disposable {
             }
         }
 
-        public @NotNull Collection<PsiQualifiedPathElement> resolvedElements() {
+        public @NotNull Collection<RPsiQualifiedPathElement> resolvedElements() {
             List<Resolution> allResolutions = new ArrayList<>();
 
             // flatten elements

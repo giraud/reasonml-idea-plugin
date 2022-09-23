@@ -18,7 +18,7 @@ public class ExpressionChainingParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_alias_chaining_include() {
-        PsiModule module = first(moduleExpressions(parseCode("module D = B\n include D.C")));
+        RPsiModule module = first(moduleExpressions(parseCode("module D = B\n include D.C")));
 
         assertEquals("D", module.getName());
         assertEquals("B", module.getAlias());
@@ -26,7 +26,7 @@ public class ExpressionChainingParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_alias_chaining_call() {
-        PsiModule module = first(moduleExpressions(parseCode("module D = B\n D.C")));
+        RPsiModule module = first(moduleExpressions(parseCode("module D = B\n D.C")));
 
         assertEquals("D", module.getName());
         assertEquals("B", module.getAlias());

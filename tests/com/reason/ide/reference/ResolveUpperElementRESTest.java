@@ -1,6 +1,5 @@
 package com.reason.ide.reference;
 
-import com.intellij.psi.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
@@ -45,7 +44,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("A.res", "module A1 = {}");
         configureCode("B.res", "module X = A\n X.A1<caret>");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("A.A1", e.getQualifiedName());
     }
 
@@ -54,7 +53,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("A.res", "module X = { module Y = { let z = 1 } }");
         configureCode("B.res", "module C = A.X\n C<caret>.Y");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("B.C", e.getQualifiedName());
     }
 
@@ -63,7 +62,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("A.res", "module X = { module Y = { let z = 1 } }");
         configureCode("B.res", "module C = A.X\n C.Y<caret>");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("A.X.Y", e.getQualifiedName());
     }
 
@@ -72,7 +71,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("Belt.res", "let x = 1");
         configureCode("A.res", "module B = Belt\n B<caret>");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("A.B", e.getQualifiedName());
     }
 
@@ -81,7 +80,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("C.resi", "module A1 = {}");
         configureCode("D.res", "module X = C\n X.A1<caret>;");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("C.A1", e.getQualifiedName());
     }
 
@@ -90,7 +89,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("Belt.res", "module Option = {}");
         configureCode("Dummy.res", "open Belt.Option<caret>");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("Belt.Option", e.getQualifiedName());
         assertEquals("Belt.res", e.getContainingFile().getName());
     }
@@ -111,7 +110,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("Css.res", "include Css_Core");
         configureCode("A.res", "Css.Types.Color<caret>");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
     }
 
@@ -121,7 +120,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("B.res", "type b = | Variant");
         configureCode("C.res", "A.Variant<caret>");
 
-        PsiVariantDeclaration e = (PsiVariantDeclaration) myFixture.getElementAtCaret();
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
         assertEquals("A.a.Variant", e.getQualifiedName());
     }
 
@@ -130,7 +129,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("Aaa.res", "type t = | Test");
         configureCode("Bbb.res", "module A = Aaa\n A.Test<caret>");
 
-        PsiVariantDeclaration e = (PsiVariantDeclaration) myFixture.getElementAtCaret();
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
         assertEquals("Aaa.t.Test", e.getQualifiedName());
     }
 
@@ -139,7 +138,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("Aaa.res", "module Option = { type t = | Test }");
         configureCode("Bbb.res", "module A = Aaa\n A.Option.Test<caret>");
 
-        PsiVariantDeclaration e = (PsiVariantDeclaration) myFixture.getElementAtCaret();
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
         assertEquals("Aaa.Option.t.Test", e.getQualifiedName());
     }
 
@@ -148,7 +147,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("A.res", "type a = | Variant(int)");
         configureCode("B.res", "let _ = A.Variant<caret>(1)");
 
-        PsiVariantDeclaration e = (PsiVariantDeclaration) myFixture.getElementAtCaret();
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
         assertEquals("A.a.Variant", e.getQualifiedName());
     }
 
@@ -156,7 +155,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
     public void test_exception() {
         myFixture.configureByText("A.res", "exception ExceptionName\n raise(ExceptionName<caret>)");
 
-        PsiException e = (PsiException) myFixture.getElementAtCaret();
+        RPsiException e = (RPsiException) myFixture.getElementAtCaret();
         assertEquals("A.ExceptionName", e.getQualifiedName());
     }
 
@@ -168,7 +167,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("Belt.res", "module Map = Belt_Map");
         configureCode("A.res", "Belt.Map.String<caret>");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("Belt_Map.String", e.getQualifiedName());
     }
 
@@ -180,7 +179,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("Belt.res", "module Map = Belt_Map");
         configureCode("A.res", "open Belt\n open Map\n String<caret>");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("Belt_Map.String", e.getQualifiedName());
     }
 
@@ -200,7 +199,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("B.res", "module C = { module X = { let fn = () => () } }");
         configureCode("D.res", "B.C.X.fn() |> A.X<caret>.fn");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("A.X", e.getQualifiedName());
     }
 
@@ -212,7 +211,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("Belt.res", "module Option = Belt_Option\n module Map = Belt_Map;");
         configureCode("A.res", "let x = (dict, locale) => locale->Belt.Option<caret>.flatMap(dict->Belt.Map.String.get);");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("Belt.Option", e.getQualifiedName());
     }
 
@@ -224,7 +223,7 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         configureCode("Belt.res", "module Option = Belt_Option\n module Map = Belt_Map;");
         configureCode("A.res", "let x = (dict, locale) => locale->Belt.Option.flatMap(dict->Belt.Map<caret>.String.get);");
 
-        PsiModule e = (PsiModule) myFixture.getElementAtCaret();
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("Belt.Map", e.getQualifiedName());
     }
 

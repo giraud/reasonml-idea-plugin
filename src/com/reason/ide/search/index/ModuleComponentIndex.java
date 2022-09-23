@@ -9,30 +9,30 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class ModuleComponentIndex extends StringStubIndexExtension<PsiModule> {
+public class ModuleComponentIndex extends StringStubIndexExtension<RPsiModule> {
     @Override
     public int getVersion() {
         return super.getVersion() + ORStubVersions.MODULE;
     }
 
     @Override
-    public @NotNull StubIndexKey<String, PsiModule> getKey() {
+    public @NotNull StubIndexKey<String, RPsiModule> getKey() {
         return IndexKeys.MODULES_COMP;
     }
 
-    public static void processItems(@NotNull Project project, @Nullable GlobalSearchScope scope, @NotNull IndexKeys.ProcessElement<PsiModule> processor) {
+    public static void processItems(@NotNull Project project, @Nullable GlobalSearchScope scope, @NotNull IndexKeys.ProcessElement<RPsiModule> processor) {
         StubIndex.getInstance().processAllKeys(IndexKeys.MODULES_COMP, project,
                 name -> {
-                    Collection<PsiModule> collection = getElements(name, project, scope);
-                    for (PsiModule module : collection) {
+                    Collection<RPsiModule> collection = getElements(name, project, scope);
+                    for (RPsiModule module : collection) {
                         processor.process(module);
                     }
                     return true;
                 });
     }
 
-    private static @NotNull Collection<PsiModule> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.MODULES_COMP, key, project, scope, PsiModule.class);
+    private static @NotNull Collection<RPsiModule> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.MODULES_COMP, key, project, scope, RPsiModule.class);
     }
 
 

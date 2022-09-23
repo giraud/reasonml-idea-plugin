@@ -12,7 +12,7 @@ import java.util.*;
 public class PolyVariantTest extends RmlParsingTestCase {
     @Test
     public void test_basic_LIdent() {
-        PsiLet e = first(letExpressions(parseCode("let x = `red;")));
+        RPsiLet e = first(letExpressions(parseCode("let x = `red;")));
         PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
 
         assertEquals("`red", variant.getText());
@@ -20,7 +20,7 @@ public class PolyVariantTest extends RmlParsingTestCase {
 
     @Test
     public void test_basic_UIdent() {
-        PsiLet e = first(letExpressions(parseCode("let x = `Red;")));
+        RPsiLet e = first(letExpressions(parseCode("let x = `Red;")));
         PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
 
         assertEquals("`Red", variant.getText());
@@ -35,7 +35,7 @@ public class PolyVariantTest extends RmlParsingTestCase {
 
         assertEquals(1, expressions.size());
 
-        Collection<PsiPatternMatch> matches = PsiTreeUtil.findChildrenOfType(first(expressions), PsiPatternMatch.class);
+        Collection<RPsiPatternMatch> matches = PsiTreeUtil.findChildrenOfType(first(expressions), RPsiPatternMatch.class);
         assertEquals(2, matches.size());
     }
 }

@@ -2,7 +2,7 @@ package com.reason.ide.reference;
 
 import com.intellij.psi.*;
 import com.reason.ide.*;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -15,7 +15,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_let_basic() {
         configureCode("A.re", "let x = 1; let z = x<caret> + 1;");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.x", e.getQualifiedName());
     }
 
@@ -23,7 +23,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_let_in_module_binding() {
         configureCode("A.re", "let foo = 2; module X = { let foo = 1; let z = foo<caret>; };");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.X.foo", e.getQualifiedName());
     }
 
@@ -31,7 +31,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_let_inner_scope() {
         configureCode("A.re", "let x = 1; let a = { let x = 2; x<caret> + 10 };");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.a.x", e.getQualifiedName());
     }
 
@@ -39,7 +39,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_inner_scope_in_function() {
         configureCode("A.re", "let x = 1; let fn = { let x = 2; fn1(x<caret>); };");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.fn.x", e.getQualifiedName());
     }
 
@@ -48,7 +48,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.rei", "let x:int;");
         configureCode("A.re", "let x = 1; let fn = { let foo = 2; fn1(foo<caret>); };");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.fn.foo", e.getQualifiedName());
         assertEquals("A.re", e.getContainingFile().getName());
     }
@@ -58,7 +58,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.rei", "let x:int;");
         configureCode("B.re", "let x = 1; module X = A; X.x<caret>");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.x", e.getQualifiedName());
     }
 
@@ -67,7 +67,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module W = { module X = { module Y = { module Z = { let z = 1; }; }; }; };");
         configureCode("B.re", "module C = A.W.X; module D = C.Y.Z; D.z<caret>");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.W.X.Y.Z.z", e.getQualifiedName());
     }
 
@@ -77,7 +77,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "module B1 = { module Mode = A.Mode; };");
         configureCode("C.re", "B.B1.Mode.t<caret>");        // B.B1.Mode.t -> A.Mode.t
 
-        PsiType e = (PsiType) myFixture.getElementAtCaret();
+        RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.Mode.t", e.getQualifiedName());
     }
 
@@ -86,7 +86,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "let x = 1;");
         configureCode("A.re", "let x = 2; open B; x<caret>");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("B.x", e.getQualifiedName());
     }
 
@@ -95,7 +95,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "let x = 1;");
         configureCode("A.re", "let x = 2; module C = B; open C; x<caret>");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("B.x", e.getQualifiedName());
     }
 
@@ -104,7 +104,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module A1 = { let a = 1; };");
         configureCode("B.re", "let a = 2; let b = A.(A1.a<caret>);");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.A1.a", e.getQualifiedName());
     }
 
@@ -113,7 +113,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module A1 = { let a = 3; };");
         configureCode("B.re", "let a = A.A1.(a<caret>);");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.A1.a", e.getQualifiedName());
     }
 
@@ -121,7 +121,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_type() {
         configureCode("A.re", "type t; type t' = t<caret>;");
 
-        PsiType e = (PsiType) myFixture.getElementAtCaret();
+        RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.t", e.getQualifiedName());
         assertTrue(e.isAbstract());
     }
@@ -131,7 +131,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "type t;");
         configureCode("B.re", "type t = A.t<caret>;");
 
-        PsiType e = (PsiType) myFixture.getElementAtCaret();
+        RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.t", e.getQualifiedName());
     }
 
@@ -144,6 +144,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         });
     }
 
+    /*
     @Test // TODO Ocl/Res
     public void test_record_field() {
         configureCode("A.re", "type t = { f1: bool, f2: int }; let x = { f1: true, f2<caret>: 421 };");
@@ -151,12 +152,13 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.t.f2", e.getQualifiedName());
     }
+    */
 
     @Test
     public void test_function() {
         configureCode("A.re", "module B = { let bb = 1; }; module C = { let cc = x => x; }; let z = C.cc(B.bb<caret>);");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.B.bb", e.getQualifiedName());
     }
 
@@ -165,7 +167,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "module C = { let make = x => x; let convert = x => x; }");
         configureCode("A.re", "open B; C.make([| C.convert<caret> |]);");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("B.C.convert", e.getQualifiedName());
     }
 
@@ -173,7 +175,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_param_parenLess() {
         configureCode("A.re", "let add10 = x => x<caret> + 10;");
 
-        PsiParameterDeclaration e = (PsiParameterDeclaration) myFixture.getElementAtCaret();
+        RPsiParameterDeclaration e = (RPsiParameterDeclaration) myFixture.getElementAtCaret();
         assertEquals("A.add10[x]", e.getQualifiedName());
     }
 
@@ -182,7 +184,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module A1 = { external a : int = \"\"; };");
         configureCode("B.re", "let b = A.(A1.a<caret>);");
 
-        PsiExternal e = (PsiExternal) myFixture.getElementAtCaret();
+        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
         assertEquals("A.A1.a", e.getQualifiedName());
     }
 
@@ -191,7 +193,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module A1 = { external a : int = \"\"; };");
         configureCode("B.re", "let a = A.A1.(a<caret>);");
 
-        PsiExternal e = (PsiExternal) myFixture.getElementAtCaret();
+        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
         assertEquals("A.A1.a", e.getQualifiedName());
     }
 
@@ -200,7 +202,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module A1 = { type t = | Variant; let toString = x => x; };");
         configureCode("B.re", "A.A1.(Variant->toString<caret>);");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.A1.toString", e.getQualifiedName());
     }
 
@@ -208,7 +210,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_include() {
         configureCode("A.re", "module B = { type t; }; module C = B; include C; type x = t<caret>;");
 
-        PsiType e = (PsiType) myFixture.getElementAtCaret();
+        RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.B.t", e.getQualifiedName());
     }
 
@@ -219,7 +221,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Css.re", "include Css_Legacy_Core;");
         configureCode("A.re", "type layoutRule; let visibility: [< Css.Types.Length.t | Css.Types.Visibility.t<caret> ] => layoutRule;");
 
-        PsiType e = (PsiType) myFixture.getElementAtCaret();
+        RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("Css_AtomicTypes.Visibility.t", e.getQualifiedName());
     }
 
@@ -228,7 +230,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module B = { module C = { type t; }; }; module D = B; include D.C;");
         configureCode("C.re", "type t = A.t<caret>;");
 
-        PsiType e = (PsiType) myFixture.getElementAtCaret();
+        RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.B.C.t", e.getQualifiedName());
     }
 
@@ -236,7 +238,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_module_signature() {
         configureCode("A.re", "module B: { type t; let toString: t => string; }; module C: { type t; let toString: t<caret> => string; };");
 
-        PsiType e = (PsiType) myFixture.getElementAtCaret();
+        RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.C.t", e.getQualifiedName());
     }
 
@@ -245,7 +247,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module A1 = { let add = x => x + 3; };");
         configureCode("B.re", "let x = A.A1.(x->add<caret>);");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.A1.add", e.getQualifiedName());
     }
 
@@ -254,7 +256,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module A1 = { external add : int => int = \"\"; };");
         configureCode("B.re", "let x = A.A1.(x->add<caret>);");
 
-        PsiExternal e = (PsiExternal) myFixture.getElementAtCaret();
+        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
         assertEquals("A.A1.add", e.getQualifiedName());
     }
 
@@ -263,7 +265,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Css.mli", "val px: int => string;");
         configureCode("A.re", "Dimensions.spacing.small->Css.px<caret>");
 
-        PsiVal e = (PsiVal) myFixture.getElementAtCaret();
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
         assertEquals("Css.px", e.getQualifiedName());
     }
 
@@ -272,7 +274,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Css.mli", "val px: int => string;");
         configureCode("A.re", "let make = () => { open Css; Dimensions.spacing.small->px<caret>; }");
 
-        PsiVal e = (PsiVal) myFixture.getElementAtCaret();
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
         assertEquals("Css.px", e.getQualifiedName());
     }
 
@@ -281,7 +283,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Core.re", "module Async = { let get = x => x; };");
         configureCode("A.re", "open Core.Async; request->get<caret>(\"windows/settings\")");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("Core.Async.get", e.getQualifiedName());
     }
 
@@ -290,7 +292,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Css.mli", "module Rule = { val px: int => string; };");
         configureCode("A.re", "let make = () => { open Css; Dimensions.spacing.small->Rule.px<caret>; }");
 
-        PsiVal e = (PsiVal) myFixture.getElementAtCaret();
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
         assertEquals("Css.Rule.px", e.getQualifiedName());
     }
 
@@ -299,7 +301,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Command.re", "module Settings = { module Action = { let convert = x => x; }; };");
         configureCode("A.re", "module C = Y; open Command; Settings.Action.convert<caret>");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("Command.Settings.Action.convert", e.getQualifiedName());
     }
 
@@ -308,7 +310,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "let convert = x => x;");
         configureCode("A.re", "X.Variant(B.convert<caret>())");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("B.convert", e.getQualifiedName());
     }
 
@@ -317,7 +319,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "type t('a) = | Variant('a, 'b);");
         configureCode("A.re", "let x = 1; B.Variant(X.Y, x<caret>)");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.x", e.getQualifiedName());
     }
 
@@ -327,7 +329,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Css.re", "include Css_Core;");
         configureCode("A.re", "open Css; fontStyle<caret>");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("Css_Core.fontStyle", e.getQualifiedName());
     }
 
@@ -338,7 +340,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Css.re", "include Css_Core;");
         configureCode("A.re", "open Css.Rules; fontStyle<caret>");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("Css_Rule.fontStyle", e.getQualifiedName());
     }
 
@@ -350,7 +352,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Belt.re", "module Option = Belt_Option; module Map = Belt_Map;");
         configureCode("A.re", "let x = (dict, locale) => locale->Belt.Option.flatMap<caret>(dict->Belt.Map.String.get);");
 
-        PsiVal e = (PsiVal) myFixture.getElementAtCaret();
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
         assertEquals("Belt_Option.flatMap", e.getQualifiedName());
     }
 
@@ -362,7 +364,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Belt.re", "module Option = Belt_Option; module Map = Belt_Map;");
         configureCode("A.re", "let x = (dict, locale) => locale->Belt.Option.flatMap(dict->Belt.Map.String.get<caret>);");
 
-        PsiVal e = (PsiVal) myFixture.getElementAtCaret();
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
         assertEquals("Belt_MapString.get", e.getQualifiedName());
     }
 
@@ -372,7 +374,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module Make = (M:I) => { let a = 3; };");
         configureCode("B.re", "module Instance = A.Make({}); let b = Instance.a<caret>;");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.Make.a", e.getQualifiedName());
     }
 
@@ -381,7 +383,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module Make = (M:I) => { let a = 3; }; include Make({})");
         configureCode("B.re", "let b = A.a<caret>;");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.Make.a", e.getQualifiedName());
     }
 
@@ -391,7 +393,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "module T = A; module Make = (M:Intf): T.Result => { let b = 3; };");
         configureCode("C.re", "module Instance = Make({}); let c = Instance.a<caret>;");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.Result.a", e.getQualifiedName());
     }
     */
@@ -401,7 +403,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("pervasives.mli", "external compare : 'a -> 'a -> int = \"%compare\"");
         configureCode("A.re", "module B = X.Functor({ let cmp = Pervasives.compare<caret>; })");
 
-        PsiExternal e = (PsiExternal) myFixture.getElementAtCaret();
+        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
         assertEquals("Pervasives.compare", e.getQualifiedName());
     }
 
@@ -410,7 +412,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_record() {
         configureCode("B.re", "let b = { a: 1, b: 2 }; b<caret>");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("B.b", e.getQualifiedName());
     }
 
@@ -436,7 +438,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_object_l1() {
         configureCode("A.re", "let a = { \"b\": 1, \"c\": 2 }; a##b<caret>");
 
-        PsiObjectField e = (PsiObjectField) myFixture.getElementAtCaret();
+        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
         assertEquals("A.a.b", e.getQualifiedName());
     }
 
@@ -444,7 +446,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_object_l3() {
         configureCode("A.re", "let a = { \"b\": { \"c\": { \"d\": 1 } } }; a##b##c##d<caret>");
 
-        PsiObjectField e = (PsiObjectField) myFixture.getElementAtCaret();
+        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
         assertEquals("A.a.b.c.d", e.getQualifiedName());
     }
     //endregion
@@ -479,7 +481,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         configureCode("B.re", "type t1 = {bar:string};");
         configureCode("A.re", "type t = {bar: string}; let bar<caret> = item => item.bar;");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.bar", e.getQualifiedName());
     }
 
@@ -490,7 +492,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
                 "module Xxx = { type t = | ClearPath; let clearPath = () => (); };\n " +
                 "let reducer = fun | Xxx.ClearPath => clearPath<caret>();");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.clearPath", e.getQualifiedName());
     }
 }

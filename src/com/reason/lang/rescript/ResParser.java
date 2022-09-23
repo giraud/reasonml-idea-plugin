@@ -73,7 +73,7 @@ public class ResParser extends CommonPsiParser {
                         // EOL in it ; but we don't want to have it in the parsed tree, we change it to a whitespace
                         myBuilder.remapCurrentToken(TokenType.WHITE_SPACE);
 
-                        if (is(myTypes.C_FUNCTOR_CALL/*PsiOpen is potential functor call*/) && isRawParent(myTypes.C_OPEN)) {
+                        if (is(myTypes.C_FUNCTOR_CALL/*RPsiOpen is potential functor call*/) && isRawParent(myTypes.C_OPEN)) {
                             popEnd().popEnd();
                         } else if (isRawParent(myTypes.C_ANNOTATION) && !is(myTypes.C_SCOPED_EXPR)) {
                             // inside an annotation
@@ -92,6 +92,8 @@ public class ResParser extends CommonPsiParser {
                         parseArrow();
                     } else if (tokenType == myTypes.REF) {
                         parseRef();
+                    } else if (tokenType == myTypes.METHOD) {
+                        parseMethod();
                     } else if (tokenType == myTypes.OPTION) {
                         parseOption();
                     } else if (tokenType == myTypes.MATCH) {
@@ -254,12 +256,19 @@ public class ResParser extends CommonPsiParser {
         private void parseRef() {
             if (is(myTypes.C_RECORD_EXPR)) {
                 // { |>x<| ...
-                mark(myTypes.C_RECORD_FIELD).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                remapCurrentToken(myTypes.LIDENT).
+                        mark(myTypes.C_RECORD_FIELD).wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (strictlyIn(myTypes.C_TAG_START)) {
                 remapCurrentToken(myTypes.PROPERTY_NAME).mark(myTypes.C_TAG_PROPERTY);
             }
         }
 
+        private void parseMethod() {
+            if (is(myTypes.C_RECORD_EXPR)) {
+                remapCurrentToken(myTypes.LIDENT).
+                        mark(myTypes.C_RECORD_FIELD).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            }
+        }
 
         private void generateJsxPropertyName() {
             remapCurrentToken(myTypes.PROPERTY_NAME)

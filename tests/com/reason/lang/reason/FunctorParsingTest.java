@@ -12,11 +12,11 @@ import java.util.*;
 public class FunctorParsingTest extends RmlParsingTestCase {
     @Test
     public void test_basic() {
-        PsiFunctor e = firstOfType(parseCode("module Make = (M: Def): S => {}"), PsiFunctor.class);
+        RPsiFunctor e = firstOfType(parseCode("module Make = (M: Def): S => {}"), RPsiFunctor.class);
 
         assertEquals("S", e.getReturnType().getText());
         assertEquals("{}", e.getBody().getText());
-        assertNull(PsiTreeUtil.findChildOfType(e.getBody(), PsiScopedExpr.class));
+        assertNull(PsiTreeUtil.findChildOfType(e.getBody(), RPsiScopedExpr.class));
         assertDoesntContain(extractUpperSymbolTypes(e), myTypes.A_VARIANT_NAME);
     }
 
@@ -25,12 +25,12 @@ public class FunctorParsingTest extends RmlParsingTestCase {
         Collection<PsiNamedElement> expressions = expressions(parseCode("module Make = (M: Input) : (S with type t('a) = M.t('a) and type b = M.b) => {}"));
 
         assertEquals(1, expressions.size());
-        PsiFunctor f = (PsiFunctor) first(expressions);
+        RPsiFunctor f = (RPsiFunctor) first(expressions);
 
         assertEquals("M: Input", first(f.getParameters()).getText());
         assertEquals("S", f.getReturnType().getText());
 
-        List<PsiTypeConstraint> constraints = new ArrayList<>(f.getConstraints());
+        List<RPsiTypeConstraint> constraints = new ArrayList<>(f.getConstraints());
         assertEquals(2, constraints.size());
         assertEquals("type t('a) = M.t('a)", constraints.get(0).getText());
         assertEquals("type b = M.b", constraints.get(1).getText());
@@ -39,7 +39,7 @@ public class FunctorParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_signature() {
-        Collection<PsiFunctor> functors = functorExpressions(parseCode(
+        Collection<RPsiFunctor> functors = functorExpressions(parseCode(
                 "module GlobalBindings = (M: {\n" +
                         "    let relation_classes: list(string);\n" +
                         "    let morphisms: list(string);\n" +
@@ -50,13 +50,13 @@ public class FunctorParsingTest extends RmlParsingTestCase {
                         "}"));
 
         assertEquals(1, functors.size());
-        PsiFunctor f = first(functors);
+        RPsiFunctor f = first(functors);
         assertEquals("GlobalBindings", f.getName());
         assertEquals("Dummy.GlobalBindings", f.getQualifiedName());
-        Collection<PsiParameterDeclaration> parameters = f.getParameters();
+        Collection<RPsiParameterDeclaration> parameters = f.getParameters();
         assertSize(1, parameters);
         assertEquals("M", first(parameters).getName());
         assertNotNull(f.getBody());
-        assertNull(PsiTreeUtil.findChildOfType(f.getBody(), PsiScopedExpr.class));
+        assertNull(PsiTreeUtil.findChildOfType(f.getBody(), RPsiScopedExpr.class));
     }
 }

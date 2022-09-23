@@ -2,7 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -115,7 +115,7 @@ public class ClassParsingTest extends OclParsingTestCase {
         assertSize(2, es);
         assertInstanceOf(es.get(0), RPsiClass.class);
         assertEquals("control", es.get(0).getName());
-        assertInstanceOf(es.get(1), PsiType.class);
+        assertInstanceOf(es.get(1), RPsiType.class);
         assertEquals("errpage", es.get(1).getName());
     }
 

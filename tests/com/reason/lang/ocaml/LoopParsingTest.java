@@ -11,17 +11,17 @@ import java.util.*;
 public class LoopParsingTest extends OclParsingTestCase {
     @Test
     public void test_for() {
-        PsiLetBinding e = firstOfType(parseCode("let _ = for i = 1 to pred l do unsafe_set rest i (f i) done"), PsiLet.class).getBinding();
+        RPsiLetBinding e = firstOfType(parseCode("let _ = for i = 1 to pred l do unsafe_set rest i (f i) done"), RPsiLet.class).getBinding();
 
-        PsiForLoop l = PsiTreeUtil.findChildOfType(e, PsiForLoop.class);
+        RPsiForLoop l = PsiTreeUtil.findChildOfType(e, RPsiForLoop.class);
         assertEquals("for i = 1 to pred l do unsafe_set rest i (f i) done", l.getText());
     }
 
     // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/176
     @Test
     public void test_GH_176() {
-        PsiLet e = first(letExpressions(parseCode("let x = while true do match x with | _ -> () done")));
-        PsiWhile while_ = (PsiWhile) e.getBinding().getFirstChild();
+        RPsiLet e = first(letExpressions(parseCode("let x = while true do match x with | _ -> () done")));
+        RPsiWhile while_ = (RPsiWhile) e.getBinding().getFirstChild();
 
         assertEquals("true", while_.getCondition().getText());
     }
@@ -29,8 +29,8 @@ public class LoopParsingTest extends OclParsingTestCase {
     // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/189
     @Test
     public void test_GH_189() {
-        Collection<PsiLet> es = letExpressions(parseCode("let utf8_length s = while !p < len do () done; ()\nlet foo x = x"));
-        PsiWhile while_ = (PsiWhile) ((PsiFunction) first(es).getBinding().getFirstChild()).getBody().getFirstChild();
+        Collection<RPsiLet> es = letExpressions(parseCode("let utf8_length s = while !p < len do () done; ()\nlet foo x = x"));
+        RPsiWhile while_ = (RPsiWhile) ((RPsiFunction) first(es).getBinding().getFirstChild()).getBody().getFirstChild();
 
         assertEquals("!p < len", while_.getCondition().getText());
         assertEquals("do () done", while_.getBody().getText());

@@ -2,7 +2,7 @@ package com.reason.lang;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.psi.impl.PsiAnnotation;
+import com.reason.lang.core.psi.impl.RPsiAnnotation;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
@@ -19,13 +19,13 @@ public class ModuleHelper {
         }
 
         PsiElement componentDef = null;
-        PsiLet makeDef = null;
+        RPsiLet makeDef = null;
 
         // JSX 3
 
         // Try to find a react.component attribute
-        List<PsiAnnotation> annotations = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiAnnotation.class);
-        for (PsiAnnotation annotation : annotations) {
+        List<RPsiAnnotation> annotations = PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiAnnotation.class);
+        for (RPsiAnnotation annotation : annotations) {
             if ("@react.component".equals(annotation.getName())) {
                 return true;
             }
@@ -34,9 +34,9 @@ public class ModuleHelper {
         // JSX 2
 
         // Try to find if it's a proxy to a React class
-        List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiExternal.class);
-        for (PsiExternal external : externals) {
-            PsiSignature signature = external.getSignature();
+        List<RPsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiExternal.class);
+        for (RPsiExternal external : externals) {
+            RPsiSignature signature = external.getSignature();
             String signatureText = signature == null ? null : signature.asText(ORLanguageProperties.cast(element.getLanguage()));
             if ("ReasonReact.reactClass".equals(signatureText)) {
                 componentDef = external;
@@ -45,8 +45,8 @@ public class ModuleHelper {
         }
 
         // Try to find a make function and a component (if not a proxy) functions
-        List<PsiLet> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiLet.class);
-        for (PsiLet let : expressions) {
+        List<RPsiLet> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiLet.class);
+        for (RPsiLet let : expressions) {
             if (componentDef == null && "component".equals(let.getName())) {
                 componentDef = let;
             } else if (makeDef == null && "make".equals(let.getName())) {

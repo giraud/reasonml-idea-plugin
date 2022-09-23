@@ -9,18 +9,18 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class ExceptionFqnIndex extends IntStubIndexExtension<PsiException> {
+public class ExceptionFqnIndex extends IntStubIndexExtension<RPsiException> {
     @Override
     public int getVersion() {
         return super.getVersion() + ORStubVersions.EXCEPTION;
     }
 
     @Override
-    public @NotNull StubIndexKey<Integer, PsiException> getKey() {
+    public @NotNull StubIndexKey<Integer, RPsiException> getKey() {
         return IndexKeys.EXCEPTIONS_FQN;
     }
 
-    public static @NotNull Collection<PsiException> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.EXCEPTIONS_FQN, key.hashCode(), project, scope, PsiException.class);
+    public static @NotNull Collection<RPsiException> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.EXCEPTIONS_FQN, key.hashCode(), project, scope, RPsiException.class);
     }
 }

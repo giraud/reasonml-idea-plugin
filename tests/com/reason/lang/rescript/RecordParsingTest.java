@@ -13,8 +13,8 @@ import java.util.*;
 public class RecordParsingTest extends ResParsingTestCase {
     @Test
     public void test_declaration() {
-        PsiType e = first(typeExpressions(parseCode("type r = {a: int, b: option<string>}")));
-        PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
+        RPsiType e = first(typeExpressions(parseCode("type r = {a: int, b: option<string>}")));
+        RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
 
         List<RPsiRecordField> fields = record.getFields();
         assertEquals("a", fields.get(0).getName());
@@ -25,8 +25,8 @@ public class RecordParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_usage() {
-        PsiLet e = first(letExpressions(parseCode("let r = {a: 1, b: 2, c: 3}")));
-        PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
+        RPsiLet e = first(letExpressions(parseCode("let r = {a: 1, b: 2, c: 3}")));
+        RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
 
         List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
         assertSize(3, fields);
@@ -40,8 +40,8 @@ public class RecordParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_usage_with_sig() {
-        PsiLet e = first(letExpressions(parseCode("let r: M.t = {a: 1, b: 2, c: 3}")));
-        PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
+        RPsiLet e = first(letExpressions(parseCode("let r: M.t = {a: 1, b: 2, c: 3}")));
+        RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
 
         List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
         assertSize(3, fields);
@@ -55,8 +55,8 @@ public class RecordParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_usage_deep() {
-        PsiLet e = first(letExpressions(parseCode("let r = { a: [ 1, 2 ], b: { b1: { b11: 3 } }, c: 4 }")));
-        PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
+        RPsiLet e = first(letExpressions(parseCode("let r = { a: [ 1, 2 ], b: { b1: { b11: 3 } }, c: 4 }")));
+        RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
 
         List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
         assertSize(3, fields);
@@ -71,17 +71,17 @@ public class RecordParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_mixin() {
-        PsiLet let = first(letExpressions(parseCode("let x = {...component, otherField: 1}")));
+        RPsiLet let = first(letExpressions(parseCode("let x = {...component, otherField: 1}")));
 
-        PsiRecord record = (PsiRecord) let.getBinding().getFirstChild();
+        RPsiRecord record = (RPsiRecord) let.getBinding().getFirstChild();
         RPsiRecordField field = record.getFields().iterator().next();
         assertEquals(field.getName(), "otherField");
     }
 
     @Test
     public void test_annotations() {
-        PsiType e = first(typeExpressions(parseCode("type props = { @optional key: string, @optional @as(\"aria-label\") ariaLabel: string }")));
-        PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
+        RPsiType e = first(typeExpressions(parseCode("type props = { @optional key: string, @optional @as(\"aria-label\") ariaLabel: string }")));
+        RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
 
         List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
         assertSize(2, fields);
@@ -93,8 +93,8 @@ public class RecordParsingTest extends ResParsingTestCase {
     public void test_annotation_after() {
         FileBase e = parseCode("type t = { key: string }\n@module(\"x\")");
 
-        PsiType t = ORUtil.findImmediateFirstChildOfClass(e, PsiType.class);
-        PsiAnnotation a = ORUtil.findImmediateFirstChildOfClass(e, PsiAnnotation.class);
+        RPsiType t = ORUtil.findImmediateFirstChildOfClass(e, RPsiType.class);
+        RPsiAnnotation a = ORUtil.findImmediateFirstChildOfClass(e, RPsiAnnotation.class);
 
         assertEquals("{ key: string }", t.getBinding().getText());
         assertEquals("@module", a.getName());
@@ -102,9 +102,9 @@ public class RecordParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_inside_module() {
-        PsiModule e = firstOfType(parseCode("module M = { let _ = (x) => { ...x, } }"), PsiModule.class);
+        RPsiModule e = firstOfType(parseCode("module M = { let _ = (x) => { ...x, } }"), RPsiModule.class);
 
-        PsiFunction ef = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
+        RPsiFunction ef = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
         assertEquals("{ ...x, }", ef.getBody().getText());
         assertEquals("{ let _ = (x) => { ...x, } }", e.getBody().getText());
     }

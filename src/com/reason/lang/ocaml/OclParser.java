@@ -197,6 +197,8 @@ public class OclParser extends CommonPsiParser {
                     parseLet();
                 } else if (tokenType == myTypes.VAL) {
                     parseVal();
+                } else if (tokenType == myTypes.REF) {
+                    parseRef();
                 } else if (tokenType == myTypes.METHOD) {
                     parseMethod();
                 } else if (tokenType == myTypes.EXCEPTION) {
@@ -1208,9 +1210,19 @@ public class OclParser extends CommonPsiParser {
             mark(insideClass ? myTypes.C_CLASS_FIELD : myTypes.C_VAL_DECLARATION).setStart();
         }
 
+        private void parseRef() {
+            if (is(myTypes.C_RECORD_FIELD)) {
+                remapCurrentToken(myTypes.LIDENT).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            }
+        }
+
         private void parseMethod() {
-            popEndUntil(myTypes.C_OBJECT);
-            mark(myTypes.C_CLASS_METHOD).setStart();
+            if (is(myTypes.C_RECORD_FIELD)) {
+                remapCurrentToken(myTypes.LIDENT).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            } else {
+                popEndUntil(myTypes.C_OBJECT);
+                mark(myTypes.C_CLASS_METHOD).setStart();
+            }
         }
 
         private void parseLet() {

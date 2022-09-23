@@ -4,7 +4,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiIfStatement;
+import com.reason.lang.core.psi.impl.RPsiIfStatement;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 
@@ -15,7 +15,7 @@ public class IfParsingTest extends ResParsingTestCase {
     @Test
     public void test_basic_if() {
         PsiFile psiFile = parseCode("if (x) { () }");
-        PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
+        RPsiIfStatement e = firstOfType(psiFile, RPsiIfStatement.class);
 
         assertNotNull(e);
         assertNotNull(e.getCondition());
@@ -26,7 +26,7 @@ public class IfParsingTest extends ResParsingTestCase {
     @Test
     public void test_if_else() {
         PsiFile psiFile = parseCode("let test = x => if (x) { 1 } else { 2 }");
-        PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
+        RPsiIfStatement e = firstOfType(psiFile, RPsiIfStatement.class);
 
         assertNotNull(e);
         assertNotNull(e.getCondition());
@@ -37,7 +37,7 @@ public class IfParsingTest extends ResParsingTestCase {
     @Test
     public void test_if_else_noBrace() {
         PsiFile psiFile = parseCode("let test = x => if (x) 1 else 2");
-        PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
+        RPsiIfStatement e = firstOfType(psiFile, RPsiIfStatement.class);
 
         assertEquals("(x)", e.getCondition().getText());
         assertEquals("1", e.getThenExpression().getText());
@@ -47,7 +47,7 @@ public class IfParsingTest extends ResParsingTestCase {
     @Test
     public void test_ternary_lident() {
         PsiFile psiFile = parseCode("let _ = a ? b : c");
-        PsiTernary e = firstOfType(psiFile, PsiTernary.class);
+        RPsiTernary e = firstOfType(psiFile, RPsiTernary.class);
 
         assertNotNull(e);
         assertNotNull(e.getCondition());
@@ -59,7 +59,7 @@ public class IfParsingTest extends ResParsingTestCase {
     @Test
     public void test_ternary_parens() {
         PsiFile psiFile = parseCode("let _ = (a) ? b : c");
-        PsiTernary e = firstOfType(psiFile, PsiTernary.class);
+        RPsiTernary e = firstOfType(psiFile, RPsiTernary.class);
 
         assertNotNull(e);
         assertNotNull(e.getCondition());
@@ -71,7 +71,7 @@ public class IfParsingTest extends ResParsingTestCase {
     @Test
     public void test_ternary_cond() {
         PsiFile psiFile = parseCode("let _ = a == a' || (x < y) ? b : c");
-        PsiTernary e = firstOfType(psiFile, PsiTernary.class);
+        RPsiTernary e = firstOfType(psiFile, RPsiTernary.class);
 
         assertNotNull(e);
         assertNotNull(e.getCondition());
@@ -83,7 +83,7 @@ public class IfParsingTest extends ResParsingTestCase {
     @Test
     public void test_ternary_call() {
         PsiFile psiFile = parseCode("let _ = fn(a) ? b : c");
-        PsiTernary e = firstOfType(psiFile, PsiTernary.class);
+        RPsiTernary e = firstOfType(psiFile, RPsiTernary.class);
 
         assertNotNull(e);
         assertNotNull(e.getCondition());
@@ -94,10 +94,10 @@ public class IfParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_ternary_fun_record() {
-        PsiRecord e = firstOfType(parseCode("let x = (x) => {a: [ X.y ? true : false ] }"), PsiRecord.class);
+        RPsiRecord e = firstOfType(parseCode("let x = (x) => {a: [ X.y ? true : false ] }"), RPsiRecord.class);
 
         assertEquals("{a: [ X.y ? true : false ] }", e.getText());
-        PsiTernary t = PsiTreeUtil.findChildOfType(e, PsiTernary.class);
+        RPsiTernary t = PsiTreeUtil.findChildOfType(e, RPsiTernary.class);
         assertEquals("X.y", t.getCondition().getText());
         assertEquals("true", t.getThenExpression().getText());
         assertEquals("false", t.getElseExpression().getText());
@@ -105,63 +105,63 @@ public class IfParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_ternary_array() {
-        PsiScopedExpr e = firstOfType(parseCode("let x = [ x ? a : b, y ? c : d  ]"), PsiScopedExpr.class);
+        RPsiScopedExpr e = firstOfType(parseCode("let x = [ x ? a : b, y ? c : d  ]"), RPsiScopedExpr.class);
 
-        List<PsiTernary> ts = ORUtil.findImmediateChildrenOfClass(e, PsiTernary.class);
+        List<RPsiTernary> ts = ORUtil.findImmediateChildrenOfClass(e, RPsiTernary.class);
         assertEquals("x ? a : b", ts.get(0).getText());
         assertEquals("y ? c : d", ts.get(1).getText());
     }
 
     @Test
     public void test_ternary_list() {
-        PsiScopedExpr e = firstOfType(parseCode("let x = list{ x ? a : b, y ? c : d  }"), PsiScopedExpr.class);
+        RPsiScopedExpr e = firstOfType(parseCode("let x = list{ x ? a : b, y ? c : d  }"), RPsiScopedExpr.class);
 
-        List<PsiTernary> ts = ORUtil.findImmediateChildrenOfClass(e, PsiTernary.class);
+        List<RPsiTernary> ts = ORUtil.findImmediateChildrenOfClass(e, RPsiTernary.class);
         assertEquals("x ? a : b", ts.get(0).getText());
         assertEquals("y ? c : d", ts.get(1).getText());
     }
 
     @Test
     public void test_ternary_tuple() {
-        PsiScopedExpr e = firstOfType(parseCode("let x = ( x ? a : b, y ? c : d  );"), PsiScopedExpr.class);
+        RPsiScopedExpr e = firstOfType(parseCode("let x = ( x ? a : b, y ? c : d  );"), RPsiScopedExpr.class);
 
-        List<PsiTernary> ts = ORUtil.findImmediateChildrenOfClass(e, PsiTernary.class);
+        List<RPsiTernary> ts = ORUtil.findImmediateChildrenOfClass(e, RPsiTernary.class);
         assertEquals("x ? a : b", ts.get(0).getText());
         assertEquals("y ? c : d", ts.get(1).getText());
     }
 
     @Test
     public void test_ternary_function_parameters() {
-        PsiParameters e = firstOfType(parseCode("let x = fn( x ? a : b, y ? c : d  )"), PsiParameters.class);
+        RPsiParameters e = firstOfType(parseCode("let x = fn( x ? a : b, y ? c : d  )"), RPsiParameters.class);
 
-        assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameterReference.class));
-        List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
+        assertSize(2, PsiTreeUtil.findChildrenOfType(e, RPsiParameterReference.class));
+        List<RPsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiTernary.class));
         assertEquals("x ? a : b", ts.get(0).getText());
         assertEquals("y ? c : d", ts.get(1).getText());
     }
 
     //public void test_ternary_functor_parameters() {      zzz functor
-    //    PsiParameters e = firstOfType(parseCode("module M = Make( x ? a : b, y ? c : d  )"), PsiParameters.class);
+    //    RPsiParameters e = firstOfType(parseCode("module M = Make( x ? a : b, y ? c : d  )"), RPsiParameters.class);
     //
-    //    assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiParameterDeclaration.class));
-    //    List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
+    //    assertSize(2, PsiTreeUtil.findChildrenOfType(e, RPsiParameterDeclaration.class));
+    //    List<RPsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiTernary.class));
     //    assertEquals("x ? a : b", ts.get(0).getText());
     //    assertEquals("y ? c : d", ts.get(1).getText());
     //}
 
     @Test
     public void test_ternary_switch() {
-        PsiLet e = firstOfType(parseCode("let compare = switch index { | 0 => appliedCount > appliedCount' ? (-1) : 0 }"), PsiLet.class);
+        RPsiLet e = firstOfType(parseCode("let compare = switch index { | 0 => appliedCount > appliedCount' ? (-1) : 0 }"), RPsiLet.class);
 
-        List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
+        List<RPsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiTernary.class));
         assertEquals("appliedCount > appliedCount' ? (-1) : 0", ts.get(0).getText());
     }
 
     @Test
     public void test_ternary_fun() {
-        PsiLet e = firstOfType(parseCode("let fn = x => x ? Some(x) : None"), PsiLet.class);
+        RPsiLet e = firstOfType(parseCode("let fn = x => x ? Some(x) : None"), RPsiLet.class);
 
-        List<PsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTernary.class));
+        List<RPsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiTernary.class));
         assertEquals("x ? Some(x) : None", ts.get(0).getText());
     }
 }

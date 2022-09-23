@@ -16,7 +16,7 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class RPsiRecordFieldImpl extends PsiTokenStub<ORTypes, RPsiRecordField, RsiRecordFieldStub> implements RPsiRecordField {
+public class RPsiRecordFieldImpl extends RPsiTokenStub<ORTypes, RPsiRecordField, RsiRecordFieldStub> implements RPsiRecordField {
     // region Constructors
     public RPsiRecordFieldImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
@@ -30,7 +30,7 @@ public class RPsiRecordFieldImpl extends PsiTokenStub<ORTypes, RPsiRecordField, 
     // region PsiNamedElement
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiLowerSymbol.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiLowerSymbol.class);
     }
 
     @Override
@@ -72,8 +72,8 @@ public class RPsiRecordFieldImpl extends PsiTokenStub<ORTypes, RPsiRecordField, 
     }
     //endregion
 
-    public @Nullable PsiSignature getSignature() {
-        return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
+    public @Nullable RPsiSignature getSignature() {
+        return PsiTreeUtil.findChildOfType(this, RPsiSignature.class);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class RPsiRecordFieldImpl extends PsiTokenStub<ORTypes, RPsiRecordField, 
 
             @Override
             public @Nullable String getLocationString() {
-                PsiSignature signature = getSignature();
+                RPsiSignature signature = getSignature();
                 return signature == null ? null : signature.asText(ORLanguageProperties.cast(getLanguage()));
             }
 

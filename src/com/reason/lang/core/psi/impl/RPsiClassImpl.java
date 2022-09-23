@@ -16,7 +16,7 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-public class RPsiClassImpl extends PsiTokenStub<ORTypes, RPsiClass, RsiClassStub> implements RPsiClass {
+public class RPsiClassImpl extends RPsiTokenStub<ORTypes, RPsiClass, RsiClassStub> implements RPsiClass {
     // region Constructors
     public RPsiClassImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
@@ -29,7 +29,7 @@ public class RPsiClassImpl extends PsiTokenStub<ORTypes, RPsiClass, RsiClassStub
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerSymbol.class);
+        return findChildByClass(RPsiLowerSymbol.class);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class RPsiClassImpl extends PsiTokenStub<ORTypes, RPsiClass, RsiClassStub
 
     @Override
     public @Nullable PsiElement getClassBody() {
-        return PsiTreeUtil.findChildOfType(this, PsiObject.class);
+        return PsiTreeUtil.findChildOfType(this, RPsiObject.class);
     }
 
     @Override
@@ -82,8 +82,8 @@ public class RPsiClassImpl extends PsiTokenStub<ORTypes, RPsiClass, RsiClassStub
     }
 
     @Override
-    public @NotNull Collection<PsiParameters> getParameters() {
-        return PsiTreeUtil.findChildrenOfType(this, PsiParameters.class);
+    public @NotNull Collection<RPsiParameters> getParameters() {
+        return PsiTreeUtil.findChildrenOfType(this, RPsiParameters.class);
     }
 
     @Override

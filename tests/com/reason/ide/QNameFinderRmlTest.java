@@ -80,7 +80,7 @@ public class QNameFinderRmlTest extends ORBasePlatformTestCase {
     public void test_component_path_from_tagname() {
         FileBase f = configureCode("A.re", "open X; <B.C.Comp />;");
 
-        List<String> paths = extractPotentialPaths(PsiTreeUtil.findChildOfType(f, PsiTagStart.class).getNameIdentifier());
+        List<String> paths = extractPotentialPaths(PsiTreeUtil.findChildOfType(f, RPsiTagStart.class).getNameIdentifier());
         assertEquals(makePaths("X.B.C.Comp", "A.B.C.Comp", "B.C.Comp", "", "Pervasives"), paths);
     }
 

@@ -12,26 +12,26 @@ import java.util.*;
 public class SignatureParsingTest extends RmlParsingTestCase {
     @Test
     public void test_let() {
-        PsiLet let = first(letExpressions(parseCode("let x:int = 1")));
+        RPsiLet let = first(letExpressions(parseCode("let x:int = 1")));
 
-        PsiSignature signature = let.getSignature();
+        RPsiSignature signature = let.getSignature();
         assertEquals("int", signature.asText(getLangProps()));
         assertFalse(signature.getItems().get(0).isOptional());
     }
 
     @Test
     public void test_trimming() {
-        PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string =>\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
+        RPsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string =>\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
 
-        PsiSignature signature = let.getSignature();
+        RPsiSignature signature = let.getSignature();
         assertEquals("string => componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asText(getLangProps()));
     }
 
     @Test
     public void test_parsing_named_params() {
-        PsiLet let = first(letExpressions(parseCode("let padding: (~v:length, ~h:length) => rule;")));
+        RPsiLet let = first(letExpressions(parseCode("let padding: (~v:length, ~h:length) => rule;")));
 
-        PsiSignature signature = let.getSignature();
+        RPsiSignature signature = let.getSignature();
         assertEquals(3, signature.getItems().size());
         assertEquals("(~v:length, ~h:length) => rule", signature.asText(getLangProps()));
         assertFalse(signature.getItems().get(0).isOptional());
@@ -43,9 +43,9 @@ public class SignatureParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_optional_fun() {
-        PsiLet let = first(letExpressions(parseCode("let x:int => option(string) => string = (a,b) => c")));
+        RPsiLet let = first(letExpressions(parseCode("let x:int => option(string) => string = (a,b) => c")));
 
-        List<PsiSignatureItem> items = let.getSignature().getItems();
+        List<RPsiSignatureItem> items = let.getSignature().getItems();
         assertEquals("int", items.get(0).getText());
         assertFalse(items.get(0).isOptional());
         assertEquals("option(string)", items.get(1).getText());
@@ -56,10 +56,10 @@ public class SignatureParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_optional_fun_parameters() {
-        PsiLet let = first(letExpressions(parseCode("let x = (a:Js.t, b:option(string), ~c:bool=false, ~d:float=?) => 3")));
+        RPsiLet let = first(letExpressions(parseCode("let x = (a:Js.t, b:option(string), ~c:bool=false, ~d:float=?) => 3")));
 
-        PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
-        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
+        RPsiFunction function = (RPsiFunction) let.getBinding().getFirstChild();
+        List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(4, parameters);
         assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
@@ -75,10 +75,10 @@ public class SignatureParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_optional_02() {
-        PsiLet let = firstOfType(parseCode("module Size: { let makeRecord: (~size: option(float)=?, unit) => t; };"), PsiLet.class);
+        RPsiLet let = firstOfType(parseCode("module Size: { let makeRecord: (~size: option(float)=?, unit) => t; };"), RPsiLet.class);
 
-        PsiSignature s = let.getSignature();
-        List<PsiSignatureItem> si = s.getItems();
+        RPsiSignature s = let.getSignature();
+        List<RPsiSignatureItem> si = s.getItems();
 
         assertSize(3, si);
         assertTrue(si.get(0).isOptional());
@@ -90,19 +90,19 @@ public class SignatureParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_unit_fun_parameter() {
-        PsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1")));
+        RPsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1")));
 
-        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
+        RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
+        List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(3, parameters);
     }
 
     @Test
     public void test_jsObject() {
-        PsiType psiType = first(typeExpressions(parseCode("type props = { [@bs.optional] dangerouslySetInnerHTML: {. \"__html\": string} };")));
+        RPsiType psiType = first(typeExpressions(parseCode("type props = { [@bs.optional] dangerouslySetInnerHTML: {. \"__html\": string} };")));
 
-        PsiRecord record = (PsiRecord) psiType.getBinding().getFirstChild();
+        RPsiRecord record = (RPsiRecord) psiType.getBinding().getFirstChild();
         List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
 
         assertEquals(1, fields.size());
@@ -111,19 +111,19 @@ public class SignatureParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_external_fun() {
-        PsiExternal e = first(externalExpressions(parseCode("external refToJsObj : reactRef => Js.t({..}) = \"%identity\";")));
+        RPsiExternal e = first(externalExpressions(parseCode("external refToJsObj : reactRef => Js.t({..}) = \"%identity\";")));
 
-        PsiSignature signature = e.getSignature();
-        assertSize(2, ORUtil.findImmediateChildrenOfClass(e.getSignature(), PsiSignatureItem.class));
+        RPsiSignature signature = e.getSignature();
+        assertSize(2, ORUtil.findImmediateChildrenOfClass(e.getSignature(), RPsiSignatureItem.class));
         assertEquals("reactRef => Js.t({..})", signature.asText(getLangProps()));
     }
 
     @Test
     public void test_external_fun_2() {
-        PsiExternal e = first(externalExpressions(parseCode("external requestAnimationFrame: (unit => string) => animationFrameID = \"\";")));
+        RPsiExternal e = first(externalExpressions(parseCode("external requestAnimationFrame: (unit => string) => animationFrameID = \"\";")));
 
-        PsiSignature signature = e.getSignature();
-        List<PsiSignatureItem> signatureItems = signature.getItems();
+        RPsiSignature signature = e.getSignature();
+        List<RPsiSignatureItem> signatureItems = signature.getItems();
         assertEquals("unit", signatureItems.get(0).getText());
         assertEquals("string", signatureItems.get(1).getText());
         assertEquals("animationFrameID", signatureItems.get(2).getText());
@@ -132,9 +132,9 @@ public class SignatureParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_dot() {
-        PsiExternal e = firstOfType(parseCode("external getPlatformInformation: (. store) => platform = \"\""), PsiExternal.class);
+        RPsiExternal e = firstOfType(parseCode("external getPlatformInformation: (. store) => platform = \"\""), RPsiExternal.class);
 
-        List<PsiSignatureItem> items = e.getSignature().getItems();
+        List<RPsiSignatureItem> items = e.getSignature().getItems();
         assertSize(2, items);
         assertEquals("store", items.get(0).getText());
         assertEquals("platform", items.get(1).getText());
@@ -142,10 +142,10 @@ public class SignatureParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_option() {
-        PsiExternal e = first(externalExpressions(parseCode("external e : option(show) = \"\";")));
+        RPsiExternal e = first(externalExpressions(parseCode("external e : option(show) = \"\";")));
 
-        PsiSignatureItem sigItem =
-                ORUtil.findImmediateChildrenOfClass(e.getSignature(), PsiSignatureItem.class)
+        RPsiSignatureItem sigItem =
+                ORUtil.findImmediateChildrenOfClass(e.getSignature(), RPsiSignatureItem.class)
                         .iterator()
                         .next();
         assertEquals("option(show)", sigItem.asText(getLangProps()));
@@ -153,20 +153,20 @@ public class SignatureParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_default_optional() {
-        PsiLet let = first(letExpressions(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa;")));
-        PsiSignature signature = let.getSignature();
+        RPsiLet let = first(letExpressions(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa;")));
+        RPsiSignature signature = let.getSignature();
         // assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
         // signature.asString(myLanguage));
     }
 
     @Test
     public void test_react() {
-        PsiExternal e = first(externalExpressions(parseCode("external useState: ([@bs.uncurry] (unit => 'state)) => ('state, (. ('state => 'state)) => unit) = \"useState\";")));
+        RPsiExternal e = first(externalExpressions(parseCode("external useState: ([@bs.uncurry] (unit => 'state)) => ('state, (. ('state => 'state)) => unit) = \"useState\";")));
 
         assertEquals("useState", e.getExternalName());
         assertEquals("([@bs.uncurry] (unit => 'state)) => ('state, (. ('state => 'state)) => unit)", e.getSignature().getText());
-        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunction.class));
-        List<PsiSignatureItem> signatureItems = e.getSignature().getItems();
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, RPsiFunction.class));
+        List<RPsiSignatureItem> signatureItems = e.getSignature().getItems();
         assertEquals("[@bs.uncurry] (unit => 'state)", signatureItems.get(0).getText());
         assertEquals("('state, (. ('state => 'state)) => unit)", signatureItems.get(1).getText());
     }

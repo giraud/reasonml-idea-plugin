@@ -20,7 +20,7 @@ public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
             myEditorPosition = new EditorPosition(lines);
         }
 
-        public @Nullable PsiSignature getSignatureByOffset(int textOffset) {
+        public @Nullable RPsiSignature getSignatureByOffset(int textOffset) {
             LogicalPosition elementPosition = myEditorPosition.getPositionFromOffset(textOffset);
             return elementPosition == null ? null : myTypes.getSignatureByPosition(elementPosition);
         }

@@ -12,10 +12,10 @@ import java.util.*;
 public class LocalOpenParsingTest extends OclParsingTestCase {
     @Test
     public void test_local_open() {
-        List<PsiLet> lets = letExpressions(parseCode("let _ = Int64.(x + y / of_int 2) let x = 1"));
+        List<RPsiLet> lets = letExpressions(parseCode("let _ = Int64.(x + y / of_int 2) let x = 1"));
 
         assertSize(2 , lets);
-        PsiLocalOpen localOpen = PsiTreeUtil.findChildOfType(lets.get(0).getBinding(), PsiLocalOpen.class);
+        RPsiLocalOpen localOpen = PsiTreeUtil.findChildOfType(lets.get(0).getBinding(), RPsiLocalOpen.class);
         assertEquals("(x + y / of_int 2)", localOpen.getText());
         assertFalse(lets.get(1).isFunction());
         assertEquals("1", lets.get(1).getBinding().getText());
@@ -24,7 +24,7 @@ public class LocalOpenParsingTest extends OclParsingTestCase {
     @Test
     public void test_not_local_open() {
         PsiElement expression = firstElement(parseCode("Js.log(\"nok\")"));
-        assertFalse(expression instanceof PsiLocalOpen);
+        assertFalse(expression instanceof RPsiLocalOpen);
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/294
@@ -33,8 +33,8 @@ public class LocalOpenParsingTest extends OclParsingTestCase {
         Collection<PsiNamedElement> es = expressions(parseCode("let _ = let open P in function | A -> true | _ -> false"));
 
         assertSize(1, es);
-        PsiLet e = (PsiLet) es.iterator().next();
+        RPsiLet e = (RPsiLet) es.iterator().next();
         assertEquals("let open P in function | A -> true | _ -> false", e.getBinding().getText());
-        assertEquals("P", PsiTreeUtil.findChildOfType(e, PsiOpen.class).getPath());
+        assertEquals("P", PsiTreeUtil.findChildOfType(e, RPsiOpen.class).getPath());
     }
 }

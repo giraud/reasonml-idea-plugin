@@ -8,15 +8,15 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-class ModuleDelegatePresentation extends ORDelegatePsiElement implements NavigationItem, PsiQualifiedPathElement {
+class ModuleDelegatePresentation extends ORDelegatePsiElement implements NavigationItem, RPsiQualifiedPathElement {
     private final @NotNull ItemPresentation m_presentation;
 
-    public ModuleDelegatePresentation(@NotNull PsiQualifiedPathElement source, @NotNull ItemPresentation presentation) {
+    public ModuleDelegatePresentation(@NotNull RPsiQualifiedPathElement source, @NotNull ItemPresentation presentation) {
         super(source);
         m_presentation = presentation;
     }
 
-    //region PsiQualifiedPathElement
+    //region RPsiQualifiedPathElement
     @Override
     public @Nullable String[] getPath() {
         return m_source.getPath();

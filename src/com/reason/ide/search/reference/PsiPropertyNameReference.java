@@ -13,13 +13,13 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<PsiLeafPropertyName> {
+public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLeafPropertyName> {
     private static final Log LOG = Log.create("ref.params");
 
     private final @Nullable String myReferenceName;
     private final @NotNull ORTypes myTypes;
 
-    public PsiPropertyNameReference(@NotNull PsiLeafPropertyName element, @NotNull ORTypes types) {
+    public PsiPropertyNameReference(@NotNull RPsiLeafPropertyName element, @NotNull ORTypes types) {
         super(element, TextRange.from(0, element.getTextLength()));
         myReferenceName = element.getText();
         myTypes = types;
@@ -59,7 +59,7 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<PsiLea
         for (CodeInstruction instruction : resolvedInstructions) {
             if (instruction.mySource instanceof FileBase) {
                 resolutions.udpateTerminalWeight(((FileBase) instruction.mySource).getModuleName());
-            } else if (instruction.mySource instanceof PsiLowerSymbol) {
+            } else if (instruction.mySource instanceof RPsiLowerSymbol) {
                 resolutions.removeUpper();
                 resolutions.updateWeight(null, instruction.myAlternateValues);
             } else if (instruction.myValues != null) {
@@ -70,7 +70,7 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<PsiLea
         }
 
         resolutions.removeIncomplete();
-        Collection<PsiQualifiedPathElement> sortedResult = resolutions.resolvedElements();
+        Collection<RPsiQualifiedPathElement> sortedResult = resolutions.resolvedElements();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("  => found", Joiner.join(", ", sortedResult,
@@ -98,11 +98,11 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<PsiLea
         private @Nullable PsiElement myReferencedIdentifier = null;
 
         public JsxTagResolveResult(@NotNull PsiElement referencedElement, @NotNull String propertyName) {
-            if (referencedElement instanceof PsiLet) {
-                PsiFunction function = ((PsiLet) referencedElement).getFunction();
+            if (referencedElement instanceof RPsiLet) {
+                RPsiFunction function = ((RPsiLet) referencedElement).getFunction();
                 if (function != null) {
-                    List<PsiParameterDeclaration> parameters = function.getParameters();
-                    for (PsiParameterDeclaration parameter : parameters) {
+                    List<RPsiParameterDeclaration> parameters = function.getParameters();
+                    for (RPsiParameterDeclaration parameter : parameters) {
                         if (propertyName.equals(parameter.getName())) {
                             myReferencedIdentifier = parameter;
                             break;

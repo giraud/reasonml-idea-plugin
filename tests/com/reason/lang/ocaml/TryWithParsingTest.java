@@ -10,7 +10,7 @@ import org.junit.*;
 public class TryWithParsingTest extends OclParsingTestCase {
     @Test
     public void test_structure() {
-        PsiTry e = (PsiTry) firstElement(parseCode("try x with Not_found -> ()"));
+        RPsiTry e = (RPsiTry) firstElement(parseCode("try x with Not_found -> ()"));
 
         assertEquals("try", e.getFirstChild().getText());
         assertNotNull(e.getBody());
@@ -35,7 +35,7 @@ public class TryWithParsingTest extends OclParsingTestCase {
     @Test
     public void test_try() {
         PsiFile file = parseCode("try f() with e -> let e = CErrors.push e");
-        PsiTry try_ = (PsiTry) firstElement(file);
+        RPsiTry try_ = (RPsiTry) firstElement(file);
 
         assertEquals("e -> let e = CErrors.push e", try_.getHandlers().iterator().next().getText());
     }
@@ -43,7 +43,7 @@ public class TryWithParsingTest extends OclParsingTestCase {
     @Test
     public void test_GH_256() {
         PsiFile file = parseCode("try find nt with Not_found -> (error \"Missing nt '%s' for splice\" nt; []) in let splice_prods = xxx");
-        PsiTry e = (PsiTry) firstElement(file);
+        RPsiTry e = (RPsiTry) firstElement(file);
         PsiElement handlers = ORUtil.findImmediateFirstChildOfType(e, myTypes.C_TRY_HANDLERS);
 
         assertEquals("Not_found -> (error \"Missing nt '%s' for splice\" nt; [])", handlers.getText());

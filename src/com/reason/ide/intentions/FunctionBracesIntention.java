@@ -9,7 +9,7 @@ import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
-public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> {
+public class FunctionBracesIntention extends AbstractBaseIntention<RPsiFunction> {
 
     @Nls
     @NotNull
@@ -27,16 +27,16 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> 
 
     @NotNull
     @Override
-    Class<PsiFunction> getClazz() {
-        return PsiFunction.class;
+    Class<RPsiFunction> getClazz() {
+        return RPsiFunction.class;
     }
 
     @Override
-    public boolean isAvailable(@NotNull PsiFunction parentElement) {
-        PsiFunctionBody body = PsiTreeUtil.findChildOfType(parentElement, PsiFunctionBody.class);
+    public boolean isAvailable(@NotNull RPsiFunction parentElement) {
+        RPsiFunctionBody body = PsiTreeUtil.findChildOfType(parentElement, RPsiFunctionBody.class);
         if (body != null) {
             PsiElement firstChild = body.getFirstChild();
-            if (firstChild instanceof PsiScopedExpr) {
+            if (firstChild instanceof RPsiScopedExpr) {
                 firstChild = firstChild.getFirstChild();
                 return firstChild != null
                         && firstChild.getNode().getElementType() != RmlTypes.INSTANCE.LBRACE;
@@ -49,20 +49,20 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> 
     }
 
     @Override
-    void runInvoke(@NotNull Project project, @NotNull PsiFunction oldFunction) {
-        PsiFunctionBody oldBody = oldFunction.getBody();
+    void runInvoke(@NotNull Project project, @NotNull RPsiFunction oldFunction) {
+        RPsiFunctionBody oldBody = oldFunction.getBody();
         if (oldBody != null) {
             String text = oldFunction.getText();
             int bodyOffset = oldBody.getStartOffsetInParent();
             String def = text.substring(0, bodyOffset);
             String body = text.substring(bodyOffset);
-            PsiLet newSyntax =
-                    (PsiLet) ORCodeFactory.createExpression(project, "let x = " + def + "{ " + body + "; };");
+            RPsiLet newSyntax =
+                    (RPsiLet) ORCodeFactory.createExpression(project, "let x = " + def + "{ " + body + "; };");
 
             if (newSyntax != null) {
-                PsiFunction newFunction = newSyntax.getFunction();
+                RPsiFunction newFunction = newSyntax.getFunction();
                 if (newFunction != null) {
-                    PsiFunctionBody newBody = newFunction.getBody();
+                    RPsiFunctionBody newBody = newFunction.getBody();
                     if (newBody != null) {
                         oldFunction.getNode().replaceChild(oldBody.getNode(), newBody.getNode());
                     }

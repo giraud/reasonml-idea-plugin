@@ -70,6 +70,8 @@ public class RmlParser extends CommonPsiParser {
                         parseArrow();
                     } else if (tokenType == myTypes.REF) {
                         parseRef();
+                    } else if (tokenType == myTypes.METHOD) {
+                        parseMethod();
                     } else if (tokenType == myTypes.OPTION) {
                         parseOption();
                     } else if (tokenType == myTypes.MATCH) {
@@ -202,6 +204,13 @@ public class RmlParser extends CommonPsiParser {
             }
         }
 
+        private void parseMethod() {
+            if (isCurrent(myTypes.C_RECORD_EXPR)) {
+                // { |>method<| : ...
+                remapCurrentToken(myTypes.LIDENT).mark(myTypes.C_RECORD_FIELD);
+            }
+        }
+
         private void parsePolyVariant() {
             if (isRawParent(myTypes.C_TYPE_BINDING)) {
                 // type t = [ |>`xxx<| ...
@@ -291,7 +300,9 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseRef() {
-            if (strictlyIn(myTypes.C_TAG_START)) {
+            if (isCurrent(myTypes.C_RECORD_EXPR)) {
+                remapCurrentToken(myTypes.LIDENT).mark(myTypes.C_RECORD_FIELD);
+            } else if (strictlyIn(myTypes.C_TAG_START)) {
                 remapCurrentToken(myTypes.PROPERTY_NAME)
                         .mark(myTypes.C_TAG_PROPERTY);
             }
@@ -436,11 +447,16 @@ public class RmlParser extends CommonPsiParser {
                         return;
                     }
 
-                    // double sig ? ~x:int,
-                    if (in(myTypes.C_PARAM_DECLARATION, /*not*/myTypes.C_SCOPED_EXPR)) {
+                    if (strictlyInAny(myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD)) {
+                        // { x:t , ...
                         popEndUntilFoundIndex().popEnd();
+                    } else if (in(myTypes.C_PARAM_DECLARATION, /*not*/myTypes.C_SCOPED_EXPR)) {
+                        // double sig ? ~x:int,
+                        popEndUntilFoundIndex().popEnd();
+                        popEnd();
+                    } else {
+                        popEnd();
                     }
-                    popEnd();
                 }
 
                 if (isScope(myTypes.LPAREN) && isRawParent(myTypes.C_SIG_EXPR)) {

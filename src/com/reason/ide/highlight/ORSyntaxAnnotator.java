@@ -24,7 +24,7 @@ public abstract class ORSyntaxAnnotator implements Annotator {
         IElementType elementType = element.getNode().getElementType();
 
         if (elementType == myTypes.C_TAG_START) {
-            PsiElement nameIdentifier = ((PsiTagStart) element).getNameIdentifier();
+            PsiElement nameIdentifier = ((RPsiTagStart) element).getNameIdentifier();
             if (nameIdentifier != null) {
                 TextRange range = TextRange.create(element.getTextRange().getStartOffset(), nameIdentifier.getTextRange().getEndOffset());
                 enforceColor(holder, range, MARKUP_TAG_);
@@ -40,7 +40,7 @@ public abstract class ORSyntaxAnnotator implements Annotator {
             enforceColor(holder, element, ANNOTATION_);
         } else if (elementType == myTypes.C_INTERPOLATION_PART) {
             enforceColor(holder, element, STRING_);
-        } else if (element instanceof PsiInterpolationReference) {
+        } else if (element instanceof RPsiInterpolationReference) {
             enforceColor(holder, element, INTERPOLATED_REF_);
         }
         // remapped tokens are not seen by syntaxAnnotator

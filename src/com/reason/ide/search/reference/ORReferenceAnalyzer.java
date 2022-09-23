@@ -8,7 +8,7 @@ import com.intellij.psi.tree.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -51,12 +51,12 @@ public class ORReferenceAnalyzer {
         }
 
         public boolean isModuleName(@NotNull String name) {
-            return name.equals(((PsiModule) getOriginalElement()).getModuleName());
+            return name.equals(((RPsiModule) getOriginalElement()).getModuleName());
         }
 
         @Override
         public @NotNull String toString() {
-            return ((PsiModule) getOriginalElement()).getModuleName() + " =~ " + myResolvedAlias;
+            return ((RPsiModule) getOriginalElement()).getModuleName() + " =~ " + myResolvedAlias;
         }
     }
 
@@ -64,7 +64,7 @@ public class ORReferenceAnalyzer {
     static @NotNull Deque<PsiElement> createInstructions(@NotNull PsiElement sourceElement, @NotNull ORTypes types) {
         boolean startPath = true;
         PsiElement prevItem = ORUtil.prevSibling(sourceElement);
-        if ((sourceElement instanceof PsiUpperSymbol || sourceElement instanceof PsiLowerSymbol) && prevItem != null) {
+        if ((sourceElement instanceof RPsiUpperSymbol || sourceElement instanceof RPsiLowerSymbol) && prevItem != null) {
             IElementType prevType = prevItem.getNode().getElementType();
             if (prevType == types.RIGHT_ARROW || prevType == types.PIPE_FORWARD || prevType == types.COMMA) {
                 // -> A.B   |> A.B
@@ -81,7 +81,7 @@ public class ORReferenceAnalyzer {
                 // if LocalOpen found, it is still a path
                 if (prevType == types.LPAREN) {
                     PsiElement parent = prevItem.getParent();
-                    startPath = parent instanceof PsiLocalOpen;
+                    startPath = parent instanceof RPsiLocalOpen;
                 } else {
                     startPath = false;
                 }
@@ -92,22 +92,22 @@ public class ORReferenceAnalyzer {
         boolean skipLet = false;
 
         while (item != null) {
-            if (item instanceof PsiPath) {
-                List<PsiUpperSymbol> uppers = ORUtil.findImmediateChildrenOfClass(item, PsiUpperSymbol.class);
+            if (item instanceof RPsiPath) {
+                List<RPsiUpperSymbol> uppers = ORUtil.findImmediateChildrenOfClass(item, RPsiUpperSymbol.class);
                 for (int i = uppers.size() - 1; i >= 0; i--) {
                     instructions.push(new ORUpperSymbolWithResolution(uppers.get(i)));
                 }
-            } else if (item instanceof PsiUpperSymbol || item instanceof PsiLowerSymbol) {
+            } else if (item instanceof RPsiUpperSymbol || item instanceof RPsiLowerSymbol) {
                 // only add if it's from a local path
                 //   can be a real path from a record : a.b.c
                 //   or a simulated path from a js object field : a##b##c
                 IElementType nextSiblingNodeType = item.getNextSibling().getNode().getElementType();
                 if ((nextSiblingNodeType == types.DOT || nextSiblingNodeType == types.SHARPSHARP) && startPath) {
-                    instructions.push(item instanceof PsiUpperSymbol ? new ORUpperSymbolWithResolution(item) : item);
+                    instructions.push(item instanceof RPsiUpperSymbol ? new ORUpperSymbolWithResolution(item) : item);
                 }
-            } else if (item instanceof PsiInnerModule) {
-                if (((PsiInnerModule) item).isFunctorCall()) {
-                    PsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(item, PsiFunctorCall.class);
+            } else if (item instanceof RPsiInnerModule) {
+                if (((RPsiInnerModule) item).isFunctorCall()) {
+                    RPsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(item, RPsiFunctorCall.class);
                     if (functorCall != null) {
                         instructions.push(functorCall);
                         //instructions.push(new ORFakeModuleAlias(item, functorCall.getFunctorName()));
@@ -115,36 +115,36 @@ public class ORReferenceAnalyzer {
                 } else {
                     instructions.push(item);
                 }
-            } else if (item instanceof PsiOpen) {
+            } else if (item instanceof RPsiOpen) {
                 instructions.push(item);
-            } else if (item instanceof PsiLet) {
+            } else if (item instanceof RPsiLet) {
                 if (!skipLet) {
                     instructions.push(item);
                 }
                 skipLet = false;
-            } else if (item instanceof PsiType) {
+            } else if (item instanceof RPsiType) {
                 instructions.push(item);
-            } else if (item instanceof PsiTagStart) {
+            } else if (item instanceof RPsiTagStart) {
                 instructions.push(item);
             } else if (item instanceof FileBase) {
                 instructions.push(item);
                 break;
-            } else if (item instanceof PsiLetBinding) {
-                // equivalent to a PsiLet
+            } else if (item instanceof RPsiLetBinding) {
+                // equivalent to a RPsiLet
                 instructions.push(item);
                 skipLet = true;
-            } else if (item instanceof PsiModuleBinding) {
-                // equivalent to a PsiModule
+            } else if (item instanceof RPsiModuleBinding) {
+                // equivalent to a RPsiModule
                 instructions.push(item);
                 item = item.getParent();
-            } else if (item instanceof PsiModuleType) {
-                // equivalent to a PsiModule also
+            } else if (item instanceof RPsiModuleType) {
+                // equivalent to a RPsiModule also
                 instructions.push(item);
                 item = item.getParent();
             }
 
             prevItem = ORUtil.prevSibling(item);
-            if ((item instanceof PsiUpperSymbol || item instanceof PsiLowerSymbol) && prevItem != null) {
+            if ((item instanceof RPsiUpperSymbol || item instanceof RPsiLowerSymbol) && prevItem != null) {
                 IElementType prevType = prevItem.getNode().getElementType();
                 if (prevType == types.RIGHT_ARROW || prevType == types.PIPE_FORWARD || prevType == types.COMMA) {
                     // -> A.B   or   |> A.B
@@ -159,7 +159,7 @@ public class ORReferenceAnalyzer {
                     // if LocalOpen found, it is still a path
                     if (prevType == types.LPAREN) {
                         PsiElement parent = prevItem.getParent();
-                        startPath = parent instanceof PsiLocalOpen;
+                        startPath = parent instanceof RPsiLocalOpen;
                     } else {
                         startPath = false;
                     }
@@ -168,8 +168,8 @@ public class ORReferenceAnalyzer {
                 // if LPAREN, we need to analyze context: a localOpen is still part of the path
                 IElementType itemType = item.getNode().getElementType();
                 PsiElement parent = item.getParent();
-                startPath = itemType == types.LPAREN && parent instanceof PsiLocalOpen;
-            } else if (item instanceof PsiPatternMatchBody) {
+                startPath = itemType == types.LPAREN && parent instanceof RPsiLocalOpen;
+            } else if (item instanceof RPsiPatternMatchBody) {
                 startPath = false;
             }
 
@@ -186,7 +186,7 @@ public class ORReferenceAnalyzer {
         while (!instructions.isEmpty()) {
             PsiElement psiElement = instructions.removeFirst();
 
-            if (psiElement instanceof PsiUpperSymbol || psiElement instanceof ORUpperSymbolWithResolution) {
+            if (psiElement instanceof RPsiUpperSymbol || psiElement instanceof ORUpperSymbolWithResolution) {
                 boolean withResolution = psiElement instanceof ORUpperSymbolWithResolution;
                 PsiElement element = withResolution ? psiElement.getOriginalElement() : psiElement;
                 String name = element.getText();
@@ -214,9 +214,9 @@ public class ORReferenceAnalyzer {
                     boolean hasNext = rIt.hasNext();
                     while (hasNext) {
                         CodeInstruction instruction = rIt.next();
-                        if (instruction.mySource instanceof PsiUpperSymbol) {
+                        if (instruction.mySource instanceof RPsiUpperSymbol) {
                             qname = instruction.mySource.getText() + "." + qname;
-                            Collection<PsiModule> elements = ModuleAliasesIndex.getElements(qname, project, scope);
+                            Collection<RPsiModule> elements = ModuleAliasesIndex.getElements(qname, project, scope);
                             if (elements.isEmpty()) {
                                 hasNext = rIt.hasNext();
                             } else {
@@ -243,21 +243,21 @@ public class ORReferenceAnalyzer {
                 if (path == null && !alreadyReplaced) {
                     resolvedInstructions.push(new CodeInstruction(element, name));
                 }
-            } else if (psiElement instanceof PsiLowerSymbol) {
+            } else if (psiElement instanceof RPsiLowerSymbol) {
                 resolvedInstructions.push(new CodeInstruction(psiElement, psiElement.getText()));
-            } else if (psiElement instanceof PsiLetBinding) {
+            } else if (psiElement instanceof RPsiLetBinding) {
                 // inside a let, just resolve to itself
-                resolvedInstructions.push(new CodeInstruction(psiElement, ((PsiLet) psiElement.getParent()).getName()));
-            } else if (psiElement instanceof PsiModuleBinding) {
+                resolvedInstructions.push(new CodeInstruction(psiElement, ((RPsiLet) psiElement.getParent()).getName()));
+            } else if (psiElement instanceof RPsiModuleBinding) {
                 // inside a module, just resolve to itself
-                resolvedInstructions.push(new CodeInstruction(psiElement, ((PsiInnerModule) psiElement.getParent()).getModuleName()));
-            } else if (psiElement instanceof PsiModuleType) {
+                resolvedInstructions.push(new CodeInstruction(psiElement, ((RPsiInnerModule) psiElement.getParent()).getModuleName()));
+            } else if (psiElement instanceof RPsiModuleType) {
                 // inside a module signature, just resolve to itself
-                resolvedInstructions.push(new CodeInstruction(psiElement, ((PsiInnerModule) psiElement.getParent()).getModuleName()));
-            } else if (psiElement instanceof PsiInnerModule) {
-                String alias = ((PsiInnerModule) psiElement).getAlias();
+                resolvedInstructions.push(new CodeInstruction(psiElement, ((RPsiInnerModule) psiElement.getParent()).getModuleName()));
+            } else if (psiElement instanceof RPsiInnerModule) {
+                String alias = ((RPsiInnerModule) psiElement).getAlias();
                 if (alias == null) {
-                    resolvedInstructions.push(new CodeInstruction(psiElement, ((PsiInnerModule) psiElement).getModuleName()));
+                    resolvedInstructions.push(new CodeInstruction(psiElement, ((RPsiInnerModule) psiElement).getModuleName()));
                 } else {
                     String[] aliasPath = alias.split("\\.");
                     CodeInstruction localAlias = resolvedInstructions.stream().filter(instruction -> instruction.mySource instanceof ORLocalAlias && ((ORLocalAlias) instruction.mySource).isModuleName(aliasPath[0])).findFirst().orElse(null);
@@ -273,8 +273,8 @@ public class ORReferenceAnalyzer {
                         }
                     }
                 }
-            } else if (psiElement instanceof PsiOpen) {
-                String[] tokens = ((PsiOpen) psiElement).getPath().split("\\.");
+            } else if (psiElement instanceof RPsiOpen) {
+                String[] tokens = ((RPsiOpen) psiElement).getPath().split("\\.");
                 for (String token : tokens) {
                     resolvedInstructions.push(new CodeInstruction(psiElement, token));
                 }

@@ -18,7 +18,7 @@ public class TypeConversionOclTest extends ORBasePlatformTestCase {
     @Test
     public void test_option() {
         FileBase e = configureCode("A.ml", "val x: int option");
-        PsiSignature sig = PsiTreeUtil.findChildOfType(e, PsiSignature.class);
+        RPsiSignature sig = PsiTreeUtil.findChildOfType(e, RPsiSignature.class);
 
         assertEquals("option(int)", sig.asText(REASON));
         assertEquals("option<int>", sig.asText(RESCRIPT));
@@ -27,7 +27,7 @@ public class TypeConversionOclTest extends ORBasePlatformTestCase {
     @Test
     public void test_option_named_params() {
         FileBase e = configureCode("A.ml", "external add : x:int option -> y:int -> int = \"\"");
-        PsiSignature sig = PsiTreeUtil.findChildOfType(e, PsiSignature.class);
+        RPsiSignature sig = PsiTreeUtil.findChildOfType(e, RPsiSignature.class);
 
         assertEquals("(~x:option(int), ~y:int) => int", sig.asText(REASON));
         assertEquals("(~x:option<int>, ~y:int) => int", sig.asText(RESCRIPT));

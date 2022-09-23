@@ -6,7 +6,7 @@ import com.reason.lang.core.psi.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
-public class PsiModuleStub extends NamedStubBase<PsiModule> {
+public class PsiModuleStub extends NamedStubBase<RPsiModule> {
     private final String[] myPath;
     private final String[] myQualifiedNameAsPath;
     private final String myQname;

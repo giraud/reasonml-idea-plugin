@@ -9,7 +9,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class Resolution implements Comparable<Resolution> {
-    final List<PsiQualifiedPathElement> myElements = new ArrayList<>();
+    final List<RPsiQualifiedPathElement> myElements = new ArrayList<>();
     private final String[] myPath;
     private String[] myAlternatePath;
 
@@ -17,13 +17,13 @@ public class Resolution implements Comparable<Resolution> {
     boolean myIsComplete = false;
     Integer[] myWeights;
 
-    public Resolution(String @Nullable [] path, @NotNull PsiQualifiedPathElement element) {
+    public Resolution(String @Nullable [] path, @NotNull RPsiQualifiedPathElement element) {
         myPath = path;
         myLevel = path == null ? -1 : myPath.length - 1;
         myElements.add(element);
     }
 
-    public Resolution(String @Nullable [] path, @NotNull List<PsiQualifiedPathElement> elements) {
+    public Resolution(String @Nullable [] path, @NotNull List<RPsiQualifiedPathElement> elements) {
         myPath = path;
         myLevel = path == null ? -1 : myPath.length - 1;
         myElements.addAll(elements);
@@ -143,9 +143,9 @@ public class Resolution implements Comparable<Resolution> {
 
         // let has more priority than record field
         if (myElements.size() == 1 && myElements.size() == o.myElements.size()) {
-            PsiQualifiedPathElement myElement = myElements.get(0);
-            PsiQualifiedPathElement otherElement = o.myElements.get(0);
-            if (otherElement instanceof RPsiRecordField && myElement instanceof PsiLet) {
+            RPsiQualifiedPathElement myElement = myElements.get(0);
+            RPsiQualifiedPathElement otherElement = o.myElements.get(0);
+            if (otherElement instanceof RPsiRecordField && myElement instanceof RPsiLet) {
                 return -1;
             }
         }

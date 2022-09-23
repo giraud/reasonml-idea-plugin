@@ -38,6 +38,6 @@ public class FindLIdentUsagesOCLTest extends ORBasePlatformTestCase {
 
         List<UsageInfo> usages = findUsages("A.mli");
         assertSize(1, usages);
-        assertInstanceOf(usages.get(0).getElement().getParent(), PsiLetBinding.class);
+        assertInstanceOf(usages.get(0).getElement().getParent(), RPsiLetBinding.class);
     }
 }

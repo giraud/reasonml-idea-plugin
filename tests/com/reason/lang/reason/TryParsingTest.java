@@ -7,7 +7,7 @@ import org.junit.*;
 public class TryParsingTest extends RmlParsingTestCase {
     @Test
     public void test_try_structure() {
-        PsiTry e = (PsiTry) firstElement(parseCode("try (x) { | Not_found => () };"));
+        RPsiTry e = (RPsiTry) firstElement(parseCode("try (x) { | Not_found => () };"));
 
         assertEquals("try", e.getFirstChild().getText());
         assertNotNull(e.getBody());

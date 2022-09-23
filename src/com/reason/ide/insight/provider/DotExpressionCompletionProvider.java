@@ -9,8 +9,8 @@ import com.reason.ide.files.*;
 import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.impl.PsiAnnotation;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.RPsiAnnotation;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;
@@ -31,7 +31,7 @@ public class DotExpressionCompletionProvider {
         PsiElement dotLeaf = PsiTreeUtil.prevVisibleLeaf(element);
         PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
 
-        if (previousElement instanceof PsiUpperSymbol) {
+        if (previousElement instanceof RPsiUpperSymbol) {
             // File.<caret>
             // File.Module.<caret>
 
@@ -42,8 +42,8 @@ public class DotExpressionCompletionProvider {
             LOG.debug(" -> resolved to", resolvedElement);
 
             Collection<PsiNamedElement> expressions = new ArrayList<>();
-            if (resolvedElement instanceof PsiInnerModule) {
-                addInnerModuleExpressions((PsiInnerModule) resolvedElement, expressions);
+            if (resolvedElement instanceof RPsiInnerModule) {
+                addInnerModuleExpressions((RPsiInnerModule) resolvedElement, expressions);
             } else if (resolvedElement instanceof FileBase) {
                 addFileExpressions((FileBase) resolvedElement, expressions);
             }
@@ -54,7 +54,7 @@ public class DotExpressionCompletionProvider {
                 LOG.trace(" -> expressions", expressions);
                 addExpressions(resultSet, expressions, ORLanguageProperties.cast(element.getLanguage()));
             }
-        } else if (previousElement instanceof PsiLowerSymbol) {
+        } else if (previousElement instanceof RPsiLowerSymbol) {
             // Records: let x = {a:1, b:2};       x.<caret>
             //          let x: z = y;             x.<caret>
             //          let x = { y: { a: 1 } };  x.y.<caret>
@@ -67,11 +67,11 @@ public class DotExpressionCompletionProvider {
                 LOG.debug(" -> resolved to", resolvedElement == null ? null : resolvedElement.getParent());
             }
 
-            if (resolvedElement instanceof PsiVar) {
-                for (RPsiRecordField recordField : ((PsiVar) resolvedElement).getRecordFields()) {
+            if (resolvedElement instanceof RPsiVar) {
+                for (RPsiRecordField recordField : ((RPsiVar) resolvedElement).getRecordFields()) {
                     resultSet.addElement(
                             LookupElementBuilder.create(recordField)
-                                    .withTypeText(PsiSignatureUtil.getSignature(recordField, ORLanguageProperties.cast(element.getLanguage())))
+                                    .withTypeText(RPsiSignatureUtil.getSignature(recordField, ORLanguageProperties.cast(element.getLanguage())))
                                     .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
                 }
             }
@@ -79,14 +79,14 @@ public class DotExpressionCompletionProvider {
     }
 
     private static void addModuleExpressions(@Nullable PsiElement resolvedElement, @NotNull Collection<PsiNamedElement> expressions) {
-        if (resolvedElement instanceof PsiInnerModule) {
-            addInnerModuleExpressions((PsiInnerModule) resolvedElement, expressions);
+        if (resolvedElement instanceof RPsiInnerModule) {
+            addInnerModuleExpressions((RPsiInnerModule) resolvedElement, expressions);
         } else if (resolvedElement instanceof FileBase) {
             addFileExpressions((FileBase) resolvedElement, expressions);
-        } else if (resolvedElement instanceof PsiFunctor) {
-            PsiFunctorResult returnType = ((PsiFunctor) resolvedElement).getReturnType();
+        } else if (resolvedElement instanceof RPsiFunctor) {
+            RPsiFunctorResult returnType = ((RPsiFunctor) resolvedElement).getReturnType();
             if (returnType == null) {
-                addChildren(((PsiFunctor) resolvedElement).getBody(), expressions);
+                addChildren(((RPsiFunctor) resolvedElement).getBody(), expressions);
             } else {
                 addModuleExpressions(returnType.resolveModule(), expressions);
             }
@@ -94,16 +94,16 @@ public class DotExpressionCompletionProvider {
     }
 
     private static void addFileExpressions(@NotNull FileBase element, @NotNull Collection<PsiNamedElement> expressions) {
-        List<PsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiInclude.class);
-        for (PsiInclude include : includes) {
+        List<RPsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiInclude.class);
+        for (RPsiInclude include : includes) {
             addModuleExpressions(include.resolveModule(), expressions);
         }
 
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiType.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiType.class));
 
-        List<PsiLet> lets = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiLet.class);
+        List<RPsiLet> lets = PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiLet.class);
         if (element.getLanguage() == RmlLanguage.INSTANCE) {
-            for (PsiLet let : lets) {
+            for (RPsiLet let : lets) {
                 if (!let.isPrivate()) {
                     expressions.add(let);
                 }
@@ -112,22 +112,22 @@ public class DotExpressionCompletionProvider {
             expressions.addAll(lets);
         }
 
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiVal.class));
-        List<PsiModule> modules = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiModule.class);
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiVal.class));
+        List<RPsiModule> modules = PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiModule.class);
         modules.remove(modules.size() - 1); // remove fake module
         expressions.addAll(modules);
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiFunctor.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiFunctor.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiClass.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiExternal.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiException.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiExternal.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiException.class));
     }
 
-    private static void addInnerModuleExpressions(@NotNull PsiInnerModule module, @NotNull Collection<PsiNamedElement> expressions) {
+    private static void addInnerModuleExpressions(@NotNull RPsiInnerModule module, @NotNull Collection<PsiNamedElement> expressions) {
         if (module.getAlias() != null) {
             PsiElement resolvedAlias = ORUtil.resolveModuleSymbol(module.getAliasSymbol());
             addModuleExpressions(resolvedAlias, expressions);
         } else if (module.isFunctorCall()) {
-            PsiFunctorCall functorCall = module.getFunctorCall();
+            RPsiFunctorCall functorCall = module.getFunctorCall();
             if (functorCall != null) {
                 addModuleExpressions(functorCall.resolveFunctor(), expressions);
             }
@@ -142,21 +142,21 @@ public class DotExpressionCompletionProvider {
 
     private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNamedElement> expressions, @Nullable ORLanguageProperties language) {
         for (PsiNamedElement expression : expressions) {
-            if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
+            if (!(expression instanceof RPsiOpen) && !(expression instanceof RPsiInclude) && !(expression instanceof RPsiAnnotation)) {
                 // TODO: if include => include
                 String name = expression.getName();
                 if (name != null) {
-                    String signature = PsiSignatureUtil.getSignature(expression, language);
+                    String signature = RPsiSignatureUtil.getSignature(expression, language);
                     resultSet.addElement(
                             LookupElementBuilder.create(name)
                                     .withTypeText(signature)
                                     .withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
                 }
-                if (expression instanceof PsiType) {
-                    PsiType eType = (PsiType) expression;
-                    Collection<PsiVariantDeclaration> variants = eType.getVariants();
+                if (expression instanceof RPsiType) {
+                    RPsiType eType = (RPsiType) expression;
+                    Collection<RPsiVariantDeclaration> variants = eType.getVariants();
                     if (!variants.isEmpty()) {
-                        for (PsiVariantDeclaration variant : variants) {
+                        for (RPsiVariantDeclaration variant : variants) {
                             String variantName = variant.getName();
                             if (variantName != null) {
                                 resultSet.addElement(
@@ -172,13 +172,13 @@ public class DotExpressionCompletionProvider {
     }
 
     private static void addChildren(@Nullable PsiElement body, @NotNull Collection<PsiNamedElement> expressions) {
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiLet.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiVal.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiModule.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiFunctor.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiType.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiLet.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiVal.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiModule.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiFunctor.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiClass.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class));
-        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiException.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiExternal.class));
+        expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiException.class));
     }
 }

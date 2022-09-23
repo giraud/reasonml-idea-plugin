@@ -7,7 +7,7 @@ import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -16,11 +16,11 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymbol> {
+public class PsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSymbol> {
     private static final Log LOG = Log.create("ref.lower");
     private static final Log LOG_PERF = Log.create("ref.perf.lower");
 
-    public PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull ORTypes types) {
+    public PsiLowerSymbolReference(@NotNull RPsiLowerSymbol element, @NotNull ORTypes types) {
         super(element, types);
     }
 
@@ -33,7 +33,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
         PsiElement parent = myElement.getParent();
-        if (parent instanceof PsiLet || parent instanceof PsiVal || parent instanceof PsiType || parent instanceof PsiExternal) {
+        if (parent instanceof RPsiLet || parent instanceof RPsiVal || parent instanceof RPsiType || parent instanceof RPsiExternal) {
             return ResolveResult.EMPTY_ARRAY;
         }
 
@@ -64,13 +64,13 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         ORElementResolver.Resolutions resolutions = project.getService(ORElementResolver.class).getComputation();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
-        Collection<PsiType> types = TypeIndex.getElements(myReferenceName, project, scope);
-        Collection<PsiVal> vals = ValIndex.getElements(myReferenceName, project, scope);
-        Collection<PsiLet> lets = LetIndex.getElements(myReferenceName, project, scope);
-        Collection<PsiExternal> externals = ExternalIndex.getElements(myReferenceName, project, scope);
+        Collection<RPsiType> types = TypeIndex.getElements(myReferenceName, project, scope);
+        Collection<RPsiVal> vals = ValIndex.getElements(myReferenceName, project, scope);
+        Collection<RPsiLet> lets = LetIndex.getElements(myReferenceName, project, scope);
+        Collection<RPsiExternal> externals = ExternalIndex.getElements(myReferenceName, project, scope);
         Collection<RPsiRecordField> recordFields = RecordFieldIndex.getElements(myReferenceName, project, scope);
-        Collection<PsiObjectField> objectFields = ObjectFieldIndex.getElements(myReferenceName, project, scope);
-        Collection<PsiParameterDeclaration> parameters = ParameterIndex.getElements(myReferenceName, project, scope);
+        Collection<RPsiObjectField> objectFields = ObjectFieldIndex.getElements(myReferenceName, project, scope);
+        Collection<RPsiParameterDeclaration> parameters = ParameterIndex.getElements(myReferenceName, project, scope);
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("  indexes: types=" + types.size() + ", vals=" + vals.size() + ", lets=" + lets.size() +
@@ -97,27 +97,27 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
 
         List<String> modulesInScope = new ArrayList<>();
         for (CodeInstruction instruction : resolvedInstructions) {
-            if (instruction.mySource instanceof PsiInnerModule) {
+            if (instruction.mySource instanceof RPsiInnerModule) {
                 // if the module is not in scope, we skip that resolution
-                if (!modulesInScope.contains(((PsiInnerModule) instruction.mySource).getQualifiedName())) {
+                if (!modulesInScope.contains(((RPsiInnerModule) instruction.mySource).getQualifiedName())) {
                     continue;
                 }
             }
 
             if (instruction.mySource instanceof FileBase) {
                 resolutions.udpateTerminalWeight(((FileBase) instruction.mySource).getModuleName());
-            } else if (instruction.mySource instanceof PsiLowerSymbol) {
+            } else if (instruction.mySource instanceof RPsiLowerSymbol) {
                 resolutions.removeUpper();
                 resolutions.updateWeight(null, instruction.myAlternateValues);
-            } else if (instruction.mySource instanceof PsiUpperSymbol) {
+            } else if (instruction.mySource instanceof RPsiUpperSymbol) {
                 // We're in a path, must be exact
                 String value = instruction.getFirstValue();
                 resolutions.removeIfNotFound(value, instruction.myAlternateValues);
                 resolutions.updateWeight(value, instruction.myAlternateValues);
             } else {
-                if (instruction.mySource instanceof PsiOpen) {
+                if (instruction.mySource instanceof RPsiOpen) {
                     // adding a module in scope
-                    modulesInScope.add(((PsiOpen) instruction.mySource).getPath());
+                    modulesInScope.add(((RPsiOpen) instruction.mySource).getPath());
                 }
 
                 if (instruction.myValues != null) {
@@ -131,7 +131,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         long endUpdateResolutions = System.currentTimeMillis();
 
         resolutions.removeIncomplete();
-        Collection<PsiQualifiedPathElement> sortedResult = resolutions.resolvedElements();
+        Collection<RPsiQualifiedPathElement> sortedResult = resolutions.resolvedElements();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("  => found", Joiner.join(", ", sortedResult,
@@ -174,9 +174,9 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<PsiLowerSymb
         private final @NotNull PsiElement myReferencedIdentifier;
 
         public LowerResolveResult(@NotNull PsiElement referencedElement, String sourceName) {
-            if (referencedElement instanceof PsiLet && ((PsiLet) referencedElement).isDeconstruction()) {
+            if (referencedElement instanceof RPsiLet && ((RPsiLet) referencedElement).isDeconstruction()) {
                 PsiElement identifierElement = referencedElement;
-                for (PsiElement deconstructedElement : ((PsiLet) referencedElement).getDeconstructedElements()) {
+                for (PsiElement deconstructedElement : ((RPsiLet) referencedElement).getDeconstructedElements()) {
                     if (deconstructedElement.getText().equals(sourceName)) {
                         identifierElement = deconstructedElement;
                         break;

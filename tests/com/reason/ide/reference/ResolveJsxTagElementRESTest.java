@@ -14,7 +14,7 @@ public class ResolveJsxTagElementRESTest extends ORBasePlatformTestCase {
         configureCode("X.res", "@react.component\n let make = (~value) => <div/>;");
         configureCode("A.res", "<X<caret> ></X>");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("X.make", e.getQualifiedName());
     }
 
@@ -23,7 +23,7 @@ public class ResolveJsxTagElementRESTest extends ORBasePlatformTestCase {
         configureCode("X.res", "@react.component\n external make : (~value:string) => React.element = \"Xx\"");
         configureCode("A.res", "<X<caret> ></X>;");
 
-        PsiExternal e = (PsiExternal) myFixture.getElementAtCaret();
+        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
         assertEquals("X.make", e.getQualifiedName());
     }
 
@@ -40,7 +40,7 @@ public class ResolveJsxTagElementRESTest extends ORBasePlatformTestCase {
     public void test_nested_let() {
         configureCode("A.res", "module X = { module Y = { @react.component\n let make = (~value) => <div/> } }\n <X.Y<caret> ></X>");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.X.Y.make", e.getQualifiedName());
     }
 
@@ -48,7 +48,7 @@ public class ResolveJsxTagElementRESTest extends ORBasePlatformTestCase {
     public void test_nested_external() {
         configureCode("A.res", "module X = { module Y = { @react.component\n external make : (~value:string) => React.element = \"XY\" } }\n <X.Y<caret> ></X>;");
 
-        PsiExternal e = (PsiExternal) myFixture.getElementAtCaret();
+        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
         assertEquals("A.X.Y.make", e.getQualifiedName());
     }
 
@@ -57,7 +57,7 @@ public class ResolveJsxTagElementRESTest extends ORBasePlatformTestCase {
         configureCode("X.res", "@react.component\n let make = (~value) => <div/>");
         configureCode("A.res", "<X<caret> />");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("X.make", e.getQualifiedName());
     }
 
@@ -66,7 +66,7 @@ public class ResolveJsxTagElementRESTest extends ORBasePlatformTestCase {
         configureCode("A.res", "module X = { @react.component\n let make = (~value) => <div/> }");
         configureCode("B.res", "open A\n <X<caret> ");
 
-        PsiLet e = (PsiLet) myFixture.getElementAtCaret();
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.X.make", e.getQualifiedName());
     }
 }

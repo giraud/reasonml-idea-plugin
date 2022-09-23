@@ -11,20 +11,20 @@ import org.junit.*;
 public class MacroParsingTest extends RmlParsingTestCase {
     @Test
     public void test_basic() {
-        PsiLet expression = first(letExpressions(parseCode("let _ = [%raw \"xxx\"]")));
+        RPsiLet expression = first(letExpressions(parseCode("let _ = [%raw \"xxx\"]")));
 
         PsiElement macro = expression.getBinding().getFirstChild();
-        assertInstanceOf(macro, PsiMacro.class);
+        assertInstanceOf(macro, RPsiMacro.class);
 
-        PsiMacroBody rawMacroBody = PsiTreeUtil.findChildOfType(macro, PsiMacroBody.class);
-        assertEquals("%raw", PsiTreeUtil.findChildOfType(macro, PsiMacroName.class).getText());
+        RPsiMacroBody rawMacroBody = PsiTreeUtil.findChildOfType(macro, RPsiMacroBody.class);
+        assertEquals("%raw", PsiTreeUtil.findChildOfType(macro, RPsiMacroName.class).getText());
         assertEquals("\"xxx\"", rawMacroBody.getText());
         assertEquals(new TextRange(1, 4), rawMacroBody.getMacroTextRange());
     }
 
     @Test
     public void test_rootRaw() {
-        PsiMacro e = firstOfType(parseCode("%raw \"xxx\";"), PsiMacro.class);
+        RPsiMacro e = firstOfType(parseCode("%raw \"xxx\";"), RPsiMacro.class);
 
         assertTrue(e.isRoot());
         assertEquals("\"xxx\"", e.getContent().getText());
@@ -32,9 +32,9 @@ public class MacroParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_multiLine() {
-        PsiLet expression = first(letExpressions(parseCode("let _ = [%raw {|function (a) {}|}]")));
+        RPsiLet expression = first(letExpressions(parseCode("let _ = [%raw {|function (a) {}|}]")));
 
-        PsiMacro macro = (PsiMacro) expression.getBinding().getFirstChild();
+        RPsiMacro macro = (RPsiMacro) expression.getBinding().getFirstChild();
 
         assertEquals("%raw", macro.getName());
         assertEquals("{|function (a) {}|}", macro.getContent().getText());

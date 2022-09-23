@@ -17,9 +17,9 @@ public class MatchParsingTest extends OclParsingTestCase {
         FileBase psiFile = parseCode("let path_of_dirpath dir = match DirPath.repr dir with [] -> failwith \"path_of_dirpath\"");
         assertEquals(1, childrenCount(psiFile));
 
-        PsiLet let = first(letExpressions(psiFile));
+        RPsiLet let = first(letExpressions(psiFile));
         assertTrue(let.isFunction());
-        PsiTreeUtil.findChildOfType(let, PsiFunction.class);
+        PsiTreeUtil.findChildOfType(let, RPsiFunction.class);
     }
 
     @Test
@@ -27,9 +27,9 @@ public class MatchParsingTest extends OclParsingTestCase {
         FileBase psiFileModule = parseCode("let _ = match c with | VtMeta -> let _ = x");
         assertEquals(1, childrenCount(psiFileModule));
 
-        PsiLet let = first(letExpressions(psiFileModule));
-        PsiLetBinding binding = let.getBinding();
-        PsiSwitch match = PsiTreeUtil.findChildOfType(binding, PsiSwitch.class);
+        RPsiLet let = first(letExpressions(psiFileModule));
+        RPsiLetBinding binding = let.getBinding();
+        RPsiSwitch match = PsiTreeUtil.findChildOfType(binding, RPsiSwitch.class);
         assertEquals("VtMeta -> let _ = x", match.getPatterns().get(0).getText());
     }
 
@@ -51,18 +51,18 @@ public class MatchParsingTest extends OclParsingTestCase {
         PsiElement[] children = file.getChildren();
 
         assertEquals(1, childrenCount((file)));
-        assertInstanceOf(children[0], PsiScopedExpr.class);
+        assertInstanceOf(children[0], RPsiScopedExpr.class);
     }
 
     @Test
     public void test_pattern_token_type() {
         PsiFile psiFile = parseCode("let _ = match action with | Incr -> counter + 1");
 
-        PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
-        Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);
+        RPsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, RPsiSwitch.class));
+        Collection<RPsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, RPsiPatternMatch.class);
         assertSize(1, patterns);
-        PsiPatternMatch patternMatch = patterns.iterator().next();
-        PsiUpperSymbol variant = ORUtil.findImmediateFirstChildOfClass(patternMatch, PsiUpperSymbol.class);
+        RPsiPatternMatch patternMatch = patterns.iterator().next();
+        RPsiUpperSymbol variant = ORUtil.findImmediateFirstChildOfClass(patternMatch, RPsiUpperSymbol.class);
         // assertTrue(variant.isVariant());
         assertEquals("Incr", variant.getText());
         assertEquals("counter + 1", patternMatch.getBody().getText());
@@ -72,49 +72,49 @@ public class MatchParsingTest extends OclParsingTestCase {
     public void test_pattern_match() {
         PsiFile psiFile = parseCode("let _ = match p with | Typedtree.Partial -> \"Partial\" | Total -> \"Total\"");
 
-        PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
-        List<PsiPatternMatch> patterns = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiPatternMatch.class));
+        RPsiSwitch e = first(PsiTreeUtil.findChildrenOfType(psiFile, RPsiSwitch.class));
+        List<RPsiPatternMatch> patterns = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiPatternMatch.class));
         assertSize(2, patterns);
 
-        PsiPatternMatch m1 = patterns.get(0);
-        assertEquals("Typedtree", PsiTreeUtil.findChildOfType(m1, PsiUpperSymbol.class).getText());
-        assertEquals(myTypes.A_VARIANT_NAME, ORUtil.findImmediateLastChildOfClass(m1, PsiUpperSymbol.class).getNode().getElementType());
+        RPsiPatternMatch m1 = patterns.get(0);
+        assertEquals("Typedtree", PsiTreeUtil.findChildOfType(m1, RPsiUpperSymbol.class).getText());
+        assertEquals(myTypes.A_VARIANT_NAME, ORUtil.findImmediateLastChildOfClass(m1, RPsiUpperSymbol.class).getNode().getElementType());
         assertEquals("\"Partial\"", m1.getBody().getText());
 
-        PsiPatternMatch m2 = patterns.get(1);
+        RPsiPatternMatch m2 = patterns.get(1);
         assertEquals("\"Total\"", m2.getBody().getText());
     }
 
     @Test
     public void test_function_shortcut() {
-        PsiLet e = first(letExpressions(parseCode("let f x = function | Variant -> 1")));
+        RPsiLet e = first(letExpressions(parseCode("let f x = function | Variant -> 1")));
 
-        PsiFunction fun = (PsiFunction) e.getBinding().getFirstChild();
-        PsiSwitch shortcut = ORUtil.findImmediateFirstChildOfClass(fun.getBody(), PsiSwitch.class);
-        assertNotNull(ORUtil.findImmediateFirstChildOfClass(shortcut, PsiPatternMatch.class));
-        assertEquals("1", PsiTreeUtil.findChildOfType(shortcut, PsiPatternMatchBody.class).getText());
+        RPsiFunction fun = (RPsiFunction) e.getBinding().getFirstChild();
+        RPsiSwitch shortcut = ORUtil.findImmediateFirstChildOfClass(fun.getBody(), RPsiSwitch.class);
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(shortcut, RPsiPatternMatch.class));
+        assertEquals("1", PsiTreeUtil.findChildOfType(shortcut, RPsiPatternMatchBody.class).getText());
     }
 
     @Test
     public void test_function_shortcut_no_pipe() {
-        PsiLet e = first(letExpressions(parseCode("let f x = function Variant -> 1")));
+        RPsiLet e = first(letExpressions(parseCode("let f x = function Variant -> 1")));
 
-        PsiFunction fun = (PsiFunction) e.getBinding().getFirstChild();
-        PsiSwitch shortcut = ORUtil.findImmediateFirstChildOfClass(fun.getBody(), PsiSwitch.class);
-        assertNotNull(ORUtil.findImmediateFirstChildOfClass(shortcut, PsiPatternMatch.class));
-        assertEquals("1", PsiTreeUtil.findChildOfType(shortcut, PsiPatternMatchBody.class).getText());
+        RPsiFunction fun = (RPsiFunction) e.getBinding().getFirstChild();
+        RPsiSwitch shortcut = ORUtil.findImmediateFirstChildOfClass(fun.getBody(), RPsiSwitch.class);
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(shortcut, RPsiPatternMatch.class));
+        assertEquals("1", PsiTreeUtil.findChildOfType(shortcut, RPsiPatternMatchBody.class).getText());
     }
 
     @Test
     public void test_function_shortcut_many() {
-        PsiLet e = first(letExpressions(
+        RPsiLet e = first(letExpressions(
                 parseCode("let rec db_output_prodn = function "
                         + " | Sterm s -> if cond then first else second\n"
                         + " | Sedit2 (\"FILE\", file) -> let file_suffix_regex = a in printf \"i\"\n"
                         + " | Snterm s -> sprintf \"(Snterm %s) \" s")));
 
-        PsiSwitch shortcut = PsiTreeUtil.findChildOfType(e, PsiSwitch.class);
-        List<PsiPatternMatch> patterns = shortcut.getPatterns();
+        RPsiSwitch shortcut = PsiTreeUtil.findChildOfType(e, RPsiSwitch.class);
+        List<RPsiPatternMatch> patterns = shortcut.getPatterns();
         assertSize(3, patterns);
         assertEquals("Sterm s -> if cond then first else second", patterns.get(0).getText());
         assertEquals("Sedit2 (\"FILE\", file) -> let file_suffix_regex = a in printf \"i\"", patterns.get(1).getText());
@@ -125,8 +125,8 @@ public class MatchParsingTest extends OclParsingTestCase {
     public void test_group() {
         PsiFile psiFile = parseCode("let _ = match x with | V1(y) -> Some y | Empty | Unknown -> None");
 
-        PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
-        List<PsiPatternMatch> patterns = e.getPatterns();
+        RPsiSwitch e = first(PsiTreeUtil.findChildrenOfType(psiFile, RPsiSwitch.class));
+        List<RPsiPatternMatch> patterns = e.getPatterns();
 
         assertSize(3, patterns);
         assertEquals("V1(y) -> Some y", patterns.get(0).getText());
@@ -139,8 +139,8 @@ public class MatchParsingTest extends OclParsingTestCase {
     public void test_GH_312() {
         PsiFile f = parseCode("match fn ?arg with |None -> false |Some f -> true");
 
-        PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
-        List<PsiPatternMatch> patterns = e.getPatterns();
+        RPsiSwitch e = first(PsiTreeUtil.findChildrenOfType(f, RPsiSwitch.class));
+        List<RPsiPatternMatch> patterns = e.getPatterns();
 
         assertSize(2, patterns);
         assertEquals("None -> false", patterns.get(0).getText());
@@ -151,7 +151,7 @@ public class MatchParsingTest extends OclParsingTestCase {
     // Not an object !
     @Test
     public void test_GH_340() {
-        List<PsiLet> es = letExpressions(parseCode("let fn cond i j = match cond with | Some i, Some j -> i < j\n let fn2 s = ()"));
+        List<RPsiLet> es = letExpressions(parseCode("let fn cond i j = match cond with | Some i, Some j -> i < j\n let fn2 s = ()"));
 
         assertSize(2, es);
         assertEquals("let fn cond i j = match cond with | Some i, Some j -> i < j", es.get(0).getText());

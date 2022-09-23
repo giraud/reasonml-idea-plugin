@@ -56,14 +56,14 @@ public class RmlParameterInfoHandlerTest extends ORBasePlatformTestCase {
         RmlParameterInfoHandler handler = new RmlParameterInfoHandler();
         MockCreateParameterInfoContext infoContext = new MockCreateParameterInfoContext(myFixture.getEditor(), myFixture.getFile());
 
-        PsiParameters paramsOwner = handler.findElementForParameterInfo(infoContext);
+        RPsiParameters paramsOwner = handler.findElementForParameterInfo(infoContext);
         handler.showParameterInfo(paramsOwner, infoContext);
 
         MockParameterInfoUIContext<PsiElement> context = new MockParameterInfoUIContext<>(paramsOwner);
         handler.updateUI((RmlParameterInfoHandler.ArgumentsDescription) infoContext.getItemsToShow()[0], context);
 
         MockUpdateParameterInfoContext updateContext = new MockUpdateParameterInfoContext(myFixture.getEditor(), myFixture.getFile());
-        PsiParameters updateParamsOwner = handler.findElementForUpdatingParameterInfo(updateContext);
+        RPsiParameters updateParamsOwner = handler.findElementForUpdatingParameterInfo(updateContext);
         updateContext.setParameterOwner(updateParamsOwner);
         handler.updateParameterInfo(updateParamsOwner, updateContext);
 

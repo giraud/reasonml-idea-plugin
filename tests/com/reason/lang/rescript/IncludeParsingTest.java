@@ -12,16 +12,16 @@ import java.util.*;
 public class IncludeParsingTest extends ResParsingTestCase {
     @Test
     public void test_one() {
-        PsiInclude e = first(includeExpressions(parseCode("include Belt")));
+        RPsiInclude e = first(includeExpressions(parseCode("include Belt")));
 
-        assertNull(PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class));
         assertEquals("Belt", e.getIncludePath());
         assertEquals("Belt", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
     @Test
     public void test_path() {
-        PsiInclude e = first(includeExpressions(parseCode("include Belt.Array")));
+        RPsiInclude e = first(includeExpressions(parseCode("include Belt.Array")));
 
         assertEquals("Belt.Array", e.getIncludePath());
         assertEquals("Array", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
@@ -29,10 +29,10 @@ public class IncludeParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_functor() {
-        PsiInclude e = firstOfType(parseCode("include Make({ type t })"), PsiInclude.class);
+        RPsiInclude e = firstOfType(parseCode("include Make({ type t })"), RPsiInclude.class);
 
         assertTrue(e.useFunctor());
-        PsiFunctorCall c = PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class);
+        RPsiFunctorCall c = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);
         assertEquals(myTypes.A_MODULE_NAME, c.getNavigationElement().getNode().getElementType());
         assertEquals("Make", c.getName());
         assertEquals("Make", e.getIncludePath());
@@ -40,16 +40,16 @@ public class IncludeParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_functor_with_path() {
-        PsiInclude e = firstOfType(parseCode("include A.Make({ type t })"), PsiInclude.class);
+        RPsiInclude e = firstOfType(parseCode("include A.Make({ type t })"), RPsiInclude.class);
 
         assertTrue(e.useFunctor());
-        assertEquals("Make", PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class).getName());
+        assertEquals("Make", PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class).getName());
         assertEquals("A.Make", e.getIncludePath());
     }
 
     @Test
     public void test_chaining() {
-        Collection<PsiInclude> includes = includeExpressions(parseCode("include Belt include Js"));
+        Collection<RPsiInclude> includes = includeExpressions(parseCode("include Belt include Js"));
 
         assertSize(2, includes);
     }

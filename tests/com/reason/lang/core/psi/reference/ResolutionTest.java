@@ -68,7 +68,7 @@ public class ResolutionTest extends LightPlatformTestCase {
     }
 
     @SuppressWarnings("ConstantConditions")
-    private @NotNull PsiType crateLowerElement() {
-        return (PsiType) ORCodeFactory.createTypeName(getProject(), "t").getParent();
+    private @NotNull RPsiType crateLowerElement() {
+        return (RPsiType) ORCodeFactory.createTypeName(getProject(), "t").getParent();
     }
 }

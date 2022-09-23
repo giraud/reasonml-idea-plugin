@@ -11,27 +11,27 @@ import java.util.*;
 public class SignatureParsingTest extends OclParsingTestCase {
     @Test
     public void test_let() {
-        PsiLet e = first(letExpressions(parseCode("let x:int = 1")));
+        RPsiLet e = first(letExpressions(parseCode("let x:int = 1")));
 
-        PsiSignature signature = e.getSignature();
+        RPsiSignature signature = e.getSignature();
         assertEquals("int", signature.asText(getLangProps()));
         assertFalse(signature.getItems().get(0).isOptional());
     }
 
     @Test
     public void test_OCamlBeforeDirective() {
-        PsiVal e = first(valExpressions(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end")));
+        RPsiVal e = first(valExpressions(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end")));
 
-        PsiSignature signature = e.getSignature();
+        RPsiSignature signature = e.getSignature();
         assertEquals("string -> bool option", signature.asText(getLangProps()));
     }
 
     @Test
     public void test_val() {
-        PsiVal e = first(valExpressions(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option")));
+        RPsiVal e = first(valExpressions(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option")));
 
-        PsiSignature signature = e.getSignature();
-        List<PsiSignatureItem> items = signature.getItems();
+        RPsiSignature signature = e.getSignature();
+        List<RPsiSignatureItem> items = signature.getItems();
         assertEquals("'a option -> ('a -> 'b) -> 'b option", signature.asText(getLangProps()));
         assertFalse(items.get(0).isOptional());
         assertFalse(items.get(1).isOptional());
@@ -40,18 +40,18 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_trimming() {
-        PsiLet let = first(letExpressions(
+        RPsiLet let = first(letExpressions(
                 parseCode("let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  )\n")));
 
-        PsiSignature signature = let.getSignature();
+        RPsiSignature signature = let.getSignature();
         assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asText(getLangProps()));
     }
 
     @Test
     public void test_parsing_named_params() {
-        PsiLet let = first(letExpressions(parseCode("let padding: v:length -> h:length -> rule")));
+        RPsiLet let = first(letExpressions(parseCode("let padding: v:length -> h:length -> rule")));
 
-        PsiSignature signature = let.getSignature();
+        RPsiSignature signature = let.getSignature();
         assertEquals(3, signature.getItems().size());
         assertEquals("v:length -> h:length -> rule", signature.asText(getLangProps()));
         assertFalse(signature.getItems().get(0).isOptional());
@@ -63,12 +63,12 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_optional_fun() {
-        PsiLet let = first(letExpressions(parseCode("let x: int -> string option -> string = fun a  -> fun b  -> c")));
+        RPsiLet let = first(letExpressions(parseCode("let x: int -> string option -> string = fun a  -> fun b  -> c")));
 
-        PsiSignature signature = let.getSignature();
+        RPsiSignature signature = let.getSignature();
         assertEquals("int -> string option -> string", signature.asText(getLangProps()));
 
-        List<PsiSignatureItem> items = let.getSignature().getItems();
+        List<RPsiSignatureItem> items = let.getSignature().getItems();
         assertEquals("int", items.get(0).getText());
         assertFalse(items.get(0).isOptional());
         assertEquals("string option", items.get(1).getText());
@@ -79,10 +79,10 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_optional_fun_parameters() {
-        PsiLet let = first(letExpressions(parseCode("let x a b ?(c= false)  ?(d= 1.)  = 3")));
+        RPsiLet let = first(letExpressions(parseCode("let x a b ?(c= false)  ?(d= 1.)  = 3")));
 
-        PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
-        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
+        RPsiFunction function = (RPsiFunction) let.getBinding().getFirstChild();
+        List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(4, parameters);
         assertFalse(parameters.get(0).isOptional());
@@ -97,10 +97,10 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_optional_fun_parameters_typed() {
-        PsiLet let = first(letExpressions(parseCode("let x (a : int) (b : string option) ?c:((c : bool)= false)  ?d:((d : float)=1.) = 3")));
+        RPsiLet let = first(letExpressions(parseCode("let x (a : int) (b : string option) ?c:((c : bool)= false)  ?d:((d : float)=1.) = 3")));
 
-        PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
-        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
+        RPsiFunction function = (RPsiFunction) let.getBinding().getFirstChild();
+        List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(4, parameters);
         assertEquals("Dummy.x[a]", parameters.get(0).getQualifiedName());
@@ -119,10 +119,10 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_unitFunParameter() {
-        PsiLet e = first(letExpressions(parseCode("let x (a : int) () = a")));
+        RPsiLet e = first(letExpressions(parseCode("let x (a : int) () = a")));
 
-        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        List<PsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
+        RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
+        List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
         assertSize(2, parameters);
         assertEquals("(a : int)", parameters.get(0).getText());
@@ -131,20 +131,20 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_signature_items() {
-        PsiLet e = first(letExpressions(parseCode("let createAction: < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element;")));
-        PsiSignature signature = e.getSignature();
+        RPsiLet e = first(letExpressions(parseCode("let createAction: < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element;")));
+        RPsiSignature signature = e.getSignature();
 
         assertEquals(2, signature.getItems().size());
     }
 
     @Test
     public void test_jsObject() {
-        PsiLet e = first(letExpressions(parseCode("let x: < a: string; b: 'a > Js.t -> string")));
-        PsiSignature signature = e.getSignature();
+        RPsiLet e = first(letExpressions(parseCode("let x: < a: string; b: 'a > Js.t -> string")));
+        RPsiSignature signature = e.getSignature();
 
         assertEquals(2, signature.getItems().size());
-        PsiSignatureItem jsObj = signature.getItems().get(0);
-        List<PsiObjectField> fields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(jsObj, PsiObjectField.class));
+        RPsiSignatureItem jsObj = signature.getItems().get(0);
+        List<RPsiObjectField> fields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(jsObj, RPsiObjectField.class));
         assertSize(2, fields);
         assertEquals(fields.get(0).getName(), "a");
         assertEquals(fields.get(1).getName(), "b");
@@ -152,17 +152,17 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_option() {
-        PsiVal e = firstOfType(parseCode("val x: string array option"), PsiVal.class);
+        RPsiVal e = firstOfType(parseCode("val x: string array option"), RPsiVal.class);
 
-        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        RPsiOption option = PsiTreeUtil.findChildOfType(e, RPsiOption.class);
         assertEquals("string array option", option.getText());
     }
 
     @Test
     public void test_option_named_params() {
-        PsiExternal e = firstOfType(parseCode("external add : x:int option -> int = \"\""), PsiExternal.class);
+        RPsiExternal e = firstOfType(parseCode("external add : x:int option -> int = \"\""), RPsiExternal.class);
 
-        PsiOption option = PsiTreeUtil.findChildOfType(e, PsiOption.class);
+        RPsiOption option = PsiTreeUtil.findChildOfType(e, RPsiOption.class);
         assertEquals("int option", option.getText());
     }
 }

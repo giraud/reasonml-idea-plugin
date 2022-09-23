@@ -66,7 +66,7 @@ public class OclParameterInfoHandlerTest extends ORBasePlatformTestCase {
         ORParameterInfoHandler handler = new OclParameterInfoHandler();
         MockCreateParameterInfoContext infoContext = new MockCreateParameterInfoContext(myFixture.getEditor(), myFixture.getFile());
 
-        PsiParameters paramsOwner = handler.findElementForParameterInfo(infoContext);
+        RPsiParameters paramsOwner = handler.findElementForParameterInfo(infoContext);
         if (paramsOwner == null) {
             return new UIInfoContext("NULL", -1);
         }
@@ -76,7 +76,7 @@ public class OclParameterInfoHandlerTest extends ORBasePlatformTestCase {
         handler.updateUI((RmlParameterInfoHandler.ArgumentsDescription) infoContext.getItemsToShow()[0], context);
 
         MockUpdateParameterInfoContext updateContext = new MockUpdateParameterInfoContext(myFixture.getEditor(), myFixture.getFile());
-        PsiParameters updateParamsOwner = handler.findElementForUpdatingParameterInfo(updateContext);
+        RPsiParameters updateParamsOwner = handler.findElementForUpdatingParameterInfo(updateContext);
         updateContext.setParameterOwner(updateParamsOwner);
         handler.updateParameterInfo(updateParamsOwner, updateContext);
 

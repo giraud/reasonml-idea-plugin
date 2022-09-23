@@ -14,26 +14,26 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 import java.util.*;
 
-public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet> {
+public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, RPsiLet> {
     public PsiLetStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);
     }
 
-    public @NotNull PsiLetImpl createPsi(@NotNull PsiLetStub stub) {
-        return new PsiLetImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    public @NotNull RPsiLetImpl createPsi(@NotNull PsiLetStub stub) {
+        return new RPsiLetImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
     @Override
     public @NotNull PsiElement createPsi(@NotNull ASTNode node) {
-        return new PsiLetImpl(ORTypesUtil.getInstance(getLanguage()), node);
+        return new RPsiLetImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    public @NotNull PsiLetStub createStub(@NotNull PsiLet psi, @Nullable StubElement parentStub) {
+    public @NotNull PsiLetStub createStub(@NotNull RPsiLet psi, @Nullable StubElement parentStub) {
         List<String> deconstructedNames = new ArrayList<>();
         if (psi.isDeconstruction()) {
             List<PsiElement> elements = psi.getDeconstructedElements();
             for (PsiElement element : elements) {
-                if (element instanceof PsiLowerSymbol) {
+                if (element instanceof RPsiLowerSymbol) {
                     deconstructedNames.add(element.getText());
                 }
             }

@@ -373,7 +373,7 @@
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
         <languageInjector implementation="com.reason.ide.js.JsInjector"/>
-        <lang.elementManipulator forClass="com.reason.lang.core.psi.impl.PsiLiteralExpression"
+        <lang.elementManipulator forClass="com.reason.lang.core.psi.impl.RPsiLiteralExpression"
                                  implementationClass="com.reason.lang.core.LiteralStringManipulator"/>
 
         <!--

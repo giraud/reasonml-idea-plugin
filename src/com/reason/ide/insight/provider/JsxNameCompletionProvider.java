@@ -37,20 +37,20 @@ public class JsxNameCompletionProvider {
         if (prevLeaf != null && prevLeaf.getNode().getElementType() == types.DOT) {
             // Inner component completion
             PsiElement previousElement = prevLeaf.getPrevSibling();
-            if (previousElement instanceof PsiUpperSymbol) {
+            if (previousElement instanceof RPsiUpperSymbol) {
                 PsiUpperSymbolReference reference = (PsiUpperSymbolReference) previousElement.getReference();
                 PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
                 LOG.debug(" -> resolved to", resolvedElement);
 
                 // A component is resolved to the make function
                 if (resolvedElement != null) {
-                    PsiElement resolvedModule = PsiTreeUtil.getStubOrPsiParentOfType(resolvedElement, PsiModule.class);
+                    PsiElement resolvedModule = PsiTreeUtil.getStubOrPsiParentOfType(resolvedElement, RPsiModule.class);
                     if (resolvedModule == null) {
                         resolvedModule = resolvedElement.getContainingFile();
                     }
 
-                    for (PsiModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(resolvedModule, PsiModule.class)) {
-                        if (module.isComponent() && !(module instanceof PsiFakeModule)) {
+                    for (RPsiModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(resolvedModule, RPsiModule.class)) {
+                        if (module.isComponent() && !(module instanceof RPsiFakeModule)) {
                             expressions.add(module);
                         }
                     }
@@ -58,18 +58,18 @@ public class JsxNameCompletionProvider {
             }
         } else {
             // List inner components above
-            List<PsiModule> localModules = ORUtil.findPreviousSiblingsOrParentOfClass(element, PsiModule.class);
-            for (PsiModule localModule : localModules) {
+            List<RPsiModule> localModules = ORUtil.findPreviousSiblingsOrParentOfClass(element, RPsiModule.class);
+            for (RPsiModule localModule : localModules) {
                 if (localModule.isComponent() && !localModule.isInterface()) {
                     expressions.add(localModule);
                 }
             }
 
             // List all top level components
-            final PsiModule currentModule = getParentModule(element);
+            final RPsiModule currentModule = getParentModule(element);
             GlobalSearchScope scope = GlobalSearchScope.allScope(project);
             ModuleComponentIndex.processItems(project, scope, componentModule -> {
-                if (componentModule instanceof PsiFakeModule && !componentModule.equals(currentModule)) {
+                if (componentModule instanceof RPsiFakeModule && !componentModule.equals(currentModule)) {
                     expressions.add(componentModule);
                 }
             });
@@ -85,12 +85,12 @@ public class JsxNameCompletionProvider {
         }
     }
 
-    private static @Nullable PsiModule getParentModule(@NotNull PsiElement element) {
-        PsiModule parentModule = PsiTreeUtil.getStubOrPsiParentOfType(element, PsiModule.class);
+    private static @Nullable RPsiModule getParentModule(@NotNull PsiElement element) {
+        RPsiModule parentModule = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
         if (parentModule == null) {
             PsiElement lastElement = element.getContainingFile().getLastChild();
-            if (lastElement instanceof PsiFakeModule) {
-                parentModule = (PsiModule) lastElement;
+            if (lastElement instanceof RPsiFakeModule) {
+                parentModule = (RPsiModule) lastElement;
             }
         }
         return parentModule;

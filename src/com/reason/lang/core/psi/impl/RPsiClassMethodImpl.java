@@ -14,7 +14,7 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class RPsiClassMethodImpl extends PsiTokenStub<ORTypes, RPsiClassMethod, RsiClassMethodStub> implements RPsiClassMethod {
+public class RPsiClassMethodImpl extends RPsiTokenStub<ORTypes, RPsiClassMethod, RsiClassMethodStub> implements RPsiClassMethod {
     // region Constructors
     public RPsiClassMethodImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
@@ -27,7 +27,7 @@ public class RPsiClassMethodImpl extends PsiTokenStub<ORTypes, RPsiClassMethod, 
 
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiLowerSymbol.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiLowerSymbol.class);
     }
 
     //region PsiQualifiedName
@@ -63,8 +63,8 @@ public class RPsiClassMethodImpl extends PsiTokenStub<ORTypes, RPsiClassMethod, 
         return null;
     }
 
-    public @Nullable PsiSignature getSignature() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiSignature.class);
+    public @Nullable RPsiSignature getSignature() {
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiSignature.class);
     }
 
     public ItemPresentation getPresentation() {
@@ -78,7 +78,7 @@ public class RPsiClassMethodImpl extends PsiTokenStub<ORTypes, RPsiClassMethod, 
             @Nullable
             @Override
             public String getLocationString() {
-                PsiSignature signature = getSignature();
+                RPsiSignature signature = getSignature();
                 return signature == null ? null : signature.getText();
             }
 

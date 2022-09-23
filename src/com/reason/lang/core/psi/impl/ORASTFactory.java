@@ -18,118 +18,118 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
     @Override
     public @Nullable CompositeElement createComposite(@NotNull IElementType type) {
         if (type == myTypes.C_LET_BINDING) {
-            return new PsiLetBinding(myTypes, type);
+            return new RPsiLetBinding(myTypes, type);
         }
         if (type == myTypes.C_DEFAULT_VALUE) {
-            return new PsiDefaultValue(myTypes, type);
+            return new RPsiDefaultValue(myTypes, type);
         }
         if (type == myTypes.C_SIG_EXPR) {
-            return new PsiSignatureImpl(myTypes, type);
+            return new RPsiSignatureImpl(myTypes, type);
         }
         if (type == myTypes.C_TAG) {
-            return new PsiTag(myTypes, type);
+            return new RPsiTag(myTypes, type);
         }
         if (type == myTypes.C_TAG_BODY) {
-            return new PsiTagBody(myTypes, type);
+            return new RPsiTagBody(myTypes, type);
         }
         if (type == myTypes.C_TAG_CLOSE) {
-            return new PsiTagClose(myTypes, type);
+            return new RPsiTagClose(myTypes, type);
         }
         if (type == myTypes.C_TAG_PROPERTY) {
-            return new PsiTagProperty(myTypes, type);
+            return new RPsiTagProperty(myTypes, type);
         }
         if (type == myTypes.C_TAG_PROP_VALUE) {
-            return new PsiTagPropertyValue(myTypes, type);
+            return new RPsiTagPropertyValue(myTypes, type);
         }
         if (type == myTypes.C_TAG_START) {
-            return new PsiTagStart(myTypes, type);
+            return new RPsiTagStart(myTypes, type);
         }
         if (type == myTypes.C_FIELD_VALUE) {
-            return new PsiFieldValue(myTypes, type);
+            return new RPsiFieldValue(myTypes, type);
         }
         if (type == myTypes.C_FUN_EXPR) {
-            return new PsiFunSwitch(myTypes, type);
+            return new RPsiFunSwitch(myTypes, type);
         }
         if (type == myTypes.C_FUNCTION_BODY) {
-            return new PsiFunctionBody(myTypes, type);
+            return new RPsiFunctionBody(myTypes, type);
         }
         if (type == myTypes.C_FUNCTION_CALL) {
-            return new PsiFunctionCall(myTypes, type);
+            return new RPsiFunctionCall(myTypes, type);
         }
         if (type == myTypes.C_FUNCTION_EXPR) {
-            return new PsiFunction(myTypes, type);
+            return new RPsiFunction(myTypes, type);
         }
         if (type == myTypes.C_SIG_ITEM) {
-            return new PsiSignatureItemImpl(myTypes, type);
+            return new RPsiSignatureItemImpl(myTypes, type);
         }
         if (type == myTypes.C_CUSTOM_OPERATOR || type == myTypes.C_SCOPED_EXPR || type == myTypes.C_IF_THEN_SCOPE || type == myTypes.C_DO_LOOP) {
-            return new PsiScopedExpr(myTypes, type);
+            return new RPsiScopedExpr(myTypes, type);
         }
         if (type == myTypes.C_FOR_LOOP) {
-            return new PsiForLoop(myTypes, type);
+            return new RPsiForLoop(myTypes, type);
         }
         if (type == myTypes.C_LOCAL_OPEN) {
-            return new PsiLocalOpen(myTypes, type);
+            return new RPsiLocalOpen(myTypes, type);
         }
         if (type == myTypes.C_PARAM || type == myTypes.C_NAMED_PARAM) {
-            return new PsiParameterReference(myTypes, type);
+            return new RPsiParameterReference(myTypes, type);
         }
         if (type == myTypes.C_PARAMETERS || type == myTypes.C_VARIANT_CONSTRUCTOR) {
-            return new PsiParameters(myTypes, type);
+            return new RPsiParameters(myTypes, type);
         }
         if (type == myTypes.C_PATTERN_MATCH_BODY) {
-            return new PsiPatternMatchBody(myTypes, type);
+            return new RPsiPatternMatchBody(myTypes, type);
         }
         if (type == myTypes.C_PATTERN_MATCH_EXPR) {
-            return new PsiPatternMatch(myTypes, type);
+            return new RPsiPatternMatch(myTypes, type);
         }
         if (type == myTypes.C_JS_OBJECT) {
-            return new PsiJsObject(myTypes, type);
+            return new RPsiJsObject(myTypes, type);
         }
         if (type == myTypes.C_DECONSTRUCTION) {
-            return new PsiDeconstruction(myTypes, type);
+            return new RPsiDeconstruction(myTypes, type);
         }
         if (type == myTypes.C_TYPE_BINDING) {
-            return new PsiTypeBinding(myTypes, type);
+            return new RPsiTypeBinding(myTypes, type);
         }
         if (type == myTypes.C_RECORD_EXPR) {
-            return new PsiRecord(myTypes, type);
+            return new RPsiRecord(myTypes, type);
         }
         if (type == myTypes.C_MODULE_BINDING) {
-            return new PsiModuleBinding(myTypes, type);
+            return new RPsiModuleBinding(myTypes, type);
         }
         if (type == myTypes.C_MODULE_TYPE) {
-            return new PsiModuleType(myTypes, type);
+            return new RPsiModuleType(myTypes, type);
         }
         if (type == myTypes.C_MODULE_VALUE) {
-            return new PsiModuleValue(myTypes, type);
+            return new RPsiModuleValue(myTypes, type);
         }
         if (type == myTypes.C_ANNOTATION) {
-            return new PsiAnnotation(myTypes, type);
+            return new RPsiAnnotation(myTypes, type);
         }
         if (type == myTypes.C_MACRO_BODY) {
-            return new PsiMacroBody(myTypes, type);
+            return new RPsiMacroBody(myTypes, type);
         }
         if (type == myTypes.C_FUNCTOR_CALL) {
-            return new PsiFunctorCall(myTypes, type);
+            return new RPsiFunctorCall(myTypes, type);
         }
         if (type == myTypes.C_CONSTRAINTS) {
-            return new PsiConstraints(myTypes, type);
+            return new RPsiConstraints(myTypes, type);
         }
         if (type == myTypes.C_TYPE_CONSTRAINT) {
-            return new PsiTypeConstraint(myTypes, type);
+            return new RPsiTypeConstraint(myTypes, type);
         }
         if (type == myTypes.C_ASSERT_STMT) {
-            return new PsiAssert(myTypes, type);
+            return new RPsiAssert(myTypes, type);
         }
         if (type == myTypes.C_IF) {
-            return new PsiIfStatement(myTypes, type);
+            return new RPsiIfStatement(myTypes, type);
         }
         if (type == myTypes.C_OBJECT) {
-            return new PsiObject(myTypes, type);
+            return new RPsiObject(myTypes, type);
         }
         if (type == myTypes.C_OPTION) {
-            return new PsiOption(myTypes, type);
+            return new RPsiOption(myTypes, type);
         }
         if (type == myTypes.C_CLASS_CONSTR) {
             return new RPsiClassConstructor(myTypes, type);
@@ -138,61 +138,61 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new RPsiClassField(myTypes, type);
         }
         if (type == myTypes.C_SWITCH_BODY) {
-            return new PsiSwitchBody(myTypes, type);
+            return new RPsiSwitchBody(myTypes, type);
         }
         if (type == myTypes.C_SWITCH_EXPR || type == myTypes.C_MATCH_EXPR) {
-            return new PsiSwitch(myTypes, type);
+            return new RPsiSwitch(myTypes, type);
         }
         if (type == myTypes.C_FUNCTOR_BINDING) {
-            return new PsiFunctorBinding(myTypes, type);
+            return new RPsiFunctorBinding(myTypes, type);
         }
         if (type == myTypes.C_FUNCTOR_RESULT) {
-            return new PsiFunctorResult(myTypes, type);
+            return new RPsiFunctorResult(myTypes, type);
         }
         if (type == myTypes.C_BINARY_CONDITION) {
-            return new PsiBinaryCondition(myTypes, type);
+            return new RPsiBinaryCondition(myTypes, type);
         }
         if (type == myTypes.C_TERNARY) {
-            return new PsiTernary(myTypes, type);
+            return new RPsiTernary(myTypes, type);
         }
         if (type == myTypes.C_MIXIN_FIELD) {
-            return new PsiMixinField(type);
+            return new RPsiMixinField(type);
         }
         if (type == myTypes.C_LET_ATTR) {
-            return new PsiLetAttribute(type);
+            return new RPsiLetAttribute(type);
         }
         if (type == myTypes.C_CLOSED_VARIANT) {
-            return new PsiPolyVariantConstraint(myTypes, type);
+            return new RPsiPolyVariantConstraint(myTypes, type);
         }
         if (type == myTypes.C_MACRO_EXPR) {
-            return new PsiMacro(myTypes, type);
+            return new RPsiMacro(myTypes, type);
         }
         if (type == myTypes.C_INTERPOLATION_EXPR) {
-            return new PsiInterpolation(myTypes, type);
+            return new RPsiInterpolation(myTypes, type);
         }
         if (type == myTypes.C_INTERPOLATION_REF) {
-            return new PsiInterpolationReference(myTypes, type);
+            return new RPsiInterpolationReference(myTypes, type);
         }
         if (type == myTypes.C_TRY_EXPR) {
-            return new PsiTry(myTypes, type);
+            return new RPsiTry(myTypes, type);
         }
         if (type == myTypes.C_TUPLE) {
-            return new PsiTuple(myTypes, type);
+            return new RPsiTuple(myTypes, type);
         }
         if (type == myTypes.C_ML_INTERPOLATOR) {
-            return new PsiMultiLineInterpolator(myTypes, type);
+            return new RPsiMultiLineInterpolator(myTypes, type);
         }
         if (type == myTypes.C_DIRECTIVE) {
-            return new PsiDirective(myTypes, type);
+            return new RPsiDirective(myTypes, type);
         }
         if (type == myTypes.C_STRUCT_EXPR) {
-            return new PsiStruct(myTypes, type);
+            return new RPsiStruct(myTypes, type);
         }
         if (type == myTypes.C_UNIT) {
-            return new PsiUnit(type);
+            return new RPsiUnit(type);
         }
         if (type == myTypes.C_WHILE) {
-            return new PsiWhile(myTypes, type);
+            return new RPsiWhile(myTypes, type);
         }
         // Generic
         if (type == myTypes.C_TRY_HANDLERS
@@ -204,10 +204,10 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             };
         }
         if (type == myTypes.C_OPEN_VARIANT) {
-            return new PsiPolyVariantConstraint(myTypes, type);
+            return new RPsiPolyVariantConstraint(myTypes, type);
         }
         if (type == myTypes.C_MACRO_NAME) {
-            return new PsiMacroName(myTypes, type);
+            return new RPsiMacroName(myTypes, type);
         }
 
         return null;
@@ -217,20 +217,20 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
     public @Nullable LeafElement createLeaf(@NotNull IElementType type, @NotNull CharSequence text) {
         if (type == myTypes.UIDENT || type == myTypes.A_VARIANT_NAME || type == myTypes.A_MODULE_NAME) {
             if (!DUMMY_IDENTIFIER_TRIMMED.contentEquals(text)) {
-                return new PsiUpperSymbol(myTypes, type, text);
+                return new RPsiUpperSymbol(myTypes, type, text);
             }
         }
         if (type == myTypes.A_UPPER_TAG_NAME) {
-            return new PsiUpperTagName(myTypes, type, text);
+            return new RPsiUpperTagName(myTypes, type, text);
         }
         if (type == myTypes.LIDENT) {
-            return new PsiLowerSymbol(myTypes, type, text);
+            return new RPsiLowerSymbol(myTypes, type, text);
         }
         if (type == myTypes.PROPERTY_NAME) {
-            return new PsiLeafPropertyName(type, text);
+            return new RPsiLeafPropertyName(type, text);
         }
         if (type == myTypes.STRING_VALUE) {
-            return new PsiLiteralExpression(type, text);
+            return new RPsiLiteralExpression(type, text);
         }
 
         return super.createLeaf(type, text);

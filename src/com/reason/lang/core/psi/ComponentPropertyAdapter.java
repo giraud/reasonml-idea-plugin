@@ -2,7 +2,7 @@ package com.reason.lang.core.psi;
 
 import com.intellij.psi.*;
 import com.reason.lang.*;
-import com.reason.lang.core.psi.impl.PsiAnnotation;
+import com.reason.lang.core.psi.impl.RPsiAnnotation;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -14,24 +14,24 @@ public class ComponentPropertyAdapter {
     private final PsiElement myPsiElement;
     private boolean myMandatory;
 
-    public ComponentPropertyAdapter(@NotNull RPsiRecordField field, @NotNull List<PsiAnnotation> annotations) {
+    public ComponentPropertyAdapter(@NotNull RPsiRecordField field, @NotNull List<RPsiAnnotation> annotations) {
         myPsiElement = field;
         myName = field.getName();
-        PsiSignature signature = field.getSignature();
+        RPsiSignature signature = field.getSignature();
         myType = signature == null ? "" : signature.asText(RmlLanguage.INSTANCE);
         myMandatory = false; // TODO: hmSignature.isMandatory(0);
 
-        for (PsiAnnotation annotation : annotations) {
+        for (RPsiAnnotation annotation : annotations) {
             if ("@bs.optional".equals(annotation.getName())) {
                 myMandatory = false;
             }
         }
     }
 
-    public ComponentPropertyAdapter(@NotNull PsiParameterDeclaration parameter) {
+    public ComponentPropertyAdapter(@NotNull RPsiParameterDeclaration parameter) {
         myPsiElement = parameter;
         myName = parameter.getName();
-        PsiSignature signature = parameter.getSignature();
+        RPsiSignature signature = parameter.getSignature();
         if (signature == null) {
             myType = (parameter.getDefaultValue() == null ? "" : "=" + parameter.getDefaultValue().getText());
         } else {
@@ -40,7 +40,7 @@ public class ComponentPropertyAdapter {
         myMandatory = parameter.getDefaultValue() == null;
     }
 
-    public ComponentPropertyAdapter(@NotNull PsiSignatureItem signatureItem) {
+    public ComponentPropertyAdapter(@NotNull RPsiSignatureItem signatureItem) {
         myPsiElement = signatureItem;
         myName = signatureItem.getName();
         myType = signatureItem.asText(ORLanguageProperties.cast(signatureItem.getLanguage()));

@@ -5,7 +5,7 @@ import com.intellij.util.io.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 
-public class PsiVariantDeclarationStub extends PsiQualifiedNameStub<PsiVariantDeclaration> {
+public class PsiVariantDeclarationStub extends PsiQualifiedNameStub<RPsiVariantDeclaration> {
     public PsiVariantDeclarationStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String[] path) {
         super(parent, elementType, name, path);
     }

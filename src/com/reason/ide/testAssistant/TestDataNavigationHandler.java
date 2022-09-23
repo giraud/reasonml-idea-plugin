@@ -11,7 +11,7 @@ import org.jetbrains.annotations.*;
 import java.awt.event.*;
 import java.util.*;
 
-public class TestDataNavigationHandler implements GutterIconNavigationHandler<PsiFunction> {
+public class TestDataNavigationHandler implements GutterIconNavigationHandler<RPsiFunction> {
 
     static void navigate(
             @NotNull RelativePoint point, @NotNull List<String> paths, @NotNull Project project) {
@@ -25,6 +25,6 @@ public class TestDataNavigationHandler implements GutterIconNavigationHandler<Ps
     }
 
     @Override
-    public void navigate(MouseEvent e, PsiFunction element) {
+    public void navigate(MouseEvent e, RPsiFunction element) {
     }
 }

@@ -7,7 +7,7 @@ import org.junit.*;
 public class AssertParsingTest extends ResParsingTestCase {
     @Test
     public void test_basic() {
-        PsiAssert e = firstOfType(parseCode("assert (i < Array.length(t))"), PsiAssert.class);
+        RPsiAssert e = firstOfType(parseCode("assert (i < Array.length(t))"), RPsiAssert.class);
 
         assertEquals("(i < Array.length(t))", e.getAssertion().getText());
     }

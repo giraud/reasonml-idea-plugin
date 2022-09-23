@@ -10,16 +10,16 @@ import org.junit.*;
 public class OpenParsingTest extends OclParsingTestCase {
     @Test
     public void test_one() {
-        PsiOpen e = firstOfType(parseCode("open Belt"), PsiOpen.class);
+        RPsiOpen e = firstOfType(parseCode("open Belt"), RPsiOpen.class);
 
-        assertNull(PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class));
         assertEquals("Belt", e.getPath());
         assertEquals("Belt", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
     }
 
     @Test
     public void test_path() {
-        PsiOpen e = firstOfType(parseCode("open Belt.Array"), PsiOpen.class);
+        RPsiOpen e = firstOfType(parseCode("open Belt.Array"), RPsiOpen.class);
 
         assertEquals("Belt.Array", e.getPath());
         assertEquals("Array", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
@@ -27,17 +27,17 @@ public class OpenParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_chaining() {
-        PsiOpen e = firstOfType(parseCode("open Belt Array"), PsiOpen.class);
+        RPsiOpen e = firstOfType(parseCode("open Belt Array"), RPsiOpen.class);
 
         assertEquals("Belt", e.getPath());
     }
 
     @Test
     public void test_functor() {
-        PsiOpen e = firstOfType(parseCode("open Make(struct type t end)"), PsiOpen.class);
+        RPsiOpen e = firstOfType(parseCode("open Make(struct type t end)"), RPsiOpen.class);
 
         assertTrue(e.useFunctor());
-        PsiFunctorCall c = PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class);
+        RPsiFunctorCall c = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);
         assertEquals("Make", c.getName());
         assertEquals(myTypes.A_MODULE_NAME, c.getNavigationElement().getNode().getElementType());
         assertEquals("Make", e.getPath());
@@ -45,10 +45,10 @@ public class OpenParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_functor_with_path() {
-        PsiOpen e = firstOfType(parseCode("open A.Make(struct type t end)"), PsiOpen.class);
+        RPsiOpen e = firstOfType(parseCode("open A.Make(struct type t end)"), RPsiOpen.class);
 
         assertTrue(e.useFunctor());
-        assertEquals("Make", PsiTreeUtil.findChildOfType(e, PsiFunctorCall.class).getName());
+        assertEquals("Make", PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class).getName());
         assertEquals("A.Make", e.getPath());
     }
 }

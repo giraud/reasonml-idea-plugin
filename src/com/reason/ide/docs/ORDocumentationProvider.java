@@ -10,9 +10,9 @@ import com.reason.ide.search.*;
 import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiAnnotation;
+import com.reason.lang.core.psi.impl.RPsiAnnotation;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
@@ -27,7 +27,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
     @Override
     public @Nullable String generateDoc(PsiElement resolvedElement, @Nullable PsiElement originalElement) {
         ORLanguageProperties languageProperties = ORLanguageProperties.cast(originalElement == null ? null : originalElement.getLanguage());
-        if (resolvedElement instanceof PsiFakeModule) {
+        if (resolvedElement instanceof RPsiFakeModule) {
             PsiElement child = resolvedElement.getContainingFile().getFirstChild();
             String text = "";
 
@@ -47,10 +47,10 @@ public class ORDocumentationProvider implements DocumentationProvider {
             }
         } else {
             // If it's an alias, resolve to the alias
-            if (resolvedElement instanceof PsiLet) {
-                String alias = ((PsiLet) resolvedElement).getAlias();
+            if (resolvedElement instanceof RPsiLet) {
+                String alias = ((RPsiLet) resolvedElement).getAlias();
                 if (alias != null) {
-                    PsiElement resolvedAlias = ((PsiLet) resolvedElement).resolveAlias();
+                    PsiElement resolvedAlias = ((RPsiLet) resolvedElement).resolveAlias();
                     if (resolvedAlias != null) {
                         resolvedElement = resolvedAlias;
                     }
@@ -70,8 +70,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
             // Else try to find a comment just above
             PsiElement aboveComment = findAboveComment(resolvedElement);
             if (aboveComment != null) {
-                if (aboveComment instanceof PsiAnnotation) {
-                    PsiElement value = ((PsiAnnotation) aboveComment).getValue();
+                if (aboveComment instanceof RPsiAnnotation) {
+                    PsiElement value = ((RPsiAnnotation) aboveComment).getValue();
                     String text = value == null ? null : value.getText();
                     return text == null ? null : text.substring(1, text.length() - 1);
                 }
@@ -109,19 +109,19 @@ public class ORDocumentationProvider implements DocumentationProvider {
         } else {
             LOG.trace("Resolved element", resolvedElement);
 
-            if (resolvedElement instanceof PsiType) {
-                PsiType type = (PsiType) resolvedElement;
+            if (resolvedElement instanceof RPsiType) {
+                RPsiType type = (RPsiType) resolvedElement;
                 String[] path = ORUtil.getQualifiedPath(type);
                 String typeBinding = type.isAbstract() ? "This is an abstract type" : DocFormatter.escapeCodeForHtml(type.getBinding());
                 return createQuickDocTemplate(path, "type", type.getNavigationElement().getText(), typeBinding);
             }
 
-            if (resolvedElement instanceof PsiSignatureElement) {
-                PsiSignature signature = ((PsiSignatureElement) resolvedElement).getSignature();
+            if (resolvedElement instanceof RPsiSignatureElement) {
+                RPsiSignature signature = ((RPsiSignatureElement) resolvedElement).getSignature();
                 if (signature != null) {
                     String sig = DocFormatter.escapeCodeForHtml(signature.asText(languageProperties));
-                    if (resolvedElement instanceof PsiQualifiedPathElement) {
-                        PsiQualifiedPathElement qualifiedElement = (PsiQualifiedPathElement) resolvedElement;
+                    if (resolvedElement instanceof RPsiQualifiedPathElement) {
+                        RPsiQualifiedPathElement qualifiedElement = (RPsiQualifiedPathElement) resolvedElement;
                         String elementType = PsiTypeElementProvider.getType(resolvedElement);
                         return createQuickDocTemplate(qualifiedElement.getPath(), elementType, qualifiedElement.getName(), sig);
                     }
@@ -146,12 +146,12 @@ public class ORDocumentationProvider implements DocumentationProvider {
                 }
 
                 String sig = inferredType == null ? null : DocFormatter.escapeCodeForHtml(inferredType);
-                if (resolvedElement instanceof PsiVariantDeclaration) {
-                    PsiType type = PsiTreeUtil.getParentOfType(resolvedElement, PsiType.class);
+                if (resolvedElement instanceof RPsiVariantDeclaration) {
+                    RPsiType type = PsiTreeUtil.getParentOfType(resolvedElement, RPsiType.class);
                     sig = "type " + (type == null ? "unknown" : type.getName());
                 }
 
-                return createQuickDocTemplate(path, elementType, desc, resolvedElement instanceof PsiModule ? null : sig);
+                return createQuickDocTemplate(path, elementType, desc, resolvedElement instanceof RPsiModule ? null : sig);
             }
         }
 
@@ -174,8 +174,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
                 commentElement = prevSibling;
             } else if (prevSibling instanceof PsiWhiteSpace) {
                 prevSibling = prevSibling.getPrevSibling();
-            } else if (prevSibling instanceof PsiAnnotation) {
-                PsiAnnotation annotation = (PsiAnnotation) prevSibling;
+            } else if (prevSibling instanceof RPsiAnnotation) {
+                RPsiAnnotation annotation = (RPsiAnnotation) prevSibling;
                 if ("@ocaml.doc".equals(annotation.getName())) {
                     search = false;
                     commentElement = annotation;
@@ -211,7 +211,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
 
         // When quick doc inside empty parenthesis, we want to display the function doc (github #155)
         // functionName(<caret>) ==> functionName<caret>()
-        if (contextElement != null && parent instanceof PsiParameters && contextElement.getLanguage() == RmlLanguage.INSTANCE) {
+        if (contextElement != null && parent instanceof RPsiParameters && contextElement.getLanguage() == RmlLanguage.INSTANCE) {
             PsiElement prevSibling = parent.getPrevSibling();
             if (prevSibling != null) {
                 PsiReference reference = prevSibling.getReference();
@@ -221,7 +221,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
             }
         }
 
-        if (contextElement != null && parent instanceof PsiLowerSymbol) {
+        if (contextElement != null && parent instanceof RPsiLowerSymbol) {
             PsiReference reference = parent.getReference();
             if (reference instanceof PsiPolyVariantReference) {
                 PsiLowerSymbolReference lowerReference = (PsiLowerSymbolReference) reference;
@@ -243,7 +243,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
     private String getInferredSignature(@NotNull PsiElement element, @NotNull PsiFile psiFile, @Nullable ORLanguageProperties language) {
         SignatureProvider.InferredTypesWithLines signaturesContext = psiFile.getUserData(SignatureProvider.SIGNATURES_CONTEXT);
         if (signaturesContext != null) {
-            PsiSignature elementSignature = signaturesContext.getSignatureByOffset(element.getTextOffset());
+            RPsiSignature elementSignature = signaturesContext.getSignatureByOffset(element.getTextOffset());
             if (elementSignature != null) {
                 return elementSignature.asText(language);
             }

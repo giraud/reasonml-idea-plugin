@@ -12,25 +12,25 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-public class PsiParameterDeclarationStubElementType extends ORStubElementType<PsiParameterDeclarationStub, PsiParameterDeclaration> {
+public class PsiParameterDeclarationStubElementType extends ORStubElementType<PsiParameterDeclarationStub, RPsiParameterDeclaration> {
     public PsiParameterDeclarationStubElementType(@NotNull String name, @NotNull Language language) {
         super(name, language);
     }
 
     @NotNull
-    public PsiParameterDeclaration createPsi(@NotNull PsiParameterDeclarationStub stub) {
+    public RPsiParameterDeclaration createPsi(@NotNull PsiParameterDeclarationStub stub) {
         ORTypes types = ORTypesUtil.getInstance(getLanguage());
-        return new PsiParameterDeclarationImpl(types, stub, this);
+        return new RPsiParameterDeclarationImpl(types, stub, this);
     }
 
     @NotNull
-    public PsiParameterDeclaration createPsi(@NotNull ASTNode node) {
+    public RPsiParameterDeclaration createPsi(@NotNull ASTNode node) {
         ORTypes types = ORTypesUtil.getInstance(getLanguage());
-        return new PsiParameterDeclarationImpl(types, node);
+        return new RPsiParameterDeclarationImpl(types, node);
     }
 
     @NotNull
-    public PsiParameterDeclarationStub createStub(@NotNull PsiParameterDeclaration psi, StubElement parentStub) {
+    public PsiParameterDeclarationStub createStub(@NotNull RPsiParameterDeclaration psi, StubElement parentStub) {
         return new PsiParameterDeclarationStub(parentStub, this, psi.getName(), psi.getPath(), psi.getQualifiedName(), psi.isNamed());
     }
 

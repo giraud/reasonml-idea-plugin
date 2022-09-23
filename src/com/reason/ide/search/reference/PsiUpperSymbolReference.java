@@ -14,11 +14,11 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymbol> {
+public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSymbol> {
     private static final Log LOG = Log.create("ref.upper");
     private static final Log LOG_PERF = Log.create("ref.perf.upper");
 
-    public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
+    public PsiUpperSymbolReference(@NotNull RPsiUpperSymbol element, @NotNull ORTypes types) {
         super(element, types);
     }
 
@@ -32,11 +32,11 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
         //if (myElement instanceof PsiUpperIdentifier) {
         PsiElement parent = myElement.getParent();
-        if (parent instanceof PsiModule) {
-            if (!(parent.getParent() instanceof PsiModuleType)) {
+        if (parent instanceof RPsiModule) {
+            if (!(parent.getParent() instanceof RPsiModuleType)) {
                 return ResolveResult.EMPTY_ARRAY;
             }
-        } else if (parent instanceof PsiException) {
+        } else if (parent instanceof RPsiException) {
             return ResolveResult.EMPTY_ARRAY;
         }
 
@@ -69,9 +69,9 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
         //GlobalSearchScope scope = module == null ? GlobalSearchScope.projectScope(project) : GlobalSearchScope.moduleScope(module);
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
-        Collection<PsiModule> modules = ModuleIndex.getElements(myReferenceName, project, scope);
-        Collection<PsiVariantDeclaration> variants = VariantIndex.getElements(myReferenceName, project, scope);
-        Collection<PsiException> exceptions = ExceptionIndex.getElements(myReferenceName, project, scope);
+        Collection<RPsiModule> modules = ModuleIndex.getElements(myReferenceName, project, scope);
+        Collection<RPsiVariantDeclaration> variants = VariantIndex.getElements(myReferenceName, project, scope);
+        Collection<RPsiException> exceptions = ExceptionIndex.getElements(myReferenceName, project, scope);
 
         long endIndexes = System.currentTimeMillis();
 
@@ -105,7 +105,7 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
         long endUpdateResolutions = System.currentTimeMillis();
 
         resolutions.removeIncomplete();
-        Collection<PsiQualifiedPathElement> sortedResult = resolutions.resolvedElements();
+        Collection<RPsiQualifiedPathElement> sortedResult = resolutions.resolvedElements();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("  => found", Joiner.join(", ", sortedResult,
@@ -142,7 +142,7 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
-        //myElement.replace(new PsiUpperTagName(myTypes, myElement.getElementType(), newName));
+        //myElement.replace(new RPsiUpperTagName(myTypes, myElement.getElementType(), newName));
         return myElement;
     }
 
@@ -150,17 +150,17 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<PsiUpperSymb
         private final PsiElement m_referencedIdentifier;
 
         public UpperResolveResult(@NotNull PsiElement referencedElement, @Nullable PsiElement sourceParent) {
-            if (referencedElement instanceof PsiModule && ((PsiModule) referencedElement).isComponent() && sourceParent instanceof PsiTagStart) {
-                PsiElement make = ((PsiModule) referencedElement).getComponentNavigationElement();
+            if (referencedElement instanceof RPsiModule && ((RPsiModule) referencedElement).isComponent() && sourceParent instanceof RPsiTagStart) {
+                PsiElement make = ((RPsiModule) referencedElement).getComponentNavigationElement();
                 m_referencedIdentifier = make == null ? referencedElement : make;
-            } else if (referencedElement instanceof PsiFakeModule) {
+            } else if (referencedElement instanceof RPsiFakeModule) {
                 // A fake module resolve to its file
                 m_referencedIdentifier = referencedElement.getContainingFile();
             } else /*if (referencedElement instanceof PsiNameIdentifierOwner)*/ {
                 m_referencedIdentifier = referencedElement;
             }
             //else {
-            //    PsiUpperSymbol identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiUpperSymbol.class);
+            //    RPsiUpperSymbol identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, RPsiUpperSymbol.class);
             //    m_referencedIdentifier = identifier == null ? referencedElement : identifier;
             //}
         }

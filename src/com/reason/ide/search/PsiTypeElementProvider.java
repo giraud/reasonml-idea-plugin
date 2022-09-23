@@ -12,28 +12,28 @@ public class PsiTypeElementProvider {
 
     @Nullable
     public static String getType(@NotNull PsiElement element) {
-        if (element instanceof PsiModule) {
+        if (element instanceof RPsiModule) {
             return "module";
         }
-        if (element instanceof PsiException) {
+        if (element instanceof RPsiException) {
             return "exception";
         }
-        if (element instanceof PsiLet) {
+        if (element instanceof RPsiLet) {
             return "let";
         }
-        if (element instanceof PsiVal) {
+        if (element instanceof RPsiVal) {
             return "val";
         }
-        if (element instanceof PsiType) {
+        if (element instanceof RPsiType) {
             return "type";
         }
-        if (element instanceof PsiExternal) {
+        if (element instanceof RPsiExternal) {
             return "external";
         }
-        if (element instanceof PsiVariantDeclaration) {
+        if (element instanceof RPsiVariantDeclaration) {
             return "variant";
         }
-        if (element instanceof PsiParameterDeclaration) {
+        if (element instanceof RPsiParameterDeclaration) {
             return "parameter";
         }
         if (element instanceof RPsiRecordField) {

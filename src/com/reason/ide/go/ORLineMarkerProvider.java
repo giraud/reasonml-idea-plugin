@@ -9,7 +9,7 @@ import com.intellij.psi.search.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import icons.*;
@@ -32,7 +32,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
         PsiElement parent = element.getParent();
-        if (parent instanceof PsiDeconstruction) {
+        if (parent instanceof RPsiDeconstruction) {
             parent = parent.getParent();
         }
 
@@ -41,22 +41,22 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         FileBase containingFile = (FileBase) element.getContainingFile();
         boolean isInterface = containingFile.isInterface();
 
-        if (element instanceof PsiLowerSymbol) {
-            if (parent instanceof PsiLet) {
-                String qNameLet = ((PsiLetImpl) parent).getQualifiedName();
-                if (((PsiLet) parent).isDeconstruction()) {
+        if (element instanceof RPsiLowerSymbol) {
+            if (parent instanceof RPsiLet) {
+                String qNameLet = ((RPsiLetImpl) parent).getQualifiedName();
+                if (((RPsiLet) parent).isDeconstruction()) {
                     qNameLet = Joiner.join(".", ORUtil.getQualifiedPath(parent)) + "." + element.getText();
                 }
                 final String qName = qNameLet;
 
-                Collection<PsiVal> vals = ValFqnIndex.getElements(qName.hashCode(), project, scope);
+                Collection<RPsiVal> vals = ValFqnIndex.getElements(qName.hashCode(), project, scope);
                 vals.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                         .findFirst()
                         .ifPresentOrElse(psiVal ->
                                         result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiVal.getContainingFile(), psiVal))
                                 , () -> {
-                                    Collection<PsiLet> lets = LetFqnIndex.getElements(qName.hashCode(), project, scope);
+                                    Collection<RPsiLet> lets = LetFqnIndex.getElements(qName.hashCode(), project, scope);
                                     lets.stream()
                                             .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                                             .findFirst()
@@ -64,27 +64,27 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                                                     result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiLet.getContainingFile(), psiLet))
                                             );
                                 });
-            } else if (parent instanceof PsiExternal) {
-                String externalQName = ((PsiExternalImpl) parent).getQualifiedName();
-                Collection<PsiExternal> elements = ExternalFqnIndex.getElements(externalQName.hashCode(), project, scope);
+            } else if (parent instanceof RPsiExternal) {
+                String externalQName = ((RPsiExternalImpl) parent).getQualifiedName();
+                Collection<RPsiExternal> elements = ExternalFqnIndex.getElements(externalQName.hashCode(), project, scope);
                 elements.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                         .findFirst()
                         .ifPresent(psiTarget ->
                                 result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiTarget.getContainingFile(), psiTarget))
                         );
-            } else if (parent instanceof PsiValImpl) {
-                String valQName = ((PsiValImpl) parent).getQualifiedName();
-                Collection<PsiLet> elements = LetFqnIndex.getElements(valQName.hashCode(), project, scope);
+            } else if (parent instanceof RPsiValImpl) {
+                String valQName = ((RPsiValImpl) parent).getQualifiedName();
+                Collection<RPsiLet> elements = LetFqnIndex.getElements(valQName.hashCode(), project, scope);
                 elements.stream()
                         .filter(PSI_IMPL_PREDICATE)
                         .findFirst()
                         .ifPresent(psiTarget ->
                                 result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiTarget.getContainingFile(), psiTarget))
                         );
-            } else if (parent instanceof PsiType) {
-                String valQName = ((PsiTypeImpl) parent).getQualifiedName();
-                Collection<PsiType> elements = TypeFqnIndex.getElements(valQName.hashCode(), project, scope);
+            } else if (parent instanceof RPsiType) {
+                String valQName = ((RPsiTypeImpl) parent).getQualifiedName();
+                Collection<RPsiType> elements = TypeFqnIndex.getElements(valQName.hashCode(), project, scope);
                 elements.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                         .findFirst()
@@ -110,23 +110,23 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                                 result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiTarget.getContainingFile(), psiTarget))
                         );
             }
-        } else if (element instanceof PsiUpperSymbol) {
-            if (parent instanceof PsiInnerModule) {
+        } else if (element instanceof RPsiUpperSymbol) {
+            if (parent instanceof RPsiInnerModule) {
                 extractRelatedExpressions(
                         element.getFirstChild(),
-                        ((PsiInnerModule) parent).getQualifiedName(),
+                        ((RPsiInnerModule) parent).getQualifiedName(),
                         result,
                         containingFile,
                         "module",
-                        PsiInnerModule.class);
-            } else if (parent instanceof PsiException) {
+                        RPsiInnerModule.class);
+            } else if (parent instanceof RPsiException) {
                 extractRelatedExpressions(
                         element.getFirstChild(),
-                        ((PsiException) parent).getQualifiedName(),
+                        ((RPsiException) parent).getQualifiedName(),
                         result,
                         containingFile,
                         "exception",
-                        PsiException.class);
+                        RPsiException.class);
             }
         }
     }

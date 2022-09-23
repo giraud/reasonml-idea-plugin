@@ -3,9 +3,7 @@ package com.reason.ide.doc;
 import com.intellij.lang.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;
 import org.junit.*;
 import org.junit.runner.*;
@@ -20,7 +18,7 @@ public class ShowDocRMLTest extends ORBasePlatformTestCase {
         FileBase doc = configureCode("Doc.re", "/** add 1 */\nlet fn = x => x + 1;");
         FileBase a = configureCode("A.re", "Mod.fn(<caret>);");
 
-        PsiLet resolvedElement = doc.getQualifiedExpressions("Doc.fn", PsiLet.class).get(0);
+        RPsiLet resolvedElement = doc.getQualifiedExpressions("Doc.fn", RPsiLet.class).get(0);
         assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let fn</i></p></div><div class=\"content\"><p>add 1</p></div>", getDocForElement(a, LANG, resolvedElement));
     }
 

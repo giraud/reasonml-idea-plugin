@@ -8,25 +8,25 @@ import org.junit.*;
 public class ExternalParsingTest extends ResParsingTestCase {
     @Test
     public void test_basic() {
-        PsiExternal e = firstOfType(parseCode("external global : t = \"global\""), PsiExternal.class);
+        RPsiExternal e = firstOfType(parseCode("external global : t = \"global\""), RPsiExternal.class);
 
-        PsiSignature signature = e.getSignature();
+        RPsiSignature signature = e.getSignature();
         assertEquals("t", signature.getText());
         assertEquals("global", e.getExternalName());
     }
 
     @Test
     public void test_signature_function() {
-        PsiExternal e = externalExpression(parseCode("external props : string => string = \"\""), "props");
+        RPsiExternal e = externalExpression(parseCode("external props : string => string = \"\""), "props");
 
-        PsiSignature signature = e.getSignature();
+        RPsiSignature signature = e.getSignature();
         assertEquals("string => string", signature.getText());
         assertTrue(e.isFunction());
     }
 
     @Test
     public void test_with_string() {
-        PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"FormattedMessage\""), PsiExternal.class);
+        RPsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"FormattedMessage\""), RPsiExternal.class);
 
         assertEquals("ReasonReact.reactClass", e.getSignature().asText(getLangProps()));
         assertFalse(e.isFunction());
@@ -35,7 +35,7 @@ public class ExternalParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_with_empty_string() {
-        PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"\""), PsiExternal.class);
+        RPsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"\""), RPsiExternal.class);
 
         assertEquals("ReasonReact.reactClass", e.getSignature().asText(getLangProps()));
         assertFalse(e.isFunction());
@@ -44,26 +44,26 @@ public class ExternalParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_named_param() {
-        PsiExternal e = firstOfType(parseCode("external props : (~value:string) => string = \"\""), PsiExternal.class);
+        RPsiExternal e = firstOfType(parseCode("external props : (~value:string) => string = \"\""), RPsiExternal.class);
 
-        PsiSignature signature = e.getSignature();
+        RPsiSignature signature = e.getSignature();
         assertEquals("(~value:string) => string", signature.getText());
         assertTrue(e.isFunction());
     }
 
     @Test
     public void test_string() {
-        PsiExternal e = firstOfType(parseCode("external string: string => reactElement = \"%identity\""), PsiExternal.class);
+        RPsiExternal e = firstOfType(parseCode("external string: string => reactElement = \"%identity\""), RPsiExternal.class);
 
         assertEquals("string", e.getName());
-        assertInstanceOf(((PsiExternalImpl) e).getNameIdentifier(), PsiLowerSymbol.class);
+        assertInstanceOf(((RPsiExternalImpl) e).getNameIdentifier(), RPsiLowerSymbol.class);
         assertEquals("string => reactElement", e.getSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
 
     @Test
     public void test_array() {
-        PsiExternal e = firstOfType(parseCode("external array: array<reactElement> => reactElement = \"%identity\""), PsiExternal.class);
+        RPsiExternal e = firstOfType(parseCode("external array: array<reactElement> => reactElement = \"%identity\""), RPsiExternal.class);
 
         assertEquals("array", e.getName());
         assertEquals("array<reactElement> => reactElement", e.getSignature().getText());

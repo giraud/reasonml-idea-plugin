@@ -11,7 +11,7 @@ import com.reason.ide.search.index.*;
 import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
@@ -33,7 +33,7 @@ public class ObjectCompletionProvider {
 
         QNameFinder qnameFinder = QNameFinderFactory.getQNameFinder(element.getLanguage());
 
-        if (previousElement instanceof PsiLowerSymbol) {
+        if (previousElement instanceof RPsiLowerSymbol) {
             LOG.debug(" -> lower symbol", previousElement);
 
             PsiLowerSymbolReference reference = (PsiLowerSymbolReference) previousElement.getReference();
@@ -43,12 +43,12 @@ public class ObjectCompletionProvider {
             }
 
             if (resolvedElement != null) {
-                Collection<PsiObjectField> fields = getFields(qnameFinder, resolvedElement);
+                Collection<RPsiObjectField> fields = getFields(qnameFinder, resolvedElement);
 
                 if (fields == null) {
                     LOG.debug("  -> Not a js object");
                 } else {
-                    for (PsiObjectField field : fields) {
+                    for (RPsiObjectField field : fields) {
                         String fieldName = field.getName();
                         resultSet.addElement(LookupElementBuilder.create(fieldName)
                                 .withIcon(PsiIconUtil.getProvidersIcon(field, 0)));
@@ -60,29 +60,29 @@ public class ObjectCompletionProvider {
         LOG.debug("  -> Nothing found");
     }
 
-    private static @Nullable Collection<PsiObjectField> getFields(@NotNull QNameFinder qnameFinder, @NotNull PsiElement resolvedElement) {
-        if (resolvedElement instanceof PsiLet) {
-            PsiLet let = (PsiLet) resolvedElement;
+    private static @Nullable Collection<RPsiObjectField> getFields(@NotNull QNameFinder qnameFinder, @NotNull PsiElement resolvedElement) {
+        if (resolvedElement instanceof RPsiLet) {
+            RPsiLet let = (RPsiLet) resolvedElement;
             if (let.isJsObject()) {
-                PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(let.getBinding(), PsiJsObject.class);
+                RPsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(let.getBinding(), RPsiJsObject.class);
                 return jsObject == null ? null : jsObject.getFields();
             } else {
-                PsiType type = getType(let, qnameFinder);
+                RPsiType type = getType(let, qnameFinder);
                 if (type != null && type.isJsObject()) {
-                    PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(type.getBinding(), PsiJsObject.class);
+                    RPsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(type.getBinding(), RPsiJsObject.class);
                     return jsObject == null ? null : jsObject.getFields();
                 }
             }
-        } else if (resolvedElement instanceof PsiObjectField) {
-            PsiElement value = ((PsiObjectField) resolvedElement).getValue();
-            if (value instanceof PsiJsObject) {
-                return ((PsiJsObject) value).getFields();
-            } else if (value instanceof PsiLowerSymbol) {
+        } else if (resolvedElement instanceof RPsiObjectField) {
+            PsiElement value = ((RPsiObjectField) resolvedElement).getValue();
+            if (value instanceof RPsiJsObject) {
+                return ((RPsiJsObject) value).getFields();
+            } else if (value instanceof RPsiLowerSymbol) {
                 // Must be an object defined outside
                 PsiLowerSymbolReference valueReference = (PsiLowerSymbolReference) value.getReference();
                 PsiElement valueResolvedElement = valueReference == null ? null : valueReference.resolveInterface();
                 return valueResolvedElement == null ? null : getFields(qnameFinder, valueResolvedElement);
-            } else if (value instanceof PsiUpperSymbol) {
+            } else if (value instanceof RPsiUpperSymbol) {
                 // Must be a path of an object defined outside
                 PsiElement lSymbol = ORUtil.nextSiblingWithTokenType(value, ORUtil.getTypes(resolvedElement.getLanguage()).LIDENT);
                 PsiLowerSymbolReference valueReference = lSymbol == null ? null : (PsiLowerSymbolReference) lSymbol.getReference();
@@ -93,9 +93,9 @@ public class ObjectCompletionProvider {
         return null;
     }
 
-    private static @Nullable PsiType getType(@NotNull PsiLet let, @NotNull QNameFinder qnameFinder) {
+    private static @Nullable RPsiType getType(@NotNull RPsiLet let, @NotNull QNameFinder qnameFinder) {
         GlobalSearchScope scope = GlobalSearchScope.allScope(let.getProject());
-        PsiSignature letSignature = let.getSignature();
+        RPsiSignature letSignature = let.getSignature();
         if (letSignature != null) {
             LOG.debug("Testing let signature", letSignature.getText());
 
@@ -105,9 +105,9 @@ public class ObjectCompletionProvider {
             Project project = let.getProject();
             String signatureName = "." + letSignature.getText();
             for (String path : paths) {
-                Collection<PsiType> types = TypeFqnIndex.getElements((path + signatureName).hashCode(), project, scope);
+                Collection<RPsiType> types = TypeFqnIndex.getElements((path + signatureName).hashCode(), project, scope);
                 if (!types.isEmpty()) {
-                    PsiType type = types.iterator().next();
+                    RPsiType type = types.iterator().next();
                     LOG.debug("  -> Found", type);
                     return type;
                 }

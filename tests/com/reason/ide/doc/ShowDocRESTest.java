@@ -18,7 +18,7 @@ public class ShowDocRESTest extends ORBasePlatformTestCase {
         FileBase doc = configureCode("Doc.res", "/** add 1 */\nlet fn = x => x + 1");
         FileBase a = configureCode("A.res", "Mod.fn(<caret>)");
 
-        PsiLet resolvedELement = doc.getQualifiedExpressions("Doc.fn", PsiLet.class).get(0);
+        RPsiLet resolvedELement = doc.getQualifiedExpressions("Doc.fn", RPsiLet.class).get(0);
         assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let fn</i></p></div><div class=\"content\"><p>add 1</p></div>", getDocForElement(a, LANG, resolvedELement));
     }
 

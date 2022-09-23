@@ -28,6 +28,7 @@ public class FindUIdentUsagesRMLTest extends ORBasePlatformTestCase {
         assertEquals("M.x", usages.get(0).getElement().getParent().getText());
     }
 
+    /*
     @Test // TODO Ocl/Res
     public void test_variant() {
         configureCode("A.re", "type t = | Red<caret>; let color = Red;");
@@ -36,4 +37,5 @@ public class FindUIdentUsagesRMLTest extends ORBasePlatformTestCase {
         assertSize(1, usages); // TODO
         assertEquals("A.color", usages.get(0).getElement().getParent().getText());
     }
+    */
 }

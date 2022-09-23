@@ -13,11 +13,11 @@ class CodeInstruction {
     final String[] myValues;
     Set<String> myAlternateValues = null;
 
-    public CodeInstruction(@NotNull PsiElement source, @Nullable String value, @Nullable Collection<PsiInclude> includes) {
+    public CodeInstruction(@NotNull PsiElement source, @Nullable String value, @Nullable Collection<RPsiInclude> includes) {
         mySource = source;
         myValues = value == null ? null : new String[]{value};
         if (includes != null && !includes.isEmpty()) {
-            myAlternateValues = includes.stream().map(PsiInclude::getIncludePath).collect(Collectors.toSet());
+            myAlternateValues = includes.stream().map(RPsiInclude::getIncludePath).collect(Collectors.toSet());
         }
     }
 
