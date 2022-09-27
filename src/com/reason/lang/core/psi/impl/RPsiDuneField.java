@@ -1,14 +1,19 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
+import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.dune.*;
+import icons.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiDuneField extends RPsiToken<DuneTypes> implements PsiNameIdentifierOwner {
+import javax.swing.*;
+
+public class RPsiDuneField extends RPsiToken<DuneTypes> implements PsiNameIdentifierOwner, RPsiStructuredElement {
     public RPsiDuneField(@NotNull DuneTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
@@ -35,6 +40,27 @@ public class RPsiDuneField extends RPsiToken<DuneTypes> implements PsiNameIdenti
         PsiElement name = ORUtil.findImmediateFirstChildOfType(this, DuneTypes.INSTANCE.ATOM);
         PsiElement nextLeaf = name == null ? null : PsiTreeUtil.nextVisibleLeaf(name);
         return nextLeaf == null ? "" : nextLeaf.getText();  // might be not enough
+    }
+
+    @Override
+    public @NotNull ItemPresentation getPresentation() {
+        return new ItemPresentation() {
+            @Override
+            public @NotNull String getPresentableText() {
+                String name = getName();
+                return name == null ? "unknown" : name;
+            }
+
+            @Override
+            public @Nullable String getLocationString() {
+                return null;
+            }
+
+            @Override
+            public @NotNull Icon getIcon(boolean unused) {
+                return ORIcons.OBJECT;
+            }
+        };
     }
 
     @Override

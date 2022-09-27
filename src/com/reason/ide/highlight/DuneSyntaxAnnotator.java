@@ -8,7 +8,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.impl.RPsiDuneField;
-import com.reason.lang.core.psi.impl.RPsiStanza;
+import com.reason.lang.core.psi.impl.RPsiDuneStanza;
 import com.reason.lang.dune.DuneTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,8 +18,8 @@ public class DuneSyntaxAnnotator implements Annotator {
   public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
     IElementType elementType = element.getNode().getElementType();
 
-    if (element instanceof RPsiStanza) {
-      PsiElement identifier = ((RPsiStanza) element).getNameIdentifier();
+    if (element instanceof RPsiDuneStanza) {
+      PsiElement identifier = ((RPsiDuneStanza) element).getNameIdentifier();
       if (identifier != null) {
         color(holder, identifier, DuneSyntaxHighlighter.STANZAS_);
       }

@@ -19,7 +19,7 @@ public class DuneStanzaParsingTest extends BaseParsingTestCase {
     public void test_stanza() {
         DuneFile e = parseDuneCode("(library (name x)) (version 1)");
 
-        Collection<RPsiStanza> stanzas = ORUtil.findImmediateChildrenOfClass(e, RPsiStanza.class);
+        Collection<RPsiDuneStanza> stanzas = ORUtil.findImmediateChildrenOfClass(e, RPsiDuneStanza.class);
         assertSize(2, stanzas);
         assertEquals("library", e.getStanza("library").getName());
         assertEquals("version", e.getStanza("version").getName());
@@ -27,7 +27,7 @@ public class DuneStanzaParsingTest extends BaseParsingTestCase {
 
     @Test
     public void test_stanza_fields() {
-        RPsiStanza e = parseDuneCode("(library (name x) (wrapped true))").getStanza("library");
+        RPsiDuneStanza e = parseDuneCode("(library (name x) (wrapped true))").getStanza("library");
 
         assertEquals("library", e.getName());
         assertSize(2, e.getFields());
@@ -43,7 +43,7 @@ public class DuneStanzaParsingTest extends BaseParsingTestCase {
     public void test_chain() {
         PsiFile e = parseRawCode("(library (name x)) (version 1)");
 
-        Collection<RPsiStanza> stanzas = ORUtil.findImmediateChildrenOfClass(e, RPsiStanza.class);
+        Collection<RPsiDuneStanza> stanzas = ORUtil.findImmediateChildrenOfClass(e, RPsiDuneStanza.class);
         assertSize(2, stanzas);
     }
 }

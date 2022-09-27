@@ -18,9 +18,9 @@ class DunePsiElementFactory {
     } else if (type == DuneTypes.INSTANCE.C_FIELDS) {
       return new RPsiDuneFields(DuneTypes.INSTANCE, node);
     } else if (type == DuneTypes.INSTANCE.C_STANZA) {
-      return new RPsiStanza(DuneTypes.INSTANCE, node);
+      return new RPsiDuneStanza(DuneTypes.INSTANCE, node);
     } else if (type == DuneTypes.INSTANCE.C_SEXPR) {
-      return new RPsiSExpr(DuneTypes.INSTANCE, node);
+      return new RPsiDuneSExpr(DuneTypes.INSTANCE, node);
     } else if (type == DuneTypes.INSTANCE.C_VAR) {
       return new RPsiDuneVar(DuneTypes.INSTANCE, node);
     }

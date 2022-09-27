@@ -13,8 +13,8 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-public class RPsiStanza extends RPsiToken<DuneTypes> implements PsiNameIdentifierOwner, RPsiStructuredElement {
-    public RPsiStanza(@NotNull DuneTypes types, @NotNull ASTNode node) {
+public class RPsiDuneStanza extends RPsiToken<DuneTypes> implements PsiNameIdentifierOwner, RPsiStructuredElement {
+    public RPsiDuneStanza(@NotNull DuneTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 

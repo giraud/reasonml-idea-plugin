@@ -18,8 +18,8 @@ public class DuneFile extends PsiFileBase {
         return DuneFileType.INSTANCE;
     }
 
-    public @Nullable RPsiStanza getStanza(@NotNull String name) {
-        for (RPsiStanza stanza : ORUtil.findImmediateChildrenOfClass(this, RPsiStanza.class)) {
+    public @Nullable RPsiDuneStanza getStanza(@NotNull String name) {
+        for (RPsiDuneStanza stanza : ORUtil.findImmediateChildrenOfClass(this, RPsiDuneStanza.class)) {
             if (name.equals(stanza.getName())) {
                 return stanza;
             }

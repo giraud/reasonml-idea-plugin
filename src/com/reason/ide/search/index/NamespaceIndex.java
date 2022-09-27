@@ -41,8 +41,8 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
             VirtualFile dataFile = inputData.getFile();
             if (inputData.getFileType() instanceof DuneFileType) {
                 DuneFile duneFile = (DuneFile) inputData.getPsiFile();
-                List<RPsiStanza> stanzas = ORUtil.findImmediateChildrenOfClass(duneFile, RPsiStanza.class);
-                for (RPsiStanza stanza : stanzas) {
+                List<RPsiDuneStanza> stanzas = ORUtil.findImmediateChildrenOfClass(duneFile, RPsiDuneStanza.class);
+                for (RPsiDuneStanza stanza : stanzas) {
                     if ("library".equals(stanza.getName())) {
                         VirtualFile parent = dataFile.getParent();
                         String namespace = StringUtil.toFirstUpper(parent.getName());

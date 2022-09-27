@@ -62,7 +62,7 @@ public class InferredTypesService {
                     VirtualFile duneSource = ORFileUtils.findAncestor(project, "dune", sourceFile);
                     PsiFile dune = duneSource == null ? null : PsiManager.getInstance(project).findFile(duneSource);
                     if (dune instanceof DuneFile) {
-                        RPsiStanza library = ((DuneFile) dune).getStanza("library");
+                        RPsiDuneStanza library = ((DuneFile) dune).getStanza("library");
                         RPsiDuneField name = library == null ? null : library.getField("name");
                         if (name == null && library != null) {
                             name = library.getField("public_name");
