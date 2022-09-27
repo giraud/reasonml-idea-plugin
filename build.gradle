@@ -38,6 +38,7 @@ intellij {
         changeNotes = """
                 <ul>
                     <li>Display dune-project fields in structure view</li>
+                    <li>Fix illegal characters in dune files</li>
                     <li>#358 - Incorrect resolution with module in pattern</li>
                     <li>#323 - Method declarations in .ml files should link to their implementations</li>
                     <li>Parse ternary if in OCaml</li>

@@ -42,7 +42,7 @@ WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
 WHITE_SPACE={WHITE_SPACE_CHAR}+
 
 NEWLINE=("\r"* "\n")
-ATOM=[A-Za-z_0-9'&\^!\.\-/+\\]
+ATOM=[A-Za-z_0-9'@&\^!\.\-/+\\]
 
 %state WAITING_VALUE
 %state INITIAL
@@ -66,11 +66,15 @@ ATOM=[A-Za-z_0-9'&\^!\.\-/+\\]
     ";"         { yybegin(IN_SL_COMMENT); tokenStart(); }
 
     "%{"        { return types.VAR_START; }
+    ">="        { return types.GTE; }
+    "<="        { return types.LTE; }
     "}"         { return types.VAR_END; }
     ":"         { return types.COLON; }
     "("         { return types.LPAREN; }
     ")"         { return types.RPAREN; }
     "="         { return types.EQUAL; }
+    "<"         { return types.LT; }
+    ">"         { return types.GT; }
     "#"         { return types.SHARP; }
 
     {ATOM}+     { return types.ATOM; }

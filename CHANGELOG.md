@@ -16,6 +16,7 @@
 - :bug: [#358](https://github.com/giraud/reasonml-idea-plugin/issues/358) Incorrect resolution with module in pattern
 - :bug: [#323](https://github.com/giraud/reasonml-idea-plugin/issues/323) Method declarations in .ml files should link to their implementations
 - :house: ![o] Parse ternary if in OCaml
+- :house: ![o] Fix illegal characters in dune files
 
 NOTE: minimal version supported is 2021.3
 
