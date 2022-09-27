@@ -677,14 +677,6 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseLIdent() {
-            // Must stop annotation if no dot/@ before
-            if (is(myTypes.C_MACRO_NAME)) {
-                IElementType previousElementType = previousElementType(1);
-                if (previousElementType != myTypes.DOT && previousElementType != myTypes.ARROBASE) {
-                    popEnd().popEnd();
-                }
-            }
-
             if (is(myTypes.C_EXTERNAL_DECLARATION)) {
                 // external |>x<| ...
                 wrapAtom(myTypes.CA_LOWER_SYMBOL);
@@ -714,7 +706,13 @@ public class ResParser extends CommonPsiParser {
             } else {
                 IElementType nextElementType = lookAhead(1);
 
-                if (is(myTypes.C_SCOPED_EXPR) && isScope(myTypes.LBRACE) && nextElementType == myTypes.COLON) {
+                if (isCurrent(myTypes.C_MACRO_NAME)) {
+                    // @ |>x<|  or  @x. |>y<|
+                    if (nextElementType != myTypes.DOT && nextElementType != myTypes.LPAREN) {
+                        wrapAtom(myTypes.CA_LOWER_SYMBOL).
+                                popEndUntil(myTypes.C_ANNOTATION).popEnd();
+                    }
+                } else if (is(myTypes.C_SCOPED_EXPR) && isScope(myTypes.LBRACE) && nextElementType == myTypes.COLON) {
                     // this is a record usage ::  { |>x<| : ...
                     updateComposite(myTypes.C_RECORD_EXPR)
                             .mark(myTypes.C_RECORD_FIELD)

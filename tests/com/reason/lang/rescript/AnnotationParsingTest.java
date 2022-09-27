@@ -50,4 +50,11 @@ public class AnnotationParsingTest extends ResParsingTestCase {
         assertEquals("@ocaml.doc", e.getName());
         assertEquals("\"something\"", e.getValue().getText());
     }
+
+    @Test
+    public void test_uncurry() {
+        RPsiAnnotation e = firstOfType(parseCode("type t = @uncurry unit => unit"), RPsiAnnotation.class);
+
+        assertEquals("@uncurry", e.getText());
+    }
 }
