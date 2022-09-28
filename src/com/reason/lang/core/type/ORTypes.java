@@ -90,6 +90,7 @@ public abstract class ORTypes {
     public ORCompositeType C_TRY_BODY;
     public ORCompositeType C_TRY_HANDLERS;
     public ORCompositeType C_TRY_HANDLER;
+    public ORCompositeType C_TRY_HANDLER_BODY;
     public ORCompositeType C_TYPE_BINDING;
     public ORCompositeType C_UNIT;
     public ORCompositeType C_VARIANT_CONSTRUCTOR;

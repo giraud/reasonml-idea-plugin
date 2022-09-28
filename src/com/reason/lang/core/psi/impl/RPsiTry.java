@@ -13,12 +13,12 @@ public class RPsiTry extends ORCompositePsiElement<ORTypes> {
         super(types, elementType);
     }
 
-    public @Nullable PsiElement getBody() {
-        return ORUtil.findImmediateFirstChildOfType(this, (IElementType) myTypes.C_TRY_BODY);
+    public @Nullable RPsiTryBody getBody() {
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiTryBody.class);
     }
 
-    public @Nullable List<PsiElement> getHandlers() {
+    public @Nullable List<RPsiTryHandler> getHandlers() {
         PsiElement scopedElement = ORUtil.findImmediateFirstChildOfType(this, (IElementType) myTypes.C_TRY_HANDLERS);
-        return ORUtil.findImmediateChildrenOfType(scopedElement, (IElementType) myTypes.C_TRY_HANDLER);
+        return ORUtil.findImmediateChildrenOfClass(scopedElement, RPsiTryHandler.class);
     }
 }

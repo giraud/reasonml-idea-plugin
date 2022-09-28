@@ -3,6 +3,7 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 
@@ -24,6 +25,17 @@ public class TryWithParsingTest extends OclParsingTestCase {
     public void test_in() {
         FileBase file = parseCode("try x with Not_found -> assert false in otherExpression");
         assertEquals(1, childrenCount(file));
+    }
+
+    @Test // coq/util.ml
+    public void test_call() {
+        RPsiTry e = firstOfType(parseCode("let system_getenv name = try Sys.getenv name with Not_found -> getenv_from_file name "), RPsiTry.class);
+
+        assertEquals("Sys.getenv name", e.getBody().getText());
+        assertSize(1, e.getHandlers());
+        RPsiTryHandler handler0 = e.getHandlers().get(0);
+        assertEquals("Not_found -> getenv_from_file name", handler0.getText());
+        assertEquals("getenv_from_file name", handler0.getBody().getText());
     }
 
     @Test

@@ -176,6 +176,19 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == myTypes.C_TRY_EXPR) {
             return new RPsiTry(myTypes, type);
         }
+        if (type == myTypes.C_TRY_HANDLERS) {
+            return new CompositePsiElement(type) {
+            };
+        }
+        if (type == myTypes.C_TRY_HANDLER) {
+            return new RPsiTryHandler(myTypes, type);
+        }
+        if (type == myTypes.C_TRY_HANDLER_BODY) {
+            return new RPsiTryHandlerBody(myTypes, type);
+        }
+        if (type == myTypes.C_TRY_BODY) {
+            return new RPsiTryBody(myTypes, type);
+        }
         if (type == myTypes.C_TUPLE) {
             return new RPsiTuple(myTypes, type);
         }
@@ -195,11 +208,7 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
             return new RPsiWhile(myTypes, type);
         }
         // Generic
-        if (type == myTypes.C_TRY_HANDLERS
-                || type == myTypes.C_TRY_HANDLER
-                || type == myTypes.C_TRY_BODY
-                || type == myTypes.C_INTERPOLATION_PART
-                || type == myTypes.C_TYPE_VARIABLE) {
+        if (type == myTypes.C_INTERPOLATION_PART || type == myTypes.C_TYPE_VARIABLE) {
             return new CompositePsiElement(type) {
             };
         }

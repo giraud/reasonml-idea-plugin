@@ -379,8 +379,8 @@ public class OclParser extends CommonPsiParser {
                 markDummyParenthesisScope().mark(myTypes.C_SIG_ITEM);
             }
             // same priority
-            else if (inAny(
-                    myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_FUNCTION_EXPR
+            else if (strictlyInAny(
+                    myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_FUNCTION_EXPR, myTypes.C_TRY_HANDLER
             )) {
 
                 if (isFound(myTypes.C_PATTERN_MATCH_EXPR)) {
@@ -391,6 +391,10 @@ public class OclParser extends CommonPsiParser {
                     // fun ... |>-><| ...
                     popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
                             .mark(myTypes.C_FUNCTION_BODY);
+                } else if (isFound(myTypes.C_TRY_HANDLER)) {
+                    // try .. with .. |>-><|
+                    popEndUntilFoundIndex().advance()
+                            .mark(myTypes.C_TRY_HANDLER_BODY);
                 }
 
             }

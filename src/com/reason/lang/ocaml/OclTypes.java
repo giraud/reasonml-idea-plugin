@@ -88,6 +88,7 @@ public class OclTypes extends ORTypes {
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", OclLanguage.INSTANCE);
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", OclLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", OclLanguage.INSTANCE);
+        C_TRY_HANDLER_BODY = new ORCompositeElementType("C_TRY_HANDLER_BODY", OclLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", OclLanguage.INSTANCE);
         C_TUPLE = new ORCompositeElementType("C_TUPLE", OclLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", OclLanguage.INSTANCE);

@@ -93,6 +93,7 @@ public class ResTypes extends ORTypes {
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", ResLanguage.INSTANCE);
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", ResLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", ResLanguage.INSTANCE);
+        C_TRY_HANDLER_BODY = new ORCompositeElementType("C_TRY_HANDLER_BODY", ResLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", ResLanguage.INSTANCE);
         C_TUPLE = new ORCompositeElementType("C_TUPLE", ResLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", ResLanguage.INSTANCE);

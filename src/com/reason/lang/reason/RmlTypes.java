@@ -93,6 +93,7 @@ public class RmlTypes extends ORTypes {
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", RmlLanguage.INSTANCE);
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", RmlLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", RmlLanguage.INSTANCE);
+        C_TRY_HANDLER_BODY = new ORCompositeElementType("C_TRY_HANDLER_BODY", RmlLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", RmlLanguage.INSTANCE);
         C_TUPLE = new ORCompositeElementType("C_TUPLE", RmlLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", RmlLanguage.INSTANCE);
