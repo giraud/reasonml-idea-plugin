@@ -104,7 +104,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         RPsiParameterReference p0 = e.getParameters().get(0);
         assertEquals("~dir:Coq_config.coqlibsuffix", p0.getText());
         assertEquals("dir", p0.getName());
-        assertEquals("Coq_config.coqlibsuffix",p0.getValue().getText());
+        assertEquals("Coq_config.coqlibsuffix", p0.getValue().getText());
         RPsiParameterReference p1 = e.getParameters().get(1);
         assertEquals("~file:prelude", p1.getText());
         assertEquals("file", p1.getName());
@@ -119,5 +119,15 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertSize(2, ps);
         assertEquals("\"x\"", ps.get(0).getText());
         assertEquals("(1)", ps.get(1).getText());
+    }
+
+    @Test
+    public void test_call_06() {
+        RPsiFunctionCall e = firstOfType(parseCode("let _ = print_usage_common co (\"Usage:\" ^ executable_name ^ \" < options > \" ^ extra_args ^ \"\n\n\")"), RPsiFunctionCall.class);
+
+        List<RPsiParameterReference> ps = e.getParameters();
+        assertSize(2, ps);
+        assertEquals("co", ps.get(0).getText());
+        assertEquals("(\"Usage:\" ^ executable_name ^ \" < options > \" ^ extra_args ^ \"\n\n\")", ps.get(1).getText());
     }
 }

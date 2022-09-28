@@ -986,13 +986,13 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseStringValue() {
-            if (is(myTypes.C_PARAMETERS)) {
+            if (is(myTypes.C_PARAM) && !currentHasScope()) {
+                popEnd().mark(myTypes.C_PARAM).advance().popEnd();
+            } else if (is(myTypes.C_PARAMETERS)) {
                 boolean isCall = strictlyIn(myTypes.C_FUNCTION_CALL);
                 mark(isCall ? myTypes.C_PARAM : myTypes.C_PARAM_DECLARATION).advance().popEnd();
             } else if (is(myTypes.C_PARAM_DECLARATION)) {
                 popEnd().mark(myTypes.C_PARAM_DECLARATION).advance().popEnd();
-            } else if (is(myTypes.C_PARAM)) {
-                popEnd().mark(myTypes.C_PARAM).advance().popEnd();
             }
         }
 
