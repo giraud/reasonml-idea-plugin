@@ -57,6 +57,15 @@ public class IfParsingTest extends OclParsingTestCase {
     }
 
     @Test
+    public void test_comment_else() {
+        RPsiIfStatement e = firstOfType(parseCode("let _ = if cond then 1 else (* !! *) let z = true in 2"), RPsiIfStatement.class);
+
+        assertEquals("cond", e.getCondition().getText());
+        assertEquals("1", e.getThenExpression().getText());
+        assertEquals("let z = true in 2", e.getElseExpression().getText());
+    }
+
+    @Test
     public void test_ternary_lident() {
         RPsiLet e = firstOfType(parseCode("let _ = a ? b : c"), RPsiLet.class);
         RPsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), RPsiTernary.class);

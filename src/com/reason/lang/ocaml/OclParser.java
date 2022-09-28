@@ -1249,7 +1249,13 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void endLikeSemi() {
-            IElementType previousElementType = previousElementType(-1);
+            int previousStep = -1;
+            IElementType previousElementType = previousElementType(previousStep);
+            while (previousElementType == myTypes.MULTI_COMMENT) {
+                previousStep--;
+                previousElementType = previousElementType(previousStep);
+            }
+
             if (previousElementType != myTypes.EQ
                     && previousElementType != myTypes.RIGHT_ARROW
                     && previousElementType != myTypes.TRY
