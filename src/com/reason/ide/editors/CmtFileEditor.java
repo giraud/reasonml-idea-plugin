@@ -27,9 +27,13 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
         myFile = file;
     }
 
-    @NotNull
     @Override
-    public JComponent getComponent() {
+    public @NotNull VirtualFile getFile() {
+        return myFile;
+    }
+
+    @Override
+    public @NotNull JComponent getComponent() {
         // using workaround found at https://youtrack.jetbrains.com/issue/IDEA-272890
         // myRootTabbedPane = new JBTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         PrevNextActionsDescriptor descriptor = new PrevNextActionsDescriptor(IdeActions.ACTION_NEXT_EDITOR_TAB, IdeActions.ACTION_PREVIOUS_EDITOR_TAB);
