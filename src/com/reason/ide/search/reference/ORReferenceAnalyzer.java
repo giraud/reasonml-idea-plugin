@@ -250,10 +250,16 @@ public class ORReferenceAnalyzer {
                 resolvedInstructions.push(new CodeInstruction(psiElement, ((RPsiLet) psiElement.getParent()).getName()));
             } else if (psiElement instanceof RPsiModuleBinding) {
                 // inside a module, just resolve to itself
-                resolvedInstructions.push(new CodeInstruction(psiElement, ((RPsiInnerModule) psiElement.getParent()).getModuleName()));
+                PsiElement parent = psiElement.getParent();
+                if (parent instanceof RPsiInnerModule) {
+                    resolvedInstructions.push(new CodeInstruction(psiElement, ((RPsiInnerModule) parent).getModuleName()));
+                }
             } else if (psiElement instanceof RPsiModuleType) {
                 // inside a module signature, just resolve to itself
-                resolvedInstructions.push(new CodeInstruction(psiElement, ((RPsiInnerModule) psiElement.getParent()).getModuleName()));
+                PsiElement parent = psiElement.getParent();
+                if (parent instanceof RPsiInnerModule) {
+                    resolvedInstructions.push(new CodeInstruction(psiElement, ((RPsiInnerModule) parent).getModuleName()));
+                }
             } else if (psiElement instanceof RPsiInnerModule) {
                 String alias = ((RPsiInnerModule) psiElement).getAlias();
                 if (alias == null) {

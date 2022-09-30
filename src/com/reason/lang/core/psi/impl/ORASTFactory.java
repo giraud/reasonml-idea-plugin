@@ -17,6 +17,12 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
 
     @Override
     public @Nullable CompositeElement createComposite(@NotNull IElementType type) {
+        if (type == myTypes.C_ASSERT_STMT) {
+            return new RPsiAssert(myTypes, type);
+        }
+        if (type == myTypes.C_ARRAY) {
+            return new RPsiArray(myTypes, type);
+        }
         if (type == myTypes.C_LET_BINDING) {
             return new RPsiLetBinding(myTypes, type);
         }
@@ -118,9 +124,6 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         }
         if (type == myTypes.C_TYPE_CONSTRAINT) {
             return new RPsiTypeConstraint(myTypes, type);
-        }
-        if (type == myTypes.C_ASSERT_STMT) {
-            return new RPsiAssert(myTypes, type);
         }
         if (type == myTypes.C_IF) {
             return new RPsiIfStatement(myTypes, type);

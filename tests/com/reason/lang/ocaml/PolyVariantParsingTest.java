@@ -10,6 +10,7 @@ import org.junit.*;
 
 import java.util.*;
 
+@SuppressWarnings("ConstantConditions")
 public class PolyVariantParsingTest extends OclParsingTestCase {
     @Test
     public void test_basic_LIdent() {

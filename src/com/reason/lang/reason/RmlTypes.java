@@ -29,7 +29,7 @@ public class RmlTypes extends ORTypes {
         // Composite element types
 
         C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION", RmlLanguage.INSTANCE);
-        C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", RmlLanguage.INSTANCE);
+        C_ARRAY = new ORCompositeElementType("C_ARRAY", RmlLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", RmlLanguage.INSTANCE);
         C_BINARY_CONDITION = new ORCompositeElementType("C_BINARY_CONDITION", RmlLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", RmlLanguage.INSTANCE);
@@ -64,6 +64,7 @@ public class RmlTypes extends ORTypes {
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", RmlLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", RmlLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
+        C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", RmlLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", RmlLanguage.INSTANCE);
         C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", RmlLanguage.INSTANCE);
         C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", RmlLanguage.INSTANCE);

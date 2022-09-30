@@ -29,7 +29,7 @@ public class ResTypes extends ORTypes {
         // Composite element types
 
         C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION", ResLanguage.INSTANCE);
-        C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", ResLanguage.INSTANCE);
+        C_ARRAY = new ORCompositeElementType("C_ARRAY", ResLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", ResLanguage.INSTANCE);
         C_BINARY_CONDITION = new ORCompositeElementType("C_BINARY_CONDITION", ResLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", ResLanguage.INSTANCE);
@@ -64,6 +64,7 @@ public class ResTypes extends ORTypes {
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", ResLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", ResLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", ResLanguage.INSTANCE);
+        C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", ResLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", ResLanguage.INSTANCE);
         C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", ResLanguage.INSTANCE);
         C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", ResLanguage.INSTANCE);

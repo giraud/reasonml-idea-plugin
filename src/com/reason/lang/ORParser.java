@@ -446,14 +446,6 @@ public abstract class ORParser<T> {
         return popEndUntilIndex(index);
     }
 
-    public boolean hasScopeAtIndex(int index) {
-        Marker marker = null;
-        if (0 <= index && index < myMarkers.size()) {
-            marker = myMarkers.get(index);
-        }
-        return marker != null && marker.hasScope();
-    }
-
     public boolean rawHasScope() {
         Marker marker = getLatestMarker();
         return marker != null && marker.hasScope();

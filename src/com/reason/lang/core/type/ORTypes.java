@@ -23,6 +23,7 @@ public abstract class ORTypes {
     // Composite element types
 
     public ORCompositeType C_ANNOTATION;
+    public ORCompositeType C_ARRAY;
     public ORCompositeType C_ASSERT_STMT;
     public ORCompositeType C_BINARY_CONDITION;
     public ORCompositeType C_CLASS_CONSTR;

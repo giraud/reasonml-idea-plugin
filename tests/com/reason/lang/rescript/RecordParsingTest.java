@@ -108,4 +108,19 @@ public class RecordParsingTest extends ResParsingTestCase {
         assertEquals("{ ...x, }", ef.getBody().getText());
         assertEquals("{ let _ = (x) => { ...x, } }", e.getBody().getText());
     }
+
+    @Test
+    public void test_if() {
+        RPsiRecord e = firstOfType(parseCode("let _ = { sortable: Manual({ ascending: idx == 0 ? Some(dir > 0) : None }) }"), RPsiRecord.class);
+
+        assertSize(1, e.getFields());
+        RPsiRecordField f0 = e.getFields().get(0);
+        assertEquals("sortable", f0.getName());
+        RPsiFieldValue v0 = f0.getValue();
+        RPsiRecordField f00 = PsiTreeUtil.findChildOfType(v0, RPsiRecordField.class);
+        assertEquals("ascending", f00.getName());
+        RPsiTernary t = ORUtil.findImmediateFirstChildOfClass(f00.getValue(), RPsiTernary.class);
+        assertEquals("idx == 0 ? Some(dir > 0) : None", t.getText());
+        assertEquals("Manual({ ascending: idx == 0 ? Some(dir > 0) : None })", f0.getValue().getText());
+    }
 }

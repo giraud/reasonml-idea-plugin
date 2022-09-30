@@ -30,6 +30,7 @@ public class OclTypes extends ORTypes {
         // Composite element types
 
         C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION", OclLanguage.INSTANCE);
+        C_ARRAY = new ORCompositeElementType("C_ARRAY", OclLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", OclLanguage.INSTANCE);
         C_BINARY_CONDITION = new ORCompositeElementType("C_BINARY_CONDITION", OclLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", OclLanguage.INSTANCE);

@@ -356,4 +356,15 @@ public class JsxParsingTest extends ResParsingTestCase {
         RPsiFunction f = PsiTreeUtil.findChildOfType(v, RPsiFunction.class);
         assertEquals("domRef", f.getParameters().get(0).getText());
     }
+
+    @Test
+    public void test_if() {
+        RPsiTagPropertyValue e = firstOfType(parseCode("let _ = <InputText onKeyDown={(e) => {\n let key = false\n if true {\n ()\n }\n }}/>"), RPsiTagPropertyValue.class);
+
+        RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
+        RPsiLet l = PsiTreeUtil.findChildOfType(f.getBody(), RPsiLet.class);
+        assertEquals("let key = false", l.getText());
+        RPsiIfStatement i = PsiTreeUtil.findChildOfType(f.getBody(), RPsiIfStatement.class);
+        assertEquals("if true {\n ()\n }", i.getText());
+    }
 }

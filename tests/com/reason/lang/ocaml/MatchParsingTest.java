@@ -23,7 +23,7 @@ public class MatchParsingTest extends OclParsingTestCase {
     }
 
     @Test
-    public void test_matchExpr() {
+    public void test_match_01() {
         FileBase psiFileModule = parseCode("let _ = match c with | VtMeta -> let _ = x");
         assertEquals(1, childrenCount(psiFileModule));
 
@@ -41,13 +41,11 @@ public class MatchParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_complex_match() {
-        FileBase file =
-                parseCode(
-                        "begin match Repr.repr o with\n"
-                                + "    | BLOCK (0, [|id; o|]) ->\n"
-                                + "      [|(Int, id, 0 :: pos); (tpe, o, 1 :: pos)|]\n"
-                                + "    | _ -> raise Exit\n"
-                                + "    end");
+        FileBase file = parseCode("begin match Repr.repr o with\n"
+                + "    | BLOCK (0, [|id; o|]) ->\n"
+                + "      [|(Int, id, 0 :: pos); (tpe, o, 1 :: pos)|]\n"
+                + "    | _ -> raise Exit\n"
+                + "    end");
         PsiElement[] children = file.getChildren();
 
         assertEquals(1, childrenCount((file)));
@@ -63,7 +61,6 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertSize(1, patterns);
         RPsiPatternMatch patternMatch = patterns.iterator().next();
         RPsiUpperSymbol variant = ORUtil.findImmediateFirstChildOfClass(patternMatch, RPsiUpperSymbol.class);
-        // assertTrue(variant.isVariant());
         assertEquals("Incr", variant.getText());
         assertEquals("counter + 1", patternMatch.getBody().getText());
     }
@@ -132,6 +129,57 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertEquals("V1(y) -> Some y", patterns.get(0).getText());
         assertEquals("Empty", patterns.get(1).getText());
         assertEquals("Unknown -> None", patterns.get(2).getText());
+    }
+
+    @Test
+    public void test_semi() {
+        RPsiPatternMatchBody e = firstOfType(parseCode("let _ = match x with | X -> let y = 1 in fn (y); print y"), RPsiPatternMatchBody.class);
+
+        assertEquals("let y = 1 in fn (y); print y", e.getText());
+    }
+
+    @Test // coq/analyze.ml
+    public void test_begin_end() {
+        RPsiPatternMatchBody e = firstOfType(parseCode("let _ = match (Obj.magic data) with\n" +
+                "| CODE_CUSTOM_FIXED ->\n" +
+                "    begin match input_cstring chan with\n" +
+                "    | \"_j\" -> Rint64 (input_intL chan)\n" +
+                "    | s -> Printf.eprintf \"Unhandled custom code: %s\" s; assert false\n" +
+                "    end"), RPsiPatternMatchBody.class);
+
+        assertEquals("begin match input_cstring chan with\n" +
+                "    | \"_j\" -> Rint64 (input_intL chan)\n" +
+                "    | s -> Printf.eprintf \"Unhandled custom code: %s\" s; assert false\n" +
+                "    end", e.getText());
+        RPsiSwitch m = PsiTreeUtil.findChildOfType(e, RPsiSwitch.class);
+        assertEquals("input_cstring chan", m.getCondition().getText());
+        assertSize(2, m.getPatterns());
+    }
+
+    @Test // coq/checker/checkInductive.ml
+    public void test_match_or() {
+        RPsiPatternMatch e = firstOfType(parseCode("let check_arity env ar1 ar2 = match ar1, ar2 with | (RegularArity _ | TemplateArity _), _ -> assert false"), RPsiPatternMatch.class);
+
+        assertEquals("(RegularArity _ | TemplateArity _), _ -> assert false", e.getText());
+        assertEquals("assert false", e.getBody().getText());
+    }
+
+    @Test // coq/checker/checkTypes.ml
+    public void test_match_no_pipe() {
+        RPsiPatternMatch e = firstOfType(parseCode("let _ = match pl, params with Some u::pl, LocalAssum (na,ty)::params -> check_kind env ty u"), RPsiPatternMatch.class);
+
+        assertEquals("Some u::pl, LocalAssum (na,ty)::params -> check_kind env ty u", e.getText());
+        assertEquals("check_kind env ty u", e.getBody().getText());
+    }
+
+    @Test // coq/checker/validate.ml
+    public void test_match_02() {
+        RPsiPatternMatch e = firstOfType(parseCode("let _ = match v with | List v0 -> val_sum \"list\" 1 [|[|Annot(\"elem\",v0);v|]|] mem ctx o"), RPsiPatternMatch.class);
+
+        assertEquals("List v0 -> val_sum \"list\" 1 [|[|Annot(\"elem\",v0);v|]|] mem ctx o", e.getText());
+        assertEquals("val_sum \"list\" 1 [|[|Annot(\"elem\",v0);v|]|] mem ctx o", e.getBody().getText());
+        RPsiFunctionCall fc = ORUtil.findImmediateFirstChildOfClass(e.getBody(), RPsiFunctionCall.class);
+        assertSize(6, fc.getParameters());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/312

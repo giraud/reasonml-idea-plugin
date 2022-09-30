@@ -52,6 +52,40 @@ public class TryWithParsingTest extends OclParsingTestCase {
         assertEquals("e -> let e = CErrors.push e", try_.getHandlers().iterator().next().getText());
     }
 
+    @Test // coq/util.ml
+    public void test_semi() {
+        RPsiTry e = firstOfType(parseCode("let _ = try\n let rc = f ic in\n close_in ic;\n rc\n with e -> close_in ic; raise e"), RPsiTry.class);
+
+        assertEquals("let rc = f ic in\n close_in ic;\n rc", e.getBody().getText());
+        assertEquals("e -> close_in ic; raise e", e.getHandlers().get(0).getText());
+    }
+
+    @Test // coq/util.ml
+    public void test_util() {
+        RPsiTry e = firstOfType(parseCode("let getenv_from_file name =\n" +
+                "  try\n" +
+                "    with_ic (base ^ \"/coq_environment.txt\") (fun ic ->\n" +
+                "      let rec find () =\n" +
+                "        match cond with\n" +
+                "        | _ -> ()\n" +
+                "      in\n" +
+                "        find ())\n" +
+                "  with\n" +
+                "  | Sys_error s -> raise Not_found\n" +
+                "  | End_of_file -> raise Not_found\n"), RPsiTry.class);
+
+        assertEquals("with_ic (base ^ \"/coq_environment.txt\") (fun ic ->\n" +
+                        "      let rec find () =\n" +
+                        "        match cond with\n" +
+                        "        | _ -> ()\n" +
+                        "      in\n" +
+                        "        find ())"
+                , e.getBody().getText());
+        RPsiFunctionCall fc = ORUtil.findImmediateFirstChildOfClass(e.getBody(), RPsiFunctionCall.class);
+        assertEquals("with_ic", fc.getName());
+        assertSize(2, fc.getParameters());
+    }
+
     @Test
     public void test_GH_256() {
         PsiFile file = parseCode("try find nt with Not_found -> (error \"Missing nt '%s' for splice\" nt; []) in let splice_prods = xxx");

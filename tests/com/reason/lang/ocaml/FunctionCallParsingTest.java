@@ -1,6 +1,8 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 
@@ -129,5 +131,31 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertSize(2, ps);
         assertEquals("co", ps.get(0).getText());
         assertEquals("(\"Usage:\" ^ executable_name ^ \" < options > \" ^ extra_args ^ \"\n\n\")", ps.get(1).getText());
+    }
+
+    @Test
+    public void test_call_07() {
+        RPsiFunctionCall e = firstOfType(parseCode("let _ = sscanf l \"%[^=]=%S\" (fun name value -> Some(name))"),RPsiFunctionCall.class);
+
+        List<RPsiParameterReference> ps = e.getParameters();
+        assertSize(3, ps);
+        assertEquals("l", ps.get(0).getText());
+        assertEquals("\"%[^=]=%S\"", ps.get(1).getText());
+        RPsiParameterReference p2 = ps.get(2);
+        RPsiFunction f = ORUtil.findImmediateFirstChildOfClass(p2, RPsiFunction.class);
+        assertEquals("fun name value -> Some(name)", f.getText());
+    }
+
+    //@Test zzz
+    public void test_parens() {
+        RPsiLet e = firstOfType(parseCode("let memory = LargeArray.make size (Struct ((-1), [||]))"), RPsiLet.class);
+
+        RPsiFunctionCall fc = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
+        assertEquals("make", fc.getName());
+        assertSize(2, fc.getParameters());
+        assertEquals("size", fc.getParameters().get(0).getText());
+        assertEquals("(Struct ((-1), [||]))", fc.getParameters().get(1).getText());
+        assertEquals("LargeArray.make size (Struct ((-1), [||]))", e.getBinding().getText());
+        // TODO: Struct is variant constructor
     }
 }

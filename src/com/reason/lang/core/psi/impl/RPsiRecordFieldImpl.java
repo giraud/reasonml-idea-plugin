@@ -72,8 +72,14 @@ public class RPsiRecordFieldImpl extends RPsiTokenStub<ORTypes, RPsiRecordField,
     }
     //endregion
 
+    @Override
     public @Nullable RPsiSignature getSignature() {
         return PsiTreeUtil.findChildOfType(this, RPsiSignature.class);
+    }
+
+    @Override
+    public @Nullable RPsiFieldValue getValue() {
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiFieldValue.class);
     }
 
     @Override

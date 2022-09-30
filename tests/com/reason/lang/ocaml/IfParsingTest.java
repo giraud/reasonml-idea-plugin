@@ -106,4 +106,18 @@ public class IfParsingTest extends OclParsingTestCase {
         assertEquals("b", t.getThenExpression().getText());
         assertEquals("c", t.getElseExpression().getText());
     }
+
+    @Test
+    public void test_named_param() {
+        RPsiLet e = firstOfType(parseCode("let add_rec_path ~unix_path ~coq_root =\n" +
+                "  if exists_dir unix_path then\n" +
+                "    let dirs = all_subdirs ~unix_path \n" +
+                "  else\n" +
+                "    Feedback.msg_warning (str \"Cannot open \" ++ str unix_path)"), RPsiLet.class);
+
+        RPsiIfStatement i = PsiTreeUtil.findChildOfType(e, RPsiIfStatement.class);
+        assertEquals("exists_dir unix_path", i.getCondition().getText());
+        assertEquals("let dirs = all_subdirs ~unix_path", i.getThenExpression().getText());
+        assertEquals("Feedback.msg_warning (str \"Cannot open \" ++ str unix_path)", i.getElseExpression().getText());
+    }
 }

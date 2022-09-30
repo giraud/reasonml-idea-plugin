@@ -294,6 +294,7 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseIf() {
+            popEndUntilScope();
             mark(myTypes.C_IF)
                     .advance().mark(myTypes.C_BINARY_CONDITION);
         }
@@ -584,7 +585,8 @@ public class ResParser extends CommonPsiParser {
                         mark(myTypes.C_SIG_EXPR)
                                 .mark(myTypes.C_SIG_ITEM);
                     } else {
-                        mark(myTypes.C_FIELD_VALUE);
+                        mark(myTypes.C_FIELD_VALUE)
+                                .markHolder(myTypes.H_PLACE_HOLDER);
                     }
                 } else if (isFound(myTypes.C_IF_THEN_SCOPE)) {
                     popEndUntilFoundIndex().popEnd()
@@ -601,10 +603,13 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseLt() {
-            if (is(myTypes.C_OPTION) || in(myTypes.C_SIG_ITEM)) {
+            if (is(myTypes.C_OPTION) || in(myTypes.C_SIG_EXPR)) {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LT);
-            } else if (strictlyIn(myTypes.C_TYPE_DECLARATION)) { // type parameters
+            } else if (strictlyInAny(myTypes.C_TYPE_DECLARATION, myTypes.C_VARIANT_DECLARATION)) { // type parameters
                 // type t |> < <| 'a >
+                markScope(myTypes.C_PARAMETERS, myTypes.LT);
+            } else if (in(myTypes.C_VARIANT_DECLARATION)) {
+                // type t = #X(array |> < <| ...
                 markScope(myTypes.C_PARAMETERS, myTypes.LT);
             } else {
                 // Can be a symbol or a JSX tag
@@ -639,7 +644,8 @@ public class ResParser extends CommonPsiParser {
                 mark(myTypes.C_TAG_BODY);
             } else if (strictlyIn(myTypes.C_TAG_CLOSE)) {
                 advance().popEndUntil(myTypes.C_TAG).end();
-            } else if (strictlyIn(myTypes.C_PARAMETERS)) {
+            } else if (strictlyIn(myTypes.C_PARAMETERS) && isFoundScope(myTypes.LT)) {
+                // type x< ... |> ><|
                 popEndUntilFoundIndex().advance().end();
             } else if (in(myTypes.C_SCOPED_EXPR) && isFoundScope(myTypes.LT)) {
                 popEndUntilFoundIndex().advance().popEnd();
@@ -815,7 +821,11 @@ public class ResParser extends CommonPsiParser {
                 markScope(myTypes.C_SWITCH_BODY, myTypes.LBRACE);
             } else if (strictlyIn(myTypes.C_BINARY_CONDITION)) {
                 popEndUntilFoundIndex().end();
-                if (strictlyIn(myTypes.C_SWITCH_EXPR)) {
+                if (isCurrent(myTypes.C_IF)) {
+                    // if ... |>{<|
+                    pop();
+                    markScope(myTypes.C_IF_THEN_SCOPE, myTypes.LBRACE);
+                } else if (strictlyIn(myTypes.C_SWITCH_EXPR)) {
                     // switch x |>{<| ... }
                     markScope(myTypes.C_SWITCH_BODY, myTypes.LBRACE);
                 }

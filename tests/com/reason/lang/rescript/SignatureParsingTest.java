@@ -155,9 +155,20 @@ public class SignatureParsingTest extends ResParsingTestCase {
     }
 
     @Test
-    public void test_no_tag() {
+    public void test_no_tag_01() {
         RPsiExternal e = firstOfType(parseCode("external make: (. Js.Dict.t<Js.Json.t>) => string"), RPsiExternal.class);
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
+    }
 
+    @Test
+    public void test_no_tag_02() {
+        RPsiExternal e = firstOfType(parseCode("external renderKeyframes: (. renderer, Js.Dict.t<Js.Json.t>) => string"), RPsiExternal.class);
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
+    }
+
+    @Test
+    public void test_no_tag_03() {
+        RPsiType e = firstOfType(parseCode("type t = [ | #none | #areas(list<string>)]"), RPsiType.class);
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
     }
 
