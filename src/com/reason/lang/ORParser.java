@@ -287,6 +287,17 @@ public abstract class ORParser<T> {
         return -1;
     }
 
+    public int latestIndexOfCompositeAtMost(@NotNull ORCompositeType composite, int maxIndex) {
+        int max = Math.min(maxIndex, myMarkers.size());
+        for (int i = 0; i < max; i++) {
+            Marker markerScope = myMarkers.get(i);
+            if (markerScope.isCompositeType(composite)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public boolean inAny(ORCompositeType... composite) {
         int stop = myMarkers.size();
         for (int i = 0; i < stop; i++) {

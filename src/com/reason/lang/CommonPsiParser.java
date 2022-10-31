@@ -16,7 +16,7 @@ public abstract class CommonPsiParser implements PsiParser {
 
     @Override
     public @NotNull ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
-        //builder.setDebugMode(true);
+        builder.setDebugMode(true);
         PsiBuilder.Marker r = builder.mark();
 
         ORParser<?> state = getORParser(builder);

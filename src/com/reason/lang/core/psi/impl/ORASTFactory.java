@@ -125,6 +125,9 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
         if (type == myTypes.C_TYPE_CONSTRAINT) {
             return new RPsiTypeConstraint(myTypes, type);
         }
+        if (type == myTypes.C_GUARD) {
+            return new RPsiGuard(myTypes, type);
+        }
         if (type == myTypes.C_IF) {
             return new RPsiIfStatement(myTypes, type);
         }

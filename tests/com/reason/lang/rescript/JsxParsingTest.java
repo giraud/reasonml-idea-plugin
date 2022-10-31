@@ -367,4 +367,31 @@ public class JsxParsingTest extends ResParsingTestCase {
         RPsiIfStatement i = PsiTreeUtil.findChildOfType(f.getBody(), RPsiIfStatement.class);
         assertEquals("if true {\n ()\n }", i.getText());
     }
+
+    @Test
+    public void test_inside_switch() {
+        RPsiTagPropertyValue e = firstOfType(parseCode("let _ = switch x { | _ => <MovableMashlet onPositionChange={(y: M.t) => { fn(alias, y) }}/> }"), RPsiTagPropertyValue.class);
+
+        assertEquals("{(y: M.t) => { fn(alias, y) }}", e.getText());
+    }
+
+    @Test
+    public void test_incomplete_value_scope_autoclose() {
+        RPsiTagStart e = firstOfType(parseCode("<ListRe values={x />"), RPsiTagStart.class);
+
+        assertNoParserError(e);
+        RPsiTagProperty ep = e.getProperties().get(0);
+        assertEquals("{x", ep.getValue().getText());
+        assertEquals("/>", e.getLastChild().getText());
+    }
+
+    @Test
+    public void test_incomplete_value_scope_close() {
+        RPsiTagStart e = firstOfType(parseCode("<ListRe values={x >"), RPsiTagStart.class);
+
+        assertNoParserError(e);
+        RPsiTagProperty ep = e.getProperties().get(0);
+        assertEquals("{x", ep.getValue().getText());
+        assertEquals(">", e.getLastChild().getText());
+    }
 }

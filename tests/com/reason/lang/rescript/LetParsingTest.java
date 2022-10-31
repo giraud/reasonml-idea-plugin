@@ -98,8 +98,11 @@ public class LetParsingTest extends ResParsingTestCase {
     public void test_signature() {
         RPsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { }")));
 
+        assertNoParserError(let);
         assertEquals("(style, style) => style", let.getSignature().getText());
         assertEquals("(a, b) => { }", let.getBinding().getText());
+        assertTrue(let.isFunction());
+        assertNotNull(PsiTreeUtil.findChildOfType(let, RPsiFunction.class));
     }
 
     @Test

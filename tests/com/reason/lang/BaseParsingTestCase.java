@@ -134,6 +134,9 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
                 .collect(Collectors.toList());
     }
 
+    protected void assertNoParserError(PsiElement e) {
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiErrorElement.class));
+    }
 
     @NotNull
     protected PsiFile parseFile(String name) throws IOException {

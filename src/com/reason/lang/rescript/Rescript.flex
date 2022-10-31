@@ -79,6 +79,7 @@ ESCAPE_OCTAL="\\o" [0-3] {OCTAL} {OCTAL}
 ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_TAB} | {ESCAPE_BACKSPACE } | { ESCAPE_CR } | { ESCAPE_QUOTE } | {ESCAPE_DECIMAL} | {ESCAPE_HEXA} | {ESCAPE_OCTAL}
 
 %state INITIAL
+%state IN_TEMPLATE
 %state IN_STRING
 %state IN_ML_COMMENT
 %state IN_SL_COMMENT
@@ -169,8 +170,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 
     "_"         { return types.UNDERSCORE; }
 
-    "`"         { return types.JS_STRING_OPEN/*Template*/; }
-
     "'" ( {ESCAPE_CHAR} | . ) "'"    { return types.CHAR_VALUE; }
     {LOWERCASE}{IDENTCHAR}*          { return types.LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return types.UIDENT; }
@@ -180,6 +179,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "#"{UPPERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
     "#"{LOWERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
 
+    "`"  { yybegin(IN_TEMPLATE); return types.JS_STRING_OPEN; }
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_ML_COMMENT); commentDepth = 1; tokenStart(); }
     "//" { yybegin(IN_SL_COMMENT); tokenStart(); }
@@ -209,7 +209,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     ":"   { return types.COLON; }
     ";"   { return types.SEMI; }
     "'"   { return types.SINGLE_QUOTE; }
-    //"\""  { return types.DOUBLE_QUOTE; }
     "..." { return types.DOTDOTDOT; }
     ".."  { return types.DOTDOT; }
     "."   { return types.DOT; }
@@ -224,7 +223,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "#"   { return types.SHARP; }
     "?"   { return types.QUESTION_MARK; }
     "!"   { return types.EXCLAMATION_MARK; }
-    "$"   { return types.DOLLAR; }
     "~"   { return types.TILDE; }
     "&"   { return types.AMPERSAND; }
 
@@ -242,6 +240,18 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "*"   { return types.STAR; }
     "%"   { return types.PERCENT; }
     "\\"  { return types.BACKSLASH; }
+}
+
+<IN_TEMPLATE> {
+    {WHITE_SPACE} { return WHITE_SPACE; }
+    {EOL}         { return types.EOL; }
+    "$"           { return types.DOLLAR; }
+    "{"           { return types.LBRACE; }
+    "}"           { return types.RBRACE; }
+    "`"           { yybegin(INITIAL); return types.JS_STRING_CLOSE; }
+    {NEWLINE}     { yybegin(INITIAL); }
+    <<EOF>>       { yybegin(INITIAL); }
+    ([^`{}$])+    { return types.STRING_VALUE; }
 }
 
 <IN_STRING> {

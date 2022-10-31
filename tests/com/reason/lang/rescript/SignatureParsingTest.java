@@ -93,6 +93,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
+        assertNoParserError(e);
         assertSize(3, parameters);
     }
 

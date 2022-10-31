@@ -10,6 +10,8 @@ import org.junit.*;
 import java.util.*;
 import java.util.stream.*;
 
+import static java.util.List.of;
+
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends ResParsingTestCase {
     @Test
@@ -40,7 +42,7 @@ public class TypeParsingTest extends ResParsingTestCase {
         List<RPsiUpperSymbol> modules = ORUtil.findImmediateChildrenOfClass(e.getBinding(), RPsiUpperSymbol.class);
         assertSize(2, modules);
         List<IElementType> es = modules.stream().map(u -> u.getNode().getElementType()).collect(Collectors.toList());
-        assertEquals(List.of(myTypes.A_MODULE_NAME, myTypes.A_MODULE_NAME), es);
+        assertEquals(of(myTypes.A_MODULE_NAME, myTypes.A_MODULE_NAME), es);
     }
 
     @Test
@@ -175,6 +177,16 @@ public class TypeParsingTest extends ResParsingTestCase {
         RPsiParameterDeclaration param = e.getFunction().getParameters().get(0);
         RPsiSignatureItem sigItem = param.getSignature().getItems().get(0);
         assertEquals("array<int>", sigItem.getText());
+    }
+
+    @Test
+    public void test_module() {
+        RPsiSignature e = firstOfType(parseCode("let stroke: [< Types.Color.t | Types.Var.t] => rule"), RPsiSignature.class);
+
+        assertNoParserError(e);
+        assertDoesntContain(extractUpperSymbolTypes(e), myTypes.A_VARIANT_NAME);
+        assertDoesntContain(extractUpperSymbolTypes(e), myTypes.UIDENT);
+        assertEquals(extractUpperSymbolTypes(e), of(myTypes.A_MODULE_NAME, myTypes.A_MODULE_NAME, myTypes.A_MODULE_NAME, myTypes.A_MODULE_NAME));
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/326

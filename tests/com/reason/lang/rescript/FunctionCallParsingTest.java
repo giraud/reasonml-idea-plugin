@@ -92,6 +92,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         List<RPsiLet> expressions = letAllExpressions(parseCode("describe(\"context\", () => { test(\"should do something\", () => { let inner = 1 }) })"));
         RPsiLet e = first(expressions);
 
+        assertNoParserError(e);
         assertEquals("Dummy.describe[1].test[1].inner", e.getQualifiedName());
     }
 

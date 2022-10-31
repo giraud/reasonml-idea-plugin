@@ -45,6 +45,7 @@ public abstract class ORTypes {
     public ORCompositeType C_FUNCTOR_BINDING;
     public ORCompositeType C_FUNCTOR_CALL;
     public ORCompositeType C_FUNCTOR_RESULT;
+    public ORCompositeType C_GUARD;
     public ORCompositeType C_IF;
     public ORCompositeType C_IF_THEN_SCOPE;
     public ORCompositeType C_LET_ATTR;

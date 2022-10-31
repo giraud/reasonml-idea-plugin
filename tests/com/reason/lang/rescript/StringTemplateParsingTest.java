@@ -11,7 +11,7 @@ import java.util.*;
 @SuppressWarnings("ConstantConditions")
 public class StringTemplateParsingTest extends ResParsingTestCase {
     @Test
-    public void test_basic() {
+    public void test_basic_new() {
         List<RPsiLet> es = letExpressions(parseCode("let x = `this is a ${var} Template string`\nlet y = 1"));
 
         RPsiLetBinding b = first(es).getBinding();
@@ -20,14 +20,14 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
         assertEquals("`this is a ${var} Template string`", b.getText());
 
         RPsiInterpolation inter = (RPsiInterpolation) b.getFirstChild();
-        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, myTypes.C_INTERPOLATION_PART);
+        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, myTypes.STRING_VALUE);
         assertSize(2, parts);
         RPsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, RPsiInterpolationReference.class);
-        assertEquals(ref.getText(), "var");
+        assertEquals("var", ref.getText());
     }
 
     @Test
-    public void test_ref_only() {
+    public void test_ref_only_new() {
         RPsiLetBinding b = first(letExpressions(parseCode("let x = `${var}`"))).getBinding();
 
         assertEquals("`${var}`", b.getText());
@@ -36,7 +36,67 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
         Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, myTypes.C_INTERPOLATION_PART);
         assertEmpty(parts);
         RPsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, RPsiInterpolationReference.class);
-        assertEquals(ref.getText(), "var");
+        assertEquals("var", ref.getText());
+    }
+
+    @Test
+    public void test_string_new() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = `url(\"${var}\")`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        List<RPsiLiteralExpression> strings = ORUtil.findImmediateChildrenOfClass(e, RPsiLiteralExpression.class);
+        assertEquals("url(\"", strings.get(0).getText());
+        assertEquals("\")", strings.get(1).getText());
+        RPsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class);
+        assertEquals("var", ref.getText());
+    }
+
+    @Test
+    public void test_string_old() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = j`url(\"${var}\")`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        List<RPsiLiteralExpression> strings = ORUtil.findImmediateChildrenOfClass(e, RPsiLiteralExpression.class);
+        assertEquals("url(\"", strings.get(0).getText());
+        assertEquals("\")", strings.get(1).getText());
+        RPsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class);
+        assertEquals("var", ref.getText());
+    }
+
+    @Test
+    public void test_unbalanced_new() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = `url(\"${var\")`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        assertNull(ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class));
+        assertEquals("`url(\"${var\")`", e.getText());
+    }
+
+    @Test
+    public void test_no_ref_braces() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = `style {color:red}`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        assertNull(ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class));
+        assertNull(ORUtil.findImmediateFirstChildOfType(e, myTypes.LBRACE));
+        assertNull(ORUtil.findImmediateFirstChildOfType(e, myTypes.RBRACE));
+    }
+
+    @Test
+    public void test_no_ref_dollar() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = `style $color:red`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        assertNull(ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class));
+        assertNull(ORUtil.findImmediateFirstChildOfType(e, myTypes.DOLLAR));
+    }
+
+    @Test
+    public void test_no_ref_in_ref() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = `test{ ${noref ${ref} }`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        assertEquals("ref", ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class).getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/353

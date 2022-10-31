@@ -64,6 +64,6 @@ public class RPsiLiteralExpression extends LeafPsiElement implements PsiLanguage
 
     @Override
     public @NotNull String toString() {
-        return "PsiLeafLiteralExpression";
+        return "RPsiLiteralExpression";
     }
 }

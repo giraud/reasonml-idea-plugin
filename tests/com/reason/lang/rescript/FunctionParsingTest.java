@@ -68,6 +68,8 @@ public class FunctionParsingTest extends ResParsingTestCase {
     public void test_inner_function() {
         RPsiLet e = first(letExpressions(parseCode("let _ = error => Belt.Array.mapU(errors, (. error) => error[\"message\"])")));
 
+        assertNoParserError(e);
+
         RPsiFunction functionOuter = (RPsiFunction) e.getBinding().getFirstChild();
         assertEquals("Belt.Array.mapU(errors, (. error) => error[\"message\"])", functionOuter.getBody().getText());
 
@@ -235,12 +237,15 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_rollback_01() {
         RPsiFunction f = firstOfType(parseCode("let _ = { let x = 1\n let y = 2\n () => 3 }"), RPsiFunction.class); // test infinite rollback
+
+        assertNoParserError(f);
         assertEquals("() => 3", f.getText());
     }
 
     @Test
     public void test_rollback_02() {
         List<RPsiFunction> es = children(parseCode("let _ = (() => 1, () => 2);"), RPsiFunction.class); // test infinite rollback
+
         assertEquals("() => 1", es.get(0).getText());
         assertEquals("() => 2", es.get(1).getText());
     }

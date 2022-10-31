@@ -165,6 +165,16 @@ public class SwitchParsingTest extends ResParsingTestCase {
         assertEquals("Unknown => None", patterns.get(3).getText());
     }
 
+    @Test
+    public void test_guard() {
+        RPsiSwitch e = firstOfType(parseCode("let _ = switch x { | M1 if x == 1 => 2 | _ => 3 }"), RPsiSwitch.class);
+
+        assertNoParserError(e);
+        assertSize(2, e.getPatterns());
+        assertEquals("2", e.getPatterns().get(0).getBody().getText());
+        assertEquals("3", e.getPatterns().get(1).getBody().getText());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/275
     @Test
     public void test_GH_275() {
