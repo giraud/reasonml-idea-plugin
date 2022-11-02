@@ -4,8 +4,8 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiMultiLineInterpolator extends ORCompositePsiElement<ORTypes> {
-    protected RPsiMultiLineInterpolator(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiMultiLineInterpolator extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiMultiLineInterpolator(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 }

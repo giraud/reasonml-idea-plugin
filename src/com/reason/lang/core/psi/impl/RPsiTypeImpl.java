@@ -18,13 +18,13 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class RPsiTypeImpl extends RPsiTokenStub<ORTypes, RPsiType, PsiTypeStub> implements RPsiType {
+public class RPsiTypeImpl extends RPsiTokenStub<ORLangTypes, RPsiType, PsiTypeStub> implements RPsiType {
     // region Constructors
-    public RPsiTypeImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiTypeImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiTypeImpl(@NotNull ORTypes types, @NotNull PsiTypeStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiTypeImpl(@NotNull ORLangTypes types, @NotNull PsiTypeStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

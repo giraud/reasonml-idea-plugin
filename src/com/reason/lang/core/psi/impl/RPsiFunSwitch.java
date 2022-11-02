@@ -7,8 +7,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiFunSwitch extends ORCompositePsiElement<ORTypes> {
-    protected RPsiFunSwitch(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiFunSwitch extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiFunSwitch(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

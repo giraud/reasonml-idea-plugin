@@ -23,13 +23,13 @@ import java.util.*;
 import static com.reason.lang.core.ORFileType.*;
 import static java.util.Collections.*;
 
-public class RPsiInnerModuleImpl extends RPsiTokenStub<ORTypes, RPsiModule, PsiModuleStub> implements RPsiInnerModule, PsiNameIdentifierOwner {
+public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiModuleStub> implements RPsiInnerModule, PsiNameIdentifierOwner {
     // region Constructors
-    public RPsiInnerModuleImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiInnerModuleImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiInnerModuleImpl(@NotNull ORTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiInnerModuleImpl(@NotNull ORLangTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

@@ -1007,7 +1007,7 @@ public class RmlParser extends CommonPsiParser {
                 markScope(myTypes.C_LOCAL_OPEN, myTypes.LPAREN);
             } else if (is(myTypes.C_MODULE_BINDING) && !in(myTypes.C_FUNCTOR_DECLARATION)) {
                 if (myBuilder.lookAhead(1) == myTypes.VAL) {
-                    markDummyParenthesisScope();
+                    markParenthesisScope(true);
                 } else if (in(myTypes.C_MODULE_DECLARATION)) {
                     // This is a functor ::  module M = |>(<| .. )
                     updateCompositeAt(getIndex(), myTypes.C_FUNCTOR_DECLARATION)
@@ -1086,9 +1086,10 @@ public class RmlParser extends CommonPsiParser {
                         if (nextTokenType == myTypes.COLON) {
                             // module M = (P) |> :<| R ...
                             advance();
-                            if (getTokenType() == myTypes.LPAREN) {
-                                markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
-                            }
+                            markParenthesisScope(true);
+                            //if (getTokenType() == myTypes.LPAREN) {
+                            //    markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
+                            //}
                             mark(myTypes.C_FUNCTOR_RESULT);
                         } else if (nextTokenType == myTypes.ARROW) {
                             // module M = (P) |>=><| ...

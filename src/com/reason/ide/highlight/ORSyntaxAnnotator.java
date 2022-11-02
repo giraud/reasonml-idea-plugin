@@ -14,9 +14,9 @@ import static com.intellij.lang.annotation.HighlightSeverity.*;
 import static com.reason.ide.highlight.ORSyntaxHighlighter.*;
 
 public abstract class ORSyntaxAnnotator implements Annotator {
-    private final ORTypes myTypes;
+    private final ORLangTypes myTypes;
 
-    ORSyntaxAnnotator(@NotNull ORTypes types) {
+    ORSyntaxAnnotator(@NotNull ORLangTypes types) {
         myTypes = types;
     }
 

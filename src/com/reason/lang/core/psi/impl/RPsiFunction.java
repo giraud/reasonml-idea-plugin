@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
@@ -9,8 +8,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiFunction extends ORCompositePsiElement<ORTypes> implements PsiElement {
-    protected RPsiFunction(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiFunction extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiFunction(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

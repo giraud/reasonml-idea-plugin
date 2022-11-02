@@ -20,15 +20,15 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-public class RPsiLetImpl extends RPsiTokenStub<ORTypes, RPsiLet, PsiLetStub> implements RPsiLet {
+public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub> implements RPsiLet {
     private RPsiSignature myInferredType;
 
     // region Constructors
-    public RPsiLetImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiLetImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiLetImpl(@NotNull ORTypes types, @NotNull PsiLetStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiLetImpl(@NotNull ORLangTypes types, @NotNull PsiLetStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

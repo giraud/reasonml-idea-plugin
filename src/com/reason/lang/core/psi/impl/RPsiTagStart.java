@@ -16,8 +16,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiTagStart extends ORCompositePsiElement<ORTypes> implements PsiNameIdentifierOwner {
-    protected RPsiTagStart(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiTagStart extends ORCompositePsiElement<ORLangTypes> implements PsiNameIdentifierOwner {
+    protected RPsiTagStart(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

@@ -16,7 +16,7 @@ import org.jetbrains.annotations.*;
 abstract class ORCompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
     static final Log LOG = Log.create("insight");
 
-    ORCompletionContributor(@NotNull ORTypes types, @NotNull QNameFinder qnameFinder) {
+    ORCompletionContributor(@NotNull ORLangTypes types, @NotNull QNameFinder qnameFinder) {
         extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(),
                 new CompletionProvider<>() {
                     @Override

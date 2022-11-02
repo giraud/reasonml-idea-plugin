@@ -17,9 +17,9 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLe
     private static final Log LOG = Log.create("ref.params");
 
     private final @Nullable String myReferenceName;
-    private final @NotNull ORTypes myTypes;
+    private final @NotNull ORLangTypes myTypes;
 
-    public PsiPropertyNameReference(@NotNull RPsiLeafPropertyName element, @NotNull ORTypes types) {
+    public PsiPropertyNameReference(@NotNull RPsiLeafPropertyName element, @NotNull ORLangTypes types) {
         super(element, TextRange.from(0, element.getTextLength()));
         myReferenceName = element.getText();
         myTypes = types;

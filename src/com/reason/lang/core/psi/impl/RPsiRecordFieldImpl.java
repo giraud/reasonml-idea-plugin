@@ -16,13 +16,13 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class RPsiRecordFieldImpl extends RPsiTokenStub<ORTypes, RPsiRecordField, RsiRecordFieldStub> implements RPsiRecordField {
+public class RPsiRecordFieldImpl extends RPsiTokenStub<ORLangTypes, RPsiRecordField, RsiRecordFieldStub> implements RPsiRecordField {
     // region Constructors
-    public RPsiRecordFieldImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiRecordFieldImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiRecordFieldImpl(@NotNull ORTypes types, @NotNull RsiRecordFieldStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiRecordFieldImpl(@NotNull ORLangTypes types, @NotNull RsiRecordFieldStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

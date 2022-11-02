@@ -8,9 +8,9 @@ import com.reason.lang.core.type.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiMacro extends ORCompositePsiElement<ORTypes> {
+public class RPsiMacro extends ORCompositePsiElement<ORLangTypes> {
 
-    protected RPsiMacro(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    protected RPsiMacro(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

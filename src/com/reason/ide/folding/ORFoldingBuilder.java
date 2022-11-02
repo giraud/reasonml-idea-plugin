@@ -24,7 +24,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
     @Override
     public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
-        ORTypes types = ORUtil.getTypes(root.getLanguage());
+        ORLangTypes types = ORUtil.getTypes(root.getLanguage());
 
         PsiTreeUtil.processElements(root, element -> {
             if (element instanceof RPsiLet) {
@@ -37,6 +37,8 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
                 foldFunction(descriptors, (RPsiFunction) element);
             } else if (element instanceof RPsiFunctor) {
                 foldFunctor(descriptors, (RPsiFunctor) element);
+            } else if (element instanceof RPsiFunctorResult) {
+                foldFunctorResult(descriptors, (RPsiFunctorResult) element);
             } else if (element instanceof RPsiTag) {
                 foldTag(descriptors, (RPsiTag) element);
             } else if (element instanceof RPsiPatternMatch) {
@@ -98,6 +100,13 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
 
     private void foldFunctor(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiFunctor element) {
         FoldingDescriptor foldBinding = fold(element.getBody());
+        if (foldBinding != null) {
+            descriptors.add(foldBinding);
+        }
+    }
+
+    private void foldFunctorResult(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiFunctorResult element) {
+        FoldingDescriptor foldBinding = fold(element);
         if (foldBinding != null) {
             descriptors.add(foldBinding);
         }

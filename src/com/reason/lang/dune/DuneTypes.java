@@ -1,9 +1,8 @@
 package com.reason.lang.dune;
 
-import com.reason.lang.core.type.ORCompositeElementType;
-import com.reason.lang.core.type.ORTokenElementType;
+import com.reason.lang.core.type.*;
 
-public class DuneTypes {
+public class DuneTypes extends ORTypes {
     public static final DuneTypes INSTANCE = new DuneTypes();
 
     private DuneTypes() {

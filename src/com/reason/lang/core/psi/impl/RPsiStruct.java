@@ -4,8 +4,8 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiStruct extends ORCompositePsiElement<ORTypes> {
-    protected RPsiStruct(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiStruct extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiStruct(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 }

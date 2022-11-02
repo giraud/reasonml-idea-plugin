@@ -19,13 +19,13 @@ public class PsiParameterDeclarationStubElementType extends ORStubElementType<Ps
 
     @NotNull
     public RPsiParameterDeclaration createPsi(@NotNull PsiParameterDeclarationStub stub) {
-        ORTypes types = ORTypesUtil.getInstance(getLanguage());
+        ORLangTypes types = ORTypesUtil.getInstance(getLanguage());
         return new RPsiParameterDeclarationImpl(types, stub, this);
     }
 
     @NotNull
     public RPsiParameterDeclaration createPsi(@NotNull ASTNode node) {
-        ORTypes types = ORTypesUtil.getInstance(getLanguage());
+        ORLangTypes types = ORTypesUtil.getInstance(getLanguage());
         return new RPsiParameterDeclarationImpl(types, node);
     }
 

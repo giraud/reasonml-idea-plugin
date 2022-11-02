@@ -6,9 +6,9 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiTagProperty extends ORCompositePsiElement<ORTypes> {
+public class RPsiTagProperty extends ORCompositePsiElement<ORLangTypes> {
     // region Constructors
-    protected RPsiTagProperty(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    protected RPsiTagProperty(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
     // endregion

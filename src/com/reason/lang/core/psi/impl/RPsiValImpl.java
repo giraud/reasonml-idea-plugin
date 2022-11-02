@@ -17,13 +17,13 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-public class RPsiValImpl extends RPsiTokenStub<ORTypes, RPsiVal, PsiValStub> implements RPsiVal {
+public class RPsiValImpl extends RPsiTokenStub<ORLangTypes, RPsiVal, PsiValStub> implements RPsiVal {
     // region Constructors
-    public RPsiValImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiValImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiValImpl(@NotNull ORTypes types, @NotNull PsiValStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiValImpl(@NotNull ORLangTypes types, @NotNull PsiValStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

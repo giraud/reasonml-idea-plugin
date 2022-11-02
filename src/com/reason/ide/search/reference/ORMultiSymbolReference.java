@@ -8,9 +8,9 @@ import org.jetbrains.annotations.*;
 
 public abstract class ORMultiSymbolReference<T extends PsiElement> extends PsiPolyVariantReferenceBase<T> {
     protected final @Nullable String myReferenceName;
-    protected final @NotNull ORTypes myTypes;
+    protected final @NotNull ORLangTypes myTypes;
 
-    protected ORMultiSymbolReference(@NotNull T element, @NotNull ORTypes types) {
+    protected ORMultiSymbolReference(@NotNull T element, @NotNull ORLangTypes types) {
         super(element, TextRange.create(0, element.getTextLength()));
         myReferenceName = element.getText();
         myTypes = types;

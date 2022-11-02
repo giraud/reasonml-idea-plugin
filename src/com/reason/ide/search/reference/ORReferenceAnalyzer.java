@@ -61,7 +61,7 @@ public class ORReferenceAnalyzer {
     }
 
     // Walk through the file - from element up to the root - and extract instructions
-    static @NotNull Deque<PsiElement> createInstructions(@NotNull PsiElement sourceElement, @NotNull ORTypes types) {
+    static @NotNull Deque<PsiElement> createInstructions(@NotNull PsiElement sourceElement, @NotNull ORLangTypes types) {
         boolean startPath = true;
         PsiElement prevItem = ORUtil.prevSibling(sourceElement);
         if ((sourceElement instanceof RPsiUpperSymbol || sourceElement instanceof RPsiLowerSymbol) && prevItem != null) {

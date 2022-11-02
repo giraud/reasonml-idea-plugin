@@ -55,17 +55,17 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_optional_02() {
-        RPsiLet let = firstOfType(parseCode("module Size: { let makeRecord: (~size: option<float> =?, unit) => t }"), RPsiLet.class);
+        RPsiLet e = firstOfType(parseCode("module Size: { let makeRecord: (~size: option<float> =?, unit) => t }"), RPsiLet.class);
+        RPsiSignature es = e.getSignature();
+        List<RPsiSignatureItem> esi = es.getItems();
 
-        RPsiSignature s = let.getSignature();
-        List<RPsiSignatureItem> si = s.getItems();
-
-        assertSize(3, si);
-        assertTrue(si.get(0).isOptional());
-        assertEquals("?", si.get(0).getDefaultValue().getText());
-        assertEquals("~size: option<float> =?", si.get(0).asText(getLangProps()));
-        assertFalse(si.get(1).isOptional());
-        assertEquals("unit", si.get(1).getText());
+        assertNoParserError(e);
+        assertSize(3, esi);
+        assertTrue(esi.get(0).isOptional());
+        assertEquals("?", esi.get(0).getDefaultValue().getText());
+        assertEquals("~size: option<float> =?", esi.get(0).asText(getLangProps()));
+        assertFalse(esi.get(1).isOptional());
+        assertEquals("unit", esi.get(1).getText());
     }
 
     @Test

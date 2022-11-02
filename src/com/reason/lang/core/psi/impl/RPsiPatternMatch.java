@@ -5,8 +5,8 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiPatternMatch extends ORCompositePsiElement<ORTypes> {
-    protected RPsiPatternMatch(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiPatternMatch extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiPatternMatch(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

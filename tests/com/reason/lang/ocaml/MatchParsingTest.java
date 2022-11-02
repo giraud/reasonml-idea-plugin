@@ -34,9 +34,19 @@ public class MatchParsingTest extends OclParsingTestCase {
     }
 
     @Test
-    public void test_match_with_exception() {
-        FileBase psiFile = parseCode("match x with | exception Failure -> Printf.printf");
-        assertEquals(1, childrenCount(psiFile));
+    public void test_match_with_exception_01() {
+        RPsiPatternMatch e = firstOfType(parseCode("match x with | exception Failure -> Printf.printf"), RPsiPatternMatch.class);
+
+        assertNoParserError(e);
+        assertEquals("exception Failure -> Printf.printf", e.getText());
+    }
+
+    @Test
+    public void test_match_with_exception_02() {
+        RPsiPatternMatch e = firstOfType(parseCode("match x with | (* comment *) exception Failure -> Printf.printf"), RPsiPatternMatch.class);
+
+        assertNoParserError(e);
+        assertEquals("exception Failure -> Printf.printf", e.getText());
     }
 
     @Test

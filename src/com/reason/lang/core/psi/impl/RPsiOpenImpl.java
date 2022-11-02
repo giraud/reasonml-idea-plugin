@@ -14,13 +14,13 @@ import com.reason.lang.core.type.*;
 import icons.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiOpenImpl extends RPsiTokenStub<ORTypes, RPsiOpen, PsiOpenStub> implements RPsiOpen {
+public class RPsiOpenImpl extends RPsiTokenStub<ORLangTypes, RPsiOpen, PsiOpenStub> implements RPsiOpen {
     // region Constructors
-    public RPsiOpenImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiOpenImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiOpenImpl(@NotNull ORTypes types, @NotNull PsiOpenStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiOpenImpl(@NotNull ORLangTypes types, @NotNull PsiOpenStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

@@ -1,6 +1,5 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -81,14 +80,17 @@ public class FunctionParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_complex_params() {
-        Collection<PsiNamedElement> expressions = expressions(parseCode(
-                "let resolve_morphism env ?(fnewt=fun x -> x) args' (b,cstr) = let x = 1"));
+        RPsiLet e = firstOfType(parseCode("let resolve_morphism env ?(hook=(fun _ -> ())) args' (b, cStr) = let x = 1"), RPsiLet.class);
 
-        assertSize(1, expressions);
-        RPsiLet let = (RPsiLet) first(expressions);
-        assertTrue(let.isFunction());
-        assertSize(4, let.getFunction().getParameters());
-        assertEquals("let x = 1", let.getFunction().getBody().getText());
+        assertNoParserError(e);
+        assertTrue(e.isFunction());
+        RPsiFunction ef = e.getFunction();
+        assertSize(4, ef.getParameters());
+        assertEquals("env", ef.getParameters().get(0).getText());
+        assertEquals("?(hook=(fun _ -> ()))", ef.getParameters().get(1).getText());
+        assertEquals("args'", ef.getParameters().get(2).getText());
+        assertEquals("(b, cStr)", ef.getParameters().get(3).getText());
+        assertEquals("let x = 1", ef.getBody().getText());
     }
 
     @Test

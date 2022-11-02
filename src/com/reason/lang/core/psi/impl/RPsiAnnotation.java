@@ -7,8 +7,8 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiAnnotation extends ORCompositePsiElement<ORTypes> implements PsiNameIdentifierOwner {
-    protected RPsiAnnotation(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiAnnotation extends ORCompositePsiElement<ORLangTypes> implements PsiNameIdentifierOwner {
+    protected RPsiAnnotation(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

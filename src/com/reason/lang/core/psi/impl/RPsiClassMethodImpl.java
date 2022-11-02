@@ -14,13 +14,13 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class RPsiClassMethodImpl extends RPsiTokenStub<ORTypes, RPsiClassMethod, RsiClassMethodStub> implements RPsiClassMethod {
+public class RPsiClassMethodImpl extends RPsiTokenStub<ORLangTypes, RPsiClassMethod, RsiClassMethodStub> implements RPsiClassMethod {
     // region Constructors
-    public RPsiClassMethodImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiClassMethodImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiClassMethodImpl(@NotNull ORTypes types, @NotNull RsiClassMethodStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiClassMethodImpl(@NotNull ORLangTypes types, @NotNull RsiClassMethodStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

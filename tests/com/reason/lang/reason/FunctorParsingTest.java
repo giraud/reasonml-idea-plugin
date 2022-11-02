@@ -22,19 +22,16 @@ public class FunctorParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_with_constraints() {
-        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make = (M: Input) : (S with type t('a) = M.t('a) and type b = M.b) => {}"));
+        RPsiFunctor e = firstOfType(parseCode("module Make = (M: Input) : (S with type t('a) = M.t('a) and type b = M.b) => {}"), RPsiFunctor.class);
 
-        assertEquals(1, expressions.size());
-        RPsiFunctor f = (RPsiFunctor) first(expressions);
+        assertEquals("M: Input", first(e.getParameters()).getText());
+        assertEquals("S", e.getReturnType().getText());
+        assertEquals("{}", e.getBody().getText());
 
-        assertEquals("M: Input", first(f.getParameters()).getText());
-        assertEquals("S", f.getReturnType().getText());
-
-        List<RPsiTypeConstraint> constraints = new ArrayList<>(f.getConstraints());
-        assertEquals(2, constraints.size());
-        assertEquals("type t('a) = M.t('a)", constraints.get(0).getText());
-        assertEquals("type b = M.b", constraints.get(1).getText());
-        assertEquals("{}", f.getBody().getText());
+        List<RPsiTypeConstraint> ec = e.getConstraints();
+        assertEquals(2, ec.size());
+        assertEquals("type t('a) = M.t('a)", ec.get(0).getText());
+        assertEquals("type b = M.b", ec.get(1).getText());
     }
 
     @Test

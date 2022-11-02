@@ -1,15 +1,13 @@
 package com.reason.lang.rescript;
 
 import com.intellij.lang.*;
-import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
-import com.intellij.psi.util.*;
 import com.reason.lang.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 
 abstract class ResParsingTestCase extends BaseParsingTestCase {
-    public ORTypes myTypes = ResTypes.INSTANCE;
+    public ORLangTypes myTypes = ResTypes.INSTANCE;
 
     protected ResParsingTestCase() {
         super("", "res", new ResParserDefinition());

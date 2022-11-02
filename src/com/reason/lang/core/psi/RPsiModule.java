@@ -41,7 +41,7 @@ public interface RPsiModule extends RPsiQualifiedPathElement, NavigatablePsiElem
     RPsiLet getLetExpression(@Nullable String name);
 
     @Nullable
-    PsiElement getModuleType();
+    RPsiModuleType getModuleType();
 
     @Nullable
     PsiElement getBody();

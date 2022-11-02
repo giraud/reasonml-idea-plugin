@@ -7,7 +7,7 @@ import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 
 abstract class OclParsingTestCase extends BaseParsingTestCase {
-    public ORTypes myTypes = OclTypes.INSTANCE;
+    public ORLangTypes myTypes = OclTypes.INSTANCE;
 
     protected OclParsingTestCase() {
         super("", "ml", new OclParserDefinition());

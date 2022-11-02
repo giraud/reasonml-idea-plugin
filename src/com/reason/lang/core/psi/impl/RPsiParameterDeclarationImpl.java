@@ -17,13 +17,13 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiParameterDeclarationImpl extends RPsiTokenStub<ORTypes, RPsiParameterDeclaration, PsiParameterDeclarationStub> implements RPsiParameterDeclaration {
+public class RPsiParameterDeclarationImpl extends RPsiTokenStub<ORLangTypes, RPsiParameterDeclaration, PsiParameterDeclarationStub> implements RPsiParameterDeclaration {
     // region Constructors
-    public RPsiParameterDeclarationImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiParameterDeclarationImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiParameterDeclarationImpl(@NotNull ORTypes types, @NotNull PsiParameterDeclarationStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiParameterDeclarationImpl(@NotNull ORLangTypes types, @NotNull PsiParameterDeclarationStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

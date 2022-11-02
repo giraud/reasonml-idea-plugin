@@ -13,8 +13,8 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.stream.*;
 
-public class RPsiObject extends ORCompositePsiElement<ORTypes> implements RPsiLanguageConverter {
-    protected RPsiObject(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiObject extends ORCompositePsiElement<ORLangTypes> implements RPsiLanguageConverter {
+    protected RPsiObject(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

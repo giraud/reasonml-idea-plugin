@@ -7,8 +7,8 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiFunctorResult extends ORCompositePsiElement<ORTypes> {
-    protected RPsiFunctorResult(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiFunctorResult extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiFunctorResult(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

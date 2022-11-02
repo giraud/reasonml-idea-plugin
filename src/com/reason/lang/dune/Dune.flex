@@ -95,22 +95,22 @@ ATOM=[A-Za-z_0-9'@&\^!\.\-/+\\]
 
 <IN_ML_COMMENT> {
     "#|" { commentDepth += 1; }
-    "|#" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } }
+    "|#" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } }
     . | {NEWLINE} { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 <IN_SEXPR_COMMENT> {
     "(" { parenDepth += 1; }
-    ")" { parenDepth -= 1; if(parenDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } }
+    ")" { parenDepth -= 1; if(parenDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } }
     . | {NEWLINE} { }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 <IN_SL_COMMENT> {
     .         {}
-    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

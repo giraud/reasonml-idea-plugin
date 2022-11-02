@@ -8,8 +8,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiTry extends ORCompositePsiElement<ORTypes> {
-    protected RPsiTry(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiTry extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiTry(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

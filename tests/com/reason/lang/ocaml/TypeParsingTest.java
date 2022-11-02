@@ -62,9 +62,32 @@ public class TypeParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_binding_with_record() {
-        PsiFile file = parseCode("type t = {count: int;}");
+        RPsiTypeBinding e = firstOfType(parseCode("type t = { string_f_apply: ('a -> unit); string_help: string option; list_f_edit: ('a -> 'a) option; }"), RPsiTypeBinding.class);
+        RPsiRecord er = ORUtil.findImmediateFirstChildOfClass(e, RPsiRecord.class);
 
-        assertNotNull(first(findChildrenOfType(first(typeExpressions(file)), RPsiTypeBinding.class)));
+        assertNoParserError(e);
+        assertSize(3, er.getFields());
+        RPsiRecordField er0 = er.getFields().get(0);
+        List<RPsiSignatureItem> er0i = er0.getSignature().getItems();
+        assertEquals("string_f_apply", er0.getName());
+        assertSize(2, er0i);
+        RPsiRecordField er1 = er.getFields().get(1);
+        List<RPsiSignatureItem> er1i = er1.getSignature().getItems();
+        assertEquals("string_help", er1.getName());
+        assertSize(1, er1i);
+        RPsiRecordField er2 = er.getFields().get(2);
+        List<RPsiSignatureItem> er2i = er2.getSignature().getItems();
+        assertEquals("list_f_edit", er2.getName());
+        //assertSize(1, er2i); TODO
+        //assertEquals("('a -> 'a) option", er2i.get(0).getText());
+    }
+
+    @Test
+    public void test_binding_with_functor() {
+        RPsiFunctorCall e = firstOfType(parseCode("val domain : 'a map -> Set.Make(M).t"), RPsiFunctorCall.class);
+
+        assertNoParserError(e);
+        assertEquals("Make(M)", e.getText());
     }
 
     @Test

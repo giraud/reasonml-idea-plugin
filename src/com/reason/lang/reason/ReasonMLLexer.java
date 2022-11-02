@@ -645,11 +645,11 @@ public class ReasonMLLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-    public ReasonMLLexer(ORTypes types) {
+    public ReasonMLLexer(ORLangTypes types) {
         this.types = types;
     }
 
-    private ORTypes types;
+    private ORLangTypes types;
     private int tokenStartIndex;
     private CharSequence quotedStringId;
     private int commentDepth;

@@ -16,13 +16,13 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiFakeModule extends RPsiTokenStub<ORTypes, RPsiModule, PsiModuleStub> implements RPsiModule, StubBasedPsiElement<PsiModuleStub> {
+public class RPsiFakeModule extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiModuleStub> implements RPsiModule, StubBasedPsiElement<PsiModuleStub> {
     // region Constructors
-    public RPsiFakeModule(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiFakeModule(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiFakeModule(@NotNull ORTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiFakeModule(@NotNull ORLangTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
@@ -118,7 +118,7 @@ public class RPsiFakeModule extends RPsiTokenStub<ORTypes, RPsiModule, PsiModule
     }
 
     @Override
-    public @Nullable PsiElement getModuleType() {
+    public @Nullable RPsiModuleType getModuleType() {
         return null;
     }
 

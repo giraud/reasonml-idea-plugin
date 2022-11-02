@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.9.0'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.10.0'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
@@ -17,7 +17,7 @@ apply plugin: 'org.jetbrains.intellij'
 group = pluginGroup
 version = pluginVersion + '-' + platformVersion
 
-sourceCompatibility = '11.0'
+java.sourceCompatibility = '11.0'
 compileJava.options.encoding = 'UTF-8'
 
 sourceSets {

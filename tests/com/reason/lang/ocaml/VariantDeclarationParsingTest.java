@@ -75,7 +75,15 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         RPsiVariantDeclaration e = firstOfType(parseCode("type cases_pattern_expr_r = | CPatRecord of (qualid * cases_pattern_expr) list"), RPsiVariantDeclaration.class);
 
         assertEquals("CPatRecord of (qualid * cases_pattern_expr) list", e.getText());
-        RPsiParameterDeclaration p = e.getParameterList().iterator().next();
-        assertEquals("(qualid * cases_pattern_expr) list", p.getText());
+        assertEquals("(qualid * cases_pattern_expr) list", e.getParameterList().get(0).getText());
+    }
+
+    @Test // coq:: coqpp/coqpp_ast.mli
+    public void test_parens() {
+        RPsiVariantDeclaration e = firstOfType(parseCode("type symb = | SymbRules of ((string option * symb) list * code) list"), RPsiVariantDeclaration.class);
+
+        assertNoParserError(e);
+        assertEquals("SymbRules of ((string option * symb) list * code) list", e.getText());
+        assertEquals("((string option * symb) list * code) list", e.getParameterList().get(0).getText());
     }
 }

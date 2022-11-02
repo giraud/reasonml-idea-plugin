@@ -171,9 +171,9 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
-    private final ORTypes m_types;
+    private final ORLangTypes m_types;
 
-    public ORSyntaxHighlighter(ORTypes types) {
+    public ORSyntaxHighlighter(ORLangTypes types) {
         m_types = types;
     }
 

@@ -4,8 +4,8 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiDefaultValue extends ORCompositePsiElement<ORTypes> {
-    public RPsiDefaultValue(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiDefaultValue extends ORCompositePsiElement<ORLangTypes> {
+    public RPsiDefaultValue(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 }

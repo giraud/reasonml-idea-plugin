@@ -146,16 +146,35 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
         assertEquals("fun name value -> Some(name)", f.getText());
     }
 
-    //@Test zzz
-    public void test_parens() {
-        RPsiLet e = firstOfType(parseCode("let memory = LargeArray.make size (Struct ((-1), [||]))"), RPsiLet.class);
+    @Test // coq::checker/analyze.ml
+    public void test_parens_01() {
+        RPsiLet e = firstOfType(parseCode("let memory = make size (Struct ((-1), [||]))"), RPsiLet.class);
 
         RPsiFunctionCall fc = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
         assertEquals("make", fc.getName());
         assertSize(2, fc.getParameters());
         assertEquals("size", fc.getParameters().get(0).getText());
         assertEquals("(Struct ((-1), [||]))", fc.getParameters().get(1).getText());
-        assertEquals("LargeArray.make size (Struct ((-1), [||]))", e.getBinding().getText());
-        // TODO: Struct is variant constructor
+        assertEquals("make size (Struct ((-1), [||]))", e.getBinding().getText());
+        assertContainsElements(extractUpperSymbolTypes(e), myTypes.A_VARIANT_NAME);
+    }
+
+    @Test // coq::checker/votour.ml
+    public void test_parens_02() {
+        RPsiPatternMatchBody e = firstOfType(parseCode("let _ = match cond with | BLOCK -> loop tl (1 :: pos) ((v, hd, 0 :: pos) :: accu) |_ -> raise_notrace Exit"), RPsiPatternMatchBody.class);
+
+        RPsiFunctionCall fc = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
+        assertEquals("loop", fc.getName());
+        assertSize(3, fc.getParameters());
+    }
+
+    @Test
+    public void test_xxx() {
+        RPsiFunctionCall e = firstOfType(parseCode("let _ = list_iteri (fun i ((start, stop), value) -> tree.(k) <- (i, Some i))"), RPsiFunctionCall.class);
+        RPsiFunction ef = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
+
+        assertSize(1, e.getParameters());
+        assertEquals("(fun i ((start, stop), value) -> tree.(k) <- (i, Some i))", e.getParameters().get(0).getText());
+        assertEquals("tree.(k) <- (i, Some i)", ef.getBody().getText());
     }
 }

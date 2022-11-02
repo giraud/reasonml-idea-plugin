@@ -4,8 +4,8 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiLocalOpen extends ORCompositePsiElement<ORTypes> {
-    protected RPsiLocalOpen(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiLocalOpen extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiLocalOpen(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 }

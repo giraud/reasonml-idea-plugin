@@ -9,8 +9,8 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiMacroBody extends ORCompositePsiElement<ORTypes> implements PsiLanguageInjectionHost {
-    protected RPsiMacroBody(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiMacroBody extends ORCompositePsiElement<ORLangTypes> implements PsiLanguageInjectionHost {
+    protected RPsiMacroBody(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

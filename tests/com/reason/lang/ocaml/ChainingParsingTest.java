@@ -22,4 +22,13 @@ public class ChainingParsingTest extends OclParsingTestCase {
         assertEquals("eprintf \"%s@\\n%!\" fail_msg", fc.get(0).getText());
         assertEquals("exit 1", fc.get(1).getText());
     }
+
+    @Test
+    public void test_while() {
+        RPsiWhile e = firstOfType(parseCode("let _ = while true do printf \"File format: %ld\\n%!\" version; exit 1 done"), RPsiWhile.class);
+
+        List<RPsiFunctionCall> fc = ORUtil.findImmediateChildrenOfClass(e.getBody(), RPsiFunctionCall.class);
+        assertEquals("printf \"File format: %ld\\n%!\" version", fc.get(0).getText());
+        assertEquals("exit 1", fc.get(1).getText());
+    }
 }

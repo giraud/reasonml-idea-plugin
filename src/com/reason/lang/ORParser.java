@@ -1,7 +1,6 @@
 package com.reason.lang;
 
 import com.intellij.lang.*;
-import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.util.*;
 import com.reason.lang.core.type.*;
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public abstract class ORParser<T> {
+public abstract class ORParser<T extends ORTypes> {
     protected static final Log LOG = Log.create("parser");
 
     protected final T myTypes;
@@ -38,14 +37,14 @@ public abstract class ORParser<T> {
         int total = Math.abs(step);
 
         IElementType elementType = myBuilder.rawLookup(pos);
-        if (elementType != null && elementType != TokenType.WHITE_SPACE) {
+        if (elementType != null && elementType != myTypes.WHITE_SPACE && elementType != myTypes.SINGLE_COMMENT && elementType != myTypes.MULTI_COMMENT) {
             found++;
         }
 
         while (elementType != null && found != total) {
             pos--;
             elementType = myBuilder.rawLookup(pos);
-            if (elementType != null && elementType != TokenType.WHITE_SPACE) {
+            if (elementType != null && elementType != myTypes.WHITE_SPACE && elementType != myTypes.SINGLE_COMMENT && elementType != myTypes.MULTI_COMMENT) {
                 found++;
             }
         }
@@ -147,11 +146,6 @@ public abstract class ORParser<T> {
     public boolean isDone(@Nullable ORCompositeType composite) {
         Marker marker = myMarkers.isEmpty() ? null : myMarkers.peek();
         return marker != null && marker.isDone() && marker.isCompositeType(composite);
-    }
-
-    public boolean isDropped(@Nullable ORCompositeType composite) {
-        Marker marker = myMarkers.isEmpty() ? null : myMarkers.peek();
-        return marker != null && marker.isDropped() && marker.isCompositeType(composite);
     }
 
     public boolean isRawParent(ORCompositeType composite) {
@@ -329,6 +323,11 @@ public abstract class ORParser<T> {
         return latest != null && latest.isScopeToken(scopeType);
     }
 
+    public boolean isScopeAtIndex(int pos, @Nullable ORTokenElementType scopeType) {
+        Marker marker = find(pos);
+        return marker != null && marker.isScopeToken(scopeType);
+    }
+
     public boolean isCurrentScope(@Nullable ORTokenElementType scopeType) {
         Marker latest = getCurrentMarker();
         return latest != null && latest.isScopeToken(scopeType);
@@ -354,7 +353,7 @@ public abstract class ORParser<T> {
         markScope(composite, scope);
         Marker latest = myMarkers.peek();
         if (latest != null) {
-            latest.drop();
+            latest.hold();
         }
         return this;
     }
@@ -462,20 +461,6 @@ public abstract class ORParser<T> {
         return marker != null && marker.hasScope();
     }
 
-    public boolean rawParentHasScope() {
-        Marker marker = getPrevious();
-        return marker != null && marker.hasScope();
-    }
-
-    public boolean rawGrandParentHasScope() {
-        Marker marker = null;
-        if (myMarkers.size() > 2) {
-            marker = myMarkers.get(2);
-        }
-
-        return marker != null && marker.hasScope();
-    }
-
     protected boolean currentHasScope() {
         Marker current = getCurrentMarker();
         return current != null && current.hasScope();
@@ -553,7 +538,7 @@ public abstract class ORParser<T> {
     }
 
     public void error(@NotNull String message) {
-        myBuilder.error(message);
+        myBuilder.error("Plugin error! " + message);
     }
 
     public @NotNull ORParser<T> remapCurrentToken(ORTokenElementType elementType) {
@@ -591,8 +576,18 @@ public abstract class ORParser<T> {
         return marker != null && marker.isHold();
     }
 
+    public ORParser<T> duplicateAtIndex(int pos) {
+        if (0 <= pos) {
+            Marker foundMarker = myMarkers.get(pos);
+            Marker marker = Marker.precede(foundMarker, foundMarker.getCompositeType());
+            marker.updateScope(foundMarker.getScopeType());
+            myMarkers.add(pos + 1, marker);
+        }
+        return this;
+    }
+
     public ORParser<T> markBefore(int pos, ORCompositeType compositeType) {
-        if (pos >= 0) {
+        if (0 <= pos) {
             Marker scope = myMarkers.get(pos);
             Marker precedeScope = Marker.precede(scope, compositeType);
             myMarkers.add(pos + 1, precedeScope);

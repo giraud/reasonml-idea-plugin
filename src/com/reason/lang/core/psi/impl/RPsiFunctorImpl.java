@@ -17,13 +17,13 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class RPsiFunctorImpl extends RPsiTokenStub<ORTypes, RPsiModule, PsiModuleStub> implements RPsiFunctor {
+public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiModuleStub> implements RPsiFunctor {
     // region Constructors
-    public RPsiFunctorImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiFunctorImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiFunctorImpl(@NotNull ORTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiFunctorImpl(@NotNull ORLangTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
@@ -114,7 +114,7 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORTypes, RPsiModule, PsiModul
     }
 
     @Override
-    public @Nullable PsiElement getModuleType() {
+    public @Nullable RPsiModuleType getModuleType() {
         return null;
     }
 
@@ -205,21 +205,18 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORTypes, RPsiModule, PsiModul
     }
 
     @Override
-    public @NotNull Collection<RPsiParameterDeclaration> getParameters() {
+    public @NotNull List<RPsiParameterDeclaration> getParameters() {
         return ORUtil.findImmediateChildrenOfClass(
                 ORUtil.findImmediateFirstChildOfClass(this, RPsiParameters.class), RPsiParameterDeclaration.class);
     }
 
     @Override
     public @Nullable RPsiFunctorResult getReturnType() {
-        PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, myTypes.COLON);
-        PsiElement element = ORUtil.nextSibling(colon);
-
-        return element instanceof RPsiFunctorResult ? (RPsiFunctorResult) element : ORUtil.findImmediateFirstChildOfClass(element, RPsiFunctorResult.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiFunctorResult.class);
     }
 
     @Override
-    public @NotNull Collection<RPsiTypeConstraint> getConstraints() {
+    public @NotNull List<RPsiTypeConstraint> getConstraints() {
         RPsiConstraints constraints = ORUtil.findImmediateFirstChildOfClass(this, RPsiConstraints.class);
         if (constraints == null) {
             PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, myTypes.COLON);

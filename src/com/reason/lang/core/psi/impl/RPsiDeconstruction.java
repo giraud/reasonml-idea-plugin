@@ -3,17 +3,17 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.type.ORCompositePsiElement;
-import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.core.type.*;
+import com.reason.lang.core.type.ORLangTypes;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
-public class RPsiDeconstruction extends ORCompositePsiElement<ORTypes> {
+public class RPsiDeconstruction extends ORCompositePsiElement<ORLangTypes> {
 
-    protected RPsiDeconstruction(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    protected RPsiDeconstruction(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

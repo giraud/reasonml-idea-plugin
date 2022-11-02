@@ -13,8 +13,8 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class RPsiFunctorCall extends ORCompositePsiElement<ORTypes> {
-    protected RPsiFunctorCall(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiFunctorCall extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiFunctorCall(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 
@@ -40,9 +40,9 @@ public class RPsiFunctorCall extends ORCompositePsiElement<ORTypes> {
         return name == null ? "" : name.getText();
     }
 
-    public @NotNull Collection<PsiElement> getParameters() {
+    public @NotNull List<RPsiParameterReference> getParameters() {
         RPsiParameters params = PsiTreeUtil.findChildOfType(this, RPsiParameters.class);
-        return params == null ? emptyList() : params.getParametersList();
+        return params == null ? emptyList() : ORUtil.findImmediateChildrenOfClass(params, RPsiParameterReference.class);
     }
 
     public @Nullable RPsiFunctor resolveFunctor() {

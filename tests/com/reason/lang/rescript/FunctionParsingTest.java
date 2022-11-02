@@ -244,7 +244,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_rollback_02() {
-        List<RPsiFunction> es = children(parseCode("let _ = (() => 1, () => 2);"), RPsiFunction.class); // test infinite rollback
+        List<RPsiFunction> es = childrenOfType(parseCode("let _ = (() => 1, () => 2);"), RPsiFunction.class); // test infinite rollback
 
         assertEquals("() => 1", es.get(0).getText());
         assertEquals("() => 2", es.get(1).getText());

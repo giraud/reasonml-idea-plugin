@@ -6,9 +6,9 @@ import com.intellij.psi.util.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiAssert extends ORCompositePsiElement<ORTypes> {
+public class RPsiAssert extends ORCompositePsiElement<ORLangTypes> {
 
-    protected RPsiAssert(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    protected RPsiAssert(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

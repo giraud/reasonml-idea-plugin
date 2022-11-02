@@ -13,7 +13,7 @@ import java.util.stream.*;
 public abstract class BaseQNameFinder implements QNameFinder {
 
     @NotNull
-    protected String extractPathName(@NotNull PsiElement element, @NotNull ORTypes types) {
+    protected String extractPathName(@NotNull PsiElement element, @NotNull ORLangTypes types) {
         String path = element instanceof RPsiUpperSymbol ? element.getText() : "";
 
         PsiElement prevSibling = PsiTreeUtil.prevVisibleLeaf(element);

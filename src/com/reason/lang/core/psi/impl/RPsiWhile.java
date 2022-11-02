@@ -5,8 +5,8 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiWhile extends ORCompositePsiElement<ORTypes> {
-    protected RPsiWhile(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiWhile extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiWhile(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

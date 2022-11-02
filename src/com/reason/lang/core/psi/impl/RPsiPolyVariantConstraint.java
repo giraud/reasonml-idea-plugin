@@ -6,8 +6,8 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiPolyVariantConstraint extends ORCompositePsiElement<ORTypes> {
-    protected RPsiPolyVariantConstraint(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiPolyVariantConstraint extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiPolyVariantConstraint(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

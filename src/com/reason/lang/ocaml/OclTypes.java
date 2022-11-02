@@ -3,8 +3,7 @@ package com.reason.lang.ocaml;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 
-public class OclTypes extends ORTypes {
-
+public class OclTypes extends ORLangTypes {
     public static final OclTypes INSTANCE = new OclTypes();
 
     private OclTypes() {

@@ -5,8 +5,8 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiScopedExpr extends ORCompositePsiElement<ORTypes> {
-    protected RPsiScopedExpr(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiScopedExpr extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiScopedExpr(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

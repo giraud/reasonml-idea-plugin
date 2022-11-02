@@ -10,8 +10,8 @@ import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiOption extends ORCompositePsiElement<ORTypes> implements RPsiLanguageConverter {
-    protected RPsiOption(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiOption extends ORCompositePsiElement<ORLangTypes> implements RPsiLanguageConverter {
+    protected RPsiOption(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

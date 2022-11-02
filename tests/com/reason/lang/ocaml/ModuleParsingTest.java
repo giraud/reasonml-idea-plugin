@@ -6,6 +6,7 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
 import org.junit.*;
 
 import java.util.*;
@@ -124,6 +125,49 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals("M", e.getName());
         assertEquals("(val selectors)", e.getBody().getText());
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiVal.class));
+    }
+
+    @Test
+    public void test_decode_first_class_module_in_let() {
+        RPsiModule e = firstOfType(parseCode("let _ = let module M = (val m : S)"), RPsiModule.class);
+
+        assertFalse(e instanceof RPsiFunctor);
+        assertEquals("M", e.getName());
+        assertEquals("(val m : S)", e.getBody().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiVal.class));
+    }
+
+    @Test
+    public void test_decode_first_class_module_with_in() {
+        RPsiModule e = firstOfType(parseCode("let module Visit = Visit(Repr) in printf x"), RPsiModule.class);
+
+        assertFalse(e instanceof RPsiFunctor);
+        assertEquals("Visit", e.getName());
+        assertEquals("Visit(Repr)", e.getBody().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiVal.class));
+    }
+
+    @Test // coq::clib/cArray.ml
+    public void test_signature() {
+        RPsiModuleType e = firstOfType(parseCode("module Smart : sig val map : ('a -> 'a) -> 'a array -> 'a array end"), RPsiModuleType.class);
+
+        RPsiVal ev = PsiTreeUtil.findChildOfType(e, RPsiVal.class);
+        assertNoParserError(ev);
+        assertEquals("map", ev.getName());
+        assertEquals("('a -> 'a) -> 'a array -> 'a array", ev.getSignature().getText());
+    }
+
+
+    @Test
+    public void test_signature_many() {
+        List<RPsiModuleType> es = childrenOfType(parseCode("module A: sig val a: int end\n module B: sig val b: int end"), RPsiModuleType.class);
+
+        RPsiModuleType e0 = es.get(0);
+        assertNoParserError(e0);
+        assertEquals("sig val a: int end", e0.getText());
+        RPsiModuleType e1 = es.get(1);
+        assertNoParserError(e1);
+        assertEquals("sig val b: int end", e1.getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/91

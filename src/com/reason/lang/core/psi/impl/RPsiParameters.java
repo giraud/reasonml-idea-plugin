@@ -8,8 +8,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiParameters extends ORCompositePsiElement<ORTypes> implements PsiElement {
-    protected RPsiParameters(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiParameters extends ORCompositePsiElement<ORLangTypes> implements PsiElement {
+    protected RPsiParameters(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

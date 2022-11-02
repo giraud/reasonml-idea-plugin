@@ -9,11 +9,11 @@ import java.util.*;
 
 public interface RPsiFunctor extends PsiNameIdentifierOwner, RPsiModule, StubBasedPsiElement<PsiModuleStub> {
     @NotNull
-    Collection<RPsiParameterDeclaration> getParameters();
+    List<RPsiParameterDeclaration> getParameters();
 
     @Nullable
     RPsiFunctorResult getReturnType();
 
     @NotNull
-    Collection<RPsiTypeConstraint> getConstraints();
+    List<RPsiTypeConstraint> getConstraints();
 }

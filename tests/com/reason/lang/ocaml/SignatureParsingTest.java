@@ -97,8 +97,8 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_optional_fun_parameters_typed() {
-        RPsiLet let = first(letExpressions(parseCode("let x (a : int) (b : string option) ?c:((c : bool)= false)  ?d:((d : float)=1.) = 3")));
-
+        RPsiLet let = first(letExpressions(parseCode("let x (a : int) (b : string option) ?c:((c : bool)= false) ?d:((d : float)=1.) = 3")));
+        //val lcs :  -> t
         RPsiFunction function = (RPsiFunction) let.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
@@ -118,7 +118,17 @@ public class SignatureParsingTest extends OclParsingTestCase {
     }
 
     @Test
-    public void test_unitFunParameter() {
+    public void test_named_optional_in_val() {
+        RPsiSignature e = firstOfType(parseCode("val diff: ?equal:(elem -> bool) -> t"), RPsiSignature.class);
+
+        assertNoParserError(e);
+        assertSize(2, e.getItems());
+        assertEquals("?equal:(elem -> bool)", e.getItems().get(0).getText());
+        assertEquals("t", e.getItems().get(1).getText());
+    }
+
+    @Test
+    public void test_unit_fun_parameter() {
         RPsiLet e = first(letExpressions(parseCode("let x (a : int) () = a")));
 
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
@@ -159,10 +169,31 @@ public class SignatureParsingTest extends OclParsingTestCase {
     }
 
     @Test
+    public void test_option_of_option() {
+        List<RPsiSignatureItem> es = childrenOfType(parseCode("val view : 'a t -> ('a option * 'a t) option"), RPsiSignatureItem.class);
+        RPsiSignatureItem e0 = es.get(0);
+        RPsiSignatureItem e1 = es.get(1);
+        RPsiOption e1o = PsiTreeUtil.findChildOfType(e1, RPsiOption.class);
+        RPsiOption e1oo = PsiTreeUtil.findChildOfType(e1o, RPsiOption.class);
+
+        assertNoParserError(e0);
+        assertNoParserError(e1);
+        assertEquals("'a t", e0.getText());
+        assertEquals("('a option * 'a t) option", e1.getText());
+        assertEquals("('a option * 'a t) option", e1o.getText());
+        assertEquals("'a option", e1oo.getText());
+    }
+
+    @Test
     public void test_option_named_params() {
         RPsiExternal e = firstOfType(parseCode("external add : x:int option -> int = \"\""), RPsiExternal.class);
 
         RPsiOption option = PsiTreeUtil.findChildOfType(e, RPsiOption.class);
         assertEquals("int option", option.getText());
+    }
+
+    //@Test // coq:: clib/diff2.mli
+    public void test_functor() {
+        RPsiFunctor e = firstOfType(parseCode("module M: functor (I: T) -> (S)"), RPsiFunctor.class);     // TODO
     }
 }

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
 
-public class ORASTFactory<T extends ORTypes> extends ASTFactory {
+public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
     private final T myTypes;
 
     public ORASTFactory(T types) {

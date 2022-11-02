@@ -12,13 +12,13 @@ import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiObjectField extends RPsiTokenStub<ORTypes, RPsiObjectField, PsiObjectFieldStub> implements RPsiLanguageConverter, RPsiQualifiedPathElement, StubBasedPsiElement<PsiObjectFieldStub> {
+public class RPsiObjectField extends RPsiTokenStub<ORLangTypes, RPsiObjectField, PsiObjectFieldStub> implements RPsiLanguageConverter, RPsiQualifiedPathElement, StubBasedPsiElement<PsiObjectFieldStub> {
     // region Constructors
-    public RPsiObjectField(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiObjectField(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiObjectField(@NotNull ORTypes types, @NotNull PsiObjectFieldStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiObjectField(@NotNull ORLangTypes types, @NotNull PsiObjectFieldStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

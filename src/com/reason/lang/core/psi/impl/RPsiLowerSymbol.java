@@ -9,10 +9,10 @@ import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 public class RPsiLowerSymbol extends LeafPsiElement implements RPsiAtom {
-    protected final ORTypes myTypes;
+    protected final ORLangTypes myTypes;
 
     // region Constructors
-    public RPsiLowerSymbol(@NotNull ORTypes types, @NotNull IElementType tokenType, CharSequence text) {
+    public RPsiLowerSymbol(@NotNull ORLangTypes types, @NotNull IElementType tokenType, CharSequence text) {
         super(tokenType, text);
         myTypes = types;
     }

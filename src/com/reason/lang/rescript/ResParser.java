@@ -83,7 +83,7 @@ public class ResParser extends CommonPsiParser {
                     if (tokenType == myTypes.EOL) {
                         // We identify it at the lexer level, because We try to detect current construction that can't have
                         // EOL in it ; but we don't want to have it in the parsed tree, we change it to a whitespace
-                        myBuilder.remapCurrentToken(TokenType.WHITE_SPACE);
+                        myBuilder.remapCurrentToken(myTypes.WHITE_SPACE);
 
                         if (is(myTypes.C_FUNCTOR_CALL/*RPsiOpen is potential functor call*/) && isRawParent(myTypes.C_OPEN)) {
                             popEnd().popEnd();
@@ -897,7 +897,7 @@ public class ResParser extends CommonPsiParser {
             } else if (is(myTypes.C_MODULE_BINDING) && !in(myTypes.C_FUNCTOR_DECLARATION)) {
                 if (myBuilder.lookAhead(1) == myTypes.UNPACK) {
                     // module M = |>(<| unpack .. )
-                    markDummyParenthesisScope();
+                    markParenthesisScope(true);
                 } else {
                     // This is a functor
                     // module M = |>(<| .. )
@@ -1001,9 +1001,7 @@ public class ResParser extends CommonPsiParser {
                     if (nextTokenType == myTypes.COLON) {
                         // module M = (P) |> :<| R ...
                         advance();
-                        if (getTokenType() == myTypes.LPAREN) {
-                            markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
-                        }
+                        markParenthesisScope(true);
                         mark(myTypes.C_FUNCTOR_RESULT);
                     } else if (nextTokenType == myTypes.ARROW) {
                         // module M = (P) |>=><| ...

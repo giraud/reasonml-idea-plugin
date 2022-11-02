@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.*;
+import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.*;
@@ -253,8 +254,18 @@ public class OclParser extends CommonPsiParser {
                 // or signature :  ... -> xxx |>option<| ...
                 int pos = getIndex();
                 if (pos > 0) {
-                    markBefore(pos - 1, myTypes.C_OPTION);
+                    markBefore(pos - 1, myTypes.C_OPTION)
+                            .advance().popEndUntilIndex(pos).popEnd();
+                } else if (pos == 0) {
+                    duplicateAtIndex(pos).
+                            updateLatestComposite(myTypes.C_OPTION).advance().popEnd();
                 }
+            } else if (isHold()) {
+                Marker latestMarker = getLatestMarker();
+                ORCompositeType holdType = latestMarker == null ? myTypes.H_PLACE_HOLDER : latestMarker.getCompositeType();
+                updateLatestComposite(myTypes.C_OPTION);
+                markHolderBefore(0, holdType);
+                advance().popEnd();
             }
         }
 
@@ -321,7 +332,7 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseLt() {
-            if (is(myTypes.C_SIG_ITEM) || in(myTypes.C_TYPE_BINDING) || is(myTypes.C_OBJECT_FIELD)) {
+            if (isCurrent(myTypes.C_SIG_ITEM) || in(myTypes.C_TYPE_BINDING) || isCurrent(myTypes.C_OBJECT_FIELD)) {
                 // |> < <| .. > ..
                 markScope(myTypes.C_OBJECT, myTypes.LT).advance()
                         .mark(myTypes.C_OBJECT_FIELD);
@@ -368,15 +379,15 @@ public class OclParser extends CommonPsiParser {
         private void parseRightArrow() {
             if (is(myTypes.C_SIG_EXPR)) {
                 advance();
-                markDummyParenthesisScope().mark(myTypes.C_SIG_ITEM);
+                markParenthesisScope(true).mark(myTypes.C_SIG_ITEM);
             } else if (strictlyIn(myTypes.C_SIG_ITEM)) {
                 popEndUntilFoundIndex().popEnd();
-                if (in(myTypes.H_NAMED_PARAM_DECLARATION)) { // can't have an arrow in a named param signature
+                if (in(myTypes.H_NAMED_PARAM_DECLARATION) && !isFoundScope(myTypes.LPAREN)) { // can't have an arrow in a named param signature
                     // let fn x:int |>-><| y:int
                     popEnd().popEndUntil(myTypes.C_SIG_EXPR);
                 }
                 advance();
-                markDummyParenthesisScope().mark(myTypes.C_SIG_ITEM);
+                markParenthesisScope(true).mark(myTypes.C_SIG_ITEM);
             }
             // same priority
             else if (strictlyInAny(
@@ -445,7 +456,8 @@ public class OclParser extends CommonPsiParser {
             }
 
             if (strictlyInAny(myTypes.C_TYPE_BINDING, myTypes.C_VARIANT_DECLARATION, myTypes.C_FUNCTION_EXPR,
-                    myTypes.C_MATCH_EXPR, myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_PATTERN_MATCH_BODY)) {
+                    myTypes.C_MATCH_EXPR, myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_PATTERN_MATCH_BODY,
+                    myTypes.C_TRY_HANDLERS, myTypes.C_TRY_HANDLER)) {
 
                 if (isFound(myTypes.C_TYPE_BINDING)) { // remap an upper symbol to a variant if first element is missing pipe
                     // type t = (|) V1 |>|<| ...
@@ -469,19 +481,12 @@ public class OclParser extends CommonPsiParser {
                 } else if (isFound(myTypes.C_PATTERN_MATCH_BODY)) {
                     popEndUntil(myTypes.C_PATTERN_MATCH_EXPR).popEnd().advance()
                             .mark(myTypes.C_PATTERN_MATCH_EXPR);
+                } else if (isFound(myTypes.C_TRY_HANDLERS)) {
+                    mark(myTypes.C_TRY_HANDLER);
+                } else if (isFound(myTypes.C_TRY_HANDLER)) {
+                    popEndUntil(myTypes.C_TRY_HANDLERS).mark(myTypes.C_TRY_HANDLER);
                 }
-
             }
-
-            //{
-            //    if (in(myTypes.C_PATTERN_MATCH_EXPR)) { // pattern group
-            // | X |>|<| Y ...
-            //popEndUntil(myTypes.C_PATTERN_MATCH_EXPR).popEnd();
-            //}
-            //
-            // By default, a pattern match
-            //advance().mark(myTypes.C_PATTERN_MATCH_EXPR);
-            //}
         }
 
         private void parseMatch() {
@@ -514,8 +519,10 @@ public class OclParser extends CommonPsiParser {
                 if (isFound(myTypes.C_TRY_BODY)) {
                     // try ... |>with<| ...
                     popEndUntil(myTypes.C_TRY_EXPR).advance()
-                            .mark(myTypes.C_TRY_HANDLERS)
-                            .mark(myTypes.C_TRY_HANDLER);
+                            .mark(myTypes.C_TRY_HANDLERS);
+                    if (getTokenType() != myTypes.PIPE) {
+                        mark(myTypes.C_TRY_HANDLER);
+                    }
                 } else if (isFound(myTypes.C_BINARY_CONDITION)) {
                     if (isPrevious(myTypes.C_MATCH_EXPR, getIndex())) {
                         // match ... |>with<| ...
@@ -578,7 +585,8 @@ public class OclParser extends CommonPsiParser {
             )) {
 
                 if (isFound(myTypes.C_FUNCTION_BODY) || isFound(myTypes.C_LET_BINDING) || isFound(myTypes.C_DIRECTIVE)
-                        || isFound(myTypes.C_TRY_BODY) || isFound(myTypes.C_TRY_HANDLER) || isFound(myTypes.C_PATTERN_MATCH_BODY)) {
+                        || isFound(myTypes.C_TRY_BODY) || isFound(myTypes.C_TRY_HANDLER) || isFound(myTypes.C_PATTERN_MATCH_BODY)
+                        || isFound(myTypes.C_SCOPED_EXPR)) {
                     // A SEMI operator ends the previous expression
                     popEndUntilFoundIndex();
                 } else if (isRawParent(myTypes.C_OBJECT)) {
@@ -604,9 +612,13 @@ public class OclParser extends CommonPsiParser {
 
         private void parseIn() {
             if (in(myTypes.C_TRY_HANDLER)) {
-                popEndUntil(myTypes.C_TRY_EXPR);
-            } else if (strictlyInAny(myTypes.C_LET_DECLARATION, myTypes.C_PATTERN_MATCH_BODY)) {
-                boolean isStart = isFound(myTypes.C_LET_DECLARATION);
+                if (strictlyInAny(myTypes.C_LET_DECLARATION)) {
+                    popEndUntil(myTypes.C_TRY_HANDLER);
+                } else {
+                    popEndUntil(myTypes.C_TRY_EXPR);
+                }
+            } else if (strictlyInAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_DECLARATION, myTypes.C_PATTERN_MATCH_BODY)) {
+                boolean isStart = isFound(myTypes.C_LET_DECLARATION) || isFound(myTypes.C_MODULE_DECLARATION);
                 popEndUntilFoundIndex();
                 if (isStart) {
                     popEnd();
@@ -632,12 +644,14 @@ public class OclParser extends CommonPsiParser {
                 if (is(myTypes.C_MODULE_DECLARATION)) {
                     // module M = struct .. |>end<|
                     popEnd();
-
                     IElementType nextToken = getTokenType();
                     if (nextToken == myTypes.AND) {
                         // module M = struct .. end |>and<|
                         advance().mark(myTypes.C_MODULE_DECLARATION).setStart();
                     }
+                } else if (is(myTypes.C_MODULE_TYPE) && getTokenType() != myTypes.WITH) {
+                    // module M : sig .. |>end<|
+                    popEnd();
                 }
             }
         }
@@ -645,7 +659,8 @@ public class OclParser extends CommonPsiParser {
         private void parseColon() {
             if (is(myTypes.C_FUNCTOR_DECLARATION)) {
                 // module M (...) |> :<| ...
-                advance().mark(myTypes.C_FUNCTOR_RESULT);
+                advance();
+                markParenthesisScope(true).mark(myTypes.C_FUNCTOR_RESULT);
             } else if (isRawParent(myTypes.H_NAMED_PARAM_DECLARATION)) {
                 advance();
                 if (getTokenType() == myTypes.LPAREN) {
@@ -669,8 +684,7 @@ public class OclParser extends CommonPsiParser {
                 if (isFound(myTypes.C_TERNARY)) {
                     // x ? y |> :<| ...
                     popEndUntilFoundIndex()
-                            .advance().mark(myTypes.C_IF_THEN_SCOPE);
-                    markHolder(myTypes.H_PLACE_HOLDER);
+                            .advance().mark(myTypes.C_IF_THEN_SCOPE).markHolder(myTypes.H_PLACE_HOLDER);
                 } else {
                     // external x |> : <| ...  OR  val x |> : <| ...  OR  let x |> : <| ...
                     advance();
@@ -678,20 +692,24 @@ public class OclParser extends CommonPsiParser {
                         // Local type
                         mark(myTypes.C_TYPE_VARIABLE);
                     } else {
-                        mark(myTypes.C_SIG_EXPR)
-                                .mark(myTypes.C_SIG_ITEM);
+                        parseSignatureExpression();
                     }
                 }
-
             } else if (in(myTypes.C_MODULE_DECLARATION)) {
                 // module M |> : <| ...
                 advance();
-                markDummyParenthesisScope()
+                markParenthesisScope(true)
                         .mark(myTypes.C_MODULE_TYPE);
             } else if (in(myTypes.C_RECORD_FIELD)) {
-                advance().mark(myTypes.C_SIG_EXPR)
-                        .mark(myTypes.C_SIG_ITEM);
+                advance();
+                parseSignatureExpression();
             }
+        }
+
+        private void parseSignatureExpression() {
+            mark(myTypes.C_SIG_EXPR);
+            markParenthesisScope(true).
+                    mark(myTypes.C_SIG_ITEM).markHolder(myTypes.H_PLACE_HOLDER);
         }
 
         private void parseQuestionMark() {
@@ -755,22 +773,24 @@ public class OclParser extends CommonPsiParser {
             } else if (strictlyIn(myTypes.C_EXTERNAL_DECLARATION)) {
                 // external e : sig |> = <| ...
                 popEndUntil(myTypes.C_SIG_EXPR).popEnd().advance();
-            } else if (strictlyIn(myTypes.C_LET_DECLARATION)) {
-                int letPos = getIndex();
-                if (in(myTypes.C_LET_BINDING, null, letPos, false)) {
-                    // in a function ::  let (x) y z |> = <| ...
-                    popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
-                            .mark(myTypes.C_FUNCTION_BODY);
-                } else {
-                    // let x |> = <| ...
-                    popEndUntilStart().advance().
-                            mark(myTypes.C_LET_BINDING).
-                            markHolder(myTypes.H_PLACE_HOLDER);
+            } else if (strictlyInAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_DECLARATION)) {
+                if (isFound(myTypes.C_LET_DECLARATION)) {
+                    int letPos = getIndex();
+                    if (in(myTypes.C_LET_BINDING, null, letPos, false)) {
+                        // in a function ::  let (x) y z |> = <| ...
+                        popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
+                                .mark(myTypes.C_FUNCTION_BODY);
+                    } else {
+                        // let x |> = <| ...
+                        popEndUntilStart().advance().
+                                mark(myTypes.C_LET_BINDING).
+                                markHolder(myTypes.H_PLACE_HOLDER);
+                    }
+                } else if (isFound(myTypes.C_MODULE_DECLARATION)) {
+                    // module M |> = <| ...
+                    popEndUntil(myTypes.C_MODULE_DECLARATION).advance()
+                            .mark(myTypes.C_MODULE_BINDING);
                 }
-            } else if (in(myTypes.C_MODULE_DECLARATION)) {
-                // module M |> = <| ...
-                popEndUntil(myTypes.C_MODULE_DECLARATION).advance()
-                        .mark(myTypes.C_MODULE_BINDING);
             } else if (in(myTypes.C_FUNCTOR_RESULT)) {
                 popEndUntil(myTypes.C_FUNCTOR_RESULT).popEnd();
             } else if (in(myTypes.C_CONSTRAINTS)) {
@@ -788,10 +808,15 @@ public class OclParser extends CommonPsiParser {
         private void parseStar() {
             if (strictlyIn(myTypes.C_TUPLE)) {
                 popEndUntilFoundIndex();
-            } else if (in(myTypes.C_PARAM_DECLARATION) && in(myTypes.C_VARIANT_CONSTRUCTOR)) {
-                // type t = | Variant of x |>*<| y ..
-                popEndUntil(myTypes.C_PARAM_DECLARATION).popEnd().advance()
-                        .mark(myTypes.C_PARAM_DECLARATION);
+            } else if (inScopeOrAny(myTypes.C_PARAM_DECLARATION, myTypes.C_VARIANT_CONSTRUCTOR, myTypes.C_SIG_ITEM)) {
+                if (isFoundScope(myTypes.LPAREN)) {
+                    // ( ... |>*<|
+                    updateCompositeAt(getIndex(), myTypes.C_TUPLE);
+                } else if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.C_VARIANT_CONSTRUCTOR)) {
+                    // type t = | Variant of x |>*<| y ..
+                    popEndUntil(myTypes.C_PARAM_DECLARATION).popEnd().advance()
+                            .mark(myTypes.C_PARAM_DECLARATION);
+                }
             }
         }
 
@@ -801,10 +826,9 @@ public class OclParser extends CommonPsiParser {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
             } else if (isRawParent(myTypes.C_MODULE_DECLARATION) && previousElementType(1) == myTypes.A_MODULE_NAME) {
                 //  module M |>(<| ... )
-                updateCompositeAt(1, myTypes.C_FUNCTOR_DECLARATION)
-                        .popEnd()
-                        .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
-                        .mark(myTypes.C_PARAM_DECLARATION);
+                updateCompositeAt(1, myTypes.C_FUNCTOR_DECLARATION).popEnd()
+                        .mark(myTypes.C_PARAMETERS)
+                        .markScope(myTypes.C_PARAM_DECLARATION, myTypes.LPAREN).advance();
             } else if (previousElementType(2) == myTypes.A_MODULE_NAME && previousElementType(1) == myTypes.DOT) { // Detecting a local open
                 // M1.M2. |>(<| ... )
                 popEnd().
@@ -821,42 +845,47 @@ public class OclParser extends CommonPsiParser {
             } else if (isRawParent(myTypes.H_NAMED_PARAM_DECLARATION)) {
                 popEnd();
                 markParenthesisScope(false);
-            } else if (in(myTypes.C_CLASS_DECLARATION)) {
-                // class x |>(<| ...
-                markScope(myTypes.C_CLASS_CONSTR, myTypes.LPAREN);
             } else if (is(myTypes.C_MODULE_BINDING)) {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
                 if (getTokenType() == myTypes.VAL) {
                     advance(); // skip 'val' in a first class module decoding
                 }
             } else if (inAny(//
-                    myTypes.C_PARAM_DECLARATION, myTypes.C_PARAMETERS, myTypes.C_PARAM, myTypes.C_SIG_ITEM, myTypes.C_FUNCTION_BODY
+                    myTypes.C_PARAM_DECLARATION, myTypes.C_PARAMETERS, myTypes.C_PARAM, myTypes.C_SIG_ITEM, myTypes.C_FUNCTION_BODY,
+                    myTypes.C_LET_BINDING, myTypes.C_CLASS_DECLARATION, myTypes.C_DEFAULT_VALUE, myTypes.C_TUPLE
             )) {
                 boolean isDeclaration = isFound(myTypes.C_PARAM_DECLARATION);
+                boolean isParam = isFound(myTypes.C_PARAM);
+                boolean isFoundScopeLParen = isFoundScope(myTypes.LPAREN);
                 int foundIndex = getIndex();
 
-                if (isFound(myTypes.C_PARAMETERS)) {
+                if (isFound(myTypes.C_PARAMETERS) || isFound(myTypes.C_DEFAULT_VALUE)) {
                     markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
+                } else if (isFound(myTypes.C_CLASS_DECLARATION)) {
+                    // class x |>(<| ...
+                    markScope(myTypes.C_CLASS_CONSTR, myTypes.LPAREN);
                 } else if (isDeclaration && isRawParent(myTypes.C_VARIANT_CONSTRUCTOR)) {
                     // Tuple in variant declaration
                     markScope(myTypes.C_TUPLE, myTypes.LPAREN);
-                } else if (isDeclaration || (isFound(myTypes.C_PARAM) && !isFoundScope(myTypes.LPAREN))) { // Start of a new parameter
-                    popEndUntilIndex(foundIndex).popEnd()
-                            .mark(isDeclaration ? myTypes.C_PARAM_DECLARATION : myTypes.C_PARAM);
-                    if (lookAhead(1) == myTypes.LIDENT) {
-                        // let f x |>(<| fn ...
-                        markDummyParenthesisScope()
-                                .mark(myTypes.C_FUNCTION_CALL)
-                                .wrapAtom(myTypes.CA_LOWER_SYMBOL).popEnd()
-                                .mark(myTypes.C_PARAMETERS);
+                } else {
+                    if (!isFoundScopeLParen && (isDeclaration || isParam)) { // Start of a new parameter
+                        popEndUntilIndex(foundIndex).popEnd()
+                                .mark(isDeclaration ? myTypes.C_PARAM_DECLARATION : myTypes.C_PARAM);
+                        if (lookAhead(1) == myTypes.LIDENT) {
+                            // let f x |>(<| fn ...
+                            markParenthesisScope(true)
+                                    .mark(myTypes.C_FUNCTION_CALL)
+                                    .wrapAtom(myTypes.CA_LOWER_SYMBOL).popEnd()
+                                    .mark(myTypes.C_PARAMETERS);
+                        } else {
+                            // let f x |>(<| ...tuple?
+                            markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
+                        }
+                    } else if (is(myTypes.C_SIG_ITEM) && !rawHasScope()) {
+                        updateScopeToken(myTypes.LPAREN);
                     } else {
-                        // let f x |>(<| ...tuple?
                         markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
                     }
-                } else if (is(myTypes.C_SIG_ITEM) && !rawHasScope()) {
-                    updateScopeToken(myTypes.LPAREN);
-                } else {
-                    markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
                 }
             } else {
                 inAny(myTypes.C_OPEN, myTypes.C_INCLUDE);
@@ -865,7 +894,7 @@ public class OclParser extends CommonPsiParser {
                     // a functor call inside open/include ::  open/include M |>(<| ...
                     markBefore(0, myTypes.C_FUNCTOR_CALL)
                             .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
-                            .mark(myTypes.C_PARAM_DECLARATION);
+                            .mark(myTypes.C_PARAM);
                 } else {
                     markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
                 }
@@ -873,6 +902,20 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseRParen() {
+            // special case when an option is used in a signature item
+            IElementType nextElementType = lookAhead(1);
+            if (nextElementType == myTypes.OPTION) {
+                // normally, a signature item is defined inside the (..), but when using an option, it must be the opposite
+                if (strictlyIn(myTypes.C_SIG_ITEM) && isScopeAtIndex(getIndex() + 2, myTypes.LPAREN)) {
+                    // need a rollback to swap elements : lparen -> sigItem to sigItem -> lparen
+                    rollbackToIndex(getIndex() + 2);
+                    markBefore(0, myTypes.C_OPTION);
+                    markBefore(1, myTypes.C_SIG_ITEM);
+                    markHolder(myTypes.H_COLLECTION_ITEM);
+                    return;
+                }
+            }
+
             Marker lParen = popEndUntilScopeToken(myTypes.LPAREN);
             if (lParen == null) {
                 return;
@@ -881,14 +924,13 @@ public class OclParser extends CommonPsiParser {
             advance();
 
             int scopeLength = lParen.getLength();
-            if (scopeLength <= 3 && isRawParent(myTypes.C_LET_DECLARATION)) {
-                // unit ::  let ()
-                lParen.updateCompositeType(myTypes.C_UNIT);
-            }
-
-            IElementType nextToken = getTokenType();
-            if (nextToken == myTypes.OPTION) {
-                markBefore(0, myTypes.C_OPTION);
+            if (isRawParent(myTypes.C_LET_DECLARATION)) {
+                if (scopeLength <= 3) {
+                    // unit ::  let ()
+                    lParen.updateCompositeType(myTypes.C_UNIT);
+                } else {
+                    lParen.updateCompositeType(myTypes.C_DECONSTRUCTION);
+                }
             }
 
             if (is(myTypes.C_DECONSTRUCTION)) {
@@ -896,22 +938,31 @@ public class OclParser extends CommonPsiParser {
             } else {
                 popEnd();
 
-                if (lParen.isCompositeType(myTypes.H_NAMED_PARAM_DECLARATION) && nextToken != myTypes.EQ) {
+                if (lParen.isCompositeType(myTypes.H_NAMED_PARAM_DECLARATION) && nextElementType != myTypes.EQ) {
                     popEnd();
                     if (is(myTypes.C_PARAM_DECLARATION)) {
                         popEnd();
                     }
-                } else if (lParen.isCompositeType(myTypes.C_SCOPED_EXPR) && is(myTypes.C_LET_DECLARATION) && nextToken != myTypes.EQ) { // This is a custom infix operator
+                } else if (is(myTypes.C_PARAMETERS) && isParent(myTypes.C_FUNCTOR_DECLARATION)) {
+                    // module M (...|>)<|
+                    if (nextElementType == myTypes.LPAREN) {
+                        markScope(myTypes.C_PARAM_DECLARATION, myTypes.LPAREN).advance();
+                    } else {
+                        popEnd();
+                    }
+                } else if (lParen.isCompositeType(myTypes.C_SCOPED_EXPR) && is(myTypes.C_LET_DECLARATION) && nextElementType != myTypes.EQ) { // This is a custom infix operator
                     mark(myTypes.C_PARAMETERS);
                 } else if (is(myTypes.C_OPTION)) {
                     advance().popEnd();
-                } else if (nextToken == myTypes.RIGHT_ARROW && lParen.isCompositeType(myTypes.C_SIG_ITEM)) {
+                } else if (isCurrent(myTypes.C_FUNCTOR_CALL)) {
+                    popEndUntil(myTypes.C_FUNCTOR_CALL).popEnd();
+                } else if (nextElementType == myTypes.RIGHT_ARROW && lParen.isCompositeType(myTypes.C_SIG_ITEM)) {
                     advance().mark(myTypes.C_SIG_ITEM);
                 } else if (is(myTypes.C_PARAM_DECLARATION) && isRawParent(myTypes.C_VARIANT_CONSTRUCTOR) && !lParen.isCompositeType(myTypes.C_TUPLE)) {
                     popEnd();
-                } else if (is(myTypes.C_PARAM)) {
+                } else if (is(myTypes.C_PARAM) && !currentHasScope()) {
                     popEnd();
-                } else if (nextToken == myTypes.AND) { // close intermediate elements
+                } else if (nextElementType == myTypes.AND) { // close intermediate elements
                     popEndUntilStart();
                     if (in(myTypes.C_LET_BINDING)) {
                         popEndUntil(myTypes.C_LET_BINDING);
@@ -1089,7 +1140,7 @@ public class OclParser extends CommonPsiParser {
             } else {
                 IElementType nextTokenType = lookAhead(1);
 
-                if (nextTokenType == myTypes.COLON && is(myTypes.C_SIG_ITEM)) {
+                if (nextTokenType == myTypes.COLON && isCurrent(myTypes.C_SIG_ITEM)) {
                     // let fn: |>x<| : ...
                     mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
                 } else if (!in(myTypes.C_SIG_ITEM) && !is(myTypes.C_TYPE_VARIABLE) && !is(myTypes.C_TYPE_CONSTRAINT)
@@ -1122,12 +1173,7 @@ public class OclParser extends CommonPsiParser {
             } else if (isCurrent(myTypes.C_MODULE_BINDING)) {
                 IElementType nextElement = lookAhead(1);
                 if (nextElement == myTypes.LPAREN) {
-                    // functor call ::  |>X<| ( ...
-                    // functor call with path :: A.B.|>X<| ( ...
-                    mark(myTypes.C_FUNCTOR_CALL)
-                            .remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL)
-                            .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
-                            .mark(myTypes.C_PARAM);
+                    parseFunctorCall();
                 } else {
                     // module M = |>X<|
                     // module M = X.|>Y<|
@@ -1168,15 +1214,25 @@ public class OclParser extends CommonPsiParser {
                         && nextToken != myTypes.DOT) { // Pattern matching a variant or using it
                     // match c with | |>X<| ... / let x = |>X<| ...
                     remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
-                    return;
+                } else if (nextToken == myTypes.LPAREN && isCurrent(myTypes.C_SIG_ITEM)) {
+                    parseFunctorCall();
                 } else if (nextToken == myTypes.LPAREN && !strictlyInAny(myTypes.C_OPEN, myTypes.C_INCLUDE)) {
                     // |>X<| (
                     remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL)
                             .advance().markScope(myTypes.C_VARIANT_CONSTRUCTOR, myTypes.LPAREN);
+                } else {
+                    remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
-
-                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             }
+        }
+
+        private void parseFunctorCall() {
+            // functor call ::  |>X<| ( ...
+            // functor call with path :: A.B.|>X<| ( ...
+            mark(myTypes.C_FUNCTOR_CALL)
+                    .remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL)
+                    .markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                    .mark(myTypes.C_PARAM);
         }
 
         private void parseOpen() {
@@ -1274,6 +1330,11 @@ public class OclParser extends CommonPsiParser {
                 endLikeSemi();
             }
             mark(myTypes.C_LET_DECLARATION).setStart();
+            advance();
+            if (getTokenType() == myTypes.LPAREN) { // an operator overload or a deconstruction
+                // let |>(<| ...
+                markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
+            }
         }
 
         private void parseModule() {

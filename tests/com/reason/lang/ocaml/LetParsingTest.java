@@ -247,6 +247,14 @@ public class LetParsingTest extends OclParsingTestCase {
         assertNull(e.getName());
     }
 
+    @Test
+    public void test_parens() {
+        RPsiLetBinding e = firstOfType(parseCode("let tmp = uget t ((pred n)-i)"), RPsiLetBinding.class);
+
+        assertNoParserError(e);
+        assertEquals("uget t ((pred n)-i)", e.getText());
+    }
+
     // should it be parsed like a function ?
     // https://github.com/giraud/reasonml-idea-plugin/issues/309
     @Test

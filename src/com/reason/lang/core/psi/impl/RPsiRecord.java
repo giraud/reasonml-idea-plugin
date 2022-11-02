@@ -9,8 +9,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiRecord extends ORCompositePsiElement<ORTypes> {
-    protected RPsiRecord(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiRecord extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiRecord(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

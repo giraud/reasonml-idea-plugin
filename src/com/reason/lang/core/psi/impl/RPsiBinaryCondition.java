@@ -4,9 +4,9 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiBinaryCondition extends ORCompositePsiElement<ORTypes> {
+public class RPsiBinaryCondition extends ORCompositePsiElement<ORLangTypes> {
 
-    protected RPsiBinaryCondition(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    protected RPsiBinaryCondition(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 }

@@ -14,13 +14,13 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class RPsiVariantDeclaration extends RPsiTokenStub<ORTypes, RPsiVariantDeclaration, PsiVariantDeclarationStub> implements PsiNameIdentifierOwner, RPsiQualifiedPathElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
+public class RPsiVariantDeclaration extends RPsiTokenStub<ORLangTypes, RPsiVariantDeclaration, PsiVariantDeclarationStub> implements PsiNameIdentifierOwner, RPsiQualifiedPathElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
     // region Constructors
-    public RPsiVariantDeclaration(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiVariantDeclaration(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiVariantDeclaration(@NotNull ORTypes types, @NotNull PsiVariantDeclarationStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiVariantDeclaration(@NotNull ORLangTypes types, @NotNull PsiVariantDeclarationStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
@@ -88,7 +88,7 @@ public class RPsiVariantDeclaration extends RPsiTokenStub<ORTypes, RPsiVariantDe
     }
 
     @NotNull
-    public Collection<RPsiParameterDeclaration> getParameterList() {
+    public List<RPsiParameterDeclaration> getParameterList() {
         RPsiParameters parameters = ORUtil.findImmediateFirstChildOfClass(this, RPsiParameters.class);
         return parameters == null
                 ? emptyList()

@@ -530,15 +530,15 @@ public class DuneLexer implements FlexLexer {
             }  // fall though
             case 51: break;
             case IN_ML_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT;
             }  // fall though
             case 52: break;
             case IN_SEXPR_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT;
             }  // fall though
             case 53: break;
             case IN_SL_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT;
             }  // fall though
             case 54: break;
             default:
@@ -633,12 +633,12 @@ public class DuneLexer implements FlexLexer {
             // fall through
           case 43: break;
           case 18: 
-            { parenDepth -= 1; if(parenDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+            { parenDepth -= 1; if(parenDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
             } 
             // fall through
           case 44: break;
           case 19: 
-            { yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+            { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT;
             } 
             // fall through
           case 45: break;
@@ -673,7 +673,7 @@ public class DuneLexer implements FlexLexer {
             // fall through
           case 51: break;
           case 26: 
-            { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+            { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
             } 
             // fall through
           case 52: break;

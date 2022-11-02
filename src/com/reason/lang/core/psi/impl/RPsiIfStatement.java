@@ -7,8 +7,8 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiIfStatement extends ORCompositePsiElement<ORTypes> implements RPsiConditional {
-    protected RPsiIfStatement(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiIfStatement extends ORCompositePsiElement<ORLangTypes> implements RPsiConditional {
+    protected RPsiIfStatement(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

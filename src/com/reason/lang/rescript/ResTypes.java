@@ -3,7 +3,7 @@ package com.reason.lang.rescript;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 
-public class ResTypes extends ORTypes {
+public class ResTypes extends ORLangTypes {
     public static final ResTypes INSTANCE = new ResTypes();
 
     private ResTypes() {

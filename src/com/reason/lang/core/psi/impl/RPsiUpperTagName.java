@@ -5,7 +5,7 @@ import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
 public class RPsiUpperTagName extends RPsiUpperSymbol {
-    public RPsiUpperTagName(@NotNull ORTypes types, @NotNull IElementType tokenType, CharSequence text) {
+    public RPsiUpperTagName(@NotNull ORLangTypes types, @NotNull IElementType tokenType, CharSequence text) {
         super(types, tokenType, text);
     }
 

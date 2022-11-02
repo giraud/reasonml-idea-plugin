@@ -7,8 +7,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiTag extends ORCompositePsiElement<ORTypes> {
-    protected RPsiTag(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiTag extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiTag(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

@@ -8,8 +8,8 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiSignatureItemImpl extends ORCompositePsiElement<ORTypes> implements RPsiSignatureItem {
-    protected RPsiSignatureItemImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiSignatureItemImpl extends ORCompositePsiElement<ORLangTypes> implements RPsiSignatureItem {
+    protected RPsiSignatureItemImpl(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

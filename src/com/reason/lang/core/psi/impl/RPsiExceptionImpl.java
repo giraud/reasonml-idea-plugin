@@ -14,13 +14,13 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class RPsiExceptionImpl extends RPsiTokenStub<ORTypes, RPsiException, PsiExceptionStub> implements RPsiException {
+public class RPsiExceptionImpl extends RPsiTokenStub<ORLangTypes, RPsiException, PsiExceptionStub> implements RPsiException {
     // region Constructors
-    public RPsiExceptionImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public RPsiExceptionImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public RPsiExceptionImpl(@NotNull ORTypes types, @NotNull PsiExceptionStub stub, @NotNull IStubElementType nodeType) {
+    public RPsiExceptionImpl(@NotNull ORLangTypes types, @NotNull PsiExceptionStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion

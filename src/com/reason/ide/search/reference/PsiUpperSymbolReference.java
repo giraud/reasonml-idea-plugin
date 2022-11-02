@@ -18,7 +18,7 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSym
     private static final Log LOG = Log.create("ref.upper");
     private static final Log LOG_PERF = Log.create("ref.perf.upper");
 
-    public PsiUpperSymbolReference(@NotNull RPsiUpperSymbol element, @NotNull ORTypes types) {
+    public PsiUpperSymbolReference(@NotNull RPsiUpperSymbol element, @NotNull ORLangTypes types) {
         super(element, types);
     }
 

@@ -13,8 +13,8 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.stream.*;
 
-public class RPsiSignatureImpl extends ORCompositePsiElement<ORTypes> implements RPsiSignature {
-    RPsiSignatureImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiSignatureImpl extends ORCompositePsiElement<ORLangTypes> implements RPsiSignature {
+    RPsiSignatureImpl(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

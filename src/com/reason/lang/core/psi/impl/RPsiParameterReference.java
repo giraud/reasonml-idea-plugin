@@ -6,8 +6,8 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiParameterReference extends ORCompositePsiElement<ORTypes> {
-    protected RPsiParameterReference(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiParameterReference extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiParameterReference(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

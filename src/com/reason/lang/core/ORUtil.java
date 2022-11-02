@@ -129,7 +129,7 @@ public class ORUtil {
      */
     public static @NotNull String getLongIdent(@Nullable PsiElement root) {
         StringBuilder text = new StringBuilder(root == null ? "" : root.getText());
-        ORTypes types = root == null ? null : ORUtil.getTypes(root.getLanguage());
+        ORLangTypes types = root == null ? null : ORUtil.getTypes(root.getLanguage());
 
         PsiElement sibling = root == null ? null : root.getNextSibling();
         while (sibling != null) {
@@ -339,7 +339,7 @@ public class ORUtil {
     }
 
     @NotNull
-    public static ORTypes getTypes(@NotNull Language language) {
+    public static ORLangTypes getTypes(@NotNull Language language) {
         return language == ResLanguage.INSTANCE
                 ? ResTypes.INSTANCE
                 : language == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
@@ -350,7 +350,7 @@ public class ORUtil {
         boolean isALias = true;
 
         PsiElement currentElement = rootElement;
-        ORTypes types = getTypes(language);
+        ORLangTypes types = getTypes(language);
         StringBuilder aliasName = new StringBuilder();
         IElementType elementType = currentElement == null ? null : currentElement.getNode().getElementType();
         while (elementType != null && elementType != types.SEMI && elementType != types.EOL) {

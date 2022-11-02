@@ -4,9 +4,9 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiTagPropertyValue extends ORCompositePsiElement<ORTypes> {
+public class RPsiTagPropertyValue extends ORCompositePsiElement<ORLangTypes> {
     // region Constructors
-    protected RPsiTagPropertyValue(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    protected RPsiTagPropertyValue(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
     // endregion

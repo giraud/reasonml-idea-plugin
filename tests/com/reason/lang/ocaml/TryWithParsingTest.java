@@ -49,7 +49,7 @@ public class TryWithParsingTest extends OclParsingTestCase {
         PsiFile file = parseCode("try f() with e -> let e = CErrors.push e");
         RPsiTry try_ = (RPsiTry) firstElement(file);
 
-        assertEquals("e -> let e = CErrors.push e", try_.getHandlers().iterator().next().getText());
+        assertEquals("e -> let e = CErrors.push e", try_.getHandlers().get(0).getText());
     }
 
     @Test // coq/util.ml
@@ -71,7 +71,7 @@ public class TryWithParsingTest extends OclParsingTestCase {
                 "      in\n" +
                 "        find ())\n" +
                 "  with\n" +
-                "  | Sys_error s -> raise Not_found\n" +
+                "  | Sys_error s ->  let () = close_in chan in fatal msg\n" +
                 "  | End_of_file -> raise Not_found\n"), RPsiTry.class);
 
         assertEquals("with_ic (base ^ \"/coq_environment.txt\") (fun ic ->\n" +
@@ -84,6 +84,7 @@ public class TryWithParsingTest extends OclParsingTestCase {
         RPsiFunctionCall fc = ORUtil.findImmediateFirstChildOfClass(e.getBody(), RPsiFunctionCall.class);
         assertEquals("with_ic", fc.getName());
         assertSize(2, fc.getParameters());
+        assertSize(2, e.getHandlers());
     }
 
     @Test

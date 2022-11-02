@@ -5,8 +5,8 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiGuard extends ORCompositePsiElement<ORTypes> {
-    protected RPsiGuard(@NotNull ORTypes types, @NotNull IElementType elementType) {
+public class RPsiGuard extends ORCompositePsiElement<ORLangTypes> {
+    protected RPsiGuard(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
 

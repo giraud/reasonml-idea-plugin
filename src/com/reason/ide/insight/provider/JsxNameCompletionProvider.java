@@ -27,7 +27,7 @@ public class JsxNameCompletionProvider {
     private JsxNameCompletionProvider() {
     }
 
-    public static void addCompletions(@NotNull ORTypes types, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull ORLangTypes types, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
         LOG.debug("JSX name expression completion");
 
         Collection<PsiNamedElement> expressions = new ArrayList<>();

@@ -20,7 +20,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSym
     private static final Log LOG = Log.create("ref.lower");
     private static final Log LOG_PERF = Log.create("ref.perf.lower");
 
-    public PsiLowerSymbolReference(@NotNull RPsiLowerSymbol element, @NotNull ORTypes types) {
+    public PsiLowerSymbolReference(@NotNull RPsiLowerSymbol element, @NotNull ORLangTypes types) {
         super(element, types);
     }
 
