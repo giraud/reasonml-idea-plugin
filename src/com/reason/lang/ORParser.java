@@ -538,7 +538,7 @@ public abstract class ORParser<T extends ORTypes> {
     }
 
     public void error(@NotNull String message) {
-        myBuilder.error("Plugin error! " + message);
+        //myBuilder.error("Plugin error! " + message); // RELEASE: comment that line
     }
 
     public @NotNull ORParser<T> remapCurrentToken(ORTokenElementType elementType) {
