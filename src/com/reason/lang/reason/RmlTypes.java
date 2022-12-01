@@ -3,13 +3,14 @@ package com.reason.lang.reason;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 
-public class RmlTypes extends ORTypes {
+public class RmlTypes extends ORLangTypes {
     public static final RmlTypes INSTANCE = new RmlTypes();
 
     private RmlTypes() {
         // Stub element types
 
         C_CLASS_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_CLASS_DECLARATION;
+        C_CLASS_METHOD = (ORCompositeType) RmlStubBasedElementTypes.C_CLASS_METHOD;
         C_EXCEPTION_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_EXCEPTION_DECLARATION;
         C_EXTERNAL_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_EXTERNAL_DECLARATION;
         C_FAKE_MODULE = (ORCompositeType) RmlStubBasedElementTypes.C_FAKE_MODULE;
@@ -28,12 +29,11 @@ public class RmlTypes extends ORTypes {
         // Composite element types
 
         C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION", RmlLanguage.INSTANCE);
-        C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", RmlLanguage.INSTANCE);
+        C_ARRAY = new ORCompositeElementType("C_ARRAY", RmlLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", RmlLanguage.INSTANCE);
         C_BINARY_CONDITION = new ORCompositeElementType("C_BINARY_CONDITION", RmlLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", RmlLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", RmlLanguage.INSTANCE);
-        C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", RmlLanguage.INSTANCE);
         C_CLOSED_VARIANT = new ORCompositeElementType("C_CLOSED_VARIANT", RmlLanguage.INSTANCE);
         C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", RmlLanguage.INSTANCE);
         C_TYPE_CONSTRAINT = new ORCompositeElementType("C_TYPE_CONSTRAINT", RmlLanguage.INSTANCE);
@@ -51,6 +51,7 @@ public class RmlTypes extends ORTypes {
         C_FUNCTOR_BINDING = new ORCompositeElementType("C_FUNCTOR_BINDING", RmlLanguage.INSTANCE);
         C_FUNCTOR_CALL = new ORCompositeElementType("C_FUNCTOR_CALL", RmlLanguage.INSTANCE);
         C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", RmlLanguage.INSTANCE);
+        C_GUARD = new ORCompositeElementType("C_GUARD", RmlLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", RmlLanguage.INSTANCE);
         C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", RmlLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", RmlLanguage.INSTANCE);
@@ -64,6 +65,7 @@ public class RmlTypes extends ORTypes {
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", RmlLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", RmlLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
+        C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", RmlLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", RmlLanguage.INSTANCE);
         C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", RmlLanguage.INSTANCE);
         C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", RmlLanguage.INSTANCE);
@@ -77,9 +79,10 @@ public class RmlTypes extends ORTypes {
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", RmlLanguage.INSTANCE);
         C_RECORD_EXPR = new ORCompositeElementType("C_RECORD_EXPR", RmlLanguage.INSTANCE);
+        C_SCOPED_EXPR = new ORCompositeElementType("C_SCOPED_EXPR", RmlLanguage.INSTANCE);
         C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", RmlLanguage.INSTANCE);
         C_SIG_ITEM = new ORCompositeElementType("C_SIG_ITEM", RmlLanguage.INSTANCE);
-        C_SCOPED_EXPR = new ORCompositeElementType("C_SCOPED_EXPR", RmlLanguage.INSTANCE);
+        C_SOME = new ORCompositeElementType("C_SOME", RmlLanguage.INSTANCE);
         C_STRUCT_EXPR = new ORCompositeElementType("C_STRUCT_EXPR", RmlLanguage.INSTANCE);
         C_SWITCH_BODY = new ORCompositeElementType("C_SWITCH_BODY", RmlLanguage.INSTANCE);
         C_SWITCH_EXPR = new ORCompositeElementType("C_SWITCH_EXPR", RmlLanguage.INSTANCE);
@@ -93,6 +96,7 @@ public class RmlTypes extends ORTypes {
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", RmlLanguage.INSTANCE);
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", RmlLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", RmlLanguage.INSTANCE);
+        C_TRY_HANDLER_BODY = new ORCompositeElementType("C_TRY_HANDLER_BODY", RmlLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", RmlLanguage.INSTANCE);
         C_TUPLE = new ORCompositeElementType("C_TUPLE", RmlLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", RmlLanguage.INSTANCE);

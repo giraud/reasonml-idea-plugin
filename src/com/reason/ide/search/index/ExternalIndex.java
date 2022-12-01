@@ -9,18 +9,18 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class ExternalIndex extends StringStubIndexExtension<PsiExternal> {
+public class ExternalIndex extends StringStubIndexExtension<RPsiExternal> {
     @Override
     public int getVersion() {
         return super.getVersion() + ORStubVersions.EXTERNAL;
     }
 
     @Override
-    public @NotNull StubIndexKey<String, PsiExternal> getKey() {
+    public @NotNull StubIndexKey<String, RPsiExternal> getKey() {
         return IndexKeys.EXTERNALS;
     }
 
-    public static @NotNull Collection<PsiExternal> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.EXTERNALS, key, project, scope, PsiExternal.class);
+    public static @NotNull Collection<RPsiExternal> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.EXTERNALS, key, project, scope, RPsiExternal.class);
     }
 }

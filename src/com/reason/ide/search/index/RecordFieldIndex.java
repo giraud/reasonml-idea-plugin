@@ -9,18 +9,18 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RecordFieldIndex extends StringStubIndexExtension<PsiRecordField> {
+public class RecordFieldIndex extends StringStubIndexExtension<RPsiRecordField> {
     @Override
     public int getVersion() {
         return super.getVersion() + ORStubVersions.RECORD_FIELD;
     }
 
     @Override
-    public @NotNull StubIndexKey<String, PsiRecordField> getKey() {
+    public @NotNull StubIndexKey<String, RPsiRecordField> getKey() {
         return IndexKeys.RECORD_FIELDS;
     }
 
-    public static @NotNull Collection<PsiRecordField> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.RECORD_FIELDS, key, project, scope, PsiRecordField.class);
+    public static @NotNull Collection<RPsiRecordField> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.RECORD_FIELDS, key, project, scope, RPsiRecordField.class);
     }
 }

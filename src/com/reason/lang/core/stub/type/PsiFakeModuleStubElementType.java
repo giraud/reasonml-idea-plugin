@@ -12,12 +12,12 @@ public class PsiFakeModuleStubElementType extends PsiModuleStubElementType imple
     }
 
     @NotNull
-    public PsiFakeModule createPsi(@NotNull final ASTNode node) {
-        return new PsiFakeModule(ORTypesUtil.getInstance(getLanguage()), node);
+    public RPsiFakeModule createPsi(@NotNull final ASTNode node) {
+        return new RPsiFakeModule(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
     @NotNull
-    public PsiFakeModule createPsi(@NotNull final PsiModuleStub stub) {
-        return new PsiFakeModule(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    public RPsiFakeModule createPsi(@NotNull final PsiModuleStub stub) {
+        return new RPsiFakeModule(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 }

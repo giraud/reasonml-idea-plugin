@@ -10,7 +10,7 @@ import org.jetbrains.annotations.*;
 
 public class OclYaccParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    private static final TokenSet COMMENTS = TokenSet.create(OclYaccTypes.INSTANCE.COMMENT);
+    private static final TokenSet COMMENTS = TokenSet.create(OclYaccTypes.INSTANCE.MULTI_COMMENT, OclYaccTypes.INSTANCE.SINGLE_COMMENT);
 
     private static final IFileElementType FILE = new IFileElementType(Language.findInstance(OclYaccLanguage.class));
 

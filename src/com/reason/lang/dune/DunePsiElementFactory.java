@@ -14,17 +14,17 @@ class DunePsiElementFactory {
     IElementType type = node.getElementType();
 
     if (type == DuneTypes.INSTANCE.C_FIELD) {
-      return new PsiDuneField(DuneTypes.INSTANCE, node);
+      return new RPsiDuneField(DuneTypes.INSTANCE, node);
     } else if (type == DuneTypes.INSTANCE.C_FIELDS) {
-      return new PsiDuneFields(DuneTypes.INSTANCE, node);
+      return new RPsiDuneFields(DuneTypes.INSTANCE, node);
     } else if (type == DuneTypes.INSTANCE.C_STANZA) {
-      return new PsiStanza(DuneTypes.INSTANCE, node);
+      return new RPsiDuneStanza(DuneTypes.INSTANCE, node);
     } else if (type == DuneTypes.INSTANCE.C_SEXPR) {
-      return new PsiSExpr(DuneTypes.INSTANCE, node);
+      return new RPsiDuneSExpr(DuneTypes.INSTANCE, node);
     } else if (type == DuneTypes.INSTANCE.C_VAR) {
-      return new PsiDuneVar(DuneTypes.INSTANCE, node);
+      return new RPsiDuneVar(DuneTypes.INSTANCE, node);
     }
 
-    return new PsiToken<>(DuneTypes.INSTANCE, node);
+    return new RPsiToken<>(DuneTypes.INSTANCE, node);
   }
 }

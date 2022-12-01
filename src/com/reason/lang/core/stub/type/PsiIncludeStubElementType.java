@@ -15,23 +15,23 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub, PsiInclude> {
+public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub, RPsiInclude> {
     public PsiIncludeStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);
     }
 
     @Override
-    public @NotNull PsiInclude createPsi(@NotNull PsiIncludeStub stub) {
-        return new PsiIncludeImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    public @NotNull RPsiInclude createPsi(@NotNull PsiIncludeStub stub) {
+        return new RPsiIncludeImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
     @Override
     public @NotNull PsiElement createPsi(@NotNull ASTNode node) {
-        return new PsiIncludeImpl(ORTypesUtil.getInstance(getLanguage()), node);
+        return new RPsiIncludeImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
     @Override
-    public @NotNull PsiIncludeStub createStub(@NotNull PsiInclude psi, @Nullable StubElement parentStub) {
+    public @NotNull PsiIncludeStub createStub(@NotNull RPsiInclude psi, @Nullable StubElement parentStub) {
         return new PsiIncludeStub(parentStub, this, ((FileBase) psi.getContainingFile()).getModuleName(), psi.getIncludePath(), psi.getQualifiedPath(), psi.getResolvedPath());
     }
 

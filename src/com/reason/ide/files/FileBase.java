@@ -11,7 +11,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public abstract class FileBase extends PsiFileBase implements PsiQualifiedPathElement {
+public abstract class FileBase extends PsiFileBase implements RPsiQualifiedPathElement {
     private final @NotNull String m_moduleName;
 
     FileBase(@NotNull FileViewProvider viewProvider, @NotNull Language language) {
@@ -45,14 +45,14 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedPathEl
 
     public @Nullable PsiElement getComponentNavigationElement() {
         if (isComponent()) {
-            List<PsiLet> lets = PsiTreeUtil.getStubChildrenOfTypeAsList(this, PsiLet.class);
-            for (PsiLet let : lets) {
+            List<RPsiLet> lets = PsiTreeUtil.getStubChildrenOfTypeAsList(this, RPsiLet.class);
+            for (RPsiLet let : lets) {
                 if ("make".equals(let.getName())) {
                     return let;
                 }
             }
-            List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(this, PsiExternal.class);
-            for (PsiExternal external : externals) {
+            List<RPsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(this, RPsiExternal.class);
+            for (RPsiExternal external : externals) {
                 if ("make".equals(external.getName())) {
                     return external;
                 }

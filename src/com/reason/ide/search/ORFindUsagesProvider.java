@@ -4,7 +4,7 @@ import com.intellij.lang.*;
 import com.intellij.lang.findUsages.*;
 import com.intellij.psi.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 
@@ -12,10 +12,10 @@ public abstract class ORFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof PsiModule || element instanceof PsiException ||
-                element instanceof PsiLet || element instanceof PsiVal ||
-                element instanceof PsiType || element instanceof PsiExternal ||
-                element instanceof PsiVariantDeclaration || element instanceof PsiParameterDeclaration;
+        return element instanceof RPsiModule || element instanceof RPsiException ||
+                element instanceof RPsiLet || element instanceof RPsiVal ||
+                element instanceof RPsiType || element instanceof RPsiExternal || element instanceof RPsiRecordField ||
+                element instanceof RPsiVariantDeclaration || element instanceof RPsiParameterDeclaration;
     }
 
     @Override
@@ -31,8 +31,8 @@ public abstract class ORFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public @NotNull String getDescriptiveName(@NotNull PsiElement element) {
-        if (element instanceof PsiModule) {
-            return "Module " + ((PsiModule) element).getName();
+        if (element instanceof RPsiModule) {
+            return "Module " + ((RPsiModule) element).getName();
         } else if (element instanceof PsiNamedElement) {
             String name = ((PsiNamedElement) element).getName();
             return name == null ? "" : name;

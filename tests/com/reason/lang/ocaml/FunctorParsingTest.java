@@ -2,71 +2,83 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
-import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctorParsingTest extends OclParsingTestCase {
+    @Test
     public void test_basic() {
-        PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) : S = struct end")));
+        RPsiFunctor e = firstOfType(parseCode("module Make (M:T0) (N:T1) : S = struct end"),RPsiFunctor.class);
 
-        PsiFunctor f = (PsiFunctor) e;
-        assertEquals("struct end", f.getBody().getText());
-        assertEquals("S", f.getReturnType().getText());
-        PsiParameterDeclaration p = f.getParameters().iterator().next();
-        assertEquals(OclTypes.INSTANCE.C_PARAM_DECLARATION, p.getNode().getElementType());
-        List<IElementType> uTypes =
-                PsiTreeUtil.findChildrenOfType(e, PsiUpperSymbol.class)
-                        .stream()
-                        .map(psi -> psi.getNode().getElementType())
-                        .collect(Collectors.toList());
-        assertDoesntContain(uTypes, myTypes.A_VARIANT_NAME);
+        assertNoParserError(e);
+        assertEquals("struct end", e.getBody().getText());
+        assertEquals("S", e.getReturnType().getText());
+        List<RPsiParameterDeclaration> eps = e.getParameters();
+        assertSize(2, eps);
+        assertEquals("(M:T0)", eps.get(0).getText());   // parens outside ?
+        //assertEquals("T0", eps.get(0).getSignature().getText());          TODO
+        assertEquals("(N:T1)", eps.get(1).getText());
+        //assertEquals("T1", eps.get(1).getSignature().getText());          TODO
+        assertEquals(OclTypes.INSTANCE.C_PARAM_DECLARATION, eps.get(0).getNode().getElementType());
+        assertDoesntContain(extractUpperSymbolTypes(e), myTypes.A_VARIANT_NAME);
     }
 
+    @Test
     public void test_struct() {
-        PsiNamedElement e = first(expressions(parseCode("module Make (struct type t end) : S = struct end")));
+        RPsiFunctor e = firstOfType(parseCode("module Make (struct type t end) : S = struct end"), RPsiFunctor.class);
 
-        PsiFunctor f = (PsiFunctor) e;
-        assertEquals("struct end", f.getBody().getText());
-        assertEquals("S", f.getReturnType().getText());
-        List<IElementType> uTypes =
-                PsiTreeUtil.findChildrenOfType(e, PsiUpperSymbol.class)
-                        .stream()
-                        .map(psi -> psi.getNode().getElementType())
-                        .collect(Collectors.toList());
+        assertEquals("struct end", e.getBody().getText());
+        assertEquals("S", e.getReturnType().getText());
+        List<IElementType> uTypes = extractUpperSymbolTypes(e);
         assertDoesntContain(uTypes, myTypes.A_VARIANT_NAME);
     }
 
+    @Test
     public void test_implicit_result() {
-        PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) = struct end")));
+        RPsiFunctor e = firstOfType(parseCode("module Make (M:Def) = struct end"), RPsiFunctor.class);
 
-        PsiFunctor f = (PsiFunctor) e;
-        assertEquals("struct end", f.getBody().getText());
+        assertEquals("struct end", e.getBody().getText());
     }
 
+    @Test
     public void test_with_constraints() {
-        Collection<PsiNamedElement> expressions = expressions(parseCode(
-                "module Make (M: Input) : S with type +'a t = 'a M.t and type b = M.b = struct end"));
+        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M: Input) : S with type +'a t = 'a M.t and type b = M.b = struct end"));
 
         assertEquals(1, expressions.size());
-        PsiFunctor f = (PsiFunctor) first(expressions);
+        RPsiFunctor f = (RPsiFunctor) first(expressions);
 
-        assertEquals("M: Input", first(f.getParameters()).getText());
+        assertEquals("(M: Input)", first(f.getParameters()).getText());
         assertEquals("S", f.getReturnType().getText());
 
-        List<PsiTypeConstraint> constraints = new ArrayList<>(f.getConstraints());
+        List<RPsiTypeConstraint> constraints = new ArrayList<>(f.getConstraints());
         assertEquals(2, constraints.size());
         assertEquals("type +'a t = 'a M.t", constraints.get(0).getText());
         assertEquals("type b = M.b", constraints.get(1).getText());
         assertEquals("struct end", f.getBody().getText());
     }
 
+    @Test
+    public void test_with_constraints_parens() {
+        RPsiFunctor e = firstOfType(parseCode("module Make(M: SeqType) : (S with type t = M.t) = struct end"), RPsiFunctor.class);
+        List<RPsiTypeConstraint> ec = e.getConstraints();
+
+        assertNoParserError(e);
+        assertEquals("(M: SeqType)", e.getParameters().get(0).getText());
+        //assertEquals("SeqType", e.getParameters().get(0).getSignature().getText()); TODO
+        assertEquals("S", e.getReturnType().getText());
+
+        assertEquals(1, ec.size());
+        assertEquals("type t = M.t", ec.get(0).getText());
+        assertEquals("struct end", e.getBody().getText());
+    }
+
+    @Test
     public void test_signature() {
-        Collection<PsiFunctor> functors = functorExpressions(parseCode( //
+        Collection<RPsiFunctor> functors = functorExpressions(parseCode( //
                 "module GlobalBindings (M : sig\n" + //
                         "val relation_classes : string list\n" + //
                         "val morphisms : string list\n" + //
@@ -74,10 +86,10 @@ public class FunctorParsingTest extends OclParsingTestCase {
                         "end) = struct  open M  end"));
 
         assertEquals(1, functors.size());
-        PsiFunctor functor = first(functors);
+        RPsiFunctor functor = first(functors);
         assertEquals("GlobalBindings", functor.getName());
         assertEquals("Dummy.GlobalBindings", functor.getQualifiedName());
-        Collection<PsiParameterDeclaration> parameters = functor.getParameters();
+        Collection<RPsiParameterDeclaration> parameters = functor.getParameters();
         assertSize(1, parameters);
         assertEquals("M", first(parameters).getName());
         assertNotNull(functor.getBody());

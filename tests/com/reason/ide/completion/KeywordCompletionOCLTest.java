@@ -2,11 +2,16 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class KeywordCompletionOCLTest extends ORBasePlatformTestCase {
+    @Test
     public void test_basic() {
         configureCode("B.ml", "<caret>");
 

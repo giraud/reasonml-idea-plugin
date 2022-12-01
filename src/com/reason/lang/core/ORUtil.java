@@ -7,10 +7,10 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiAnnotation;
+import com.reason.lang.core.psi.impl.RPsiAnnotation;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.psi.reference.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
@@ -59,12 +59,12 @@ public class ORUtil {
     }
 
     @NotNull
-    public static List<PsiAnnotation> prevAnnotations(@NotNull PsiElement element) {
-        List<PsiAnnotation> annotations = new ArrayList<>();
+    public static List<RPsiAnnotation> prevAnnotations(@NotNull PsiElement element) {
+        List<RPsiAnnotation> annotations = new ArrayList<>();
 
         PsiElement prevSibling = prevSibling(element);
-        while (prevSibling instanceof PsiAnnotation) {
-            annotations.add((PsiAnnotation) prevSibling);
+        while (prevSibling instanceof RPsiAnnotation) {
+            annotations.add((RPsiAnnotation) prevSibling);
             prevSibling = prevSibling(prevSibling);
         }
 
@@ -129,7 +129,7 @@ public class ORUtil {
      */
     public static @NotNull String getLongIdent(@Nullable PsiElement root) {
         StringBuilder text = new StringBuilder(root == null ? "" : root.getText());
-        ORTypes types = root == null ? null : ORUtil.getTypes(root.getLanguage());
+        ORLangTypes types = root == null ? null : ORUtil.getTypes(root.getLanguage());
 
         PsiElement sibling = root == null ? null : root.getNextSibling();
         while (sibling != null) {
@@ -294,11 +294,11 @@ public class ORUtil {
 
         PsiElement parent = element.getParent();
         while (parent != null) {
-            if (parent instanceof PsiParameterReference) {
+            if (parent instanceof RPsiParameterReference) {
                 PsiElement parameters = parent.getParent();
                 PsiElement functionCall = parameters == null ? null : parameters.getParent();
-                if (parameters instanceof PsiParameters && (functionCall instanceof PsiFunctionCall || functionCall instanceof PsiFunctorCall)) {
-                    int index = ((PsiParameters) parameters).getParametersList().indexOf(parent);
+                if (parameters instanceof RPsiParameters && (functionCall instanceof RPsiFunctionCall || functionCall instanceof RPsiFunctorCall)) {
+                    int index = ((RPsiParameters) parameters).getParametersList().indexOf(parent);
                     if (index >= 0) {
                         path = ((NavigationItem) functionCall).getName() + "[" + index + "]" + (path.isEmpty() ? "" : "." + path);
                     }
@@ -306,9 +306,9 @@ public class ORUtil {
                 } else {
                     parent = parameters;
                 }
-            } else if (parent instanceof PsiQualifiedPathElement) {
+            } else if (parent instanceof RPsiQualifiedPathElement) {
                 if (parent instanceof PsiNameIdentifierOwner && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
-                    String[] parentPath = ((PsiQualifiedPathElement) parent).getPath();
+                    String[] parentPath = ((RPsiQualifiedPathElement) parent).getPath();
                     return parentPath == null ? EMPTY_PATH : parentPath;
                 }
                 return (((PsiQualifiedNamedElement) parent).getQualifiedName() + (path.isEmpty() ? "" : "." + path)).split("\\.");
@@ -339,7 +339,7 @@ public class ORUtil {
     }
 
     @NotNull
-    public static ORTypes getTypes(@NotNull Language language) {
+    public static ORLangTypes getTypes(@NotNull Language language) {
         return language == ResLanguage.INSTANCE
                 ? ResTypes.INSTANCE
                 : language == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
@@ -350,7 +350,7 @@ public class ORUtil {
         boolean isALias = true;
 
         PsiElement currentElement = rootElement;
-        ORTypes types = getTypes(language);
+        ORLangTypes types = getTypes(language);
         StringBuilder aliasName = new StringBuilder();
         IElementType elementType = currentElement == null ? null : currentElement.getNode().getElementType();
         while (elementType != null && elementType != types.SEMI && elementType != types.EOL) {
@@ -373,7 +373,7 @@ public class ORUtil {
         return isALias ? aliasName.toString() : null;
     }
 
-    public static String @Nullable [] getQualifiedNameAsPath(@NotNull PsiQualifiedPathElement element) {
+    public static String @Nullable [] getQualifiedNameAsPath(@NotNull RPsiQualifiedPathElement element) {
         String[] path = element.getPath();
         if (path == null) {
             return null;
@@ -390,13 +390,13 @@ public class ORUtil {
         return qpath;
     }
 
-    public static @Nullable PsiElement resolveModuleSymbol(@Nullable PsiUpperSymbol moduleSymbol) {
+    public static @Nullable PsiElement resolveModuleSymbol(@Nullable RPsiUpperSymbol moduleSymbol) {
         PsiUpperSymbolReference reference = moduleSymbol == null ? null : (PsiUpperSymbolReference) moduleSymbol.getReference();
         PsiElement resolvedSymbol = reference == null ? null : reference.resolveInterface();
-        return resolvedSymbol instanceof PsiUpperSymbol ? resolvedSymbol.getParent() : resolvedSymbol;
+        return resolvedSymbol instanceof RPsiUpperSymbol ? resolvedSymbol.getParent() : resolvedSymbol;
     }
 
-    public static @Nullable PsiElement getModuleContent(@NotNull PsiModule module) {
+    public static @Nullable PsiElement getModuleContent(@NotNull RPsiModule module) {
         PsiElement body = module.getModuleType();
         return (body == null) ? module.getBody() : body;
     }

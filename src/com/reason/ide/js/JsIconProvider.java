@@ -12,7 +12,7 @@ import javax.swing.*;
 public class JsIconProvider extends com.intellij.ide.IconProvider {
     @Override
     public @Nullable Icon getIcon(@NotNull PsiElement psiElement, int flags) {
-        PsiElement element = psiElement instanceof PsiFakeModule ? psiElement.getContainingFile() : psiElement;
+        PsiElement element = psiElement instanceof RPsiFakeModule ? psiElement.getContainingFile() : psiElement;
         if (element instanceof PsiFile && isBsJsFile((PsiFile) element)) {
             return ORIcons.BS_FILE;
         }

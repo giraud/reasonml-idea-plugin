@@ -5,7 +5,7 @@ import com.intellij.util.io.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
-public class PsiExceptionStub extends PsiQualifiedNameStub<PsiException> {
+public class PsiExceptionStub extends PsiQualifiedNameStub<RPsiException> {
     private final String myAlias;
 
     public PsiExceptionStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String[] path, @Nullable String alias) {

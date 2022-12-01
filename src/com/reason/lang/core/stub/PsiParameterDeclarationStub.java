@@ -5,7 +5,7 @@ import com.intellij.util.io.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
-public class PsiParameterDeclarationStub extends NamedStubBase<PsiParameterDeclaration> {
+public class PsiParameterDeclarationStub extends NamedStubBase<RPsiParameterDeclaration> {
     private final String[] myPath;
     private final String myQname;
     private final boolean myIsNamed;

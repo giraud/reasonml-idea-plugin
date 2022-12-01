@@ -5,18 +5,24 @@ import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.rescript.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class ShowDocRESTest extends ORBasePlatformTestCase {
     public static final Language LANG = ResLanguage.INSTANCE;
 
+    @Test
     public void test_GH_155() {
         FileBase doc = configureCode("Doc.res", "/** add 1 */\nlet fn = x => x + 1");
         FileBase a = configureCode("A.res", "Mod.fn(<caret>)");
 
-        PsiLet resolvedELement = doc.getQualifiedExpressions("Doc.fn", PsiLet.class).get(0);
+        RPsiLet resolvedELement = doc.getQualifiedExpressions("Doc.fn", RPsiLet.class).get(0);
         assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let fn</i></p></div><div class=\"content\"><p>add 1</p></div>", getDocForElement(a, LANG, resolvedELement));
     }
 
+    @Test
     public void test_GH_156() {
         configureCode("Doc.res", "/** Doc for y */\nlet y = 1");
         FileBase a = configureCode("A.res", "let x = Doc.y\nlet z = x<caret>");
@@ -24,6 +30,7 @@ public class ShowDocRESTest extends ORBasePlatformTestCase {
         assertEquals("<div class=\"definition\"><b>Doc</b><p><i>let y</i></p></div><div class=\"content\"><p>Doc for y</p></div>", getDoc(a, LANG));
     }
 
+    @Test
     public void test_GH_359() {
         FileBase a = configureCode("A.res", "module InnerComp = {\n" +
                 "  /**\n" +
@@ -38,4 +45,5 @@ public class ShowDocRESTest extends ORBasePlatformTestCase {
                 "let make = () => <InnerComp<caret> text=\"my text\" />");
 
         assertEquals("<div class=\"definition\"><b>A.InnerComp</b><p><i>let make</i></p></div><div class=\"content\"><p>Doc for my component</p><table class=\"sections\"><tr><td class=\"section\" valign=\"top\"><p>Param:</p></td><td valign=\"top\"><p>text - Label</p></td></tr></table></div>", getDoc(a, LANG));
-    }}
+    }
+}

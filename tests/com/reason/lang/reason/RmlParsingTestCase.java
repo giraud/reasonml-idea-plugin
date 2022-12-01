@@ -4,10 +4,10 @@ import com.intellij.lang.LanguageASTFactory;
 import com.intellij.psi.stubs.StubElementTypeHolderEP;
 import com.reason.lang.*;
 import com.reason.lang.core.stub.RmlStubBasedElementTypes;
-import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.core.type.ORLangTypes;
 
 abstract class RmlParsingTestCase extends BaseParsingTestCase {
-    public ORTypes myTypes = RmlTypes.INSTANCE;
+    public ORLangTypes myTypes = RmlTypes.INSTANCE;
 
     protected RmlParsingTestCase() {
         super("", "re", new RmlParserDefinition());

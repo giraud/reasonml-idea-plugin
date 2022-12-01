@@ -60,10 +60,10 @@ public class DuneLexer implements FlexLexer {
 
   /* The ZZ_CMAP_A table has 320 entries */
   static final char ZZ_CMAP_A[] = zzUnpackCMap(
-    "\11\0\1\21\1\1\1\30\1\3\1\2\22\0\1\21\1\4\1\5\1\6\1\0\1\11\2\4\1\15\1\16\1"+
-    "\0\1\4\1\0\3\4\4\24\4\25\2\22\1\14\1\10\1\0\1\17\3\0\6\27\24\4\1\0\1\20\1"+
-    "\0\2\4\1\0\6\27\10\4\1\23\10\4\1\26\2\4\1\12\1\7\1\13\7\0\1\30\242\0\2\30"+
-    "\26\0");
+    "\11\0\1\23\1\1\1\32\1\3\1\2\22\0\1\23\1\4\1\5\1\6\1\0\1\11\2\4\1\20\1\21\1"+
+    "\0\1\4\1\0\3\4\4\26\4\27\2\24\1\17\1\10\1\15\1\14\1\13\1\0\1\4\6\31\24\4\1"+
+    "\0\1\22\1\0\2\4\1\0\6\31\10\4\1\25\10\4\1\30\2\4\1\12\1\7\1\16\7\0\1\32\242"+
+    "\0\2\32\26\0");
 
   /** 
    * Translates DFA states to action switch labels.
@@ -72,12 +72,13 @@ public class DuneLexer implements FlexLexer {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\7\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7"+
-    "\1\2\1\10\1\11\1\12\1\13\1\14\1\15\1\2"+
-    "\1\16\3\15\1\17\1\20\1\21\1\2\1\22\1\23"+
-    "\1\24\1\0\1\15\1\0\3\15\1\25\1\26\5\0";
+    "\1\2\1\10\1\11\1\12\1\13\1\14\1\15\1\16"+
+    "\1\17\1\2\1\20\3\17\1\21\1\22\1\23\1\2"+
+    "\1\24\1\25\1\26\1\27\1\30\1\0\1\17\1\0"+
+    "\3\17\1\31\1\32\5\0";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[46];
+    int [] result = new int[50];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -102,15 +103,16 @@ public class DuneLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\31\0\62\0\113\0\144\0\175\0\226\0\257"+
-    "\0\257\0\310\0\341\0\257\0\372\0\257\0\u0113\0\257"+
-    "\0\257\0\257\0\257\0\257\0\257\0\u012c\0\257\0\u0145"+
-    "\0\u015e\0\u0177\0\257\0\257\0\257\0\u0190\0\257\0\257"+
-    "\0\257\0\u012c\0\u01a9\0\u01c2\0\u01db\0\u01f4\0\u020d\0\257"+
-    "\0\257\0\u0190\0\u0226\0\u023f\0\u0258\0\u0271";
+    "\0\0\0\33\0\66\0\121\0\154\0\207\0\242\0\275"+
+    "\0\275\0\330\0\363\0\275\0\u010e\0\275\0\u0129\0\u0144"+
+    "\0\275\0\u015f\0\275\0\275\0\275\0\275\0\275\0\u017a"+
+    "\0\275\0\u0195\0\u01b0\0\u01cb\0\275\0\275\0\275\0\u01e6"+
+    "\0\275\0\275\0\275\0\275\0\275\0\u017a\0\u0201\0\u021c"+
+    "\0\u0237\0\u0252\0\u026d\0\275\0\275\0\u01e6\0\u0288\0\u02a3"+
+    "\0\u02be\0\u02d9";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[46];
+    int [] result = new int[50];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -133,24 +135,25 @@ public class DuneLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\31\10\32\11\3\12\1\13\1\14\1\15\1\11\1\16"+
-    "\1\17\1\11\1\20\1\21\1\22\1\23\1\24\1\13"+
-    "\1\12\6\13\1\11\2\25\1\26\1\11\1\25\1\27"+
-    "\12\25\1\30\7\25\1\11\2\25\1\26\1\11\2\25"+
-    "\1\31\1\32\20\25\1\11\2\25\1\26\1\11\11\25"+
-    "\1\33\1\34\11\25\1\11\1\25\1\35\1\36\1\11"+
-    "\24\25\1\11\32\0\3\12\15\0\1\12\13\0\1\13"+
-    "\13\0\1\13\1\0\6\13\10\0\1\37\1\40\32\0"+
-    "\1\41\17\0\1\25\1\42\26\0\1\25\1\43\1\44"+
-    "\1\0\16\25\1\45\1\46\2\45\1\47\1\25\10\0"+
-    "\1\50\27\0\1\51\23\0\1\35\1\52\47\0\1\43"+
-    "\10\0\1\43\1\44\50\0\1\53\1\0\2\53\27\0"+
-    "\1\54\26\0\1\55\1\0\2\55\1\0\1\55\23\0"+
-    "\1\25\1\0\2\25\27\0\2\56\25\0\1\25\1\0"+
-    "\2\25\1\0\1\25\25\0\2\25\3\0";
+    "\33\10\34\11\3\12\1\13\1\14\1\15\1\11\1\16"+
+    "\1\17\1\11\1\20\1\21\1\22\1\23\1\24\1\25"+
+    "\1\26\1\13\1\12\6\13\1\11\2\27\1\30\1\11"+
+    "\1\27\1\31\14\27\1\32\7\27\1\11\2\27\1\30"+
+    "\1\11\2\27\1\33\1\34\22\27\1\11\2\27\1\30"+
+    "\1\11\14\27\1\35\1\36\10\27\1\11\1\27\1\37"+
+    "\1\40\1\11\26\27\1\11\34\0\3\12\17\0\1\12"+
+    "\13\0\1\13\15\0\1\13\1\0\6\13\10\0\1\41"+
+    "\1\42\34\0\1\43\34\0\1\44\32\0\1\45\17\0"+
+    "\1\27\1\46\30\0\1\27\1\47\1\50\1\0\20\27"+
+    "\1\51\1\52\2\51\1\53\1\27\10\0\1\54\31\0"+
+    "\1\55\25\0\1\37\1\56\53\0\1\47\10\0\1\47"+
+    "\1\50\54\0\1\57\1\0\2\57\31\0\1\60\30\0"+
+    "\1\61\1\0\2\61\1\0\1\61\25\0\1\27\1\0"+
+    "\2\27\31\0\2\62\27\0\1\27\1\0\2\27\1\0"+
+    "\1\27\27\0\2\27\3\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[650];
+    int [] result = new int[756];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -188,12 +191,12 @@ public class DuneLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\7\0\2\11\2\1\1\11\1\1\1\11\1\1\6\11"+
-    "\1\1\1\11\3\1\3\11\1\1\3\11\1\0\1\1"+
-    "\1\0\3\1\2\11\5\0";
+    "\7\0\2\11\2\1\1\11\1\1\1\11\2\1\1\11"+
+    "\1\1\5\11\1\1\1\11\3\1\3\11\1\1\5\11"+
+    "\1\0\1\1\1\0\3\1\2\11\5\0";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[46];
+    int [] result = new int[50];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -525,19 +528,19 @@ public class DuneLexer implements FlexLexer {
             case IN_STRING: {
               yybegin(INITIAL); tokenEnd(); return types.STRING;
             }  // fall though
-            case 47: break;
+            case 51: break;
             case IN_ML_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT;
             }  // fall though
-            case 48: break;
+            case 52: break;
             case IN_SEXPR_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT;
             }  // fall though
-            case 49: break;
+            case 53: break;
             case IN_SL_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT;
             }  // fall though
-            case 50: break;
+            case 54: break;
             default:
         return null;
         }
@@ -548,112 +551,132 @@ public class DuneLexer implements FlexLexer {
             { yybegin(INITIAL); yypushback(1);
             } 
             // fall through
-          case 23: break;
+          case 27: break;
           case 2: 
             { return BAD_CHARACTER;
             } 
             // fall through
-          case 24: break;
+          case 28: break;
           case 3: 
             { return WHITE_SPACE;
             } 
             // fall through
-          case 25: break;
+          case 29: break;
           case 4: 
             { return types.ATOM;
             } 
             // fall through
-          case 26: break;
+          case 30: break;
           case 5: 
             { yybegin(IN_STRING); tokenStart();
             } 
             // fall through
-          case 27: break;
+          case 31: break;
           case 6: 
             { return types.SHARP;
             } 
             // fall through
-          case 28: break;
+          case 32: break;
           case 7: 
             { yybegin(IN_SL_COMMENT); tokenStart();
             } 
             // fall through
-          case 29: break;
-          case 8: 
-            { return types.VAR_END;
-            } 
-            // fall through
-          case 30: break;
-          case 9: 
-            { return types.COLON;
-            } 
-            // fall through
-          case 31: break;
-          case 10: 
-            { return types.LPAREN;
-            } 
-            // fall through
-          case 32: break;
-          case 11: 
-            { return types.RPAREN;
-            } 
-            // fall through
           case 33: break;
-          case 12: 
-            { return types.EQUAL;
+          case 8: 
+            { return types.GT;
             } 
             // fall through
           case 34: break;
-          case 13: 
-            { 
+          case 9: 
+            { return types.EQUAL;
             } 
             // fall through
           case 35: break;
-          case 14: 
-            { yybegin(INITIAL); tokenEnd(); return types.STRING;
+          case 10: 
+            { return types.LT;
             } 
             // fall through
           case 36: break;
-          case 15: 
-            { parenDepth += 1;
+          case 11: 
+            { return types.VAR_END;
             } 
             // fall through
           case 37: break;
-          case 16: 
-            { parenDepth -= 1; if(parenDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+          case 12: 
+            { return types.COLON;
             } 
             // fall through
           case 38: break;
-          case 17: 
-            { yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+          case 13: 
+            { return types.LPAREN;
             } 
             // fall through
           case 39: break;
-          case 18: 
-            { yybegin(IN_ML_COMMENT); commentDepth = 1; tokenStart();
+          case 14: 
+            { return types.RPAREN;
             } 
             // fall through
           case 40: break;
-          case 19: 
-            { yybegin(IN_SEXPR_COMMENT); parenDepth = 0; tokenStart();
+          case 15: 
+            { 
             } 
             // fall through
           case 41: break;
-          case 20: 
-            { return types.VAR_START;
+          case 16: 
+            { yybegin(INITIAL); tokenEnd(); return types.STRING;
             } 
             // fall through
           case 42: break;
-          case 21: 
-            { commentDepth += 1;
+          case 17: 
+            { parenDepth += 1;
             } 
             // fall through
           case 43: break;
-          case 22: 
-            { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+          case 18: 
+            { parenDepth -= 1; if(parenDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
             } 
             // fall through
           case 44: break;
+          case 19: 
+            { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT;
+            } 
+            // fall through
+          case 45: break;
+          case 20: 
+            { yybegin(IN_ML_COMMENT); commentDepth = 1; tokenStart();
+            } 
+            // fall through
+          case 46: break;
+          case 21: 
+            { yybegin(IN_SEXPR_COMMENT); parenDepth = 0; tokenStart();
+            } 
+            // fall through
+          case 47: break;
+          case 22: 
+            { return types.VAR_START;
+            } 
+            // fall through
+          case 48: break;
+          case 23: 
+            { return types.GTE;
+            } 
+            // fall through
+          case 49: break;
+          case 24: 
+            { return types.LTE;
+            } 
+            // fall through
+          case 50: break;
+          case 25: 
+            { commentDepth += 1;
+            } 
+            // fall through
+          case 51: break;
+          case 26: 
+            { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
+            } 
+            // fall through
+          case 52: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

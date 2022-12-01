@@ -12,20 +12,20 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-public class PsiValStubElementType extends ORStubElementType<PsiValStub, PsiVal> {
+public class PsiValStubElementType extends ORStubElementType<PsiValStub, RPsiVal> {
     public PsiValStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);
     }
 
-    public @NotNull PsiValImpl createPsi(@NotNull ASTNode node) {
-        return new PsiValImpl(ORTypesUtil.getInstance(getLanguage()), node);
+    public @NotNull RPsiValImpl createPsi(@NotNull ASTNode node) {
+        return new RPsiValImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    public @NotNull PsiValImpl createPsi(@NotNull PsiValStub stub) {
-        return new PsiValImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    public @NotNull RPsiValImpl createPsi(@NotNull PsiValStub stub) {
+        return new RPsiValImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    public @NotNull PsiValStub createStub(@NotNull PsiVal psi, @Nullable StubElement parentStub) {
+    public @NotNull PsiValStub createStub(@NotNull RPsiVal psi, @Nullable StubElement parentStub) {
         String[] path = psi.getPath();
         return new PsiValStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.isFunction());
     }

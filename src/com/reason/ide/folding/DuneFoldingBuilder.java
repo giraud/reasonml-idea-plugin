@@ -21,8 +21,8 @@ public class DuneFoldingBuilder extends FoldingBuilderEx {
         PsiTreeUtil.processElements(root, element -> {
             if (isMultiline(element.getTextRange(), document)) {
                 FoldingDescriptor fold = null;
-                if (element instanceof PsiStanza) {
-                    fold = foldStanza((PsiStanza) element);
+                if (element instanceof RPsiDuneStanza) {
+                    fold = foldStanza((RPsiDuneStanza) element);
                 } else if (DuneTypes.INSTANCE.C_SEXPR == element.getNode().getElementType()) {
                     fold = fold(element);
                 }
@@ -42,8 +42,8 @@ public class DuneFoldingBuilder extends FoldingBuilderEx {
                 < document.getLineNumber(range.getEndOffset());
     }
 
-    private @Nullable FoldingDescriptor foldStanza(@NotNull PsiStanza root) {
-        PsiDuneFields fields = ORUtil.findImmediateFirstChildOfClass(root, PsiDuneFields.class);
+    private @Nullable FoldingDescriptor foldStanza(@NotNull RPsiDuneStanza root) {
+        RPsiDuneFields fields = ORUtil.findImmediateFirstChildOfClass(root, RPsiDuneFields.class);
         return fields == null ? null : new FoldingDescriptor(root, fields.getTextRange());
     }
 

@@ -97,6 +97,6 @@ public class ORColorSettingsPage implements ColorSettingsPage {
 
     @Override
     public @NotNull String getDisplayName() {
-        return "Reason (OCaml)";
+        return "Rescript/Reason (OCaml)";
     }
 }

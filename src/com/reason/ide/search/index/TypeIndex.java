@@ -9,18 +9,18 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class TypeIndex extends StringStubIndexExtension<PsiType> {
+public class TypeIndex extends StringStubIndexExtension<RPsiType> {
     @Override
     public int getVersion() {
         return super.getVersion() + ORStubVersions.TYPE;
     }
 
     @Override
-    public @NotNull StubIndexKey<String, PsiType> getKey() {
+    public @NotNull StubIndexKey<String, RPsiType> getKey() {
         return IndexKeys.TYPES;
     }
 
-    public static @NotNull Collection<PsiType> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.TYPES, key, project, scope, PsiType.class);
+    public static @NotNull Collection<RPsiType> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.TYPES, key, project, scope, RPsiType.class);
     }
 }

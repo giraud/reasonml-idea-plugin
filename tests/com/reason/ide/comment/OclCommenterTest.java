@@ -2,8 +2,13 @@ package com.reason.ide.comment;
 
 import com.intellij.codeInsight.generation.actions.*;
 import com.reason.ide.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class OclCommenterTest extends ORBasePlatformTestCase {
+    @Test
     public void testLineCommenter() {
         configureCode("A.ml", "comment<caret>");
         CommentByLineCommentAction action = new CommentByLineCommentAction();
@@ -15,6 +20,7 @@ public class OclCommenterTest extends ORBasePlatformTestCase {
         myFixture.checkResult("comment");
     }
 
+    @Test
     public void testLineUncommenter() {
         configureCode("A.ml", "(* comment *)<caret>");
         CommentByLineCommentAction action = new CommentByLineCommentAction();
@@ -30,6 +36,7 @@ public class OclCommenterTest extends ORBasePlatformTestCase {
     *)!
     <caret>
     --*/
+    @Test
     public void testGH_27() {
         configureCode("A.ml", "<selection>(*\n  x (* y *)\n*)</selection>\n<caret>");
 
@@ -47,6 +54,7 @@ public class OclCommenterTest extends ORBasePlatformTestCase {
     (* z *)...             (* z *)
                            *)
     --*/
+    @Test
     public void testGH_27b() {
         configureCode("A.ml", "<selection>(* x *)\ny\n(* z *)\n</selection><caret>");
 
@@ -56,6 +64,7 @@ public class OclCommenterTest extends ORBasePlatformTestCase {
         myFixture.checkResult("(*\n(* x *)\ny\n(* z *)\n*)\n");
     }
 
+    @Test
     public void testGH_27c() {
         configureCode("A.ml", "<selection>(* x *)\n(* z *)\n</selection><caret>");
 

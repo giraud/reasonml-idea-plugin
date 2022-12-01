@@ -3,37 +3,37 @@ package com.reason.lang.rescript;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 
-public class ResTypes extends ORTypes {
+public class ResTypes extends ORLangTypes {
     public static final ResTypes INSTANCE = new ResTypes();
 
     private ResTypes() {
         // Stub element types
 
-        C_CLASS_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_CLASS_DECLARATION;
-        C_FAKE_MODULE = (ORCompositeType) RescriptStubBasedElementTypes.C_FAKE_MODULE;
-        C_EXCEPTION_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_EXCEPTION_DECLARATION;
-        C_TYPE_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_TYPE_DECLARATION;
-        C_EXTERNAL_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_EXTERNAL_DECLARATION;
-        C_LET_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_LET_DECLARATION;
-        C_MODULE_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_MODULE_DECLARATION;
-        C_OBJECT_FIELD = (ORCompositeType) RescriptStubBasedElementTypes.C_OBJECT_FIELD;
-        C_VAL_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_VAL_DECLARATION;
-        C_PARAM_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_PARAM_DECLARATION;
-        C_FUNCTOR_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_FUNCTOR_DECLARATION;
-        C_RECORD_FIELD = (ORCompositeType) RescriptStubBasedElementTypes.C_RECORD_FIELD;
-        C_VARIANT_DECLARATION = (ORCompositeType) RescriptStubBasedElementTypes.C_VARIANT_DECLARATION;
-        C_INCLUDE = (ORCompositeType) RescriptStubBasedElementTypes.C_INCLUDE;
-        C_OPEN = (ORCompositeType) RescriptStubBasedElementTypes.C_OPEN;
+        C_CLASS_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_CLASS_DECLARATION;
+        C_CLASS_METHOD = (ORCompositeType) ResStubBasedElementTypes.C_CLASS_METHOD;
+        C_FAKE_MODULE = (ORCompositeType) ResStubBasedElementTypes.C_FAKE_MODULE;
+        C_EXCEPTION_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_EXCEPTION_DECLARATION;
+        C_TYPE_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_TYPE_DECLARATION;
+        C_EXTERNAL_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_EXTERNAL_DECLARATION;
+        C_LET_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_LET_DECLARATION;
+        C_MODULE_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_MODULE_DECLARATION;
+        C_OBJECT_FIELD = (ORCompositeType) ResStubBasedElementTypes.C_OBJECT_FIELD;
+        C_VAL_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_VAL_DECLARATION;
+        C_PARAM_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_PARAM_DECLARATION;
+        C_FUNCTOR_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_FUNCTOR_DECLARATION;
+        C_RECORD_FIELD = (ORCompositeType) ResStubBasedElementTypes.C_RECORD_FIELD;
+        C_VARIANT_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_VARIANT_DECLARATION;
+        C_INCLUDE = (ORCompositeType) ResStubBasedElementTypes.C_INCLUDE;
+        C_OPEN = (ORCompositeType) ResStubBasedElementTypes.C_OPEN;
 
         // Composite element types
 
         C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION", ResLanguage.INSTANCE);
-        C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", ResLanguage.INSTANCE);
+        C_ARRAY = new ORCompositeElementType("C_ARRAY", ResLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", ResLanguage.INSTANCE);
         C_BINARY_CONDITION = new ORCompositeElementType("C_BINARY_CONDITION", ResLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", ResLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", ResLanguage.INSTANCE);
-        C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", ResLanguage.INSTANCE);
         C_CLOSED_VARIANT = new ORCompositeElementType("C_CLOSED_VARIANT", ResLanguage.INSTANCE);
         C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", ResLanguage.INSTANCE);
         C_TYPE_CONSTRAINT = new ORCompositeElementType("C_TYPE_CONSTRAINT", ResLanguage.INSTANCE);
@@ -51,6 +51,7 @@ public class ResTypes extends ORTypes {
         C_FUNCTOR_BINDING = new ORCompositeElementType("C_FUNCTOR_BINDING", ResLanguage.INSTANCE);
         C_FUNCTOR_CALL = new ORCompositeElementType("C_FUNCTOR_CALL", ResLanguage.INSTANCE);
         C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", ResLanguage.INSTANCE);
+        C_GUARD = new ORCompositeElementType("C_GUARD", ResLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", ResLanguage.INSTANCE);
         C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", ResLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", ResLanguage.INSTANCE);
@@ -64,6 +65,7 @@ public class ResTypes extends ORTypes {
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", ResLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", ResLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", ResLanguage.INSTANCE);
+        C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", ResLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", ResLanguage.INSTANCE);
         C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", ResLanguage.INSTANCE);
         C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", ResLanguage.INSTANCE);
@@ -79,6 +81,7 @@ public class ResTypes extends ORTypes {
         C_RECORD_EXPR = new ORCompositeElementType("C_RECORD_EXPR", ResLanguage.INSTANCE);
         C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", ResLanguage.INSTANCE);
         C_SIG_ITEM = new ORCompositeElementType("C_SIG_ITEM", ResLanguage.INSTANCE);
+        C_SOME = new ORCompositeElementType("C_SOME", ResLanguage.INSTANCE);
         C_SCOPED_EXPR = new ORCompositeElementType("C_SCOPED_EXPR", ResLanguage.INSTANCE);
         C_STRUCT_EXPR = new ORCompositeElementType("C_STRUCT_EXPR", ResLanguage.INSTANCE);
         C_SWITCH_BODY = new ORCompositeElementType("C_SWITCH_BODY", ResLanguage.INSTANCE);
@@ -93,6 +96,7 @@ public class ResTypes extends ORTypes {
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", ResLanguage.INSTANCE);
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", ResLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", ResLanguage.INSTANCE);
+        C_TRY_HANDLER_BODY = new ORCompositeElementType("C_TRY_HANDLER_BODY", ResLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", ResLanguage.INSTANCE);
         C_TUPLE = new ORCompositeElementType("C_TUPLE", ResLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", ResLanguage.INSTANCE);

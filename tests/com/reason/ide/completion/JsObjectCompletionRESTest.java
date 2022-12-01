@@ -1,9 +1,14 @@
 package com.reason.ide.completion;
 
 import com.reason.ide.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class JsObjectCompletionRESTest extends ORBasePlatformTestCase {
+    @Test
     public void test_basic() {
         //configureCode("JsObj.res", "let oo = {\"asd\": 1, \"qwe\": 2}");
         //configureCode("Dummy.res", "open JsObj\n oo[<caret>");

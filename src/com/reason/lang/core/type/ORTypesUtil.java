@@ -12,7 +12,7 @@ public final class ORTypesUtil {
     private ORTypesUtil() {
     }
 
-    public static @NotNull ORTypes getInstance(@NotNull Language language) {
+    public static @NotNull ORLangTypes getInstance(@NotNull Language language) {
         if (language instanceof OclLanguage) {
             return OclTypes.INSTANCE;
         }

@@ -10,10 +10,10 @@ import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.psi.reference.*;
 import icons.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -36,7 +36,7 @@ public class ModuleCompletionProvider {
 
         final Collection<PsiElement> expressions = new ArrayList<>();
 
-        if (previousElement instanceof PsiUpperSymbol) {
+        if (previousElement instanceof RPsiUpperSymbol) {
             LOG.debug(" -> upper symbol", previousElement);
 
             PsiUpperSymbolReference reference = (PsiUpperSymbolReference) previousElement.getReference();
@@ -45,8 +45,8 @@ public class ModuleCompletionProvider {
 
             if (resolvedElement instanceof FileBase) {
                 expressions.addAll(getFileModules((FileBase) resolvedElement));
-            } else if (resolvedElement instanceof PsiInnerModule) {
-                expressions.addAll(getInnerModules((PsiModule) resolvedElement));
+            } else if (resolvedElement instanceof RPsiInnerModule) {
+                expressions.addAll(getInnerModules((RPsiModule) resolvedElement));
             }
         } else {
             // empty path
@@ -82,7 +82,7 @@ public class ModuleCompletionProvider {
                             create(topFile.getModuleName())
                             .withTypeText(FileHelper.shortLocation(topFile))
                             .withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
-                } else if (expression instanceof PsiNamedElement && !(expression instanceof PsiFakeModule)) {
+                } else if (expression instanceof PsiNamedElement && !(expression instanceof RPsiFakeModule)) {
                     String name = ((PsiNamedElement) expression).getName();
                     resultSet.addElement(LookupElementBuilder.
                             create(name == null ? "unknown" : name)
@@ -92,9 +92,9 @@ public class ModuleCompletionProvider {
         }
     }
 
-    private static @NotNull Collection<? extends PsiModule> getModules(@Nullable PsiElement element) {
-        if (element instanceof PsiModule) {
-            return getInnerModules((PsiModule) element);
+    private static @NotNull Collection<? extends RPsiModule> getModules(@Nullable PsiElement element) {
+        if (element instanceof RPsiModule) {
+            return getInnerModules((RPsiModule) element);
         }
         if (element instanceof FileBase) {
             return getFileModules((FileBase) element);
@@ -102,8 +102,8 @@ public class ModuleCompletionProvider {
         return Collections.emptyList();
     }
 
-    private static @NotNull Collection<PsiModule> getInnerModules(@NotNull PsiModule module) {
-        List<PsiModule> result = new ArrayList<>();
+    private static @NotNull Collection<RPsiModule> getInnerModules(@NotNull RPsiModule module) {
+        List<RPsiModule> result = new ArrayList<>();
 
         if (module.getAlias() != null) {
             PsiElement resolvedAlias = ORUtil.resolveModuleSymbol(module.getAliasSymbol());
@@ -111,32 +111,32 @@ public class ModuleCompletionProvider {
         } else {
             PsiElement content = ORUtil.getModuleContent(module);
 
-            List<PsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(content, PsiInclude.class);
-            for (PsiInclude include : includes) {
+            List<RPsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(content, RPsiInclude.class);
+            for (RPsiInclude include : includes) {
                 PsiElement includedModule = ORUtil.resolveModuleSymbol(include.getModuleReference());
                 if (includedModule != null) {
                     result.addAll(getModules(includedModule));
                 }
             }
 
-            result.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(content, PsiModule.class));
+            result.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(content, RPsiModule.class));
         }
 
         return result;
     }
 
-    private static @NotNull List<PsiModule> getFileModules(@NotNull FileBase element) {
-        List<PsiModule> result = new ArrayList<>();
+    private static @NotNull List<RPsiModule> getFileModules(@NotNull FileBase element) {
+        List<RPsiModule> result = new ArrayList<>();
 
-        List<PsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiInclude.class);
-        for (PsiInclude include : includes) {
+        List<RPsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiInclude.class);
+        for (RPsiInclude include : includes) {
             PsiElement includedModule = ORUtil.resolveModuleSymbol(include.getModuleReference());
             if (includedModule != null) {
                 result.addAll(getModules(includedModule));
             }
         }
 
-        result.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiModule.class));
+        result.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiModule.class));
 
         return result;
     }

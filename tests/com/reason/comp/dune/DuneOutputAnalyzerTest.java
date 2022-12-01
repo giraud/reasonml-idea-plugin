@@ -4,7 +4,11 @@ import com.reason.comp.*;
 import com.reason.ide.*;
 import com.reason.ide.annotations.*;
 import org.jetbrains.annotations.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class DuneOutputAnalyzerTest extends ORBasePlatformTestCase {
     /*
      | File "lib/InputTest.ml", line 3, characters 0-1:     unknown -> fileLocation
@@ -12,6 +16,7 @@ public class DuneOutputAnalyzerTest extends ORBasePlatformTestCase {
      |     ^                                                -
      | Error: Unbound constructor X                         sourceCode -> ErrorMessage
      */
+    @Test
     public void test_error_01() {
         CompilerOutputAnalyzer analyzer = analyze(
                 "File \"lib/InputTest.ml\", line 3, characters 0-1:",
@@ -34,6 +39,7 @@ public class DuneOutputAnalyzerTest extends ORBasePlatformTestCase {
      | File "lib/InputTest.ml", line 3, characters 10-12:
      | Error: Syntax error
      */
+    @Test
     public void test_error_02() {
         CompilerOutputAnalyzer analyzer = analyze(
                 "File \"lib/InputTest.ml\", line 3, characters 10-12:",

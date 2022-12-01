@@ -12,20 +12,20 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStub, PsiExternal> {
+public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStub, RPsiExternal> {
     public PsiExternalStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);
     }
 
-    public @NotNull PsiExternalImpl createPsi(@NotNull PsiExternalStub stub) {
-        return new PsiExternalImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    public @NotNull RPsiExternalImpl createPsi(@NotNull PsiExternalStub stub) {
+        return new RPsiExternalImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    public @NotNull PsiExternalImpl createPsi(@NotNull ASTNode node) {
-        return new PsiExternalImpl(ORTypesUtil.getInstance(getLanguage()), node);
+    public @NotNull RPsiExternalImpl createPsi(@NotNull ASTNode node) {
+        return new RPsiExternalImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    public @NotNull PsiExternalStub createStub(@NotNull PsiExternal psi, @Nullable StubElement parentStub) {
+    public @NotNull PsiExternalStub createStub(@NotNull RPsiExternal psi, @Nullable StubElement parentStub) {
         String[] path = psi.getPath();
         return new PsiExternalStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.isFunction());
     }

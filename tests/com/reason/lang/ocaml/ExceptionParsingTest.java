@@ -1,19 +1,22 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.core.psi.PsiException;
+import com.reason.lang.core.psi.RPsiException;
+import org.junit.*;
 
 public class ExceptionParsingTest extends OclParsingTestCase {
-  public void test_basic() {
-    PsiException e = firstOfType(parseCode("exception Ex"), PsiException.class);
+    @Test
+    public void test_basic() {
+        RPsiException e = firstOfType(parseCode("exception Ex"), RPsiException.class);
 
-    assertEquals("Ex", e.getName());
-    assertEquals("Dummy.Ex", e.getQualifiedName());
-  }
+        assertEquals("Ex", e.getName());
+        assertEquals("Dummy.Ex", e.getQualifiedName());
+    }
 
-  public void test_parameter() {
-    PsiException e = firstOfType(parseCode("exception Ex of string"), PsiException.class);
+    @Test
+    public void test_parameter() {
+        RPsiException e = firstOfType(parseCode("exception Ex of string"), RPsiException.class);
 
-    assertEquals("Ex", e.getName());
-    assertEquals("Dummy.Ex", e.getQualifiedName());
-  }
+        assertEquals("Ex", e.getName());
+        assertEquals("Dummy.Ex", e.getQualifiedName());
+    }
 }

@@ -11,19 +11,19 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModuleStub, PsiModule> {
+public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModuleStub, RPsiModule> {
     protected PsiModuleStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);
     }
 
     @NotNull
-    public PsiModuleStub createStub(@NotNull PsiModule psi, StubElement parentStub) {
+    public PsiModuleStub createStub(@NotNull RPsiModule psi, StubElement parentStub) {
         boolean isFunctorCall = false;
-        if (psi instanceof PsiInnerModule) {
-            isFunctorCall = ((PsiInnerModule) psi).isFunctorCall();
+        if (psi instanceof RPsiInnerModule) {
+            isFunctorCall = ((RPsiInnerModule) psi).isFunctorCall();
         }
 
-        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getPath(), psi.getQualifiedNameAsPath(), null, psi.getAlias(), psi.isComponent(), psi.isInterface(), psi instanceof PsiFakeModule, isFunctorCall);
+        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getPath(), psi.getQualifiedNameAsPath(), null, psi.getAlias(), psi.isComponent(), psi.isInterface(), psi instanceof RPsiFakeModule, isFunctorCall);
     }
 
     public void serialize(@NotNull PsiModuleStub stub, @NotNull StubOutputStream dataStream) throws IOException {

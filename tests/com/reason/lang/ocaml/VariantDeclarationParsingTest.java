@@ -3,15 +3,17 @@ package com.reason.lang.ocaml;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class VariantDeclarationParsingTest extends OclParsingTestCase {
+    @Test
     public void test_basic() {
-        PsiType e = first(typeExpressions(parseCode("type t = | Black | White")));
+        RPsiType e = first(typeExpressions(parseCode("type t = | Black | White")));
 
-        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        List<RPsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), RPsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Black", declarations.get(0).getVariant().getText());
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
@@ -19,10 +21,11 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
     }
 
+    @Test
     public void test_no_pipe_first() {
-        PsiType e = first(typeExpressions(parseCode("type t = V1 | V2")));
+        RPsiType e = first(typeExpressions(parseCode("type t = V1 | V2")));
 
-        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        List<RPsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), RPsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("V1", declarations.get(0).getVariant().getText());
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
@@ -30,20 +33,22 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
     }
 
+    @Test
     public void test_no_pipe_first_constructor() {
-        PsiType e = first(typeExpressions(parseCode("type t = V1 of string | V2")));
+        RPsiType e = first(typeExpressions(parseCode("type t = V1 of string | V2")));
 
-        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        List<RPsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), RPsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("V1", declarations.get(0).getVariant().getText());
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
         assertEquals("V2", declarations.get(1).getVariant().getText());
     }
 
+    @Test
     public void test_constructor() {
-        PsiType e = first(typeExpressions(parseCode("type t = | Hex of string | Rgb of int * int * int")));
+        RPsiType e = first(typeExpressions(parseCode("type t = | Hex of string | Rgb of int * int * int")));
 
-        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        List<RPsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), RPsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Hex", declarations.get(0).getVariant().getText());
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
@@ -53,10 +58,11 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
+    @Test
     public void test_mixed() {
-        PsiType e = first(typeExpressions(parseCode("type t = | Cannot of reason | Loose | Strict")));
+        RPsiType e = first(typeExpressions(parseCode("type t = | Cannot of reason | Loose | Strict")));
 
-        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        List<RPsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), RPsiVariantDeclaration.class);
         assertEquals(3, declarations.size());
         assertEquals("Cannot", declarations.get(0).getVariant().getText());
         assertEquals(1, declarations.get(0).getParameterList().size());
@@ -64,11 +70,20 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         assertEquals("Strict", declarations.get(2).getVariant().getText());
     }
 
+    @Test
     public void test_generic() {
-        PsiVariantDeclaration e = firstOfType(parseCode("type cases_pattern_expr_r = | CPatRecord of (qualid * cases_pattern_expr) list"), PsiVariantDeclaration.class);
+        RPsiVariantDeclaration e = firstOfType(parseCode("type cases_pattern_expr_r = | CPatRecord of (qualid * cases_pattern_expr) list"), RPsiVariantDeclaration.class);
 
         assertEquals("CPatRecord of (qualid * cases_pattern_expr) list", e.getText());
-        PsiParameterDeclaration p = e.getParameterList().iterator().next();
-        assertEquals("(qualid * cases_pattern_expr) list", p.getText());
+        assertEquals("(qualid * cases_pattern_expr) list", e.getParameterList().get(0).getText());
+    }
+
+    @Test // coq:: coqpp/coqpp_ast.mli
+    public void test_parens() {
+        RPsiVariantDeclaration e = firstOfType(parseCode("type symb = | SymbRules of ((string option * symb) list * code) list"), RPsiVariantDeclaration.class);
+
+        assertNoParserError(e);
+        assertEquals("SymbRules of ((string option * symb) list * code) list", e.getText());
+        assertEquals("((string option * symb) list * code) list", e.getParameterList().get(0).getText());
     }
 }

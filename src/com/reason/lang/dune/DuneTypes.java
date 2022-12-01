@@ -1,9 +1,8 @@
 package com.reason.lang.dune;
 
-import com.reason.lang.core.type.ORCompositeElementType;
-import com.reason.lang.core.type.ORTokenElementType;
+import com.reason.lang.core.type.*;
 
-public class DuneTypes {
+public class DuneTypes extends ORTypes {
     public static final DuneTypes INSTANCE = new DuneTypes();
 
     private DuneTypes() {
@@ -23,7 +22,11 @@ public class DuneTypes {
     public final ORTokenElementType COLON = new ORTokenElementType("COLON", DuneLanguage.INSTANCE);
     public final ORTokenElementType COMMENT = new ORTokenElementType("COMMENT", DuneLanguage.INSTANCE);
     public final ORTokenElementType EQUAL = new ORTokenElementType("EQUAL", DuneLanguage.INSTANCE);
+    public final ORTokenElementType GT = new ORTokenElementType("GT", DuneLanguage.INSTANCE);
+    public final ORTokenElementType GTE = new ORTokenElementType("GTE", DuneLanguage.INSTANCE);
     public final ORTokenElementType LPAREN = new ORTokenElementType("LPAREN", DuneLanguage.INSTANCE);
+    public final ORTokenElementType LT = new ORTokenElementType("LT", DuneLanguage.INSTANCE);
+    public final ORTokenElementType LTE = new ORTokenElementType("LTE", DuneLanguage.INSTANCE);
     public final ORTokenElementType RPAREN = new ORTokenElementType("RPAREN", DuneLanguage.INSTANCE);
     public final ORTokenElementType SHARP = new ORTokenElementType("SHARP", DuneLanguage.INSTANCE);
     public final ORTokenElementType STRING = new ORTokenElementType("String", DuneLanguage.INSTANCE);
