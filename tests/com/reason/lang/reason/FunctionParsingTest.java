@@ -259,6 +259,16 @@ public class FunctionParsingTest extends RmlParsingTestCase {
     }
 
     @Test
+    public void test_in_Some() {
+        RPsiSwitch e = firstOfType(parseCode("let _ = switch (a, b) { | (Some(_), None) => Some((. ()) => 1) | (_, _) => None }"), RPsiSwitch.class);
+
+        assertNoParserError(e);
+        assertSize(2, e.getPatterns());
+        RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
+        // todo assertEquals("(. ()) => 1", f.getText());
+    }
+
+    @Test
     public void test_rollback_04() {
         RPsiFunction e = firstOfType(parseCode("let fn = () => { let _ = 1; (x) => 2; };"), RPsiFunction.class);
         assertEquals("{ let _ = 1; (x) => 2; }", e.getBody().getText());

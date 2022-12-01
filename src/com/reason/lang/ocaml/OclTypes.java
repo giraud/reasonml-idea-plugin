@@ -81,6 +81,7 @@ public class OclTypes extends ORLangTypes {
         C_RECORD_EXPR = new ORCompositeElementType("C_RECORD_EXPR", OclLanguage.INSTANCE);
         C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", OclLanguage.INSTANCE);
         C_SIG_ITEM = new ORCompositeElementType("C_SIG_ITEM", OclLanguage.INSTANCE);
+        C_SOME = new ORCompositeElementType("C_SOME", OclLanguage.INSTANCE);
         C_TAG = new ORCompositeElementType("C_TAG", OclLanguage.INSTANCE);
         C_TAG_BODY = new ORCompositeElementType("C_TAG_BODY", OclLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", OclLanguage.INSTANCE);

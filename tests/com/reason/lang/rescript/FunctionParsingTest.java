@@ -268,6 +268,16 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("{ let _ = 1\n (x) => 2 }", e.getBody().getText());
     }
 
+    @Test
+    public void test_in_Some() {
+        RPsiSwitch e = firstOfType(parseCode("let _ = switch (a, b) { | (Some(_), None) => Some((. ()) => 1) | (_, _) => None }"), RPsiSwitch.class);
+
+        assertNoParserError(e);
+        assertSize(2, e.getPatterns());
+        RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
+        assertEquals("(. ()) => 1", f.getText());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/113
     @Test
     public void test_GH_113() {

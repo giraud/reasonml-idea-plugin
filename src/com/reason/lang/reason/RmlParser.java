@@ -124,6 +124,8 @@ public class RmlParser extends CommonPsiParser {
                         parseQuestionMark();
                     } else if (tokenType == myTypes.UNDERSCORE) {
                         parseUnderscore();
+                    }else if (tokenType == myTypes.SOME) {
+                        parseSome();
                     }
                     // ( ... )
                     else if (tokenType == myTypes.LPAREN) {
@@ -201,6 +203,17 @@ public class RmlParser extends CommonPsiParser {
                 } else {
                     myBuilder.advanceLexer();
                 }
+            }
+        }
+
+        private void parseSome() {
+            markHolder(myTypes.C_SOME); // holder or real ?
+            advance();
+            if (getTokenType() != myTypes.LPAREN) {
+                error("Missing parenthesis");
+            } else {
+                markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
+                        .markHolder(myTypes.H_COLLECTION_ITEM);
             }
         }
 
@@ -1242,10 +1255,14 @@ public class RmlParser extends CommonPsiParser {
                     popEndUntilFoundIndex().popEnd()
                             .advance().mark(myTypes.C_FUNCTOR_BINDING);
                 } else if (isFound(myTypes.C_PARAM_DECLARATION)) {
-                    // x |>=><| ...
-                    popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
-                            .mark(myTypes.C_FUNCTION_BODY);
-                    markHolder(myTypes.H_PLACE_HOLDER);
+                    if (isRawParent(myTypes.H_COLLECTION_ITEM)) {
+                     // inside a parenthesis, function not declared yet
+                    } else {
+                        // x |>=><| ...
+                        popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
+                                .mark(myTypes.C_FUNCTION_BODY);
+                        markHolder(myTypes.H_PLACE_HOLDER);
+                    }
                 } else if (isFound(myTypes.C_PARAMETERS) || isFound(myTypes.C_FUNCTION_EXPR)) {
                     popEndUntilOneOf(myTypes.C_PARAMETERS, myTypes.C_FUNCTION_EXPR);
                     if (isRawParent(myTypes.C_FUNCTION_EXPR) || isRawParent(myTypes.C_FUNCTION_CALL)) {

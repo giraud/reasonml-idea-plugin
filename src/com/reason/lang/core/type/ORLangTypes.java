@@ -73,6 +73,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_SCOPED_EXPR;
     public ORCompositeType C_SIG_EXPR;
     public ORCompositeType C_SIG_ITEM;
+    public ORCompositeType C_SOME;
     public ORCompositeType C_TAG;
     public ORCompositeType C_TAG_PROP_VALUE;
     public ORCompositeType C_TAG_BODY;

@@ -81,9 +81,9 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_params() {
-        FileBase f = parseCode("call(~decode=x => Ok(), ~task=() => y)");
-        RPsiFunctionCall e = ORUtil.findImmediateFirstChildOfClass(f, RPsiFunctionCall.class);
+        RPsiFunctionCall e = firstOfType(parseCode(" call(~decode=x => Ok(), ~task=() => y)"), RPsiFunctionCall.class);
 
+        assertNoParserError(e);
         assertSize(2, e.getParameters());
     }
 

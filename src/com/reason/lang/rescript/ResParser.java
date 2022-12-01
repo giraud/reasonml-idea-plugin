@@ -1,7 +1,6 @@
 package com.reason.lang.rescript;
 
 import com.intellij.lang.*;
-import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.*;
 import org.jetbrains.annotations.*;
@@ -225,8 +224,11 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseSome() {
+            markHolder(myTypes.C_SOME); // holder or real ?
             advance();
-            if (getTokenType() == myTypes.LPAREN) {
+            if (getTokenType() != myTypes.LPAREN) {
+                error("Missing parenthesis");
+            } else {
                 markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
                         .markHolder(myTypes.H_COLLECTION_ITEM);
             }
@@ -1011,7 +1013,7 @@ public class ResParser extends CommonPsiParser {
                     popEnd();
                     if (strictlyIn(myTypes.C_PATTERN_MATCH_EXPR)) {
                         popEndUntil(myTypes.C_PATTERN_MATCH_EXPR);
-                    } else if (strictlyInAny(myTypes.C_SCOPED_EXPR, myTypes.C_PARAMETERS) && isCurrentScope(myTypes.LPAREN)) {
+                    } else if ((strictlyInAny(myTypes.C_SCOPED_EXPR, myTypes.C_PARAMETERS) && (isCurrentScope(myTypes.LPAREN)) || in(myTypes.C_SOME))) {
                         int foundHolderIndex = latestIndexOfCompositeAtMost(myTypes.H_COLLECTION_ITEM, getIndex());
                         if (-1 < foundHolderIndex) {
                             rollbackToIndex(foundHolderIndex);

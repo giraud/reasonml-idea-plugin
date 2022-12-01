@@ -32,6 +32,9 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         if (type == myTypes.C_SIG_EXPR) {
             return new RPsiSignatureImpl(myTypes, type);
         }
+        if (type == myTypes.C_SIG_ITEM) {
+            return new RPsiSignatureItemImpl(myTypes, type);
+        }
         if (type == myTypes.C_TAG) {
             return new RPsiTag(myTypes, type);
         }
@@ -64,9 +67,6 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         }
         if (type == myTypes.C_FUNCTION_EXPR) {
             return new RPsiFunction(myTypes, type);
-        }
-        if (type == myTypes.C_SIG_ITEM) {
-            return new RPsiSignatureItemImpl(myTypes, type);
         }
         if (type == myTypes.C_CUSTOM_OPERATOR || type == myTypes.C_SCOPED_EXPR || type == myTypes.C_IF_THEN_SCOPE || type == myTypes.C_DO_LOOP) {
             return new RPsiScopedExpr(myTypes, type);

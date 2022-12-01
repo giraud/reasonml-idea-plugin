@@ -81,6 +81,7 @@ public class ResTypes extends ORLangTypes {
         C_RECORD_EXPR = new ORCompositeElementType("C_RECORD_EXPR", ResLanguage.INSTANCE);
         C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", ResLanguage.INSTANCE);
         C_SIG_ITEM = new ORCompositeElementType("C_SIG_ITEM", ResLanguage.INSTANCE);
+        C_SOME = new ORCompositeElementType("C_SOME", ResLanguage.INSTANCE);
         C_SCOPED_EXPR = new ORCompositeElementType("C_SCOPED_EXPR", ResLanguage.INSTANCE);
         C_STRUCT_EXPR = new ORCompositeElementType("C_STRUCT_EXPR", ResLanguage.INSTANCE);
         C_SWITCH_BODY = new ORCompositeElementType("C_SWITCH_BODY", ResLanguage.INSTANCE);
