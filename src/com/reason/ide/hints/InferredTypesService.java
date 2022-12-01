@@ -19,6 +19,7 @@ import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.nio.file.*;
+import java.util.concurrent.*;
 
 import static com.reason.comp.Compiler.CompilerType.*;
 import static com.reason.ide.hints.CodeLens.*;
@@ -74,14 +75,15 @@ public class InferredTypesService {
                 }
 
                 if (!DumbService.isDumb(project)) {
-                    ReadAction.nonBlocking(() -> {
+                    ReadAction.nonBlocking((Callable<Void>) () -> {
                                 LOG.debug("Reading types from file", psiFile);
-                                PsiFile cmtFile = ORFileUtils.findCmtFileFromSource(project, sourceFile.getNameWithoutExtension(), namespace[0]);
+                                VirtualFile cmtFile = ORFileUtils.findCmtFileFromSource(project, sourceFile.getNameWithoutExtension(), namespace[0]);
                                 if (cmtFile != null) {
-                                    Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
+                                    Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
                                     insightManager.queryTypes(sourceFile, cmtPath,
                                             types -> application.runReadAction(() -> annotatePsiFile(project, languageProperties, sourceFile, types)));
                                 }
+                                return null;
                             })
                             .coalesceBy(insightManager)
                             .submit(AppExecutorUtil.getAppExecutorService());

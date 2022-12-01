@@ -21,8 +21,8 @@ import org.jetbrains.annotations.*;
 
 /*
  java invocation:
-      CodeStyleManager codeStyleManager = project.getService(CodeStyleManager.class);
-      PsiElement reformat = codeStyleManager.reformat(file);
+      CodeStyleManager manager = project.getService(CodeStyleManager.class);
+      PsiElement reformat = manager.reformat(file);
  */
 
 /**

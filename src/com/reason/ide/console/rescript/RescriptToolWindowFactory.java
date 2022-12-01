@@ -8,10 +8,7 @@ import com.intellij.openapi.util.*;
 import com.intellij.openapi.wm.*;
 import com.intellij.ui.content.*;
 import com.reason.ide.console.*;
-import icons.*;
 import org.jetbrains.annotations.*;
-
-import javax.swing.*;
 
 public class RescriptToolWindowFactory extends ORToolWindowFactory {
     private static final String TITLE = "Rescript";
@@ -20,11 +17,6 @@ public class RescriptToolWindowFactory extends ORToolWindowFactory {
     @Override
     public @NotNull String getId() {
         return ID;
-    }
-
-    @Override
-    public @NotNull Icon getIcon() {
-        return ORIcons.RESCRIPT_TOOL;
     }
 
     @Override

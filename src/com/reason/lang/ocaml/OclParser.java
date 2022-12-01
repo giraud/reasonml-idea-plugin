@@ -264,8 +264,7 @@ public class OclParser extends CommonPsiParser {
                 Marker latestMarker = getLatestMarker();
                 ORCompositeType holdType = latestMarker == null ? myTypes.H_PLACE_HOLDER : latestMarker.getCompositeType();
                 updateLatestComposite(myTypes.C_OPTION);
-                markHolderBefore(0, holdType);
-                advance().popEnd();
+                markHolderBefore(0, holdType).advance().popEnd();
             }
         }
 

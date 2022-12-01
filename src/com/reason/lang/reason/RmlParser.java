@@ -124,7 +124,7 @@ public class RmlParser extends CommonPsiParser {
                         parseQuestionMark();
                     } else if (tokenType == myTypes.UNDERSCORE) {
                         parseUnderscore();
-                    }else if (tokenType == myTypes.SOME) {
+                    } else if (tokenType == myTypes.SOME) {
                         parseSome();
                     }
                     // ( ... )
@@ -304,8 +304,8 @@ public class RmlParser extends CommonPsiParser {
                         .advance().mark(myTypes.C_IF_THEN_SCOPE);
                 markHolder(myTypes.H_PLACE_HOLDER);
             } else if (isAtIndex(foundPos, myTypes.H_COLLECTION_ITEM)) {
-                markHolderBefore(foundPos, myTypes.H_COLLECTION_ITEM);
-                markBefore(foundPos, myTypes.C_TERNARY)
+                markHolderBefore(foundPos, myTypes.H_COLLECTION_ITEM)
+                        .markBefore(foundPos, myTypes.C_TERNARY)
                         .updateCompositeAt(foundPos, myTypes.C_BINARY_CONDITION)
                         .popEndUntilIndex(foundPos).end()
                         .advance().mark(myTypes.C_IF_THEN_SCOPE);
@@ -1256,7 +1256,7 @@ public class RmlParser extends CommonPsiParser {
                             .advance().mark(myTypes.C_FUNCTOR_BINDING);
                 } else if (isFound(myTypes.C_PARAM_DECLARATION)) {
                     if (isRawParent(myTypes.H_COLLECTION_ITEM)) {
-                     // inside a parenthesis, function not declared yet
+                        // inside a parenthesis, function not declared yet
                     } else {
                         // x |>=><| ...
                         popEndUntil(myTypes.C_FUNCTION_EXPR).advance()

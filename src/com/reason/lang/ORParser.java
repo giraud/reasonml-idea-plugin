@@ -538,7 +538,7 @@ public abstract class ORParser<T extends ORTypes> {
     }
 
     public void error(@NotNull String message) {
-        //myBuilder.error("Plugin error! " + message); // RELEASE: comment that line
+        myBuilder.error("Plugin error! " + message); // RELEASE: comment that line
     }
 
     public @NotNull ORParser<T> remapCurrentToken(ORTokenElementType elementType) {
@@ -602,7 +602,6 @@ public abstract class ORParser<T extends ORTypes> {
         return null;
     }
 
-    @Deprecated
     public @NotNull ORParser<T> rollbackToPos(int pos) {
         for (int i = 0; i < pos; i++) {
             myMarkers.pop();

@@ -17,7 +17,6 @@ public class OcamlFormatProcess {
     private static final Log LOG = Log.create("ocamlformat.process");
 
     private final Project myProject;
-    private final AtomicBoolean myConfigurationWarning = new AtomicBoolean(false);
 
     public OcamlFormatProcess(Project project) {
         myProject = project;

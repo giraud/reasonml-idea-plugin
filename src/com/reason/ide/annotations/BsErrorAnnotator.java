@@ -68,7 +68,7 @@ public class BsErrorAnnotator {
         // It'll be used by bsc for a temporary compilation
 
         File sourceTempFile = ORErrorAnnotator.copyToTempFile(tempCompilationDirectory, psiFile, sourceFile.getNameWithoutExtension());
-        if (sourceTempFile == null) {
+        if (sourceTempFile == null || ninja == null) {
             return null;
         }
 

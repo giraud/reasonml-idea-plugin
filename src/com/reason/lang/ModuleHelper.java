@@ -23,7 +23,7 @@ public class ModuleHelper {
 
         // JSX 3
 
-        // Try to find a react.component attribute
+        // Try to find a React.component attribute
         List<RPsiAnnotation> annotations = PsiTreeUtil.getStubChildrenOfTypeAsList(element, RPsiAnnotation.class);
         for (RPsiAnnotation annotation : annotations) {
             if ("@react.component".equals(annotation.getName())) {

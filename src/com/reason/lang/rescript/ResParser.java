@@ -364,8 +364,8 @@ public class ResParser extends CommonPsiParser {
                         .advance().mark(myTypes.C_IF_THEN_SCOPE)
                         .markHolder(myTypes.H_PLACE_HOLDER);
             } else if (isAtIndex(foundPos, myTypes.H_COLLECTION_ITEM)) {
-                markHolderBefore(foundPos, myTypes.H_COLLECTION_ITEM);
-                markBefore(foundPos, myTypes.C_TERNARY)
+                markHolderBefore(foundPos, myTypes.H_COLLECTION_ITEM)
+                        .markBefore(foundPos, myTypes.C_TERNARY)
                         .updateCompositeAt(foundPos, myTypes.C_BINARY_CONDITION)
                         .popEndUntilIndex(foundPos).end()
                         .advance().mark(myTypes.C_IF_THEN_SCOPE);
