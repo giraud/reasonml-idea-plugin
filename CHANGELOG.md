@@ -11,14 +11,17 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
 ## Unreleased
+
+## 0.108 - 2022/12/01
           
 - :nail_care: Display dune-project fields in structure view
+- :bug: [#389](https://github.com/giraud/reasonml-idea-plugin/issues/389) java.util.EmptyStackException
 - :bug: [#358](https://github.com/giraud/reasonml-idea-plugin/issues/358) Incorrect resolution with module in pattern
 - :bug: [#323](https://github.com/giraud/reasonml-idea-plugin/issues/323) Method declarations in .ml files should link to their implementations
 - :house: ![o] Parse ternary if in OCaml
 - :house: ![o] Fix illegal characters in dune files
 
-NOTE: minimal version supported is 2021.3
+**NOTE**: minimal supported version is **2021.3**
 
 ## 0.107 - 2022/09/13
 
