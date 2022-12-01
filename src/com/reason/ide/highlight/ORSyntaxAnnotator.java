@@ -14,9 +14,9 @@ import static com.intellij.lang.annotation.HighlightSeverity.*;
 import static com.reason.ide.highlight.ORSyntaxHighlighter.*;
 
 public abstract class ORSyntaxAnnotator implements Annotator {
-    private final ORTypes myTypes;
+    private final ORLangTypes myTypes;
 
-    ORSyntaxAnnotator(@NotNull ORTypes types) {
+    ORSyntaxAnnotator(@NotNull ORLangTypes types) {
         myTypes = types;
     }
 
@@ -24,11 +24,15 @@ public abstract class ORSyntaxAnnotator implements Annotator {
         IElementType elementType = element.getNode().getElementType();
 
         if (elementType == myTypes.C_TAG_START) {
-            PsiElement nameIdentifier = ((PsiTagStart) element).getNameIdentifier();
+            PsiElement nameIdentifier = ((RPsiTagStart) element).getNameIdentifier();
             if (nameIdentifier != null) {
                 TextRange range = TextRange.create(element.getTextRange().getStartOffset(), nameIdentifier.getTextRange().getEndOffset());
                 enforceColor(holder, range, MARKUP_TAG_);
-                enforceColor(holder, element.getLastChild(), MARKUP_TAG_);
+                PsiElement lastChild = element.getLastChild();
+                IElementType lastElementType = lastChild == null ? null : lastChild.getNode().getElementType();
+                if (lastElementType == myTypes.TAG_AUTO_CLOSE || lastElementType == myTypes.GT) {
+                    enforceColor(holder, lastChild, MARKUP_TAG_);
+                }
             } else {
                 enforceColor(holder, element, MARKUP_TAG_);
             }
@@ -40,7 +44,7 @@ public abstract class ORSyntaxAnnotator implements Annotator {
             enforceColor(holder, element, ANNOTATION_);
         } else if (elementType == myTypes.C_INTERPOLATION_PART) {
             enforceColor(holder, element, STRING_);
-        } else if (element instanceof PsiInterpolationReference) {
+        } else if (element instanceof RPsiInterpolationReference) {
             enforceColor(holder, element, INTERPOLATED_REF_);
         }
         // remapped tokens are not seen by syntaxAnnotator

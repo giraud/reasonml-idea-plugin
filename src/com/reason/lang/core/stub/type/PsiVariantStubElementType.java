@@ -11,20 +11,20 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-public class PsiVariantStubElementType extends ORStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> {
+public class PsiVariantStubElementType extends ORStubElementType<PsiVariantDeclarationStub, RPsiVariantDeclaration> {
     public PsiVariantStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);
     }
 
-    public @NotNull PsiVariantDeclaration createPsi(@NotNull PsiVariantDeclarationStub stub) {
-        return new PsiVariantDeclaration(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    public @NotNull RPsiVariantDeclaration createPsi(@NotNull PsiVariantDeclarationStub stub) {
+        return new RPsiVariantDeclaration(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    public @NotNull PsiVariantDeclaration createPsi(@NotNull ASTNode node) {
-        return new PsiVariantDeclaration(ORTypesUtil.getInstance(getLanguage()), node);
+    public @NotNull RPsiVariantDeclaration createPsi(@NotNull ASTNode node) {
+        return new RPsiVariantDeclaration(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    public @NotNull PsiVariantDeclarationStub createStub(@NotNull PsiVariantDeclaration psi, @Nullable StubElement parentStub) {
+    public @NotNull PsiVariantDeclarationStub createStub(@NotNull RPsiVariantDeclaration psi, @Nullable StubElement parentStub) {
         return new PsiVariantDeclarationStub(parentStub, this, psi.getName(), psi.getPath());
     }
 

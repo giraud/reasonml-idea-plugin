@@ -4,8 +4,13 @@ import com.intellij.psi.*;
 import com.intellij.testFramework.utils.parameterInfo.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class ResParameterInfoHandlerTest extends ORBasePlatformTestCase {
+    @Test
     public void test_basic() {
         configureCode("A.resi", "let add : (int, int) => int");
         configureCode("B.res", "A.add(<caret>)");
@@ -15,6 +20,7 @@ public class ResParameterInfoHandlerTest extends ORBasePlatformTestCase {
         assertEquals(0, context.currentParam);
     }
 
+    @Test
     public void test_intf_impl() {
         configureCode("A.resi", "let add : (int, int) => int");
         configureCode("A.res", "let add = (x, y) => x + y");
@@ -25,6 +31,7 @@ public class ResParameterInfoHandlerTest extends ORBasePlatformTestCase {
         assertEquals(0, context.currentParam);
     }
 
+    @Test
     public void test_empty() {
         configureCode("A.resi", "let fn : unit => string");
         configureCode("B.res", "A.fn(<caret>)");
@@ -34,6 +41,7 @@ public class ResParameterInfoHandlerTest extends ORBasePlatformTestCase {
         assertEquals(0, context.currentParam);
     }
 
+    @Test
     public void test_item() {
         configureCode("A.resi", "let add : (int, int) => int");
         configureCode("B.res", "A.add(1, <caret>)");
@@ -48,14 +56,14 @@ public class ResParameterInfoHandlerTest extends ORBasePlatformTestCase {
         ResParameterInfoHandler handler = new ResParameterInfoHandler();
         MockCreateParameterInfoContext infoContext = new MockCreateParameterInfoContext(myFixture.getEditor(), myFixture.getFile());
 
-        PsiParameters paramsOwner = handler.findElementForParameterInfo(infoContext);
+        RPsiParameters paramsOwner = handler.findElementForParameterInfo(infoContext);
         handler.showParameterInfo(paramsOwner, infoContext);
 
         MockParameterInfoUIContext<PsiElement> context = new MockParameterInfoUIContext<>(paramsOwner);
         handler.updateUI((RmlParameterInfoHandler.ArgumentsDescription) infoContext.getItemsToShow()[0], context);
 
         MockUpdateParameterInfoContext updateContext = new MockUpdateParameterInfoContext(myFixture.getEditor(), myFixture.getFile());
-        PsiParameters updateParamsOwner = handler.findElementForUpdatingParameterInfo(updateContext);
+        RPsiParameters updateParamsOwner = handler.findElementForUpdatingParameterInfo(updateContext);
         updateContext.setParameterOwner(updateParamsOwner);
         handler.updateParameterInfo(updateParamsOwner, updateContext);
 

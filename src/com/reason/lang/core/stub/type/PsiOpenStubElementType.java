@@ -12,23 +12,23 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-public class PsiOpenStubElementType extends ORStubElementType<PsiOpenStub, PsiOpen> {
+public class PsiOpenStubElementType extends ORStubElementType<PsiOpenStub, RPsiOpen> {
     public PsiOpenStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);
     }
 
     @Override
-    public @NotNull PsiOpen createPsi(@NotNull PsiOpenStub stub) {
-        return new PsiOpenImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    public @NotNull RPsiOpen createPsi(@NotNull PsiOpenStub stub) {
+        return new RPsiOpenImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
     @Override
     public @NotNull PsiElement createPsi(@NotNull ASTNode node) {
-        return new PsiOpenImpl(ORTypesUtil.getInstance(getLanguage()), node);
+        return new RPsiOpenImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
     @Override
-    public @NotNull PsiOpenStub createStub(@NotNull PsiOpen psi, @Nullable StubElement parentStub) {
+    public @NotNull PsiOpenStub createStub(@NotNull RPsiOpen psi, @Nullable StubElement parentStub) {
         return new PsiOpenStub(parentStub, this, psi.getPath());
     }
 

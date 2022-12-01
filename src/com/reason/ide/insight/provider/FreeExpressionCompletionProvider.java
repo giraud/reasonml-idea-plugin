@@ -13,8 +13,8 @@ import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.*;
-import com.reason.lang.core.psi.impl.PsiAnnotation;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.RPsiAnnotation;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import icons.*;
@@ -70,8 +70,8 @@ public class FreeExpressionCompletionProvider {
 
         // Add paths (opens and local opens for example)
         for (String path : paths) {
-            Collection<PsiModule> modulesFromQn = ModuleFqnIndex.getElements(path, project, scope);
-            for (PsiModule module : modulesFromQn) {
+            Collection<RPsiModule> modulesFromQn = ModuleFqnIndex.getElements(path, project, scope);
+            for (RPsiModule module : modulesFromQn) {
                 if (module.getContainingFile().equals(containingFile)) {
                     // if the module is already the containing file, we do nothing,
                     // local expressions will be added after
@@ -80,10 +80,10 @@ public class FreeExpressionCompletionProvider {
 
                 Collection<PsiNamedElement> expressions = module.getExpressions(pub, NO_FILTER);
                 for (PsiNamedElement expression : expressions) {
-                    if (!(expression instanceof PsiAnnotation)) {
+                    if (!(expression instanceof RPsiAnnotation)) {
                         resultSet.addElement(
                                 LookupElementBuilder.create(expression)
-                                        .withTypeText(PsiSignatureUtil.getSignature(expression, ORLanguageProperties.cast(element.getLanguage())))
+                                        .withTypeText(RPsiSignatureUtil.getSignature(expression, ORLanguageProperties.cast(element.getLanguage())))
                                         .withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
                                         .withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
                     }
@@ -98,27 +98,27 @@ public class FreeExpressionCompletionProvider {
         }
 
         while (item != null) {
-            if (item instanceof PsiInnerModule
-                    || item instanceof PsiLet
-                    || item instanceof PsiType
-                    || item instanceof PsiExternal
-                    || item instanceof PsiException
-                    || item instanceof PsiVal) {
-                if (item instanceof PsiLet && ((PsiLet) item).isDeconstruction()) {
-                    for (PsiElement deconstructedElement : ((PsiLet) item).getDeconstructedElements()) {
+            if (item instanceof RPsiInnerModule
+                    || item instanceof RPsiLet
+                    || item instanceof RPsiType
+                    || item instanceof RPsiExternal
+                    || item instanceof RPsiException
+                    || item instanceof RPsiVal) {
+                if (item instanceof RPsiLet && ((RPsiLet) item).isDeconstruction()) {
+                    for (PsiElement deconstructedElement : ((RPsiLet) item).getDeconstructedElements()) {
                         resultSet.addElement(
                                 LookupElementBuilder.create(deconstructedElement.getText())
-                                        .withTypeText(PsiSignatureUtil.getSignature(item, ORLanguageProperties.cast(element.getLanguage())))
+                                        .withTypeText(RPsiSignatureUtil.getSignature(item, ORLanguageProperties.cast(element.getLanguage())))
                                         .withIcon(ORIcons.LET));
                     }
                 } else {
                     PsiNamedElement expression = (PsiNamedElement) item;
                     resultSet.addElement(
                             LookupElementBuilder.create(expression)
-                                    .withTypeText(PsiSignatureUtil.getSignature(expression, ORLanguageProperties.cast(element.getLanguage())))
+                                    .withTypeText(RPsiSignatureUtil.getSignature(expression, ORLanguageProperties.cast(element.getLanguage())))
                                     .withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
-                    if (item instanceof PsiType) {
-                        expandType((PsiType) item, resultSet);
+                    if (item instanceof RPsiType) {
+                        expandType((RPsiType) item, resultSet);
                     }
                 }
             }
@@ -126,17 +126,17 @@ public class FreeExpressionCompletionProvider {
             PsiElement prevItem = item.getPrevSibling();
             if (prevItem == null) {
                 PsiElement parent = item.getParent();
-                item = parent instanceof PsiInnerModule ? parent.getPrevSibling() : parent;
+                item = parent instanceof RPsiInnerModule ? parent.getPrevSibling() : parent;
             } else {
                 item = prevItem;
             }
         }
     }
 
-    private static void expandType(@NotNull PsiType type, @NotNull CompletionResultSet resultSet) {
-        Collection<PsiVariantDeclaration> variants = type.getVariants();
+    private static void expandType(@NotNull RPsiType type, @NotNull CompletionResultSet resultSet) {
+        Collection<RPsiVariantDeclaration> variants = type.getVariants();
         if (!variants.isEmpty()) {
-            for (PsiVariantDeclaration variant : variants) {
+            for (RPsiVariantDeclaration variant : variants) {
                 resultSet.addElement(
                         LookupElementBuilder.create(variant)
                                 .withTypeText(type.getName())
@@ -148,8 +148,8 @@ public class FreeExpressionCompletionProvider {
     private static void insertExpression(
             @NotNull InsertionContext insertionContext, @NotNull LookupElement element) {
         PsiElement psiElement = element.getPsiElement();
-        if (psiElement instanceof PsiLet) {
-            PsiLet let = (PsiLet) psiElement;
+        if (psiElement instanceof RPsiLet) {
+            RPsiLet let = (RPsiLet) psiElement;
             if (let.isFunction()) {
                 insertionContext.setAddCompletionChar(false);
                 Editor editor = insertionContext.getEditor();

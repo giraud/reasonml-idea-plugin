@@ -2,11 +2,16 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class FreeCompletionRESTest extends ORBasePlatformTestCase {
+    @Test
     public void test_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
         configureCode("belt_Array.mli", "val length: t -> int");
@@ -21,6 +26,7 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "Pervasives", "x");
     }
 
+    @Test
     public void test_deconstruction() {
         configureCode("Dummy.res", "let (first, second) = myVar <caret>");
 
@@ -30,6 +36,7 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "first", "second");
     }
 
+    @Test
     public void test_include() {
         myFixture.configureByText("A.res", "let x = 1");
         myFixture.configureByText("B.res", "include A\n<caret>\n");

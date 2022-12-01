@@ -42,7 +42,7 @@ WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
 WHITE_SPACE={WHITE_SPACE_CHAR}+
 
 NEWLINE=("\r"* "\n")
-ATOM=[A-Za-z_0-9'&\^!\.\-/+\\]
+ATOM=[A-Za-z_0-9'@&\^!\.\-/+\\]
 
 %state WAITING_VALUE
 %state INITIAL
@@ -66,11 +66,15 @@ ATOM=[A-Za-z_0-9'&\^!\.\-/+\\]
     ";"         { yybegin(IN_SL_COMMENT); tokenStart(); }
 
     "%{"        { return types.VAR_START; }
+    ">="        { return types.GTE; }
+    "<="        { return types.LTE; }
     "}"         { return types.VAR_END; }
     ":"         { return types.COLON; }
     "("         { return types.LPAREN; }
     ")"         { return types.RPAREN; }
     "="         { return types.EQUAL; }
+    "<"         { return types.LT; }
+    ">"         { return types.GT; }
     "#"         { return types.SHARP; }
 
     {ATOM}+     { return types.ATOM; }
@@ -91,22 +95,22 @@ ATOM=[A-Za-z_0-9'&\^!\.\-/+\\]
 
 <IN_ML_COMMENT> {
     "#|" { commentDepth += 1; }
-    "|#" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } }
+    "|#" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } }
     . | {NEWLINE} { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 <IN_SEXPR_COMMENT> {
     "(" { parenDepth += 1; }
-    ")" { parenDepth -= 1; if(parenDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } }
+    ")" { parenDepth -= 1; if(parenDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } }
     . | {NEWLINE} { }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 <IN_SL_COMMENT> {
     .         {}
-    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

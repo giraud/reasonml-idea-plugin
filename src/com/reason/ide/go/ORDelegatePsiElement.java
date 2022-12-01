@@ -10,9 +10,9 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 
 public abstract class ORDelegatePsiElement extends PsiElementBase {
-    protected final @NotNull PsiQualifiedPathElement m_source;
+    protected final @NotNull RPsiQualifiedPathElement m_source;
 
-    protected ORDelegatePsiElement(@NotNull PsiQualifiedPathElement source) {
+    protected ORDelegatePsiElement(@NotNull RPsiQualifiedPathElement source) {
         m_source = source;
     }
 

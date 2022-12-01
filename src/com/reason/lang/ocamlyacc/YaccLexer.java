@@ -532,7 +532,7 @@ class YaccLexer implements FlexLexer {
             }  // fall though
             case 58: break;
             case IN_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.COMMENT;
+              yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.SINGLE_COMMENT;
             }  // fall though
             case 59: break;
             case IN_TRAILER: {
@@ -621,7 +621,7 @@ class YaccLexer implements FlexLexer {
             // fall through
           case 41: break;
           case 16: 
-            { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.COMMENT;
+            { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.SINGLE_COMMENT;
             } 
             // fall through
           case 42: break;

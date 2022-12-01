@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.9.0'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.10.0'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
@@ -22,7 +22,7 @@ apply plugin: 'org.jetbrains.intellij'
 group = pluginGroup
 version = pluginVersion + '-' + platformVersion
 
-sourceCompatibility = '11.0'
+java.sourceCompatibility = '11.0'
 compileJava.options.encoding = 'UTF-8'
 
 sourceSets {
@@ -42,9 +42,12 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#379 - Plugin crashes with NoClassDefFoundError in WebStorm during any attempt to autocomplete</li>
-                    <li>fix missing color for fragment tag</li>
-                    <li>reworked the parsers</li>
+                    <li>Display dune-project fields in structure view</li>
+                    <li>Fix illegal characters in dune files</li>
+                    <li>#389 - java.util.EmptyStackException</li>
+                    <li>#358 - Incorrect resolution with module in pattern</li>
+                    <li>#323 - Method declarations in .ml files should link to their implementations</li>
+                    <li>Parse ternary if in OCaml</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

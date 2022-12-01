@@ -5,7 +5,7 @@ import com.intellij.util.io.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
-public class PsiIncludeStub extends StubBase<PsiInclude> {
+public class PsiIncludeStub extends StubBase<RPsiInclude> {
     @Nullable private final StringRef myFileModule;
     private final String myIncludePath;
     private final String[] myQualifiedPath;

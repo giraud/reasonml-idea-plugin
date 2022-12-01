@@ -103,8 +103,8 @@ IDENT=[A-Za-z_0-9]
 
 <IN_COMMENT> {
     .         { }
-    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.COMMENT; }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.COMMENT; }
+    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.SINGLE_COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.SINGLE_COMMENT; }
 }
 
 <IN_TRAILER> {

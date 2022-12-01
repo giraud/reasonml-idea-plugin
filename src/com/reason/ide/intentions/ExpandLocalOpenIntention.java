@@ -9,7 +9,7 @@ import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
-public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen> {
+public class ExpandLocalOpenIntention extends AbstractBaseIntention<RPsiLocalOpen> {
     @Nls
     @NotNull
     @Override
@@ -26,17 +26,17 @@ public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen
 
     @NotNull
     @Override
-    Class<PsiLocalOpen> getClazz() {
-        return PsiLocalOpen.class;
+    Class<RPsiLocalOpen> getClazz() {
+        return RPsiLocalOpen.class;
     }
 
     @Override
-    boolean isAvailable(@NotNull PsiLocalOpen parentElement) {
+    boolean isAvailable(@NotNull RPsiLocalOpen parentElement) {
         return true;
     }
 
     @Override
-    void runInvoke(@NotNull Project project, @NotNull PsiLocalOpen parentElement) {
+    void runInvoke(@NotNull Project project, @NotNull RPsiLocalOpen parentElement) {
         // parentElement is the scope: Module.Module «( ... )»
         RmlTypes types = RmlTypes.INSTANCE;
         PsiElement grandParentElement = parentElement.getParent();

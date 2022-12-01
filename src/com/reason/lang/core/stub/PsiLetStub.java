@@ -9,7 +9,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.stream.*;
 
-public class PsiLetStub extends NamedStubBase<PsiLet> {
+public class PsiLetStub extends NamedStubBase<RPsiLet> {
     private final String[] myPath;
     private final List<String> myQnames;
     private final String myAlias;

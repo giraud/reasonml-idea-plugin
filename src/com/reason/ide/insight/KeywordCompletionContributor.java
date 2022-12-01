@@ -18,7 +18,7 @@ abstract class KeywordCompletionContributor extends com.intellij.codeInsight.com
 
     protected static final InsertHandler<LookupElement> INSERT_SPACE = new AddSpaceInsertHandler(false);
 
-    KeywordCompletionContributor(@NotNull ORTypes types) {
+    KeywordCompletionContributor(@NotNull ORLangTypes types) {
         extend(CompletionType.BASIC, psiElement(), new CompletionProvider<>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {

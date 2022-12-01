@@ -10,13 +10,15 @@ import com.intellij.testFramework.fixtures.*;
 import com.intellij.usageView.*;
 import com.reason.ide.files.*;
 import org.jetbrains.annotations.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.io.*;
 import java.util.*;
 import java.util.stream.*;
 
+@RunWith(JUnit4.class)
 public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
-
     @NotNull
     @SuppressWarnings("UnusedReturnValue")
     protected FileBase configureCode(@NotNull String fileName, @NotNull String code) {

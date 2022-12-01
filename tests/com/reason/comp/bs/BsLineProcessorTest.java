@@ -6,11 +6,13 @@ import static org.junit.Assert.*;
 import jpsplugin.com.reason.Log;
 import com.reason.ide.annotations.OutputInfo;
 import org.junit.Test;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.List;
 
+@RunWith(JUnit4.class)
 public class BsLineProcessorTest {
-
     @Test
     public void testWarningMessage() {
         String[] output =

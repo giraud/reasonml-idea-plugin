@@ -30,7 +30,7 @@ public class RincewindDownloader extends Task.Backgroundable {
 
     @Override
     public void run(@NotNull ProgressIndicator indicator) {
-        if (myProject.isDisposed()) {
+        if (myProject == null || myProject.isDisposed()) {
             LOG.debug("Project is disposed, can't download rincewind");
             return;
         }

@@ -5,7 +5,7 @@ import com.intellij.util.io.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
-public class PsiExternalStub extends PsiQualifiedNameStub<PsiExternal> {
+public class PsiExternalStub extends PsiQualifiedNameStub<RPsiExternal> {
     private final boolean myIsFunction;
 
     public PsiExternalStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @NotNull String[] path, boolean isFunction) {

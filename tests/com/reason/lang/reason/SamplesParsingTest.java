@@ -2,6 +2,7 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.*;
 import org.jetbrains.annotations.*;
+import org.junit.*;
 
 import java.io.*;
 
@@ -11,6 +12,7 @@ public class SamplesParsingTest extends RmlParsingTestCase {
         return "testData/com/reason/lang/samples";
     }
 
+    @Test
     public void test_stream() throws IOException {
         //PsiFile e = parseFile("toto");
     }

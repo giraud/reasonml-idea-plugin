@@ -26,14 +26,14 @@ public class JsxAttributeCompletionProvider {
     public static void addCompletions(@NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
         LOG.debug("JSX attribute completion");
 
-        PsiTagStart tag = PsiTreeUtil.getParentOfType(element, PsiTagStart.class);
+        RPsiTagStart tag = PsiTreeUtil.getParentOfType(element, RPsiTagStart.class);
         if (tag != null) {
             List<ComponentPropertyAdapter> attributes = tag.getUnifiedPropertyList();
 
-            if (tag.getNameIdentifier() instanceof PsiUpperSymbol) {
+            if (tag.getNameIdentifier() instanceof RPsiUpperSymbol) {
                 // Additional attributes for UpperSymbol => only key and ref
-                attributes.add(PsiTagStart.createProp("key", "string=?"));
-                attributes.add(PsiTagStart.createProp("ref", "Js.nullable(Dom.element) => unit=?"));
+                attributes.add(RPsiTagStart.createProp("key", "string=?"));
+                attributes.add(RPsiTagStart.createProp("ref", "Js.nullable(Dom.element) => unit=?"));
             }
 
             if (LOG.isDebugEnabled()) {
@@ -42,8 +42,8 @@ public class JsxAttributeCompletionProvider {
             }
 
             // Attributes already used
-            Collection<PsiTagProperty> usedAttributes = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
-            List<String> usedNames = usedAttributes.stream().map(PsiTagProperty::getName).collect(toList());
+            Collection<RPsiTagProperty> usedAttributes = PsiTreeUtil.findChildrenOfType(tag, RPsiTagProperty.class);
+            List<String> usedNames = usedAttributes.stream().map(RPsiTagProperty::getName).collect(toList());
             LOG.debug("used names", usedNames);
 
             // Now populate the dialog

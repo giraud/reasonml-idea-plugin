@@ -54,11 +54,11 @@ public class GotoTestDataAction extends AnAction {
 
             GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
             PsiFinder psiFinder = project.getService(PsiFinder.class);
-            PsiModule relatedModule;
+            RPsiModule relatedModule;
 
             String[] tokens = splitModuleName(((FileBase) file).getModuleName());
             if (tokens.length == 1) {
-                Set<PsiModule> relatedModules =
+                Set<RPsiModule> relatedModules =
                         psiFinder.findModulesbyName(
                                 tokens[0] + "_test",
                                 ORFileType.implementationOnly,
@@ -75,7 +75,7 @@ public class GotoTestDataAction extends AnAction {
                     relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
                 }
             } else {
-                Set<PsiModule> relatedModules =
+                Set<RPsiModule> relatedModules =
                         psiFinder.findModulesbyName(
                                 tokens[0],
                                 ORFileType.implementationOnly,

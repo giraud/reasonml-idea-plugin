@@ -18,5 +18,5 @@ public interface InferredTypes {
     Map<Integer, LogicalPositionSignature> signaturesByLines(@Nullable ORLanguageProperties lang);
 
     @Nullable
-    PsiSignature getSignatureByPosition(@NotNull LogicalPosition elementPosition);
+    RPsiSignature getSignatureByPosition(@NotNull LogicalPosition elementPosition);
 }

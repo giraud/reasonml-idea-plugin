@@ -7,10 +7,15 @@ import com.reason.ide.*;
 import com.reason.ide.files.*;
 import icons.*;
 import org.jetbrains.annotations.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import javax.swing.*;
 
+@RunWith(JUnit4.class)
 public class StructureOCLTest extends ORBasePlatformTestCase {
+    @Test
     public void test_let() {
         FileBase a = configureCode("A.ml", "let x = 1");
         StructureViewModel model = new ORStructureViewModel(a);
@@ -20,6 +25,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertEquals("x", pres.getPresentableText());
     }
 
+    @Test
     public void test_let_underscore() {
         FileBase a = configureCode("A.ml", "let _ = ()");
         StructureViewModel model = new ORStructureViewModel(a);
@@ -29,6 +35,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertEquals("_", pres.getPresentableText());
     }
 
+    @Test
     public void test_deconstruction() {
         FileBase a = configureCode("A.ml", "let (a, b) = x");
         StructureViewModel model = new ORStructureViewModel(a);
@@ -39,6 +46,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertPresentation("b", "", ORIcons.LET, children[1].getPresentation());
     }
 
+    @Test
     public void test_val() {
         FileBase a = configureCode("A.mli", "val x: int");
         StructureViewModel model = new ORStructureViewModel(a);
@@ -47,6 +55,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertPresentation("x", "int", ORIcons.VAL, x.getPresentation());
     }
 
+    @Test
     public void test_type_record() {
         FileBase a = configureCode("A.ml", "type x = { a: int; mutable b: string list }");
         StructureViewModel model = new ORStructureViewModel(a);
@@ -59,6 +68,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertPresentation("b", "string list", ORIcons.VAL, c2.getPresentation());
     }
 
+    @Test
     public void test_module_type() {
         FileBase a = configureCode("A.ml", "module type I = sig val x : bool end");
         StructureViewModel model = new ORStructureViewModel(a);
@@ -69,6 +79,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertPresentation("x", "bool", ORIcons.VAL, x.getPresentation());
     }
 
+    @Test
     public void test_module_type_extraction() {
         configureCode("A.mli", "module type S = sig\n end");
         FileBase b = configureCode("B.ml", "module X : module type of A.S");
@@ -80,6 +91,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertPresentation("S", "A.mli", ORIcons.MODULE_TYPE, ee.getPresentation());
     }
 
+    @Test
     public void test_module_type_extraction_functor() {
         configureCode("A.mli", "module type S = sig\n module Branch : sig type t end\n end\n module Make() : S\n module Vcs = Make()");
         FileBase b = configureCode("B.ml", "module X : module type of A.Vcs.Branch");
@@ -93,6 +105,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/274
     // omit () in structure panel
+    @Test
     public void test_GH_274() {
         FileBase a = configureCode("A.ml", "let () = 1 + 2");
         StructureViewModel model = new ORStructureViewModel(a);
@@ -102,6 +115,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/190
     // nested functions
+    @Test
     public void test_GH_190() {
         FileBase e = configureCode("A.ml", "let fn a b = let open Pp in let fn1 = 1 in let fn2 = 2");
         StructureViewModel model = new ORStructureViewModel(e);

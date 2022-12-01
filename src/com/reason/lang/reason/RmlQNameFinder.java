@@ -4,10 +4,10 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.containers.*;
 import com.reason.ide.files.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.psi.reference.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -51,8 +51,8 @@ public class RmlQNameFinder extends BaseQNameFinder {
                 qualifiedNames.add(((FileBase) item).getModuleName() + pathExtension);
                 resolvedQualifiedNames.add(((FileBase) item).getModuleName() + resolvedPathExtension);
                 break;
-            } else if (item instanceof PsiInnerModule) {
-                PsiInnerModule module = (PsiInnerModule) item;
+            } else if (item instanceof RPsiInnerModule) {
+                RPsiInnerModule module = (RPsiInnerModule) item;
                 String moduleQName = module.getQualifiedName();
 
                 String alias = module.getAlias();
@@ -80,7 +80,7 @@ public class RmlQNameFinder extends BaseQNameFinder {
                     qualifiedNames.add(moduleQName + pathExtension);
                     resolvedQualifiedNames.add(moduleQName + resolvedPathExtension);
                 }
-            } else if (item instanceof PsiLocalOpen) {
+            } else if (item instanceof RPsiLocalOpen) {
                 String openName = extractPathName(item, RmlTypes.INSTANCE);
                 String moduleName = ((FileBase) sourceElement.getContainingFile()).getModuleName();
                 // Add local open value to all previous elements
@@ -91,17 +91,17 @@ public class RmlQNameFinder extends BaseQNameFinder {
                 resolvedQualifiedNames.addAll(extendPathWith(filePath, openName, resolvedQualifiedNames));
                 resolvedQualifiedNames.add(openName + resolvedPathExtension);
                 resolvedQualifiedNames.add(moduleName + "." + openName + resolvedPathExtension);
-            } else if (item instanceof PsiOpen || item instanceof PsiInclude) {
-                String openName = item instanceof PsiOpen ? ((PsiOpen) item).getPath() : ((PsiInclude) item).getIncludePath();
+            } else if (item instanceof RPsiOpen || item instanceof RPsiInclude) {
+                String openName = item instanceof RPsiOpen ? ((RPsiOpen) item).getPath() : ((RPsiInclude) item).getIncludePath();
                 // Add open value to all previous elements
                 qualifiedNames.addAll(extendPathWith(filePath, openName, qualifiedNames));
                 qualifiedNames.add(openName + pathExtension);
                 // Some for resolved elements
                 resolvedQualifiedNames.addAll(extendPathWith(filePath, openName, resolvedQualifiedNames));
                 resolvedQualifiedNames.add(openName + resolvedPathExtension);
-            } else if (item instanceof PsiLetBinding) {
+            } else if (item instanceof RPsiLetBinding) {
                 // let a = { <caret> }
-                PsiLet let = PsiTreeUtil.getParentOfType(item, PsiLet.class);
+                RPsiLet let = PsiTreeUtil.getParentOfType(item, RPsiLet.class);
                 String letQName = let == null ? null : let.getQualifiedName();
                 if (letQName != null) {
                     qualifiedNames.addAll(extendPathWith(filePath, letQName, qualifiedNames));
@@ -110,12 +110,12 @@ public class RmlQNameFinder extends BaseQNameFinder {
                     resolvedQualifiedNames.addAll(extendPathWith(filePath, letQName, resolvedQualifiedNames));
                     resolvedQualifiedNames.add(letQName + resolvedPathExtension);
                 }
-            } else if (item instanceof PsiFunction) {
+            } else if (item instanceof RPsiFunction) {
                 PsiQualifiedNamedElement parent = PsiTreeUtil.getParentOfType(item, PsiQualifiedNamedElement.class);
                 if (parent != null) {
                     String parentQName = parent.getQualifiedName();
                     // Register all parameters of function
-                    for (PsiParameterDeclaration parameter : ((PsiFunction) item).getParameters()) {
+                    for (RPsiParameterDeclaration parameter : ((RPsiFunction) item).getParameters()) {
                         String paramQName = parentQName + "[" + parameter.getName() + "]";
                         qualifiedNames.add(paramQName);
                         // Same for resolved elements

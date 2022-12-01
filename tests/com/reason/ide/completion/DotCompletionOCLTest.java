@@ -2,11 +2,16 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class DotCompletionOCLTest extends ORBasePlatformTestCase {
+    @Test
     public void test_basic() {
         configureCode("A.ml", "let x = 1");
         configureCode("B.ml", "type t let y = 2 module B = struct end let _ = A.<caret>");
@@ -17,6 +22,7 @@ public class DotCompletionOCLTest extends ORBasePlatformTestCase {
         assertSameElements(strings, "x");
     }
 
+    @Test
     public void test_module_override() {
         configureCode("A.ml", "let x = 1");
         configureCode("B.ml", "module A = struct let y = 2 end let _ = A.<caret>");
@@ -27,6 +33,7 @@ public class DotCompletionOCLTest extends ORBasePlatformTestCase {
         assertSameElements(strings, "y");
     }
 
+    @Test
     public void test_multiple_alias() {
         // like Belt
         configureCode("string.mli", "external length : string -> int = \"%string_length\"");
@@ -43,6 +50,7 @@ public class DotCompletionOCLTest extends ORBasePlatformTestCase {
         assertEquals("key", elements.get(0));
     }
 
+    @Test
     public void test_no_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
         configureCode("belt_Array.mli", "val length: t -> int");
@@ -57,6 +65,7 @@ public class DotCompletionOCLTest extends ORBasePlatformTestCase {
         assertEquals("length", elements.get(0));
     }
 
+    @Test
     public void test_functor_no_return_type() {
         configureCode("A.ml", "module type Intf  = sig val x : bool end\n module MakeOcl(I:Intf) = struct let y = 1 end");
         configureCode("B.ml", "open A\n module Instance = MakeOcl(struct let x = true end)");
@@ -68,6 +77,7 @@ public class DotCompletionOCLTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "y");
     }
 
+    @Test
     public void test_functor_with_return_type() {
         configureCode("A.ml", "module type Intf  = sig val x : bool end\n module MakeIntf(I:Intf) : Intf = struct let y = 1 end");
         configureCode("B.ml", "open A\n module Instance = MakeIntf(struct let x = true end)");
@@ -79,6 +89,7 @@ public class DotCompletionOCLTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "x");
     }
 
+    @Test
     public void test_functor_include() {
         configureCode("A.ml", "module type Intf  = sig val x : bool end\n module MakeIntf(I:Intf) = struct let y = 1 end");
         configureCode("B.ml", "include A.MakeIntf(struct let x = true end)");

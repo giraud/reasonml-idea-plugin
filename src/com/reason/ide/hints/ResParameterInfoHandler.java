@@ -9,13 +9,13 @@ import org.jetbrains.annotations.*;
 
 public class ResParameterInfoHandler extends ORParameterInfoHandler {
     @Override
-    int computeParameterIndex(@NotNull PsiParameters paramsOwner, @NotNull UpdateParameterInfoContext context) {
+    int computeParameterIndex(@NotNull RPsiParameters paramsOwner, @NotNull UpdateParameterInfoContext context) {
         return ParameterInfoUtils.getCurrentParameterIndex(paramsOwner.getNode(), context.getOffset(), ResTypes.INSTANCE.COMMA);
     }
 
     @Override
-    @Nullable PsiParameters findFunctionParams(@NotNull PsiFile file, int offset) {
+    @Nullable RPsiParameters findFunctionParams(@NotNull PsiFile file, int offset) {
         PsiElement elementAt = file.findElementAt(offset);
-        return elementAt == null ? null : PsiTreeUtil.getParentOfType(elementAt, PsiParameters.class);
+        return elementAt == null ? null : PsiTreeUtil.getParentOfType(elementAt, RPsiParameters.class);
     }
 }

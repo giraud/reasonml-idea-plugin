@@ -7,7 +7,6 @@ import com.intellij.psi.*;
 import com.intellij.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
@@ -16,9 +15,9 @@ import javax.swing.*;
 import java.util.*;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
-    private final PsiElement m_element;
+    private final PsiElement myElement;
     private final PsiElement m_viewElement;
-    private final int m_level;
+    private final int myLevel;
     private final boolean m_navigateToViewElement;
 
     StructureViewElement(@NotNull PsiElement element, int level) {
@@ -27,24 +26,24 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
     private StructureViewElement(@Nullable PsiElement viewElement, @NotNull PsiElement element, boolean navigateToViewElement, int level) {
         m_viewElement = viewElement;
-        m_element = element;
+        myElement = element;
         m_navigateToViewElement = navigateToViewElement;
-        m_level = level;
+        myLevel = level;
     }
 
     @Override
     public @NotNull Object getValue() {
-        return m_viewElement == null ? m_element : m_viewElement;
+        return m_viewElement == null ? myElement : m_viewElement;
     }
 
     int getLevel() {
-        return m_level;
+        return myLevel;
     }
 
     @Override
     public void navigate(boolean requestFocus) {
-        if (m_element instanceof NavigationItem) {
-            NavigationItem targetElement = (NavigationItem) (m_navigateToViewElement ? m_viewElement : m_element);
+        if (myElement instanceof NavigationItem) {
+            NavigationItem targetElement = (NavigationItem) (m_navigateToViewElement ? m_viewElement : myElement);
             assert targetElement != null;
             targetElement.navigate(requestFocus);
         }
@@ -52,26 +51,26 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
     @Override
     public boolean canNavigate() {
-        return m_element instanceof NavigationItem && ((NavigationItem) m_element).canNavigate();
+        return myElement instanceof NavigationItem && ((NavigationItem) myElement).canNavigate();
     }
 
     @Override
     public boolean canNavigateToSource() {
-        return m_element instanceof NavigationItem
-                && ((NavigationItem) m_element).canNavigateToSource();
+        return myElement instanceof NavigationItem
+                && ((NavigationItem) myElement).canNavigateToSource();
     }
 
     @Override
     public @NotNull String getAlphaSortKey() {
         String name = null;
-        PsiElement element = m_viewElement == null ? m_element : m_viewElement;
+        PsiElement element = m_viewElement == null ? myElement : m_viewElement;
 
         if (element instanceof PsiNamedElement) {
             name = ((PsiNamedElement) element).getName();
-        } else if (element instanceof PsiInclude) {
-            name = ((PsiInclude) element).getIncludePath();
-        } else if (element instanceof PsiOpen) {
-            name = ((PsiOpen) element).getPath();
+        } else if (element instanceof RPsiInclude) {
+            name = ((RPsiInclude) element).getIncludePath();
+        } else if (element instanceof RPsiOpen) {
+            name = ((RPsiOpen) element).getPath();
         }
 
         return name == null ? "" : name;
@@ -89,24 +88,24 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                 @Nullable
                 @Override
                 public String getLocationString() {
-                    if (m_element instanceof PsiLet && ((PsiLet) m_element).isDeconstruction()) {
+                    if (myElement instanceof RPsiLet && ((RPsiLet) myElement).isDeconstruction()) {
                         return "";
                     }
-                    return m_element instanceof PsiNamedElement
-                            ? ((PsiNamedElement) m_element).getName()
+                    return myElement instanceof PsiNamedElement
+                            ? ((PsiNamedElement) myElement).getName()
                             : "";
                 }
 
                 @Nullable
                 @Override
                 public Icon getIcon(boolean unused) {
-                    return PsiIconUtil.getProvidersIcon(m_element, 0);
+                    return PsiIconUtil.getProvidersIcon(myElement, 0);
                 }
             };
         }
 
-        if (m_element instanceof NavigationItem) {
-            ItemPresentation presentation = ((NavigationItem) m_element).getPresentation();
+        if (myElement instanceof NavigationItem) {
+            ItemPresentation presentation = ((NavigationItem) myElement).getPresentation();
             if (presentation != null) {
                 return presentation;
             }
@@ -115,7 +114,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return new ItemPresentation() {
             @Override
             public @NotNull String getPresentableText() {
-                return "Unknown presentation for element " + m_element.getText();
+                return "Unknown presentation for element " + myElement.getText();
             }
 
             @Nullable
@@ -136,24 +135,29 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     public TreeElement @NotNull [] getChildren() {
         List<TreeElement> treeElements = null;
 
-        if (m_element instanceof FileBase || m_element instanceof DuneFile) {
+        // File
+        if (myElement instanceof FileBase || myElement instanceof DuneFile) {
             treeElements = new ArrayList<>();
-            m_element.acceptChildren(new ElementVisitor(treeElements, m_level));
+            myElement.acceptChildren(new ElementVisitor(treeElements, myLevel));
             if (!treeElements.isEmpty()) {
                 return treeElements.toArray(new TreeElement[0]);
             }
-        } else if (m_element instanceof PsiInnerModule) {
-            treeElements = buildModuleStructure((PsiInnerModule) m_element);
-        } else if (m_element instanceof PsiFunctor) {
-            treeElements = buildFunctorStructure((PsiFunctor) m_element);
-        } else if (m_element instanceof PsiType) {
-            treeElements = buildTypeStructure((PsiType) m_element);
-        } else if (m_element instanceof PsiKlass) {
-            treeElements = buildClassStructure((PsiKlass) m_element);
-        } else if (m_element instanceof PsiStanza) {
-            treeElements = buildStanzaStructure((PsiStanza) m_element);
-        } else if (m_element instanceof PsiLet) {
-            treeElements = buildLetStructure((PsiLet) m_element);
+        }
+        // Lang
+        else if (myElement instanceof RPsiInnerModule) {
+            treeElements = buildModuleStructure((RPsiInnerModule) myElement);
+        } else if (myElement instanceof RPsiFunctor) {
+            treeElements = buildFunctorStructure((RPsiFunctor) myElement);
+        } else if (myElement instanceof RPsiType) {
+            treeElements = buildTypeStructure((RPsiType) myElement);
+        } else if (myElement instanceof RPsiClass) {
+            treeElements = buildClassStructure((RPsiClass) myElement);
+        } else if (myElement instanceof RPsiLet) {
+            treeElements = buildLetStructure((RPsiLet) myElement);
+        }
+        // Dune
+        else if (myElement instanceof RPsiDuneStanza) {
+            treeElements = buildStanzaStructure((RPsiDuneStanza) myElement);
         }
 
         if (treeElements != null && !treeElements.isEmpty()) {
@@ -163,17 +167,17 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return EMPTY_ARRAY;
     }
 
-    private @NotNull List<TreeElement> buildModuleStructure(@NotNull PsiInnerModule moduleElement) {
+    private @NotNull List<TreeElement> buildModuleStructure(@NotNull RPsiInnerModule moduleElement) {
         List<TreeElement> treeElements = new ArrayList<>();
 
-        PsiModuleType moduleType = moduleElement.getModuleType();
+        RPsiModuleType moduleType = moduleElement.getModuleType();
         PsiElement rootElement = moduleType;
         if (rootElement == null) {
             rootElement = moduleElement.getBody();
         }
 
         if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
+            rootElement.acceptChildren(new ElementVisitor(treeElements, myLevel));
         }
 
         // Process body if there is a signature
@@ -187,61 +191,60 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return treeElements;
     }
 
-    private @NotNull List<TreeElement> buildFunctorStructure(@NotNull PsiFunctor functor) {
+    private @NotNull List<TreeElement> buildFunctorStructure(@NotNull RPsiFunctor functor) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement binding = functor.getBody();
         if (binding != null) {
-            binding.acceptChildren(new ElementVisitor(treeElements, m_level));
+            binding.acceptChildren(new ElementVisitor(treeElements, myLevel));
         }
 
         return treeElements;
     }
 
-    private @NotNull List<TreeElement> buildTypeStructure(@NotNull PsiType type) {
+    private @NotNull List<TreeElement> buildTypeStructure(@NotNull RPsiType type) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement binding = type.getBinding();
         if (binding != null) {
-            PsiRecord record = ORUtil.findImmediateFirstChildOfClass(binding, PsiRecord.class);
+            RPsiRecord record = ORUtil.findImmediateFirstChildOfClass(binding, RPsiRecord.class);
             if (record != null) {
-                binding.acceptChildren(new ElementVisitor(treeElements, m_level));
+                binding.acceptChildren(new ElementVisitor(treeElements, myLevel));
             }
         }
 
         return treeElements;
     }
 
-    private @NotNull List<TreeElement> buildClassStructure(@NotNull PsiKlass classElement) {
+    private @NotNull List<TreeElement> buildClassStructure(@NotNull RPsiClass classElement) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement rootElement = classElement.getClassBody();
         if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
+            rootElement.acceptChildren(new ElementVisitor(treeElements, myLevel));
         }
 
         return treeElements;
     }
 
-    private @NotNull List<TreeElement> buildStanzaStructure(@NotNull PsiStanza stanzaElement) {
+    private @NotNull List<TreeElement> buildStanzaStructure(@NotNull RPsiDuneStanza stanza) {
         List<TreeElement> treeElements = new ArrayList<>();
 
-        PsiElement rootElement =
-                ORUtil.findImmediateFirstChildOfClass(stanzaElement, PsiDuneFields.class);
+        PsiElement rootElement = ORUtil.findImmediateFirstChildOfClass(stanza, RPsiDuneFields.class);
         if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
+            rootElement.acceptChildren(new ElementVisitor(treeElements, myLevel));
         }
 
         return treeElements;
     }
 
-    private @Nullable List<TreeElement> buildLetStructure(@NotNull PsiLet let) {
+    private @Nullable List<TreeElement> buildLetStructure(@NotNull RPsiLet let) {
         List<TreeElement> treeElements = null;
 
         PsiElement rootElement = let.getBinding();
         if (rootElement != null && let.isFunction()) {
             treeElements = new ArrayList<>();
-            rootElement.acceptChildren(new ElementVisitor(treeElements, m_level));
+            rootElement.acceptChildren(new ElementVisitor(treeElements, myLevel));
         }
 
         return treeElements;
@@ -258,14 +261,14 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         @Override
         public void visitElement(@NotNull PsiElement element) {
-            if (element instanceof PsiStructuredElement && !(element instanceof PsiFakeModule)) {
-                if (((PsiStructuredElement) element).canBeDisplayed()) {
-                    if (element instanceof PsiLet) {
-                        PsiLet let = (PsiLet) element;
+            if (element instanceof RPsiStructuredElement && !(element instanceof RPsiFakeModule)) {
+                if (((RPsiStructuredElement) element).canBeDisplayed()) {
+                    if (element instanceof RPsiLet) {
+                        RPsiLet let = (RPsiLet) element;
                         if (let.isScopeIdentifier()) {
                             // it's a tuple! add each element of the tuple separately.
                             for (PsiElement child : let.getScopeChildren()) {
-                                if (child instanceof PsiLowerSymbol) {
+                                if (child instanceof RPsiLowerSymbol) {
                                     m_treeElements.add(new StructureViewElement(child, element, true, m_elementLevel));
                                 }
                             }
@@ -274,21 +277,21 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                     }
                     m_treeElements.add(new StructureViewElement(element, m_elementLevel));
                 }
-            } else if (element instanceof PsiRecord) {
-                for (PsiRecordField field : ((PsiRecord) element).getFields()) {
+            } else if (element instanceof RPsiRecord) {
+                for (RPsiRecordField field : ((RPsiRecord) element).getFields()) {
                     m_treeElements.add(new StructureViewElement(field, m_elementLevel));
                 }
-            } else if (element instanceof PsiScopedExpr && m_elementLevel < 2) {
-                List<PsiStructuredElement> children = ORUtil.findImmediateChildrenOfClass(element, PsiStructuredElement.class);
-                for (PsiStructuredElement child : children) {
+            } else if (element instanceof RPsiScopedExpr && m_elementLevel < 2) {
+                List<RPsiStructuredElement> children = ORUtil.findImmediateChildrenOfClass(element, RPsiStructuredElement.class);
+                for (RPsiStructuredElement child : children) {
                     if (child.canBeDisplayed()) {
                         m_treeElements.add(new StructureViewElement(child, m_elementLevel));
                     }
                 }
-            } else if (element instanceof PsiFunction && m_elementLevel < 2) {
-                PsiFunctionBody body = ((PsiFunction) element).getBody();
-                List<PsiStructuredElement> children = ORUtil.findImmediateChildrenOfClass(body, PsiStructuredElement.class);
-                for (PsiStructuredElement child : children) {
+            } else if (element instanceof RPsiFunction && m_elementLevel < 2) {
+                RPsiFunctionBody body = ((RPsiFunction) element).getBody();
+                List<RPsiStructuredElement> children = ORUtil.findImmediateChildrenOfClass(body, RPsiStructuredElement.class);
+                for (RPsiStructuredElement child : children) {
                     if (child.canBeDisplayed()) {
                         m_treeElements.add(new StructureViewElement(child, m_elementLevel + 1));
                     }

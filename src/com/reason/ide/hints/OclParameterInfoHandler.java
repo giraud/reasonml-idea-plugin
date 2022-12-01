@@ -14,12 +14,12 @@ public class OclParameterInfoHandler extends ORParameterInfoHandler {
     }
 
     @Override
-    int computeParameterIndex(@NotNull PsiParameters paramsOwner, @NotNull UpdateParameterInfoContext context) {
+    int computeParameterIndex(@NotNull RPsiParameters paramsOwner, @NotNull UpdateParameterInfoContext context) {
         return ParameterInfoUtils.getCurrentParameterIndex(paramsOwner.getNode(), context.getOffset(), TokenType.WHITE_SPACE);
     }
 
     @Override
-    @Nullable PsiParameters findFunctionParams(@NotNull PsiFile file, int offset) {
+    @Nullable RPsiParameters findFunctionParams(@NotNull PsiFile file, int offset) {
         PsiElement elementAt = file.findElementAt(offset);
 
         if (elementAt == null) {
@@ -36,10 +36,10 @@ public class OclParameterInfoHandler extends ORParameterInfoHandler {
             }
         }
 
-        if (elementAt instanceof PsiFunctionCall) {
-            return ORUtil.findImmediateFirstChildOfClass(elementAt, PsiParameters.class);
+        if (elementAt instanceof RPsiFunctionCall) {
+            return ORUtil.findImmediateFirstChildOfClass(elementAt, RPsiParameters.class);
         }
 
-        return elementAt == null ? null : PsiTreeUtil.getParentOfType(elementAt, PsiParameters.class);
+        return elementAt == null ? null : PsiTreeUtil.getParentOfType(elementAt, RPsiParameters.class);
     }
 }

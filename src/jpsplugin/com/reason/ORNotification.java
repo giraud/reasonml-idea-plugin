@@ -8,32 +8,37 @@ import javax.swing.*;
 
 import static com.intellij.notification.NotificationType.*;
 
-public class ORNotification extends Notification {
-
+public final class ORNotification extends Notification {
     private static final String REASON_ML_GROUP_DISPLAY = "Reason";
 
-    public static void notifyError(@Nullable String title, @Nullable String subtitle, @Nullable String content, @Nullable NotificationListener listener) {
+    public static void notifyError(@NotNull String title, @Nullable String subtitle, @NotNull String content, @Nullable NotificationListener listener) {
         Notifications.Bus.notify(new ORNotification(title, subtitle, content, ERROR, listener));
     }
 
-    public static void notifyInfo(@Nullable String title, @Nullable String subtitle, @Nullable String content, @Nullable NotificationListener listener) {
-        Notifications.Bus.notify(new ORNotification(title, subtitle, content, INFORMATION, listener));
-    }
-
-    public ORNotification(@Nullable String title, @Nullable String subtitle, @Nullable String content, @NotNull NotificationType type, @Nullable NotificationListener listener) {
-        super(REASON_ML_GROUP_DISPLAY, getIcon(type), title, subtitle, content, type, listener);
+    public ORNotification(@NotNull String title, @Nullable String subtitle, @NotNull String content, @NotNull NotificationType type, @Nullable NotificationListener listener) {
+        super(REASON_ML_GROUP_DISPLAY, title, content, type);
+        setIcon(getIcon(type));
+        setSubtitle(subtitle);
+        if (listener != null) {
+            setListener(listener);
+        }
     }
 
     public ORNotification(@NotNull String title, @NotNull String content, @NotNull NotificationType type) {
-        super(REASON_ML_GROUP_DISPLAY, getIcon(type), title, null, content, type, null);
+        super(REASON_ML_GROUP_DISPLAY, title, content, type);
+        setIcon(getIcon(type));
     }
 
-    public ORNotification(@NotNull String title, @NotNull String content, @NotNull NotificationType type, NotificationListener listener) {
-        super(REASON_ML_GROUP_DISPLAY, getIcon(type), title, null, content, type, listener);
+    public ORNotification(@NotNull String title, @NotNull String content, @NotNull NotificationType type, @Nullable NotificationListener listener) {
+        super(REASON_ML_GROUP_DISPLAY, title, content, type);
+        setIcon(getIcon(type));
+        if (listener != null) {
+            setListener(listener);
+        }
     }
 
     @Override
-    public @Nullable Icon getIcon() {
+    public @NotNull Icon getIcon() {
         return getIcon(getType());
     }
 

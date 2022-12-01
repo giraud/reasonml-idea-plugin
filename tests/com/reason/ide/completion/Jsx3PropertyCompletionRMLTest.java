@@ -2,16 +2,21 @@ package com.reason.ide.completion;
 
 import com.reason.ide.*;
 import org.jetbrains.annotations.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
     @Override
     protected @NotNull String getTestDataPath() {
         return "testData/com/reason/lang";
     }
 
+    @Test
     public void test_display_properties_let() {
         myFixture.configureByFiles("pervasives.ml");
         configureCode("Component.re", "[@react.component] let make = (~name, ~onClose=?) => <div/>;");
@@ -24,6 +29,7 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(completions, "key", "ref", "name", "onClose");
     }
 
+    @Test
     public void test_display_properties_external() {
         myFixture.configureByFiles("pervasives.ml");
         configureCode("Component.re", "[@react.component] external make : (~name:string, ~onClose: unit => unit) = \"Comp\";");
@@ -36,6 +42,7 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(completions, "key", "ref", "name", "onClose");
     }
 
+    @Test
     public void test_props_after_name() {
         myFixture.configureByFiles("pervasives.ml");
         configureCode("Component.re", "[@react.component] let make = (~name, ~onClose) => <div/>;");
@@ -48,6 +55,7 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         assertNull(completions);
     }
 
+    @Test
     public void test_shouldDisplayProperties_nested() {
         myFixture.configureByFiles("pervasives.ml");
         configureCode("A.re", "module Comp = { [@react.component] let make = (~name) => <div/>; };");
@@ -60,6 +68,7 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(completions, "key", "ref", "name");
     }
 
+    @Test
     public void test_shouldDisplayProperties_open() {
         myFixture.configureByFiles("pervasives.ml");
         configureCode("A.re", "module Comp = { [@react.component] let make = (~name) => <div/>; };");
@@ -72,6 +81,7 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(completions, "key", "ref", "name");
     }
 
+    @Test
     public void test_interface_local() {
         myFixture.configureByFiles("pervasives.ml");
         configureCode("A.re",
@@ -85,5 +95,4 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(completions, "key", "ref", "name", "enabled");
         assertSize(4, completions);
     }
-
 }

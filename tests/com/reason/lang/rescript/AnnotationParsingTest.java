@@ -2,25 +2,29 @@ package com.reason.lang.rescript;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
-import com.reason.lang.core.psi.impl.PsiAnnotation;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.RPsiAnnotation;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class AnnotationParsingTest extends ResParsingTestCase {
+    @Test
     public void test_annotation_name() {
-        assertEquals("@bs.module", ((PsiAnnotation) firstElement(parseCode("@bs.module"))).getName());
-        assertEquals("@bs.val", ((PsiAnnotation) firstElement(parseCode("@bs.val"))).getName());
+        assertEquals("@bs.module", ((RPsiAnnotation) firstElement(parseCode("@bs.module"))).getName());
+        assertEquals("@bs.val", ((RPsiAnnotation) firstElement(parseCode("@bs.val"))).getName());
     }
 
+    @Test
     public void test_annotation_with_string() {
-        PsiAnnotation annotation = (PsiAnnotation) firstElement(parseCode("@module(\"xyz\")"));
+        RPsiAnnotation annotation = (RPsiAnnotation) firstElement(parseCode("@module(\"xyz\")"));
 
         assertEquals("@module", annotation.getName());
     }
 
+    @Test
     public void test_chaining() {
         List<PsiNamedElement> es = new ArrayList<>(expressions(parseCode("@module(\"xyz\") @react.component")));
 
@@ -29,19 +33,28 @@ public class AnnotationParsingTest extends ResParsingTestCase {
         assertEquals("@react.component", es.get(1).getName());
     }
 
+    @Test
     public void test_eol() {
-        PsiType e = firstOfType(parseCode("type t = { @optional\n fn: unit => string }"), PsiType.class);
+        RPsiType e = firstOfType(parseCode("type t = { @optional\n fn: unit => string }"), RPsiType.class);
 
-        PsiRecord r = (PsiRecord) e.getBinding().getFirstChild();
-        PsiAnnotation a = PsiTreeUtil.findChildOfType(r, PsiAnnotation.class);
+        RPsiRecord r = (RPsiRecord) e.getBinding().getFirstChild();
+        RPsiAnnotation a = PsiTreeUtil.findChildOfType(r, RPsiAnnotation.class);
         assertEquals("@optional", a.getName());
         assertEquals("fn", r.getFields().get(0).getName());
     }
 
+    @Test
     public void test_doc() {
-        PsiAnnotation e = firstOfType(parseCode("@ocaml.doc(\n \"something\" \n )"), PsiAnnotation.class);
+        RPsiAnnotation e = firstOfType(parseCode("@ocaml.doc(\n \"something\" \n )"), RPsiAnnotation.class);
 
         assertEquals("@ocaml.doc", e.getName());
         assertEquals("\"something\"", e.getValue().getText());
+    }
+
+    @Test
+    public void test_uncurry() {
+        RPsiAnnotation e = firstOfType(parseCode("type t = @uncurry unit => unit"), RPsiAnnotation.class);
+
+        assertEquals("@uncurry", e.getText());
     }
 }

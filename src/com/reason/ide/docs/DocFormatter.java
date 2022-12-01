@@ -28,20 +28,20 @@ class DocFormatter {
             HtmlBuilder definitionBuilder = new HtmlBuilder();
 
             String path = source.getModuleName();
-            if (element instanceof PsiQualifiedPathElement) {
-                path = Joiner.join(".", ((PsiQualifiedPathElement) element).getPath());
+            if (element instanceof RPsiQualifiedPathElement) {
+                path = Joiner.join(".", ((RPsiQualifiedPathElement) element).getPath());
             }
             definitionBuilder.append(HtmlChunk.text(path).bold());
 
             if (element instanceof PsiNamedElement) {
-                String className = element.getClass().getSimpleName().substring(3).replace("Impl", "").toLowerCase();
+                String className = element.getClass().getSimpleName().substring(4).replace("Impl", "").toLowerCase();
                 String name = ((PsiNamedElement) element).getName();
                 if (name != null) {
                     definitionBuilder.append(HtmlChunk.raw("<p><i>"));
                     definitionBuilder.append(HtmlChunk.text(className + " " + name));
 
-                    if (element instanceof PsiSignatureElement) {
-                        PsiSignature signature = ((PsiSignatureElement) element).getSignature();
+                    if (element instanceof RPsiSignatureElement) {
+                        RPsiSignature signature = ((RPsiSignatureElement) element).getSignature();
                         if (signature != null) {
                             definitionBuilder.append(HtmlChunk.text(" : ")).append(HtmlChunk.text(signature.asText(lang)).wrapWith("code"));
                         }

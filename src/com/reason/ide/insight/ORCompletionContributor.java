@@ -16,7 +16,7 @@ import org.jetbrains.annotations.*;
 abstract class ORCompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
     static final Log LOG = Log.create("insight");
 
-    ORCompletionContributor(@NotNull ORTypes types, @NotNull QNameFinder qnameFinder) {
+    ORCompletionContributor(@NotNull ORLangTypes types, @NotNull QNameFinder qnameFinder) {
         extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(),
                 new CompletionProvider<>() {
                     @Override
@@ -50,10 +50,10 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                             ModuleCompletionProvider.addCompletions(element, result);
                             return;
                         }
-                        if (parent instanceof PsiOpen
-                                || parent instanceof PsiInclude
-                                || grandParent instanceof PsiOpen
-                                || grandParent instanceof PsiInclude) {
+                        if (parent instanceof RPsiOpen
+                                || parent instanceof RPsiInclude
+                                || grandParent instanceof RPsiOpen
+                                || grandParent instanceof RPsiInclude) {
                             LOG.debug("Inside OPEN/INCLUDE");
                             ModuleCompletionProvider.addCompletions(element, result);
                             return;
@@ -67,7 +67,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                             if (prevPrevLeaf != null && prevPrevLeaf.getNode().getElementType() != types.LPAREN) {
                                 LOG.debug("the previous element is DOT");
 
-                                if (parent instanceof PsiTagStart) {
+                                if (parent instanceof RPsiTagStart) {
                                     LOG.debug("Inside a Tag start");
                                     JsxNameCompletionProvider.addCompletions(types, element, result);
                                     return;
@@ -86,13 +86,13 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
 
                         // Jsx
                         //IElementType elementType = element.getNode().getElementType();
-                        if (element instanceof PsiUpperTagName) {
+                        if (element instanceof RPsiUpperTagName) {
                             LOG.debug("Previous element type is TAG_NAME");
                             JsxNameCompletionProvider.addCompletions(types, element, result);
                             return;
                         }
 
-                        if (parent instanceof PsiTagProperty /*inside the prop name*/ || parent instanceof PsiTagStart || grandParent instanceof PsiTagStart) {
+                        if (parent instanceof RPsiTagProperty /*inside the prop name*/ || parent instanceof RPsiTagStart || grandParent instanceof RPsiTagStart) {
                             LOG.debug("Inside a Tag start");
                             JsxAttributeCompletionProvider.addCompletions(element, result);
                             return;

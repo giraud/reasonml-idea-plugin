@@ -4,45 +4,109 @@ import com.intellij.psi.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class StringTemplateParsingTest extends ResParsingTestCase {
-    public void test_basic() {
-        List<PsiLet> es = letExpressions(parseCode("let x = `this is a ${var} Template string`\nlet y = 1"));
+    @Test
+    public void test_basic_new() {
+        List<RPsiLet> es = letExpressions(parseCode("let x = `this is a ${var} Template string`\nlet y = 1"));
 
-        PsiLetBinding b = first(es).getBinding();
+        RPsiLetBinding b = first(es).getBinding();
 
         assertSize(2, es);
         assertEquals("`this is a ${var} Template string`", b.getText());
 
-        PsiInterpolation inter = (PsiInterpolation) b.getFirstChild();
-        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, myTypes.C_INTERPOLATION_PART);
+        RPsiInterpolation inter = (RPsiInterpolation) b.getFirstChild();
+        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, myTypes.STRING_VALUE);
         assertSize(2, parts);
-        PsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, PsiInterpolationReference.class);
-        assertEquals(ref.getText(), "var");
+        RPsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, RPsiInterpolationReference.class);
+        assertEquals("var", ref.getText());
     }
 
-    public void test_ref_only() {
-        PsiLetBinding b = first(letExpressions(parseCode("let x = `${var}`"))).getBinding();
+    @Test
+    public void test_ref_only_new() {
+        RPsiLetBinding b = first(letExpressions(parseCode("let x = `${var}`"))).getBinding();
 
         assertEquals("`${var}`", b.getText());
 
-        PsiInterpolation inter = (PsiInterpolation) b.getFirstChild();
+        RPsiInterpolation inter = (RPsiInterpolation) b.getFirstChild();
         Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, myTypes.C_INTERPOLATION_PART);
         assertEmpty(parts);
-        PsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, PsiInterpolationReference.class);
-        assertEquals(ref.getText(), "var");
+        RPsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, RPsiInterpolationReference.class);
+        assertEquals("var", ref.getText());
+    }
+
+    @Test
+    public void test_string_new() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = `url(\"${var}\")`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        List<RPsiLiteralExpression> strings = ORUtil.findImmediateChildrenOfClass(e, RPsiLiteralExpression.class);
+        assertEquals("url(\"", strings.get(0).getText());
+        assertEquals("\")", strings.get(1).getText());
+        RPsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class);
+        assertEquals("var", ref.getText());
+    }
+
+    @Test
+    public void test_string_old() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = j`url(\"${var}\")`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        List<RPsiLiteralExpression> strings = ORUtil.findImmediateChildrenOfClass(e, RPsiLiteralExpression.class);
+        assertEquals("url(\"", strings.get(0).getText());
+        assertEquals("\")", strings.get(1).getText());
+        RPsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class);
+        assertEquals("var", ref.getText());
+    }
+
+    @Test
+    public void test_unbalanced_new() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = `url(\"${var\")`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        assertNull(ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class));
+        assertEquals("`url(\"${var\")`", e.getText());
+    }
+
+    @Test
+    public void test_no_ref_braces() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = `style {color:red}`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        assertNull(ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class));
+        assertNull(ORUtil.findImmediateFirstChildOfType(e, myTypes.LBRACE));
+        assertNull(ORUtil.findImmediateFirstChildOfType(e, myTypes.RBRACE));
+    }
+
+    @Test
+    public void test_no_ref_dollar() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = `style $color:red`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        assertNull(ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class));
+        assertNull(ORUtil.findImmediateFirstChildOfType(e, myTypes.DOLLAR));
+    }
+
+    @Test
+    public void test_no_ref_in_ref() {
+        RPsiInterpolation e = firstOfType(parseCode("let _ = `test{ ${noref ${ref} }`"), RPsiInterpolation.class);
+
+        assertNoParserError(e);
+        assertEquals("ref", ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class).getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/353
+    @Test
     public void test_GH_353() {
-        PsiLet e = first(letExpressions(parseCode("let _ = `${rowStart} / ${colStart}`")));
-        PsiLetBinding binding = e.getBinding();
-        PsiInterpolation inter = (PsiInterpolation) binding.getFirstChild();
+        RPsiLet e = first(letExpressions(parseCode("let _ = `${rowStart} / ${colStart}`")));
+        RPsiLetBinding binding = e.getBinding();
+        RPsiInterpolation inter = (RPsiInterpolation) binding.getFirstChild();
 
-        List<PsiInterpolationReference> refs = ORUtil.findImmediateChildrenOfClass(inter, PsiInterpolationReference.class);
+        List<RPsiInterpolationReference> refs = ORUtil.findImmediateChildrenOfClass(inter, RPsiInterpolationReference.class);
         assertSize(2, refs);
         assertEquals("rowStart", refs.get(0).getText());
         assertEquals("colStart", refs.get(1).getText());

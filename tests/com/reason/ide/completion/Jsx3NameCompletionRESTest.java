@@ -2,11 +2,16 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class Jsx3NameCompletionRESTest extends ORBasePlatformTestCase {
+    @Test
     public void test_outside_components() {
         configureCode("DialogHeader.res", "@react.component let make = () => { <div/> }");
         configureCode("DialogFooter.res", "@react.component let make = () => { <div/> }");
@@ -19,6 +24,7 @@ public class Jsx3NameCompletionRESTest extends ORBasePlatformTestCase {
         assertSize(2, completions);
     }
 
+    @Test
     public void test_dont_display_properties() {
         configureCode("DialogHeader.res", "@react.component let make = () => { <div/> }");
         configureCode("Dummy.res", "let _ = <<caret>Dialog");

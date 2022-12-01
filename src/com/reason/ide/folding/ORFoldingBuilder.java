@@ -8,7 +8,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.psi.ocamlyacc.*;
@@ -24,25 +24,27 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
     @Override
     public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
-        ORTypes types = ORUtil.getTypes(root.getLanguage());
+        ORLangTypes types = ORUtil.getTypes(root.getLanguage());
 
         PsiTreeUtil.processElements(root, element -> {
-            if (element instanceof PsiLet) {
-                foldLet(descriptors, (PsiLet) element);
-            } else if (element instanceof PsiType) {
-                foldType(descriptors, (PsiType) element);
-            } else if (element instanceof PsiInnerModule) {
-                foldModule(descriptors, (PsiInnerModule) element);
-            } else if (element instanceof PsiFunction) {
-                foldFunction(descriptors, (PsiFunction) element);
-            } else if (element instanceof PsiFunctor) {
-                foldFunctor(descriptors, (PsiFunctor) element);
-            } else if (element instanceof PsiTag) {
-                foldTag(descriptors, (PsiTag) element);
-            } else if (element instanceof PsiPatternMatch) {
-                foldPatternMatch(descriptors, (PsiPatternMatch) element);
-            } else if (element instanceof PsiSwitch) {
-                foldSwitch(descriptors, (PsiSwitch) element);
+            if (element instanceof RPsiLet) {
+                foldLet(descriptors, (RPsiLet) element);
+            } else if (element instanceof RPsiType) {
+                foldType(descriptors, (RPsiType) element);
+            } else if (element instanceof RPsiInnerModule) {
+                foldModule(descriptors, (RPsiInnerModule) element);
+            } else if (element instanceof RPsiFunction) {
+                foldFunction(descriptors, (RPsiFunction) element);
+            } else if (element instanceof RPsiFunctor) {
+                foldFunctor(descriptors, (RPsiFunctor) element);
+            } else if (element instanceof RPsiFunctorResult) {
+                foldFunctorResult(descriptors, (RPsiFunctorResult) element);
+            } else if (element instanceof RPsiTag) {
+                foldTag(descriptors, (RPsiTag) element);
+            } else if (element instanceof RPsiPatternMatch) {
+                foldPatternMatch(descriptors, (RPsiPatternMatch) element);
+            } else if (element instanceof RPsiSwitch) {
+                foldSwitch(descriptors, (RPsiSwitch) element);
             } else if (element instanceof OclYaccHeader) {
                 foldHeader(descriptors, (OclYaccHeader) element);
             } else if (element instanceof OclYaccRule) {
@@ -60,15 +62,15 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[0]);
     }
 
-    private void foldLet(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiLet letExpression) {
+    private void foldLet(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiLet letExpression) {
         FoldingDescriptor fold = fold(letExpression.getBinding());
         if (fold != null) {
             descriptors.add(fold);
         }
     }
 
-    private void foldType(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiType typeExpression) {
-        PsiElement constrName = ORUtil.findImmediateFirstChildOfClass(typeExpression, PsiLowerSymbol.class);
+    private void foldType(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiType typeExpression) {
+        PsiElement constrName = ORUtil.findImmediateFirstChildOfClass(typeExpression, RPsiLowerSymbol.class);
         if (constrName != null) {
             PsiElement binding = typeExpression.getBinding();
             if (binding != null && binding.getTextLength() > 5) {
@@ -77,7 +79,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldModule(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiInnerModule module) {
+    private void foldModule(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiInnerModule module) {
         FoldingDescriptor foldSignature = fold(module.getModuleType());
         if (foldSignature != null) {
             descriptors.add(foldSignature);
@@ -89,23 +91,30 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldFunction(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiFunction func) {
+    private void foldFunction(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiFunction func) {
         FoldingDescriptor foldBinding = fold(func.getBody());
         if (foldBinding != null) {
             descriptors.add(foldBinding);
         }
     }
 
-    private void foldFunctor(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiFunctor element) {
+    private void foldFunctor(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiFunctor element) {
         FoldingDescriptor foldBinding = fold(element.getBody());
         if (foldBinding != null) {
             descriptors.add(foldBinding);
         }
     }
 
-    private void foldTag(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiTag element) {
-        PsiTagStart start = ORUtil.findImmediateFirstChildOfClass(element, PsiTagStart.class);
-        PsiTagClose close = start == null ? null : ORUtil.findImmediateFirstChildOfClass(element, PsiTagClose.class);
+    private void foldFunctorResult(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiFunctorResult element) {
+        FoldingDescriptor foldBinding = fold(element);
+        if (foldBinding != null) {
+            descriptors.add(foldBinding);
+        }
+    }
+
+    private void foldTag(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiTag element) {
+        RPsiTagStart start = ORUtil.findImmediateFirstChildOfClass(element, RPsiTagStart.class);
+        RPsiTagClose close = start == null ? null : ORUtil.findImmediateFirstChildOfClass(element, RPsiTagClose.class);
         // Auto-closed tags are not foldable
         if (close != null) {
             PsiElement lastChild = start.getLastChild();
@@ -114,8 +123,8 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldSwitch(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiSwitch element) {
-        PsiBinaryCondition condition = element.getCondition();
+    private void foldSwitch(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiSwitch element) {
+        RPsiBinaryCondition condition = element.getCondition();
         if (condition != null) {
             int startOffset = condition.getTextOffset() + condition.getTextLength() + 1;
             int endOffset = element.getTextRange().getEndOffset();
@@ -126,7 +135,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldPatternMatch(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiPatternMatch element) {
+    private void foldPatternMatch(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiPatternMatch element) {
         FoldingDescriptor fold = fold(element.getBody());
         if (fold != null) {
             descriptors.add(fold);

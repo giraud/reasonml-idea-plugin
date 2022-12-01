@@ -2,8 +2,9 @@
 package com.reason.lang.ocamlyacc;
 
 import com.intellij.psi.tree.*;
+import com.reason.lang.core.type.*;
 
-public class OclYaccTypes {
+public class OclYaccTypes extends ORTypes {
     public static final OclYaccTypes INSTANCE = new OclYaccTypes();
 
     final IElementType DECLARATION = new OclYaccElementType("DECLARATION");
@@ -14,7 +15,8 @@ public class OclYaccTypes {
     final IElementType TRAILER = new OclYaccElementType("TRAILER");
 
     final IElementType COLON = new OclYaccTokenType("COLON");
-    final IElementType COMMENT = new OclYaccTokenType("COMMENT");
+    final IElementType MULTI_COMMENT = new OclYaccTokenType("MULTI_COMMENT");
+    final IElementType SINGLE_COMMENT = new OclYaccTokenType("SINGLE_COMMENT");
     final IElementType DOT = new OclYaccTokenType("DOT");
     final IElementType GT = new OclYaccTokenType("GT");
     final IElementType HEADER_START = new OclYaccTokenType("HEADER_START");

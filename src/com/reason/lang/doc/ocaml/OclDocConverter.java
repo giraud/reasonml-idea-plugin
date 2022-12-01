@@ -91,7 +91,7 @@ public class OclDocConverter extends ORDocConverter {
                     currentBuilder = listBuilder;
                 } else if (tokenType == OclDocTypes.RBRACE) {
                     ORDocHtmlBuilder builder = builders.empty() ? null : builders.pop();
-                    currentBuilder = builders.peek();
+                    currentBuilder = builders.empty() ? currentBuilder : builders.peek();
                     if (builder instanceof TagHtmlBuilder) {
                         TagHtmlBuilder tagBuilder = (TagHtmlBuilder) builder;
                         tagBuilder.appendChildren(false);

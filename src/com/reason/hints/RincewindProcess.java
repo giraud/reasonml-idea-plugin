@@ -59,6 +59,7 @@ public class RincewindProcess {
             StringBuilder msgBuffer = new StringBuilder();
             if (errReader.ready()) {
                 errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
+                LOG.warn("Error when processing types");
                 LOG.warn(msgBuffer.toString());
             } else {
                 final InferredTypesImplementation types = new InferredTypesImplementation();
@@ -107,14 +108,6 @@ public class RincewindProcess {
         return dump.toString();
     }
 
-    public @NotNull List<String> dumpTypes(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile) {
-        LOG.debug("Dumping types", cmtFile);
-
-        final List<String> dump = new ArrayList<>();
-        dumper(rincewindBinary, cmtFile, "", dump::add);
-
-        return dump;
-    }
 
     public @NotNull List<String> dumpMeta(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile) {
         LOG.debug("Dumping meta", cmtFile);
@@ -125,11 +118,21 @@ public class RincewindProcess {
         return dump;
     }
 
+    public @NotNull List<String> dumpTypes(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile) {
+        LOG.debug("Dumping types", cmtFile);
+
+        final List<String> dump = new ArrayList<>();
+        dumper(rincewindBinary, cmtFile, null, dump::add);
+
+        return dump;
+    }
+
+
     interface DumpVisitor {
         void visitLine(String line);
     }
 
-    public void dumper(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile, @NotNull String arg, @NotNull DumpVisitor visitor) {
+    public void dumper(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile, @Nullable String arg, @NotNull DumpVisitor visitor) {
         if (!new File(rincewindBinary).exists()) {
             LOG.debug("File doesn't exists", rincewindBinary);
             return;
@@ -145,8 +148,13 @@ public class RincewindProcess {
         if (contentRoot != null) {
             Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 
-            ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, arg, cmtPath.toString());
+            ProcessBuilder processBuilder = arg == null
+                    ? new ProcessBuilder(rincewindBinary, cmtPath.toString())
+                    : new ProcessBuilder(rincewindBinary, arg, cmtPath.toString());
             processBuilder.directory(new File(contentRoot.getPath()));
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(Joiner.join(" ", processBuilder.command()));
+            }
 
             Process rincewind = null;
             try {

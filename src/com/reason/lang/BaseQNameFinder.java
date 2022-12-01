@@ -13,8 +13,8 @@ import java.util.stream.*;
 public abstract class BaseQNameFinder implements QNameFinder {
 
     @NotNull
-    protected String extractPathName(@NotNull PsiElement element, @NotNull ORTypes types) {
-        String path = element instanceof PsiUpperSymbol ? element.getText() : "";
+    protected String extractPathName(@NotNull PsiElement element, @NotNull ORLangTypes types) {
+        String path = element instanceof RPsiUpperSymbol ? element.getText() : "";
 
         PsiElement prevSibling = PsiTreeUtil.prevVisibleLeaf(element);
         IElementType prevType = prevSibling == null ? null : prevSibling.getNode().getElementType();
@@ -23,9 +23,9 @@ public abstract class BaseQNameFinder implements QNameFinder {
             prevSibling = prevSibling.getPrevSibling();
         }
 
-        if (prevSibling != null && (prevSibling.getNode().getElementType() == types.DOT || prevSibling instanceof PsiUpperSymbol)) {
+        if (prevSibling != null && (prevSibling.getNode().getElementType() == types.DOT || prevSibling instanceof RPsiUpperSymbol)) {
             // Extract the qualified name of current element
-            if (prevSibling instanceof PsiUpperSymbol) {
+            if (prevSibling instanceof RPsiUpperSymbol) {
                 String name = prevSibling.getText();
                 path = name == null ? path : path.isEmpty() ? name : name + "." + path;
                 prevSibling = prevSibling.getPrevSibling();
@@ -33,7 +33,7 @@ public abstract class BaseQNameFinder implements QNameFinder {
 
             while (prevSibling != null && prevSibling.getNode().getElementType() == types.DOT) {
                 prevSibling = prevSibling.getPrevSibling();
-                if (prevSibling instanceof PsiUpperSymbol) {
+                if (prevSibling instanceof RPsiUpperSymbol) {
                     path = prevSibling.getText() + (path.isEmpty() ? "" : "." + path);
                     prevSibling = prevSibling.getPrevSibling();
                 } else {

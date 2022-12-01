@@ -1,6 +1,5 @@
 package com.reason.ide.settings;
 
-import com.intellij.execution.wsl.*;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.fileChooser.*;
 import com.intellij.openapi.module.Module;

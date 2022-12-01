@@ -29,13 +29,13 @@ public final class PsiFinder {
         myProject = project;
     }
 
-    public @Nullable PsiQualifiedPathElement findModuleBack(@Nullable PsiElement root, @Nullable String path) {
+    public @Nullable RPsiQualifiedPathElement findModuleBack(@Nullable PsiElement root, @Nullable String path) {
         if (root != null && path != null) {
             PsiElement prev = ORUtil.prevSibling(root);
             PsiElement item = prev == null ? root.getParent() : prev;
             while (item != null) {
-                if (item instanceof PsiInnerModule) {
-                    PsiInnerModule module = (PsiInnerModule) item;
+                if (item instanceof RPsiInnerModule) {
+                    RPsiInnerModule module = (RPsiInnerModule) item;
                     String name = module.getModuleName();
                     String alias = module.getAlias();
                     if (alias != null) {
@@ -59,13 +59,13 @@ public final class PsiFinder {
         return null;
     }
 
-    private @Nullable PsiQualifiedPathElement findModuleForward(@Nullable PsiElement root, @Nullable String path) {
+    private @Nullable RPsiQualifiedPathElement findModuleForward(@Nullable PsiElement root, @Nullable String path) {
         if (root != null && path != null) {
             PsiElement next = ORUtil.nextSibling(root);
             PsiElement item = next == null ? root.getFirstChild() : next;
             while (item != null) {
-                if (item instanceof PsiInnerModule) {
-                    PsiInnerModule module = (PsiInnerModule) item;
+                if (item instanceof RPsiInnerModule) {
+                    RPsiInnerModule module = (RPsiInnerModule) item;
                     String name = module.getModuleName();
                     if (path.equals(name)) {
                         return module;
@@ -84,19 +84,19 @@ public final class PsiFinder {
     }
 
     @FunctionalInterface
-    public interface ModuleFilter<T extends PsiModule> {
+    public interface ModuleFilter<T extends RPsiModule> {
         boolean accepts(T module);
     }
 
     static class PartitionedModules {
-        private final List<PsiModule> m_interfaces = new ArrayList<>();
-        private final List<PsiModule> m_implementations = new ArrayList<>();
+        private final List<RPsiModule> m_interfaces = new ArrayList<>();
+        private final List<RPsiModule> m_implementations = new ArrayList<>();
 
-        PartitionedModules(@NotNull Project project, @Nullable Collection<PsiModule> modules, @Nullable ModuleFilter<PsiModule> filter) {
+        PartitionedModules(@NotNull Project project, @Nullable Collection<RPsiModule> modules, @Nullable ModuleFilter<RPsiModule> filter) {
             if (modules != null) {
                 BsCompiler bucklescript = project.getService(BsCompiler.class);
 
-                for (PsiModule module : modules) {
+                for (RPsiModule module : modules) {
                     FileBase file = (FileBase) module.getContainingFile();
                     if (bucklescript.isDependency(file.getVirtualFile())) {
                         if (filter == null || filter.accepts(module)) {
@@ -123,17 +123,17 @@ public final class PsiFinder {
             return !m_interfaces.isEmpty();
         }
 
-        public @NotNull List<PsiModule> getInterfaces() {
+        public @NotNull List<RPsiModule> getInterfaces() {
             return m_interfaces;
         }
 
-        public @NotNull List<PsiModule> getImplementations() {
+        public @NotNull List<RPsiModule> getImplementations() {
             return m_implementations;
         }
     }
 
-    public @NotNull Set<PsiModule> findModulesbyName(@NotNull String name, @NotNull ORFileType fileType, ModuleFilter<PsiModule> filter) {
-        Set<PsiModule> result = new HashSet<>();
+    public @NotNull Set<RPsiModule> findModulesbyName(@NotNull String name, @NotNull ORFileType fileType, ModuleFilter<RPsiModule> filter) {
+        Set<RPsiModule> result = new HashSet<>();
         GlobalSearchScope scope = GlobalSearchScope.allScope(myProject);
 
         StubIndex.getInstance().processAllKeys(IndexKeys.MODULES,
@@ -141,7 +141,7 @@ public final class PsiFinder {
                 CommonProcessors.processAll(
                         moduleName -> {
                             if (name.equals(moduleName)) {
-                                Collection<PsiModule> modules = ModuleIndex.getElements(moduleName, myProject, scope);
+                                Collection<RPsiModule> modules = ModuleIndex.getElements(moduleName, myProject, scope);
                                 PartitionedModules partitionedModules =
                                         new PartitionedModules(myProject, modules, filter);
 
@@ -169,29 +169,29 @@ public final class PsiFinder {
                             + result.size()
                             + "): "
                             + Joiner.join(
-                            ", ", result.stream().map(PsiModule::getName).collect(Collectors.toList())));
+                            ", ", result.stream().map(RPsiModule::getName).collect(Collectors.toList())));
         }
 
         return result;
     }
 
     @NotNull
-    public Set<PsiModule> findModuleAlias(@Nullable String qname) {
+    public Set<RPsiModule> findModuleAlias(@Nullable String qname) {
         if (qname == null) {
             return Collections.emptySet();
         }
 
-        Set<PsiModule> result = new HashSet<>();
+        Set<RPsiModule> result = new HashSet<>();
 
         GlobalSearchScope scope = GlobalSearchScope.allScope(myProject);
-        Collection<PsiModule> psiModules = ModuleFqnIndex.getElements(qname, myProject, scope);
-        for (PsiModule module : psiModules) {
+        Collection<RPsiModule> psiModules = ModuleFqnIndex.getElements(qname, myProject, scope);
+        for (RPsiModule module : psiModules) {
             String alias = module.getAlias();
             if (alias != null) {
-                Collection<PsiModule> aliasModules = ModuleFqnIndex.getElements(alias, myProject, scope);
+                Collection<RPsiModule> aliasModules = ModuleFqnIndex.getElements(alias, myProject, scope);
                 if (!aliasModules.isEmpty()) {
-                    for (PsiModule aliasModule : aliasModules) {
-                        Set<PsiModule> nextModuleAlias = findModuleAlias(aliasModule.getQualifiedName());
+                    for (RPsiModule aliasModule : aliasModules) {
+                        Set<RPsiModule> nextModuleAlias = findModuleAlias(aliasModule.getQualifiedName());
                         if (nextModuleAlias.isEmpty()) {
                             result.add(aliasModule);
                         } else {
@@ -206,29 +206,29 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Set<PsiModule> findModulesFromQn(@Nullable String qname, boolean resolveAlias, @NotNull ORFileType fileType) {
+    public Set<RPsiModule> findModulesFromQn(@Nullable String qname, boolean resolveAlias, @NotNull ORFileType fileType) {
         if (qname == null) {
             return Collections.emptySet();
         }
 
-        Set<PsiModule> result = new HashSet<>();
+        Set<RPsiModule> result = new HashSet<>();
         GlobalSearchScope scope = GlobalSearchScope.allScope(myProject);
 
         // Try qn directly
-        Collection<PsiModule> modules = ModuleFqnIndex.getElements(qname, myProject, scope);
+        Collection<RPsiModule> modules = ModuleFqnIndex.getElements(qname, myProject, scope);
 
         if (modules.isEmpty()) {
             // Qn not working, maybe because of aliases... try to navigate to each module
             String[] names = qname.split("\\.");
 
             // extract first token of path
-            Set<PsiModule> firstModules =
+            Set<RPsiModule> firstModules =
                     findModulesbyName(names[0], interfaceOrImplementation, null);
-            PsiModule firstModule = firstModules.isEmpty() ? null : firstModules.iterator().next();
+            RPsiModule firstModule = firstModules.isEmpty() ? null : firstModules.iterator().next();
 
-            Set<PsiModule> firstModuleAliases =
+            Set<RPsiModule> firstModuleAliases =
                     findModuleAlias(firstModule == null ? null : firstModule.getQualifiedName());
-            PsiModule currentModule =
+            RPsiModule currentModule =
                     firstModuleAliases.isEmpty() ? firstModule : firstModuleAliases.iterator().next();
             if (currentModule != null) {
                 for (int i = 1; i < names.length; i++) {
@@ -238,7 +238,7 @@ public final class PsiFinder {
                     currentModule = currentModule.getModuleExpression(names[i]);
                     String alias = currentModule == null ? null : currentModule.getAlias();
                     if (alias != null) {
-                        Set<PsiModule> modulesByName = findModulesbyName(alias, fileType, null);
+                        Set<RPsiModule> modulesByName = findModulesbyName(alias, fileType, null);
                         if (!modulesByName.isEmpty()) {
                             currentModule = modulesByName.iterator().next();
                         }
@@ -251,14 +251,14 @@ public final class PsiFinder {
             }
         } else {
             // Qn returned something
-            for (PsiModule module : modules) {
+            for (RPsiModule module : modules) {
                 String alias = resolveAlias ? module.getAlias() : null;
                 if (alias == null) {
                     // It's not an alias, but maybe it's a functor call that we must resolve if asked
-                    PsiFunctorCall functorCall = module instanceof PsiInnerModule ? ((PsiInnerModule) module).getFunctorCall() : null;
+                    RPsiFunctorCall functorCall = module instanceof RPsiInnerModule ? ((RPsiInnerModule) module).getFunctorCall() : null;
                     if (resolveAlias && functorCall != null) {
                         String functorName = functorCall.getName();
-                        Set<PsiModule> modulesFromFunctor = null;
+                        Set<RPsiModule> modulesFromFunctor = null;
 
                         QNameFinder qnameFinder = QNameFinderFactory.getQNameFinder(functorCall.getLanguage());
                         Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorCall);

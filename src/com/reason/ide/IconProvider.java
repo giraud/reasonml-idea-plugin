@@ -5,7 +5,7 @@ import com.intellij.psi.*;
 import com.reason.comp.esy.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import icons.*;
@@ -18,7 +18,7 @@ public class IconProvider extends com.intellij.ide.IconProvider {
   @Override
   public Icon getIcon(@NotNull PsiElement psiElement, int flags) {
     PsiElement element =
-        psiElement instanceof PsiFakeModule ? psiElement.getContainingFile() : psiElement;
+        psiElement instanceof RPsiFakeModule ? psiElement.getContainingFile() : psiElement;
     if (element instanceof PsiFile) {
       if (element instanceof OclFile) {
         return ORIcons.OCL_FILE;
@@ -41,22 +41,22 @@ public class IconProvider extends com.intellij.ide.IconProvider {
       if (isEsyPackageJson((PsiFile) element)) {
         return ORIcons.ESY_FILE;
       }
-    } else if (element instanceof PsiException) {
+    } else if (element instanceof RPsiException) {
       return ORIcons.EXCEPTION;
-    } else if (element instanceof PsiInnerModule) {
+    } else if (element instanceof RPsiInnerModule) {
       return ORIcons.INNER_MODULE;
-    } else if (element instanceof PsiFunctor) {
+    } else if (element instanceof RPsiFunctor) {
       return ORIcons.FUNCTOR;
-    } else if (element instanceof PsiType) {
+    } else if (element instanceof RPsiType) {
       return ORIcons.TYPE;
-    } else if (element instanceof PsiVariantDeclaration) {
+    } else if (element instanceof RPsiVariantDeclaration) {
       return ORIcons.VARIANT;
-    } else if (element instanceof PsiLet) {
-      PsiLet let = (PsiLet) element;
+    } else if (element instanceof RPsiLet) {
+      RPsiLet let = (RPsiLet) element;
       return let.isRecord() ? ORIcons.OBJECT : (let.isFunction() ? ORIcons.FUNCTION : ORIcons.LET);
-    } else if (element instanceof PsiExternal) {
+    } else if (element instanceof RPsiExternal) {
       return ORIcons.EXTERNAL;
-    } else if (element instanceof PsiVal) {
+    } else if (element instanceof RPsiVal) {
       return ORIcons.VAL;
     }
     return null;

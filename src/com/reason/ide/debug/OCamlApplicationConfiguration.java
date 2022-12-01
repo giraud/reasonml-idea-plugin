@@ -11,7 +11,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 
-public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCamlModuleBasedConfiguration, PsiModule> {
+public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCamlModuleBasedConfiguration, RPsiModule> {
     public OCamlApplicationConfiguration(String name, @NotNull OCamlModuleBasedConfiguration configurationModule, @NotNull ConfigurationFactory factory) {
         super(name, configurationModule, factory);
     }

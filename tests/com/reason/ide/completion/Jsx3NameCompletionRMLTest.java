@@ -2,12 +2,17 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class Jsx3NameCompletionRMLTest extends ORBasePlatformTestCase {
     // need multiple components because completeBasic returns null if there is only one lookup element
+    @Test
     public void test_local_component() {
         configureCode("Dialog.re",
                 "module DialogHeader = { [@react.component] let make = () => { <div/> }; };\n" +
@@ -21,6 +26,7 @@ public class Jsx3NameCompletionRMLTest extends ORBasePlatformTestCase {
         assertSize(2, completions);
     }
 
+    @Test
     public void test_outside_components() {
         configureCode("DialogHeader.re", "[@react.component] let make = () => { <div/> };");
         configureCode("DialogFooter.re", "[@react.component] let make = () => { <div/> };");
@@ -33,6 +39,7 @@ public class Jsx3NameCompletionRMLTest extends ORBasePlatformTestCase {
         assertSize(2, completions);
     }
 
+    @Test
     public void test_dont_display_properties() {
         configureCode("DialogHeader.re", "[@react.component] let make = () => { <div/> };");
         configureCode("Dummy.re", "let _ = <<caret>Dialog");
@@ -44,6 +51,7 @@ public class Jsx3NameCompletionRMLTest extends ORBasePlatformTestCase {
         assertEquals("DialogHeader", completions.get(0));
     }
 
+    @Test
     public void test_dot() {
         configureCode("Dialog.re", "module Title = { [@react.component] let make = () => <div/>; }; [@react.component] let make = () => <div/>;");
         configureCode("A.re", "let _ = <Dialog.<caret>");
@@ -55,6 +63,7 @@ public class Jsx3NameCompletionRMLTest extends ORBasePlatformTestCase {
         assertEquals(1, completions.size());
     }
 
+    @Test
     public void test_local_recursive() {
         configureCode("A.re",
                 "module Confirm = = { [@react.component] let make = () => <div/>; };\n" +

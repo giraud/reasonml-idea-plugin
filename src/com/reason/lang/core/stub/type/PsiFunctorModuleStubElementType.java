@@ -12,11 +12,11 @@ public class PsiFunctorModuleStubElementType extends PsiModuleStubElementType {
         super(name, language);
     }
 
-    public @NotNull PsiFunctor createPsi(@NotNull PsiModuleStub stub) {
-        return new PsiFunctorImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    public @NotNull RPsiFunctor createPsi(@NotNull PsiModuleStub stub) {
+        return new RPsiFunctorImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    public @NotNull PsiFunctor createPsi(@NotNull ASTNode node) {
-        return new PsiFunctorImpl(ORTypesUtil.getInstance(getLanguage()), node);
+    public @NotNull RPsiFunctor createPsi(@NotNull ASTNode node) {
+        return new RPsiFunctorImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 }

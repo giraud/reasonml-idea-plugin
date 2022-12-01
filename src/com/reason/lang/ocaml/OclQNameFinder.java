@@ -4,10 +4,10 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.containers.*;
 import com.reason.ide.files.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.psi.reference.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -51,8 +51,8 @@ public class OclQNameFinder extends BaseQNameFinder {
                 qualifiedNames.add(moduleName + pathExtension);
                 resolvedQualifiedNames.add(moduleName + resolvedPathExtension);
                 break;
-            } else if (item instanceof PsiInnerModule) {
-                PsiInnerModule module = (PsiInnerModule) item;
+            } else if (item instanceof RPsiInnerModule) {
+                RPsiInnerModule module = (RPsiInnerModule) item;
                 String moduleQName = module.getQualifiedName();
 
                 String alias = module.getAlias();
@@ -81,7 +81,7 @@ public class OclQNameFinder extends BaseQNameFinder {
                     qualifiedNames.add(moduleName + pathExtension);
                     resolvedQualifiedNames.add(moduleName + resolvedPathExtension);
                 }
-            } else if (item instanceof PsiLocalOpen) {
+            } else if (item instanceof RPsiLocalOpen) {
                 String openName = extractPathName(item, OclTypes.INSTANCE);
                 // Add local open value to all previous elements
                 qualifiedNames.addAll(extendPathWith(filePath, openName, qualifiedNames));
@@ -89,8 +89,8 @@ public class OclQNameFinder extends BaseQNameFinder {
                 // Same for resolved elements
                 resolvedQualifiedNames.addAll(extendPathWith(filePath, openName, resolvedQualifiedNames));
                 resolvedQualifiedNames.add(openName + resolvedPathExtension);
-            } else if (item instanceof PsiOpen || item instanceof PsiInclude) {
-                String openName = item instanceof PsiOpen ? ((PsiOpen) item).getPath() : ((PsiInclude) item).getIncludePath();
+            } else if (item instanceof RPsiOpen || item instanceof RPsiInclude) {
+                String openName = item instanceof RPsiOpen ? ((RPsiOpen) item).getPath() : ((RPsiInclude) item).getIncludePath();
                 String moduleName = ((FileBase) sourceElement.getContainingFile()).getModuleName();
                 // Add open value to all previous elements
                 qualifiedNames.addAll(extendPathWith(filePath, openName, qualifiedNames));
@@ -100,9 +100,9 @@ public class OclQNameFinder extends BaseQNameFinder {
                 resolvedQualifiedNames.addAll(extendPathWith(filePath, openName, resolvedQualifiedNames));
                 resolvedQualifiedNames.add(openName + resolvedPathExtension);
                 resolvedQualifiedNames.add(moduleName + "." + openName + resolvedPathExtension);
-            } else if (item instanceof PsiLetBinding) {
+            } else if (item instanceof RPsiLetBinding) {
                 // let a = { <caret> }
-                PsiLet let = PsiTreeUtil.getParentOfType(item, PsiLet.class);
+                RPsiLet let = PsiTreeUtil.getParentOfType(item, RPsiLet.class);
                 String letQName = let == null ? null : let.getQualifiedName();
                 if (letQName != null) {
                     qualifiedNames.addAll(extendPathWith(filePath, letQName, qualifiedNames));
@@ -112,9 +112,9 @@ public class OclQNameFinder extends BaseQNameFinder {
                     resolvedQualifiedNames.add(letQName + resolvedPathExtension);
                     // If function, register all parameters of function
                     if (let.isFunction()) {
-                        PsiFunction function = let.getFunction();
-                        List<PsiParameterDeclaration> parameters = function == null ? emptyList() : function.getParameters();
-                        for (PsiParameterDeclaration parameter : parameters) {
+                        RPsiFunction function = let.getFunction();
+                        List<RPsiParameterDeclaration> parameters = function == null ? emptyList() : function.getParameters();
+                        for (RPsiParameterDeclaration parameter : parameters) {
                             String paramQName = letQName + "[" + parameter.getName() + "]";
                             qualifiedNames.add(paramQName);
                             // Same for resolved elements
@@ -124,12 +124,12 @@ public class OclQNameFinder extends BaseQNameFinder {
                 }
             }
       /*
-      else if (item instanceof PsiFunction) {
+      else if (item instanceof RPsiFunction) {
         PsiQualifiedElement parent = PsiTreeUtil.getParentOfType(item, PsiQualifiedElement.class);
         if (parent != null) {
           String parentQName = parent.getQualifiedName();
           // Register all parameters of function
-          for (PsiParameterDeclaration parameter : ((PsiFunction) item).getParameters()) {
+          for (RPsiParameterDeclaration parameter : ((RPsiFunction) item).getParameters()) {
             String paramQName = parentQName + "[" + parameter.getName() + "]";
             qualifiedNames.add(paramQName);
             // Same for resolved elements

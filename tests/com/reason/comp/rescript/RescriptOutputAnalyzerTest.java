@@ -2,7 +2,11 @@ package com.reason.comp.rescript;
 
 import com.reason.ide.*;
 import com.reason.ide.annotations.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class RescriptOutputAnalyzerTest extends ORBasePlatformTestCase {
     /*
     FAILED: src/InputTest.ast
@@ -19,6 +23,7 @@ public class RescriptOutputAnalyzerTest extends ORBasePlatformTestCase {
 
     FAILED: cannot make progress due to previous errors.
     */
+    @Test
     public void test_error_01() {
         String[] lines = new String[]{
                 "FAILED: src/InputTest.ast", //
@@ -61,6 +66,7 @@ public class RescriptOutputAnalyzerTest extends ORBasePlatformTestCase {
 
     FAILED: cannot make progress due to previous errors.
      */
+    @Test
     public void test_error_02() {
         String[] lines = new String[]{
                 "FAILED: src/InputTest.ast", //
@@ -97,6 +103,7 @@ Error: This expression has type int but an expression was expected of type    fi
          float                                                                -
 FAILED: cannot make progress due to previous errors.                          * -> unknown
      */
+    @Test
     public void test_error_03() {
         String[] lines = new String[]{
                 "File \"C:\\bla\\bla\\src\\InputTest.res\", line 1, characters 9-10:", //
@@ -127,6 +134,7 @@ FAILED: cannot make progress due to previous errors.                          * 
     File "C:\bla\bla\src\InputTest.res", line 8, characters 13-17:        errorMessage -> fileLocation
     Error (warning 27): unused variable sss.                              fileLocation -> errorMessage(warning)
     */
+    @Test
     public void test_error_04() {
         String[] lines = new String[]{
                 "File \"C:\\bla\\bla\\src\\InputTest.res\", line 2, characters 5-9:", //
@@ -166,6 +174,7 @@ FAILED: cannot make progress due to previous errors.                          * 
     File "C:\bla\bla\src\InputTest.res", line 186, characters 8-18:       errorMessage -> fileLocation
     Warning 27: unused variable onCanceled.                               fileLocation -> warningMessage
     */
+    @Test
     public void test_error_05() {
         String[] lines = new String[]{
                 "File \"C:\\bla\\bla\\src\\InputTest.res\", line 185, characters 8-17:", //

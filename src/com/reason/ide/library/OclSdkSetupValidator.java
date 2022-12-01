@@ -54,7 +54,6 @@ public class OclSdkSetupValidator implements ProjectSdkSetupValidator {
 
             @Override
             public void handleQuickFixClick(@NotNull Editor editor, @NotNull PsiFile psiFile) {
-                // TODO implement method
             }
         };
     }

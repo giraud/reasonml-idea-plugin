@@ -4,7 +4,7 @@ package com.reason.lang.core.psi.ocamlyacc;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.reason.lang.core.psi.PsiStructuredElement;
+import com.reason.lang.core.psi.RPsiStructuredElement;
 
 public class OclYaccVisitor extends PsiElementVisitor {
 
@@ -32,7 +32,7 @@ public class OclYaccVisitor extends PsiElementVisitor {
     visitPsiStructuredElement(o);
   }
 
-  public void visitPsiStructuredElement(@NotNull PsiStructuredElement o) {
+  public void visitPsiStructuredElement(@NotNull RPsiStructuredElement o) {
     visitElement(o);
   }
 

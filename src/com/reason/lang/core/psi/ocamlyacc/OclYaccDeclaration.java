@@ -5,7 +5,7 @@ import com.intellij.navigation.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
-public interface OclYaccDeclaration extends PsiStructuredElement {
+public interface OclYaccDeclaration extends RPsiStructuredElement {
 
   @NotNull
   ItemPresentation getPresentation();

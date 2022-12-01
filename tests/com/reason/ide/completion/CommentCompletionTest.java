@@ -4,7 +4,11 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
+@RunWith(JUnit4.class)
 public class CommentCompletionTest extends BasePlatformTestCase {
   @NotNull
   @Override
@@ -12,6 +16,7 @@ public class CommentCompletionTest extends BasePlatformTestCase {
     return "testData/com/reason/lang";
   }
 
+  @Test
   public void testCommentCompletion() {
     myFixture.configureByFiles("pervasives.ml");
     myFixture.configureByText("Comment.re", "/*<caret>*/");
@@ -22,6 +27,7 @@ public class CommentCompletionTest extends BasePlatformTestCase {
     assertEmpty(strings);
   }
 
+  @Test
   public void testCommentStartCompletion() {
     myFixture.configureByFiles("pervasives.ml");
     myFixture.configureByText("Comment.re", "/*<caret>");

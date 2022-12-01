@@ -12,20 +12,20 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-public class PsiExceptionStubElementType extends ORStubElementType<PsiExceptionStub, PsiException> {
+public class PsiExceptionStubElementType extends ORStubElementType<PsiExceptionStub, RPsiException> {
     public PsiExceptionStubElementType(@NotNull String name, @NotNull Language language) {
         super(name, language);
     }
 
-    public @NotNull PsiException createPsi(@NotNull PsiExceptionStub stub) {
-        return new PsiExceptionImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    public @NotNull RPsiException createPsi(@NotNull PsiExceptionStub stub) {
+        return new RPsiExceptionImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
-    public @NotNull PsiException createPsi(@NotNull ASTNode node) {
-        return new PsiExceptionImpl(ORTypesUtil.getInstance(getLanguage()), node);
+    public @NotNull RPsiException createPsi(@NotNull ASTNode node) {
+        return new RPsiExceptionImpl(ORTypesUtil.getInstance(getLanguage()), node);
     }
 
-    public @NotNull PsiExceptionStub createStub(@NotNull PsiException psi, @Nullable StubElement parentStub) {
+    public @NotNull PsiExceptionStub createStub(@NotNull RPsiException psi, @Nullable StubElement parentStub) {
         String[] path = psi.getPath();
         return new PsiExceptionStub(parentStub, this, psi.getName(), path == null ? EMPTY_PATH : path, psi.getAlias());
     }

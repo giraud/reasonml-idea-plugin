@@ -5,7 +5,7 @@ import com.intellij.util.io.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
-public class PsiTypeStub extends PsiQualifiedNameStub<PsiType> {
+public class PsiTypeStub extends PsiQualifiedNameStub<RPsiType> {
     private final boolean myAbstract;
     private final boolean myJsObject;
     private final boolean myRecord;

@@ -4,38 +4,39 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.junit.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctorParsingTest extends ResParsingTestCase {
+    @Test
     public void test_basic() {
-        PsiNamedElement e = first(expressions(parseCode("module Make = (M: Def): S => {}")));
+        RPsiFunctor e = firstOfType(parseCode("module Make = (M: Def): S => {}"), RPsiFunctor.class);
 
-        PsiFunctor f = (PsiFunctor) e;
-        assertEquals("S", f.getReturnType().getText());
-        assertEquals("{}", f.getBody().getText());
-        assertNull(PsiTreeUtil.findChildOfType(f.getBody(), PsiScopedExpr.class));
+        assertEquals("S", e.getReturnType().getText());
+        assertEquals("{}", e.getBody().getText());
+        assertNull(PsiTreeUtil.findChildOfType(e.getBody(), RPsiScopedExpr.class));
+        assertDoesntContain(extractUpperSymbolTypes(e), myTypes.A_VARIANT_NAME);
     }
 
+    @Test
     public void test_withConstraints() {
-        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make = (M: Input) : (S with type t<'a> = M.t<'a> and type b = M.b) => {}"));
+        RPsiFunctor e = firstOfType(parseCode("module Make = (M: Input) : (S with type t<'a> = M.t<'a> and type b = M.b) => {}"), RPsiFunctor.class);
 
-        assertEquals(1, expressions.size());
-        PsiFunctor f = (PsiFunctor) first(expressions);
+        assertEquals("M: Input", first(e.getParameters()).getText());
+        assertEquals("S", e.getReturnType().getText());
+        assertEquals("{}", e.getBody().getText());
 
-        assertEquals("M: Input", first(f.getParameters()).getText());
-        assertEquals("S", f.getReturnType().getText());
-
-        List<PsiTypeConstraint> constraints = new ArrayList<>(f.getConstraints());
-        assertEquals(2, constraints.size());
-        assertEquals("type t<'a> = M.t<'a>", constraints.get(0).getText());
-        assertEquals("type b = M.b", constraints.get(1).getText());
-        assertEquals("{}", f.getBody().getText());
+        List<RPsiTypeConstraint> ec = e.getConstraints();
+        assertEquals(2, ec.size());
+        assertEquals("type t<'a> = M.t<'a>", ec.get(0).getText());
+        assertEquals("type b = M.b", ec.get(1).getText());
     }
 
+    @Test
     public void test_signature() {
-        Collection<PsiFunctor> functors = functorExpressions(parseCode(
+        Collection<RPsiFunctor> functors = functorExpressions(parseCode(
                 "module GlobalBindings = (M: {\n" +
                         "    let relation_classes: list<string>\n" +
                         "    let morphisms: list<string>\n" +
@@ -46,13 +47,13 @@ public class FunctorParsingTest extends ResParsingTestCase {
                         "}"));
 
         assertEquals(1, functors.size());
-        PsiFunctor f = first(functors);
+        RPsiFunctor f = first(functors);
         assertEquals("GlobalBindings", f.getName());
         assertEquals("Dummy.GlobalBindings", f.getQualifiedName());
-        Collection<PsiParameterDeclaration> parameters = f.getParameters();
+        Collection<RPsiParameterDeclaration> parameters = f.getParameters();
         assertSize(1, parameters);
         assertEquals("M", first(parameters).getName());
         assertNotNull(f.getBody());
-        assertNull(PsiTreeUtil.findChildOfType(f.getBody(), PsiScopedExpr.class));
+        assertNull(PsiTreeUtil.findChildOfType(f.getBody(), RPsiScopedExpr.class));
     }
 }

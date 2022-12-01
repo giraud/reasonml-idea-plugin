@@ -2,11 +2,16 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
+@RunWith(JUnit4.class)
 public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
+    @Test
     public void test_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
         configureCode("belt_Array.mli", "val length: t -> int");
@@ -21,6 +26,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "Pervasives", "x");
     }
 
+    @Test
     public void test_deconstruction() {
         configureCode("Dummy.re", "let (first, second) = myVar; <caret>");
 
@@ -30,6 +36,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "first", "second");
     }
 
+    @Test
     public void test_let_private_from_outside() {
         configureCode("A.re", "let x%private = 1;");
         configureCode("B.re", "open A; <caret>");
@@ -40,6 +47,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         assertDoesntContain(elements, "x");
     }
 
+    @Test
     public void test_let_private_from_inside() {
         configureCode("A.re", "let x%private = 1; <caret>");
 
@@ -49,6 +57,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         assertContainsElements(elements, "x");
     }
 
+    @Test
     public void test_include() {
         myFixture.configureByText("A.re", "let x = 1;");
         myFixture.configureByText("B.re", "include A;\n<caret>\n");
@@ -60,6 +69,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         assertSameElements(strings, "x", "A");
     }
 
+    @Test
     public void test_include_eof() {
         myFixture.configureByText("A.re", "let x = 1;");
         myFixture.configureByText("B.re", "include A;\nlet y = 2;\n<caret>");
@@ -70,5 +80,4 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         assertSameElements(strings, "exception", "external", "include", "let", "module", "open", "type", "A", "y", "x");
         assertSize(10, strings);
     }
-
 }

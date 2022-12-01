@@ -19,7 +19,7 @@ public class Marker {
     private ORTokenElementType myScopeElementType;
     private IElementType myAtomType;
     private Status myStatus = Status.unset;
-    private boolean myIsStart = false;
+    private boolean myIsStart = false; // TODO: delete ?
 
     private Marker(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull ORCompositeType compositeElementType, @Nullable ORTokenElementType scopeTokenElementType) {
         myBuilder = builder;
