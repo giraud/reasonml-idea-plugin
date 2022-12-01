@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+**NOTE**: minimal version supported is **2022.1**
+
 ## 0.108 - 2022/12/01
           
 - :nail_care: Display dune-project fields in structure view
