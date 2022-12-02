@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: [#391](https://github.com/giraud/reasonml-idea-plugin/issues/391) Dune comments are broken (lexer) #391
+
 **NOTE**: minimal version supported is **2022.1**
 
 ## 0.108 - 2022/12/01

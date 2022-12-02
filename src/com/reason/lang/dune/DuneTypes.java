@@ -8,6 +8,9 @@ public class DuneTypes extends ORTypes {
     private DuneTypes() {
     }
 
+    public final ORTokenElementType SINGLE_COMMENT = new ORTokenElementType("SINGLE_COMMENT", DuneLanguage.INSTANCE);
+    public final ORTokenElementType MULTI_COMMENT = new ORTokenElementType("MULTI_COMMENT", DuneLanguage.INSTANCE);
+
     // Composite element types
 
     public final ORCompositeElementType C_FIELD = new ORCompositeElementType("Field", DuneLanguage.INSTANCE);
@@ -20,7 +23,6 @@ public class DuneTypes extends ORTypes {
 
     public final ORTokenElementType ATOM = new ORTokenElementType("ATOM", DuneLanguage.INSTANCE);
     public final ORTokenElementType COLON = new ORTokenElementType("COLON", DuneLanguage.INSTANCE);
-    public final ORTokenElementType COMMENT = new ORTokenElementType("COMMENT", DuneLanguage.INSTANCE);
     public final ORTokenElementType EQUAL = new ORTokenElementType("EQUAL", DuneLanguage.INSTANCE);
     public final ORTokenElementType GT = new ORTokenElementType("GT", DuneLanguage.INSTANCE);
     public final ORTokenElementType GTE = new ORTokenElementType("GTE", DuneLanguage.INSTANCE);

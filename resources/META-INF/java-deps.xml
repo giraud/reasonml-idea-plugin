@@ -20,6 +20,7 @@
          | UI
          -->
 
+        <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>
         <toolWindow id="Esy:" factoryClass="com.reason.ide.console.esy.EsyToolWindowFactory"
                     anchor="bottom" icon="ORIcons.ESY_TOOL"/>
 

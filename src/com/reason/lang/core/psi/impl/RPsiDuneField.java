@@ -1,28 +1,29 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
 import com.reason.lang.dune.*;
 import icons.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class RPsiDuneField extends RPsiToken<DuneTypes> implements PsiNameIdentifierOwner, RPsiStructuredElement {
-    public RPsiDuneField(@NotNull DuneTypes types, @NotNull ASTNode node) {
-        super(types, node);
+public class RPsiDuneField extends ORCompositePsiElement<DuneTypes> implements PsiNameIdentifierOwner, RPsiStructuredElement {
+    public RPsiDuneField(@NotNull DuneTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 
     @Override
     public @Nullable PsiElement getNameIdentifier() {
         PsiElement firstChild = getFirstChild();
         PsiElement nextSibling = firstChild.getNextSibling();
-        return nextSibling != null && nextSibling.getNode().getElementType() == m_types.ATOM ? nextSibling : null;
+        return nextSibling != null && nextSibling.getNode().getElementType() == myTypes.ATOM ? nextSibling : null;
     }
 
     @Override
@@ -61,10 +62,5 @@ public class RPsiDuneField extends RPsiToken<DuneTypes> implements PsiNameIdenti
                 return ORIcons.OBJECT;
             }
         };
-    }
-
-    @Override
-    public @Nullable String toString() {
-        return "Field " + getName();
     }
 }

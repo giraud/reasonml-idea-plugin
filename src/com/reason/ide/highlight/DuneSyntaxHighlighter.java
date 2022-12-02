@@ -52,7 +52,7 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
     public TextAttributesKey @NotNull [] getTokenHighlights(@NotNull IElementType tokenType) {
         if (tokenType.equals(DuneTypes.INSTANCE.LPAREN) || tokenType.equals(DuneTypes.INSTANCE.RPAREN)) {
             return PAREN_KEYS;
-        } else if (tokenType.equals(DuneTypes.INSTANCE.COMMENT)) {
+        } else if (tokenType.equals(DuneTypes.INSTANCE.SINGLE_COMMENT) || tokenType.equals(DuneTypes.INSTANCE.MULTI_COMMENT)) {
             return COMMENT_KEYS;
         } else if (tokenType.equals(DuneTypes.INSTANCE.STRING)) {
             return STRING_KEYS;
