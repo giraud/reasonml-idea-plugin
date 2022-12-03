@@ -33,16 +33,18 @@ public class ORElementResolver implements Disposable {
             Map<String, Set<String[]>> dependencies = new HashMap<>();
 
             StubIndex stubIndex = StubIndex.getInstance();
-            stubIndex.processAllKeys(IndexKeys.INCLUDES, myProject, includePath -> {
-                stubIndex.processElements(IndexKeys.INCLUDES, includePath, myProject, null, RPsiInclude.class, psiInclude -> {
+            stubIndex.processAllKeys(IndexKeys.INCLUDES, myProject, includeIndex -> {
+                stubIndex.processElements(IndexKeys.INCLUDES, includeIndex, myProject, null, RPsiInclude.class, psiInclude -> {
                     String[] includeQPath = psiInclude.getQualifiedPath();
-                    String[] resolvedPath = psiInclude.getResolvedPath();
+                    String includeQName = Joiner.join(".", psiInclude.getQualifiedPath()) + "." + psiInclude.getIncludePath();
+                    String[] resolvedPath = ORIncludePsiGist.getData(psiInclude.getContainingFile()).get(includeQName);
                     if (Arrays.equals(resolvedPath, includeQPath)) {
-                        // !? coq ?
+                        // !? coq ?!
                         LOG.info("Equality with recursion found: " + psiInclude + " [" + Joiner.join(".", includeQPath) + "] in " + psiInclude.getContainingFile().getVirtualFile());
                         return true;
                     }
 
+                    String includePath = Joiner.join(".", resolvedPath);
                     Set<String[]> depPaths = dependencies.computeIfAbsent(includePath, k -> new TreeSet<>(ArrayUtil::lexicographicCompare));
                     depPaths.add(includeQPath);
 

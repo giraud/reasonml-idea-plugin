@@ -165,7 +165,7 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
             return new RPsiMixinField(type);
         }
         if (type == myTypes.C_LET_ATTR) {
-            return new RPsiLetAttribute(type);
+            return new RPsiLetAttribute(myTypes, type);
         }
         if (type == myTypes.C_CLOSED_VARIANT) {
             return new RPsiPolyVariantConstraint(myTypes, type);
@@ -208,7 +208,7 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
             return new RPsiStruct(myTypes, type);
         }
         if (type == myTypes.C_UNIT) {
-            return new RPsiUnit(type);
+            return new RPsiUnit(myTypes, type);
         }
         if (type == myTypes.C_WHILE) {
             return new RPsiWhile(myTypes, type);

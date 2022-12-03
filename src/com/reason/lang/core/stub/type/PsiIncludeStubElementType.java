@@ -32,7 +32,7 @@ public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub,
 
     @Override
     public @NotNull PsiIncludeStub createStub(@NotNull RPsiInclude psi, @Nullable StubElement parentStub) {
-        return new PsiIncludeStub(parentStub, this, ((FileBase) psi.getContainingFile()).getModuleName(), psi.getIncludePath(), psi.getQualifiedPath(), psi.getResolvedPath());
+        return new PsiIncludeStub(parentStub, this, ((FileBase) psi.getContainingFile()).getModuleName(), psi.getIncludePath(), psi.getQualifiedPath());
     }
 
     @Override
@@ -40,7 +40,6 @@ public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub,
         dataStream.writeName(stub.getFileModule());
         dataStream.writeUTFFast(stub.getIncludePath());
         SerializerUtil.writePath(dataStream, stub.getQualifiedPath());
-        SerializerUtil.writePath(dataStream, stub.getResolvedPath());
     }
 
     @Override
@@ -48,13 +47,12 @@ public class PsiIncludeStubElementType extends ORStubElementType<PsiIncludeStub,
         StringRef fileModule = dataStream.readName();
         String includePath = dataStream.readUTFFast();
         String[] qualifiedPath = SerializerUtil.readPath(dataStream);
-        String[] resolvedPath = SerializerUtil.readPath(dataStream);
-        return new PsiIncludeStub(parentStub, this, fileModule, includePath, qualifiedPath, resolvedPath);
+        return new PsiIncludeStub(parentStub, this, fileModule, includePath, qualifiedPath);
     }
 
     @Override
     public void indexStub(@NotNull PsiIncludeStub stub, @NotNull IndexSink sink) {
-        sink.occurrence(IndexKeys.INCLUDES, Joiner.join(".", stub.getResolvedPath()));
+        sink.occurrence(IndexKeys.INCLUDES, stub.getIncludePath());
     }
 
     @Override

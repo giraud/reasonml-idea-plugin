@@ -69,22 +69,19 @@ public class RPsiClassMethodImpl extends RPsiTokenStub<ORLangTypes, RPsiClassMet
 
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
-            @Nullable
             @Override
-            public String getPresentableText() {
+            public @Nullable String getPresentableText() {
                 return getName();
             }
 
-            @Nullable
             @Override
-            public String getLocationString() {
+            public @Nullable String getLocationString() {
                 RPsiSignature signature = getSignature();
                 return signature == null ? null : signature.getText();
             }
 
-            @NotNull
             @Override
-            public Icon getIcon(boolean unused) {
+            public @NotNull Icon getIcon(boolean unused) {
                 return ORIcons.METHOD;
             }
         };

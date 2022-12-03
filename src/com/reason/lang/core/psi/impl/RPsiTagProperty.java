@@ -29,9 +29,4 @@ public class RPsiTagProperty extends ORCompositePsiElement<ORLangTypes> {
         PsiElement eq = ORUtil.nextSiblingWithTokenType(getFirstChild(), myTypes.EQ);
         return eq == null ? null : eq.getNextSibling();
     }
-
-    @Override
-    public String toString() {
-        return "RPsiTagProperty:" + getName();
-    }
 }

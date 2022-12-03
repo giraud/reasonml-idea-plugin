@@ -8,11 +8,10 @@ import org.jetbrains.annotations.*;
 public interface RPsiInclude extends RPsiStructuredElement, StubBasedPsiElement<PsiIncludeStub> {
     String[] getQualifiedPath();
 
-    String @Nullable [] getResolvedPath();
-
     @NotNull String getIncludePath();
 
     @Nullable RPsiUpperSymbol getModuleReference();
+
     @Nullable PsiElement resolveModule();
 
     boolean useFunctor();
