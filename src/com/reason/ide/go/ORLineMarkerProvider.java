@@ -160,7 +160,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     }
 
     private @NotNull <T extends PsiQualifiedNamedElement> RelatedItemLineMarkerInfo<PsiElement> createGutterIcon(@NotNull PsiElement psiSource, boolean isInterface, @NotNull String method, @NotNull FileBase relatedFile, T relatedElement) {
-        // GutterTooltipHelper only available for java-based IDE ?
+        // GutterTooltipHelper only available for java based IDE ?
         String relatedFilename = relatedFile.getVirtualFile().getName();
         String tooltip = "<html><body>" +
                 "<p>" + (isInterface ? "Implements " : "Declare ") + method + " in <a href=\"#navigation/" + relatedFile.getVirtualFile().getPath() + ":0\"><code>" + relatedFilename + "</code></a></p>" +

@@ -2,7 +2,6 @@ package com.reason.lang.dune;
 
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
-import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -10,11 +9,7 @@ import org.junit.*;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-public class DuneStanzaParsingTest extends BaseParsingTestCase {
-    public DuneStanzaParsingTest() {
-        super("", "", new DuneParserDefinition());
-    }
-
+public class DuneStanzaParsingTest extends DuneParsingTestCase {
     @Test
     public void test_stanza() {
         DuneFile e = parseDuneCode("(library (name x)) (version 1)");

@@ -30,7 +30,7 @@ import static com.intellij.psi.TokenType.*;
         private void tokenEnd() {
             zzStartRead = tokenStartIndex;
         }
-    %}
+%}
 
 %public
 %class ResFlexLexer

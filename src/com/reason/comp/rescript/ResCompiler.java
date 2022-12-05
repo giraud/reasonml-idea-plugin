@@ -115,7 +115,7 @@ public class ResCompiler implements Compiler {
                         processHandler.startNotify();
                     }
                 } catch (ExecutionException e) {
-                    ORNotification.notifyError("Rescript", "Execution exception", e.getMessage(), null);
+                    ORNotification.notifyError("Rescript", "Execution exception", e.getMessage());
                     myProcessStarted.compareAndSet(true, false);
                 }
             }

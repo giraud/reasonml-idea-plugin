@@ -4,7 +4,7 @@ public class ORStubVersions {
     private ORStubVersions() {
     }
 
-    public static final int INCLUDE = 4;
+    public static final int INCLUDE = 5;
     public static final int CLASS = 3;
     public static final int CLASS_METHOD = 1;
     public static final int LET = 16;

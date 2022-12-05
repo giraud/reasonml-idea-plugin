@@ -72,7 +72,8 @@
         <!-- Rescript -->
         <fileType extensions="resi" name="RESCRIPT_INTF" fieldName="INSTANCE" language="Rescript"
                   implementationClass="com.reason.ide.files.ResInterfaceFileType"/>
-        <fileType name="RESCRIPT" fieldName="INSTANCE" language="Rescript" implementationClass="com.reason.ide.files.ResFileType"/>
+        <fileType name="RESCRIPT" fieldName="INSTANCE" language="Rescript"
+                  implementationClass="com.reason.ide.files.ResFileType"/>
         <!-- OCaml -->
         <fileType extensions="mli" name="OCAML_INTF" fieldName="INSTANCE" language="OCaml"
                   implementationClass="com.reason.ide.files.OclInterfaceFileType"/>
@@ -128,7 +129,8 @@
         <stubElementTypeHolder externalIdPrefix="Rescript."
                                class="com.reason.lang.core.stub.ResStubBasedElementTypes"/>
         <lang.ast.factory language="Rescript" implementationClass="com.reason.lang.rescript.ResASTFactory"/>
-        <lang.parserDefinition language="Rescript" implementationClass="com.reason.lang.rescript.ResSafeParserDefinition"/>
+        <lang.parserDefinition language="Rescript"
+                               implementationClass="com.reason.lang.rescript.ResSafeParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Rescript"
                                        implementationClass="com.reason.ide.highlight.ResSyntaxHighlighterFactory"/>
         <!-- OCaml -->
@@ -154,6 +156,7 @@
         <lang.syntaxHighlighterFactory language="Mly"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- Dune -->
+        <lang.ast.factory language="Dune" implementationClass="com.reason.lang.dune.DuneASTFactory"/>
         <lang.parserDefinition language="Dune" implementationClass="com.reason.lang.dune.DuneParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Dune"
                                        implementationClass="com.reason.ide.highlight.DuneSyntaxHighlighterFactory"/>
@@ -277,13 +280,15 @@
          -->
 
         <orderRootType implementation="jpsplugin.com.reason.OclSourcesOrderRootType" id="OCAML_SOURCES" order="FIRST"/>
-        <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="jpsplugin.com.reason.OClSourcesOrderRootTypeUIFactory"/>
+        <OrderRootTypeUI key="OCAML_SOURCES"
+                         implementationClass="jpsplugin.com.reason.OClSourcesOrderRootTypeUIFactory"/>
 
         <library.type implementation="com.reason.ide.library.OclLibraryType"/>
         <additionalLibraryRootsProvider implementation="com.reason.ide.library.OclLibraryRootProvider"/>
 
         <projectService serviceImplementation="com.reason.ide.settings.ORSettings"/>
-        <projectConfigurable id="settings.reason" groupId="language" instance="com.reason.ide.settings.ORSettingsConfigurable"/>
+        <projectConfigurable id="settings.reason" groupId="language"
+                             instance="com.reason.ide.settings.ORSettingsConfigurable"/>
 
         <projectSdkSetupValidator implementation="com.reason.ide.library.OclSdkSetupValidator"/>
         <projectService serviceImplementation="com.reason.comp.ocaml.OpamProcess"/>
@@ -343,7 +348,6 @@
         <iconProvider implementation="com.reason.ide.IconProvider"/>
 
         <colorSettingsPage implementation="com.reason.ide.settings.ORColorSettingsPage"/>
-        <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>
 
         <annotator language="Reason" implementationClass="com.reason.ide.highlight.RmlSyntaxAnnotator"/>
         <annotator language="Rescript" implementationClass="com.reason.ide.highlight.ResSyntaxAnnotator"/>
@@ -419,10 +423,12 @@
          | UI
          -->
 
-        <toolWindow id="BuckleScript:" anchor="bottom" factoryClass="com.reason.ide.console.bs.BsToolWindowFactory"/>
-        <toolWindow id="Rescript:" anchor="bottom"
-                    factoryClass="com.reason.ide.console.rescript.RescriptToolWindowFactory"/>
-        <toolWindow id="Dune:" anchor="bottom" factoryClass="com.reason.ide.console.dune.DuneToolWindowFactory"/>
+        <toolWindow id="BuckleScript:" factoryClass="com.reason.ide.console.bs.BsToolWindowFactory"
+                    anchor="bottom" icon="ORIcons.BUCKLESCRIPT_TOOL"/>
+        <toolWindow id="Rescript:" factoryClass="com.reason.ide.console.rescript.RescriptToolWindowFactory"
+                    anchor="bottom" icon="ORIcons.RESCRIPT_TOOL"/>
+        <toolWindow id="Dune:" factoryClass="com.reason.ide.console.dune.DuneToolWindowFactory"
+                    anchor="bottom" icon="ORIcons.DUNE_TOOL"/>
 
         <!-- <codeInsight.typeInfo language="Reason" implementationClass="com.reason.ide.hints.RmlTypeProvider"/> ctrl-shift-p -->
         <codeInsight.parameterInfo language="Reason"

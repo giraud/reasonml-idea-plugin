@@ -8,10 +8,7 @@ import com.intellij.openapi.util.*;
 import com.intellij.openapi.wm.*;
 import com.intellij.ui.content.*;
 import com.reason.ide.console.*;
-import icons.*;
 import org.jetbrains.annotations.*;
-
-import javax.swing.*;
 
 public class BsToolWindowFactory extends ORToolWindowFactory {
     public static final String ID = "BuckleScript:";
@@ -19,11 +16,6 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
     @Override
     public @NotNull String getId() {
         return ID;
-    }
-
-    @Override
-    public @NotNull Icon getIcon() {
-        return ORIcons.BUCKLESCRIPT_TOOL;
     }
 
     @Override

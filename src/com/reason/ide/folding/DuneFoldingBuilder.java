@@ -44,7 +44,7 @@ public class DuneFoldingBuilder extends FoldingBuilderEx {
 
     private @Nullable FoldingDescriptor foldStanza(@NotNull RPsiDuneStanza root) {
         RPsiDuneFields fields = ORUtil.findImmediateFirstChildOfClass(root, RPsiDuneFields.class);
-        return fields == null ? null : new FoldingDescriptor(root, fields.getTextRange());
+        return fields == null ? null : new FoldingDescriptor(root.getNode(), fields.getTextRange());
     }
 
     private @Nullable FoldingDescriptor fold(@Nullable PsiElement root) {

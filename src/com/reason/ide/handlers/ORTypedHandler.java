@@ -27,7 +27,7 @@ public class ORTypedHandler extends TypedHandlerDelegate {
       return Result.CONTINUE;
     }
 
-    // #62 - don't insert a ) when at the end of a comment
+    // #62 - don't insert a right parenthesis when at the end of a comment
     if (c == ')') {
       Document doc = editor.getDocument();
       PsiDocumentManager.getInstance(project).commitDocument(doc);

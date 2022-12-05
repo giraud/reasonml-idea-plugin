@@ -99,7 +99,7 @@ public class InsightManagerImpl implements InsightManager {
         String rincewindVersion = Rincewind.getLatestVersion(ocamlVersion);
 
         // ocaml version default - opam -> use ocaml -version ??
-        // opam switch different than default
+        // opam switch different from default
         // opam settings set correctly (not default)
 
 

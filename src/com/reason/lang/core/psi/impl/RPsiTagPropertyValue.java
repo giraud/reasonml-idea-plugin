@@ -10,10 +10,4 @@ public class RPsiTagPropertyValue extends ORCompositePsiElement<ORLangTypes> {
         super(types, elementType);
     }
     // endregion
-
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
 }

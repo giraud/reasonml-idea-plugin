@@ -61,7 +61,7 @@ public class OpamProcess {
             });
             processHandler.startNotify();
         } catch (ExecutionException e) {
-            ORNotification.notifyError("Opam", "Can't list libraries", e.getMessage(), null);
+            ORNotification.notifyError("Opam", "Can't list libraries", e.getMessage());
             installedLibs.add(new String[]{"Error", e.getMessage()});
             onProcessTerminated.run(installedLibs);
         }
@@ -110,7 +110,7 @@ public class OpamProcess {
             });
             processHandler.startNotify();
         } catch (ExecutionException e) {
-            ORNotification.notifyError("Opam", "Can't read opam env", e.getMessage(), null);
+            ORNotification.notifyError("Opam", "Can't read opam env", e.getMessage());
             onProcessTerminated.run(result);
         }
     }
@@ -171,7 +171,7 @@ public class OpamProcess {
             });
             processHandler.startNotify();
         } catch (ExecutionException e) {
-            ORNotification.notifyError("Dune", "Can't run opam", e.getMessage(), null);
+            ORNotification.notifyError("Dune", "Can't run opam", e.getMessage());
             onProcessTerminated.run(result);
         }
     }
