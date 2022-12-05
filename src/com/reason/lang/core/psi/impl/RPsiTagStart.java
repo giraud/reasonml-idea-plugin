@@ -110,9 +110,4 @@ public class RPsiTagStart extends ORCompositePsiElement<ORLangTypes> implements 
 
         return result;
     }
-
-    @Override
-    public String toString() {
-        return "RPsiTagStart";
-    }
 }

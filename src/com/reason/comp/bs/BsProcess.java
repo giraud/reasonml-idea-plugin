@@ -31,7 +31,7 @@ public final class BsProcess {
                 Notifications.Bus.notify(new ORNotification("Bsb", "Invalid commandline type (" + cliType.getCompilerType() + ")", WARNING));
             }
         } catch (ExecutionException e) {
-            ORNotification.notifyError("Bsb", "Execution exception", e.getMessage(), null);
+            ORNotification.notifyError("Bsb", "Execution exception", e.getMessage());
         }
 
         return null;

@@ -110,7 +110,7 @@ public class OclQNameFinder extends BaseQNameFinder {
                     // Same for resolved elements
                     resolvedQualifiedNames.addAll(extendPathWith(filePath, letQName, resolvedQualifiedNames));
                     resolvedQualifiedNames.add(letQName + resolvedPathExtension);
-                    // If function, register all parameters of function
+                    // If ’let’ is a function, register all parameters of function
                     if (let.isFunction()) {
                         RPsiFunction function = let.getFunction();
                         List<RPsiParameterDeclaration> parameters = function == null ? emptyList() : function.getParameters();

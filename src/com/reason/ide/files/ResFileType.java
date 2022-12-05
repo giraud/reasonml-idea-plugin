@@ -23,11 +23,7 @@ public class ResFileType extends LanguageFileType implements FileTypeIdentifiabl
         if (!file.isDirectory() && "res".equals(file.getExtension())) {
             // must protect from resources .res files found in jar files
             VirtualFileSystem entryFileSystem = file.getFileSystem();
-            if (entryFileSystem instanceof ArchiveFileSystem) {
-                //LOG.info("FOUND res file inside archive: " + file);
-                return false;
-            }
-            return true;
+            return !(entryFileSystem instanceof ArchiveFileSystem);
         }
         return false;
     }

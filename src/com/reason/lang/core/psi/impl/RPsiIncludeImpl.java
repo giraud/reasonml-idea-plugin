@@ -7,7 +7,6 @@ import com.intellij.psi.stubs.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.xml.model.gotosymbol.*;
-import com.reason.ide.search.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
@@ -57,22 +56,6 @@ public class RPsiIncludeImpl extends RPsiTokenStub<ORLangTypes, RPsiInclude, Psi
         return firstChild == null ? "" : ORUtil.getTextUntilClass(firstChild, RPsiConstraints.class);
     }
 
-    @Override
-    public String @Nullable [] getResolvedPath() {
-        PsiIncludeStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.getResolvedPath();
-        }
-
-        // Iterate over previous elements, can't use references here because it needs to work during indexing
-        String includePath = getIncludePath();
-        PsiFinder psiFinder = getProject().getService(PsiFinder.class);
-        RPsiQualifiedPathElement resolvedElement = psiFinder.findModuleBack(this, includePath);
-
-        String path = resolvedElement == null ? includePath : resolvedElement.getQualifiedName();
-        return path == null ? null : path.split("\\.");
-    }
-
     // deprecate ?
     @Override
     public @Nullable RPsiUpperSymbol getModuleReference() {
@@ -105,10 +88,5 @@ public class RPsiIncludeImpl extends RPsiTokenStub<ORLangTypes, RPsiInclude, Psi
     @Override
     public boolean canBeDisplayed() {
         return !(getParent() instanceof RPsiFunctionBody);
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return "RPsiInclude " + getIncludePath();
     }
 }

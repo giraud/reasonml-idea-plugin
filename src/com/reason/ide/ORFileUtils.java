@@ -2,13 +2,13 @@ package com.reason.ide;
 
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.reason.comp.bs.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.nio.file.*;
+import java.util.*;
 
 public class ORFileUtils {
     private static final Log LOG = Log.create("file");
@@ -16,22 +16,23 @@ public class ORFileUtils {
     private ORFileUtils() {
     }
 
-    public static @Nullable PsiFile findCmtFileFromSource(@NotNull Project project, @NotNull String filenameWithoutExtension, @Nullable String namespace) {
+    public static VirtualFile findCmtFileFromSource(@NotNull Project project, @NotNull String filenameWithoutExtension, @Nullable String namespace) {
         if (!DumbService.isDumb(project)) {
             GlobalSearchScope scope = GlobalSearchScope.allScope(project);
             String filename = (namespace == null ? "" : namespace) + filenameWithoutExtension + ".cmt";
 
-            PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename, scope);
-            if (cmtFiles.length == 0) {
+            Collection<VirtualFile> cmtFiles = FilenameIndex.getVirtualFilesByName(filename, scope);
+            if (cmtFiles.isEmpty()) {
                 LOG.debug("File module NOT FOUND", filename);
                 return null;
             }
 
+            VirtualFile firstFile = cmtFiles.iterator().next();
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Found cmt " + filename + " (" + cmtFiles[0].getVirtualFile().getPath() + ")");
+                LOG.debug("Found cmt " + filename + " (" + firstFile.getPath() + ")");
             }
 
-            return cmtFiles[0];
+            return firstFile;
         } else {
             LOG.info("Cant find cmt while reindexing");
         }

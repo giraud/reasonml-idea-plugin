@@ -4,13 +4,9 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.wm.*;
 import org.jetbrains.annotations.*;
 
-import javax.swing.*;
-
 public abstract class ORToolWindowFactory implements ToolWindowFactory, DumbAware {
     /* id provided in plugin.xml. this is displayed in the UI */
     public abstract @NotNull String getId();
-
-    public abstract @NotNull Icon getIcon();
 
     public abstract @NotNull String getStripeTitle();
 
@@ -27,7 +23,6 @@ public abstract class ORToolWindowFactory implements ToolWindowFactory, DumbAwar
 
     @Override
     public void init(@NotNull ToolWindow window) {
-        window.setIcon(getIcon());
         window.setTitle("Process");
         window.setStripeTitle(getStripeTitle());
     }

@@ -9,22 +9,19 @@ public class PsiIncludeStub extends StubBase<RPsiInclude> {
     @Nullable private final StringRef myFileModule;
     private final String myIncludePath;
     private final String[] myQualifiedPath;
-    private final String[] myResolvedPath;
 
-    public PsiIncludeStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef fileModule, String includePath, String[] qualifiedPath, String[] resolvedPath) {
+    public PsiIncludeStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef fileModule, String includePath, String[] qualifiedPath) {
         super(parent, elementType);
         myFileModule = fileModule;
         myIncludePath = includePath;
         myQualifiedPath = qualifiedPath;
-        myResolvedPath = resolvedPath;
     }
 
-    public PsiIncludeStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String fileModule, String includePath, String[] qualifiedPath, String[] resolvedPath) {
+    public PsiIncludeStub(@Nullable StubElement parent, @NotNull IStubElementType elementType, @Nullable String fileModule, String includePath, String[] qualifiedPath) {
         super(parent, elementType);
         myFileModule = StringRef.fromString(fileModule);
         myIncludePath = includePath;
         myQualifiedPath = qualifiedPath;
-        myResolvedPath = resolvedPath;
     }
 
     public String getIncludePath() {
@@ -38,9 +35,5 @@ public class PsiIncludeStub extends StubBase<RPsiInclude> {
     @Nullable
     public String getFileModule() {
         return myFileModule != null ? myFileModule.getString() : null;
-    }
-
-    public String[] getResolvedPath() {
-        return myResolvedPath;
     }
 }

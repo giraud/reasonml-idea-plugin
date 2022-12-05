@@ -52,7 +52,7 @@ public final class DuneProcess {
             }
             return myProcessHandler;
         } catch (ExecutionException e) {
-            ORNotification.notifyError("Dune", "Execution exception", e.getMessage(), null);
+            ORNotification.notifyError("Dune", "Execution exception", e.getMessage());
             return null;
         }
     }

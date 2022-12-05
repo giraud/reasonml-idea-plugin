@@ -15,7 +15,7 @@ the reasoning behind that decision here.
 First, plain text editors (VSCode, Textmate, VIM, etc.) and IDE (Jetbrains editors) are
 two very different categories. Text editors need additional mechanisms to be able to create
 a nice developer experience, including adding semantic to the sources, adding referencing of
-symbols for nice navigation, documentation, etc, caching and indexing for fast response.
+symbols for nice navigation, documentation, etc., caching and indexing for fast response.
 
 On the other side, an IDE - as the name implies (Integrated) - already has these behaviors
 embedded in the software. With regard to Jetbrains, many man-hours have been invested through
@@ -67,7 +67,7 @@ Structure of the sources is:
 When developing a plugin, you must be aware of the differences between the different products
 of the Jetbrains family. 
 
-Not every features are available to the editors (for ex: the JS functionality is not present in
+Not every feature are available to the editors (for ex: the JS functionality is not present in
 IntelliJ community). Moreover, modules are only exposed in the IntelliJ products.
 
 There are 2 important concepts:
@@ -78,7 +78,7 @@ It doesn't know about the sources.
 For non-IntelliJ products, the project and the module is a 1-to-1 relation. Even if the module is not
 exposed, it is still present and must be used to find the root of the sources.
 
-Plugin functionalities are defined in an xml file that uses extension points of the IDE
+Plugin functionalities are defined in a xml file that uses extension points of the IDE
 to register classes. there are different xml files:
 - `plugin.xml`: the main entry, contains all entries common to every product. It also references the other xml files.
 - `java-deps.xml`: depends on `com.intellij.modules.java` and is only loaded in IntelliJ products; 
@@ -174,7 +174,7 @@ It's important to use the stub instead of the real component whenever possible, 
 skip heavy computations, and to avoid IntelliJ to load and parse the real file. For ex,
 this is how we use stub:
 
-```java
+```
 public String getQualifiedName() {
     PsiModuleStub stub = getGreenStub();
     if (stub != null) {
@@ -206,7 +206,7 @@ using the indices viewer. These constants are used in the stub element types whe
 
 Bucklescript has a directive to automatically generate files with a namespace.
 
-```json
+```
 namespace: true | "name"
 ```
 

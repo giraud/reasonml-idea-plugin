@@ -602,7 +602,6 @@ public abstract class ORParser<T extends ORTypes> {
         return null;
     }
 
-    @Deprecated
     public @NotNull ORParser<T> rollbackToPos(int pos) {
         for (int i = 0; i < pos; i++) {
             myMarkers.pop();

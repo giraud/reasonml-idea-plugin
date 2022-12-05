@@ -229,21 +229,18 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
 
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
-            @Nullable
             @Override
-            public String getPresentableText() {
+            public @Nullable String getPresentableText() {
                 return getName();
             }
 
-            @Nullable
             @Override
-            public String getLocationString() {
+            public @Nullable String getLocationString() {
                 return null;
             }
 
-            @NotNull
             @Override
-            public Icon getIcon(boolean unused) {
+            public @NotNull Icon getIcon(boolean unused) {
                 return ORIcons.FUNCTOR;
             }
         };

@@ -34,8 +34,7 @@ public class ResQNameFinder extends BaseQNameFinder {
 
         // Another parallel set of names that are resolved from aliases. We can't mix the two sets.
         // For module resolution, we don't want resolved names, but we want them for variants.
-        // We can't distinguished upper symbols here, so we keep two lists, and resolved set has a lower
-        // priority.
+        // We can't distinguish upper symbols here, so we keep two lists, and resolved set has a lower priority.
         Set<String> resolvedQualifiedNames = new ArrayListSet<>();
         String resolvedPath = path;
         String resolvedPathExtension = pathExtension;

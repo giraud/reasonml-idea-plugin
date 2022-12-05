@@ -25,7 +25,13 @@ public class ORProjectManager {
             ImmutableMap.of(DUNE_PROJECT_FILENAME, 2, DUNE_FILENAME, 1, LEGACY_JBUILDER_FILENAME, 0);
 
     private static final Comparator<VirtualFile> DUNE_PROJECT_FILE_COMPARATOR =
-            (left, right) -> DUNE_PROJECT_FILE_PRIORITY.get(right.getName()) - DUNE_PROJECT_FILE_PRIORITY.get(left.getName());
+            (left, right) -> {
+                Integer rprio = DUNE_PROJECT_FILE_PRIORITY.get(right.getName());
+                Integer lprio = DUNE_PROJECT_FILE_PRIORITY.get(left.getName());
+                assert (rprio != null);
+                assert (lprio != null);
+                return rprio - lprio;
+            };
 
     private static final Comparator<VirtualFile> FILE_DEPTH_COMPARATOR = Comparator.comparingInt(ORProjectManager::fileSeparatorCount);
 

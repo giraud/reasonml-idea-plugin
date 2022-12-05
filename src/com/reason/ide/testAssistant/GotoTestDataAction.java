@@ -5,9 +5,7 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.ui.popup.*;
-import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
-import com.intellij.psi.search.*;
 import com.intellij.ui.awt.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
@@ -30,7 +28,7 @@ public class GotoTestDataAction extends AnAction {
             List<String> fileNames = findRelatedFiles(project, dataContext);
             if (fileNames.isEmpty()) {
                 Notifications.Bus.notify(
-                        new ORNotification("testdata", "Found no testdata files", "Cannot find related files", INFORMATION, null),
+                        new ORNotification("testdata", "Found no testdata files", "Cannot find related files", INFORMATION),
                         project);
                 return;
             }
@@ -46,13 +44,9 @@ public class GotoTestDataAction extends AnAction {
         }
     }
 
-    @NotNull
-    private List<String> findRelatedFiles(@NotNull Project project, @NotNull DataContext context) {
+    private @NotNull List<String> findRelatedFiles(@NotNull Project project, @NotNull DataContext context) {
         PsiFile file = context.getData(CommonDataKeys.PSI_FILE);
         if (file instanceof FileBase) {
-            VirtualFile relatedFile;
-
-            GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
             PsiFinder psiFinder = project.getService(PsiFinder.class);
             RPsiModule relatedModule;
 
@@ -95,9 +89,7 @@ public class GotoTestDataAction extends AnAction {
     private String @NotNull [] splitModuleName(@NotNull String moduleName) {
         int underscoreIndex = moduleName.lastIndexOf("_");
         return 0 < underscoreIndex
-                ? new String[]{
-                moduleName.substring(0, underscoreIndex), moduleName.substring(underscoreIndex + 1)
-        }
+                ? new String[]{moduleName.substring(0, underscoreIndex), moduleName.substring(underscoreIndex + 1)}
                 : new String[]{moduleName};
     }
 }

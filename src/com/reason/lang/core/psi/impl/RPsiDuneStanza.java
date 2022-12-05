@@ -1,11 +1,12 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
 import com.reason.lang.dune.*;
 import icons.*;
 import org.jetbrains.annotations.*;
@@ -13,16 +14,16 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-public class RPsiDuneStanza extends RPsiToken<DuneTypes> implements PsiNameIdentifierOwner, RPsiStructuredElement {
-    public RPsiDuneStanza(@NotNull DuneTypes types, @NotNull ASTNode node) {
-        super(types, node);
+public class RPsiDuneStanza extends ORCompositePsiElement<DuneTypes> implements PsiNameIdentifierOwner, RPsiStructuredElement {
+    public RPsiDuneStanza(@NotNull DuneTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
     }
 
     @Override
     public @Nullable PsiElement getNameIdentifier() {
         PsiElement firstChild = getFirstChild();
         PsiElement nextSibling = firstChild.getNextSibling();
-        return nextSibling != null && nextSibling.getNode().getElementType() == m_types.ATOM
+        return nextSibling != null && nextSibling.getNode().getElementType() == myTypes.ATOM
                 ? nextSibling
                 : null;
     }
@@ -56,29 +57,21 @@ public class RPsiDuneStanza extends RPsiToken<DuneTypes> implements PsiNameIdent
     @Override
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
-            @NotNull
             @Override
-            public String getPresentableText() {
+            public @NotNull String getPresentableText() {
                 String name = getName();
                 return name == null ? "unknown" : name;
             }
 
-            @Nullable
             @Override
-            public String getLocationString() {
+            public @Nullable String getLocationString() {
                 return null;
             }
 
-            @NotNull
             @Override
-            public Icon getIcon(boolean unused) {
+            public @NotNull Icon getIcon(boolean unused) {
                 return ORIcons.OBJECT;
             }
         };
-    }
-
-    @Override
-    public @Nullable String toString() {
-        return "Stanza " + getName();
     }
 }
