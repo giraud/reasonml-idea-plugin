@@ -43,7 +43,7 @@ intellij {
         changeNotes = """
                 <ul>
                     <li>#391 - Dune comments are broken (lexer)</li>
-                    <li>#390 - Stub mismatch exceptions</li>
+                    <li>#390 - Stub mismatch exceptions fixed</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

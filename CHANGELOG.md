@@ -12,8 +12,10 @@
 
 ## Unreleased
 
+## 0.109 - 2022/12/05
+
 - :bug: [#391](https://github.com/giraud/reasonml-idea-plugin/issues/391) Dune comments are broken (lexer)
-- :bug: [#390](https://github.com/giraud/reasonml-idea-plugin/issues/390) Stub mismatch exceptions
+- :bug: [#390](https://github.com/giraud/reasonml-idea-plugin/issues/390) Stub mismatch exceptions fixed
 
 **NOTE**: minimal version supported is **2022.1**
 
