@@ -47,11 +47,13 @@ public class InsightManagerImpl implements InsightManager {
     }
 
     @Override
-    public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ORProcessTerminated<InferredTypes> runAfter) {
-        String rincewindName = getRincewindFilename(sourceFile.getParent(), "");
-        File rincewindFile = rincewindName == null ? null : getRincewindTarget(rincewindName);
-        if (rincewindFile != null) {
-            myProject.getService(RincewindProcess.class).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
+    public void queryTypes(@Nullable VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ORProcessTerminated<InferredTypes> runAfter) {
+        if (sourceFile != null) {
+            String rincewindName = getRincewindFilename(sourceFile.getParent(), "");
+            File rincewindFile = rincewindName == null ? null : getRincewindTarget(rincewindName);
+            if (rincewindFile != null) {
+                myProject.getService(RincewindProcess.class).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
+            }
         }
     }
 
@@ -101,7 +103,6 @@ public class InsightManagerImpl implements InsightManager {
         // ocaml version default - opam -> use ocaml -version ??
         // opam switch different from default
         // opam settings set correctly (not default)
-
 
 
         if (ocamlVersion != null && !rincewindVersion.equals(excludedVersion)) {

@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
+import com.reason.ide.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -38,7 +39,7 @@ public abstract class CompilerAction extends DumbAwareAction {
 
         // We always use the opened file to detect the config file
         if (activeFile != null && compiler != null) {
-            compiler.run(activeFile.getVirtualFile(), cliType, onProcessTerminated);
+            compiler.run(ORFileUtils.getVirtualFile(activeFile), cliType, onProcessTerminated);
         }
     }
 

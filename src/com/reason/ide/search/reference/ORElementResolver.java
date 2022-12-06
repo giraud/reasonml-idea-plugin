@@ -8,6 +8,7 @@ import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
+import com.reason.ide.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -40,7 +41,7 @@ public class ORElementResolver implements Disposable {
                     String[] resolvedPath = ORIncludePsiGist.getData(psiInclude.getContainingFile()).get(includeQName);
                     if (Arrays.equals(resolvedPath, includeQPath)) {
                         // !? coq ?!
-                        LOG.info("Equality with recursion found: " + psiInclude + " [" + Joiner.join(".", includeQPath) + "] in " + psiInclude.getContainingFile().getVirtualFile());
+                        LOG.info("Equality with recursion found: " + psiInclude + " [" + Joiner.join(".", includeQPath) + "] in " + ORFileUtils.getVirtualFile(psiInclude.getContainingFile()));
                         return true;
                     }
 

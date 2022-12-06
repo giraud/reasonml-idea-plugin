@@ -11,6 +11,7 @@ import com.intellij.openapi.roots.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
+import com.reason.ide.*;
 import com.reason.ide.settings.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -35,7 +36,7 @@ public class ReformatOnSave {
         if (settings.isFormatOnSaveEnabled()) {
             PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
             if (psiFile != null && psiFile.isWritable()) {
-                VirtualFile virtualFile = psiFile.getVirtualFile();
+                VirtualFile virtualFile = ORFileUtils.getVirtualFile(psiFile);
                 if (virtualFile != null && virtualFile.exists()) {
                     ProjectFileIndex projectFileIndex = ProjectRootManager.getInstance(project).getFileIndex();
                     if (!projectFileIndex.isInContent(virtualFile)) {

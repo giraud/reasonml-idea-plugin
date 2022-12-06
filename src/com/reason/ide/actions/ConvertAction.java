@@ -12,6 +12,7 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.reason.comp.bs.*;
+import com.reason.ide.*;
 import com.reason.ide.files.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -38,9 +39,9 @@ public class ConvertAction extends AnAction {
 
         final Document document = PsiDocumentManager.getInstance(project).getDocument(file);
         if (document != null) {
-            final String convertedText;
-            final String toFormat;
-            VirtualFile sourceFile = file.getVirtualFile();
+            String convertedText;
+            String toFormat;
+            VirtualFile sourceFile = ORFileUtils.getVirtualFile(file);
 
             boolean isInterface = isInterface(fileType);
             if (FileHelper.isReason(fileType)) {

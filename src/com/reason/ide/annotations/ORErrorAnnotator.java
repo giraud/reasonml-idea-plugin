@@ -16,6 +16,7 @@ import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.rescript.*;
 import com.reason.hints.*;
+import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
 import com.reason.lang.*;
@@ -37,7 +38,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
             LOG.info("Annotator was initialized with errors. This isn't supported.");
         } else {
             ORCompilerManager compilerManager = psiFile.getProject().getService(ORCompilerManager.class);
-            ORResolvedCompiler<?> compiler = compilerManager.getCompiler(psiFile.getVirtualFile());
+            ORResolvedCompiler<?> compiler = compilerManager.getCompiler(ORFileUtils.getVirtualFile(psiFile));
 
             if (compiler != null) {
                 switch (compiler.getType()) {
@@ -80,8 +81,12 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
 
     @Override
     public void apply(@NotNull PsiFile sourcePsiFile, @NotNull AnnotationResult annotationResult, @NotNull AnnotationHolder holder) {
+        VirtualFile sourceFile = ORFileUtils.getVirtualFile(sourcePsiFile);
+        if (sourceFile == null) {
+            return;
+        }
+
         Project project = sourcePsiFile.getProject();
-        VirtualFile sourceFile = sourcePsiFile.getVirtualFile();
         Editor editor = annotationResult.editor;
         File cmtFile = annotationResult.cmtFile;
 
@@ -199,7 +204,11 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         File sourceTempFile;
 
         try {
-            sourceTempFile = FileUtil.createTempFile(tempCompilationDirectory, nameWithoutExtension, "." + psiFile.getVirtualFile().getExtension());
+            VirtualFile virtualFile = ORFileUtils.getVirtualFile(psiFile);
+            if (virtualFile == null) {
+                return null;
+            }
+            sourceTempFile = FileUtil.createTempFile(tempCompilationDirectory, nameWithoutExtension, "." + virtualFile.getExtension());
         } catch (IOException e) {
             LOG.info("Temporary file creation failed", e); // log error but do not show it in UI
             return null;

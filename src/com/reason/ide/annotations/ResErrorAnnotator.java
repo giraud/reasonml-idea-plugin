@@ -9,6 +9,7 @@ import com.intellij.psi.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.rescript.*;
+import com.reason.ide.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -32,8 +33,11 @@ public class ResErrorAnnotator {
         Ninja ninja = contentRoot == null ? null : compiler.readNinjaBuild();
 
         if (ninja != null && config != null && libRoot != null) {
-            List<String> args = ResPlatform.isDevSource(psiFile.getVirtualFile(), contentRoot, config) ? ninja.getArgsDev() : ninja.getArgs();
-            return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, null, editor, args, config.getJsxVersion());
+            VirtualFile virtualFile = ORFileUtils.getVirtualFile(psiFile);
+            if (virtualFile != null) {
+                List<String> args = ResPlatform.isDevSource(virtualFile, contentRoot, config) ? ninja.getArgsDev() : ninja.getArgs();
+                return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, null, editor, args, config.getJsxVersion());
+            }
         }
 
         return null;
@@ -42,7 +46,10 @@ public class ResErrorAnnotator {
     public static @Nullable ORErrorAnnotator.AnnotationResult doAnnotate(@NotNull InitialInfo<? extends ORResolvedCompiler<?>> initialInfo) {
         PsiFile sourcePsiFile = initialInfo.sourcePsiFile;
         Project project = sourcePsiFile.getProject();
-        VirtualFile sourceFile = sourcePsiFile.getVirtualFile();
+        VirtualFile sourceFile = ORFileUtils.getVirtualFile(sourcePsiFile);
+        if (sourceFile == null) {
+            return null;
+        }
 
         String nameWithoutExtension = sourceFile.getNameWithoutExtension();
 

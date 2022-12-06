@@ -10,6 +10,7 @@ import com.intellij.openapi.roots.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
+import com.reason.ide.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -79,7 +80,7 @@ public class Platform {
     }
 
     public static @NotNull String getRelativePathToModule(@NotNull PsiFile file) {
-        VirtualFile virtualFile = file.getVirtualFile();
+        VirtualFile virtualFile = ORFileUtils.getVirtualFile(file);
         String relativePath = virtualFile == null ? file.getName() : virtualFile.getPath();
 
         Module module = ModuleUtil.findModuleForFile(file);
@@ -108,6 +109,7 @@ public class Platform {
         ModuleRootManager rootManager = module == null ? null : ModuleRootManager.getInstance(module);
         ModuleFileIndex fileIndex = rootManager == null ? null : rootManager.getFileIndex();
 
-        return fileIndex != null && fileIndex.isInSourceContent(psiFile.getVirtualFile());
+        VirtualFile virtualFile = ORFileUtils.getVirtualFile(psiFile);
+        return fileIndex != null && virtualFile != null && fileIndex.isInSourceContent(virtualFile);
     }
 }
