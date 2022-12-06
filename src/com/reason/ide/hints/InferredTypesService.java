@@ -36,8 +36,8 @@ public class InferredTypesService {
             Document document = selectedTextEditor.getDocument();
             PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
             if (psiFile instanceof FileBase && !FileHelper.isInterface(psiFile.getFileType())) {
-                VirtualFile sourceFile = psiFile.getVirtualFile();
-                FileType fileType = sourceFile.getFileType();
+                VirtualFile sourceFile = ORFileUtils.getVirtualFile(psiFile);
+                FileType fileType = sourceFile == null ? null : sourceFile.getFileType();
                 return FileHelper.isCompilable(fileType) ? psiFile : null;
             }
         }
@@ -47,7 +47,7 @@ public class InferredTypesService {
     public static void queryTypes(@NotNull Project project, @NotNull PsiFile psiFile) {
         try {
             // Try to get the inferred types cached at the psi file user data
-            VirtualFile sourceFile = psiFile.getVirtualFile();
+            VirtualFile sourceFile = ORFileUtils.getVirtualFile(psiFile);
             Application application = ApplicationManager.getApplication();
 
             SignatureProvider.InferredTypesWithLines sigContext = psiFile.getUserData(SignatureProvider.SIGNATURES_CONTEXT);
@@ -77,7 +77,8 @@ public class InferredTypesService {
                 if (!DumbService.isDumb(project)) {
                     ReadAction.nonBlocking((Callable<Void>) () -> {
                                 LOG.debug("Reading types from file", psiFile);
-                                VirtualFile cmtFile = ORFileUtils.findCmtFileFromSource(project, sourceFile.getNameWithoutExtension(), namespace[0]);
+                                String nameWithoutExtension = sourceFile == null ? "" : sourceFile.getNameWithoutExtension();
+                                VirtualFile cmtFile = ORFileUtils.findCmtFileFromSource(project, nameWithoutExtension, namespace[0]);
                                 if (cmtFile != null) {
                                     Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
                                     insightManager.queryTypes(sourceFile, cmtPath,

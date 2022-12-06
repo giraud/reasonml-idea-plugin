@@ -11,7 +11,7 @@ import java.util.*;
 public interface InsightManager {
     void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile);
 
-    void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path path, @NotNull ORProcessTerminated<InferredTypes> callback);
+    void queryTypes(@Nullable VirtualFile sourceFile, @NotNull Path path, @NotNull ORProcessTerminated<InferredTypes> callback);
 
     @NotNull
     List<String> dumpMeta(@NotNull VirtualFile cmtFile);

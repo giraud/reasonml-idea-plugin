@@ -4,12 +4,13 @@ import com.intellij.codeInsight.daemon.*;
 import com.intellij.codeInsight.navigation.*;
 import com.intellij.openapi.editor.markup.*;
 import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
+import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import icons.*;
@@ -161,10 +162,15 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     private @NotNull <T extends PsiQualifiedNamedElement> RelatedItemLineMarkerInfo<PsiElement> createGutterIcon(@NotNull PsiElement psiSource, boolean isInterface, @NotNull String method, @NotNull FileBase relatedFile, T relatedElement) {
         // GutterTooltipHelper only available for java based IDE ?
-        String relatedFilename = relatedFile.getVirtualFile().getName();
-        String tooltip = "<html><body>" +
-                "<p>" + (isInterface ? "Implements " : "Declare ") + method + " in <a href=\"#navigation/" + relatedFile.getVirtualFile().getPath() + ":0\"><code>" + relatedFilename + "</code></a></p>" +
-                "</body></html>";
+        VirtualFile virtualFile = ORFileUtils.getVirtualFile(relatedFile);
+        String tooltip = "";
+        if (virtualFile != null) {
+            String relatedFilename = virtualFile.getName();
+            tooltip = "<html><body><p>" +
+                    (isInterface ? "Implements " : "Declare ") + method + " in " +
+                    "<a href=\"#navigation/" + virtualFile.getPath() + ":0\"><code>" + relatedFilename + "</code></a>" +
+                    "</p></body></html>";
+        }
 
         return NavigationGutterIconBuilder.create(isInterface ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
                 .setTooltipText(tooltip)
@@ -177,7 +183,8 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     public FileBase findRelatedFile(@NotNull FileBase file) {
         PsiDirectory directory = file.getParent();
         if (directory != null) {
-            String filename = file.getVirtualFile().getNameWithoutExtension();
+            VirtualFile virtualFile = ORFileUtils.getVirtualFile(file);
+            String filename = virtualFile == null ? "" : virtualFile.getNameWithoutExtension();
 
             String relatedExtension;
             if (FileHelper.isReason(file.getFileType())) {

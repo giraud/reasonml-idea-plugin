@@ -13,6 +13,7 @@ import com.intellij.psi.impl.source.codeStyle.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.ocaml.*;
 import com.reason.comp.rescript.*;
+import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.settings.*;
 import com.reason.lang.core.*;
@@ -95,64 +96,64 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
     }
 
     static class RmlFormatProcessor implements FormatterProcessor {
-        private final Project m_project;
-        private final VirtualFile m_file;
-        private final boolean m_isInterface;
+        private final Project myProject;
+        private final @Nullable VirtualFile myFile;
+        private final boolean myIsInterface;
 
         RmlFormatProcessor(@NotNull PsiFile file) {
-            m_project = file.getProject();
-            m_file = file.getVirtualFile();
-            m_isInterface = FileHelper.isInterface(file.getFileType());
+            myProject = file.getProject();
+            myFile = ORFileUtils.getVirtualFile(file);
+            myIsInterface = FileHelper.isInterface(file.getFileType());
         }
 
         @Override
         public @Nullable String apply(@NotNull String textToFormat) {
-            if (m_project.getService(ORSettings.class).isBsEnabled() && m_file.exists()) {
-                LOG.trace("Apply ReasonML formatter, is interface", m_isInterface);
-                BsFormatProcess process = m_project.getService(BsFormatProcess.class);
-                return process.convert(m_file, m_isInterface, "re", "re", textToFormat);
+            if (myProject.getService(ORSettings.class).isBsEnabled() && myFile != null && myFile.exists()) {
+                LOG.trace("Apply ReasonML formatter, is interface", myIsInterface);
+                BsFormatProcess process = myProject.getService(BsFormatProcess.class);
+                return process.convert(myFile, myIsInterface, "re", "re", textToFormat);
             }
             return null;
         }
     }
 
     static class ResFormatProcessor implements FormatterProcessor {
-        private final Project m_project;
-        private final VirtualFile m_file;
-        private final boolean m_isInterface;
+        private final Project myProject;
+        private final @Nullable VirtualFile myFile;
+        private final boolean myIsInterface;
 
         ResFormatProcessor(@NotNull PsiFile file) {
-            m_project = file.getProject();
-            m_file = file.getVirtualFile();
-            m_isInterface = FileHelper.isInterface(file.getFileType());
+            myProject = file.getProject();
+            myFile = ORFileUtils.getVirtualFile(file);
+            myIsInterface = FileHelper.isInterface(file.getFileType());
         }
 
         @Override
         public @Nullable String apply(@NotNull String textToFormat) {
-            if (m_file.exists()) {
-                LOG.trace("Apply Rescript formatter, is interface", m_isInterface);
-                ResFormatProcess process = m_project.getService(ResFormatProcess.class);
-                return process.format(m_file, m_isInterface, textToFormat);
+            if (myFile != null && myFile.exists()) {
+                LOG.trace("Apply Rescript formatter, is interface", myIsInterface);
+                ResFormatProcess process = myProject.getService(ResFormatProcess.class);
+                return process.format(myFile, myIsInterface, textToFormat);
             }
             return null;
         }
     }
 
     private static class OclFormatProcessor implements FormatterProcessor {
-        private final Project m_project;
-        private final VirtualFile m_file;
+        private final Project myProject;
+        private final @Nullable VirtualFile myFile;
 
         public OclFormatProcessor(@NotNull PsiFile file) {
-            m_project = file.getProject();
-            m_file = file.getVirtualFile();
+            myProject = file.getProject();
+            myFile = ORFileUtils.getVirtualFile(file);
         }
 
         @Override
         public @Nullable String apply(@NotNull String textToFormat) {
-            if (m_file.exists()) {
+            if (myFile != null && myFile.exists()) {
                 LOG.trace("Apply OCaml formatter");
-                OcamlFormatProcess process = m_project.getService(OcamlFormatProcess.class);
-                return process == null ? null : process.format(m_file, textToFormat);
+                OcamlFormatProcess process = myProject.getService(OcamlFormatProcess.class);
+                return process == null ? null : process.format(myFile, textToFormat);
             }
             return null;
         }

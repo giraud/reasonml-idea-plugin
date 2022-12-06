@@ -65,8 +65,6 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSym
 
         // Find all elements by name and create a list of paths
         Project project = myElement.getProject();
-        //Module module = Platform.getModule(project, myElement.getContainingFile().getVirtualFile());
-        //GlobalSearchScope scope = module == null ? GlobalSearchScope.projectScope(project) : GlobalSearchScope.moduleScope(module);
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
         Collection<RPsiModule> modules = ModuleIndex.getElements(myReferenceName, project, scope);

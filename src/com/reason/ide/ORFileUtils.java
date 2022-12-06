@@ -2,6 +2,7 @@ package com.reason.ide;
 
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.reason.comp.bs.*;
 import jpsplugin.com.reason.*;
@@ -59,7 +60,11 @@ public class ORFileUtils {
      * @param start   starting directory (or file) to begin searching for `target`
      * @return found target file
      */
-    public static @Nullable VirtualFile findAncestor(@NotNull Project project, @NotNull String target, @NotNull VirtualFile start) {
+    public static @Nullable VirtualFile findAncestor(@NotNull Project project, @NotNull String target, @Nullable VirtualFile start) {
+        if (start == null) {
+            return null;
+        }
+
         // start must be a directory, should only happen on first iteration
         if (!start.isDirectory()) {
             if (target.equals(start.getName())) {
@@ -87,5 +92,16 @@ public class ORFileUtils {
             return null;
         }
         return findAncestor(project, target, parent);
+    }
+
+    // RELEASE: check no direct getVirtualFile() in code
+    // Because psiFile.getVirtualFile() is not annotated with @Nullable !
+    public static @Nullable VirtualFile getVirtualFile(@Nullable PsiFile psiFile) {
+        return psiFile == null ? null : psiFile.getVirtualFile();
+    }
+
+    public static String getVirtualPath(@Nullable PsiFile file) {
+        VirtualFile virtualFile = getVirtualFile(file);
+        return virtualFile == null ? null : virtualFile.getPath();
     }
 }

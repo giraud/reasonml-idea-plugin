@@ -13,8 +13,6 @@ import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.*;
-import com.reason.lang.core.psi.impl.RPsiAnnotation;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import icons.*;
@@ -55,12 +53,14 @@ public class FreeExpressionCompletionProvider {
         ModuleTopLevelIndex.processModules(project, scope, topModule -> {
             FileBase topModuleFile = (FileBase) topModule.getContainingFile();
             if (!topModuleFile.equals(containingFile)) {
-                VirtualFile virtualFile = topModuleFile.getVirtualFile();
-                PsiFile psiFile = psiManager.findFile(virtualFile);
-                resultSet.addElement(
-                        LookupElementBuilder.create(topModule.getModuleName())
-                                .withTypeText(psiFile == null ? virtualFile.getName() : FileHelper.shortLocation(psiFile))
-                                .withIcon(IconProvider.getFileModuleIcon(topModuleFile)));
+                VirtualFile virtualFile = ORFileUtils.getVirtualFile(topModuleFile);
+                if (virtualFile != null) {
+                    PsiFile psiFile = psiManager.findFile(virtualFile);
+                    resultSet.addElement(
+                            LookupElementBuilder.create(topModule.getModuleName())
+                                    .withTypeText(psiFile == null ? virtualFile.getName() : FileHelper.shortLocation(psiFile))
+                                    .withIcon(IconProvider.getFileModuleIcon(topModuleFile)));
+                }
             }
         });
 
