@@ -20,8 +20,8 @@ public class EsyPackageJson {
     }
 
     /* detects any "package.json" with a top-level "esy" property */
-    public static boolean isEsyPackageJson(@NotNull VirtualFile file) {
-        if (file.getFileType() instanceof JsonFileType) {
+    public static boolean isEsyPackageJson(@Nullable VirtualFile file) {
+        if (file != null && file.getFileType() instanceof JsonFileType) {
             try {
                 return FileContentPattern.fileContent()
                         .withName(EsyPackageJsonFileType.getDefaultFilename())

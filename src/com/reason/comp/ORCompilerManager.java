@@ -32,8 +32,8 @@ public class ORCompilerManager {
         return compiler != null && compiler.isConfigured(myProject) ? compiler : null;
     }
 
-    public @Nullable ORResolvedCompiler<? extends Compiler> getCompiler(@NotNull VirtualFile editorFile) {
-        boolean shouldTraverse = editorFile.isDirectory() || FileHelper.isCompilable(editorFile.getFileType());
+    public @Nullable ORResolvedCompiler<? extends Compiler> getCompiler(@Nullable VirtualFile editorFile) {
+        boolean shouldTraverse = editorFile != null && (editorFile.isDirectory() || FileHelper.isCompilable(editorFile.getFileType()));
         return shouldTraverse ? traverseAncestorsForCompiler(editorFile.getParent(), new HashMap<>()) : null;
     }
 

@@ -7,6 +7,7 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.ui.popup.*;
 import com.intellij.psi.*;
 import com.intellij.ui.awt.*;
+import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.lang.core.*;
@@ -79,7 +80,7 @@ public class GotoTestDataAction extends AnAction {
             }
 
             if (relatedModule != null) {
-                return Collections.singletonList(((FileBase) relatedModule).getVirtualFile().getPath());
+                return Collections.singletonList(ORFileUtils.getVirtualPath((FileBase) relatedModule));
             }
         }
 

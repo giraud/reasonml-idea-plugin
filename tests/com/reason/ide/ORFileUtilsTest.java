@@ -7,6 +7,7 @@ import org.junit.runners.*;
 
 import java.nio.file.*;
 
+@SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
 public class ORFileUtilsTest extends ORBasePlatformTestCase {
     @Test
@@ -14,7 +15,7 @@ public class ORFileUtilsTest extends ORBasePlatformTestCase {
         myFixture.configureByText("bsconfig.json", toJson("{'name': 'foo', 'namespace': 'foo'}"));
         PsiFile binary = myFixture.configureByText("Config-Foo.cm", "binary, should be .cmt");
         FileSystem fs = FileSystems.getDefault();
-        String relativeSource = ORFileUtils.toRelativeSourceName(getProject(), binary.getVirtualFile(), fs.getPath("src/Config-Foo.cmt"));
+        String relativeSource = ORFileUtils.toRelativeSourceName(getProject(), ORFileUtils.getVirtualFile(binary), fs.getPath("src/Config-Foo.cmt"));
         assertEquals(fs.getPath("src", "Config.re").toString(), relativeSource);
     }
 }

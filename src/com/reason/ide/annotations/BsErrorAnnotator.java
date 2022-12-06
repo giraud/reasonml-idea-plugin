@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
+import com.reason.ide.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -40,7 +41,10 @@ public class BsErrorAnnotator {
 
         Project project = psiFile.getProject();
         Ninja ninja = compiler.readNinja();
-        VirtualFile sourceFile = psiFile.getVirtualFile();
+        VirtualFile sourceFile = ORFileUtils.getVirtualFile(psiFile);
+        if (sourceFile == null) {
+            return null;
+        }
 
         if (ninja != null && ninja.isRescriptFormat()) {
             List<String> args = isDevSource(sourceFile, contentRoot, config) ? ninja.getArgsDev() : ninja.getArgs();
@@ -137,7 +141,10 @@ public class BsErrorAnnotator {
             // cmt is never deleted
         } else {
             Project project = initialInfo.sourcePsiFile.getProject();
-            VirtualFile sourceFile = initialInfo.sourcePsiFile.getVirtualFile();
+            VirtualFile sourceFile = ORFileUtils.getVirtualFile(initialInfo.sourcePsiFile);
+            if (sourceFile == null) {
+                return null;
+            }
 
             // new info format
             String nameWithoutExtension = sourceFile.getNameWithoutExtension();

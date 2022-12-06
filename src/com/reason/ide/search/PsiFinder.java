@@ -6,6 +6,7 @@ import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.*;
 import com.reason.comp.bs.*;
+import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.*;
@@ -98,7 +99,7 @@ public final class PsiFinder {
 
                 for (RPsiModule module : modules) {
                     FileBase file = (FileBase) module.getContainingFile();
-                    if (bucklescript.isDependency(file.getVirtualFile())) {
+                    if (bucklescript.isDependency(ORFileUtils.getVirtualFile(file))) {
                         if (filter == null || filter.accepts(module)) {
                             if (module.isInterface()) {
                                 m_interfaces.add(module);
@@ -112,7 +113,7 @@ public final class PsiFinder {
                                     "  excluded (not in config)    "
                                             + module.getQualifiedName()
                                             + " "
-                                            + file.getVirtualFile().getPath());
+                                            + ORFileUtils.getVirtualPath(file));
                         }
                     }
                 }

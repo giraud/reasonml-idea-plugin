@@ -12,7 +12,7 @@ public interface BsCompiler extends Compiler {
     String getNamespace(@NotNull VirtualFile sourceFile);
 
     @Nullable
-    String convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document);
+    String convert(@Nullable VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document);
 
     @NotNull
     Ninja readNinjaBuild(@Nullable VirtualFile contentRoot);

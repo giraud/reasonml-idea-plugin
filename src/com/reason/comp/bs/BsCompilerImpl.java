@@ -142,12 +142,16 @@ public class BsCompilerImpl implements BsCompiler {
     }
 
     @Override
-    public @Nullable String convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
-        BsFormatProcess refmt = myProject.getService(BsFormatProcess.class);
-        String oldText = document.getText();
-        String newText = refmt.convert(virtualFile, isInterface, fromFormat, toFormat, oldText);
-        // additional protection
-        return oldText.isEmpty() || newText.isEmpty() ? null : newText;
+    public @Nullable String convert(@Nullable VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
+        String result = null;
+        if (virtualFile != null) {
+            BsFormatProcess refmt = myProject.getService(BsFormatProcess.class);
+            String oldText = document.getText();
+            String newText = refmt.convert(virtualFile, isInterface, fromFormat, toFormat, oldText);
+            // additional protection
+            result = oldText.isEmpty() || newText.isEmpty() ? null : newText;
+        }
+        return result;
     }
 
     @Override
