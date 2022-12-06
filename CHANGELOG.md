@@ -12,9 +12,9 @@
 
 ## Unreleased
 
-- :bug: [#392](https://github.com/giraud/reasonml-idea-plugin/issues/392) Attempting to open editorconfig causes IDE exception
-## 0.109 - 2022/12/05
+## 0.109.1 - 2022/12/06
 
+- :bug: [#392](https://github.com/giraud/reasonml-idea-plugin/issues/392) Attempting to open editorconfig causes IDE exception
 - :bug: [#391](https://github.com/giraud/reasonml-idea-plugin/issues/391) Dune comments are broken (lexer)
 - :bug: [#390](https://github.com/giraud/reasonml-idea-plugin/issues/390) Stub mismatch exceptions fixed
 
