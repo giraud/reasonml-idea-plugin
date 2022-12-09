@@ -1,11 +1,6 @@
 ---
-id: esy
-title: Esy Support (beta)
-sidebar_label: Esy Support (beta)
-slug: /build-tools/esy
+sidebar_position: 3
 ---
-
-# Overview
 
 Support for Esy is ongoing. The initial goal is to support Esy project detection, and an esy tool window that allows you to run basic esy tasks.
 
@@ -33,7 +28,7 @@ Next you'll need to configure the plugin with this path to the Esy executable.
 To do this, open **File > Settings > Languages & Frameworks > OCaml / Reason > Esy**
 and provide the path to the Esy executable:
 
-![](../../static/img/esy-setup-0.png)
+![](./img/esy-setup-0.png)
 
 Click *Save* and attempt to run Esy by clicking on the Esy tool window.
 
@@ -41,4 +36,4 @@ Click *Save* and attempt to run Esy by clicking on the Esy tool window.
 
 You should now be able to run Esy actions without issue:
 
-![](../../static/img/esy-setup-1.png)
+![](./img/esy-setup-1.png)

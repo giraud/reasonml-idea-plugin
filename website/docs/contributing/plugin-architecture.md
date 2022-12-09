@@ -1,8 +1,5 @@
 ---
-id: plugin-architecture
-title: Plugin Architecture
-sidebar_label: Plugin Architecture
-slug: /contributing/plugin-architecture
+sidebar_position: 2
 ---
 
 # Design decisions

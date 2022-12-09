@@ -1,8 +1,5 @@
 ---
-id: project-types
-title: Supported Project Types
-sidebar_label: Supported Project Types
-slug: /get-started/project-types
+sidebar_position: 2
 ---
 
 _**Preview** - This document needs review and is subject to change_
