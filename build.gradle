@@ -1,15 +1,13 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.10.0'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.10.1' // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
-    repositories {
-        maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots/'
-        }
-        gradlePluginPortal()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
+    gradlePluginPortal()
 }
 
 dependencies {
