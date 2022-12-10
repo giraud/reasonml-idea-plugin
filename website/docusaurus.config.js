@@ -8,8 +8,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
     title:                 'Reason IDEA Plugin',
     tagline:               'Language Plugin for <code>OCaml</code>, <code>Reason</code> and <code>ReScript</code>',
-    url:                   'https://reasonml-idea-plugin.github.io',
-    baseUrl:               '/reasonml-idea-plugin/',
+    url:                   'https://reasonml-idea-plugin.github.io/',
+    baseUrl:               '/',
     onBrokenLinks:         'throw',
     onBrokenMarkdownLinks: 'warn',
     favicon:               'img/favicon.svg',
@@ -72,10 +72,10 @@ const config = {
                         items: [
                             {
                                 label: 'Get Started',
-                                to:    'docs/',
+                                to:    'docs/intro',
                             }, {
                                 label: 'How to Contribute',
-                                to:    'docs/contributing',
+                                to:    'docs/contributing/how-to-contribute',
                             },
                         ],
                     }, {
