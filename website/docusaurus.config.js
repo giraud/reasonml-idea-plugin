@@ -9,7 +9,7 @@ const config = {
     title:                 'Reason IDEA Plugin',
     tagline:               'Language Plugin for <code>OCaml</code>, <code>Reason</code> and <code>ReScript</code>',
     url:                   'https://reasonml-idea-plugin.github.io/',
-    baseUrl:               '/',
+    baseUrl:               '/reasonml-idea-plugin/',
     onBrokenLinks:         'throw',
     onBrokenMarkdownLinks: 'warn',
     favicon:               'img/favicon.svg',
