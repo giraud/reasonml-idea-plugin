@@ -1,8 +1,5 @@
 ---
-id: bucklescript
-title: BuckleScript Support
-sidebar_label: BuckleScript Support
-slug: /build-tools/bucklescript
+sidebar_position: 1
 ---
 
 ## BuckleScript Settings
@@ -11,7 +8,7 @@ Settings are per project.
 
 You can find them in `Project settings | Languages & Frameworks | Reason`: 
 
-![](../../static/img/settings.png)
+![](./img/settings.png)
 
 See also: [Project Types - BuckleScript Projects](https://github.com/giraud/reasonml-idea-plugin/wiki/Project-Types#bucklescript-projects)
 
@@ -31,13 +28,13 @@ Then, each time a file is saved, bsb is automatically called with the incrementa
 
 If you need it, you can also manually execute a `clean-world make-world` command by using the earth icon in the bucklescript window:
 
-![](../../static/img/earth.png)
+![](./img/earth.png)
 
 # When files are saved ?
 
 You can find the settings for saving files in Appearance & Behavior:
 
-![](../../static/img/save_settings.png)
+![](./img/save_settings.png)
 
 With idea, files are saved automatically, and you don't know exactly when.
 You can force a save with key shortcut: it is sometimes better because you get feedback more quickly.

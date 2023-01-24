@@ -12,11 +12,13 @@
 
 ## Unreleased
 
-## 0.109.1 - 2022/12/06
+## 0.109.2 - 2023/01/24
 
-- :bug: [#392](https://github.com/giraud/reasonml-idea-plugin/issues/392) Attempting to open editorconfig causes IDE exception
-- :bug: [#391](https://github.com/giraud/reasonml-idea-plugin/issues/391) Dune comments are broken (lexer)
-- :bug: [#390](https://github.com/giraud/reasonml-idea-plugin/issues/390) Stub mismatch exceptions fixed
+- :bug: [#398](https://github.com/giraud/reasonml-idea-plugin/issues/398) Rescript format doesn’t respect UTF-8 encoding
+- 0.109.1
+  - :bug: [#392](https://github.com/giraud/reasonml-idea-plugin/issues/392) Attempting to open editorconfig causes IDE exception
+  - :bug: [#391](https://github.com/giraud/reasonml-idea-plugin/issues/391) Dune comments are broken (lexer)
+  - :bug: [#390](https://github.com/giraud/reasonml-idea-plugin/issues/390) Stub mismatch exceptions fixed
 
 **NOTE**: minimal version supported is **2022.1**
 
