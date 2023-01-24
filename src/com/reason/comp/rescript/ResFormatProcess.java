@@ -32,7 +32,7 @@ public class ResFormatProcess {
         }
 
         try (AutoDeletingTempFile tempFile = new AutoDeletingTempFile("fileToFormat", isInterface ? ".resi" : ".res")) {
-            tempFile.write(code);
+            tempFile.write(code, UTF8);
 
             ProcessBuilder processBuilder = new ProcessBuilder(fmtBin.getPath(), "-format", tempFile.getPath());
             Process fmt = null;

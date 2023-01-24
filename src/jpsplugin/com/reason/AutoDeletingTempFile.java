@@ -5,6 +5,7 @@ import com.intellij.openapi.util.io.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
+import java.nio.charset.*;
 
 public class AutoDeletingTempFile implements AutoCloseable {
     private final File myFile;
@@ -17,11 +18,12 @@ public class AutoDeletingTempFile implements AutoCloseable {
         return myFile.getPath();
     }
 
-    public void write(@NotNull String text) throws IOException {
-        FileUtil.writeToFile(myFile, text.getBytes());
+    public void write(@NotNull String text, @NotNull Charset charset) throws IOException {
+        FileUtil.writeToFile(myFile, text, charset);
     }
 
-    @Override public void close() {
+    @Override
+    public void close() {
         FileUtilRt.delete(myFile);
     }
 }

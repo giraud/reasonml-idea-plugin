@@ -1,15 +1,13 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.10.0'  // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.12.0' // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
-    repositories {
-        maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots/'
-        }
-        gradlePluginPortal()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -42,6 +40,7 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
+                    <li>#398 - Rescript format doesn’t respect UTF-8 encoding</li>
                     <li>#392 - Attempting to open editorconfig causes IDE exception</li>
                     <li>#391 - Dune comments are broken (lexer)</li>
                     <li>#390 - Stub mismatch exceptions fixed</li>

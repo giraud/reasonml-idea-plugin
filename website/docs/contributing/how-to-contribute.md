@@ -1,8 +1,5 @@
 ---
-id: how-to-contribute
-title: How to Contribute
-sidebar_label: How to Contribute
-slug: /contributing
+sidebar_position: 1
 ---
 
 - Be patient

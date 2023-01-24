@@ -1,8 +1,5 @@
 ---
-id: plugin-development
-title: Plugin Development
-sidebar_label: Plugin Development
-slug: /contributing/plugin-development
+sidebar_position: 3
 ---
 
 ## Local Development
@@ -20,7 +17,7 @@ Follow the steps below to get the plugin running locally for development.
 
 You can launch a new IDEA instance with your development version of the plugin installed with the `runIde` gradle task.
 
-![](../../static/img/run_ide.png)
+![](./img/run_ide.png)
 
 ### Troubleshooting
 
@@ -36,11 +33,11 @@ Two tools are very important for development: the PSIViewer and the Indices view
 When you start an IntelliJ instance with gradle for debugging, 
 they are automatically downloaded for you and immediately available.
 
-![PSIViewer tool](../../static/img/arch/psiviewer_01.png)
+![PSIViewer tool](./img/psiviewer_01.png)
 
 > The PsiViewer tool to inspect PsiElements of the generated tree from parser
 
-![Îndices viewer](../../static/img/arch/indicesviewer_01.png)
+![Îndices viewer](./img/indicesviewer_01.png)
 
 > The indices viewer tool let you verify the correctness of the indexing
 
@@ -66,7 +63,7 @@ These statements are disabled by default. To enable debug logs, do the following
  2. In the newly launched instance (not your development instance) click on **Help > Diagnostic Tools > Debug Log Settings...**
  3. Enter the following, replacing `my-logging-category` with the value provided by the `Log.create(...)` instantiator:
  
-    ![Log Configuration](../../static/img/enable-logging.png)
+    ![Log Configuration](./img/enable-logging.png)
  4. Debug logs should now be enabled for that logging category. To view the logs, run **Help > Show Log in Files**
  
  > Note: you can run `tail -f idea.log` from a terminal to follow along with the log output.
