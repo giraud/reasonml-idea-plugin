@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: [#398](https://github.com/giraud/reasonml-idea-plugin/issues/398) Rescript format doesn’t respect UTF-8 encoding
+
 ## 0.109.1 - 2022/12/06
 
 - :bug: [#392](https://github.com/giraud/reasonml-idea-plugin/issues/392) Attempting to open editorconfig causes IDE exception

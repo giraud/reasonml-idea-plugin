@@ -200,7 +200,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         }
     }
 
-    @Nullable static File copyToTempFile(@NotNull File tempCompilationDirectory, @NotNull PsiFile psiFile, @NotNull String nameWithoutExtension) {
+    static @Nullable File copyToTempFile(@NotNull File tempCompilationDirectory, @NotNull PsiFile psiFile, @NotNull String nameWithoutExtension) {
         File sourceTempFile;
 
         try {
@@ -216,7 +216,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
 
         try {
             String psiText = ReadAction.compute(psiFile::getText);
-            FileUtil.writeToFile(sourceTempFile, psiText.getBytes());
+            FileUtil.writeToFile(sourceTempFile, psiText.getBytes(Platform.UTF8));
         } catch (IOException e) {
             // Sometimes, file is locked by another process, not a big deal, skip it
             LOG.trace("Write failed: " + e.getLocalizedMessage());
