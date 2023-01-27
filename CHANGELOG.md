@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: ![n] [#399](https://github.com/giraud/reasonml-idea-plugin/issues/399) Rescript: incorrectly parse element as tag
+
 ## 0.109.2 - 2023/01/24
 
 - :bug: [#398](https://github.com/giraud/reasonml-idea-plugin/issues/398) Rescript format doesn’t respect UTF-8 encoding

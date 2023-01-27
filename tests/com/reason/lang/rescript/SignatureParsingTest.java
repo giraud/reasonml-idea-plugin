@@ -173,15 +173,10 @@ public class SignatureParsingTest extends ResParsingTestCase {
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
     }
 
-    // zzz later
-    //public void test_react() {
-    //    RPsiExternal e = first(externalExpressions(parseCode("external useState: (@uncurry (unit => 'state)) => ('state, (. 'state => 'state) => unit) = \"useState\"")));
+    @Test
+    public void test_GH_399() {
+        RPsiType e = firstOfType(parseCode("type t = React.Ref<Js.nullable<Dom.element>>"), RPsiType.class);
 
-    //assertEquals("useState", e.getExternalName());
-    //assertEquals("(@uncurry (unit => 'state)) => ('state, (. 'state => 'state) => unit)", e.getSignature().getText());
-    //assertEmpty(PsiTreeUtil.findChildrenOfType(e, RPsiFunction.class));
-    //List<RPsiSignatureItem> signatureItems = e.getSignature().getItems();
-    //assertEquals("@uncurry (unit => 'state)", signatureItems.get(0).getText());
-    // ? assertEquals("('state, (. 'state => 'state) => unit)", signatureItems.get(1).getText());
-    //}
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
+    }
 }
