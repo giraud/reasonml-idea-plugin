@@ -622,7 +622,10 @@ public class ResParser extends CommonPsiParser {
         private void parseLt() {
             if (is(myTypes.C_OPTION) || in(myTypes.C_SIG_EXPR)) {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LT);
-            } else if (strictlyInAny(myTypes.C_TYPE_DECLARATION, myTypes.C_VARIANT_DECLARATION)) { // type parameters
+            } else if (strictlyIn(myTypes.C_VARIANT_DECLARATION)) { // type parameters
+                // type t |> < <| 'a >
+                markScope(myTypes.C_PARAMETERS, myTypes.LT);
+            } else if (in(myTypes.C_TYPE_DECLARATION)) { // type parameters
                 // type t |> < <| 'a >
                 markScope(myTypes.C_PARAMETERS, myTypes.LT);
             } else if (in(myTypes.C_VARIANT_DECLARATION)) {
