@@ -14,6 +14,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_anonymous_function() {
         RPsiLet e = first(letExpressions(parseCode("let _ = Belt.map(items, (. item) => value)")));
+        assertNoParserError(e);
 
         RPsiFunction function = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
         assertSize(1, function.getParameters());
@@ -108,14 +109,16 @@ public class FunctionParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_parameters_named_symbols() {
-        RPsiLet e = first(letExpressions(parseCode("let make = (~id:string, ~values: option<'a>, children) => null")));
+        RPsiLet e = first(letExpressions(parseCode("let make = (~p1: (. int) => unit, ~p2: option<'a>, children) => null")));
+        assertNoParserError(e);
 
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
         assertSize(3, parameters);
 
-        assertEquals("id", parameters.get(0).getName());
-        assertEquals("values", parameters.get(1).getName());
+        assertEquals("p1", parameters.get(0).getName());
+        assertSize(2, parameters.get(0).getSignature().getItems());
+        assertEquals("p2", parameters.get(1).getName());
         assertEquals("children", parameters.get(2).getName());
     }
 
