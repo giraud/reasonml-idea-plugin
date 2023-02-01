@@ -1016,7 +1016,9 @@ public class ResParser extends CommonPsiParser {
                     popEnd();
                     if (strictlyIn(myTypes.C_PATTERN_MATCH_EXPR)) {
                         popEndUntil(myTypes.C_PATTERN_MATCH_EXPR);
-                    } else if ((strictlyInAny(myTypes.C_SCOPED_EXPR, myTypes.C_PARAMETERS) && (isCurrentScope(myTypes.LPAREN)) || in(myTypes.C_SOME))) {
+                    } else if (strictlyIn(myTypes.C_SIG_ITEM)) {
+                        popEndUntil(myTypes.C_SIG_ITEM);
+                    } else if (strictlyInAny(myTypes.C_SCOPED_EXPR, myTypes.C_PARAMETERS) && isCurrentScope(myTypes.LPAREN) || in(myTypes.C_SOME)) {
                         int foundHolderIndex = latestIndexOfCompositeAtMost(myTypes.H_COLLECTION_ITEM, getIndex());
                         if (-1 < foundHolderIndex) {
                             rollbackToIndex(foundHolderIndex);
@@ -1032,17 +1034,10 @@ public class ResParser extends CommonPsiParser {
                         if (-1 < foundHolderIndex) {
                             rollbackToIndex(foundHolderIndex);
                             updateLatestComposite(myTypes.C_FUNCTION_EXPR);
-                        /*
-                        if (lParen.isCompositeType(myTypes.C_PARAM)) {
-                            markBefore(1, myTypes.C_PARAM);
-                        }
-                                             */
                             mark(myTypes.C_PARAMETERS).markHolder(myTypes.H_COLLECTION_ITEM);
                         } else {
                             error("Cant find placeholder");
                         }
-                    } else {
-                        //pop();
                     }
                 } else {
                     popEnd();
