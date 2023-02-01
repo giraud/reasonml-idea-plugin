@@ -23,12 +23,6 @@ version = pluginVersion + '-' + platformVersion
 java.sourceCompatibility = '11.0'
 compileJava.options.encoding = 'UTF-8'
 
-sourceSets {
-    main.java.srcDirs = ['src']
-    main.resources.srcDirs = ['resources']
-    test.java.srcDirs = ['tests']
-}
-
 intellij {
     version = platformVersion
     type = platformType
