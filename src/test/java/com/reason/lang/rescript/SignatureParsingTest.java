@@ -176,7 +176,20 @@ public class SignatureParsingTest extends ResParsingTestCase {
     @Test
     public void test_GH_399() {
         RPsiType e = firstOfType(parseCode("type t = React.Ref<Js.nullable<Dom.element>>"), RPsiType.class);
+        assertNoParserError(e);
 
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiUpperTagName.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiLeafPropertyName.class));
+    }
+
+    @Test
+    public void test_GH_399a() {
+        RPsiLet e = firstOfType(parseCode("let fn = (domRef: React.ref<Js.nullable<Dom.element>>) => ()"), RPsiLet.class);
+        assertNoParserError(e);
+
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiUpperTagName.class));
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiLeafPropertyName.class));
     }
 }

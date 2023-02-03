@@ -119,6 +119,10 @@ public class ResParser extends CommonPsiParser {
                         parseLIdent();
                     } else if (tokenType == myTypes.UIDENT) {
                         parseUIdent();
+                    } else if (tokenType == myTypes.PROPERTY_NAME) {
+                        parseLTagName();
+                    } else if (tokenType == myTypes.A_UPPER_TAG_NAME) {
+                        parseUTagName();
                     } else if (tokenType == myTypes.POLY_VARIANT) {
                         parsePolyVariant();
                     } else if (tokenType == myTypes.UNIT) {
@@ -1186,6 +1190,20 @@ public class ResParser extends CommonPsiParser {
                     remapCurrentToken(nextToken == myTypes.RIGHT_ARROW ? myTypes.A_VARIANT_NAME : myTypes.A_MODULE_NAME)
                             .wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
+            }
+        }
+
+        private void parseLTagName() {
+            // LIdent might have already incorrectly been remapped to a tag name. need to revert that update.
+            if (in(myTypes.C_SIG_ITEM)) {
+                remapCurrentToken(myTypes.LIDENT).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+            }
+        }
+
+        private void parseUTagName() {
+            // UIdent might have already incorrectly been remapped to a tag name. need to revert that update.
+            if (in(myTypes.C_SIG_ITEM)) {
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             }
         }
 
