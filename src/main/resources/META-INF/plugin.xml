@@ -6,9 +6,9 @@
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
-    <depends optional="true" config-file="META-INF/java-deps.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="java-deps.xml">com.intellij.modules.java</depends>
 
-    <depends optional="true" config-file="META-INF/js-deps.xml">JavaScript</depends>
+    <depends optional="true" config-file="js-deps.xml">JavaScript</depends>
 
     <actions>
         <!-- CONSOLE ACTIONS - BUCKLESCRIPT -->
@@ -424,11 +424,11 @@
          -->
 
         <toolWindow id="BuckleScript:" factoryClass="com.reason.ide.console.bs.BsToolWindowFactory"
-                    anchor="bottom" icon="ORIcons.BUCKLESCRIPT_TOOL"/>
+                    anchor="bottom" icon="com.reason.ide.ORIcons.BUCKLESCRIPT_TOOL"/>
         <toolWindow id="Rescript:" factoryClass="com.reason.ide.console.rescript.RescriptToolWindowFactory"
-                    anchor="bottom" icon="ORIcons.RESCRIPT_TOOL"/>
+                    anchor="bottom" icon="com.reason.ide.ORIcons.RESCRIPT_TOOL"/>
         <toolWindow id="Dune:" factoryClass="com.reason.ide.console.dune.DuneToolWindowFactory"
-                    anchor="bottom" icon="ORIcons.DUNE_TOOL"/>
+                    anchor="bottom" icon="com.reason.ide.ORIcons.DUNE_TOOL"/>
 
         <!-- <codeInsight.typeInfo language="Reason" implementationClass="com.reason.ide.hints.RmlTypeProvider"/> ctrl-shift-p -->
         <codeInsight.parameterInfo language="Reason"
