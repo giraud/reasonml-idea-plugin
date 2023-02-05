@@ -1205,7 +1205,10 @@ public class OclParser extends CommonPsiParser {
                 remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) { // Declaring an exception
                 // exception |>X<| ...
-                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_TRY_HANDLER)) {
+                // try .. with |>X<| ..
+                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else {
                 IElementType nextToken = lookAhead(1);
 

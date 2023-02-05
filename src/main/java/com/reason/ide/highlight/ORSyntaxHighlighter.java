@@ -58,7 +58,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     ResTypes.INSTANCE.OPEN, ResTypes.INSTANCE.MODULE, ResTypes.INSTANCE.FUN, ResTypes.INSTANCE.LET,
                     ResTypes.INSTANCE.TYPE, ResTypes.INSTANCE.INCLUDE, ResTypes.INSTANCE.EXTERNAL, ResTypes.INSTANCE.LIST,
                     ResTypes.INSTANCE.IF, ResTypes.INSTANCE.ELSE, ResTypes.INSTANCE.ENDIF, ResTypes.INSTANCE.SWITCH,
-                    ResTypes.INSTANCE.TRY, ResTypes.INSTANCE.RAISE, ResTypes.INSTANCE.FOR, ResTypes.INSTANCE.IN,
+                    ResTypes.INSTANCE.TRY, ResTypes.INSTANCE.CATCH, ResTypes.INSTANCE.RAISE, ResTypes.INSTANCE.FOR, ResTypes.INSTANCE.IN,
                     ResTypes.INSTANCE.TO, ResTypes.INSTANCE.BOOL_VALUE, ResTypes.INSTANCE.REF, ResTypes.INSTANCE.EXCEPTION,
                     ResTypes.INSTANCE.WHEN, ResTypes.INSTANCE.AND, ResTypes.INSTANCE.REC, ResTypes.INSTANCE.WHILE,
                     ResTypes.INSTANCE.ASR, ResTypes.INSTANCE.CLASS, ResTypes.INSTANCE.CONSTRAINT, ResTypes.INSTANCE.DOWNTO,

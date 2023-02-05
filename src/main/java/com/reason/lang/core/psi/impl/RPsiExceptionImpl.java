@@ -28,7 +28,7 @@ public class RPsiExceptionImpl extends RPsiTokenStub<ORLangTypes, RPsiException,
     //region PsiNamedElement
     @Override
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, RPsiUpperSymbol.class);
+        return ORUtil.findImmediateFirstChildOfType(this, myTypes.EXCEPTION_NAME);
     }
 
     @Override
