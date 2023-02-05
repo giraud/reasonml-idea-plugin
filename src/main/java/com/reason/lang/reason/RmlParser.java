@@ -519,7 +519,7 @@ public class RmlParser extends CommonPsiParser {
         private void parsePipe() {
             if (is(myTypes.C_TRY_HANDLERS)) {
                 // try (...) { |>|<| ...
-                mark(myTypes.C_TRY_HANDLER);
+                advance().mark(myTypes.C_TRY_HANDLER);
             } else if (is(myTypes.C_TYPE_BINDING)) {
                 // type t = |>|<| ...
                 popEndUntil(myTypes.C_TYPE_BINDING).advance()
@@ -1204,7 +1204,10 @@ public class RmlParser extends CommonPsiParser {
                 remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ..
-                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_TRY_HANDLER)) {
+                // try .. { | |>X<| ..
+                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if ((in(myTypes.C_TAG_START, /*not*/myTypes.C_TAG_PROP_VALUE) || in(myTypes.C_TAG_CLOSE)) && previousElementType(1) == myTypes.DOT) { // a namespaced custom component
                 // <X.|>Y<| ...
                 remapCurrentToken(myTypes.A_UPPER_TAG_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
@@ -1243,7 +1246,7 @@ public class RmlParser extends CommonPsiParser {
         private void parseArrow() {
             if (inScopeOrAny(
                     myTypes.C_SIG_EXPR, myTypes.C_SIG_ITEM, myTypes.C_FUNCTOR_RESULT, myTypes.C_PATTERN_MATCH_EXPR,
-                    myTypes.C_FUNCTION_EXPR, myTypes.C_PARAMETERS, myTypes.C_PARAM_DECLARATION
+                    myTypes.C_FUNCTION_EXPR, myTypes.C_PARAMETERS, myTypes.C_PARAM_DECLARATION, myTypes.C_TRY_HANDLER
             )) {
                 if (isFound(myTypes.C_SIG_EXPR)) {
                     advance().mark(myTypes.C_SIG_ITEM);
@@ -1272,6 +1275,9 @@ public class RmlParser extends CommonPsiParser {
                 } else if (isFound(myTypes.C_PATTERN_MATCH_EXPR)) {
                     advance().mark(myTypes.C_PATTERN_MATCH_BODY);
                     markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_TRY_HANDLER)) {
+                    popEndUntilFoundIndex().advance()
+                            .mark(myTypes.C_TRY_HANDLER_BODY);
                 }
             }
         }

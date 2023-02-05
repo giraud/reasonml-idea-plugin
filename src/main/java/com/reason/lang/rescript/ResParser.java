@@ -243,7 +243,7 @@ public class ResParser extends CommonPsiParser {
                 // |>list<| { ... }
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACE)
                         .advance().advance()
-                        .markHolder(myTypes.H_COLLECTION_ITEM); // Needed to rollback to individual item in collection
+                        .markHolder(myTypes.H_COLLECTION_ITEM); // Needed to roll back to individual item in collection
             }
         }
 
@@ -571,8 +571,10 @@ public class ResParser extends CommonPsiParser {
 
         private void parseColon() {
             if (is(myTypes.C_SCOPED_EXPR) && isRawParent(myTypes.C_FIELD_VALUE)) {
-                // ...
-            } else if (strictlyInAny(
+                return;
+            }
+
+            if (strictlyInAny(
                     myTypes.C_MODULE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_EXTERNAL_DECLARATION,
                     myTypes.C_PARAM_DECLARATION, myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.H_NAMED_PARAM_DECLARATION,
                     myTypes.C_IF_THEN_SCOPE)) {
@@ -792,7 +794,7 @@ public class ResParser extends CommonPsiParser {
                 } else {
                     markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACKET).advance();
                     if (getTokenType() != myTypes.PIPE && getTokenType() != myTypes.POLY_VARIANT) {
-                        markHolder(myTypes.H_COLLECTION_ITEM); // Needed to rollback to individual item in collection
+                        markHolder(myTypes.H_COLLECTION_ITEM); // Needed to roll back to individual item in collection
                     }
                 }
             }
@@ -1020,6 +1022,8 @@ public class ResParser extends CommonPsiParser {
                     popEnd();
                     if (strictlyIn(myTypes.C_PATTERN_MATCH_EXPR)) {
                         popEndUntil(myTypes.C_PATTERN_MATCH_EXPR);
+                    } else if (strictlyIn(myTypes.C_TRY_HANDLER)) {
+                        popEndUntil(myTypes.C_TRY_HANDLER);
                     } else if (strictlyIn(myTypes.C_SIG_ITEM)) {
                         popEndUntil(myTypes.C_SIG_ITEM);
                     } else if (strictlyInAny(myTypes.C_SCOPED_EXPR, myTypes.C_PARAMETERS) && isCurrentScope(myTypes.LPAREN) || in(myTypes.C_SOME)) {
@@ -1134,7 +1138,10 @@ public class ResParser extends CommonPsiParser {
                 }
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ...
-                wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+            } else if (isCurrent(myTypes.C_TRY_HANDLER)) {
+                // try .. catch { | |>X<| ..
+                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (isCurrent(myTypes.C_TAG_START) || isCurrent(myTypes.C_TAG_CLOSE)) {
                 // tag name
                 remapCurrentToken(myTypes.A_UPPER_TAG_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
@@ -1223,7 +1230,7 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseTry() {
-            popEndUntilScope();
+            endLikeSemi2();
             mark(myTypes.C_TRY_EXPR).advance()
                     .mark(myTypes.C_TRY_BODY);
         }
@@ -1244,7 +1251,7 @@ public class ResParser extends CommonPsiParser {
 
         private void parseArrow() {
             if (inScopeOrAny(
-                    myTypes.C_PATTERN_MATCH_EXPR,
+                    myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_TRY_HANDLER,
                     myTypes.C_PARAM_DECLARATION, myTypes.C_PARAMETERS, myTypes.C_FUNCTION_EXPR,
                     myTypes.C_SIG_EXPR, myTypes.C_SIG_ITEM,
                     myTypes.C_FUNCTOR_RESULT
@@ -1266,6 +1273,10 @@ public class ResParser extends CommonPsiParser {
                     popEndUntilFoundIndex().advance()
                             .markScope(myTypes.C_PATTERN_MATCH_BODY, myTypes.ARROW)
                             .markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_TRY_HANDLER)) {
+                    // try .. { | X |>=><| .. }
+                    popEndUntilFoundIndex().advance()
+                            .mark(myTypes.C_TRY_HANDLER_BODY);
                 } else if (isFound(myTypes.C_PARAM_DECLARATION)) { // anonymous function
                     // x( y |>=><| ... )
                     popEndUntil(myTypes.C_FUNCTION_EXPR).advance()

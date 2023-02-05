@@ -3,14 +3,13 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class TryWithParsingTest extends OclParsingTestCase {
     @Test
-    public void test_structure() {
+    public void basic() {
         RPsiTry e = (RPsiTry) firstElement(parseCode("try x with Not_found -> ()"));
 
         assertEquals("try", e.getFirstChild().getText());
@@ -18,7 +17,10 @@ public class TryWithParsingTest extends OclParsingTestCase {
         assertEquals("x", e.getBody().getText());
         assertNotNull(e.getHandlers());
         assertSize(1, e.getHandlers());
-        assertEquals("Not_found -> ()", e.getHandlers().iterator().next().getText());
+        RPsiTryHandler eh = e.getHandlers().get(0);
+        assertEquals("Not_found -> ()", eh.getText());
+        assertEquals("()", eh.getBody().getText());
+        assertEquals(myTypes.EXCEPTION_NAME, eh.getFirstChild().getNode().getElementType());
     }
 
     @Test

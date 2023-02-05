@@ -6,13 +6,16 @@ import org.junit.*;
 @SuppressWarnings("ConstantConditions")
 public class TryParsingTest extends RmlParsingTestCase {
     @Test
-    public void test_try_structure() {
+    public void basic() {
         RPsiTry e = (RPsiTry) firstElement(parseCode("try (x) { | Not_found => () };"));
 
         assertEquals("try", e.getFirstChild().getText());
         assertNotNull(e.getBody());
         assertEquals("(x)", e.getBody().getText());
         assertSize(1, e.getHandlers());
-        assertEquals("| Not_found => ()", e.getHandlers().iterator().next().getText());
+        RPsiTryHandler eh = e.getHandlers().get(0);
+        assertEquals("Not_found => ()", eh.getText());
+        assertEquals("()", eh.getBody().getText());
+        assertEquals(myTypes.EXCEPTION_NAME, eh.getFirstChild().getNode().getElementType());
     }
 }
