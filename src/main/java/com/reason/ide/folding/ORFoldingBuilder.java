@@ -45,6 +45,8 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
                 foldPatternMatch(descriptors, (RPsiPatternMatch) element);
             } else if (element instanceof RPsiSwitch) {
                 foldSwitch(descriptors, (RPsiSwitch) element);
+            } else if (element instanceof RPsiTry) {
+                foldTry(descriptors, (RPsiTry) element);
             } else if (element instanceof OclYaccHeader) {
                 foldHeader(descriptors, (OclYaccHeader) element);
             } else if (element instanceof OclYaccRule) {
@@ -132,6 +134,13 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
                 TextRange textRange = TextRange.create(startOffset, endOffset);
                 descriptors.add(new FoldingDescriptor((PsiElement) element, textRange));
             }
+        }
+    }
+
+    private void foldTry(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiTry element) {
+        FoldingDescriptor fold = fold(element.getBody());
+        if (fold != null) {
+            descriptors.add(fold);
         }
     }
 

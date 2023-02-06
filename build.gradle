@@ -50,4 +50,7 @@ runPluginVerifier {
 runIde {
     systemProperty 'idea.is.internal', true
     jvmArgs '-Xmx2G'
+    // MAVEN_CACHE C:\Users\hgiraud\scoop\persist\maven\.m2
+    // MAVEN_HOME  C:\Users\hgiraud\scoop\apps\maven\current
+    // MAVEN_REPOSITORY C:\Users\hgiraud\scoop\persist\maven\.m2\repository
 }

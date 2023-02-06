@@ -6,23 +6,29 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.vfs.newvfs.*;
 import com.reason.ide.*;
 import com.reason.lang.rescript.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
 public class ResFileType extends LanguageFileType implements FileTypeIdentifiableByVirtualFile {
     public static final ResFileType INSTANCE = new ResFileType();
-    //private static final Log LOG = Log.create("fileType");
+    private static final Log LOG = Log.create("fileType");
 
     private ResFileType() {
         super(ResLanguage.INSTANCE);
     }
 
-    @Override public boolean isMyFileType(@NotNull VirtualFile file) {
+    @Override
+    public boolean isMyFileType(@NotNull VirtualFile file) {
         if (!file.isDirectory() && "res".equals(file.getExtension())) {
-            // must protect from resources .res files found in jar files
+            // must protect from .res resources files found in jar files
             VirtualFileSystem entryFileSystem = file.getFileSystem();
-            return !(entryFileSystem instanceof ArchiveFileSystem);
+            boolean isArchive = entryFileSystem instanceof ArchiveFileSystem;
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Testing entry file: " + entryFileSystem + ", archive? " + isArchive + " (" + file.getPath() + "/" + file.getName() + ")");
+            }
+            return !isArchive;
         }
         return false;
     }
@@ -39,7 +45,7 @@ public class ResFileType extends LanguageFileType implements FileTypeIdentifiabl
 
     @Override
     public @NotNull String getDefaultExtension() {
-        return "";
+        return ""; // Can't define an extension, use isMyFileType instead
     }
 
     @Override
