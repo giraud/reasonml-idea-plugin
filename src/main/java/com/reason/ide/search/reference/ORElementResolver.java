@@ -38,7 +38,8 @@ public class ORElementResolver implements Disposable {
                 stubIndex.processElements(IndexKeys.INCLUDES, includeIndex, myProject, null, RPsiInclude.class, psiInclude -> {
                     String[] includeQPath = psiInclude.getQualifiedPath();
                     String includeQName = Joiner.join(".", psiInclude.getQualifiedPath()) + "." + psiInclude.getIncludePath();
-                    String[] resolvedPath = ORIncludePsiGist.getData(psiInclude.getContainingFile()).get(includeQName);
+                    Map<String, String[]> gistData = ORIncludePsiGist.getData(psiInclude.getContainingFile());
+                    String[] resolvedPath = gistData == null ? null : gistData.get(includeQName);
                     if (Arrays.equals(resolvedPath, includeQPath)) {
                         // !? coq ?!
                         LOG.info("Equality with recursion found: " + psiInclude + " [" + Joiner.join(".", includeQPath) + "] in " + ORFileUtils.getVirtualFile(psiInclude.getContainingFile()));
@@ -188,8 +189,10 @@ public class ORElementResolver implements Disposable {
                     for (RPsiModule alias : aliases) {
                         String[] aliasPath = alias.getQualifiedNameAsPath();
                         for (Resolution resolution : resolutions) {
-                            Resolution aliasResolution = Resolution.createAlternate(resolution, aliasPath);
-                            aliasResolutions.add(aliasResolution);
+                            if (aliasPath != null) {
+                                Resolution aliasResolution = Resolution.createAlternate(resolution, aliasPath);
+                                aliasResolutions.add(aliasResolution);
+                            }
                         }
                     }
                 }

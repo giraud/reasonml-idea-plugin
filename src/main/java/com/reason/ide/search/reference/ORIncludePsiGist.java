@@ -21,8 +21,8 @@ public class ORIncludePsiGist {
     private static final String ID = "include";
     private static final PsiFileGist<Map<String, String[]>> myGist = GistManager.getInstance().newPsiFileGist(ID, VERSION, new ORIncludePsiGist.Externalizer(), ORIncludePsiGist::getFileData);
 
-    public static Map<String, String[]> getData(PsiFile psiFile) {
-        return myGist.getFileData(psiFile);
+    public static @Nullable Map<String, String[]> getData(@Nullable PsiFile psiFile) {
+        return psiFile == null ? null : myGist.getFileData(psiFile);
     }
 
     public static class Externalizer implements DataExternalizer<Map<String, String[]>> {

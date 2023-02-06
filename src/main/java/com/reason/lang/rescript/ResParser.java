@@ -1,6 +1,7 @@
 package com.reason.lang.rescript;
 
 import com.intellij.lang.*;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.*;
 import org.jetbrains.annotations.*;
@@ -43,6 +44,11 @@ public class ResParser extends CommonPsiParser {
                 }
 
                 tokenType = myBuilder.getTokenType();
+                if (tokenType == TokenType.BAD_CHARACTER) {
+                    error("Bad character");
+                    break;
+                }
+
                 if (tokenType == myTypes.EOL && strictlyIn(myTypes.C_LET_BINDING)) {
                     if (lookAheadSkipEOL() != myTypes.AND) {
                         // let x = ... |>\n<|
