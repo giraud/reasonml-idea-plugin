@@ -23,12 +23,6 @@ version = pluginVersion + '-' + platformVersion
 java.sourceCompatibility = '11.0'
 compileJava.options.encoding = 'UTF-8'
 
-sourceSets {
-    main.java.srcDirs = ['src']
-    main.resources.srcDirs = ['resources']
-    test.java.srcDirs = ['tests']
-}
-
 intellij {
     version = platformVersion
     type = platformType
@@ -40,10 +34,7 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#398 - Rescript format doesn’t respect UTF-8 encoding</li>
-                    <li>#392 - Attempting to open editorconfig causes IDE exception</li>
-                    <li>#391 - Dune comments are broken (lexer)</li>
-                    <li>#390 - Stub mismatch exceptions fixed</li>
+                    <li>#399 - Rescript: incorrectly parse element as tag</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
@@ -59,4 +50,7 @@ runPluginVerifier {
 runIde {
     systemProperty 'idea.is.internal', true
     jvmArgs '-Xmx2G'
+    // MAVEN_CACHE C:\Users\hgiraud\scoop\persist\maven\.m2
+    // MAVEN_HOME  C:\Users\hgiraud\scoop\apps\maven\current
+    // MAVEN_REPOSITORY C:\Users\hgiraud\scoop\persist\maven\.m2\repository
 }
