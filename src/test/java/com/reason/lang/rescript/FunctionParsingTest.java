@@ -26,6 +26,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_brace_function() {
         RPsiLet e = first(letExpressions(parseCode("let x = (x, y) => { x + y }")));
+        assertNoParserError(e);
 
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
         assertSize(2, function.getParameters());
@@ -34,8 +35,21 @@ public class FunctionParsingTest extends ResParsingTestCase {
     }
 
     @Test
+    public void result_function_braces() {
+        RPsiLet e = firstOfType(parseCode("let fn = () => {\n" +
+                "  let result: (. unit) => unit = (. ()) => ()\n" +
+                "}"), RPsiLet.class);
+        assertNoParserError(e);
+
+        RPsiLet el = PsiTreeUtil.findChildOfType(e, RPsiLet.class);
+        assertEquals("(. unit) => unit", el.getSignature().getText());
+        assertEquals("(. ()) => ()", el.getBinding().getText());
+    }
+
+    @Test
     public void test_destructuration() {
         RPsiLet e = first(letExpressions(parseCode("let _ = (a, {b, _}) => b")));
+        assertNoParserError(e);
 
         assertTrue(e.isFunction());
         assertSize(2, e.getFunction().getParameters());
@@ -44,6 +58,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_parenless_function() {
         RPsiLet e = first(letExpressions(parseCode("let _ = x => x + 10")));
+        assertNoParserError(e);
 
         assertTrue(e.isFunction());
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
@@ -56,6 +71,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_dot_function() {
         RPsiLet e = first(letExpressions(parseCode("let _ = (. x) => x")));
+        assertNoParserError(e);
 
         assertTrue(e.isFunction());
         RPsiFunction function = e.getFunction();
@@ -68,7 +84,6 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_inner_function() {
         RPsiLet e = first(letExpressions(parseCode("let _ = error => Belt.Array.mapU(errors, (. error) => error[\"message\"])")));
-
         assertNoParserError(e);
 
         RPsiFunction functionOuter = (RPsiFunction) e.getBinding().getFirstChild();
@@ -81,6 +96,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_inner_function_braces() {
         RPsiLet e = first(letExpressions(parseCode("let _ = error => { Belt.Array.mapU(errors, (. error) => error[\"message\"]) }")));
+        assertNoParserError(e);
 
         RPsiFunction functionOuter = (RPsiFunction) e.getBinding().getFirstChild();
         assertEquals("{ Belt.Array.mapU(errors, (. error) => error[\"message\"]) }", functionOuter.getBody().getText());
@@ -92,6 +108,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_inner_function_no_parens() {
         RPsiLet e = first(letExpressions(parseCode("let _ = funcall(result => 2)")));
+        assertNoParserError(e);
 
         RPsiFunction functionInner = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
         assertEquals("2", functionInner.getBody().getText());
@@ -100,6 +117,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_parameter_anon_function() {
         FileBase e = parseCode("describe('a', () => test('b', () => true))");
+        assertNoParserError(e);
 
         List<RPsiFunction> funcs = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiFunction.class));
         assertSize(2, funcs);
@@ -126,6 +144,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     public void test_parameters_named_symbols2() {
         RPsiLet e = first(letExpressions(parseCode(
                 "let make = (~text, ~id=?, ~values=?, ~className=\"\", ~tag=\"span\", ~transform=\"unset\", ~marginLeft=\"0\", ~onClick=?, ~onKeyPress=?, _children, ) => {}")));
+        assertNoParserError(e);
 
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
         assertSize(10, function.getParameters());
@@ -135,6 +154,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_parameters_named_symbols3() {
         RPsiLet e = firstOfType(parseCode("let fn = (~a:t, ~b=2, ~c) => ();"), RPsiLet.class);
+        assertNoParserError(e);
 
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
         assertSize(3, function.getParameters());
@@ -143,6 +163,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_paren_function() {
         RPsiLet e = first(letExpressions(parseCode("let _ = (x,y) => x + y")));
+        assertNoParserError(e);
 
         assertTrue(e.isFunction());
         RPsiFunction function = e.getFunction();
@@ -156,6 +177,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_unit_function() {
         RPsiLet e = first(letExpressions(parseCode("let _ = () => 1")));
+        assertNoParserError(e);
 
         assertTrue(e.isFunction());
         RPsiFunction function = e.getFunction();
@@ -167,6 +189,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_parameters_LIdent() {
         RPsiLet e = first(letExpressions(parseCode("let make = (id, values, children) => null;")));
+        assertNoParserError(e);
 
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
@@ -180,6 +203,8 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_record_function() {
         RPsiLet e = first(letExpressions(parseCode("let make = (children) => { ...component, render: self => <div/>, }")));
+        assertNoParserError(e);
+
         RPsiFunctionBody body = e.getFunction().getBody();
         RPsiFunction innerFunction = PsiTreeUtil.findChildOfType(body, RPsiFunction.class);
 
@@ -191,6 +216,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_underscore() {
         RPsiLet e = first(letExpressions(parseCode("let onCancel = _ => setUpdatedAttribute(_ => initialAttribute)")));
+        assertNoParserError(e);
 
         assertTrue(e.isFunction());
         RPsiFunction f1 = e.getFunction();
@@ -207,6 +233,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_first_class_module() {
         RPsiFunction e = firstOfType(parseCode("let make = (~selectors: (module SelectorsIntf)=(module Selectors)) => {}"), RPsiFunction.class);
+        assertNoParserError(e);
 
         RPsiParameterDeclaration p0 = e.getParameters().get(0);
         RPsiSignature s = p0.getSignature();
@@ -221,10 +248,11 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_signature() {
         RPsiFunction e = firstOfType(parseCode("let _ = (~p: (option(string), option(int)) => unit) => p;"), RPsiFunction.class);
+        assertNoParserError(e);
 
         RPsiParameterDeclaration p0 = e.getParameters().get(0);
         assertEquals("(option(string), option(int)) => unit", p0.getSignature().getText());
-        //assertEquals("option(string)", p0.getSignature().getItems().get(0).getText());       ??
+        //assertEquals("option(string)", p0.getSignature().getItems().get(0).getText());       zzz ??
         //assertEquals("option(int)", p0.getSignature().getItems().get(1).getText());
         //assertEquals("unit", p0.getSignature().getItems().get(2).getText());
     }
@@ -232,6 +260,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_curry_uncurry() {
         RPsiFunction e = firstOfType(parseCode("let fn = p => (. p1) => p + p1"), RPsiFunction.class);
+        assertNoParserError(e);
 
         assertEquals("p", e.getParameters().get(0).getText());
         assertEquals("(. p1) => p + p1", e.getBody().getText());
@@ -240,8 +269,8 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_rollback_01() {
         RPsiFunction f = firstOfType(parseCode("let _ = { let x = 1\n let y = 2\n () => 3 }"), RPsiFunction.class); // test infinite rollback
-
         assertNoParserError(f);
+
         assertEquals("() => 3", f.getText());
     }
 
@@ -258,6 +287,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
         RPsiInnerModule e = firstOfType(parseCode("module M: I with type t = t = {" +
                 " let fn = p => (. p1) => { let _ = a let _ = x => x } " +
                 "}"), RPsiInnerModule.class);
+        assertNoParserError(e);
 
         assertSize(1, e.getConstraints());
         RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
@@ -268,14 +298,15 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_rollback_04() {
         RPsiFunction e = firstOfType(parseCode("let fn = () => { let _ = 1\n (x) => 2 }"), RPsiFunction.class);
+        assertNoParserError(e);
         assertEquals("{ let _ = 1\n (x) => 2 }", e.getBody().getText());
     }
 
     @Test
     public void test_in_Some() {
         RPsiSwitch e = firstOfType(parseCode("let _ = switch (a, b) { | (Some(_), None) => Some((. ()) => 1) | (_, _) => None }"), RPsiSwitch.class);
-
         assertNoParserError(e);
+
         assertSize(2, e.getPatterns());
         RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
         assertEquals("(. ()) => 1", f.getText());
@@ -285,6 +316,7 @@ public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_GH_113() {
         RPsiFunction e = firstOfType(parseCode("let x = () => switch isBuggy() { | _ => \"buggy\" }"), RPsiFunction.class);
+        assertNoParserError(e);
 
         assertSize(0, e.getParameters());
         RPsiFunctionBody b = e.getBody();

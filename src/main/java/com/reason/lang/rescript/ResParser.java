@@ -1032,6 +1032,8 @@ public class ResParser extends CommonPsiParser {
                         popEndUntil(myTypes.C_TRY_HANDLER);
                     } else if (strictlyIn(myTypes.C_SIG_ITEM)) {
                         popEndUntil(myTypes.C_SIG_ITEM);
+                    } else if (strictlyIn(myTypes.C_SIG_EXPR)) {
+                        popEndUntil(myTypes.C_SIG_EXPR);
                     } else if (strictlyInAny(myTypes.C_SCOPED_EXPR, myTypes.C_PARAMETERS) && isCurrentScope(myTypes.LPAREN) || in(myTypes.C_SOME)) {
                         int foundHolderIndex = latestIndexOfCompositeAtMost(myTypes.H_COLLECTION_ITEM, getIndex());
                         if (-1 < foundHolderIndex) {
