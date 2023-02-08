@@ -1,0 +1,31 @@
+package com.reason.ide.js;
+
+import com.intellij.lang.javascript.psi.*;
+import com.intellij.psi.*;
+import com.reason.comp.*;
+import com.reason.ide.*;
+import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
+
+import javax.swing.*;
+
+public class JsIconProvider extends com.intellij.ide.IconProvider {
+    @Override
+    public @Nullable Icon getIcon(@NotNull PsiElement psiElement, int flags) {
+        PsiElement element = psiElement instanceof RPsiFakeModule ? psiElement.getContainingFile() : psiElement;
+        if (element instanceof PsiFile && isBsJsFile((PsiFile) element)) {
+            return ORIcons.BS_FILE;
+        }
+
+        return null;
+    }
+
+    /* needed as plugin.xml's filetype extension does NOT support extensions with multiple "." */
+    private static boolean isBsJsFile(PsiFile psiFile) {
+        if (psiFile instanceof JSFile) {
+            JSFile jsFile = (JSFile) psiFile;
+            return jsFile.getName().endsWith("." + ORConstants.BS_JS_FILE_EXTENSION);
+        }
+        return false;
+    }
+}
