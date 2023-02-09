@@ -52,28 +52,6 @@ public abstract class ORParser<T extends ORTypes> {
         return elementType;
     }
 
-    public @NotNull ORParser<T> popEndUntilStart() {
-        Marker latestKnownScope;
-
-        if (!myMarkers.isEmpty()) {
-            latestKnownScope = myMarkers.peek();
-            Marker scope = latestKnownScope;
-            while (scope != null && !scope.isStart()) {
-                scope = pop();
-                if (scope != null) {
-                    if (scope.isEmpty()) {
-                        scope.drop();
-                    } else {
-                        scope.end();
-                    }
-                }
-                scope = getLatestMarker();
-            }
-        }
-
-        return this;
-    }
-
     public @Nullable Marker popEndUntilScope() {
         Marker latestKnownScope = null;
 
@@ -519,21 +497,6 @@ public abstract class ORParser<T extends ORTypes> {
         myMarkers.push(mark);
         advance();
         mark.end();
-        return this;
-    }
-
-    public void setStart() {
-        Marker marker = getLatestMarker();
-        if (marker != null) {
-            marker.setIsStart(true);
-        }
-    }
-
-    public @NotNull ORParser<T> setStart(boolean isStart) {
-        Marker marker = getLatestMarker();
-        if (marker != null) {
-            marker.setIsStart(isStart);
-        }
         return this;
     }
 
