@@ -1,4 +1,4 @@
-package com.reason.ide.doc;
+package com.reason.ide.docs;
 
 import com.intellij.lang.*;
 import com.reason.ide.*;

@@ -1,4 +1,4 @@
-package com.reason.ide.doc;
+package com.reason.ide.docs;
 
 import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.FileBase;

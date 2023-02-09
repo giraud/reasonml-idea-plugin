@@ -1,5 +1,6 @@
 package com.reason.ide.docs;
 
+import com.intellij.lang.*;
 import com.intellij.lang.documentation.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.psi.*;
@@ -16,6 +17,7 @@ import com.reason.lang.core.psi.impl.RPsiAnnotation;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
+import com.reason.lang.rescript.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -164,12 +166,15 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
 
         // When quick doc inside empty parenthesis, we want to display the function doc (github #155)
         // functionName(<caret>) ==> functionName<caret>()
-        if (contextElement != null && parent instanceof RPsiParameters && contextElement.getLanguage() == RmlLanguage.INSTANCE) { // TODO: Rescript also ?
-            PsiElement prevSibling = parent.getPrevSibling();
-            if (prevSibling != null) {
-                PsiReference reference = prevSibling.getReference();
-                if (reference != null) {
-                    return reference.resolve();
+        if (contextElement != null && parent instanceof RPsiParameters) {
+            Language contextLanguage = contextElement.getLanguage();
+            if (contextLanguage == RmlLanguage.INSTANCE || contextLanguage == ResLanguage.INSTANCE) {
+                PsiElement prevSibling = parent.getPrevSibling();
+                if (prevSibling != null) {
+                    PsiReference reference = prevSibling.getReference();
+                    if (reference != null) {
+                        return reference.resolve();
+                    }
                 }
             }
         }
