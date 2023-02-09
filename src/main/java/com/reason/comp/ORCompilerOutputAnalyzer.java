@@ -28,8 +28,8 @@ public abstract class ORCompilerOutputAnalyzer implements CompilerOutputAnalyzer
         if (matcher.matches()) {
             String path = matcher.group(1);
             String linePos = matcher.group(2);
-            String colStart = matcher.group(3);
-            String colEnd = matcher.group(4);
+            String colStart = matcher.group(4);
+            String colEnd = matcher.group(5);
             OutputInfo info = addInfo(path, linePos, colStart, colEnd);
             if (info.colStart < 0 || info.colEnd < 0) {
                 LOG.error("Can't decode columns for [" + line.replace("\n", "") + "]");

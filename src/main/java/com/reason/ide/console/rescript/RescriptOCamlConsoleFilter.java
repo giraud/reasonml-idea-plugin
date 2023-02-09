@@ -7,6 +7,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.regex.*;
 
+import static com.reason.comp.CompilerOutputAnalyzer.*;
 import static java.lang.Integer.*;
 
 /**
@@ -17,21 +18,21 @@ import static java.lang.Integer.*;
  * File "xxx.ml", lines x-y, characters x-y:
  */
 public class RescriptOCamlConsoleFilter implements Filter {
-    private static final Pattern OCAML_PATTERN = Pattern.compile(".*File \"(.+\\.(?:ml|re|res)i?)\", lines? (\\d+)(?:-(\\d+))?, characters (\\d+)-(\\d+):$");
     private final Project myProject;
 
-    public RescriptOCamlConsoleFilter(Project project) {
+    public RescriptOCamlConsoleFilter(@NotNull Project project) {
         myProject = project;
     }
 
     @Override
     public @Nullable Result applyFilter(@NotNull String line, int entireLength) {
-        Matcher matcher = OCAML_PATTERN.matcher(line);
+        Pattern pattern = line.trim().startsWith("File") ? FILE_LOCATION : SYNTAX_LOCATION;
+        Matcher matcher = pattern.matcher(line);
         if (matcher.find()) {
             String filePath = matcher.group(1);
             VirtualFile sourceFile = LocalFileSystem.getInstance().findFileByPath(filePath);
             if (sourceFile != null) {
-                boolean multiline = matcher.groupCount() == 5;
+                boolean multiline = matcher.groupCount() == 6;
                 int startPoint = entireLength - line.length();
                 int documentLine = parseInt(matcher.group(2)) - 1;
                 int documentColumn = parseInt(matcher.group(multiline ? 4 : 3));
