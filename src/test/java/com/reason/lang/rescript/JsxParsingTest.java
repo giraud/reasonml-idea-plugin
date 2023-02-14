@@ -12,7 +12,8 @@ import java.util.*;
 public class JsxParsingTest extends ResParsingTestCase {
     @Test
     public void test_empty_tag() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div>children</div>"));
+        RPsiTag e = firstOfType(parseCode("<div>children</div>"), RPsiTag.class);
+        assertNoParserError(e);
 
         RPsiTagStart tag = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
         assertEquals("div", tag.getNameIdentifier().getText());
@@ -51,7 +52,8 @@ public class JsxParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_prop_function() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<Comp render={() => <Another/>}/>"));
+        RPsiTag e = firstOfType(parseCode("<Comp render={() => <Another/>}/>"), RPsiTag.class);
+        assertNoParserError(e);
 
         RPsiTagStart tag = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
         assertEquals("Comp", tag.getNameIdentifier().getText());
@@ -59,11 +61,13 @@ public class JsxParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_inner_closing_tag() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div><div/></div>"));
+        RPsiLet e = firstOfType(parseCode("let _ = \n<div><div/></div>"), RPsiLet.class);
+        assertNoParserError(e);
 
-        assertEquals("<div>", PsiTreeUtil.findChildOfType(e, RPsiTagStart.class).getText());
-        assertEquals("<div/>", PsiTreeUtil.findChildOfType(e, RPsiTagBody.class).getText());
-        assertEquals("</div>", PsiTreeUtil.findChildOfType(e, RPsiTagClose.class).getText());
+        RPsiTag et = PsiTreeUtil.findChildOfType(e, RPsiTag.class);
+        assertEquals("<div>", PsiTreeUtil.findChildOfType(et, RPsiTagStart.class).getText());
+        assertEquals("<div/>", PsiTreeUtil.findChildOfType(et, RPsiTagBody.class).getText());
+        assertEquals("</div>", PsiTreeUtil.findChildOfType(et, RPsiTagClose.class).getText());
     }
 
     @Test
