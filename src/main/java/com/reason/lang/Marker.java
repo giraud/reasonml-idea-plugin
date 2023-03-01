@@ -19,7 +19,6 @@ public class Marker {
     private ORTokenElementType myScopeElementType;
     private IElementType myAtomType;
     private Status myStatus = Status.unset;
-    private boolean myIsStart = false; // TODO: delete ?
 
     private Marker(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull ORCompositeType compositeElementType, @Nullable ORTokenElementType scopeTokenElementType) {
         myBuilder = builder;
@@ -48,7 +47,6 @@ public class Marker {
     public static Marker duplicate(Marker marker) {
         Marker newMarker = new Marker(marker.myBuilder, marker.myBuilder.mark(), marker.myCompositeElementType, marker.myScopeElementType);
         newMarker.myStatus = marker.myStatus;
-        newMarker.myIsStart = marker.myIsStart;
 
         if (marker.isDone()) {
             newMarker.done();
@@ -136,18 +134,9 @@ public class Marker {
         return myScopeElementType;
     }
 
-    public boolean isStart() {
-        return myIsStart;
-    }
-
-    public void setIsStart(boolean isStart) {
-        myIsStart = isStart;
-    }
-
     public boolean hasScope() {
         return myScopeElementType != null;
     }
-
 
     public void rollbackTo() {
         if (myMark != null) {

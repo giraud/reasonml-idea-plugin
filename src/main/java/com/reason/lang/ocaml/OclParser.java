@@ -426,9 +426,9 @@ public class OclParser extends CommonPsiParser {
                 popEnd().advance();
                 if (marker != null) {
                     if (marker.isCompositeType(myTypes.C_LET_DECLARATION)) {
-                        mark(myTypes.C_LET_DECLARATION).setStart();
+                        mark(myTypes.C_LET_DECLARATION);
                     } else if (marker.isCompositeType(myTypes.C_TYPE_DECLARATION)) {
-                        mark(myTypes.C_TYPE_DECLARATION).setStart();
+                        mark(myTypes.C_TYPE_DECLARATION);
                     }
                 }
             }
@@ -646,7 +646,7 @@ public class OclParser extends CommonPsiParser {
                     IElementType nextToken = getTokenType();
                     if (nextToken == myTypes.AND) {
                         // module M = struct .. end |>and<|
-                        advance().mark(myTypes.C_MODULE_DECLARATION).setStart();
+                        advance().mark(myTypes.C_MODULE_DECLARATION);
                     }
                 } else if (is(myTypes.C_MODULE_TYPE) && getTokenType() != myTypes.WITH) {
                     // module M : sig .. |>end<|
@@ -781,7 +781,7 @@ public class OclParser extends CommonPsiParser {
                                 .mark(myTypes.C_FUNCTION_BODY);
                     } else {
                         // let x |> = <| ...
-                        popEndUntilStart().advance().
+                        popEndUntilIndex(letPos).advance().
                                 mark(myTypes.C_LET_BINDING).
                                 markHolder(myTypes.H_PLACE_HOLDER);
                     }
@@ -962,9 +962,14 @@ public class OclParser extends CommonPsiParser {
                 } else if (is(myTypes.C_PARAM) && !currentHasScope()) {
                     popEnd();
                 } else if (nextElementType == myTypes.AND) { // close intermediate elements
-                    popEndUntilStart();
-                    if (in(myTypes.C_LET_BINDING)) {
-                        popEndUntil(myTypes.C_LET_BINDING);
+                    if (in(myTypes.C_LET_DECLARATION)) {
+                        popEndUntilFoundIndex();
+                        while (in(myTypes.C_LET_BINDING)) {
+                            popEnd();
+                            popEndUntil(myTypes.C_LET_DECLARATION);
+                        }
+                    } else {
+                        popEndUntilScope();
                     }
                 }
             }
@@ -1022,13 +1027,13 @@ public class OclParser extends CommonPsiParser {
                 // |> [ <| > ... ]
                 markScope(myTypes.C_OPEN_VARIANT, myTypes.LBRACKET).advance().advance();
                 if (getTokenType() != myTypes.RBRACKET) {
-                    mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    mark(myTypes.C_VARIANT_DECLARATION);
                 }
             } else if (nextType == myTypes.LT) {
                 // |> [ <| < ... ]
                 markScope(myTypes.C_CLOSED_VARIANT, myTypes.LBRACKET).advance().advance();
                 if (getTokenType() != myTypes.RBRACKET) {
-                    mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    mark(myTypes.C_VARIANT_DECLARATION);
                 }
             } else {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACKET);
@@ -1202,7 +1207,9 @@ public class OclParser extends CommonPsiParser {
                 }
             } else if (is(myTypes.C_VARIANT_DECLARATION)) { // Declaring a variant
                 // type t = | |>X<| ...
-                remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                IElementType nextToken = lookAhead(1);
+                remapCurrentToken(nextToken == myTypes.DOT ? myTypes.A_MODULE_NAME : myTypes.A_VARIANT_NAME)
+                        .wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) { // Declaring an exception
                 // exception |>X<| ...
                 remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
@@ -1243,18 +1250,18 @@ public class OclParser extends CommonPsiParser {
                 updateComposite(myTypes.C_OPEN);
             } else {
                 popEndUntilScope();
-                mark(myTypes.C_OPEN).setStart();
+                mark(myTypes.C_OPEN);
             }
         }
 
         private void parseInclude() {
             popEndUntilScope();
-            mark(myTypes.C_INCLUDE).setStart();
+            mark(myTypes.C_INCLUDE);
         }
 
         private void parseExternal() {
             popEndUntilScope();
-            mark(myTypes.C_EXTERNAL_DECLARATION).setStart();
+            mark(myTypes.C_EXTERNAL_DECLARATION);
         }
 
         private void parseType() {
@@ -1270,7 +1277,7 @@ public class OclParser extends CommonPsiParser {
                 } else if (!is(myTypes.C_TYPE_CONSTRAINT)) {
                     popEndUntilScope();
                 }
-                mark(myTypes.C_TYPE_DECLARATION).setStart();
+                mark(myTypes.C_TYPE_DECLARATION);
             }
         }
 
@@ -1283,7 +1290,7 @@ public class OclParser extends CommonPsiParser {
 
         private void parseDirectiveIf() {
             endLikeSemi();
-            mark(myTypes.C_DIRECTIVE).setStart();
+            mark(myTypes.C_DIRECTIVE);
         }
 
         private void parseDirectiveElse() {
@@ -1309,7 +1316,7 @@ public class OclParser extends CommonPsiParser {
                 popEndUntilScope();
             }
 
-            mark(insideClass ? myTypes.C_CLASS_FIELD : myTypes.C_VAL_DECLARATION).setStart();
+            mark(insideClass ? myTypes.C_CLASS_FIELD : myTypes.C_VAL_DECLARATION);
         }
 
         private void parseRef() {
@@ -1323,7 +1330,7 @@ public class OclParser extends CommonPsiParser {
                 remapCurrentToken(myTypes.LIDENT).wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else {
                 popEndUntil(myTypes.C_OBJECT);
-                mark(myTypes.C_CLASS_METHOD).setStart();
+                mark(myTypes.C_CLASS_METHOD);
             }
         }
 
@@ -1331,7 +1338,7 @@ public class OclParser extends CommonPsiParser {
             if (!is(myTypes.C_TRY_BODY) && previousElementType(1) != myTypes.RIGHT_ARROW) {
                 endLikeSemi();
             }
-            mark(myTypes.C_LET_DECLARATION).setStart();
+            mark(myTypes.C_LET_DECLARATION);
             advance();
             if (getTokenType() == myTypes.LPAREN) { // an operator overload or a deconstruction
                 // let |>(<| ...
@@ -1346,13 +1353,13 @@ public class OclParser extends CommonPsiParser {
                 if (!is(myTypes.C_MODULE_TYPE)) {
                     popEndUntilScope();
                 }
-                mark(myTypes.C_MODULE_DECLARATION).setStart();
+                mark(myTypes.C_MODULE_DECLARATION);
             }
         }
 
         private void parseClass() {
             endLikeSemi();
-            mark(myTypes.C_CLASS_DECLARATION).setStart();
+            mark(myTypes.C_CLASS_DECLARATION);
         }
 
         private void endLikeSemi() {

@@ -413,11 +413,11 @@ public class RmlParser extends CommonPsiParser {
                 Marker scope = popEndUntilScope();
                 if (scope != null) {
                     if (scope.isCompositeType(myTypes.C_TYPE_DECLARATION)) {
-                        advance().mark(myTypes.C_TYPE_DECLARATION).setStart();
+                        advance().mark(myTypes.C_TYPE_DECLARATION);
                     } else if (scope.isCompositeType(myTypes.C_LET_DECLARATION)) {
-                        advance().mark(myTypes.C_LET_DECLARATION).setStart();
+                        advance().mark(myTypes.C_LET_DECLARATION);
                     } else if (scope.isCompositeType(myTypes.C_MODULE_DECLARATION) || scope.isCompositeType(myTypes.C_MODULE_TYPE)) {
-                        advance().mark(myTypes.C_MODULE_DECLARATION).setStart();
+                        advance().mark(myTypes.C_MODULE_DECLARATION);
                     }
                 }
             }
@@ -594,7 +594,7 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseLet() {
-            mark(myTypes.C_LET_DECLARATION).setStart();
+            mark(myTypes.C_LET_DECLARATION);
         }
 
         private void parseVal() {
@@ -624,18 +624,18 @@ public class RmlParser extends CommonPsiParser {
                         .mark(myTypes.C_MODULE_VALUE);
             } else if (!in(myTypes.C_MACRO_NAME)) {
                 popEndUntilScope();
-                mark(myTypes.C_MODULE_DECLARATION).setStart();
+                mark(myTypes.C_MODULE_DECLARATION);
             }
         }
 
         private void parseException() {
             popEndUntilScope();
-            mark(myTypes.C_EXCEPTION_DECLARATION).setStart();
+            mark(myTypes.C_EXCEPTION_DECLARATION);
         }
 
         private void parseClass() {
             popEndUntilScope();
-            mark(myTypes.C_CLASS_DECLARATION).setStart();
+            mark(myTypes.C_CLASS_DECLARATION);
         }
 
         private void parseType() {
@@ -644,13 +644,13 @@ public class RmlParser extends CommonPsiParser {
                 mark(myTypes.C_TYPE_CONSTRAINT);
             } else if (!is(myTypes.C_MODULE_DECLARATION) && !is(myTypes.C_CLASS_DECLARATION)) {
                 popEndUntilScope();
-                mark(myTypes.C_TYPE_DECLARATION).setStart();
+                mark(myTypes.C_TYPE_DECLARATION);
             }
         }
 
         private void parseExternal() {
             popEndUntilScope();
-            mark(myTypes.C_EXTERNAL_DECLARATION).setStart();
+            mark(myTypes.C_EXTERNAL_DECLARATION);
         }
 
         private void parseOpen() {
@@ -891,13 +891,13 @@ public class RmlParser extends CommonPsiParser {
                 // |> [ <| > ... ]
                 markScope(myTypes.C_OPEN_VARIANT, myTypes.LBRACKET).advance().advance();
                 if (getTokenType() != myTypes.RBRACKET) {
-                    mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    mark(myTypes.C_VARIANT_DECLARATION);//.advance();
                 }
             } else if (nextType == myTypes.LT) {
                 // |> [ <| < ... ]
                 markScope(myTypes.C_CLOSED_VARIANT, myTypes.LBRACKET).advance().advance();
                 if (getTokenType() != myTypes.RBRACKET) {
-                    mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    mark(myTypes.C_VARIANT_DECLARATION);//.advance();
                 }
             } else {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACKET).advance();
@@ -1201,7 +1201,9 @@ public class RmlParser extends CommonPsiParser {
                 remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_VARIANT_DECLARATION)) {
                 // type t = | |>X<| ..
-                remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                IElementType nextElementType = rawLookup(1);
+                remapCurrentToken(nextElementType == myTypes.DOT ? myTypes.A_MODULE_NAME : myTypes.A_VARIANT_NAME);
+                wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ..
                 remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
