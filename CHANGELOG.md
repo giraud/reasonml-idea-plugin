@@ -11,8 +11,11 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
 ## Unreleased
+          
+## 0.110 - 2023/03/01
 
 - :bug: ![n] [#399](https://github.com/giraud/reasonml-idea-plugin/issues/399) Rescript: incorrectly parse element as tag
+- :bug: ![n] [#384](https://github.com/giraud/reasonml-idea-plugin/issues/384) Rescript compile errors not being displayed on code
 
 ## 0.109.2 - 2023/01/24
 
