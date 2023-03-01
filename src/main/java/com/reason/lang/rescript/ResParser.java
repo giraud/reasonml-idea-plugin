@@ -50,7 +50,8 @@ public class ResParser extends CommonPsiParser {
                 }
 
                 if (tokenType == myTypes.EOL && strictlyIn(myTypes.C_LET_BINDING)) {
-                    if (lookAheadSkipEOL() != myTypes.AND) {
+                    IElementType nextElementType = lookAheadSkipEOL();
+                    if (nextElementType != myTypes.AND && nextElementType != myTypes.LT) {
                         // let x = ... |>\n<|
                         popEndUntil(myTypes.C_LET_DECLARATION).popEnd();
                         popIfHold();

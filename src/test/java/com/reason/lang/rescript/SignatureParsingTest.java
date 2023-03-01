@@ -1,5 +1,6 @@
 package com.reason.lang.rescript;
 
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
@@ -171,6 +172,26 @@ public class SignatureParsingTest extends ResParsingTestCase {
     public void test_no_tag_03() {
         RPsiType e = firstOfType(parseCode("type t = [ | #none | #areas(list<string>)]"), RPsiType.class);
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
+    }
+
+    @Test
+    public void test_closed_variant() {
+        RPsiLet e = firstOfType(parseCode("let x: [< Css.Types.Length.t | Css.Types.Visibility.t ] => unit = _ => ()"), RPsiLet.class);
+        assertNoParserError(e);
+
+        List<IElementType> et = extractUpperSymbolTypes(e);
+        assertDoesntContain(et, myTypes.A_VARIANT_NAME, myTypes.UIDENT);
+        assertContainsElements(et, myTypes.A_MODULE_NAME);
+    }
+
+    @Test
+    public void test_open_variant() {
+        RPsiLet e = firstOfType(parseCode("let x: [< Css.Types.Length.t | Css.Types.Visibility.t ] => unit = _ => ()"), RPsiLet.class);
+        assertNoParserError(e);
+
+        List<IElementType> et = extractUpperSymbolTypes(e);
+        assertDoesntContain(et, myTypes.A_VARIANT_NAME, myTypes.UIDENT);
+        assertContainsElements(et, myTypes.A_MODULE_NAME);
     }
 
     @Test

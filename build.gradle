@@ -35,6 +35,7 @@ intellij {
         changeNotes = """
                 <ul>
                     <li>#399 - Rescript: incorrectly parse element as tag</li>
+                    <li>#384 - Rescript compile errors not being displayed on code</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

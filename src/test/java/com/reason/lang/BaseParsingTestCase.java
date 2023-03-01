@@ -91,14 +91,12 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return findChildrenOfType(root, RPsiVal.class);
     }
 
-    @NotNull
     protected RPsiExternal externalExpression(@NotNull PsiFile file, @NotNull String name) {
-        Collection<RPsiExternal> externalExpressions = PsiFileHelper.getExternalExpressions(file);
-        return externalExpressions
+        return PsiFileHelper.getExternalExpressions(file)
                 .stream()
                 .filter(psiExternal -> name.equals(psiExternal.getName()))
                 .findFirst()
-                .get();
+                .orElse(null);
     }
 
     protected @Nullable PsiElement firstElement(@NotNull PsiFile fileModule) {

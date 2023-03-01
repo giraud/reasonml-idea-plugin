@@ -13,6 +13,9 @@ import com.reason.lang.doc.reason.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
+/**
+ * See {@link com.intellij.codeInsight.documentation.DocumentationManagerProtocol} for link protocol.
+ */
 class DocFormatter {
     private static final Log LOG = Log.create("doc.formatter");
 
