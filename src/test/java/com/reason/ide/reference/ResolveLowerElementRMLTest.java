@@ -20,6 +20,16 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_call_function_with_module() {
+        configureCode("A.re", "let fn=()=>1;");
+        configureCode("B.re", "let x=2;");
+        configureCode("C.re", "A.fn(); B.x<caret>");
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("B.x", e.getQualifiedName());
+    }
+
+    @Test
     public void test_let_in_module_binding() {
         configureCode("A.re", "let foo = 2; module X = { let foo = 1; let z = foo<caret>; };");
 

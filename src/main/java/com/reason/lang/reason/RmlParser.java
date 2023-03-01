@@ -891,13 +891,13 @@ public class RmlParser extends CommonPsiParser {
                 // |> [ <| > ... ]
                 markScope(myTypes.C_OPEN_VARIANT, myTypes.LBRACKET).advance().advance();
                 if (getTokenType() != myTypes.RBRACKET) {
-                    mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    mark(myTypes.C_VARIANT_DECLARATION);//.advance();
                 }
             } else if (nextType == myTypes.LT) {
                 // |> [ <| < ... ]
                 markScope(myTypes.C_CLOSED_VARIANT, myTypes.LBRACKET).advance().advance();
                 if (getTokenType() != myTypes.RBRACKET) {
-                    mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    mark(myTypes.C_VARIANT_DECLARATION);//.advance();
                 }
             } else {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACKET).advance();
@@ -1201,7 +1201,9 @@ public class RmlParser extends CommonPsiParser {
                 remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_VARIANT_DECLARATION)) {
                 // type t = | |>X<| ..
-                remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                IElementType nextElementType = rawLookup(1);
+                remapCurrentToken(nextElementType == myTypes.DOT ? myTypes.A_MODULE_NAME : myTypes.A_VARIANT_NAME);
+                wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ..
                 remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);

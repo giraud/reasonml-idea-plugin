@@ -11,6 +11,24 @@ import org.junit.runners.*;
 @RunWith(JUnit4.class)
 public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     @Test
+    public void test_let_basic() {
+        configureCode("A.res", "let x = 1\n let z = x<caret> + 1");
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.x", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_call_function_with_module() {
+        configureCode("A.res", "let fn = () => 1");
+        configureCode("B.res", "let x = 2");
+        configureCode("C.res", "A.fn()\n B.x<caret>");
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("B.x", e.getQualifiedName());
+    }
+
+    @Test
     public void test_let_in_module_binding() {
         configureCode("A.res", "let foo = 2\n module X = { let foo = 1\n let z = foo<caret> }");
 

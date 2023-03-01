@@ -1,5 +1,6 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -195,5 +196,25 @@ public class SignatureParsingTest extends OclParsingTestCase {
     //@Test // coq:: clib/diff2.mli
     public void test_functor() {
         RPsiFunctor e = firstOfType(parseCode("module M: functor (I: T) -> (S)"), RPsiFunctor.class);     // TODO
+    }
+
+    @Test
+    public void test_closed_variant() {
+        RPsiLet e = firstOfType(parseCode("let x: [< Css.Types.Length.t | Css.Types.Visibility.t] -> unit = fun _  -> ()"), RPsiLet.class);
+        assertNoParserError(e);
+
+        List<IElementType> et = extractUpperSymbolTypes(e);
+        assertDoesntContain(et, myTypes.A_VARIANT_NAME, myTypes.UIDENT);
+        assertContainsElements(et, myTypes.A_MODULE_NAME);
+    }
+
+    @Test
+    public void test_open_variant() {
+        RPsiLet e = firstOfType(parseCode("let x: [< Css.Types.Length.t | Css.Types.Visibility.t] -> unit = fun _  -> ()"), RPsiLet.class);
+        assertNoParserError(e);
+
+        List<IElementType> et = extractUpperSymbolTypes(e);
+        assertDoesntContain(et, myTypes.A_VARIANT_NAME, myTypes.UIDENT);
+        assertContainsElements(et, myTypes.A_MODULE_NAME);
     }
 }
