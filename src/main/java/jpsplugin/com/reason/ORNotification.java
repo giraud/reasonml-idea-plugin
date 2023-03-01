@@ -26,14 +26,6 @@ public final class ORNotification extends Notification {
         setIcon(getIcon(type));
     }
 
-    public ORNotification(@NotNull String title, @NotNull String content, @NotNull NotificationType type, @Nullable NotificationListener listener) {
-        super(REASON_ML_GROUP_DISPLAY, title, content, type);
-        setIcon(getIcon(type));
-        if (listener != null) {
-            setListener(listener);
-        }
-    }
-
     @Override
     public @NotNull Icon getIcon() {
         return getIcon(getType());
