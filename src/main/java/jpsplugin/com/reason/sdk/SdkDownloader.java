@@ -59,7 +59,7 @@ public class SdkDownloader {
                 FileUtil.delete(tarPath);
             } catch (IOException e) {
                 Notifications.Bus.notify(
-                        new ORNotification("Sdk", "Cannot download sdk, error: " + e.getMessage(), ERROR, null),
+                        new ORNotification("Sdk", "Cannot download sdk, error: " + e.getMessage(), ERROR),
                         project);
             }
         }
