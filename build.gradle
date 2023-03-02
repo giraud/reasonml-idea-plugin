@@ -34,8 +34,7 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#399 - Rescript: incorrectly parse element as tag</li>
-                    <li>#384 - Rescript compile errors not being displayed on code</li>
+                    <li>#350 - Use declaration documentation if no local documentation</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

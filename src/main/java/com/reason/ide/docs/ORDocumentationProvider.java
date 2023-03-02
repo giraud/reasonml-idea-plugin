@@ -3,17 +3,18 @@ package com.reason.ide.docs;
 import com.intellij.lang.*;
 import com.intellij.lang.documentation.*;
 import com.intellij.openapi.editor.*;
+import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
+import com.intellij.psi.search.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
 import com.reason.ide.search.*;
+import com.reason.ide.search.index.*;
 import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.RPsiAnnotation;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.ocaml.*;
 import com.reason.lang.reason.*;
@@ -22,9 +23,12 @@ import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
+import java.util.function.*;
 
 public class ORDocumentationProvider extends AbstractDocumentationProvider {
     private static final Log LOG = Log.create("doc");
+
+    private static final @NotNull Predicate<PsiElement> PSI_INTF_PREDICATE = psiElement -> ((FileBase) psiElement.getContainingFile()).isInterface();
 
     @Override
     public @Nullable String generateDoc(PsiElement resolvedElement, @Nullable PsiElement originalElement) {
@@ -59,28 +63,40 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
                 }
             }
 
-            // Try to find a comment just below (OCaml only)
-            if (resolvedElement.getLanguage() == OclLanguage.INSTANCE) {
-                PsiElement belowComment = findBelowComment(resolvedElement);
-                if (belowComment != null) {
-                    return isSpecialComment(belowComment)
-                            ? DocFormatter.format(resolvedElement.getContainingFile(), resolvedElement, languageProperties, belowComment.getText())
-                            : belowComment.getText();
+            PsiElement comment = findComment(resolvedElement, resolvedElement.getLanguage());
+
+            // Nothing found, try to find a comment in the interface if any
+            if (comment == null && originalElement instanceof RPsiLowerSymbol && resolvedElement instanceof RPsiQualifiedPathElement) {
+                Project project = resolvedElement.getProject();
+                GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+                String elementQName = ((RPsiQualifiedPathElement) resolvedElement).getQualifiedName();
+                if (elementQName != null) {
+                    Collection<RPsiVal> vals = ValFqnIndex.getElements(elementQName.hashCode(), project, scope);
+                    if (vals.size() > 0) {
+                        RPsiVal next = vals.iterator().next();
+                        comment = findComment(next, next.getLanguage());
+                    } else {
+                        Collection<RPsiLet> lets = LetFqnIndex.getElements(elementQName.hashCode(), project, scope);
+                        RPsiLet letIntf = lets.stream()
+                                .filter(PSI_INTF_PREDICATE)
+                                .findFirst().orElse(null);
+                        if (letIntf != null) {
+                            comment = findComment(letIntf, letIntf.getLanguage());
+                        }
+                    }
                 }
             }
 
-            // Else try to find a comment just above
-            PsiElement aboveComment = findAboveComment(resolvedElement);
-            if (aboveComment != null) {
-                if (aboveComment instanceof RPsiAnnotation) {
-                    PsiElement value = ((RPsiAnnotation) aboveComment).getValue();
+            if (comment != null) {
+                if (comment instanceof RPsiAnnotation) {
+                    PsiElement value = ((RPsiAnnotation) comment).getValue();
                     String text = value == null ? null : value.getText();
                     return text == null ? null : text.substring(1, text.length() - 1);
                 }
 
-                return isSpecialComment(aboveComment)
-                        ? DocFormatter.format(resolvedElement.getContainingFile(), resolvedElement, languageProperties, aboveComment.getText())
-                        : aboveComment.getText();
+                return isSpecialComment(comment)
+                        ? DocFormatter.format(resolvedElement.getContainingFile(), resolvedElement, languageProperties, comment.getText())
+                        : comment.getText();
             }
         }
 
@@ -197,6 +213,19 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         return null;
     }
 
+    private @Nullable PsiElement findComment(@NotNull PsiElement resolvedElement, @NotNull Language lang) {
+        // Try to find a comment just below (OCaml only)
+        if (lang == OclLanguage.INSTANCE) {
+            PsiElement belowComment = findBelowComment(resolvedElement);
+            if (belowComment != null) {
+                return belowComment;
+            }
+        }
+
+        // Else try to find a comment just above
+        return findAboveComment(resolvedElement);
+    }
+
     private @Nullable PsiElement findAboveComment(@Nullable PsiElement element) {
         if (element == null) {
             return null;
@@ -229,8 +258,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         return commentElement;
     }
 
-    @Nullable
-    private PsiElement findBelowComment(@Nullable PsiElement element) {
+    private @Nullable PsiElement findBelowComment(@Nullable PsiElement element) {
         if (element != null) {
             PsiElement nextSibling = element.getNextSibling();
             PsiElement nextNextSibling = nextSibling == null ? null : nextSibling.getNextSibling();
@@ -244,8 +272,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         return null;
     }
 
-    @Nullable
-    private String getInferredSignature(@NotNull PsiElement element, @NotNull PsiFile psiFile, @Nullable ORLanguageProperties language) {
+    private @Nullable String getInferredSignature(@NotNull PsiElement element, @NotNull PsiFile psiFile, @Nullable ORLanguageProperties language) {
         SignatureProvider.InferredTypesWithLines signaturesContext = psiFile.getUserData(SignatureProvider.SIGNATURES_CONTEXT);
         if (signaturesContext != null) {
             RPsiSignature elementSignature = signaturesContext.getSignatureByOffset(element.getTextOffset());
@@ -256,8 +283,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         return null;
     }
 
-    @NotNull
-    private String createQuickDocTemplate(@Nullable String[] path, @Nullable String type, @Nullable String name, @Nullable String signature) {
+    private @NotNull String createQuickDocTemplate(@Nullable String[] path, @Nullable String type, @Nullable String name, @Nullable String signature) {
         return Joiner.join(".", path)
                 + "<br/>"
                 + (type == null ? "" : type)
