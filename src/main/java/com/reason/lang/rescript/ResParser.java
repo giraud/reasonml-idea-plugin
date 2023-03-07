@@ -49,7 +49,7 @@ public class ResParser extends CommonPsiParser {
                     break;
                 }
 
-                if (tokenType == myTypes.EOL && strictlyIn(myTypes.C_LET_BINDING)) {
+                if (tokenType == myTypes.EOL && isRawParent(myTypes.C_LET_BINDING)) {
                     IElementType nextElementType = lookAheadSkipEOL();
                     if (nextElementType != myTypes.AND && nextElementType != myTypes.LT) {
                         // let x = ... |>\n<|

@@ -22,6 +22,17 @@ public class JsxParsingTest extends ResParsingTestCase {
     }
 
     @Test
+    public void test_empty_tag_with_lf() {
+        RPsiTag e = firstOfType(parseCode("let _ = <div>\n\tchildren\n</div>"), RPsiTag.class);
+        assertNoParserError(e);
+
+        RPsiTagStart tag = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
+        assertEquals("div", tag.getNameIdentifier().getText());
+        assertEquals("children", PsiTreeUtil.findChildOfType(e, RPsiTagBody.class).getText());
+        assertEquals("</div>", PsiTreeUtil.findChildOfType(e, RPsiTagClose.class).getText());
+    }
+
+    @Test
     public void test_tag_name() {
         RPsiTag e = (RPsiTag) firstElement(parseCode("<Comp disabled=false/>"));
 
