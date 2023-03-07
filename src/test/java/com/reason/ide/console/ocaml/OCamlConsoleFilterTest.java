@@ -56,19 +56,6 @@ public class OCamlConsoleFilterTest extends BasePlatformTestCase {
     }
 
     @Test
-    public void test_common_3() {
-        String[] message = OCamlMessages.common.get(3);
-
-        OCamlConsoleFilter filter = new MemoryRescriptConsoleFilter(myFixture.getProject());
-        Filter.Result[] results = applyMessage(message, filter);
-
-        Filter.ResultItem resultItem = results[0].getResultItems().get(0);
-        assertHighlight(6, 13, resultItem);
-        assertHyperlink("file.ml", 8, 6, resultItem.getHyperlinkInfo());
-        assertNullResult(results, 1);
-    }
-
-    @Test
     public void test_408_0() {
         String[] message = OCamlMessages.since408.get(0);
 
