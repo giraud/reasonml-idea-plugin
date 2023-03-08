@@ -968,7 +968,7 @@ public class ResParser extends CommonPsiParser {
                         .markDummyScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
                         .advance()
                         .mark(myTypes.C_MACRO_BODY);
-            } else if (is(myTypes.C_BINARY_CONDITION)) {
+            } else if (is(myTypes.C_BINARY_CONDITION) && !currentHasScope()) {
                 updateScopeToken(myTypes.LPAREN);
             } else if (is(myTypes.C_DECONSTRUCTION) && isRawParent(myTypes.C_LET_DECLARATION)) {
                 // let ((x |>,<| ...
