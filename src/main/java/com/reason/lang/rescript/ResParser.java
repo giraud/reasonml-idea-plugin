@@ -634,7 +634,8 @@ public class ResParser extends CommonPsiParser {
 
         private void parseLt() {
             if (is(myTypes.C_OPTION) || in(myTypes.C_SIG_EXPR)) {
-                markScope(myTypes.C_SCOPED_EXPR, myTypes.LT);
+                markScope(myTypes.C_SCOPED_EXPR, myTypes.LT).advance()
+                        .markHolder(myTypes.H_PLACE_HOLDER);
             } else if (strictlyIn(myTypes.C_VARIANT_DECLARATION)) { // type parameters
                 // type t |> < <| 'a >
                 markScope(myTypes.C_PARAMETERS, myTypes.LT);
@@ -677,7 +678,7 @@ public class ResParser extends CommonPsiParser {
                 popEndUntilFoundIndex().advance().end();
             } else if (in(myTypes.C_SCOPED_EXPR) && isFoundScope(myTypes.LT)) {
                 popEndUntilFoundIndex().advance().popEnd();
-                if (isRawParent(myTypes.C_OPTION)) {
+                if (strictlyIn(myTypes.C_OPTION)) {
                     // option < ... |> > <| ...
                     popEnd();
                 }
