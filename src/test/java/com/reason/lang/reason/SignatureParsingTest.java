@@ -57,7 +57,7 @@ public class SignatureParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_optional_fun_parameters() {
-        RPsiLet let = first(letExpressions(parseCode("let x = (a:Js.t, b:option(string), ~c:bool=false, ~d:float=?) => 3")));
+        RPsiLet let = first(letExpressions(parseCode("let x = (a:Js.t, b:option((. unit) => unit), ~c:bool=false, ~d:float=?) => 3")));
 
         RPsiFunction function = (RPsiFunction) let.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
@@ -66,11 +66,12 @@ public class SignatureParsingTest extends RmlParsingTestCase {
         assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
         assertEquals("Js.t", parameters.get(0).getSignature().getItems().get(0).getText());
         assertFalse(parameters.get(1).getSignature().getItems().get(0).isOptional());
-        assertEquals("bool", parameters.get(2).getSignature().asText(getLangProps()));
+        assertEquals("option((. unit) => unit)", parameters.get(1).getSignature().getItems().get(0).getText());
         assertTrue(parameters.get(2).isOptional());
+        assertEquals("bool", parameters.get(2).getSignature().asText(getLangProps()));
         assertEquals("false", parameters.get(2).getDefaultValue().getText());
-        assertEquals("float", parameters.get(3).getSignature().asText(getLangProps()));
         assertTrue(parameters.get(3).isOptional());
+        assertEquals("float", parameters.get(3).getSignature().asText(getLangProps()));
         assertEquals("?", parameters.get(3).getDefaultValue().getText());
     }
 
