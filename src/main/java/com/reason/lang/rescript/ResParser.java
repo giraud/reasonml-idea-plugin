@@ -50,7 +50,7 @@ public class ResParser extends CommonPsiParser {
                 }
 
                 if (tokenType == myTypes.EOL && isRawParent(myTypes.C_LET_BINDING)) {
-                    IElementType nextElementType = lookAheadSkipEOL();
+                    IElementType nextElementType = lookAheadSkipEOL(1);
                     if (nextElementType != myTypes.AND && nextElementType != myTypes.LT) {
                         // let x = ... |>\n<|
                         popEndUntil(myTypes.C_LET_DECLARATION).popEnd();
@@ -831,7 +831,7 @@ public class ResParser extends CommonPsiParser {
                 // let |>{<| ..
                 markScope(myTypes.C_DECONSTRUCTION, myTypes.LBRACE);
             } else if (is(myTypes.C_TYPE_BINDING)) {
-                boolean isJsObject = lookAheadSkipEOL() == myTypes.STRING_VALUE;
+                boolean isJsObject = lookAheadSkipEOL(1) == myTypes.STRING_VALUE;
                 markScope(isJsObject ? myTypes.C_JS_OBJECT : myTypes.C_RECORD_EXPR, myTypes.LBRACE);
             } else if (is(myTypes.C_MODULE_BINDING)) {
                 // module M = |>{<| ...
@@ -867,7 +867,7 @@ public class ResParser extends CommonPsiParser {
                 }
             } else {
                 // it might be a js object
-                IElementType nextElement = lookAhead(1);
+                IElementType nextElement = lookAheadSkipEOL(1);
                 if (nextElement == myTypes.STRING_VALUE || nextElement == myTypes.DOT) {
                     boolean hasDot = nextElement == myTypes.DOT;
                     // js object detected ::  |>{<| ./"x" ___ }
@@ -882,10 +882,10 @@ public class ResParser extends CommonPsiParser {
             }
         }
 
-        @Nullable private IElementType lookAheadSkipEOL() {
-            IElementType elementType = lookAhead(1);
+        @Nullable private IElementType lookAheadSkipEOL(int steps) {
+            IElementType elementType = lookAhead(steps);
             if (elementType == myTypes.EOL) {
-                elementType = lookAhead(2);
+                elementType = lookAhead(steps + 1);
             }
             return elementType;
         }
