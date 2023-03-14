@@ -15,6 +15,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
     @Test
     public void test_basic() {
         RPsiLet e = first(letExpressions(parseCode("let x = {\"a\": 1, \"b\": 0}")));
+        assertNoParserError(e);
 
         RPsiLetBinding binding = e.getBinding();
         RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);
@@ -25,8 +26,22 @@ public class JsObjectParsingTest extends ResParsingTestCase {
     }
 
     @Test
+    public void test_function() {
+        RPsiLet e = first(letExpressions(parseCode("let fn = () => {\n \"a\": () => ()\n}")));
+        assertNoParserError(e);
+
+        RPsiLetBinding binding = e.getBinding();
+        RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);
+        assertNotNull(object);
+
+        Collection<RPsiObjectField> fields = object.getFields();
+        assertEquals(1, fields.size());
+    }
+
+    @Test
     public void test_definition() {
         RPsiType e = first(typeExpressions(parseCode("type t = {\n \"a\": UUID.t, \"b\": array<int>\n }")));
+        assertNoParserError(e);
 
         PsiElement binding = e.getBinding();
         RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);
@@ -44,6 +59,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
     @Test
     public void test_in_function() {
         RPsiLet e = first(letExpressions(parseCode("let x = fn(~props={\"a\": id, \"b\": 0})")));
+        assertNoParserError(e);
 
         RPsiLetBinding binding = e.getBinding();
         RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);
@@ -61,6 +77,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
                         + "\"marginLeft\": marginLeft, \"marginRight\": marginRight,\"fontSize\": \"inherit\","
                         + "\"fontWeight\": bold ? \"bold\" : \"inherit\","
                         + "\"textTransform\": transform == \"uc\" ? \"uppercase\" : \"unset\",}")));
+        assertNoParserError(e);
 
         RPsiLetBinding binding = e.getBinding();
         RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);
@@ -78,6 +95,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
                         + "open ComputingReducers\n"
                         + "{\"lastUpdate\": selectors.getLastUpdate}\n"
                         + "})")));
+        assertNoParserError(e);
 
         RPsiLetBinding binding = e.getBinding();
         RPsiParameters call = PsiTreeUtil.findChildOfType(binding, RPsiParameters.class);
@@ -90,6 +108,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
     @Test
     public void test_deep() {
         RPsiLet e = firstOfType(parseCode("let oo = {\"f1\": {\"f11\": 111}, \"f2\": o,\"f3\": {\"f33\": 333} }"), RPsiLet.class);
+        assertNoParserError(e);
 
         RPsiJsObject o = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), RPsiJsObject.class);
         List<RPsiObjectField> fields = new ArrayList<>(o.getFields());

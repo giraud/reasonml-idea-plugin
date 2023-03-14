@@ -113,7 +113,8 @@ public class JsxNameCompletionProvider {
 
         Editor editor = context.getEditor();
         if (closeTag) {
-            if (chars.charAt(context.getTailOffset()) != '>') {
+            int tailOffset = context.getTailOffset();
+            if (tailOffset < chars.length() && chars.charAt(tailOffset) != '>') {
                 EditorModificationUtil.insertStringAtCaret(editor, ">");
             }
         } else {
