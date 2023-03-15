@@ -9,12 +9,11 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.atomic.*;
 
 import static jpsplugin.com.reason.Platform.*;
 
 public class OcamlFormatProcess {
-    private static final Log LOG = Log.create("ocamlformat.process");
+    private static final Log LOG = Log.create("format.ocaml.process");
 
     private final Project myProject;
 
