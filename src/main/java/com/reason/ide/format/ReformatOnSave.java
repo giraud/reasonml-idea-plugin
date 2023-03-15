@@ -3,7 +3,6 @@ package com.reason.ide.format;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.application.ex.*;
 import com.intellij.openapi.command.*;
-import com.intellij.openapi.command.undo.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.*;
@@ -73,13 +72,10 @@ public class ReformatOnSave {
                                             newFile.putUserData(REFORMAT_COUNT, 1);
                                         } else {
                                             //noinspection DialogTitleCapitalization
-                                            CommandProcessor.getInstance().executeCommand(project, () -> {
-                                                        LOG.debug(" -> Applying text formatting");
-                                                        UndoUtil.forceUndoIn(virtualFile, () -> document.setText(newText));
-                                                    },
-                                                    "or.reformat",
-                                                    "CodeFormatGroup",
-                                                    document);
+                                            CommandProcessor.getInstance().runUndoTransparentAction(() -> {
+                                                LOG.debug(" -> Applying text formatting");
+                                                document.setText(newText);
+                                            });
 
                                             if (count == 1) {
                                                 // Only re-save first time, to avoid infinite loop
