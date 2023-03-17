@@ -51,7 +51,11 @@ public class OclLibraryRootProvider extends AdditionalLibraryRootsProvider {
         private final String myOpamSwitch;
 
         private @Nullable VirtualFile getOpamSwitchLocation() {
-            return VirtualFileManager.getInstance().findFileByNioPath(Path.of(myOpamRoot, myOpamSwitch));
+            try {
+                return VirtualFileManager.getInstance().findFileByNioPath(Path.of(myOpamRoot, myOpamSwitch));
+            } catch (InvalidPathException e) {
+                return null;
+            }
         }
 
         public OpamLibrary(@NotNull String opamRoot, @NotNull String opamSwitch) {
