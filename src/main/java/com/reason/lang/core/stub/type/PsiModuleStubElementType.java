@@ -81,6 +81,9 @@ public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModu
 
         int fqnHash = stub.getQualifiedName().hashCode();
         sink.occurrence(IndexKeys.MODULES_FQN, fqnHash);
+        if (stub.isFunctorCall()) {
+            sink.occurrence(IndexKeys.FUNCTORS_CALL_FQN/*CALL?*/, fqnHash);
+        }
         if (stub.isComponent()) {
             sink.occurrence(IndexKeys.MODULES_COMP_FQN, fqnHash);
         }

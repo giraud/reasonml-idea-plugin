@@ -236,19 +236,17 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
                 "module V = A.X<caret>");
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
-        assertEquals("F.S.X", e.getQualifiedName());
+        assertEquals("F.M.X", e.getQualifiedName());
     }
 
-    /* zzz functor
     @Test
     public void test_functor_outside() {
-        configureCode("F.re", "module type S = {module X: {};};" +
-                "module M = () : S => { module X = {}; };" +
+        configureCode("F.re", "module type S = {module X: {};};\n" +
+                "module M = () : S => { module X = {}; };\n" +
                 "module A = M({});");
         configureCode("B.re", "module X2 = { module X1 = { module X = {}; }; }; module V = F.A.X<caret>");
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
-        assertEquals("F.S.X", e.getQualifiedName());
+        assertEquals("F.M.X", e.getQualifiedName());
     }
-    */
 }

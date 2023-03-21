@@ -171,7 +171,7 @@ public class ResolveUpperElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("Belt_Map.String", e.getQualifiedName());
     }
 
-    /*  zzz functor
+    @Test
     public void test_functor_inside() {
         configureCode("F.ml", "module type S  = sig module X : sig  end end\n" +
                 "module M() : S = struct module X = struct  end end \n" +
@@ -179,10 +179,11 @@ public class ResolveUpperElementOCLTest extends ORBasePlatformTestCase {
                 "module X2 = struct module X1 = struct module X = struct end end end\n" +
                 "module V = A.X<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("F.S.X", ((PsiQualifiedElement) e.getParent()).getQualifiedName());
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("F.M.X", e.getQualifiedName());
     }
 
+    @Test
     public void test_functor_outside() {
         configureCode("F.ml", "module type S  = sig module X : sig  end end\n" +
                 "module M() : S = struct module X = struct  end end \n" +
@@ -190,8 +191,7 @@ public class ResolveUpperElementOCLTest extends ORBasePlatformTestCase {
         configureCode("B.ml", "module X2 = struct module X1 = struct module X = struct end end end\n" +
                 "module V = F.A.X<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("F.S.X", ((PsiQualifiedElement) e.getParent()).getQualifiedName());
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("F.M.X", e.getQualifiedName());
     }
-    */
 }

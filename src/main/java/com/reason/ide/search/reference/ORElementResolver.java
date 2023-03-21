@@ -24,6 +24,7 @@ public class ORElementResolver implements Disposable {
 
     private final Project myProject;
     private final CachedValue<Map<String, Set<String[]>>> myCachedIncludeDependencies;
+    private final CachedValue<Map<String, Set<String[]>>> myCachedFunctorsUsages;
 
     ORElementResolver(@NotNull Project project) {
         myProject = project;
@@ -83,6 +84,30 @@ public class ORElementResolver implements Disposable {
             return CachedValueProvider.Result.create(dependencies, PsiModificationTracker.MODIFICATION_COUNT);
         });
 
+        myCachedFunctorsUsages = cachedValuesManager.createCachedValue(() -> {
+            Map<String, Set<String[]>> dependencies = new HashMap<>();
+
+            StubIndex stubIndex = StubIndex.getInstance();
+            stubIndex.processAllKeys(IndexKeys.FUNCTORS_CALL_FQN, myProject, includeIndex -> {
+                stubIndex.processElements(IndexKeys.FUNCTORS_CALL_FQN, includeIndex, myProject, null, RPsiInnerModule.class, psiFunctorCall -> {
+                    Map<String, String[]> gistData = ORFunctorPsiGist.getData(psiFunctorCall.getContainingFile());
+                    String[] resolvedPath = gistData == null ? null : gistData.get(psiFunctorCall.getQualifiedName());
+                    if (resolvedPath != null) {
+                        String usageQName = psiFunctorCall.getQualifiedName();
+                        if (usageQName != null) {
+                            String[] usagePath = usageQName.split("\\.");
+                            String functorQName = Joiner.join(".", resolvedPath);
+                            Set<String[]> usages = dependencies.computeIfAbsent(functorQName, k -> new TreeSet<>(ArrayUtil::lexicographicCompare));
+                            usages.add(usagePath);
+                        }
+                    }
+                    return true;
+                });
+                return true;
+            });
+
+            return CachedValueProvider.Result.create(dependencies, PsiModificationTracker.MODIFICATION_COUNT);
+        });
     }
 
     @NotNull Resolutions getComputation() {
@@ -97,6 +122,8 @@ public class ORElementResolver implements Disposable {
         void add(@NotNull Collection<? extends RPsiQualifiedPathElement> elements, boolean includeSource);
 
         void addIncludesEquivalence();
+
+        void addFunctorsEquivalence();
 
         void updateWeight(@Nullable String value, Set<String> alternateNames);
 
@@ -248,6 +275,52 @@ public class ORElementResolver implements Disposable {
                     resolutionsPerQName.put(includeQName, includeResolution);
                 } else {
                     resolution.myElements.add(includeElement);
+                }
+            }
+        }
+
+        @Override
+        public void addFunctorsEquivalence() {
+            List<Resolution> functors = new ArrayList<>();
+
+            // Compute a list of alternate resolutions that are the usages of found functors
+            for (Map<String, Resolution> resolutionsPerTopModule : myResolutionsPerTopModule.values()) {
+                for (Map.Entry<String, Resolution> resolutionEntry : resolutionsPerTopModule.entrySet()) {
+                    String[] tokens = resolutionEntry.getKey().split("\\.");
+                    String moduleQName = tokens[0];
+                    // iterate on every element of the path and detect if it’s a used functor
+                    for (int i = 1; i < tokens.length; i++) {
+                        moduleQName = moduleQName + "." + tokens[i];
+                        Set<String[]> usages = myCachedFunctorsUsages.getValue().get(moduleQName);
+                        if (usages != null && !usages.isEmpty()) {
+                            // Found an instantiation of the functor, we store these usages as an alternate resolution
+                            for (String[] usage : usages) {
+                                Resolution value = resolutionEntry.getValue();
+                                String[] newPath = value.substitutePath(usage);
+                                Resolution newResolution = new Resolution(newPath, value.myElements);
+                                functors.add(newResolution);
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (Resolution functor : functors) {
+                String topModuleName = functor.getTopModuleName();
+                Map<String, Resolution> resolutionsPerQName = myResolutionsPerTopModule.get(topModuleName);
+                //noinspection Java8MapApi
+                if (resolutionsPerQName == null) {
+                    resolutionsPerQName = new HashMap<>();
+                    myResolutionsPerTopModule.put(topModuleName, resolutionsPerQName);
+                }
+
+                // Try to find duplicates
+                String instantiationQName = functor.joinPath();
+                Resolution resolution = resolutionsPerQName.get(instantiationQName);
+                if (resolution == null) {
+                    resolutionsPerQName.put(instantiationQName, functor);
+                } else {
+                    resolution.myElements.add(functor.myElements.get(0));
                 }
             }
         }

@@ -1,7 +1,9 @@
 package com.reason.ide.reference;
 
+import com.intellij.psi.util.*;
 import com.intellij.usageView.*;
 import com.reason.ide.*;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 import org.junit.*;
@@ -28,5 +30,22 @@ public class FindUIdentUsagesOCLTest extends ORBasePlatformTestCase {
 
         List<UsageInfo> usages = findUsages("A.ml");
         assertEquals("M.x", usages.get(0).getElement().getParent().getText());
+    }
+
+    @Test
+    public void test_functor() {
+        configureCode("A.ml", "module M<caret> () = struct module X = struct end end\n module X = M()");
+
+        List<UsageInfo> usages = findUsages("A.ml");
+        assertEquals("M()", usages.get(0).getElement().getParent().getText());
+    }
+
+    @Test
+    public void test_variant() {
+        configureCode("A.ml", "type t = | Red<caret>\n let color = Red");
+
+        List<UsageInfo> usages = findUsages("A.ml");
+        assertSize(1, usages);
+        assertEquals("A.color", PsiTreeUtil.getParentOfType(usages.get(0).getElement(), RPsiLet.class).getQualifiedName());
     }
 }

@@ -37,6 +37,7 @@ public class IndexKeys {
     public static final StubIndexKey<Integer, RPsiException> EXCEPTIONS_FQN = StubIndexKey.createIndexKey("reason.exception.fqn");
     public static final StubIndexKey<String, RPsiParameterDeclaration> PARAMETERS = StubIndexKey.createIndexKey("reason.parameter");
     public static final StubIndexKey<Integer, RPsiParameterDeclaration> PARAMETERS_FQN = StubIndexKey.createIndexKey("reason.parameter.fqn");
+    public static final StubIndexKey<Integer, RPsiInnerModule> FUNCTORS_CALL_FQN = StubIndexKey.createIndexKey("reason.functorcall.fqn");
     public static final StubIndexKey<String, RPsiInclude> INCLUDES = StubIndexKey.createIndexKey("reason.include");
     public static final StubIndexKey<String, RPsiOpen> OPENS = StubIndexKey.createIndexKey("reason.open");
 
