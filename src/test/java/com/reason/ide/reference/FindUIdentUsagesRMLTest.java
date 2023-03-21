@@ -1,8 +1,9 @@
 package com.reason.ide.reference;
 
+import com.intellij.psi.util.*;
 import com.intellij.usageView.*;
 import com.reason.ide.*;
-import org.jetbrains.annotations.*;
+import com.reason.lang.core.psi.*;
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
@@ -28,14 +29,20 @@ public class FindUIdentUsagesRMLTest extends ORBasePlatformTestCase {
         assertEquals("M.x", usages.get(0).getElement().getParent().getText());
     }
 
-    /*
-    @Test // TODO Ocl/Res
+    @Test
+    public void test_functor() {
+        configureCode("A.re", "module M<caret> = () => { let x = true; }; module X = M();");
+
+        List<UsageInfo> usages = findUsages("A.re");
+        assertEquals("M()", usages.get(0).getElement().getParent().getText());
+    }
+
+    @Test
     public void test_variant() {
         configureCode("A.re", "type t = | Red<caret>; let color = Red;");
 
         List<UsageInfo> usages = findUsages("A.re");
-        assertSize(1, usages); // TODO
-        assertEquals("A.color", usages.get(0).getElement().getParent().getText());
+        assertSize(1, usages);
+        assertEquals("A.color", PsiTreeUtil.getParentOfType(usages.get(0).getElement(), RPsiLet.class).getQualifiedName());
     }
-    */
 }

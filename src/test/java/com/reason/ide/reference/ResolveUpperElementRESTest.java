@@ -227,26 +227,26 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         assertEquals("Belt.Map", e.getQualifiedName());
     }
 
-    /*  zzz functor
+    @Test
     public void test_functor_inside() {
-        configureCode("F.res", "module type S = {module X: {};};\n" +
-                "module M = () : S => { module X = {}; };\n" +
-                "module A = M({});\n" +
-                "module X2 = { module X1 = { module X = {}; }; };\n" +
+        configureCode("F.res", "module type S = { module X: {} }\n" +
+                "module M = () : S => { module X = {} }\n" +
+                "module A = M({})\n" +
+                "module X2 = { module X1 = { module X = {} } }\n" +
                 "module V = A.X<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("F.S.X",e.getQualifiedName());
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("F.M.X", e.getQualifiedName());
     }
 
+    @Test
     public void test_functor_outside() {
-        configureCode("F.res", "module type S = {module X: {};};\n" +
-                "module M = () : S => { module X = {}; };\n" +
-                "module A = M({});");
-        configureCode("B.res", "module X2 = { module X1 = { module X = {}; }; }; module V = F.A.X<caret>");
+        configureCode("F.res", "module type S = { module X: {} }\n" +
+                "module M = () : S => { module X = {} }\n" +
+                "module A = M({})");
+        configureCode("B.res", "module X2 = { module X1 = { module X = {} } }\n module V = F.A.X<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("F.S.X",e.getQualifiedName());
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("F.M.X", e.getQualifiedName());
     }
-    */
 }

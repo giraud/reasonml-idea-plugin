@@ -109,14 +109,6 @@ public class Resolution implements Comparable<Resolution> {
         return "(" + myIsComplete + ", level:" + myLevel + ", path:[" + sb + "], element: '" + element.getQualifiedName() + "' " + element.getClass().getSimpleName() + ")";
     }
 
-    /*
-    public void setAlternatePath(@NotNull String[] alternatePath) {
-        int newPathLength = alternatePath.length + myPath.length;
-        myAlternatePath = alternatePath;
-        myLevel = newPathLength - 2;
-    }
-     */
-
     public boolean isComplete() {
         return myIsComplete;
     }
@@ -227,6 +219,23 @@ public class Resolution implements Comparable<Resolution> {
             System.arraycopy(myAlternatePath, 1, newPath, path.length, myAlternatePath.length - 1);
             System.arraycopy(myPath, 1, newPath, path.length + myAlternatePath.length - 1, myPath.length - 1);
         }
+
+        return newPath;
+    }
+
+    // subst E.F, A.B.C.D  ==>  E.F.C.D
+    public String @NotNull [] substitutePath(@NotNull String @NotNull [] path) {
+        if (myAlternatePath == null && myPath.length == 1) {
+            return path;
+        }
+        if (myPath.length <= path.length) {
+            return path;
+        }
+
+        String[] newPath = new String[myPath.length];
+
+        System.arraycopy(path, 0, newPath, 0, path.length);
+        System.arraycopy(myPath, path.length, newPath, path.length, myPath.length - path.length);
 
         return newPath;
     }

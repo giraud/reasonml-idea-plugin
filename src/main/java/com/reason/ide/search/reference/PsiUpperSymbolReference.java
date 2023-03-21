@@ -36,7 +36,7 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSym
             if (!(parent.getParent() instanceof RPsiModuleType)) {
                 return ResolveResult.EMPTY_ARRAY;
             }
-        } else if (parent instanceof RPsiException) {
+        } else if (parent instanceof RPsiException || parent instanceof RPsiVariantDeclaration) {
             return ResolveResult.EMPTY_ARRAY;
         }
 
@@ -85,6 +85,9 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSym
         long endAddResolutions = System.currentTimeMillis();
 
         resolutions.addIncludesEquivalence();
+        if (!(parent instanceof RPsiFunctorCall)) {
+            resolutions.addFunctorsEquivalence();
+        }
 
         long endAddIncludes = System.currentTimeMillis();
 
