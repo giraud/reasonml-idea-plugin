@@ -102,7 +102,11 @@ public class OclLibraryRootProvider extends AdditionalLibraryRootsProvider {
 
         @Override
         public @NotNull String getLocationString() {
-            return Path.of(myOpamRoot, myOpamSwitch).toString();
+            try {
+                return Path.of(myOpamRoot, myOpamSwitch).toString();
+            } catch (InvalidPathException e) {
+                return "";
+            }
         }
 
         @Override
