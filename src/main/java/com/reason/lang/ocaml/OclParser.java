@@ -339,10 +339,14 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseGt() {
-            if (in(myTypes.C_OBJECT)) {
-                popEndUntil(myTypes.C_OBJECT);
-                advance().end();
-                popEnd();
+            if (strictlyInAny(myTypes.C_OBJECT, myTypes.C_BINARY_CONDITION)) {
+                if (isFound(myTypes.C_OBJECT)) {
+                    popEndUntil(myTypes.C_OBJECT);
+                    advance().end();
+                    popEnd();
+                } else {
+                    //
+                }
             }
         }
 

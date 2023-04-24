@@ -120,4 +120,17 @@ public class IfParsingTest extends OclParsingTestCase {
         assertEquals("let dirs = all_subdirs ~unix_path", i.getThenExpression().getText());
         assertEquals("Feedback.msg_warning (str \"Cannot open \" ++ str unix_path)", i.getElseExpression().getText());
     }
+
+    @Test
+    public void test_GH_xxx() {
+        RPsiClassMethod e = firstOfType(parseCode("module M = struct\n" +
+                "  let o = object\n" +
+                "  method m =\n" +
+                "      if 2 > 1 then ()\n" +
+                "  end\n" +
+                "  let x = 0\n" +
+                "end"), RPsiClassMethod.class);
+
+        assertEquals("method m =\n      if 2 > 1 then ()", e.getText());
+    }
 }
