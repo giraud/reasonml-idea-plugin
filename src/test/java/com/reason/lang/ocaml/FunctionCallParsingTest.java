@@ -12,7 +12,7 @@ import java.util.*;
 public class FunctionCallParsingTest extends OclParsingTestCase {
     @Test
     public void test_call() {
-        RPsiLetBinding e = first(letExpressions(parseCode("let _ = string_of_int 1"))).getBinding();
+        RPsiLetBinding e = firstOfType(parseCode("let _ = string_of_int 1"), RPsiLet.class).getBinding();
 
         RPsiFunctionCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
         assertEquals("string_of_int 1", call.getText());
@@ -42,7 +42,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_call_many() {
-        RPsiLetBinding e = first(letExpressions(parseCode("let _ = fn a b c"))).getBinding();
+        RPsiLetBinding e = firstOfType(parseCode("let _ = fn a b c"), RPsiLet.class).getBinding();
 
         RPsiFunctionCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
         assertEquals("fn a b c", call.getText());
@@ -54,7 +54,7 @@ public class FunctionCallParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_inner_call() {
-        RPsiLetBinding e = first(letExpressions(parseCode("let _ = fn a (b \"{\" c) d"))).getBinding();
+        RPsiLetBinding e = firstOfType(parseCode("let _ = fn a (b \"{\" c) d"), RPsiLet.class).getBinding();
 
         RPsiFunctionCall f = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
         List<RPsiParameterReference> p = f.getParameters();

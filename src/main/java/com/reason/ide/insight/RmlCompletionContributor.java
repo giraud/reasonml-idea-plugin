@@ -4,6 +4,6 @@ import com.reason.lang.reason.*;
 
 public class RmlCompletionContributor extends ORCompletionContributor {
     RmlCompletionContributor() {
-        super(RmlTypes.INSTANCE, RmlQNameFinder.INSTANCE);
+        super(RmlTypes.INSTANCE/*, RmlQNameFinder.INSTANCE*/);
     }
 }

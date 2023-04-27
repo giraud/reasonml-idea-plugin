@@ -20,7 +20,7 @@ public class ExceptionFqnIndex extends IntStubIndexExtension<RPsiException> {
         return IndexKeys.EXCEPTIONS_FQN;
     }
 
-    public static @NotNull Collection<RPsiException> getElements(@NotNull String key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.EXCEPTIONS_FQN, key.hashCode(), project, scope, RPsiException.class);
+    public static @NotNull Collection<RPsiException> getElements(@NotNull String qName, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.EXCEPTIONS_FQN, qName.hashCode(), project, scope, RPsiException.class);
     }
 }

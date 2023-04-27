@@ -11,7 +11,7 @@ import java.util.*;
 public class FunctionParsingTest extends OclParsingTestCase {
     @Test
     public void test_single_param() {
-        RPsiLet e = first(letExpressions(parseCode("let fn x = x")));
+        RPsiLet e = firstOfType(parseCode("let fn x = x"), RPsiLet.class);
 
         assertTrue(e.isFunction());
         RPsiFunction function = e.getFunction();
@@ -24,7 +24,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_multiple_params() {
-        RPsiLet e = first(letExpressions(parseCode("let add x y = x + y")));
+        RPsiLet e = firstOfType(parseCode("let add x y = x + y"), RPsiLet.class);
 
         assertTrue(e.isFunction());
         RPsiFunction function = e.getFunction();
@@ -36,7 +36,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_let_binding() {
-        RPsiLet e = first(letExpressions(parseCode("let getAttributes node = let attr = \"r\" in attr")));
+        RPsiLet e = firstOfType(parseCode("let getAttributes node = let attr = \"r\" in attr"), RPsiLet.class);
 
         assertTrue(e.isFunction());
         RPsiFunction function = e.getFunction();
@@ -46,7 +46,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_let_binding_2() {
-        RPsiLet e = first(letExpressions(parseCode("let visit_vo f = Printf.printf \"a\"; Printf.printf \"b\"")));
+        RPsiLet e = firstOfType(parseCode("let visit_vo f = Printf.printf \"a\"; Printf.printf \"b\""), RPsiLet.class);
 
         assertTrue(e.isFunction());
         RPsiFunction function = e.getFunction();
@@ -55,7 +55,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_fun() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = fun (_, info as ei) -> x")));
+        RPsiLet e = firstOfType(parseCode("let _ = fun (_, info as ei) -> x"), RPsiLet.class);
 
         assertTrue(e.isFunction());
         RPsiFunction function = e.getFunction();
@@ -66,7 +66,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_fun_signature() {
-        RPsiLet e = first(letExpressions(parseCode("let _: int -> int = fun x y -> x + y")));
+        RPsiLet e = firstOfType(parseCode("let _: int -> int = fun x y -> x + y"), RPsiLet.class);
 
         assertTrue(e.isFunction());
         assertEquals("fun x y -> x + y", e.getBinding().getText());
@@ -102,7 +102,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/291
     @Test
     public void test_GH_291() {
-        RPsiLet e = first(letExpressions(parseCode("let fn = function | OpenedModule -> true | _ -> false")));
+        RPsiLet e = firstOfType(parseCode("let fn = function | OpenedModule -> true | _ -> false"), RPsiLet.class);
 
         assertTrue(e.isFunction());
         assertEquals("function | OpenedModule -> true | _ -> false", e.getBinding().getText());

@@ -38,7 +38,7 @@ public class ORCodeFactory {
     @Nullable
     public static PsiElement createExpression(@NotNull Project project, @NotNull String expression) {
         FileBase file = createFileFromText(project, RmlLanguage.INSTANCE, expression);
-        return ORUtil.findImmediateFirstChildWithoutClass(file, RPsiFakeModule.class);
+        return file.getFirstChild();
     }
 
     @NotNull

@@ -1,11 +1,16 @@
 package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.intellij.psi.PsiFile;
+import com.intellij.psi.*;
+import com.reason.ide.search.*;
+import com.reason.lang.core.psi.*;
 import jpsplugin.com.reason.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.nio.file.*;
 
 public class FileHelper {
     private FileHelper() {
@@ -58,5 +63,22 @@ public class FileHelper {
         }
         int pos = newPath.lastIndexOf("/");
         return 0 < pos ? newPath.substring(0, pos) : newPath;
+    }
+
+    @NotNull
+    public static String shortLocation(@NotNull String path, @NotNull Project project) {
+        String newPath = Platform.getRelativePathToModule(path, project);
+        int nodeIndex = newPath.indexOf("node_modules");
+        if (0 <= nodeIndex) {
+            newPath = newPath.substring(nodeIndex);
+        }
+        int pos = newPath.lastIndexOf("/");
+        return 0 < pos ? newPath.substring(0, pos) : newPath;
+    }
+
+    public static @Nullable RPsiModule getPsiModule(@Nullable FileModuleData data, @NotNull Project project) {
+        VirtualFile vFile = data == null ? null : VirtualFileManager.getInstance().findFileByNioPath(Path.of(data.getPath()));
+        PsiFile file = vFile == null ? null : PsiManager.getInstance(project).findFile(vFile);
+        return file instanceof RPsiModule ? (RPsiModule) file : null;
     }
 }

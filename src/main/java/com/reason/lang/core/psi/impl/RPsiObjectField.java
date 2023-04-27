@@ -12,7 +12,7 @@ import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiObjectField extends RPsiTokenStub<ORLangTypes, RPsiObjectField, PsiObjectFieldStub> implements RPsiLanguageConverter, RPsiQualifiedPathElement, StubBasedPsiElement<PsiObjectFieldStub> {
+public class RPsiObjectField extends RPsiTokenStub<ORLangTypes, RPsiObjectField, PsiObjectFieldStub> implements RPsiField, RPsiLanguageConverter, RPsiQualifiedPathElement, StubBasedPsiElement<PsiObjectFieldStub> {
     // region Constructors
     public RPsiObjectField(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
@@ -85,7 +85,13 @@ public class RPsiObjectField extends RPsiTokenStub<ORLangTypes, RPsiObjectField,
                 if (nameIdentifier == null) {
                     convertedText.append(getText());
                 } else {
-                    PsiElement value = getValue();
+                    RPsiFieldValue fieldValue = getValue();
+                    PsiElement value;
+                    if (fieldValue == null) {
+                        value = ORUtil.findImmediateFirstChildOfClass(this, RPsiSignature.class);
+                    } else {
+                        value = fieldValue.getFirstChild();
+                    }
 
                     String valueAsText = "";
                     if (value instanceof RPsiLanguageConverter) {
@@ -103,12 +109,7 @@ public class RPsiObjectField extends RPsiTokenStub<ORLangTypes, RPsiObjectField,
     }
 
     @Nullable
-    public PsiElement getValue() {
-        RPsiFieldValue fieldValue = ORUtil.findImmediateFirstChildOfClass(this, RPsiFieldValue.class);
-        if (fieldValue != null) {
-            return fieldValue.getFirstChild();
-        } else {
-            return ORUtil.findImmediateFirstChildOfClass(this, RPsiSignature.class);  // ?
-        }
+    public RPsiFieldValue getValue() {
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiFieldValue.class);
     }
 }

@@ -20,7 +20,7 @@ public class LetFqnIndex extends IntStubIndexExtension<RPsiLet> {
         return IndexKeys.LETS_FQN;
     }
 
-    public static @NotNull Collection<RPsiLet> getElements(int key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.LETS_FQN, key, project, scope, RPsiLet.class);
+    public static @NotNull Collection<RPsiLet> getElements(String qName, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.LETS_FQN, qName.hashCode(), project, scope, RPsiLet.class);
     }
 }

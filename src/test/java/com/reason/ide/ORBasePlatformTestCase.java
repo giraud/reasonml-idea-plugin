@@ -62,10 +62,4 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
     protected @NotNull List<UsageInfo> findUsages(String fileName) {
         return (List<UsageInfo>) myFixture.testFindUsages(fileName);
     }
-
-    protected List<String> makePaths(String... values) {
-        Set<String> paths = new HashSet<>();
-        Collections.addAll(paths, values);
-        return paths.stream().sorted().collect(Collectors.toList());
-    }
 }

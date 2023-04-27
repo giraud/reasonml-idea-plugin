@@ -19,7 +19,7 @@ public class RPsiLowerSymbol extends LeafPsiElement implements RPsiAtom {
     // endregion
 
     @Override
-    public PsiReference getReference() {
+    public PsiLowerSymbolReference getReference() {
         return new PsiLowerSymbolReference(this, myTypes);
     }
 

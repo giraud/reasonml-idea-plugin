@@ -1,6 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -20,7 +21,7 @@ public class LoopParsingTest extends OclParsingTestCase {
     // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/176
     @Test
     public void test_GH_176() {
-        RPsiLet e = first(letExpressions(parseCode("let x = while true do match x with | _ -> () done")));
+        RPsiLet e = firstOfType(parseCode("let x = while true do match x with | _ -> () done"), RPsiLet.class);
         RPsiWhile while_ = (RPsiWhile) e.getBinding().getFirstChild();
 
         assertEquals("true", while_.getCondition().getText());
@@ -29,8 +30,8 @@ public class LoopParsingTest extends OclParsingTestCase {
     // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/189
     @Test
     public void test_GH_189() {
-        Collection<RPsiLet> es = letExpressions(parseCode("let utf8_length s = while !p < len do () done; ()\nlet foo x = x"));
-        RPsiWhile while_ = (RPsiWhile) ((RPsiFunction) first(es).getBinding().getFirstChild()).getBody().getFirstChild();
+        List<RPsiLet> es = ORUtil.findImmediateChildrenOfClass(parseCode("let utf8_length s = while !p < len do () done; ()\nlet foo x = x"), RPsiLet.class);
+        RPsiWhile while_ = (RPsiWhile) ((RPsiFunction) es.get(0).getBinding().getFirstChild()).getBody().getFirstChild();
 
         assertEquals("!p < len", while_.getCondition().getText());
         assertEquals("do () done", while_.getBody().getText());

@@ -37,7 +37,7 @@ public class ResInterfaceFileType extends LanguageFileType {
 
     @Override
     public @NotNull Icon getIcon() {
-        return ORIcons.NS_INTERFACE_FILE;
+        return ORIcons.RES_INTERFACE_FILE;
     }
 
     @Override

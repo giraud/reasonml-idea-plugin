@@ -87,7 +87,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         TreeElement e = model.getRoot().getChildren()[0];
         assertPresentation("X", "", ORIcons.INNER_MODULE, e.getPresentation());
         TreeElement ee = e.getChildren()[0];
-        assertPresentation("S", "A.mli", ORIcons.MODULE_TYPE, ee.getPresentation());
+        assertPresentation("A.S", "", ORIcons.MODULE_TYPE, ee.getPresentation());
     }
 
     @Test

@@ -13,7 +13,6 @@ public class RmlTypes extends ORLangTypes {
         C_CLASS_METHOD = (ORCompositeType) RmlStubBasedElementTypes.C_CLASS_METHOD;
         C_EXCEPTION_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_EXCEPTION_DECLARATION;
         C_EXTERNAL_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_EXTERNAL_DECLARATION;
-        C_FAKE_MODULE = (ORCompositeType) RmlStubBasedElementTypes.C_FAKE_MODULE;
         C_FUNCTOR_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_FUNCTOR_DECLARATION;
         C_INCLUDE = (ORCompositeType) RmlStubBasedElementTypes.C_INCLUDE;
         C_LET_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_LET_DECLARATION;

@@ -8,6 +8,7 @@ import com.intellij.openapi.options.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
+import javax.swing.*;
 import java.util.*;
 
 
@@ -25,8 +26,16 @@ public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCam
     public @NotNull SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
         return new CompositeSettingsEditor<>() {
             @Override
-            public @Nullable CompositeSettingsBuilder<RunConfiguration> getBuilder() {
-                return null;
+            public @NotNull CompositeSettingsBuilder<RunConfiguration> getBuilder() {
+                return new CompositeSettingsBuilder<>() {
+                    @Override public @NotNull Collection<SettingsEditor<RunConfiguration>> getEditors() {
+                        return Collections.emptyList();
+                    }
+
+                    @Override public @NotNull JComponent createCompoundEditor() {
+                        return new JPanel(); // fixme
+                    }
+                };
             }
         };
     }

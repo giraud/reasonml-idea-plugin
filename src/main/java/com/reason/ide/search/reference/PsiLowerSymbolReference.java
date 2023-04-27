@@ -5,9 +5,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
 import com.reason.ide.files.*;
-import com.reason.ide.search.index.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -39,10 +37,25 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSym
 
         long startAll = System.currentTimeMillis();
 
+        Project project = myElement.getProject();
+        GlobalSearchScope searchScope = GlobalSearchScope.allScope(project); // ?
+
         LOG.debug("Find reference for lower symbol", myReferenceName);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(" -> search scope: " + searchScope);
+        }
 
         // Gather instructions from element up to the file root
-        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, myTypes);
+        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, true, myTypes);
+
+        // Test if source element is part of a js object chain
+        if (ORUtil.isPrevType(myElement, myTypes.SHARPSHARP)) { // ReasonML: JsObject field
+            instructions.addLast(new ORReferenceAnalyzer.LowerSymbolField(myElement, false));
+        } else if (ORUtil.isPrevType(myElement, myTypes.DOT) && ORUtil.prevPrevSibling(myElement) instanceof RPsiLowerSymbol) { // Record field: a.b
+            instructions.addLast(new ORReferenceAnalyzer.LowerSymbolField(myElement, true));
+        } else {
+            instructions.addLast(myElement);
+        }
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("  Instructions: ", Joiner.join(" -> ", instructions));
@@ -51,7 +64,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSym
         long endInstructions = System.currentTimeMillis();
 
         // Resolve aliases in the stack of instructions, this time from file down to element
-        Deque<CodeInstruction> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, myElement.getProject());
+        List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, project, searchScope);
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("  Resolved instructions: " + Joiner.join(" -> ", resolvedInstructions));
@@ -59,105 +72,24 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSym
 
         long endResolvedInstructions = System.currentTimeMillis();
 
-        // Find all elements by name and create a list of paths
-        Project project = myElement.getProject();
-        ORElementResolver.Resolutions resolutions = project.getService(ORElementResolver.class).getComputation();
-        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-
-        Collection<RPsiType> types = TypeIndex.getElements(myReferenceName, project, scope);
-        Collection<RPsiVal> vals = ValIndex.getElements(myReferenceName, project, scope);
-        Collection<RPsiLet> lets = LetIndex.getElements(myReferenceName, project, scope);
-        Collection<RPsiExternal> externals = ExternalIndex.getElements(myReferenceName, project, scope);
-        Collection<RPsiRecordField> recordFields = RecordFieldIndex.getElements(myReferenceName, project, scope);
-        Collection<RPsiObjectField> objectFields = ObjectFieldIndex.getElements(myReferenceName, project, scope);
-        Collection<RPsiParameterDeclaration> parameters = ParameterIndex.getElements(myReferenceName, project, scope);
-
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("  indexes: types=" + types.size() + ", vals=" + vals.size() + ", lets=" + lets.size() +
-                    ", externals=" + externals.size() + ", fieds=" + (recordFields.size() + objectFields.size()) + ", params=" + parameters.size());
-        }
-
-        long endIndexes = System.currentTimeMillis();
-
-        resolutions.add(types, false);
-        resolutions.add(vals, false);
-        resolutions.add(lets, false);
-        resolutions.add(externals, false);
-        resolutions.add(recordFields, false);
-        resolutions.add(objectFields, false);
-        resolutions.add(parameters, false);
-
-        long endAddResolutions = System.currentTimeMillis();
-
-        resolutions.addIncludesEquivalence();
-
-        long endIncludes = System.currentTimeMillis();
-
-        // Now that everything is resolved, we can use the stack of instructions to add weight to the paths
-
-        List<String> modulesInScope = new ArrayList<>();
-        for (CodeInstruction instruction : resolvedInstructions) {
-            if (instruction.mySource instanceof RPsiInnerModule) {
-                // if the module is not in scope, we skip that resolution
-                if (!modulesInScope.contains(((RPsiInnerModule) instruction.mySource).getQualifiedName())) {
-                    continue;
-                }
-            }
-
-            if (instruction.mySource instanceof FileBase) {
-                resolutions.udpateTerminalWeight(((FileBase) instruction.mySource).getModuleName());
-            } else if (instruction.mySource instanceof RPsiLowerSymbol) {
-                resolutions.removeUpper();
-                resolutions.updateWeight(null, instruction.myAlternateValues);
-            } else if (instruction.mySource instanceof RPsiUpperSymbol) {
-                // We're in a path, must be exact
-                String value = instruction.getFirstValue();
-                resolutions.removeIfNotFound(value, instruction.myAlternateValues);
-                resolutions.updateWeight(value, instruction.myAlternateValues);
-            } else {
-                if (instruction.mySource instanceof RPsiOpen) {
-                    // adding a module in scope
-                    modulesInScope.add(((RPsiOpen) instruction.mySource).getPath());
-                }
-
-                if (instruction.myValues != null) {
-                    for (String value : instruction.myValues) {
-                        resolutions.updateWeight(value, instruction.myAlternateValues);
-                    }
-                }
-            }
-        }
-
-        long endUpdateResolutions = System.currentTimeMillis();
-
-        resolutions.removeIncomplete();
-        Collection<RPsiQualifiedPathElement> sortedResult = resolutions.resolvedElements();
-
         if (LOG.isDebugEnabled()) {
-            LOG.debug("  => found", Joiner.join(", ", sortedResult,
+            LOG.debug("  => found", Joiner.join(", ", resolvedInstructions,
                     element -> element.getQualifiedName()
                             + " [" + Platform.getRelativePathToModule(element.getContainingFile()) + "]"));
         }
 
-        long endSort = System.currentTimeMillis();
-
-        ResolveResult[] resolveResults = new ResolveResult[sortedResult.size()];
+        ResolveResult[] resolveResults = new ResolveResult[((Collection<RPsiQualifiedPathElement>) resolvedInstructions).size()];
         int i = 0;
-        for (PsiElement element : sortedResult) {
+        for (PsiElement element : resolvedInstructions) {
             resolveResults[i] = new LowerResolveResult(element, myReferenceName);
             i++;
         }
 
-        long endAll = System.currentTimeMillis();
         if (LOG_PERF.isDebugEnabled()) {
+            long endAll = System.currentTimeMillis();
             LOG_PERF.debug("Resolution of " + myReferenceName + " in " + (endAll - startAll) + "ms => " +
                     " i:" + (endInstructions - startAll) + "," +
-                    " rI:" + (endResolvedInstructions - endInstructions) + "," +
-                    " id:" + (endIndexes - endResolvedInstructions) + "," +
-                    " aR:" + (endAddResolutions - endIndexes) + "," +
-                    " aI:" + (endIncludes - endAddResolutions) + "," +
-                    " uR:" + (endUpdateResolutions - endIncludes) + "," +
-                    " sort: " + (endSort - endUpdateResolutions) + ""
+                    " r:" + (endResolvedInstructions - endInstructions)
             );
         }
 

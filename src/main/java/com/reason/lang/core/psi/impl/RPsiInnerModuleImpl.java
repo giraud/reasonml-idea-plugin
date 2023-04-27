@@ -2,14 +2,11 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.*;
 import com.intellij.navigation.*;
-import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
-import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
-import com.reason.ide.search.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
@@ -19,9 +16,6 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 import java.util.*;
-
-import static com.reason.lang.core.ORFileType.*;
-import static java.util.Collections.*;
 
 public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiModuleStub> implements RPsiInnerModule, PsiNameIdentifierOwner {
     // region Constructors
@@ -37,6 +31,12 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
     // region NamedElement
     public @Nullable PsiElement getNameIdentifier() {
         return findChildByClass(RPsiUpperSymbol.class);
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
     }
 
     @Override
@@ -78,27 +78,21 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
     }
     //endregion
 
-
+    //region Navigatable
     @Override
     public @NotNull PsiElement getNavigationElement() {
-        PsiElement id = getNameIdentifier();
-        return id == null ? this : id;
-    }
-
-    @Override
-    public int getTextOffset() {
-        PsiElement id = getNameIdentifier();
-        return id == null ? 0 : id.getTextOffset();
-    }
-
-    @Override public @Nullable String[] getQualifiedNameAsPath() {
-        PsiModuleStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.getQualifiedNameAsPath();
+        PsiElement comp = null;
+        if (isComponent()) {
+            comp = ORUtil.findImmediateNamedChildOfClass(getBody(), RPsiLet.class, "make");
+            if (comp == null) {
+                comp = ORUtil.findImmediateNamedChildOfClass(getBody(), RPsiExternal.class, "make");
+            }
         }
 
-        return ORUtil.getQualifiedNameAsPath(this);
+        PsiElement id = comp == null ? getNameIdentifier() : comp;
+        return id == null ? this : id;
     }
+    //endregion
 
     @Override
     public @NotNull String getModuleName() {
@@ -146,113 +140,6 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
         return child instanceof RPsiModuleType ? (RPsiModuleType) child : null;
     }
 
-    @Override
-    public @NotNull Collection<RPsiModule> getModules() {
-        PsiElement body = getBody();
-        return body == null
-                ? emptyList()
-                : PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiInnerModule.class);
-    }
-
-    @Override
-    public @Nullable RPsiModule getModuleExpression(@Nullable String name) {
-        if (name != null) {
-            for (RPsiModule module : getModules()) {
-                if (name.equals(module.getName())) {
-                    return module;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public @NotNull Collection<PsiNamedElement> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
-        Collection<PsiNamedElement> result = emptyList();
-
-        Project project = getProject();
-        PsiFinder psiFinder = project.getService(PsiFinder.class);
-
-        String alias = getAlias();
-        if (alias != null) {
-            // Open alias and getExpressions on alias
-            Set<RPsiModule> modulesByName = psiFinder.findModulesbyName(alias, interfaceOrImplementation, null);
-            if (!modulesByName.isEmpty()) {
-                RPsiModule moduleAlias = modulesByName.iterator().next();
-                if (moduleAlias != null) {
-                    result = moduleAlias.getExpressions(eScope, filter);
-                }
-            }
-        } else {
-            RPsiModuleType moduleType = getModuleType();
-            if (moduleType == null) {
-                PsiElement body = getBody();
-                if (body == null) {
-                    RPsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, RPsiFunctorCall.class);
-                    if (functorCall != null) {
-                        result = new ArrayList<>();
-                        // Include all expressions from functor
-                        QNameFinder qnameFinder = QNameFinderFactory.getQNameFinder(getLanguage());
-
-                        Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorCall);
-                        for (String potentialPath : potentialPaths) {
-                            Set<RPsiModule> modules = psiFinder.findModulesFromQn(
-                                    potentialPath + "." + functorCall.getName(),
-                                    true,
-                                    interfaceOrImplementation
-                            );
-                            for (RPsiModule module : modules) {
-                                result.addAll(module.getExpressions(eScope, filter));
-                            }
-                        }
-
-                        Set<RPsiModule> modules = psiFinder.findModulesFromQn(functorCall.getName(), true, interfaceOrImplementation);
-                        for (RPsiModule module : modules) {
-                            result.addAll(module.getExpressions(eScope, filter));
-                        }
-                    }
-                } else {
-                    result = new ArrayList<>();
-                    PsiElement element = body.getFirstChild();
-                    while (element != null) {
-                        if (element instanceof PsiNamedElement
-                                && (filter == null || filter.accept((PsiNamedElement) element))) {
-                            result.add((PsiNamedElement) element);
-                        }
-                        element = element.getNextSibling();
-                    }
-                }
-            } else {
-                result = new ArrayList<>();
-                PsiElement element = moduleType.getFirstChild();
-                while (element != null) {
-                    if (element instanceof PsiNamedElement
-                            && (filter == null || filter.accept((PsiNamedElement) element))) {
-                        result.add((PsiNamedElement) element);
-                    }
-                    element = element.getNextSibling();
-                }
-            }
-        }
-
-        return result;
-    }
-
-    @Override
-    public @Nullable RPsiLet getLetExpression(@Nullable String name) {
-        PsiElement body = name == null ? null : getBody();
-        if (body != null) {
-            ExpressionFilter expressionFilter = element -> element instanceof RPsiLet && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
-            if (!expressions.isEmpty()) {
-                return (RPsiLet) expressions.iterator().next();
-            }
-        }
-
-        return null;
-    }
-
     private boolean isModuleTypeOf() {
         PsiElement nextSibling = ORUtil.nextSibling(getFirstChild());
         PsiElement nextNextSibling = ORUtil.nextSibling(nextSibling);
@@ -260,36 +147,6 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
                 && nextNextSibling != null
                 && nextSibling.getNode().getElementType() == myTypes.TYPE
                 && nextNextSibling.getNode().getElementType() == myTypes.OF;
-    }
-
-    private @Nullable RPsiModule findReferencedModuleTypeOf() {
-        PsiElement of = ORUtil.findImmediateFirstChildOfType(this, myTypes.OF);
-
-        if (of != null) {
-            // find latest module name
-            PsiElement module = ORUtil.nextSiblingWithTokenType(of, myTypes.A_MODULE_NAME);
-            PsiElement moduleNextSibling = module == null ? null : module.getNextSibling();
-            while (moduleNextSibling != null
-                    && moduleNextSibling.getNode().getElementType() == myTypes.DOT) {
-                PsiElement element = moduleNextSibling.getNextSibling();
-                if (element != null && element.getNode().getElementType() == myTypes.A_MODULE_NAME) {
-                    module = element;
-                    moduleNextSibling = module.getNextSibling();
-                } else {
-                    moduleNextSibling = null;
-                }
-            }
-
-            if (module != null) {
-                PsiReference reference = module.getReference();
-                PsiElement resolvedElement = reference == null ? null : reference.resolve();
-                if (resolvedElement instanceof RPsiModule) {
-                    return (RPsiModule) resolvedElement;
-                }
-            }
-        }
-
-        return null;
     }
 
     @Override
@@ -310,18 +167,6 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
         }
 
         return ORUtil.findImmediateFirstChildOfType(getBody(), myTypes.C_FUNCTOR_CALL) != null;
-    }
-
-    @Override
-    public @Nullable PsiElement getComponentNavigationElement() {
-        if (isComponent()) {
-            PsiElement make = ORUtil.findImmediateNamedChildOfClass(getBody(), RPsiLet.class, "make");
-            if (make == null) {
-                make = ORUtil.findImmediateNamedChildOfClass(getBody(), RPsiExternal.class, "make");
-            }
-            return make;
-        }
-        return null;
     }
 
     public @Nullable RPsiUpperSymbol getAliasSymbol() {
@@ -346,25 +191,21 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
 
     public ItemPresentation getPresentation() {
         boolean isModuleTypeOf = isModuleTypeOf();
-        RPsiModule referencedModuleType = isModuleTypeOf ? findReferencedModuleTypeOf() : null;
 
         return new ItemPresentation() {
             @Override
             public @Nullable String getPresentableText() {
                 if (isModuleTypeOf) {
-                    if (referencedModuleType == null) {
-                        PsiElement of = ORUtil.findImmediateFirstChildOfType(RPsiInnerModuleImpl.this, myTypes.OF);
-                        assert of != null;
-                        return getText().substring(of.getStartOffsetInParent() + 3);
-                    }
-                    return referencedModuleType.getName();
+                    PsiElement of = ORUtil.findImmediateFirstChildOfType(RPsiInnerModuleImpl.this, myTypes.OF);
+                    assert of != null;
+                    return getText().substring(of.getStartOffsetInParent() + 3);
                 }
                 return getName();
             }
 
             @Override
             public @NotNull String getLocationString() {
-                return referencedModuleType == null ? "" : referencedModuleType.getContainingFile().getName();
+                return "";
             }
 
             @Override

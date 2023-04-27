@@ -41,11 +41,6 @@ public class PsiVariantStubElementType extends ORStubElementType<PsiVariantDecla
     }
 
     public void indexStub(@NotNull PsiVariantDeclarationStub stub, @NotNull IndexSink sink) {
-        String name = stub.getName();
-        if (name != null) {
-            sink.occurrence(IndexKeys.VARIANTS, name);
-        }
-
         String fqn = stub.getQualifiedName();
         sink.occurrence(IndexKeys.VARIANTS_FQN, fqn.hashCode());
     }

@@ -178,7 +178,7 @@ public class TypeParsingTest extends OclParsingTestCase {
 
         assertSize(2, es);
         Iterator<PsiNamedElement> it = es.iterator();
-        assertInstanceOf(it.next(), RPsiModule.class);
+        assertInstanceOf(it.next(), RPsiInnerModule.class);
         assertInstanceOf(it.next(), RPsiType.class);
     }
 

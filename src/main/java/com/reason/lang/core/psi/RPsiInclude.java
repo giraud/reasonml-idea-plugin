@@ -12,7 +12,5 @@ public interface RPsiInclude extends RPsiStructuredElement, StubBasedPsiElement<
 
     @Nullable RPsiUpperSymbol getModuleReference();
 
-    @Nullable PsiElement resolveModule();
-
     boolean useFunctor();
 }

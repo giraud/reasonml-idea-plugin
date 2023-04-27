@@ -20,6 +20,8 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
+import static java.util.Collections.*;
+
 public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub> implements RPsiLet {
     private RPsiSignature myInferredType;
 
@@ -141,14 +143,6 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
     }
 
     @Override
-    public @Nullable PsiElement resolveAlias() {
-        PsiElement binding = getBinding();
-        RPsiLowerSymbol lSymbol = binding == null ? null : ORUtil.findImmediateLastChildOfClass(binding, RPsiLowerSymbol.class);
-        PsiLowerSymbolReference lReference = lSymbol == null ? null : (PsiLowerSymbolReference) lSymbol.getReference();
-        return lReference == null ? null : lReference.resolveInterface();
-    }
-
-    @Override
     public @Nullable RPsiSignature getSignature() {
         return findChildByClass(RPsiSignature.class);
     }
@@ -190,6 +184,24 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
     }
 
     @Override
+    public boolean isComponent() {
+        PsiLetStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isComponent();
+        }
+
+        if ("make".equals(getName())) {
+            List<RPsiAnnotation> annotations = ORUtil.prevAnnotations(this);
+            return annotations.stream().anyMatch(annotation -> {
+                String name = annotation.getName();
+                return name != null && name.contains("react.component");
+            });
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean isRecord() {
         return findChildByClass(RPsiRecord.class) != null;
     }
@@ -201,8 +213,19 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
     }
 
     @Override
+    public @NotNull Collection<RPsiObjectField> getJsObjectFields() {
+        RPsiLetBinding binding = getBinding();
+        PsiElement firstChild = binding == null ? null : binding.getFirstChild();
+        RPsiJsObject jsObject = firstChild instanceof RPsiJsObject ? ((RPsiJsObject) firstChild) : null;
+        return jsObject == null ? emptyList() : jsObject.getFields();
+    }
+
+    @Override
     public @NotNull Collection<RPsiRecordField> getRecordFields() {
-        return PsiTreeUtil.findChildrenOfType(this, RPsiRecordField.class);
+        RPsiLetBinding binding = getBinding();
+        PsiElement firstChild = binding == null ? null : binding.getFirstChild();
+        RPsiRecord record = firstChild instanceof RPsiRecord ? ((RPsiRecord) firstChild) : null;
+        return record == null ? emptyList() : record.getFields();
     }
 
     private boolean isRecursive() {
@@ -253,7 +276,7 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
         if (nameIdentifier instanceof RPsiDeconstruction) {
             return ((RPsiDeconstruction) nameIdentifier).getDeconstructedElements();
         }
-        return Collections.emptyList();
+        return emptyList();
     }
 
     // region RPsiStructuredElement

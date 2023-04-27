@@ -2,7 +2,6 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -110,7 +109,7 @@ public class ClassParsingTest extends OclParsingTestCase {
                 "  end\n" +
                 "\n" +
                 "type errpage = (int * string) list page");
-        List<PsiNamedElement> es = (List<PsiNamedElement>) expressions(file);
+        List<PsiNamedElement> es = expressions(file);
 
         assertSize(2, es);
         assertInstanceOf(es.get(0), RPsiClass.class);

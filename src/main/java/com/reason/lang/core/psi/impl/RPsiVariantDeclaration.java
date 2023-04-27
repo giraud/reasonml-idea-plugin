@@ -8,6 +8,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -62,7 +63,11 @@ public class RPsiVariantDeclaration extends RPsiTokenStub<ORLangTypes, RPsiVaria
             return stub.getPath();
         }
 
-        return ORUtil.getQualifiedPath(this);
+        String[] path = ORUtil.getQualifiedPath(this);
+        // We do not include type in the variant path
+        String[] result = new String[path.length - 1];
+        System.arraycopy(path, 0, result, 0, path.length - 1);
+        return result;
     }
 
     @Override
@@ -72,7 +77,8 @@ public class RPsiVariantDeclaration extends RPsiTokenStub<ORLangTypes, RPsiVaria
             return stub.getQualifiedName();
         }
 
-        return ORUtil.getQualifiedName(this);
+        String[] path = getPath();
+        return Joiner.join(".", path) + "." + getName();
     }
     //endregion
 

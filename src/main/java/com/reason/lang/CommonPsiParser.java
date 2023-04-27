@@ -27,8 +27,6 @@ public abstract class CommonPsiParser implements PsiParser {
             state.clear();
         }
 
-        state.eof();
-
         // end stream
         if (!builder.eof()) {
             builder.mark().error(JavaPsiBundle.message("unexpected.token"));
