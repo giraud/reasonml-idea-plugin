@@ -12,7 +12,7 @@ import java.util.*;
 public class StringTemplateParsingTest extends RmlParsingTestCase {
     @Test
     public void test_basic() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = {j|this is a $var Template string|j}")));
+        RPsiLet e = firstOfType(parseCode("let _ = {j|this is a $var Template string|j}"), RPsiLet.class);
         RPsiLetBinding binding = e.getBinding();
         RPsiInterpolation inter = (RPsiInterpolation) binding.getFirstChild();
 
@@ -25,7 +25,7 @@ public class StringTemplateParsingTest extends RmlParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/353
     @Test
     public void test_GH_353() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = {j|$rowStart / $colStart|j}")));
+        RPsiLet e = firstOfType(parseCode("let _ = {j|$rowStart / $colStart|j}"), RPsiLet.class);
         RPsiLetBinding binding = e.getBinding();
         RPsiInterpolation inter = (RPsiInterpolation) binding.getFirstChild();
 

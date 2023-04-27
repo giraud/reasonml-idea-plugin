@@ -42,7 +42,7 @@ public class IfParsingTest extends OclParsingTestCase {
     public void test_with_in() {
         FileBase file = parseCode("let _ = if x then let init = y in let data = z");
 
-        assertEquals(1, letExpressions(file).size());
+        assertEquals(1, ORUtil.findImmediateChildrenOfClass(file, RPsiLet.class).size());
         assertNotNull(firstOfType(file, RPsiIfStatement.class));
     }
 

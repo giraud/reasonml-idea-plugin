@@ -31,7 +31,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_tag_name_with_dot() {
-        RPsiLet let = first(letExpressions(parseCode("let _ = <Container.Test></Container.Test>")));
+        RPsiLet let = firstOfType(parseCode("let _ = <Container.Test></Container.Test>"), RPsiLet.class);
 
         RPsiTag tag = first(PsiTreeUtil.findChildrenOfType(let, RPsiTag.class));
         assertEquals("Container.Test", tag.getName());
@@ -81,7 +81,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
     @Test
     public void test_option_closeable_tag() {
         // option here is not a ReasonML keyword
-        RPsiLet let = first(letExpressions(parseCode("let _ = <option className/>")));
+        RPsiLet let = firstOfType(parseCode("let _ = <option className/>"), RPsiLet.class);
 
         RPsiTagStart jsx = first(PsiTreeUtil.findChildrenOfType(let, RPsiTagStart.class));
         assertNotNull(jsx);
@@ -212,7 +212,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_tag_chaining() {
-        Collection<RPsiModule> psiModules = moduleExpressions(parseCode(
+        Collection<RPsiInnerModule> psiModules = moduleExpressions(parseCode(
                 "module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};"));
         assertEquals(2, psiModules.size());
     }

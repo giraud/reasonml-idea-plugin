@@ -3,8 +3,7 @@ package com.reason.ide.search.reference;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
-import com.reason.ide.files.*;
-import com.reason.ide.search.index.*;
+import com.intellij.psi.search.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -15,6 +14,7 @@ import java.util.*;
 
 public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLeafPropertyName> {
     private static final Log LOG = Log.create("ref.params");
+    private static final Log LOG_PERF = Log.create("ref.perf.params");
 
     private final @Nullable String myReferenceName;
     private final @NotNull ORLangTypes myTypes;
@@ -31,58 +31,62 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLe
             return ResolveResult.EMPTY_ARRAY;
         }
 
-        LOG.debug("Find reference for propertyLeaf", myReferenceName);
+        // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
+        // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
+        PsiElement parent = myElement.getParent();
+        if (parent instanceof RPsiLet || parent instanceof RPsiVal || parent instanceof RPsiExternal) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
+
+        long startAll = System.currentTimeMillis();
 
         Project project = myElement.getProject();
-        ORElementResolver.Resolutions resolutions = project.getService(ORElementResolver.class).getComputation();
+        GlobalSearchScope searchScope = GlobalSearchScope.allScope(project); // ?
 
-        // Comp.make function from module
-        // Find all elements by name and create a list of paths
-        resolutions.add(LetIndex.getElements("make", project, null), false);
+        LOG.debug("Find reference for propertyLeaf", myReferenceName);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(" -> search scope: " + searchScope);
+        }
 
         // Gather instructions from element up to the file root
-        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, myTypes);
+        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, true, myTypes);
+        instructions.addLast(parent);
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("  Instructions: ", Joiner.join(" -> ", instructions));
         }
 
+        long endInstructions = System.currentTimeMillis();
+
         // Resolve aliases in the stack of instructions, this time from file down to element
-        Deque<CodeInstruction> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, myElement.getProject());
+        List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, project, searchScope);
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("  Resolved instructions: " + Joiner.join(" -> ", resolvedInstructions));
         }
 
-        // Now that everything is resolved, we can use the stack of instructions to add weight to the paths
-
-        for (CodeInstruction instruction : resolvedInstructions) {
-            if (instruction.mySource instanceof FileBase) {
-                resolutions.udpateTerminalWeight(((FileBase) instruction.mySource).getModuleName());
-            } else if (instruction.mySource instanceof RPsiLowerSymbol) {
-                resolutions.removeUpper();
-                resolutions.updateWeight(null, instruction.myAlternateValues);
-            } else if (instruction.myValues != null) {
-                for (String value : instruction.myValues) {
-                    resolutions.updateWeight(value, instruction.myAlternateValues);
-                }
-            }
-        }
-
-        resolutions.removeIncomplete();
-        Collection<RPsiQualifiedPathElement> sortedResult = resolutions.resolvedElements();
+        long endResolvedInstructions = System.currentTimeMillis();
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("  => found", Joiner.join(", ", sortedResult,
+            LOG.debug("  => found", Joiner.join(", ", resolvedInstructions,
                     element -> element.getQualifiedName()
                             + " [" + Platform.getRelativePathToModule(element.getContainingFile()) + "]"));
         }
 
-        ResolveResult[] resolveResults = new ResolveResult[sortedResult.size()];
+        ResolveResult[] resolveResults = new ResolveResult[((Collection<RPsiQualifiedPathElement>) resolvedInstructions).size()];
         int i = 0;
-        for (PsiElement element : sortedResult) {
+        for (PsiElement element : resolvedInstructions) {
             resolveResults[i] = new JsxTagResolveResult(element, myReferenceName);
             i++;
+        }
+
+
+        if (LOG_PERF.isDebugEnabled()) {
+            long endAll = System.currentTimeMillis();
+            LOG_PERF.debug("Resolution of " + myReferenceName + " in " + (endAll - startAll) + "ms => " +
+                    " i:" + (endInstructions - startAll) + "," +
+                    " r:" + (endResolvedInstructions - endInstructions)
+            );
         }
 
         return resolveResults;
@@ -109,6 +113,8 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLe
                         }
                     }
                 }
+            } else if (referencedElement instanceof RPsiParameterDeclaration) {
+                myReferencedIdentifier = referencedElement;
             }
         }
 

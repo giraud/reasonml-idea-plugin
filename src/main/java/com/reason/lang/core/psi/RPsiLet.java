@@ -14,6 +14,8 @@ public interface RPsiLet extends RPsiVar, RPsiSignatureElement, RPsiInferredType
     @Nullable
     RPsiFunction getFunction();
 
+    boolean isComponent();
+
     boolean isRecord();
 
     boolean isJsObject();
@@ -22,9 +24,6 @@ public interface RPsiLet extends RPsiVar, RPsiSignatureElement, RPsiInferredType
 
     @Nullable
     String getAlias();
-
-    @Nullable
-    PsiElement resolveAlias();
 
     @NotNull
     Collection<PsiElement> getScopeChildren();

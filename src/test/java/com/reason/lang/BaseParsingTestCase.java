@@ -8,7 +8,6 @@ import com.intellij.psi.util.*;
 import com.intellij.testFramework.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
@@ -20,7 +19,6 @@ import java.util.*;
 import java.util.stream.*;
 
 import static com.intellij.psi.util.PsiTreeUtil.*;
-import static com.reason.lang.core.ExpressionFilterConstants.*;
 
 @RunWith(JUnit4.class)
 public abstract class BaseParsingTestCase extends ParsingTestCase {
@@ -35,12 +33,12 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
 
     @NotNull
     protected List<PsiNamedElement> expressions(@NotNull PsiFile file) {
-        return new ArrayList<>(PsiFileHelper.getExpressions(file, ExpressionScope.all, null));
+        return ORUtil.findImmediateChildrenOfClass(file, PsiNamedElement.class);
     }
 
     @NotNull
     protected Collection<RPsiInclude> includeExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getIncludeExpressions(file);
+        return getStubChildrenOfTypeAsList(file, RPsiInclude.class);
     }
 
     @NotNull
@@ -50,22 +48,22 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
 
     @NotNull
     protected Collection<RPsiExternal> externalExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getExternalExpressions(file);
+        return getStubChildrenOfTypeAsList(file, RPsiExternal.class);
     }
 
     @NotNull
-    protected List<RPsiModule> moduleExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getModuleExpressions(file);
+    protected List<RPsiInnerModule> moduleExpressions(@NotNull PsiFile file) {
+        return getStubChildrenOfTypeAsList(file, RPsiInnerModule.class);
     }
 
     @NotNull
     protected Collection<RPsiFunctor> functorExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getFunctorExpressions(file);
+        return getStubChildrenOfTypeAsList(file, RPsiFunctor.class);
     }
 
     @NotNull
     protected Collection<RPsiClass> classExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getClassExpressions(file);
+        return getStubChildrenOfTypeAsList(file, RPsiClass.class);
     }
 
     @NotNull
@@ -74,16 +72,8 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected List<RPsiLet> letExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getExpressions(file, ExpressionScope.all, FILTER_LET)
-                .stream()
-                .map(element -> (RPsiLet) element)
-                .collect(Collectors.toList());
-    }
-
-    @NotNull
     protected List<RPsiOpen> openExpressions(@NotNull PsiFile file) {
-        return new ArrayList<>(PsiFileHelper.getOpenExpressions(file));
+        return new ArrayList<>(getStubChildrenOfTypeAsList(file, RPsiOpen.class));
     }
 
     @NotNull
@@ -92,7 +82,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     protected RPsiExternal externalExpression(@NotNull PsiFile file, @NotNull String name) {
-        return PsiFileHelper.getExternalExpressions(file)
+        return getStubChildrenOfTypeAsList(file, RPsiExternal.class)
                 .stream()
                 .filter(psiExternal -> name.equals(psiExternal.getName()))
                 .findFirst()
@@ -100,11 +90,11 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     protected @Nullable PsiElement firstElement(@NotNull PsiFile fileModule) {
-        return ORUtil.findImmediateFirstChildWithoutClass(fileModule, RPsiFakeModule.class);
+        return fileModule.getFirstChild();
     }
 
     public static int childrenCount(@NotNull FileBase file) {
-        return file.getChildren().length - 1 /*RPsiFakeModule*/;
+        return file.getChildren().length;
     }
 
     public static <T extends PsiElement> T first(@NotNull Collection<T> collection) {

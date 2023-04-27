@@ -79,6 +79,24 @@ public class Platform {
         return exeFile == null ? Optional.empty() : Optional.of(exeFile.toPath());
     }
 
+    public static @NotNull String getRelativePathToModule(@NotNull String path, @NotNull Project project) {
+        String relativePath = path;
+
+        VirtualFile vFile = VirtualFileManager.getInstance().findFileByNioPath(Path.of(path));
+        Module module = vFile == null ? null : ModuleUtil.findModuleForFile(vFile, project);
+        if (module != null) {
+            ModuleRootManagerEx moduleRootManager = ModuleRootManagerEx.getInstanceEx(module);
+            for (VirtualFile contentRoot : moduleRootManager.getContentRoots()) {
+                String contentRootPath = contentRoot.getPath();
+                if (path.startsWith(contentRootPath)) {
+                    relativePath = path.substring(contentRootPath.length());
+                }
+            }
+        }
+
+        return relativePath;
+    }
+
     public static @NotNull String getRelativePathToModule(@NotNull PsiFile file) {
         VirtualFile virtualFile = ORFileUtils.getVirtualFile(file);
         String relativePath = virtualFile == null ? file.getName() : virtualFile.getPath();

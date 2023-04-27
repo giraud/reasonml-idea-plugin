@@ -9,7 +9,6 @@ import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.reference.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.RPsiAnnotation;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
@@ -56,6 +55,12 @@ public class ORUtil {
             prevSibling = prevSibling.getPrevSibling();
         }
         return prevSibling;
+    }
+
+    @Nullable
+    public static PsiElement prevPrevSibling(@NotNull PsiElement element) {
+        PsiElement prevElement = prevSibling(element);
+        return prevElement == null ? null : prevSibling(prevElement);
     }
 
     @NotNull
@@ -333,9 +338,13 @@ public class ORUtil {
 
     @NotNull
     public static String getQualifiedName(@NotNull PsiNamedElement element) {
-        String name = element.getName();
         String qualifiedPath = Joiner.join(".", getQualifiedPath(element));
-        return name == null ? qualifiedPath + ".UNKNOWN" : qualifiedPath + "." + name;
+        String name = element.getName();
+        if (name == null) {
+            String nullifier = element instanceof RPsiModuleType ? "" : ".<UNKNOWN>";  // anonymous signature type is ok
+            return qualifiedPath + nullifier;
+        }
+        return qualifiedPath + "." + name;
     }
 
     @NotNull
@@ -373,30 +382,13 @@ public class ORUtil {
         return isALias ? aliasName.toString() : null;
     }
 
-    public static String @Nullable [] getQualifiedNameAsPath(@NotNull RPsiQualifiedPathElement element) {
-        String[] path = element.getPath();
-        if (path == null) {
-            return null;
-        }
-
-        String name = element.getName();
-        if (name == null) {
-            return path;
-        }
-
-        String[] qpath = new String[path.length + 1];
-        System.arraycopy(path, 0, qpath, 0, path.length);
-        qpath[qpath.length - 1] = name;
-        return qpath;
-    }
-
     public static @Nullable PsiElement resolveModuleSymbol(@Nullable RPsiUpperSymbol moduleSymbol) {
         PsiUpperSymbolReference reference = moduleSymbol == null ? null : (PsiUpperSymbolReference) moduleSymbol.getReference();
         PsiElement resolvedSymbol = reference == null ? null : reference.resolveInterface();
         return resolvedSymbol instanceof RPsiUpperSymbol ? resolvedSymbol.getParent() : resolvedSymbol;
     }
 
-    public static @Nullable PsiElement getModuleContent(@NotNull RPsiModule module) {
+    public static @Nullable PsiElement getModuleContent(@NotNull RPsiInnerModule module) {
         PsiElement body = module.getModuleType();
         return (body == null) ? module.getBody() : body;
     }
@@ -422,4 +414,9 @@ public class ORUtil {
         return ORUtil.findImmediateChildrenOfClass(element, clazz).stream().filter(item -> name.equals(item.getName())).findFirst().orElse(null);
     }
 
+    public static boolean isPrevType(PsiElement root, ORTokenElementType elementType) {
+        PsiElement prevSibling = ORUtil.prevSibling(root);
+        IElementType prevType = prevSibling == null ? null : prevSibling.getNode().getElementType();
+        return prevType != null && prevType == elementType;
+    }
 }

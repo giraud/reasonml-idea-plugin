@@ -1,11 +1,12 @@
 package com.reason.ide.files;
 
+import com.intellij.extapi.psi.*;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.reason.lang.extra.OclMllLanguage;
 import org.jetbrains.annotations.NotNull;
 
-public class MllFile extends FileBase {
+public class MllFile extends PsiFileBase {
   public MllFile(@NotNull FileViewProvider viewProvider) {
     super(viewProvider, OclMllLanguage.INSTANCE);
   }

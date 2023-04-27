@@ -24,9 +24,5 @@ public class OclYaccParser extends CommonPsiParser {
                 myBuilder.advanceLexer();
             }
         }
-
-        @Override
-        public void eof() {
-        }
     }
 }

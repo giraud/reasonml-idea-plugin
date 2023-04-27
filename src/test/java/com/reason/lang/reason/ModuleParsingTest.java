@@ -12,7 +12,7 @@ import java.util.*;
 public class ModuleParsingTest extends RmlParsingTestCase {
     @Test
     public void test_empty() {
-        Collection<RPsiModule> modules = moduleExpressions(parseCode("module M = {};"));
+        Collection<RPsiInnerModule> modules = moduleExpressions(parseCode("module M = {};"));
 
         assertEquals(1, modules.size());
         RPsiInnerModule e = (RPsiInnerModule) first(modules);
@@ -23,7 +23,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_alias() {
-        RPsiModule e = firstOfType(parseCode("module M = Y;"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = Y;"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("Y", e.getAlias());
@@ -33,7 +33,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_alias_path() {
-        RPsiModule e = firstOfType(parseCode("module M = Y.Z;"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = Y.Z;"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("Y.Z", e.getAlias());
@@ -109,7 +109,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_decode_first_class_module() {
-        RPsiModule e = firstOfType(parseCode("module M = (val selectors);"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = (val selectors);"), RPsiInnerModule.class);
 
         assertFalse(e instanceof RPsiFunctor);
         assertEquals("M", e.getName());

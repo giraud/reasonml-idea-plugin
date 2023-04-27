@@ -12,7 +12,7 @@ import java.util.*;
 public class SignatureParsingTest extends OclParsingTestCase {
     @Test
     public void test_let() {
-        RPsiLet e = first(letExpressions(parseCode("let x:int = 1")));
+        RPsiLet e = firstOfType(parseCode("let x:int = 1"), RPsiLet.class);
 
         RPsiSignature signature = e.getSignature();
         assertEquals("int", signature.asText(getLangProps()));
@@ -41,8 +41,8 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_trimming() {
-        RPsiLet let = first(letExpressions(
-                parseCode("let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  )\n")));
+        RPsiLet let = firstOfType(
+                parseCode("let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  )\n"), RPsiLet.class);
 
         RPsiSignature signature = let.getSignature();
         assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asText(getLangProps()));
@@ -50,7 +50,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_parsing_named_params() {
-        RPsiLet let = first(letExpressions(parseCode("let padding: v:length -> h:length -> rule")));
+        RPsiLet let = firstOfType(parseCode("let padding: v:length -> h:length -> rule"), RPsiLet.class);
 
         RPsiSignature signature = let.getSignature();
         assertEquals(3, signature.getItems().size());
@@ -64,7 +64,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_optional_fun() {
-        RPsiLet let = first(letExpressions(parseCode("let x: int -> string option -> string = fun a  -> fun b  -> c")));
+        RPsiLet let = firstOfType(parseCode("let x: int -> string option -> string = fun a  -> fun b  -> c"), RPsiLet.class);
 
         RPsiSignature signature = let.getSignature();
         assertEquals("int -> string option -> string", signature.asText(getLangProps()));
@@ -80,7 +80,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_optional_fun_parameters() {
-        RPsiLet let = first(letExpressions(parseCode("let x a b ?(c= false)  ?(d= 1.)  = 3")));
+        RPsiLet let = firstOfType(parseCode("let x a b ?(c= false)  ?(d= 1.)  = 3"), RPsiLet.class);
 
         RPsiFunction function = (RPsiFunction) let.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
@@ -98,7 +98,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_optional_fun_parameters_typed() {
-        RPsiLet let = first(letExpressions(parseCode("let x (a : int) (b : string option) ?c:((c : bool)= false) ?d:((d : float)=1.) = 3")));
+        RPsiLet let = firstOfType(parseCode("let x (a : int) (b : string option) ?c:((c : bool)= false) ?d:((d : float)=1.) = 3"), RPsiLet.class);
         //val lcs :  -> t
         RPsiFunction function = (RPsiFunction) let.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
@@ -130,7 +130,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_unit_fun_parameter() {
-        RPsiLet e = first(letExpressions(parseCode("let x (a : int) () = a")));
+        RPsiLet e = firstOfType(parseCode("let x (a : int) () = a"), RPsiLet.class);
 
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
@@ -142,7 +142,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_signature_items() {
-        RPsiLet e = first(letExpressions(parseCode("let createAction: < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element;")));
+        RPsiLet e = firstOfType(parseCode("let createAction: < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element;"), RPsiLet.class);
         RPsiSignature signature = e.getSignature();
 
         assertEquals(2, signature.getItems().size());
@@ -150,7 +150,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_jsObject() {
-        RPsiLet e = first(letExpressions(parseCode("let x: < a: string; b: 'a > Js.t -> string")));
+        RPsiLet e = firstOfType(parseCode("let x: < a: string; b: 'a > Js.t -> string"), RPsiLet.class);
         RPsiSignature signature = e.getSignature();
 
         assertEquals(2, signature.getItems().size());

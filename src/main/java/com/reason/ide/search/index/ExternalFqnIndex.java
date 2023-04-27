@@ -20,7 +20,7 @@ public class ExternalFqnIndex extends IntStubIndexExtension<RPsiExternal> {
         return IndexKeys.EXTERNALS_FQN;
     }
 
-    public static @NotNull Collection<RPsiExternal> getElements(int key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.EXTERNALS_FQN, key, project, scope, RPsiExternal.class);
+    public static @NotNull Collection<RPsiExternal> getElements(String qName, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.EXTERNALS_FQN, qName.hashCode(), project, scope, RPsiExternal.class);
     }
 }

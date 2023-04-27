@@ -48,6 +48,8 @@ public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStu
         String name = stub.getName();
         if (name != null) {
             sink.occurrence(IndexKeys.EXTERNALS, name);
+            int fqnHash = stub.getQualifiedName().hashCode();
+            sink.occurrence(IndexKeys.EXTERNALS_FQN, fqnHash);
         }
     }
 

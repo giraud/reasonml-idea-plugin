@@ -18,8 +18,8 @@ public class RPsiFunctorCall extends ORCompositePsiElement<ORLangTypes> {
         super(types, elementType);
     }
 
-    private @Nullable RPsiUpperSymbol getReferenceIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, RPsiUpperSymbol.class);
+    public @Nullable RPsiUpperSymbol getReferenceIdentifier() {
+        return ORUtil.findImmediateLastChildOfClass(this, RPsiUpperSymbol.class);
     }
 
     @Override
@@ -43,13 +43,5 @@ public class RPsiFunctorCall extends ORCompositePsiElement<ORLangTypes> {
     public @NotNull List<RPsiParameterReference> getParameters() {
         RPsiParameters params = PsiTreeUtil.findChildOfType(this, RPsiParameters.class);
         return params == null ? emptyList() : ORUtil.findImmediateChildrenOfClass(params, RPsiParameterReference.class);
-    }
-
-    public @Nullable RPsiFunctor resolveFunctor() {
-        RPsiUpperSymbol uSymbol = ORUtil.findImmediateLastChildOfClass(this, RPsiUpperSymbol.class);
-        PsiUpperSymbolReference reference = uSymbol == null ? null : (PsiUpperSymbolReference) uSymbol.getReference();
-        PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
-
-        return resolvedElement instanceof RPsiFunctor ? (RPsiFunctor) resolvedElement : null;
     }
 }

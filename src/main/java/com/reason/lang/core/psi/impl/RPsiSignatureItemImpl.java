@@ -1,7 +1,9 @@
 package com.reason.lang.core.psi.impl;
 
+import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
+import com.intellij.util.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
@@ -21,6 +23,10 @@ public class RPsiSignatureItemImpl extends ORCompositePsiElement<ORLangTypes> im
     public @Nullable String getName() {
         RPsiParameterDeclaration param = getNamedParam();
         return param == null ? null : param.getName();
+    }
+
+    @Override public PsiElement setName(@NlsSafe @NotNull String name) throws IncorrectOperationException {
+        return this;
     }
 
     @Override

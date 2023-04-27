@@ -17,7 +17,7 @@ public class MatchParsingTest extends OclParsingTestCase {
         FileBase psiFile = parseCode("let path_of_dirpath dir = match DirPath.repr dir with [] -> failwith \"path_of_dirpath\"");
         assertEquals(1, childrenCount(psiFile));
 
-        RPsiLet let = first(letExpressions(psiFile));
+        RPsiLet let = firstOfType(psiFile, RPsiLet.class);
         assertTrue(let.isFunction());
         PsiTreeUtil.findChildOfType(let, RPsiFunction.class);
     }
@@ -27,7 +27,7 @@ public class MatchParsingTest extends OclParsingTestCase {
         FileBase psiFileModule = parseCode("let _ = match c with | VtMeta -> let _ = x");
         assertEquals(1, childrenCount(psiFileModule));
 
-        RPsiLet let = first(letExpressions(psiFileModule));
+        RPsiLet let = firstOfType(psiFileModule, RPsiLet.class);
         RPsiLetBinding binding = let.getBinding();
         RPsiSwitch match = PsiTreeUtil.findChildOfType(binding, RPsiSwitch.class);
         assertEquals("VtMeta -> let _ = x", match.getPatterns().get(0).getText());
@@ -94,7 +94,7 @@ public class MatchParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_function_shortcut() {
-        RPsiLet e = first(letExpressions(parseCode("let f x = function | Variant -> 1")));
+        RPsiLet e = firstOfType(parseCode("let f x = function | Variant -> 1"), RPsiLet.class);
 
         RPsiFunction fun = (RPsiFunction) e.getBinding().getFirstChild();
         RPsiSwitch shortcut = ORUtil.findImmediateFirstChildOfClass(fun.getBody(), RPsiSwitch.class);
@@ -104,7 +104,7 @@ public class MatchParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_function_shortcut_no_pipe() {
-        RPsiLet e = first(letExpressions(parseCode("let f x = function Variant -> 1")));
+        RPsiLet e = firstOfType(parseCode("let f x = function Variant -> 1"), RPsiLet.class);
 
         RPsiFunction fun = (RPsiFunction) e.getBinding().getFirstChild();
         RPsiSwitch shortcut = ORUtil.findImmediateFirstChildOfClass(fun.getBody(), RPsiSwitch.class);
@@ -114,11 +114,11 @@ public class MatchParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_function_shortcut_many() {
-        RPsiLet e = first(letExpressions(
+        RPsiLet e = firstOfType(
                 parseCode("let rec db_output_prodn = function "
                         + " | Sterm s -> if cond then first else second\n"
                         + " | Sedit2 (\"FILE\", file) -> let file_suffix_regex = a in printf \"i\"\n"
-                        + " | Snterm s -> sprintf \"(Snterm %s) \" s")));
+                        + " | Snterm s -> sprintf \"(Snterm %s) \" s"), RPsiLet.class);
 
         RPsiSwitch shortcut = PsiTreeUtil.findChildOfType(e, RPsiSwitch.class);
         List<RPsiPatternMatch> patterns = shortcut.getPatterns();
@@ -209,7 +209,7 @@ public class MatchParsingTest extends OclParsingTestCase {
     // Not an object !
     @Test
     public void test_GH_340() {
-        List<RPsiLet> es = letExpressions(parseCode("let fn cond i j = match cond with | Some i, Some j -> i < j\n let fn2 s = ()"));
+        List<RPsiLet> es = ORUtil.findImmediateChildrenOfClass(parseCode("let fn cond i j = match cond with | Some i, Some j -> i < j\n let fn2 s = ()"), RPsiLet.class);
 
         assertSize(2, es);
         assertEquals("let fn cond i j = match cond with | Some i, Some j -> i < j", es.get(0).getText());

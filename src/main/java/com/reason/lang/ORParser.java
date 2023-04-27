@@ -33,8 +33,6 @@ public abstract class ORParser<T extends ORTypes> {
 
     public abstract void parse();
 
-    public abstract void eof();
-
     public @Nullable IElementType previousElementType(int step) {
         int pos = -1;
         int found = 0;

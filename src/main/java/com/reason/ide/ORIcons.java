@@ -39,23 +39,24 @@ public class ORIcons {
     public static final Icon ESY_FILE = getIcon("/icons/esyFile.svg", ORIcons.class);
     public static final Icon RML_FILE = getIcon("/icons/reFile.svg", ORIcons.class);
     public static final Icon RML_INTERFACE_FILE = getIcon("/icons/reiFile.svg", ORIcons.class);
-    public static final Icon NS_FILE = getIcon("/icons/resFile.svg", ORIcons.class);
-    public static final Icon NS_INTERFACE_FILE = getIcon("/icons/resiFile.svg", ORIcons.class);
+    public static final Icon RES_FILE = getIcon("/icons/resFile.svg", ORIcons.class);
+    public static final Icon RES_INTERFACE_FILE = getIcon("/icons/resiFile.svg", ORIcons.class);
     public static final Icon OCL_FILE = getIcon("/icons/mlFile.svg", ORIcons.class);
     public static final Icon OCL_INTERFACE_FILE = getIcon("/icons/mliFile.png", ORIcons.class);
     public static final Icon DUNE_FILE = getIcon("/icons/duneFile.svg", ORIcons.class);
 
-    public static final Icon RML_FILE_MODULE = getIcon("/icons/reasonRed.svg", ORIcons.class);
-    public static final Icon RML_FILE_MODULE_INTERFACE = getIcon("/icons/reasonBlue.svg", ORIcons.class);
-    public static final Icon OCL_FILE_MODULE = getIcon("/icons/ocamlLogo.svg", ORIcons.class);
-    public static final Icon OCL_FILE_MODULE_INTERFACE = getIcon("/icons/ocamlBlue.png", ORIcons.class);
+    public static final Icon OCL_FILE_MODULE = getIcon("/icons/top-module-ocaml.svg", ORIcons.class);
+    public static final Icon RML_FILE_MODULE = getIcon("/icons/top-module-reasonml.svg", ORIcons.class);
+    public static final Icon RES_FILE_MODULE = getIcon("/icons/top-module-rescript.svg", ORIcons.class);
+    public static final Icon OCL_FILE_MODULE_INTERFACE = getIcon("/icons/top-module-interface-ocaml.png", ORIcons.class);
+    public static final Icon RML_FILE_MODULE_INTERFACE = getIcon("/icons/top-module-interface-reasonml.svg", ORIcons.class);
+    public static final Icon RES_FILE_MODULE_INTERFACE = getIcon("/icons/top-module-interface-rescript.svg", ORIcons.class);
 
-    public static final Icon RML_BLUE = getIcon("/icons/reasonBlue.svg", ORIcons.class);
+    public static final Icon RML_BLUE = getIcon("/icons/top-module-interface-reasonml.svg", ORIcons.class);
     public static final Icon RML_YELLOW = getIcon("/icons/reasonYellow.svg", ORIcons.class);
 
     public static final Icon OCL_MODULE = getIcon("/icons/ocamlModule.svg", ORIcons.class);
     public static final Icon OCL_SDK = getIcon("/icons/ocamlSdk.svg", ORIcons.class);
-    //public static final Icon OCL_BLUE_FILE = getIcon("/icons/ocamlBlue.png", ORIcons.class);
     public static final Icon OCL_GREEN_FILE = getIcon("/icons/ocamlGreen.png", ORIcons.class);
 
     public static final Icon TYPE = getIcon("/icons/type.svg", ORIcons.class);

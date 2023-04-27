@@ -2,11 +2,11 @@ package com.reason.ide.insight;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.psi.*;
+import com.intellij.psi.search.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.insight.provider.*;
-import com.reason.lang.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.*;
 abstract class ORCompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
     static final Log LOG = Log.create("insight");
 
-    ORCompletionContributor(@NotNull ORLangTypes types, @NotNull QNameFinder qnameFinder) {
+    ORCompletionContributor(@NotNull ORLangTypes types) {
         extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(),
                 new CompletionProvider<>() {
                     @Override
@@ -29,6 +29,8 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                         PsiElement parent = element.getParent();
                         PsiElement grandParent = parent == null ? null : parent.getParent();
 
+                        GlobalSearchScope searchScope = GlobalSearchScope.allScope(position.getProject());
+
                         if (LOG.isTraceEnabled()) {
                             LOG.debug("»» Completion: position: " + position + ", " + position.getText());
                             LOG.debug("               original: " + originalPosition + ", " + (originalPosition == null ? null : originalPosition.getText()));
@@ -36,6 +38,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                             LOG.debug("                 parent: " + parent);
                             LOG.debug("           grand-parent: " + grandParent);
                             LOG.debug("                   file: " + parameters.getOriginalFile());
+                            LOG.debug("           search scope: " + searchScope);
                         }
 
                         // A comment, stop completion
@@ -47,7 +50,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                         // Just after an open/include keyword
                         if (prevNodeType == types.OPEN || prevNodeType == types.INCLUDE) {
                             LOG.debug("the previous keyword is OPEN/INCLUDE");
-                            ModuleCompletionProvider.addCompletions(element, result);
+                            ModuleCompletionProvider.addCompletions(element, searchScope, result);
                             return;
                         }
                         if (parent instanceof RPsiOpen
@@ -55,7 +58,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                                 || grandParent instanceof RPsiOpen
                                 || grandParent instanceof RPsiInclude) {
                             LOG.debug("Inside OPEN/INCLUDE");
-                            ModuleCompletionProvider.addCompletions(element, result);
+                            ModuleCompletionProvider.addCompletions(element, searchScope, result);
                             return;
                         }
 
@@ -69,11 +72,11 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
 
                                 if (parent instanceof RPsiTagStart) {
                                     LOG.debug("Inside a Tag start");
-                                    JsxNameCompletionProvider.addCompletions(types, element, result);
+                                    JsxNameCompletionProvider.addCompletions(element, types, searchScope, result);
                                     return;
                                 }
 
-                                DotExpressionCompletionProvider.addCompletions(element, result);
+                                DotExpressionCompletionProvider.addCompletions(element, searchScope, result);
                                 return;
                             }
                         }
@@ -85,21 +88,20 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                         }
 
                         // Jsx
-                        //IElementType elementType = element.getNode().getElementType();
                         if (element instanceof RPsiUpperTagName) {
                             LOG.debug("Previous element type is TAG_NAME");
-                            JsxNameCompletionProvider.addCompletions(types, element, result);
+                            JsxNameCompletionProvider.addCompletions(element, types, searchScope, result);
                             return;
                         }
 
                         if (parent instanceof RPsiTagProperty /*inside the prop name*/ || parent instanceof RPsiTagStart || grandParent instanceof RPsiTagStart) {
                             LOG.debug("Inside a Tag start");
-                            JsxAttributeCompletionProvider.addCompletions(element, result);
+                            JsxAttributeCompletionProvider.addCompletions(element, searchScope, result);
                             return;
                         }
 
                         LOG.debug("Nothing found, free expression");
-                        FreeExpressionCompletionProvider.addCompletions(qnameFinder, element, result);
+                        FreeExpressionCompletionProvider.addCompletions(element, searchScope, result);
                     }
                 });
     }

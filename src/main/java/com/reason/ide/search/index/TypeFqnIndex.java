@@ -20,7 +20,7 @@ public class TypeFqnIndex extends IntStubIndexExtension<RPsiType> {
         return IndexKeys.TYPES_FQN;
     }
 
-    public static @NotNull Collection<RPsiType> getElements(int key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.TYPES_FQN, key, project, scope, RPsiType.class);
+    public static @NotNull Collection<RPsiType> getElements(String qName, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.TYPES_FQN, qName.hashCode(), project, scope, RPsiType.class);
     }
 }

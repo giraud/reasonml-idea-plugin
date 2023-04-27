@@ -12,12 +12,9 @@ import java.awt.event.*;
 import java.util.*;
 
 public class TestDataNavigationHandler implements GutterIconNavigationHandler<RPsiFunction> {
-
-    static void navigate(
-            @NotNull RelativePoint point, @NotNull List<String> paths, @NotNull Project project) {
+    static void navigate(@NotNull RelativePoint point, @NotNull List<String> paths, @NotNull Project project) {
         if (!paths.isEmpty()) {
-            VirtualFile virtualFile =
-                    LocalFileSystem.getInstance().refreshAndFindFileByPath(paths.get(0));
+            VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(paths.get(0));
             if (virtualFile != null) {
                 new OpenFileDescriptor(project, virtualFile).navigate(true);
             }

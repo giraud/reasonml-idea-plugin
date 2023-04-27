@@ -23,7 +23,7 @@ public class RecordParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_usage() {
-        RPsiLet e = first(letExpressions(parseCode("let r = { a = 1; b = 2; c = 3 }")));
+        RPsiLet e = firstOfType(parseCode("let r = { a = 1; b = 2; c = 3 }"), RPsiLet.class);
         RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
 
         List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
@@ -38,7 +38,7 @@ public class RecordParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_usage_deep() {
-        RPsiLet e = first(letExpressions(parseCode("let r = { a = [| 1; 2 |]; b = { b1 = { b11 = 3 } }; c = 4 }")));
+        RPsiLet e = firstOfType(parseCode("let r = { a = [| 1; 2 |]; b = { b1 = { b11 = 3 } }; c = 4 }"), RPsiLet.class);
         RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
 
         List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
@@ -52,8 +52,8 @@ public class RecordParsingTest extends OclParsingTestCase {
         assertEquals("b11", allFields.get(1).getName());
     }
 
-    //public void test_mixin() {   zzz
-    //    RPsiLet let = first(letExpressions(parseCode("let x = { component with otherField = 1 }")));
+    //public void test_mixin() {   TODO
+    //    RPsiLet let = firstOfType(parseCode("let x = { component with otherField = 1 }"), RPsiLet.class);
     //
     //    RPsiRecord record = (RPsiRecord) let.getBinding().getFirstChild();
     //    RPsiRecordField field = record.getFields().iterator().next();

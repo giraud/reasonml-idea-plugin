@@ -8,7 +8,7 @@ import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.RPsiType;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
@@ -123,6 +123,23 @@ public class RPsiTypeImpl extends RPsiTokenStub<ORLangTypes, RPsiType, PsiTypeSt
 
         RPsiTypeBinding binding = getBinding();
         return binding != null && binding.getFirstChild() instanceof RPsiRecord;
+    }
+
+
+    @Override
+    public @NotNull Collection<RPsiObjectField> getJsObjectFields() {
+        RPsiTypeBinding binding = getBinding();
+        PsiElement firstChild = binding == null ? null : binding.getFirstChild();
+        RPsiJsObject jsObject = firstChild instanceof RPsiJsObject ? ((RPsiJsObject) firstChild) : null;
+        return jsObject == null ? emptyList() : jsObject.getFields();
+    }
+
+    @Override
+    public @NotNull Collection<RPsiRecordField> getRecordFields() {
+        RPsiTypeBinding binding = getBinding();
+        PsiElement firstChild = binding == null ? null : binding.getFirstChild();
+        RPsiRecord record = firstChild instanceof RPsiRecord ? ((RPsiRecord) firstChild) : null;
+        return record == null ? emptyList() : record.getFields();
     }
 
     @Override

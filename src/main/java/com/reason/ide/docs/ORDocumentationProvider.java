@@ -33,8 +33,12 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
     @Override
     public @Nullable String generateDoc(PsiElement resolvedElement, @Nullable PsiElement originalElement) {
         ORLanguageProperties languageProperties = ORLanguageProperties.cast(originalElement == null ? null : originalElement.getLanguage());
-        if (resolvedElement instanceof RPsiFakeModule) {
-            PsiElement child = resolvedElement.getContainingFile().getFirstChild();
+
+        PsiElement docElement = resolvedElement;
+        if (resolvedElement instanceof RPsiModule && ((RPsiModule) resolvedElement).isComponent()) {
+            docElement = resolvedElement.getNavigationElement();
+        } else if (resolvedElement instanceof FileBase) {
+            PsiElement child = resolvedElement.getFirstChild();
             String text = "";
 
             PsiElement nextSibling = child;
@@ -49,56 +53,61 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
             }
 
             if (!text.isEmpty()) {
-                return DocFormatter.format(resolvedElement.getContainingFile(), resolvedElement, languageProperties, text);
-            }
-        } else {
-            // If it's an alias, resolve to the alias
-            if (resolvedElement instanceof RPsiLet) {
-                String alias = ((RPsiLet) resolvedElement).getAlias();
-                if (alias != null) {
-                    PsiElement resolvedAlias = ((RPsiLet) resolvedElement).resolveAlias();
-                    if (resolvedAlias != null) {
-                        resolvedElement = resolvedAlias;
-                    }
-                }
-            }
-
-            PsiElement comment = findComment(resolvedElement, resolvedElement.getLanguage());
-
-            // Nothing found, try to find a comment in the interface if any
-            if (comment == null && originalElement instanceof RPsiLowerSymbol && resolvedElement instanceof RPsiQualifiedPathElement) {
-                Project project = resolvedElement.getProject();
-                GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-                String elementQName = ((RPsiQualifiedPathElement) resolvedElement).getQualifiedName();
-                if (elementQName != null) {
-                    Collection<RPsiVal> vals = ValFqnIndex.getElements(elementQName.hashCode(), project, scope);
-                    if (vals.size() > 0) {
-                        RPsiVal next = vals.iterator().next();
-                        comment = findComment(next, next.getLanguage());
-                    } else {
-                        Collection<RPsiLet> lets = LetFqnIndex.getElements(elementQName.hashCode(), project, scope);
-                        RPsiLet letIntf = lets.stream()
-                                .filter(PSI_INTF_PREDICATE)
-                                .findFirst().orElse(null);
-                        if (letIntf != null) {
-                            comment = findComment(letIntf, letIntf.getLanguage());
-                        }
-                    }
-                }
-            }
-
-            if (comment != null) {
-                if (comment instanceof RPsiAnnotation) {
-                    PsiElement value = ((RPsiAnnotation) comment).getValue();
-                    String text = value == null ? null : value.getText();
-                    return text == null ? null : text.substring(1, text.length() - 1);
-                }
-
-                return isSpecialComment(comment)
-                        ? DocFormatter.format(resolvedElement.getContainingFile(), resolvedElement, languageProperties, comment.getText())
-                        : comment.getText();
+                return DocFormatter.format((PsiFile) resolvedElement, resolvedElement, languageProperties, text);
             }
         }
+
+        // If it's an alias, resolve to the alias
+        if (docElement instanceof RPsiLet) {
+            RPsiLet let = (RPsiLet) docElement;
+            String alias = let.getAlias();
+            if (alias != null) {
+                PsiElement binding = let.getBinding();
+                RPsiLowerSymbol lSymbol = binding == null ? null : ORUtil.findImmediateLastChildOfClass(binding, RPsiLowerSymbol.class);
+                PsiLowerSymbolReference lReference = lSymbol == null ? null : lSymbol.getReference();
+                PsiElement resolvedAlias = lReference == null ? null : lReference.resolveInterface();
+                if (resolvedAlias != null) {
+                    docElement = resolvedAlias;
+                }
+            }
+        }
+
+        PsiElement comment = findComment(docElement, docElement.getLanguage());
+
+        // Nothing found, try to find a comment in the interface if any
+        if (comment == null && originalElement instanceof RPsiLowerSymbol && docElement instanceof RPsiQualifiedPathElement) {
+            Project project = docElement.getProject();
+            GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+            String elementQName = ((RPsiQualifiedPathElement) docElement).getQualifiedName();
+            if (elementQName != null) {
+                Collection<RPsiVal> vals = ValFqnIndex.getElements(elementQName, project, scope);
+                if (vals.size() > 0) {
+                    RPsiVal next = vals.iterator().next();
+                    comment = findComment(next, next.getLanguage());
+                } else {
+                    Collection<RPsiLet> lets = LetFqnIndex.getElements(elementQName, project, scope);
+                    RPsiLet letIntf = lets.stream()
+                            .filter(PSI_INTF_PREDICATE)
+                            .findFirst().orElse(null);
+                    if (letIntf != null) {
+                        comment = findComment(letIntf, letIntf.getLanguage());
+                    }
+                }
+            }
+        }
+
+        if (comment != null) {
+            if (comment instanceof RPsiAnnotation) {
+                PsiElement value = ((RPsiAnnotation) comment).getValue();
+                String text = value == null ? null : value.getText();
+                return text == null ? null : text.substring(1, text.length() - 1);
+            }
+
+            return isSpecialComment(comment)
+                    ? DocFormatter.format(docElement.getContainingFile(), docElement, languageProperties, comment.getText())
+                    : comment.getText();
+        }
+        //}
 
         return null;
     }
