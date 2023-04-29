@@ -12,7 +12,7 @@ import java.util.*;
 public class FunctorCallParsingTest extends ResParsingTestCase {
     @Test
     public void test_instantiation() {
-        RPsiInnerModule e = (RPsiInnerModule) first(moduleExpressions(parseCode("module Printing = Make({ let encode = encode_record })")));
+        RPsiInnerModule e = first(moduleExpressions(parseCode("module Printing = Make({ let encode = encode_record })")));
 
         assertTrue(e.isFunctorCall());
         RPsiFunctorCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);
@@ -26,7 +26,7 @@ public class FunctorCallParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_with_path() {
-        RPsiInnerModule e = (RPsiInnerModule) first(moduleExpressions(parseCode("module X = A.B.Make({})")));
+        RPsiInnerModule e = first(moduleExpressions(parseCode("module X = A.B.Make({})")));
 
         assertTrue(e.isFunctorCall());
         RPsiFunctorCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);

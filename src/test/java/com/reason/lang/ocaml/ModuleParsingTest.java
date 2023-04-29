@@ -16,7 +16,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         Collection<RPsiInnerModule> modules = moduleExpressions(parseCode("module M = struct end"));
 
         assertEquals(1, modules.size());
-        RPsiInnerModule e = (RPsiInnerModule) first(modules);
+        RPsiInnerModule e = first(modules);
         assertEquals("M", e.getName());
         assertEquals(OclTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
         assertEquals("Dummy.M", e.getQualifiedName());
@@ -109,7 +109,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         PsiFile file = parseCode("module rec A : sig type output = (Constr.constr * UState.t) option type task end = struct end");
 
         assertEquals(1, expressions(file).size());
-        RPsiInnerModule e = (RPsiInnerModule) first(moduleExpressions(file));
+        RPsiInnerModule e = first(moduleExpressions(file));
         assertEquals("A", e.getName());
         assertEquals("sig type output = (Constr.constr * UState.t) option type task end", e.getModuleType().getText());
         assertEquals("struct end", e.getBody().getText());

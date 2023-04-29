@@ -83,13 +83,6 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
                 VirtualFile parent = bsconfigFile.getParent();
                 boolean useExternalAsSource = "bs-platform".equals(parent.getName());
                 BsConfig bsConfig = BsConfigReader.read(bsconfigFile, useExternalAsSource);
-                //if (!bsConfig.isInSources(inputData.getFile())) {
-                //LOG.debug("Indexing external file", (PsiFile) psiFile);
-                //        if (LOG.isDebugEnabled()) {
-                //            LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsconfigFile);
-                //        }
-                //        return Collections.emptyMap();
-                //}
                 namespace = bsConfig.getNamespace();
             }
 

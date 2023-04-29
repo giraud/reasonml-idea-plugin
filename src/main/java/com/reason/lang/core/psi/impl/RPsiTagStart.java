@@ -1,16 +1,9 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
-import com.intellij.psi.search.*;
 import com.intellij.psi.tree.*;
-import com.intellij.psi.util.*;
 import com.intellij.util.*;
-import com.reason.ide.search.index.*;
-import com.reason.ide.search.reference.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.RPsiType;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
@@ -52,58 +45,4 @@ public class RPsiTagStart extends ORCompositePsiElement<ORLangTypes> implements 
     public @NotNull List<RPsiTagProperty> getProperties() {
         return ORUtil.findImmediateChildrenOfClass(this, RPsiTagProperty.class);
     }
-
-    //public @NotNull List<ComponentPropertyAdapter> getUnifiedPropertyList() {
-    //    final List<ComponentPropertyAdapter> result = new ArrayList<>();
-    //
-    //    Project project = getProject();
-    //    GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-    //
-    //    // find tag 'make' expression
-    //    PsiElement tagName = getNameIdentifier();
-    //    if (tagName instanceof RPsiUpperSymbol) {
-    //        PsiUpperSymbolReference reference = (PsiUpperSymbolReference) tagName.getReference();
-    //        PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
-    //        if (resolvedElement instanceof RPsiLet) {
-    //            RPsiFunction makeFunction = ((RPsiLet) resolvedElement).getFunction();
-    //            if (makeFunction != null) {
-    //                makeFunction.getParameters().stream()
-    //                        .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
-    //                        .forEach(p -> result.add(new ComponentPropertyAdapter(p)));
-    //            }
-    //        } else if (resolvedElement instanceof RPsiExternal) {
-    //            RPsiSignature signature = ((RPsiExternal) resolvedElement).getSignature();
-    //            if (signature != null) {
-    //                signature.getItems().stream()
-    //                        .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
-    //                        .forEach(p -> result.add(new ComponentPropertyAdapter(p)));
-    //            }
-    //        }
-    //    } else if (tagName == null) {
-    //        // no tag name, it's not a custom tag
-    //        tagName = ORUtil.findImmediateFirstChildOfClass(this, RPsiLowerSymbol.class);
-    //        if (tagName != null) {
-    //            Collection<RPsiType> reactDomPropsType = TypeFqnIndex.getElements("ReactDom.props", project, scope);
-    //            if (reactDomPropsType.isEmpty()) {
-    //                // Old bindings
-    //                reactDomPropsType = TypeFqnIndex.getElements("ReactDomRe.props", project, scope);
-    //            }
-    //
-    //            RPsiType props = reactDomPropsType.isEmpty() ? null : reactDomPropsType.iterator().next();
-    //            if (props != null) {
-    //                RPsiTypeBinding binding = PsiTreeUtil.getStubChildOfType(props, RPsiTypeBinding.class);
-    //                if (binding != null) {
-    //                    RPsiRecord record = PsiTreeUtil.getStubChildOfType(binding, RPsiRecord.class);
-    //                    if (record != null) {
-    //                        for (RPsiRecordField field : record.getFields()) {
-    //                            result.add(new ComponentPropertyAdapter(field, ORUtil.prevAnnotations(field)));
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //
-    //    return result;
-    //}
 }
