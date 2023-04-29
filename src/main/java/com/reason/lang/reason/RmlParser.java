@@ -1100,9 +1100,6 @@ public class RmlParser extends CommonPsiParser {
                             // module M = (P) |> :<| R ...
                             advance();
                             markParenthesisScope(true);
-                            //if (getTokenType() == myTypes.LPAREN) {
-                            //    markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
-                            //}
                             mark(myTypes.C_FUNCTOR_RESULT);
                         } else if (nextTokenType == myTypes.ARROW) {
                             // module M = (P) |>=><| ...

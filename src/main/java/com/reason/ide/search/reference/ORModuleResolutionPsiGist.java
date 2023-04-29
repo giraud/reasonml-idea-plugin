@@ -45,14 +45,13 @@ public class ORModuleResolutionPsiGist {
     }
 
     static class PsiWalker extends PsiRecursiveElementWalkingVisitor {
-        Project myProject;
-        GlobalSearchScope myScope;
-        ORLangTypes myTypes;
-        List<PsiElement> myModulesInContext = new ArrayList<>();
-        Map<PsiElement, Integer> myModuleBinding = new HashMap<>();
+        final Project myProject;
+        final GlobalSearchScope myScope;
+        final ORLangTypes myTypes;
+        final List<PsiElement> myModulesInContext = new ArrayList<>();
+        final Map<PsiElement, Integer> myModuleBinding = new HashMap<>();
+        final Data myResult;
         int myCurrentIndex = 0;
-
-        Data myResult;
 
         public PsiWalker(FileBase file) {
             myTypes = ORTypesUtil.getInstance(file.getLanguage());

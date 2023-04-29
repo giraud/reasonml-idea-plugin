@@ -62,7 +62,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
     @Test
     public void test_module() {
         PsiFile file = parseCode("module Styles = { open Css\n let y = 1 }");
-        RPsiInnerModule module = (RPsiInnerModule) first(moduleExpressions(file));
+        RPsiInnerModule module = first(moduleExpressions(file));
 
         assertEquals(1, expressions(file).size());
         assertEquals("Styles", module.getName());
@@ -72,7 +72,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
     @Test
     public void test_inline_interface() {
         PsiFile file = parseCode("module Router: { let watchUrl: (url => unit) => watcherID }");
-        RPsiInnerModule module = (RPsiInnerModule) first(moduleExpressions(file));
+        RPsiInnerModule module = first(moduleExpressions(file));
 
         assertEquals(1, expressions(file).size());
         assertEquals("Router", module.getName());

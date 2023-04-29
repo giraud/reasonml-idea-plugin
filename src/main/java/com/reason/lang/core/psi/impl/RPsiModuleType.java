@@ -6,7 +6,6 @@ import com.intellij.psi.tree.*;
 import com.intellij.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
@@ -18,11 +17,6 @@ public class RPsiModuleType extends ORCompositePsiElement<ORLangTypes> implement
     @Override
     public String @Nullable [] getPath() {
         // TODO: stub
-        //PsiModuleStub stub = getGreenStub();
-        //if (stub != null) {
-        //    return stub.getPath();
-        //}
-
         return ORUtil.getQualifiedPath(this);
 
     }
@@ -30,11 +24,6 @@ public class RPsiModuleType extends ORCompositePsiElement<ORLangTypes> implement
     @Override
     public @Nullable String getQualifiedName() {
         // TODO: stub
-        //PsiModuleStub stub = getGreenStub();
-        //if (stub != null) {
-        //    return stub.getQualifiedName();
-        //}
-
         return ORUtil.getQualifiedName(this);
     }
 
