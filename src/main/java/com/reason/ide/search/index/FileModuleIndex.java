@@ -74,30 +74,36 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
             Map<String, FileModuleData> map = new HashMap<>();
 
             FileBase psiFile = (FileBase) inputData.getPsiFile();
-            String moduleName = psiFile.getModuleName();
+            if (psiFile.canNavigate()) {
+                String moduleName = psiFile.getModuleName();
 
-            String namespace = "";
+                String namespace = "";
 
-            VirtualFile bsconfigFile = BsPlatform.findBsConfig(inputData.getProject(), inputData.getFile());
-            if (bsconfigFile != null) {
-                VirtualFile parent = bsconfigFile.getParent();
-                boolean useExternalAsSource = "bs-platform".equals(parent.getName());
-                BsConfig bsConfig = BsConfigReader.read(bsconfigFile, useExternalAsSource);
-                namespace = bsConfig.getNamespace();
-            }
+                VirtualFile bsconfigFile = BsPlatform.findBsConfig(inputData.getProject(), inputData.getFile());
+                if (bsconfigFile != null) {
+                    VirtualFile parent = bsconfigFile.getParent();
+                    boolean useExternalAsSource = "bs-platform".equals(parent.getName());
+                    BsConfig bsConfig = BsConfigReader.read(bsconfigFile, useExternalAsSource);
+                    namespace = bsConfig.getNamespace();
+                }
 
-            boolean hasComponents = PsiTreeUtil.findChildrenOfType(psiFile, RPsiInnerModule.class).stream().anyMatch(RPsiInnerModule::isComponent);
-            boolean isOCaml = FileHelper.isOCaml(inputData.getFileType());
-            boolean isRescript = FileHelper.isRescript(inputData.getFileType());
+                boolean hasComponents = PsiTreeUtil.findChildrenOfType(psiFile, RPsiInnerModule.class).stream().anyMatch(RPsiInnerModule::isComponent);
+                boolean isOCaml = FileHelper.isOCaml(inputData.getFileType());
+                boolean isRescript = FileHelper.isRescript(inputData.getFileType());
 
-            FileModuleData value = new FileModuleData(inputData.getFile(), namespace, moduleName, isOCaml, isRescript, psiFile.isInterface(), psiFile.isComponent(), hasComponents);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("indexing " + Platform.getRelativePathToModule(inputData.getPsiFile()) + ": " + value);
-            }
+                FileModuleData value = new FileModuleData(inputData.getFile(), namespace, moduleName, isOCaml, isRescript, psiFile.isInterface(), psiFile.isComponent(), hasComponents);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("indexing " + Platform.getRelativePathToModule(inputData.getPsiFile()) + ": " + value);
+                }
 
-            map.put(moduleName, value);
-            if (!namespace.isEmpty()) {
-                map.put(namespace + "." + moduleName, value);
+                map.put(moduleName, value);
+                if (!namespace.isEmpty()) {
+                    map.put(namespace + "." + moduleName, value);
+                }
+            } else {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Skip file [not navigatable]: " + Platform.getRelativePathToModule(inputData.getPsiFile()));
+                }
             }
 
             return map;
