@@ -49,14 +49,14 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 }
                 final String qName = qNameLet;
 
-                Collection<RPsiVal> vals = ValFqnIndex.getElements(qName.hashCode(), project, scope);
+                Collection<RPsiVal> vals = ValFqnIndex.getElements(qName, project, scope);
                 vals.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                         .findFirst()
                         .ifPresentOrElse(psiVal ->
                                         result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiVal.getContainingFile(), psiVal))
                                 , () -> {
-                                    Collection<RPsiLet> lets = LetFqnIndex.getElements(qName.hashCode(), project, scope);
+                                    Collection<RPsiLet> lets = LetFqnIndex.getElements(qName, project, scope);
                                     lets.stream()
                                             .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                                             .findFirst()
@@ -66,7 +66,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                                 });
             } else if (parent instanceof RPsiExternal) {
                 String externalQName = ((RPsiExternalImpl) parent).getQualifiedName();
-                Collection<RPsiExternal> elements = ExternalFqnIndex.getElements(externalQName.hashCode(), project, scope);
+                Collection<RPsiExternal> elements = ExternalFqnIndex.getElements(externalQName, project, scope);
                 elements.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                         .findFirst()
@@ -75,7 +75,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                         );
             } else if (parent instanceof RPsiValImpl) {
                 String valQName = ((RPsiValImpl) parent).getQualifiedName();
-                Collection<RPsiLet> elements = LetFqnIndex.getElements(valQName.hashCode(), project, scope);
+                Collection<RPsiLet> elements = LetFqnIndex.getElements(valQName, project, scope);
                 elements.stream()
                         .filter(PSI_IMPL_PREDICATE)
                         .findFirst()
@@ -84,7 +84,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                         );
             } else if (parent instanceof RPsiType) {
                 String valQName = ((RPsiTypeImpl) parent).getQualifiedName();
-                Collection<RPsiType> elements = TypeFqnIndex.getElements(valQName.hashCode(), project, scope);
+                Collection<RPsiType> elements = TypeFqnIndex.getElements(valQName, project, scope);
                 elements.stream()
                         .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
                         .findFirst()

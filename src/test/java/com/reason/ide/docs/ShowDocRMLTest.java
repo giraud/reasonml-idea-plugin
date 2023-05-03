@@ -31,6 +31,15 @@ public class ShowDocRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_GH_350() {
+        configureCode("A.rei", "/** compare doc */\n let compare : string -> string -> int;");
+        FileBase a = configureCode("A.re", "let compare<caret> = (s1, s2) => 1;");
+
+        String doc = getDoc(a, LANG);
+        assertEquals("<div class=\"definition\"><b>A</b><p><i>let compare</i></p></div><div class=\"content\"><p>compare doc</p></div>", doc);
+    }
+
+    @Test
     public void test_GH_359() {
         FileBase a = configureCode("A.re", "module InnerComp = {\n" +
                 "  /**\n" +

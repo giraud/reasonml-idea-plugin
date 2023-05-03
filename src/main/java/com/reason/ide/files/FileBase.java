@@ -2,6 +2,7 @@ package com.reason.ide.files;
 
 import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;
+import com.intellij.pom.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.*;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public abstract class FileBase extends PsiFileBase implements RPsiQualifiedPathElement {
+public abstract class FileBase extends PsiFileBase implements RPsiModule, Navigatable {
     private final @NotNull String m_moduleName;
 
     FileBase(@NotNull FileViewProvider viewProvider, @NotNull Language language) {
@@ -35,6 +36,12 @@ public abstract class FileBase extends PsiFileBase implements RPsiQualifiedPathE
     }
     //endregion
 
+
+    @Override
+    public @Nullable PsiElement getBody() {
+        return this;
+    }
+
     public boolean isComponent() {
         if (FileHelper.isOCaml(getFileType())) {
             return false;
@@ -43,23 +50,25 @@ public abstract class FileBase extends PsiFileBase implements RPsiQualifiedPathE
         return ModuleHelper.isComponent(this);
     }
 
-    public @Nullable PsiElement getComponentNavigationElement() {
+    //region Navigatable
+    @Override
+    public PsiElement getNavigationElement() {
         if (isComponent()) {
-            List<RPsiLet> lets = PsiTreeUtil.getStubChildrenOfTypeAsList(this, RPsiLet.class);
-            for (RPsiLet let : lets) {
+            for (RPsiLet let : PsiTreeUtil.getStubChildrenOfTypeAsList(this, RPsiLet.class)) {
                 if ("make".equals(let.getName())) {
                     return let;
                 }
             }
-            List<RPsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(this, RPsiExternal.class);
-            for (RPsiExternal external : externals) {
+            for (RPsiExternal external : PsiTreeUtil.getStubChildrenOfTypeAsList(this, RPsiExternal.class)) {
                 if ("make".equals(external.getName())) {
                     return external;
                 }
             }
         }
-        return null;
+
+        return this;
     }
+    //endregion
 
     @SafeVarargs
     public @NotNull final <T extends PsiQualifiedNamedElement> List<T> getQualifiedExpressions(@Nullable String name, @NotNull Class<? extends T>... clazz) {

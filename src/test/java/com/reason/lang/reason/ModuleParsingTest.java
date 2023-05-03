@@ -12,10 +12,10 @@ import java.util.*;
 public class ModuleParsingTest extends RmlParsingTestCase {
     @Test
     public void test_empty() {
-        Collection<RPsiModule> modules = moduleExpressions(parseCode("module M = {};"));
+        Collection<RPsiInnerModule> modules = moduleExpressions(parseCode("module M = {};"));
 
         assertEquals(1, modules.size());
-        RPsiInnerModule e = (RPsiInnerModule) first(modules);
+        RPsiInnerModule e = first(modules);
         assertEquals("M", e.getName());
         assertEquals(RmlTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
         assertEquals("{}", e.getBody().getText());
@@ -23,7 +23,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_alias() {
-        RPsiModule e = firstOfType(parseCode("module M = Y;"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = Y;"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("Y", e.getAlias());
@@ -33,7 +33,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_alias_path() {
-        RPsiModule e = firstOfType(parseCode("module M = Y.Z;"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = Y.Z;"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("Y.Z", e.getAlias());
@@ -43,7 +43,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_module_type() {
-        RPsiInnerModule module = (RPsiInnerModule) first(moduleExpressions(parseCode("module type Intf = { let x: bool; };")));
+        RPsiInnerModule module = first(moduleExpressions(parseCode("module type Intf = { let x: bool; };")));
 
         assertEquals("Intf", module.getName());
         assertTrue(module.isInterface());
@@ -54,7 +54,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
     @Test
     public void test_module() {
         PsiFile file = parseCode(" module Styles = { open Css; let y = 1 }");
-        RPsiInnerModule module = (RPsiInnerModule) first(moduleExpressions(file));
+        RPsiInnerModule module = first(moduleExpressions(file));
 
         assertEquals(1, expressions(file).size());
         assertEquals("Styles", module.getName());
@@ -65,7 +65,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
     @Test
     public void test_inline_interface() {
         PsiFile file = parseCode("module Router: { let watchUrl: (url => unit) => watcherID; }");
-        RPsiInnerModule module = (RPsiInnerModule) first(moduleExpressions(file));
+        RPsiInnerModule module = first(moduleExpressions(file));
 
         assertEquals(1, expressions(file).size());
         assertEquals("Router", module.getName());
@@ -109,7 +109,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_decode_first_class_module() {
-        RPsiModule e = firstOfType(parseCode("module M = (val selectors);"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = (val selectors);"), RPsiInnerModule.class);
 
         assertFalse(e instanceof RPsiFunctor);
         assertEquals("M", e.getName());

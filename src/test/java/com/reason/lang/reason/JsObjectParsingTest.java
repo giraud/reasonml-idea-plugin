@@ -3,7 +3,6 @@ package com.reason.lang.reason;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -14,7 +13,7 @@ import java.util.*;
 public class JsObjectParsingTest extends RmlParsingTestCase {
     @Test
     public void test_basic() {
-        RPsiLet e = first(letExpressions(parseCode("let x = {\"a\": 1, \"b\": 0};")));
+        RPsiLet e = firstOfType(parseCode("let x = {\"a\": 1, \"b\": 0};"), RPsiLet.class);
 
         RPsiLetBinding binding = e.getBinding();
         RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);
@@ -42,7 +41,7 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_in_function() {
-        RPsiLet e = first(letExpressions(parseCode("let x = fn(~props={\"a\": id, \"b\": 0});")));
+        RPsiLet e = firstOfType(parseCode("let x = fn(~props={\"a\": id, \"b\": 0});"), RPsiLet.class);
 
         RPsiLetBinding binding = e.getBinding();
         RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);
@@ -55,13 +54,13 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_declaring_open() {
-        RPsiLet e = first(letExpressions(parseCode(
+        RPsiLet e = firstOfType(parseCode(
                 "let style = {"
                         + "\"marginLeft\": marginLeft, "
                         + "\"marginRight\": marginRight,"
                         + "\"fontSize\": \"inherit\","
                         + "\"fontWeight\": bold ? \"bold\" : \"inherit\","
-                        + "\"textTransform\": transform == \"uc\" ? \"uppercase\" : \"unset\",};")));
+                        + "\"textTransform\": transform == \"uc\" ? \"uppercase\" : \"unset\",};"), RPsiLet.class);
 
         RPsiLetBinding binding = e.getBinding();
         RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);
@@ -74,10 +73,10 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_module_open() {
-        RPsiLet e = first(letExpressions(parseCode(
+        RPsiLet e = firstOfType(parseCode(
                 "let computingProperties = createStructuredSelector("
                         + "    ComputingReducers.{ \"lastUpdate\": selectors.getLastUpdate },\n"
-                        + "  );")));
+                        + "  );"), RPsiLet.class);
 
         RPsiLetBinding binding = e.getBinding();
         RPsiParameters call = PsiTreeUtil.findChildOfType(binding, RPsiParameters.class);
@@ -93,6 +92,6 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
         RPsiJsObject o = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), RPsiJsObject.class);
         List<RPsiObjectField> fields = new ArrayList<>(o.getFields());
         assertSize(3, fields);
-        assertInstanceOf(fields.get(0).getValue(), RPsiJsObject.class);
+        assertInstanceOf(fields.get(0).getValue().getFirstChild(), RPsiJsObject.class);
     }
 }

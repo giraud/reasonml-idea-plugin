@@ -12,7 +12,7 @@ import java.util.*;
 public class PolyVariantTest extends RmlParsingTestCase {
     @Test
     public void test_basic_LIdent() {
-        RPsiLet e = first(letExpressions(parseCode("let x = `red;")));
+        RPsiLet e = firstOfType(parseCode("let x = `red;"), RPsiLet.class);
         PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
 
         assertEquals("`red", variant.getText());
@@ -20,7 +20,7 @@ public class PolyVariantTest extends RmlParsingTestCase {
 
     @Test
     public void test_basic_UIdent() {
-        RPsiLet e = first(letExpressions(parseCode("let x = `Red;")));
+        RPsiLet e = firstOfType(parseCode("let x = `Red;"), RPsiLet.class);
         PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
 
         assertEquals("`Red", variant.getText());

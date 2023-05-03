@@ -50,10 +50,6 @@ public class DuneParser extends CommonPsiParser {
             }
         }
 
-        @Override
-        public void eof() {
-        }
-
         private void parseAtom() {
             if (is(myTypes.C_STANZA)) {
                 advance().mark(myTypes.C_FIELDS);

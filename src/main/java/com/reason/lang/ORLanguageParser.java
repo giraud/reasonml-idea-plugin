@@ -32,8 +32,4 @@ public abstract class ORLanguageParser<T extends ORLangTypes> extends ORParser<T
             }
         };
     }
-
-    public void eof() {
-        mark(myTypes.C_FAKE_MODULE).popEnd();
-    }
 }

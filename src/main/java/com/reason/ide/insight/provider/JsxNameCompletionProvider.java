@@ -8,7 +8,9 @@ import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.util.*;
-import com.reason.ide.search.index.*;
+import com.reason.ide.*;
+import com.reason.ide.files.*;
+import com.reason.ide.search.*;
 import com.reason.ide.search.reference.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
@@ -27,10 +29,10 @@ public class JsxNameCompletionProvider {
     private JsxNameCompletionProvider() {
     }
 
-    public static void addCompletions(@NotNull ORLangTypes types, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull PsiElement element, @NotNull ORLangTypes types, @NotNull GlobalSearchScope scope, @NotNull CompletionResultSet resultSet) {
         LOG.debug("JSX name expression completion");
 
-        Collection<PsiNamedElement> expressions = new ArrayList<>();
+        Collection<RPsiModule> expressions = new ArrayList<>();
         Project project = element.getProject();
         PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(element);
 
@@ -50,7 +52,7 @@ public class JsxNameCompletionProvider {
                     }
 
                     for (RPsiModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(resolvedModule, RPsiModule.class)) {
-                        if (module.isComponent() && !(module instanceof RPsiFakeModule)) {
+                        if (module.isComponent()) {
                             expressions.add(module);
                         }
                     }
@@ -58,42 +60,34 @@ public class JsxNameCompletionProvider {
             }
         } else {
             // List inner components above
-            List<RPsiModule> localModules = ORUtil.findPreviousSiblingsOrParentOfClass(element, RPsiModule.class);
-            for (RPsiModule localModule : localModules) {
+            List<RPsiInnerModule> localModules = ORUtil.findPreviousSiblingsOrParentOfClass(element, RPsiInnerModule.class);
+            for (RPsiInnerModule localModule : localModules) {
                 if (localModule.isComponent() && !localModule.isInterface()) {
                     expressions.add(localModule);
                 }
             }
 
             // List all top level components
-            final RPsiModule currentModule = getParentModule(element);
-            GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-            ModuleComponentIndex.processItems(project, scope, componentModule -> {
-                if (componentModule instanceof RPsiFakeModule && !componentModule.equals(currentModule)) {
-                    expressions.add(componentModule);
-                }
-            });
+            final RPsiModule currentModule = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
+            String currentModuleName = currentModule == null ? "" : currentModule.getModuleName();
+            FileModuleIndexService.getService().getTopModules(project, scope)
+                    .forEach(data -> {
+                        if ((data.isComponent() || data.hasComponents()) && !data.getModuleName().equals(currentModuleName)) {
+                            resultSet.addElement(LookupElementBuilder.create(data.getModuleName())
+                                    .withIcon(IconProvider.getDataModuleIcon(data))
+                                    .withInsertHandler((context, item) -> insertTagNameHandler(project, context, data.getModuleName())));
+                        }
+                    });
         }
 
-        for (PsiNamedElement expression : expressions) {
-            String componentName = expression.getName();
+        for (RPsiModule expression : expressions) {
+            String componentName = expression instanceof FileBase ? ((FileBase) expression).getModuleName() : expression.getName();
             if (componentName != null) {
                 resultSet.addElement(LookupElementBuilder.create(componentName)
                         .withIcon(getProvidersIcon(expression, 0))
                         .withInsertHandler((context, item) -> insertTagNameHandler(project, context, componentName)));
             }
         }
-    }
-
-    private static @Nullable RPsiModule getParentModule(@NotNull PsiElement element) {
-        RPsiModule parentModule = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
-        if (parentModule == null) {
-            PsiElement lastElement = element.getContainingFile().getLastChild();
-            if (lastElement instanceof RPsiFakeModule) {
-                parentModule = (RPsiModule) lastElement;
-            }
-        }
-        return parentModule;
     }
 
     private static void insertTagNameHandler(@NotNull Project project, @NotNull InsertionContext context, @NotNull String tagName) {
@@ -113,7 +107,8 @@ public class JsxNameCompletionProvider {
 
         Editor editor = context.getEditor();
         if (closeTag) {
-            if (chars.charAt(context.getTailOffset()) != '>') {
+            int tailOffset = context.getTailOffset();
+            if (tailOffset < chars.length() && chars.charAt(tailOffset) != '>') {
                 EditorModificationUtil.insertStringAtCaret(editor, ">");
             }
         } else {

@@ -50,7 +50,7 @@ public class ResFileType extends LanguageFileType implements FileTypeIdentifiabl
 
     @Override
     public @NotNull Icon getIcon() {
-        return ORIcons.NS_FILE;
+        return ORIcons.RES_FILE;
     }
 
     @Override

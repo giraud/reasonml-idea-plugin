@@ -4,6 +4,7 @@ import com.intellij.json.psi.*;
 import com.intellij.psi.*;
 import com.reason.comp.esy.*;
 import com.reason.ide.files.*;
+import com.reason.ide.search.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
@@ -13,9 +14,7 @@ import javax.swing.*;
 public class IconProvider extends com.intellij.ide.IconProvider {
     @Nullable
     @Override
-    public Icon getIcon(@NotNull PsiElement psiElement, int flags) {
-        PsiElement element =
-                psiElement instanceof RPsiFakeModule ? psiElement.getContainingFile() : psiElement;
+    public Icon getIcon(@NotNull PsiElement element, int flags) {
         if (element instanceof PsiFile) {
             if (element instanceof OclFile) {
                 return ORIcons.OCL_FILE;
@@ -30,10 +29,10 @@ public class IconProvider extends com.intellij.ide.IconProvider {
                 return ORIcons.RML_INTERFACE_FILE;
             }
             if (element instanceof ResFile) {
-                return ORIcons.NS_FILE;
+                return ORIcons.RES_FILE;
             }
             if (element instanceof ResInterfaceFile) {
-                return ORIcons.NS_INTERFACE_FILE;
+                return ORIcons.RES_INTERFACE_FILE;
             }
             if (isEsyPackageJson((PsiFile) element)) {
                 return ORIcons.ESY_FILE;
@@ -41,7 +40,7 @@ public class IconProvider extends com.intellij.ide.IconProvider {
         } else if (element instanceof RPsiException) {
             return ORIcons.EXCEPTION;
         } else if (element instanceof RPsiInnerModule) {
-            return ORIcons.INNER_MODULE;
+            return ((RPsiInnerModule) element).isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE;
         } else if (element instanceof RPsiFunctor) {
             return ORIcons.FUNCTOR;
         } else if (element instanceof RPsiType) {
@@ -59,16 +58,25 @@ public class IconProvider extends com.intellij.ide.IconProvider {
         return null;
     }
 
-    public static @NotNull Icon getFileModuleIcon(@NotNull FileBase element) {
-        return getFileModuleIcon(
-                FileHelper.isOCaml(element.getFileType()), FileHelper.isInterface(element.getFileType()));
-    }
-
-    public static @NotNull Icon getFileModuleIcon(boolean isOCaml, boolean isInterface) {
-        if (isOCaml) {
+    public static @NotNull Icon getDataModuleIcon(@NotNull FileModuleData element) {
+        boolean isInterface = element.isInterface();
+        if (element.isOCaml()) {
             return isInterface ? ORIcons.OCL_FILE_MODULE_INTERFACE : ORIcons.OCL_FILE_MODULE;
+        } else if (element.isRescript()) {
+            return isInterface ? ORIcons.RES_FILE_MODULE_INTERFACE : ORIcons.RES_FILE_MODULE;
         } else {
             return isInterface ? ORIcons.RML_FILE_MODULE_INTERFACE : ORIcons.RML_FILE_MODULE;
+        }
+    }
+
+    public static @NotNull Icon getDataModuleFileIcon(@NotNull FileModuleData element) {
+        boolean isInterface = element.isInterface();
+        if (element.isOCaml()) {
+            return isInterface ? ORIcons.OCL_INTERFACE_FILE : ORIcons.OCL_FILE;
+        } else if (element.isRescript()) {
+            return isInterface ? ORIcons.RES_INTERFACE_FILE : ORIcons.RES_FILE;
+        } else {
+            return isInterface ? ORIcons.RML_INTERFACE_FILE : ORIcons.RML_FILE;
         }
     }
 

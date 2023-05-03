@@ -73,7 +73,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         StructureViewModel model = new ORStructureViewModel(a);
 
         TreeElement i = model.getRoot().getChildren()[0];
-        assertPresentation("I", "", ORIcons.MODULE_TYPE, i.getPresentation());
+        assertPresentation("I", "A.I", ORIcons.MODULE_TYPE, i.getPresentation());
         TreeElement x = i.getChildren()[0];
         assertPresentation("x", "bool", ORIcons.VAL, x.getPresentation());
     }
@@ -85,9 +85,9 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         StructureViewModel model = new ORStructureViewModel(b);
 
         TreeElement e = model.getRoot().getChildren()[0];
-        assertPresentation("X", "", ORIcons.INNER_MODULE, e.getPresentation());
+        assertPresentation("X", "B.X", ORIcons.INNER_MODULE, e.getPresentation());
         TreeElement ee = e.getChildren()[0];
-        assertPresentation("S", "A.mli", ORIcons.MODULE_TYPE, ee.getPresentation());
+        assertPresentation("A.S", "", ORIcons.MODULE_TYPE, ee.getPresentation());
     }
 
     @Test
@@ -97,7 +97,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         StructureViewModel model = new ORStructureViewModel(b);
 
         TreeElement e = model.getRoot().getChildren()[0];
-        assertPresentation("X", "", ORIcons.INNER_MODULE, e.getPresentation());
+        assertPresentation("X", "B.X", ORIcons.INNER_MODULE, e.getPresentation());
         TreeElement ee = e.getChildren()[0];
         assertPresentation("A.Vcs.Branch", "", ORIcons.MODULE_TYPE, ee.getPresentation());
     }

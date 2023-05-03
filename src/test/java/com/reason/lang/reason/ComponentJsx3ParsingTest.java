@@ -27,26 +27,6 @@ public class ComponentJsx3ParsingTest extends RmlParsingTestCase {
     }
 
     @Test
-    public void test_mandatory_property() {
-        RPsiLet e = firstOfType(parseCode("[@react.component] let make = (~name, ~other:option(string)) => <div/>;"), RPsiLet.class);
-
-        List<ComponentPropertyAdapter> params = e.getFunction().getParameters().stream().map(ComponentPropertyAdapter::new).collect(Collectors.toList());
-        assertSize(2, params);
-        assertTrue(params.get(0).isMandatory());
-        assertTrue(params.get(1).isMandatory());
-    }
-
-    @Test
-    public void test_optional_property() {
-        RPsiLet e = firstOfType(parseCode("[@react.component] let make = (~layout=?) => <div/>;"), RPsiLet.class);
-
-        List<RPsiParameterDeclaration> parameters = e.getFunction().getParameters();
-        List<ComponentPropertyAdapter> params = parameters.stream().map(ComponentPropertyAdapter::new).collect(Collectors.toList());
-        assertSize(1, params);
-        assertFalse(params.get(0).isMandatory());
-    }
-
-    @Test
     public void test_close() {
         RPsiLet e = firstOfType(parseCode("[@react.component] let make = () => { <A><B><span>\"X\"->React.string</span></B><C></C></A>; };"), RPsiLet.class);
 

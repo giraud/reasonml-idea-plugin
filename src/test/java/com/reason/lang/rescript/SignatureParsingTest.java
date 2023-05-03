@@ -13,7 +13,7 @@ import java.util.*;
 public class SignatureParsingTest extends ResParsingTestCase {
     @Test
     public void test_let() {
-        RPsiLet let = first(letExpressions(parseCode("let x: int = 1")));
+        RPsiLet let = firstOfType(parseCode("let x: int = 1"), RPsiLet.class);
 
         RPsiSignature signature = let.getSignature();
         assertEquals("int", signature.asText(getLangProps()));
@@ -22,7 +22,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_trimming() {
-        RPsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string =>\n  componentSpec<\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  >\n")));
+        RPsiLet let = firstOfType(parseCode("let statelessComponent:\n  string =>\n  componentSpec<\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  >\n"), RPsiLet.class);
 
         RPsiSignature signature = let.getSignature();
         assertEquals("string => componentSpec<stateless, stateless, noRetainedProps, noRetainedProps, actionless>", signature.asText(getLangProps()));
@@ -30,7 +30,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_parsing_named_params() {
-        RPsiLet let = first(letExpressions(parseCode("let padding: (~v:length, ~h:length) => rule")));
+        RPsiLet let = firstOfType(parseCode("let padding: (~v:length, ~h:length) => rule"), RPsiLet.class);
 
         RPsiSignature signature = let.getSignature();
         assertEquals(3, signature.getItems().size());
@@ -43,7 +43,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_optional_fun() {
-        RPsiLet let = first(letExpressions(parseCode("let x:int => option<string> => string = (a,b) => c")));
+        RPsiLet let = firstOfType(parseCode("let x:int => option<string> => string = (a,b) => c"), RPsiLet.class);
 
         List<RPsiSignatureItem> items = let.getSignature().getItems();
         assertEquals("int", items.get(0).getText());
@@ -71,7 +71,8 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_optional_fun_parameters() {
-        RPsiLet let = first(letExpressions(parseCode("let x = (a:Js.t, b:option<string>, ~c:bool=false, ~d:float=?) => 3")));
+        RPsiLet let = firstOfType(parseCode("let x = (a:Js.t, b:option<(. unit) => unit>, ~c:bool=false, ~d:float=?) => 3"), RPsiLet.class);
+        assertNoParserError(let);
 
         RPsiFunction function = (RPsiFunction) let.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
@@ -79,6 +80,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
         assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
         assertEquals("Js.t", parameters.get(0).getSignature().getItems().get(0).getText());
         assertFalse(parameters.get(1).getSignature().getItems().get(0).isOptional());
+        assertEquals("option<(. unit) => unit>", parameters.get(1).getSignature().getItems().get(0).getText());
         assertEquals("bool", parameters.get(2).getSignature().asText(getLangProps()));
         assertTrue(parameters.get(2).isOptional());
         assertEquals("false", parameters.get(2).getDefaultValue().getText());
@@ -89,7 +91,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_unit_fun_parameter() {
-        RPsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1")));
+        RPsiLet e = firstOfType(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1"), RPsiLet.class);
 
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
@@ -150,7 +152,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_default_optional() {
-        RPsiLet let = first(letExpressions(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa")));
+        RPsiLet let = firstOfType(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa"), RPsiLet.class);
         RPsiSignature signature = let.getSignature();
         // assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
         // signature.asString(getLangProps()));

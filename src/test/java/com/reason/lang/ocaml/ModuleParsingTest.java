@@ -3,10 +3,8 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import org.jetbrains.annotations.*;
 import org.junit.*;
 
 import java.util.*;
@@ -15,10 +13,10 @@ import java.util.*;
 public class ModuleParsingTest extends OclParsingTestCase {
     @Test
     public void test_empty() {
-        Collection<RPsiModule> modules = moduleExpressions(parseCode("module M = struct end"));
+        Collection<RPsiInnerModule> modules = moduleExpressions(parseCode("module M = struct end"));
 
         assertEquals(1, modules.size());
-        RPsiInnerModule e = (RPsiInnerModule) first(modules);
+        RPsiInnerModule e = first(modules);
         assertEquals("M", e.getName());
         assertEquals(OclTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
         assertEquals("Dummy.M", e.getQualifiedName());
@@ -27,7 +25,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_alias() {
-        RPsiModule e = firstOfType(parseCode("module M = Y"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = Y"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("Y", e.getAlias());
@@ -37,7 +35,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_alias_path() {
-        RPsiModule e = firstOfType(parseCode("module M = Y.Z"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = Y.Z"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("Y.Z", e.getAlias());
@@ -47,7 +45,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_module_type() {
-        RPsiModule e = first(moduleExpressions(parseCode("module type Intf = sig val x : bool end")));
+        RPsiInnerModule e = first(moduleExpressions(parseCode("module type Intf = sig val x : bool end")));
 
         assertEquals("Intf", e.getName());
         assertTrue(e.isInterface());
@@ -100,9 +98,9 @@ public class ModuleParsingTest extends OclParsingTestCase {
         PsiFile file = parseCode("module M = struct module O = B.Option let _ = O.m end");
 
         assertEquals(1, expressions(file).size());
-        RPsiModule e = first(moduleExpressions(file));
+        RPsiInnerModule e = first(moduleExpressions(file));
         assertEquals("M", e.getName());
-        Collection<PsiNamedElement> expressions = e.getExpressions(ExpressionScope.pub, ExpressionFilterConstants.NO_FILTER);
+        Collection<PsiNamedElement> expressions = PsiTreeUtil.findChildrenOfType(e.getBody(), RPsiQualifiedPathElement.class);
         assertSize(2, expressions);
     }
 
@@ -111,7 +109,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         PsiFile file = parseCode("module rec A : sig type output = (Constr.constr * UState.t) option type task end = struct end");
 
         assertEquals(1, expressions(file).size());
-        RPsiInnerModule e = (RPsiInnerModule) first(moduleExpressions(file));
+        RPsiInnerModule e = first(moduleExpressions(file));
         assertEquals("A", e.getName());
         assertEquals("sig type output = (Constr.constr * UState.t) option type task end", e.getModuleType().getText());
         assertEquals("struct end", e.getBody().getText());
@@ -119,7 +117,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_decode_first_class_module() {
-        RPsiModule e = firstOfType(parseCode("module M = (val selectors)"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = (val selectors)"), RPsiInnerModule.class);
 
         assertFalse(e instanceof RPsiFunctor);
         assertEquals("M", e.getName());
@@ -129,7 +127,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_decode_first_class_module_in_let() {
-        RPsiModule e = firstOfType(parseCode("let _ = let module M = (val m : S)"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("let _ = let module M = (val m : S)"), RPsiInnerModule.class);
 
         assertFalse(e instanceof RPsiFunctor);
         assertEquals("M", e.getName());
@@ -139,7 +137,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_decode_first_class_module_with_in() {
-        RPsiModule e = firstOfType(parseCode("let module Visit = Visit(Repr) in printf x"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("let module Visit = Visit(Repr) in printf x"), RPsiInnerModule.class);
 
         assertFalse(e instanceof RPsiFunctor);
         assertEquals("Visit", e.getName());

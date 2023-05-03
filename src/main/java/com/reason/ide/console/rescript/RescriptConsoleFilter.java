@@ -3,6 +3,7 @@ package com.reason.ide.console.rescript;
 import com.intellij.execution.filters.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
+import com.reason.ide.console.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -18,12 +19,10 @@ import static java.lang.Integer.*;
  * File "xxx.ml", line x, characters x-y:
  * File "xxx.ml", lines x-y, characters x-y:
  */
-public class RescriptConsoleFilter implements Filter {
-    private static final Log LOG = Log.create("console");
-    private final Project myProject;
+public class RescriptConsoleFilter extends ORConsoleFilter {
 
     public RescriptConsoleFilter(@NotNull Project project) {
-        myProject = project;
+        super(project);
     }
 
     @Override
@@ -47,6 +46,7 @@ public class RescriptConsoleFilter implements Filter {
         return null;
     }
 
+    @Override
     protected @Nullable OpenFileHyperlinkInfo getHyperlinkInfo(String filePath, int documentLine, int documentColumn) {
         OpenFileHyperlinkInfo hyperlinkInfo = null;
         VirtualFile sourceFile = LocalFileSystem.getInstance().findFileByPath(filePath);

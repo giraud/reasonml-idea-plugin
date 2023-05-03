@@ -1,7 +1,6 @@
 package com.reason.lang.rescript;
 
 import com.intellij.psi.util.*;
-import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -13,7 +12,7 @@ import java.util.*;
 public class FunctionCallParsingTest extends ResParsingTestCase {
     @Test
     public void test_call() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = string_of_int(1)")));
+        RPsiLet e = firstOfType(parseCode("let _ = string_of_int(1)"), RPsiLet.class);
 
         RPsiFunctionCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
         assertNotNull(ORUtil.findImmediateFirstChildOfClass(call, RPsiLowerSymbol.class));
@@ -24,7 +23,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_call2() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = Belt.Option.map(self.state.timerId.contents, Js.Global.clearInterval)")));
+        RPsiLet e = firstOfType(parseCode("let _ = Belt.Option.map(self.state.timerId.contents, Js.Global.clearInterval)"), RPsiLet.class);
 
         RPsiFunctionCall call = PsiTreeUtil.findChildOfType(e.getBinding(), RPsiFunctionCall.class);
         List<RPsiParameterReference> parameters = call.getParameters();
@@ -35,7 +34,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_call3() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = subscriber->Topic.unsubscribe()")));
+        RPsiLet e = firstOfType(parseCode("let _ = subscriber->Topic.unsubscribe()"), RPsiLet.class);
 
         RPsiFunctionCall call = PsiTreeUtil.findChildOfType(e.getBinding(), RPsiFunctionCall.class);
         assertEmpty(call.getParameters());
@@ -43,7 +42,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_end_comma() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = style([ color(red), ])")));
+        RPsiLet e = firstOfType(parseCode("let _ = style([ color(red), ])"), RPsiLet.class);
 
         assertEquals("style([ color(red), ])", e.getBinding().getText());
         RPsiFunctionCall f = PsiTreeUtil.findChildOfType(e.getBinding(), RPsiFunctionCall.class);
@@ -53,7 +52,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_unit_last() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = f(1, ())")));
+        RPsiLet e = firstOfType(parseCode("let _ = f(1, ())"), RPsiLet.class);
 
         RPsiFunctionCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
         assertSize(2, call.getParameters());
@@ -69,7 +68,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_inner_parenthesis() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = f(a, (b, c))")));
+        RPsiLet e = firstOfType(parseCode("let _ = f(a, (b, c))"), RPsiLet.class);
 
         RPsiFunctionCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
         assertSize(2, call.getParameters());
@@ -107,7 +106,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_body() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = x => { open M\n {k: v} }")));
+        RPsiLet e = firstOfType(parseCode("let _ = x => { open M\n {k: v} }"), RPsiLet.class);
 
         RPsiFunctionBody body = PsiTreeUtil.findChildOfType(e, RPsiFunctionBody.class);
         assertEquals("{ open M\n {k: v} }", body.getText());
@@ -133,7 +132,7 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_GH_120() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = f(x == U.I, 1)")));
+        RPsiLet e = firstOfType(parseCode("let _ = f(x == U.I, 1)"), RPsiLet.class);
 
         RPsiFunctionCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
         assertSize(2, call.getParameters());

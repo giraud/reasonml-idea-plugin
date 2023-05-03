@@ -261,7 +261,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         @Override
         public void visitElement(@NotNull PsiElement element) {
-            if (element instanceof RPsiStructuredElement && !(element instanceof RPsiFakeModule)) {
+            if (element instanceof RPsiStructuredElement) {
                 if (((RPsiStructuredElement) element).canBeDisplayed()) {
                     if (element instanceof RPsiLet) {
                         RPsiLet let = (RPsiLet) element;

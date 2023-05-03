@@ -11,6 +11,10 @@ import java.util.*;
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
 public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
+    @Override protected String getTestDataPath() {
+        return "src/test/testData/ns";
+    }
+
     @Test
     public void test_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
@@ -22,8 +26,8 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertSize(5, elements);
         assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "Pervasives", "x");
+        assertSize(5, elements);
     }
 
     @Test
@@ -65,8 +69,8 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(2, strings);
         assertSameElements(strings, "x", "A");
+        assertSize(2, strings);
     }
 
     @Test
@@ -79,5 +83,18 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
 
         assertSameElements(strings, "exception", "external", "include", "let", "module", "open", "type", "A", "y", "x");
         assertSize(10, strings);
+    }
+
+    @Test
+    public void test_namespace() {
+        myFixture.configureByFile("bsconfig.json");
+        myFixture.configureByFile("src/A.re");
+        configureCode("B.re", "<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertSameElements(strings, "exception", "external", "include", "let", "module", "open", "type", "MyNamespace");
+        assertSize(8, strings);
     }
 }
