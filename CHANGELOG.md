@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+**NOTE**: minimal version supported is **2022.2**
+
 ## 0.111 - 2023/05/03
       
 - :house: New reference resolution algorithm
