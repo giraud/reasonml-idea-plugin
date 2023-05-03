@@ -4,7 +4,6 @@ import com.intellij.execution.filters.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.ide.console.*;
-import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.regex.*;

@@ -1,15 +1,11 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
-import com.reason.lang.core.type.ORLangTypes;
+import org.jetbrains.annotations.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.*;
 
 public class RPsiDeconstruction extends ORCompositePsiElement<ORLangTypes> {
 
