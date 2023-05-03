@@ -15,11 +15,9 @@ import java.io.*;
 import java.util.*;
 
 public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleData> {
-
-    private static final ID<String, FileModuleData> NAME = ID.create("reason.module.fileIndex");
     private static final int VERSION = 2;
+    private static final ID<String, FileModuleData> NAME = ID.create("reason.module.fileIndex");
     private static final Log LOG = Log.create("index.file");
-
     private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
 
     public static @Nullable FileModuleIndex getInstance() {
@@ -45,9 +43,8 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
             out.writeUTF(value.getFullName());
         }
 
-        @NotNull
         @Override
-        public FileModuleData read(@NotNull DataInput in) throws IOException {
+        public @NotNull FileModuleData read(@NotNull DataInput in) throws IOException {
             boolean isOCaml = in.readBoolean();
             boolean isRescript = in.readBoolean();
             boolean isInterface = in.readBoolean();
@@ -61,15 +58,13 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
         }
     }
 
-    @NotNull
     @Override
-    public KeyDescriptor<String> getKeyDescriptor() {
+    public @NotNull KeyDescriptor<String> getKeyDescriptor() {
         return EnumeratorStringDescriptor.INSTANCE;
     }
 
-    @NotNull
     @Override
-    public DataIndexer<String, FileModuleData, FileContent> getIndexer() {
+    public @NotNull DataIndexer<String, FileModuleData, FileContent> getIndexer() {
         return inputData -> {
             Map<String, FileModuleData> map = new HashMap<>();
 
@@ -110,9 +105,8 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
         };
     }
 
-    @NotNull
     @Override
-    public DataExternalizer<FileModuleData> getValueExternalizer() {
+    public @NotNull DataExternalizer<FileModuleData> getValueExternalizer() {
         return EXTERNALIZER;
     }
 
@@ -121,9 +115,8 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
         return VERSION;
     }
 
-    @NotNull
     @Override
-    public FileBasedIndex.InputFilter getInputFilter() {
+    public @NotNull FileBasedIndex.InputFilter getInputFilter() {
         return new DefaultFileTypeSpecificInputFilter(
                 RmlFileType.INSTANCE, RmlInterfaceFileType.INSTANCE,
                 OclFileType.INSTANCE, OclInterfaceFileType.INSTANCE,

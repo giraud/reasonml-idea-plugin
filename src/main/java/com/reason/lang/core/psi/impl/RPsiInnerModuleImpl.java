@@ -205,7 +205,7 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
 
             @Override
             public @NotNull String getLocationString() {
-                return "";
+                return isModuleTypeOf ? "" : getQualifiedName();
             }
 
             @Override

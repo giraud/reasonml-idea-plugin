@@ -2,7 +2,6 @@ package com.reason.ide.go;
 
 import com.intellij.navigation.*;
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.stubs.*;
@@ -45,66 +44,13 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
 
         // Top level modules
         for (FileModuleData moduleDatum : FileModuleIndexService.getService().getTopModuleData(name, scope)) {
-            processor.process(
-                    new NavigationItem() {
-                        @Override
-                        public String getName() {
-                            return moduleDatum.getModuleName();
-                        }
-
-                        @Override
-                        public ItemPresentation getPresentation() {
-                            return new FilePresentation(moduleDatum, project);
-                        }
-
-                        @Override
-                        public void navigate(boolean requestFocus) {
-                            RPsiModule module = FileHelper.getPsiModule(moduleDatum, project);
-                            if (module instanceof FileBase) {
-                                ((FileBase) module).navigate(requestFocus);
-                            }
-                        }
-
-                        @Override
-                        public boolean canNavigate() {
-                            return true;
-                        }
-
-                        @Override
-                        public boolean canNavigateToSource() {
-                            return true;
-                        }
-                    }
+            processor.process(new FileModuleDataNavigationItem(moduleDatum, project)
             );
         }
 
         // Inner modules
         for (RPsiInnerModule module : ModuleIndex.getElements(name, project, scope)) {
-            processor.process(new NavigationItem() {
-                                  @Override
-                                  public String getName() {
-                                      return module.getName();
-                                  }
-
-                                  @Override
-                                  public ItemPresentation getPresentation() {
-                                      return new ModulePresentation(module);
-                                  }
-
-                                  @Override
-                                  public void navigate(boolean requestFocus) {
-                                      module.navigate(requestFocus);
-                                  }
-
-                                  @Override public boolean canNavigate() {
-                                      return true;
-                                  }
-
-                                  @Override public boolean canNavigateToSource() {
-                                      return true;
-                                  }
-                              }
-            );
+            processor.process(module);
         }
     }
 
@@ -123,13 +69,11 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
         return null;
     }
 
-    private static class FilePresentation implements ItemPresentation {
+    private static class FileModuleDataPresentation implements ItemPresentation {
         private final FileModuleData myItem;
-        private final Project myProject;
 
-        public FilePresentation(@NotNull FileModuleData moduleDatum, @NotNull Project project) {
+        public FileModuleDataPresentation(@NotNull FileModuleData moduleDatum) {
             myItem = moduleDatum;
-            myProject = project;
         }
 
         @Override
@@ -138,8 +82,8 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
         }
 
         @Override
-        public String getLocationString() {
-            return FileHelper.shortLocation(myItem.getPath(), myProject);
+        public @Nullable String getLocationString() {
+            return null;
         }
 
         @Override
@@ -148,26 +92,49 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
         }
     }
 
-    private static class ModulePresentation implements ItemPresentation {
-        private final RPsiInnerModule myItem;
+    public static class FileModuleDataNavigationItem implements NavigationItem {
+        private final FileModuleData myData;
+        private final Project myProject;
 
-        public ModulePresentation(@NotNull RPsiInnerModule module) {
-            myItem = module;
+        public FileModuleDataNavigationItem(FileModuleData moduleDatum, Project project) {
+            myData = moduleDatum;
+            myProject = project;
         }
 
         @Override
-        public String getPresentableText() {
-            return myItem.getModuleName();
+        public String getName() {
+            return myData.getModuleName();
         }
 
         @Override
-        public String getLocationString() {
-            return myItem.getQualifiedName();
+        public ItemPresentation getPresentation() {
+            return new FileModuleDataPresentation(myData);
         }
 
         @Override
-        public Icon getIcon(boolean unused) {
-            return PsiIconUtil.getProvidersIcon(myItem, Iconable.ICON_FLAG_VISIBILITY);
+        public void navigate(boolean requestFocus) {
+            RPsiModule module = FileHelper.getPsiModule(myData, myProject);
+            if (module instanceof FileBase) {
+                ((FileBase) module).navigate(requestFocus);
+            }
+        }
+
+        @Override
+        public boolean canNavigate() {
+            return true;
+        }
+
+        @Override
+        public boolean canNavigateToSource() {
+            return true;
+        }
+
+        public String getLocation() {
+            return FileHelper.shortLocation(myData.getPath(), myProject);
+        }
+
+        public Icon getLocationIcon() {
+            return IconProvider.getDataModuleFileIcon(myData);
         }
     }
 }

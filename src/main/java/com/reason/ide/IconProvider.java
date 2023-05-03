@@ -59,16 +59,24 @@ public class IconProvider extends com.intellij.ide.IconProvider {
     }
 
     public static @NotNull Icon getDataModuleIcon(@NotNull FileModuleData element) {
-        return getFileModuleIcon(element.isOCaml(), element.isRescript(), element.isInterface());
-    }
-
-    public static @NotNull Icon getFileModuleIcon(boolean isOCaml, boolean isRescript, boolean isInterface) {
-        if (isOCaml) {
+        boolean isInterface = element.isInterface();
+        if (element.isOCaml()) {
             return isInterface ? ORIcons.OCL_FILE_MODULE_INTERFACE : ORIcons.OCL_FILE_MODULE;
-        } else if (isRescript) {
+        } else if (element.isRescript()) {
             return isInterface ? ORIcons.RES_FILE_MODULE_INTERFACE : ORIcons.RES_FILE_MODULE;
         } else {
             return isInterface ? ORIcons.RML_FILE_MODULE_INTERFACE : ORIcons.RML_FILE_MODULE;
+        }
+    }
+
+    public static @NotNull Icon getDataModuleFileIcon(@NotNull FileModuleData element) {
+        boolean isInterface = element.isInterface();
+        if (element.isOCaml()) {
+            return isInterface ? ORIcons.OCL_INTERFACE_FILE : ORIcons.OCL_FILE;
+        } else if (element.isRescript()) {
+            return isInterface ? ORIcons.RES_INTERFACE_FILE : ORIcons.RES_FILE;
+        } else {
+            return isInterface ? ORIcons.RML_INTERFACE_FILE : ORIcons.RML_FILE;
         }
     }
 

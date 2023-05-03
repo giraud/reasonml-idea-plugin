@@ -433,6 +433,8 @@
         <consoleFilterProvider implementation="com.reason.ide.console.ORConsoleFilterProvider"/>
         <editorFactoryListener implementation="com.reason.ide.OREditorFactoryListener"/>
 
+        <moduleRendererFactory implementation="com.reason.ide.go.FileModuleDataModuleRendererFactory"/>
+
         <!-- Gutter icons -->
 
         <codeInsight.lineMarkerProvider language="OCaml"
