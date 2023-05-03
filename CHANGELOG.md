@@ -12,9 +12,13 @@
 
 ## Unreleased
 
+## 0.111 - 2023/05/03
+      
+- :house: New reference resolution algorithm
+- :bug: ![o] [#405](https://github.com/giraud/reasonml-idea-plugin/issues/405) Bad parsing of if in method
 - :bug: [#350](https://github.com/giraud/reasonml-idea-plugin/issues/350) Use declaration documentation if no local documentation
 - :bug: [#319](https://github.com/giraud/reasonml-idea-plugin/issues/319) "Comment with line comment" action incorrect for lines ending with "("
-- :bug: [#174](https://github.com/giraud/reasonml-idea-plugin/issues/174) Compiler output listener needs a change for ocaml >= 4.09
+- :bug: ![o] [#174](https://github.com/giraud/reasonml-idea-plugin/issues/174) Compiler output listener needs a change for ocaml >= 4.09
 
 ## 0.110 - 2023/03/01
 
