@@ -6,12 +6,10 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.ui.popup.*;
 import com.intellij.psi.*;
+import com.intellij.psi.search.*;
 import com.intellij.ui.awt.*;
-import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
-import com.reason.lang.core.*;
-import com.reason.lang.core.psi.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -48,39 +46,25 @@ public class GotoTestDataAction extends AnAction {
     private @NotNull List<String> findRelatedFiles(@NotNull Project project, @NotNull DataContext context) {
         PsiFile file = context.getData(CommonDataKeys.PSI_FILE);
         if (file instanceof FileBase) {
-            PsiFinder psiFinder = project.getService(PsiFinder.class);
-            RPsiModule relatedModule;
+            FileModuleIndexService topModulesIndex = FileModuleIndexService.getService();
+            GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
+            FileModuleData relatedData;
 
             String[] tokens = splitModuleName(((FileBase) file).getModuleName());
             if (tokens.length == 1) {
-                Set<RPsiModule> relatedModules =
-                        psiFinder.findModulesbyName(
-                                tokens[0] + "_test",
-                                ORFileType.implementationOnly,
-                                module -> module instanceof FileBase
-                        );
-                relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
-                if (relatedModule == null) {
-                    relatedModules =
-                            psiFinder.findModulesbyName(
-                                    tokens[0] + "_spec",
-                                    ORFileType.implementationOnly,
-                                    module -> module instanceof FileBase
-                            );
-                    relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
+                List<FileModuleData> relatedModuleData = topModulesIndex.getTopModuleData(tokens[0] + "_test", scope);
+                relatedData = relatedModuleData.isEmpty() ? null : relatedModuleData.iterator().next();
+                if (relatedData == null) {
+                    relatedModuleData = topModulesIndex.getTopModuleData(tokens[0] + "_spec", scope);
+                    relatedData = relatedModuleData.isEmpty() ? null : relatedModuleData.iterator().next();
                 }
             } else {
-                Set<RPsiModule> relatedModules =
-                        psiFinder.findModulesbyName(
-                                tokens[0],
-                                ORFileType.implementationOnly,
-                                module -> module instanceof FileBase
-                        );
-                relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
+                List<FileModuleData> relatedModuleData = topModulesIndex.getTopModuleData(tokens[0], scope);
+                relatedData = relatedModuleData.isEmpty() ? null : relatedModuleData.iterator().next();
             }
 
-            if (relatedModule != null) {
-                return Collections.singletonList(ORFileUtils.getVirtualPath((FileBase) relatedModule));
+            if (relatedData != null) {
+                return Collections.singletonList(relatedData.getPath());
             }
         }
 

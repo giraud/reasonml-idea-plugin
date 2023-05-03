@@ -4,7 +4,6 @@ import com.intellij.notification.*;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.command.*;
-import com.intellij.openapi.command.undo.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.fileTypes.*;
@@ -57,55 +56,50 @@ public class ConvertAction extends AnAction {
                 convertedText = null;
             }
 
-            if (convertedText != null) {
-                UndoUtil.forceUndoIn(sourceFile, () ->
-                        CommandProcessor.getInstance()
-                                .executeCommand(
-                                        project,
-                                        () -> WriteAction.run(
-                                                () -> {
-                                                    String newFilename = sourceFile.getNameWithoutExtension() + "." + toFormat;
-                                                    if (isNewFile) {
-                                                        try {
-                                                            VirtualFile newSourceFile =
-                                                                    VfsUtilCore.copyFile(this, sourceFile, sourceFile.getParent(), newFilename);
-                                                            PsiFile newPsiFile =
-                                                                    PsiManager.getInstance(project).findFile(newSourceFile);
-                                                            Document newDocument =
-                                                                    newPsiFile == null
-                                                                            ? null
-                                                                            : PsiDocumentManager.getInstance(project)
-                                                                            .getDocument(newPsiFile);
-                                                            if (newDocument != null) {
-                                                                newDocument.setText(convertedText);
-                                                                FileDocumentManager.getInstance().saveDocument(newDocument);
-                                                            }
-                                                            VirtualFileManager.getInstance().syncRefresh();
-                                                            FileEditorManager.getInstance(project).openFile(newSourceFile, true);
-                                                        } catch (IOException ex) {
-                                                            Notifications.Bus.notify(
-                                                                    new ORNotification(
-                                                                            "Convert",
-                                                                            "File creation failed\n" + ex.getMessage(),
-                                                                            NotificationType.ERROR));
-                                                        }
-                                                    } else {
-                                                        document.setText(convertedText);
-                                                        FileDocumentManager.getInstance().saveDocument(document);
-                                                        try {
-                                                            sourceFile.rename(this, newFilename);
-                                                        } catch (IOException ex) {
-                                                            Notifications.Bus.notify(
-                                                                    new ORNotification(
-                                                                            "Convert",
-                                                                            "File renaming failed\n" + ex.getMessage(),
-                                                                            NotificationType.ERROR));
-                                                        }
+            if (sourceFile != null && convertedText != null) {
+                CommandProcessor.getInstance()
+                        .runUndoTransparentAction(
+                                () -> WriteAction.run(
+                                        () -> {
+                                            String newFilename = sourceFile.getNameWithoutExtension() + "." + toFormat;
+                                            if (isNewFile) {
+                                                try {
+                                                    VirtualFile newSourceFile =
+                                                            VfsUtilCore.copyFile(this, sourceFile, sourceFile.getParent(), newFilename);
+                                                    PsiFile newPsiFile =
+                                                            PsiManager.getInstance(project).findFile(newSourceFile);
+                                                    Document newDocument =
+                                                            newPsiFile == null
+                                                                    ? null
+                                                                    : PsiDocumentManager.getInstance(project)
+                                                                    .getDocument(newPsiFile);
+                                                    if (newDocument != null) {
+                                                        newDocument.setText(convertedText);
+                                                        FileDocumentManager.getInstance().saveDocument(newDocument);
                                                     }
-                                                }),
-                                        "Convert File",
-                                        "EditMenu",
-                                        document));
+                                                    VirtualFileManager.getInstance().syncRefresh();
+                                                    FileEditorManager.getInstance(project).openFile(newSourceFile, true);
+                                                } catch (IOException ex) {
+                                                    Notifications.Bus.notify(
+                                                            new ORNotification(
+                                                                    "Convert",
+                                                                    "File creation failed\n" + ex.getMessage(),
+                                                                    NotificationType.ERROR));
+                                                }
+                                            } else {
+                                                document.setText(convertedText);
+                                                FileDocumentManager.getInstance().saveDocument(document);
+                                                try {
+                                                    sourceFile.rename(this, newFilename);
+                                                } catch (IOException ex) {
+                                                    Notifications.Bus.notify(
+                                                            new ORNotification(
+                                                                    "Convert",
+                                                                    "File renaming failed\n" + ex.getMessage(),
+                                                                    NotificationType.ERROR));
+                                                }
+                                            }
+                                        }));
             }
         }
     }

@@ -12,7 +12,7 @@ import java.util.*;
 public class StringTemplateParsingTest extends ResParsingTestCase {
     @Test
     public void test_basic_new() {
-        List<RPsiLet> es = letExpressions(parseCode("let x = `this is a ${var} Template string`\nlet y = 1"));
+        List<RPsiLet> es = ORUtil.findImmediateChildrenOfClass(parseCode("let x = `this is a ${var} Template string`\nlet y = 1"), RPsiLet.class);
 
         RPsiLetBinding b = first(es).getBinding();
 
@@ -28,7 +28,7 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_ref_only_new() {
-        RPsiLetBinding b = first(letExpressions(parseCode("let x = `${var}`"))).getBinding();
+        RPsiLetBinding b = firstOfType(parseCode("let x = `${var}`"), RPsiLet.class).getBinding();
 
         assertEquals("`${var}`", b.getText());
 
@@ -102,7 +102,7 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/353
     @Test
     public void test_GH_353() {
-        RPsiLet e = first(letExpressions(parseCode("let _ = `${rowStart} / ${colStart}`")));
+        RPsiLet e = firstOfType(parseCode("let _ = `${rowStart} / ${colStart}`"), RPsiLet.class);
         RPsiLetBinding binding = e.getBinding();
         RPsiInterpolation inter = (RPsiInterpolation) binding.getFirstChild();
 

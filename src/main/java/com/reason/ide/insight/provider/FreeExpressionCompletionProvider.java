@@ -4,24 +4,24 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
+import com.intellij.util.indexing.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
-
-import static com.reason.lang.core.ExpressionFilterConstants.*;
-import static com.reason.lang.core.psi.impl.ExpressionScope.*;
+import java.util.stream.*;
 
 public class FreeExpressionCompletionProvider {
     private static final Log LOG = Log.create("insight.free");
@@ -29,65 +29,44 @@ public class FreeExpressionCompletionProvider {
     private FreeExpressionCompletionProvider() {
     }
 
-    public static void addCompletions(@NotNull QNameFinder qnameFinder, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull PsiElement element, @NotNull GlobalSearchScope searchScope, @NotNull CompletionResultSet resultSet) {
         LOG.debug("FREE expression completion");
 
         Project project = element.getProject();
-        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         FileBase containingFile = (FileBase) element.getContainingFile();
+        String topModuleName = containingFile.getModuleName();
+        ORLanguageProperties languageProperties = ORLanguageProperties.cast(element.getLanguage());
+        FileModuleIndexService fileModuleIndexService = FileModuleIndexService.getService();
 
         // Add virtual namespaces
-        Collection<String> namespaces = FileModuleIndexService.getService().getNamespaces(project);
-        LOG.debug("  namespaces", namespaces);
-
-        for (String namespace : namespaces) {
+        for (String namespace : fileModuleIndexService.getNamespaces(project, searchScope)) {
             resultSet.addElement(
                     LookupElementBuilder.create(namespace)
                             .withTypeText("Generated namespace")
                             .withIcon(ORIcons.VIRTUAL_NAMESPACE));
         }
 
-        // Add file modules (that are not a component and without namespaces)
-        PsiManager psiManager = PsiManager.getInstance(project);
-        ModuleTopLevelIndex.processModules(project, scope, topModule -> {
-            FileBase topModuleFile = (FileBase) topModule.getContainingFile();
-            if (!topModuleFile.equals(containingFile)) {
-                VirtualFile virtualFile = ORFileUtils.getVirtualFile(topModuleFile);
-                if (virtualFile != null) {
-                    PsiFile psiFile = psiManager.findFile(virtualFile);
-                    resultSet.addElement(
-                            LookupElementBuilder.create(topModule.getModuleName())
-                                    .withTypeText(psiFile == null ? virtualFile.getName() : FileHelper.shortLocation(psiFile))
-                                    .withIcon(IconProvider.getFileModuleIcon(topModuleFile)));
-                }
+        // Add file modules (that are not a component & not namespaced)
+        for (FileModuleData topModuleData : fileModuleIndexService.getTopModules(project, searchScope)) {
+            if (!topModuleData.getModuleName().equals(topModuleName) && !topModuleData.isComponent() && !topModuleData.hasNamespace()) {
+                resultSet.addElement(
+                        LookupElementBuilder.create(topModuleData.getModuleName())
+                                .withTypeText(topModuleData.getFullName())
+                                .withIcon(IconProvider.getDataModuleIcon(topModuleData)));
             }
-        });
+        }
 
-        Set<String> paths = qnameFinder.extractPotentialPaths(element);
-        paths.add("Pervasives");
-        LOG.debug("potential paths", paths);
-
-        // Add paths (opens and local opens for example)
-        for (String path : paths) {
-            Collection<RPsiModule> modulesFromQn = ModuleFqnIndex.getElements(path, project, scope);
-            for (RPsiModule module : modulesFromQn) {
-                if (module.getContainingFile().equals(containingFile)) {
-                    // if the module is already the containing file, we do nothing,
-                    // local expressions will be added after
-                    continue;
-                }
-
-                Collection<PsiNamedElement> expressions = module.getExpressions(pub, NO_FILTER);
-                for (PsiNamedElement expression : expressions) {
-                    if (!(expression instanceof RPsiAnnotation)) {
-                        resultSet.addElement(
-                                LookupElementBuilder.create(expression)
-                                        .withTypeText(RPsiSignatureUtil.getSignature(expression, ORLanguageProperties.cast(element.getLanguage())))
-                                        .withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
-                                        .withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
-                    }
-                }
+        // Resolve alternate names of current file (includes)
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(containingFile);
+        for (String alternateName : data.getElement(containingFile)) {
+            for (RPsiModule alternateModule : ModuleIndexService.getService().getModules(alternateName, project, searchScope)) {
+                addModuleExpressions(alternateModule, languageProperties, resultSet);
             }
+        }
+
+        // Add Pervasives expressions (always opened)
+        for (RPsiModule module : getTopModules("Pervasives", project, searchScope)) {
+            addModuleExpressions(module, languageProperties, resultSet);
         }
 
         // Add all local expressions
@@ -132,6 +111,19 @@ public class FreeExpressionCompletionProvider {
         }
     }
 
+    private static List<RPsiModule> getTopModules(@NotNull String name, @NotNull Project project, @NotNull GlobalSearchScope scope) {
+        PsiManager psiManager = PsiManager.getInstance(project);
+        FileModuleIndex index = FileModuleIndex.getInstance();
+        ID<String, FileModuleData> indexId = index == null ? null : index.getName();
+        if (indexId != null) {
+            return FileBasedIndex.getInstance().getContainingFiles(indexId, name, scope).stream().map(v -> {
+                PsiFile psiFile = psiManager.findFile(v);
+                return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
+            }).filter(Objects::nonNull).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
     private static void expandType(@NotNull RPsiType type, @NotNull CompletionResultSet resultSet) {
         Collection<RPsiVariantDeclaration> variants = type.getVariants();
         if (!variants.isEmpty()) {
@@ -144,8 +136,26 @@ public class FreeExpressionCompletionProvider {
         }
     }
 
-    private static void insertExpression(
-            @NotNull InsertionContext insertionContext, @NotNull LookupElement element) {
+    private static void addModuleExpressions(RPsiModule rootModule, @Nullable ORLanguageProperties language, @NotNull CompletionResultSet resultSet) {
+        for (PsiNamedElement item : ORUtil.findImmediateChildrenOfClass(rootModule.getBody(), PsiNamedElement.class)) {
+            if (item instanceof RPsiLet && ((RPsiLet) item).isDeconstruction()) {
+                for (PsiElement deconstructedElement : ((RPsiLet) item).getDeconstructedElements()) {
+                    resultSet.addElement(
+                            LookupElementBuilder.create(deconstructedElement.getText())
+                                    .withTypeText(RPsiSignatureUtil.getSignature(item, language))
+                                    .withIcon(ORIcons.LET));
+                }
+            } else if (!(item instanceof RPsiAnnotation)) {
+                resultSet.addElement(
+                        LookupElementBuilder.create(item)
+                                .withTypeText(RPsiSignatureUtil.getSignature(item, language))
+                                .withIcon(PsiIconUtil.getProvidersIcon(item, 0))
+                                .withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
+            }
+        }
+    }
+
+    private static void insertExpression(@NotNull InsertionContext insertionContext, @NotNull LookupElement element) {
         PsiElement psiElement = element.getPsiElement();
         if (psiElement instanceof RPsiLet) {
             RPsiLet let = (RPsiLet) psiElement;

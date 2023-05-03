@@ -229,24 +229,17 @@
          | Search / navigating
          -->
 
-        <stubIndex implementation="com.reason.ide.search.index.ModuleTopLevelIndex"/>
-        <stubIndex implementation="com.reason.ide.search.index.ModuleComponentFqnIndex"/>
-        <stubIndex implementation="com.reason.ide.search.index.ModuleComponentIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleIndex"/>
-        <stubIndex implementation="com.reason.ide.search.index.ModuleAliasedIndex"/>
-        <stubIndex implementation="com.reason.ide.search.index.ModuleAliasesIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ClassFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ClassMethodFqnIndex"/>
-        <stubIndex implementation="com.reason.ide.search.index.LetIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetFqnIndex"/>
-        <stubIndex implementation="com.reason.ide.search.index.ValIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.LetComponentFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ValFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.TypeIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.TypeFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExternalIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExternalFqnIndex"/>
-        <stubIndex implementation="com.reason.ide.search.index.VariantIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExceptionIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExceptionFqnIndex"/>
@@ -258,11 +251,9 @@
         <stubIndex implementation="com.reason.ide.search.index.OpenIndex"/>
 
         <fileBasedIndex implementation="com.reason.ide.search.index.FileModuleIndex"/>
-        <fileBasedIndex implementation="com.reason.ide.search.index.NamespaceIndex"/>
+        <!--<fileBasedIndex implementation="com.reason.ide.search.index.NamespaceIndex"/> duplication -->
         <applicationService serviceImplementation="com.reason.ide.search.FileModuleIndexService"/>
-
-        <projectService serviceImplementation="com.reason.ide.search.PsiFinder"/>
-        <projectService serviceImplementation="com.reason.ide.search.reference.ORElementResolver"/>
+        <applicationService serviceImplementation="com.reason.ide.search.ModuleIndexService"/>
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.findUsagesProvider language="Rescript"
@@ -441,6 +432,8 @@
 
         <consoleFilterProvider implementation="com.reason.ide.console.ORConsoleFilterProvider"/>
         <editorFactoryListener implementation="com.reason.ide.OREditorFactoryListener"/>
+
+        <moduleRendererFactory implementation="com.reason.ide.go.FileModuleDataModuleRendererFactory"/>
 
         <!-- Gutter icons -->
 

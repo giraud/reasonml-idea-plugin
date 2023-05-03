@@ -15,8 +15,6 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-import static java.util.Collections.*;
-
 public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiModuleStub> implements RPsiFunctor {
     // region Constructors
     public RPsiFunctorImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
@@ -32,6 +30,12 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
     @Override
     public @Nullable PsiElement getNameIdentifier() {
         return ORUtil.findImmediateFirstChildOfClass(this, RPsiUpperSymbol.class);
+    }
+
+    @Override
+    public int getTextOffset() {
+        PsiElement id = getNameIdentifier();
+        return id == null ? 0 : id.getTextOffset();
     }
 
     @Override
@@ -80,20 +84,6 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
     }
 
     @Override
-    public int getTextOffset() {
-        PsiElement id = getNameIdentifier();
-        return id == null ? 0 : id.getTextOffset();
-    }
-
-    @Override public @Nullable String[] getQualifiedNameAsPath() {
-        return ORUtil.getQualifiedNameAsPath(this);
-    }
-
-    @Override public @Nullable PsiElement getComponentNavigationElement() {
-        return null;
-    }
-
-    @Override
     public boolean isInterface() {
         return false;
     }
@@ -101,21 +91,6 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
     @Override
     public boolean isComponent() {
         return false;
-    }
-
-    @Override
-    public @Nullable String getAlias() {
-        return null;
-    }
-
-    @Override
-    public @Nullable RPsiUpperSymbol getAliasSymbol() {
-        return null;
-    }
-
-    @Override
-    public @Nullable RPsiModuleType getModuleType() {
-        return null;
     }
 
     @Override
@@ -127,81 +102,6 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
     public @NotNull String getModuleName() {
         String name = getName();
         return name == null ? "" : name;
-    }
-
-    @Override
-    public @NotNull Collection<PsiNamedElement> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
-        Collection<PsiNamedElement> result = emptyList();
-
-        //PsiElement returnType = getReturnType();
-        //if (returnType instanceof RPsiFunctorResult) {
-        //    // Resolve return type, and get expressions from there
-        //    RPsiFunctorResult functorResult = (RPsiFunctorResult) returnType;
-        //    result = new ArrayList<>();
-        //
-        //    String name = functorResult.getText();
-        //    Project project = getProject();
-        //    PsiFinder psiFinder = project.getService(PsiFinder.class);
-        //    QNameFinder qnameFinder = PsiFinder.getQNameFinder(getLanguage());
-        //    GlobalSearchScope searchScope = GlobalSearchScope.allScope(project);
-        //
-        //    Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorResult);
-        //    for (String potentialPath : potentialPaths) {
-        //        Set<RPsiModule> modulesFromQn =
-        //                psiFinder.findModulesFromQn(
-        //                        potentialPath + "." + name, true, interfaceOrImplementation);
-        //        if (!modulesFromQn.isEmpty()) {
-        //            RPsiModule module = modulesFromQn.iterator().next();
-        //            return module.getExpressions(eScope, filter);
-        //        }
-        //    }
-        //    // nothing found, try without path
-        //    Set<RPsiModule> modulesFromQn =
-        //            psiFinder.findModulesFromQn(name, true, interfaceOrImplementation);
-        //    if (!modulesFromQn.isEmpty()) {
-        //        RPsiModule module = modulesFromQn.iterator().next();
-        //        return module.getExpressions(eScope, filter);
-        //    }
-        //} else {
-        //    // Get expressions from functor body
-        //    PsiElement body = getBinding();
-        //    if (body != null) {
-        //        result = new ArrayList<>();
-        //        PsiElement element = body.getFirstChild();
-        //        while (element != null) {
-        //            if (element instanceof PsiNamedElement) {
-        //                if (filter == null || filter.accept((PsiNamedElement) element)) {
-        //                    result.add((PsiNamedElement) element);
-        //                }
-        //            }
-        //            element = element.getNextSibling();
-        //        }
-        //    }
-        //}
-
-        return result;
-    }
-
-    @Override
-    public @NotNull Collection<RPsiModule> getModules() {
-        return emptyList();
-    }
-
-    @Override
-    public @Nullable RPsiModule getModuleExpression(@Nullable String name) {
-        return null;
-    }
-
-    @Override
-    public @Nullable RPsiLet getLetExpression(@Nullable String name) {
-        if (name != null) {
-            ExpressionFilter expressionFilter = element -> element instanceof RPsiLet && name.equals(element.getName());
-            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
-            if (!expressions.isEmpty()) {
-                return (RPsiLet) expressions.iterator().next();
-            }
-        }
-        return null;
     }
 
     @Override

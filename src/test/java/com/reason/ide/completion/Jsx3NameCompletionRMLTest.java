@@ -52,6 +52,19 @@ public class Jsx3NameCompletionRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_inner_component() {
+        configureCode("Hidden.re", "");
+        configureCode("Dialog.re", "module Other = { module Title = { [@react.component] let make = () => <div/>; }; };");
+        configureCode("A.re", "let _ = <<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> completions = myFixture.getLookupElementStrings();
+
+        assertEquals("Dialog", completions.get(0));
+        assertEquals(1, completions.size());
+    }
+
+    @Test
     public void test_dot() {
         configureCode("Dialog.re", "module Title = { [@react.component] let make = () => <div/>; }; [@react.component] let make = () => <div/>;");
         configureCode("A.re", "let _ = <Dialog.<caret>");

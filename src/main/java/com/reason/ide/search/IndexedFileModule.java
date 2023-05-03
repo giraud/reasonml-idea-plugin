@@ -13,9 +13,11 @@ public interface IndexedFileModule {
   String getPath();
 
   @NotNull
-  String getFullname();
+  String getFullName();
 
   boolean isOCaml();
+
+  boolean isRescript();
 
   boolean isInterface();
 

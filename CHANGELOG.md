@@ -11,7 +11,15 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
 ## Unreleased
-          
+
+## 0.111 - 2023/05/03
+      
+- :house: New reference resolution algorithm
+- :bug: ![o] [#405](https://github.com/giraud/reasonml-idea-plugin/issues/405) Bad parsing of if in method
+- :bug: [#350](https://github.com/giraud/reasonml-idea-plugin/issues/350) Use declaration documentation if no local documentation
+- :bug: [#319](https://github.com/giraud/reasonml-idea-plugin/issues/319) "Comment with line comment" action incorrect for lines ending with "("
+- :bug: ![o] [#174](https://github.com/giraud/reasonml-idea-plugin/issues/174) Compiler output listener needs a change for ocaml >= 4.09
+
 ## 0.110 - 2023/03/01
 
 - :bug: ![n] [#399](https://github.com/giraud/reasonml-idea-plugin/issues/399) Rescript: incorrectly parse element as tag

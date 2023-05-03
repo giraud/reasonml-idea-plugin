@@ -11,12 +11,11 @@ import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
+import java.util.*;
 
 // Implements the goto class
 public class ORModuleContributor implements GotoClassContributor, ChooseByNameContributorEx {
@@ -24,41 +23,34 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
     public void processNames(@NotNull Processor<? super String> processor, @NotNull GlobalSearchScope scope, @Nullable IdFilter filter) {
         Project project = scope.getProject();
         if (project != null) {
-            StubIndex.getInstance().processAllKeys(IndexKeys.MODULES, project, processor);
+            List<String> keys = new ArrayList<>();
+
+            FileModuleIndex fileModuleIndex = FileModuleIndex.getInstance();
+            if (fileModuleIndex != null) {
+                keys.addAll(FileBasedIndex.getInstance().getAllKeys(fileModuleIndex.getName(), project));
+            }
+            keys.addAll(StubIndex.getInstance().getAllKeys(IndexKeys.MODULES, project));
+
+            for (String key : keys) {
+                processor.process(key);
+            }
         }
     }
 
     @Override
     public void processElementsWithName(@NotNull String name, @NotNull Processor<? super NavigationItem> processor, @NotNull FindSymbolParameters parameters) {
         Project project = parameters.getProject();
-        GlobalSearchScope scope = parameters.getSearchScope();
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
-        for (RPsiModule psiModule : project.getService(PsiFinder.class).findModulesbyName(name, ORFileType.both, null)) {
-            NavigationItem element = psiModule;
-            if (psiModule instanceof RPsiInnerModule) {
-                Icon icon = psiModule.isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE;
+        // Top level modules
+        for (FileModuleData moduleDatum : FileModuleIndexService.getService().getTopModuleData(name, scope)) {
+            processor.process(new FileModuleDataNavigationItem(moduleDatum, project)
+            );
+        }
 
-                element = new ModuleDelegatePresentation(
-                        psiModule,
-                        new ItemPresentation() {
-                            @Override
-                            public @Nullable String getPresentableText() {
-                                return psiModule.getName();
-                            }
-
-                            @Override
-                            public String getLocationString() {
-                                return Joiner.join(".", psiModule.getPath());
-                            }
-
-                            @Override
-                            public Icon getIcon(boolean unused) {
-                                return icon;
-                            }
-                        });
-            }
-
-            processor.process(element);
+        // Inner modules
+        for (RPsiInnerModule module : ModuleIndex.getElements(name, project, scope)) {
+            processor.process(module);
         }
     }
 
@@ -75,5 +67,74 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
     @Override
     public @Nullable String getQualifiedNameSeparator() {
         return null;
+    }
+
+    private static class FileModuleDataPresentation implements ItemPresentation {
+        private final FileModuleData myItem;
+
+        public FileModuleDataPresentation(@NotNull FileModuleData moduleDatum) {
+            myItem = moduleDatum;
+        }
+
+        @Override
+        public String getPresentableText() {
+            return myItem.getModuleName();
+        }
+
+        @Override
+        public @Nullable String getLocationString() {
+            return null;
+        }
+
+        @Override
+        public Icon getIcon(boolean unused) {
+            return IconProvider.getDataModuleIcon(myItem);
+        }
+    }
+
+    public static class FileModuleDataNavigationItem implements NavigationItem {
+        private final FileModuleData myData;
+        private final Project myProject;
+
+        public FileModuleDataNavigationItem(FileModuleData moduleDatum, Project project) {
+            myData = moduleDatum;
+            myProject = project;
+        }
+
+        @Override
+        public String getName() {
+            return myData.getModuleName();
+        }
+
+        @Override
+        public ItemPresentation getPresentation() {
+            return new FileModuleDataPresentation(myData);
+        }
+
+        @Override
+        public void navigate(boolean requestFocus) {
+            RPsiModule module = FileHelper.getPsiModule(myData, myProject);
+            if (module instanceof FileBase) {
+                ((FileBase) module).navigate(requestFocus);
+            }
+        }
+
+        @Override
+        public boolean canNavigate() {
+            return true;
+        }
+
+        @Override
+        public boolean canNavigateToSource() {
+            return true;
+        }
+
+        public String getLocation() {
+            return FileHelper.shortLocation(myData.getPath(), myProject);
+        }
+
+        public Icon getLocationIcon() {
+            return IconProvider.getDataModuleFileIcon(myData);
+        }
     }
 }

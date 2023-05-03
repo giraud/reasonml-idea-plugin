@@ -18,20 +18,18 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assert elements != null;
         assertSize(2, elements);
         assertContainsElements(elements, "asd", "qwe");
     }
 
     @Test
     public void test_deep() {
-        configureCode("JsObj.re", "let oo = {\"first\": {\"deep\": true},\"deep\": {\"other\": {\"asd\": 1} } }");
+        configureCode("JsObj.re", "let oo = {\"first\": {\"deep\": true}, \"deep\": {\"other\": {\"asd\": 1} } }");
         configureCode("Dummy.re", "open JsObj; oo##deep##other##<caret>");
 
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assert elements != null;
         assertSize(1, elements);
         assertContainsElements(elements, "asd");
     }
@@ -133,7 +131,7 @@ public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertSize(1, elements);
         assertContainsElements(elements, "a");
+        assertSize(1, elements);
     }
 }

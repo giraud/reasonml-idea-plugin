@@ -4,7 +4,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.impl.RPsiAnnotation;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -13,7 +12,7 @@ import org.junit.*;
 public class ModuleParsingTest extends ResParsingTestCase {
     @Test
     public void test_empty() {
-        RPsiModule e = firstOfType(parseCode("module M = {}"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = {}"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals(ResTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
@@ -22,7 +21,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_alias() {
-        RPsiModule e = firstOfType(parseCode("module M = Y"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = Y"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("Y", e.getAlias());
@@ -32,7 +31,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_alias_path() {
-        RPsiModule e = firstOfType(parseCode("module M = Y.Z"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = Y.Z"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("Y.Z", e.getAlias());
@@ -42,9 +41,9 @@ public class ModuleParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_alias_inner() {
-        RPsiModule e = firstOfType(parseCode("module A = { module B = C.D }"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module A = { module B = C.D }"), RPsiInnerModule.class);
 
-        RPsiModule ee = PsiTreeUtil.findChildOfType(e.getBody(), RPsiModule.class);
+        RPsiInnerModule ee = PsiTreeUtil.findChildOfType(e.getBody(), RPsiInnerModule.class);
         assertEquals("B", ee.getName());
         assertEquals("C.D", ee.getBody().getText());
         assertEquals("C.D", ee.getAlias());
@@ -63,7 +62,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
     @Test
     public void test_module() {
         PsiFile file = parseCode("module Styles = { open Css\n let y = 1 }");
-        RPsiInnerModule module = (RPsiInnerModule) first(moduleExpressions(file));
+        RPsiInnerModule module = first(moduleExpressions(file));
 
         assertEquals(1, expressions(file).size());
         assertEquals("Styles", module.getName());
@@ -73,7 +72,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
     @Test
     public void test_inline_interface() {
         PsiFile file = parseCode("module Router: { let watchUrl: (url => unit) => watcherID }");
-        RPsiInnerModule module = (RPsiInnerModule) first(moduleExpressions(file));
+        RPsiInnerModule module = first(moduleExpressions(file));
 
         assertEquals(1, expressions(file).size());
         assertEquals("Router", module.getName());
@@ -106,7 +105,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
     public void test_annotation_after() {
         FileBase e = parseCode("module M = {}\n@module(\"x\")");
 
-        RPsiModule m = ORUtil.findImmediateFirstChildOfClass(e, RPsiModule.class);
+        RPsiInnerModule m = ORUtil.findImmediateFirstChildOfClass(e, RPsiInnerModule.class);
         RPsiAnnotation a = ORUtil.findImmediateFirstChildOfClass(e, RPsiAnnotation.class);
 
         assertEquals("module M = {}", m.getText());
@@ -115,7 +114,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_decode_first_class_module() {
-        RPsiModule e = firstOfType(parseCode("module M = (unpack selectors)"), RPsiModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M = (unpack selectors)"), RPsiInnerModule.class);
 
         assertFalse(e instanceof RPsiFunctor);
         assertEquals("M", e.getName());

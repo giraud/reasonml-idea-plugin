@@ -7,7 +7,7 @@ import org.junit.*;
 public class BeginParsingTest extends OclParsingTestCase {
     @Test
     public void test_basic() {
-        RPsiLet exp = (RPsiLet) first(expressions(parseCode("let _ = begin end")));
+        RPsiLet exp = firstOfType(parseCode("let _ = begin end"), RPsiLet.class);
 
         assertNotNull(exp);
         assertEquals("begin end", exp.getBinding().getText());

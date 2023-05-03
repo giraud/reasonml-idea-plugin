@@ -12,10 +12,9 @@ public interface OclStubBasedElementTypes {
 
     IStubElementType<PsiModuleStub, RPsiModule> C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", OclLanguage.INSTANCE);
     IStubElementType<PsiModuleStub, RPsiModule> C_FUNCTOR_DECLARATION = new PsiFunctorModuleStubElementType("C_FUNCTOR_DECLARATION", OclLanguage.INSTANCE);
-    IStubElementType<PsiModuleStub, RPsiModule> C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", OclLanguage.INSTANCE);
 
-    IStubElementType<RsiClassStub, RPsiClass> C_CLASS_DECLARATION = new RsiClassStubElementType("C_CLASS_DECLARATION", OclLanguage.INSTANCE);
-    IStubElementType<RsiClassMethodStub, RPsiClassMethod> C_CLASS_METHOD = new RsiClassMethodStubElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
+    IStubElementType<RsiClassStub, RPsiClass> C_CLASS_DECLARATION = new RPsiClassStubElementType("C_CLASS_DECLARATION", OclLanguage.INSTANCE);
+    IStubElementType<RsiClassMethodStub, RPsiClassMethod> C_CLASS_METHOD = new RPsiClassMethodStubElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
 
     IStubElementType<PsiExceptionStub, RPsiException> C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", OclLanguage.INSTANCE);
     IStubElementType<PsiTypeStub, RPsiType> C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", OclLanguage.INSTANCE);
@@ -25,6 +24,6 @@ public interface OclStubBasedElementTypes {
     IStubElementType<PsiVariantDeclarationStub, RPsiVariantDeclaration> C_VARIANT_DECLARATION = new PsiVariantStubElementType("C_VARIANT_DECLARATION", OclLanguage.INSTANCE);
     IStubElementType<PsiParameterDeclarationStub, RPsiParameterDeclaration> C_PARAM_DECLARATION = new PsiParameterDeclarationStubElementType("C_PARAM_DECLARATION", OclLanguage.INSTANCE);
 
-    IStubElementType<RsiRecordFieldStub, RPsiRecordField> C_RECORD_FIELD = new RsiRecordFieldStubElementType("C_RECORD_FIELD", OclLanguage.INSTANCE);
+    IStubElementType<RsiRecordFieldStub, RPsiRecordField> C_RECORD_FIELD = new RPsiRecordFieldStubElementType("C_RECORD_FIELD", OclLanguage.INSTANCE);
     IStubElementType<PsiObjectFieldStub, RPsiObjectField> C_OBJECT_FIELD = new PsiObjectFieldStubElementType("C_OBJECT_FIELD", OclLanguage.INSTANCE);
 }

@@ -9,39 +9,70 @@ import org.jetbrains.annotations.*;
 public class DuneOutputAnalyzer extends ORCompilerOutputAnalyzer {
     private static final Log LOG = Log.create("dune.output");
 
+    /*
+     unknown -> fileLocation
+
+     fileLocation -> message
+                  -> sourceCode
+
+     sourceCode -> message
+     */
     enum OutputState {
         unknown,
-        //
         fileLocation,
         sourceCode,
-        errorMessage,
+        message,
     }
 
-    private @NotNull OutputState myCurrentState = OutputState.unknown;
+    private @NotNull OutputState myState = OutputState.unknown;
 
     @Override
     public void onTextAvailable(@NotNull String line) {
-        if (line.startsWith("File") && myCurrentState == OutputState.unknown) {
+        // State transition: unknown -> fileLocation
+        if (line.startsWith("File") && myState == OutputState.unknown) {
             myCurrentInfo = extractExtendedFilePositions(LOG, line);
-            myCurrentState = OutputState.fileLocation;
-        } else if (line.startsWith("Error:") && (myCurrentState == OutputState.fileLocation || myCurrentState == OutputState.sourceCode)) {
+            myState = OutputState.fileLocation;
+        }
+        // State transition: fileLocation|sourceCode -> message [ERROR]
+        else if (line.startsWith("Error:") && (myState == OutputState.fileLocation || myState == OutputState.sourceCode)) {
+            myState = OutputState.message;
             if (myCurrentInfo != null) {
                 myCurrentInfo.isError = true;
                 myCurrentInfo.message = line.substring(6).trim();
             }
-            myCurrentState = OutputState.errorMessage;
-        } else if (line.startsWith("Hint:") && myCurrentState == OutputState.errorMessage) {
+        }
+        // Error message might be on multiple lines
+        else if (myState == OutputState.message && myCurrentInfo != null && myCurrentInfo.isError && line.startsWith(" ")) {
+            boolean endMessage = true;
+
+            String trimmedLine = line.trim();
+            if (trimmedLine.length() > 0 && !trimmedLine.startsWith("File")) {
+                myCurrentInfo.message += " " + trimmedLine;
+                endMessage = trimmedLine.endsWith(".");
+            }
+
+            if (endMessage) {
+                myState = OutputState.unknown;
+                myCurrentInfo = null;
+            }
+        }
+        // State transition: fileLocation|sourceCode -> message [WARNING]
+        else if (line.startsWith("Warning") && (myState == OutputState.fileLocation || myState == OutputState.sourceCode)) {
+            myState = OutputState.message;
             if (myCurrentInfo != null) {
-                myCurrentInfo.message += " (" + line.trim() + ")";
+                myCurrentInfo.isError = false;
+                int pos = line.indexOf(":");
+                myCurrentInfo.message = line.substring(pos + 1).trim();
             }
-        } /*else if (line.startsWith("   ")) {
-            if (myLatestInfo != null) {
-                myLatestInfo.message = myLatestInfo.message + " " + line.trim();
-            }
-        } */ else if (myCurrentState == OutputState.fileLocation) {
-            myCurrentState = OutputState.sourceCode;
-        } else if (myCurrentState != OutputState.sourceCode && myCurrentState != OutputState.unknown) {
-            myCurrentState = OutputState.unknown;
+        }
+        // State transition: fileLocation -> sourceCode
+        else if (myState == OutputState.fileLocation) {
+            myState = OutputState.sourceCode;
+        }
+        // Fallback
+        else if (myState != OutputState.sourceCode && myState != OutputState.unknown) {
+            myState = OutputState.unknown;
+            myCurrentInfo = null;
         }
     }
 }

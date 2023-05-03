@@ -9,7 +9,7 @@ import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
-/** @noinspection ConstantConditions*/
+@SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
 public class RescriptConsoleFilterTest extends BasePlatformTestCase {
     @Test

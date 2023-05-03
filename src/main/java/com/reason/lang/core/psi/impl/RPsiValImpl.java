@@ -96,6 +96,13 @@ public class RPsiValImpl extends RPsiTokenStub<ORLangTypes, RPsiVal, PsiValStub>
     }
 
     @Override
+    public @NotNull Collection<RPsiObjectField> getJsObjectFields() {
+        PsiElement firstChild = getFirstChild();
+        RPsiJsObject jsObject = firstChild instanceof RPsiJsObject ? ((RPsiJsObject) firstChild) : null;
+        return ORUtil.findImmediateChildrenOfClass(jsObject, RPsiObjectField.class);
+    }
+
+    @Override
     public @NotNull Collection<RPsiRecordField> getRecordFields() {
         return PsiTreeUtil.findChildrenOfType(this, RPsiRecordField.class);
     }

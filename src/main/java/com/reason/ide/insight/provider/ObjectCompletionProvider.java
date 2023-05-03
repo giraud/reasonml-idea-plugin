@@ -2,16 +2,11 @@ package com.reason.ide.insight.provider;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.*;
-import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
-import com.intellij.psi.search.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
-import com.reason.ide.search.index.*;
 import com.reason.ide.search.reference.*;
-import com.reason.lang.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
@@ -31,8 +26,6 @@ public class ObjectCompletionProvider {
         PsiElement separator = PsiTreeUtil.prevVisibleLeaf(element);
         PsiElement previousElement = separator == null ? null : separator.getPrevSibling();
 
-        QNameFinder qnameFinder = QNameFinderFactory.getQNameFinder(element.getLanguage());
-
         if (previousElement instanceof RPsiLowerSymbol) {
             LOG.debug(" -> lower symbol", previousElement);
 
@@ -43,10 +36,10 @@ public class ObjectCompletionProvider {
             }
 
             if (resolvedElement != null) {
-                Collection<RPsiObjectField> fields = getFields(qnameFinder, resolvedElement);
+                Collection<RPsiObjectField> fields = getFields(resolvedElement);
 
                 if (fields == null) {
-                    LOG.debug("  -> Not a js object");
+                    LOG.debug("  -> Not a js object/record");
                 } else {
                     for (RPsiObjectField field : fields) {
                         String fieldName = field.getName();
@@ -60,60 +53,44 @@ public class ObjectCompletionProvider {
         LOG.debug("  -> Nothing found");
     }
 
-    private static @Nullable Collection<RPsiObjectField> getFields(@NotNull QNameFinder qnameFinder, @NotNull PsiElement resolvedElement) {
+    private static @Nullable Collection<RPsiObjectField> getFields(@NotNull PsiElement resolvedElement) {
         if (resolvedElement instanceof RPsiLet) {
             RPsiLet let = (RPsiLet) resolvedElement;
             if (let.isJsObject()) {
                 RPsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(let.getBinding(), RPsiJsObject.class);
                 return jsObject == null ? null : jsObject.getFields();
             } else {
-                RPsiType type = getType(let, qnameFinder);
-                if (type != null && type.isJsObject()) {
-                    RPsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(type.getBinding(), RPsiJsObject.class);
-                    return jsObject == null ? null : jsObject.getFields();
+                RPsiSignature letSignature = let.getSignature();
+                if (letSignature != null && !letSignature.isFunction()) {
+                    LOG.debug("Testing let signature", letSignature.getText());
+
+                    RPsiLowerSymbol sigTerm = ORUtil.findImmediateLastChildOfClass(letSignature.getItems().get(0), RPsiLowerSymbol.class);
+                    PsiLowerSymbolReference sigReference = sigTerm == null ? null : sigTerm.getReference();
+                    PsiElement resolvedSignature = sigReference == null ? null : sigReference.resolve();
+
+                    if (resolvedSignature instanceof RPsiType && ((RPsiType) resolvedSignature).isJsObject()) {
+                        return ((RPsiType) resolvedSignature).getJsObjectFields();
+                    }
                 }
             }
         } else if (resolvedElement instanceof RPsiObjectField) {
-            PsiElement value = ((RPsiObjectField) resolvedElement).getValue();
-            if (value instanceof RPsiJsObject) {
-                return ((RPsiJsObject) value).getFields();
-            } else if (value instanceof RPsiLowerSymbol) {
+            RPsiFieldValue value = ((RPsiObjectField) resolvedElement).getValue();
+            PsiElement valueElement = value == null ? null : value.getFirstChild();
+            if (valueElement instanceof RPsiJsObject) {
+                return ((RPsiJsObject) valueElement).getFields();
+            } else if (valueElement instanceof RPsiLowerSymbol) {
                 // Must be an object defined outside
-                PsiLowerSymbolReference valueReference = (PsiLowerSymbolReference) value.getReference();
+                PsiLowerSymbolReference valueReference = (PsiLowerSymbolReference) valueElement.getReference();
                 PsiElement valueResolvedElement = valueReference == null ? null : valueReference.resolveInterface();
-                return valueResolvedElement == null ? null : getFields(qnameFinder, valueResolvedElement);
-            } else if (value instanceof RPsiUpperSymbol) {
+                return valueResolvedElement == null ? null : getFields(valueResolvedElement);
+            } else if (valueElement instanceof RPsiUpperSymbol) {
                 // Must be a path of an object defined outside
-                PsiElement lSymbol = ORUtil.nextSiblingWithTokenType(value, ORUtil.getTypes(resolvedElement.getLanguage()).LIDENT);
+                PsiElement lSymbol = ORUtil.nextSiblingWithTokenType(valueElement, ORUtil.getTypes(resolvedElement.getLanguage()).LIDENT);
                 PsiLowerSymbolReference valueReference = lSymbol == null ? null : (PsiLowerSymbolReference) lSymbol.getReference();
                 PsiElement valueResolvedElement = valueReference == null ? null : valueReference.resolveInterface();
-                return valueResolvedElement == null ? null : getFields(qnameFinder, valueResolvedElement);
+                return valueResolvedElement == null ? null : getFields(valueResolvedElement);
             }
         }
-        return null;
-    }
-
-    private static @Nullable RPsiType getType(@NotNull RPsiLet let, @NotNull QNameFinder qnameFinder) {
-        GlobalSearchScope scope = GlobalSearchScope.allScope(let.getProject());
-        RPsiSignature letSignature = let.getSignature();
-        if (letSignature != null) {
-            LOG.debug("Testing let signature", letSignature.getText());
-
-            Set<String> paths = qnameFinder.extractPotentialPaths(let);
-            LOG.debug("  Paths found", paths);
-
-            Project project = let.getProject();
-            String signatureName = "." + letSignature.getText();
-            for (String path : paths) {
-                Collection<RPsiType> types = TypeFqnIndex.getElements((path + signatureName).hashCode(), project, scope);
-                if (!types.isEmpty()) {
-                    RPsiType type = types.iterator().next();
-                    LOG.debug("  -> Found", type);
-                    return type;
-                }
-            }
-        }
-
         return null;
     }
 }

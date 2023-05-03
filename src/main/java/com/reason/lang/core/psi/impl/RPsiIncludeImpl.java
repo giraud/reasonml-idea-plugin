@@ -64,17 +64,6 @@ public class RPsiIncludeImpl extends RPsiTokenStub<ORLangTypes, RPsiInclude, Psi
     }
 
     @Override
-    public @Nullable PsiElement resolveModule() {
-        RPsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, RPsiFunctorCall.class);
-        if (functorCall != null) {
-            return functorCall.resolveFunctor();
-        }
-
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        return ORUtil.resolveModuleSymbol((RPsiUpperSymbol) firstChild);
-    }
-
-    @Override
     public boolean useFunctor() {
         PsiElement firstChild = ORUtil.findImmediateFirstChildOfClass(this, RPsiFunctorCall.class);
         return firstChild != null;

@@ -14,13 +14,15 @@ public class PsiLetStub extends NamedStubBase<RPsiLet> {
     private final List<String> myQnames;
     private final String myAlias;
     private final boolean myIsFunction;
+    private final boolean myIsComponent;
     private final List<String> myDeconstructionNames;
 
-    public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, String name, String[] path, String alias, boolean isFunction, @NotNull List<String> deconstructionNames) {
+    public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, String name, String[] path, String alias, boolean isFunction, boolean isComponent, @NotNull List<String> deconstructionNames) {
         super(parent, elementType, name);
         myPath = path;
         myAlias = alias;
         myIsFunction = isFunction;
+        myIsComponent = isComponent;
         myDeconstructionNames = deconstructionNames;
 
         String joinedPath = Joiner.join(".", path);
@@ -31,11 +33,12 @@ public class PsiLetStub extends NamedStubBase<RPsiLet> {
         }
     }
 
-    public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String[] path, String alias, boolean isFunction, @NotNull List<String> deconstructionNames) {
+    public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String[] path, String alias, boolean isFunction, boolean isComponent, @NotNull List<String> deconstructionNames) {
         super(parent, elementType, name);
         myPath = path;
         myAlias = alias;
         myIsFunction = isFunction;
+        myIsComponent = isComponent;
         myDeconstructionNames = deconstructionNames;
 
         String joinedPath = Joiner.join(".", path);
@@ -60,6 +63,10 @@ public class PsiLetStub extends NamedStubBase<RPsiLet> {
 
     public boolean isFunction() {
         return myIsFunction;
+    }
+
+    public boolean isComponent() {
+        return myIsComponent;
     }
 
     public @NotNull List<String> getDeconstructionNames() {
