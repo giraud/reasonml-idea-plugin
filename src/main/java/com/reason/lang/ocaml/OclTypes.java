@@ -13,7 +13,6 @@ public class OclTypes extends ORLangTypes {
         C_CLASS_METHOD = (ORCompositeType) OclStubBasedElementTypes.C_CLASS_METHOD;
         C_EXCEPTION_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_EXCEPTION_DECLARATION;
         C_EXTERNAL_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_EXTERNAL_DECLARATION;
-        C_FAKE_MODULE = (ORCompositeType) OclStubBasedElementTypes.C_FAKE_MODULE;
         C_FUNCTOR_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_FUNCTOR_DECLARATION;
         C_INCLUDE = (ORCompositeType) OclStubBasedElementTypes.C_INCLUDE;
         C_LET_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_LET_DECLARATION;

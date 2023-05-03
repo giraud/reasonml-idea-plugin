@@ -14,12 +14,23 @@ import java.util.*;
 public class IfParsingTest extends ResParsingTestCase {
     @Test
     public void test_basic_if() {
-        PsiFile psiFile = parseCode("if (x) { () }");
-        RPsiIfStatement e = firstOfType(psiFile, RPsiIfStatement.class);
+        RPsiIfStatement e = firstOfType(parseCode("if (x) { () }"), RPsiIfStatement.class);
+        assertNoParserError(e);
 
         assertNotNull(e);
         assertNotNull(e.getCondition());
         assertEquals("(x)", e.getCondition().getText());
+        assertEquals("{ () }", e.getThenExpression().getText());
+    }
+
+    @Test
+    public void test_many_parens() {
+        RPsiIfStatement e = firstOfType(parseCode("if ((x)) { () }"), RPsiIfStatement.class);
+        assertNoParserError(e);
+
+        assertNotNull(e);
+        assertNotNull(e.getCondition());
+        assertEquals("((x))", e.getCondition().getText());
         assertEquals("{ () }", e.getThenExpression().getText());
     }
 

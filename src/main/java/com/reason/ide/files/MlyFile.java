@@ -1,11 +1,12 @@
 package com.reason.ide.files;
 
+import com.intellij.extapi.psi.*;
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.psi.*;
 import com.reason.lang.ocamlyacc.*;
 import org.jetbrains.annotations.*;
 
-public class MlyFile extends FileBase {
+public class MlyFile extends PsiFileBase {
     public MlyFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, OclYaccLanguage.INSTANCE);
     }

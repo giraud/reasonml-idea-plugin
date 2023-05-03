@@ -45,11 +45,6 @@ public class PsiValStubElementType extends ORStubElementType<PsiValStub, RPsiVal
     }
 
     public void indexStub(@NotNull PsiValStub stub, @NotNull IndexSink sink) {
-        String name = stub.getName();
-        if (name != null) {
-            sink.occurrence(IndexKeys.VALS, name);
-        }
-
         String fqn = stub.getQualifiedName();
         sink.occurrence(IndexKeys.VALS_FQN, fqn.hashCode());
     }

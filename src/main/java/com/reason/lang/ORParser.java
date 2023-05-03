@@ -14,11 +14,15 @@ public abstract class ORParser<T extends ORTypes> {
 
     protected final T myTypes;
     protected final boolean myVerbose;
-    protected final boolean myIsSafe;
     protected final PsiBuilder myBuilder;
     protected final LinkedList<Marker> myMarkers = new LinkedList<>();
     public boolean dontMove = false;
     private int myIndex; // found index when using in(..)/inAny(..) functions
+
+    // rollback protection
+    protected final boolean myIsSafe;
+    private int myLatestRollbackIndex = -1;
+    private int myRollbackCount = 0;
 
     protected ORParser(@NotNull T types, @NotNull PsiBuilder builder, boolean isSafe) {
         myTypes = types;
@@ -28,8 +32,6 @@ public abstract class ORParser<T extends ORTypes> {
     }
 
     public abstract void parse();
-
-    public abstract void eof();
 
     public @Nullable IElementType previousElementType(int step) {
         int pos = -1;
@@ -501,7 +503,7 @@ public abstract class ORParser<T extends ORTypes> {
     }
 
     public void error(@NotNull String message) {
-        //myBuilder.error("Plugin error! " + message); // RELEASE: comment that line
+        myBuilder.error("Plugin error! " + message); // RELEASE: comment that line
     }
 
     public @NotNull ORParser<T> remapCurrentToken(ORTokenElementType elementType) {
@@ -580,14 +582,29 @@ public abstract class ORParser<T extends ORTypes> {
     }
 
     public @NotNull ORParser<T> rollbackToIndex(int index) {
+        if (myRollbackCount > 10) {
+            myBuilder.error("Too many rollbacks");
+            return this;
+        }
+
         for (int i = 0; i < index; i++) {
             myMarkers.pop();
         }
 
         Marker foundMarker = myMarkers.pop();
         foundMarker.rollbackTo();
+
+        //
+        int rollbackIndex = myBuilder.getCurrentOffset();
+        if (rollbackIndex == myLatestRollbackIndex) {
+            myRollbackCount++;
+        } else {
+            myLatestRollbackIndex = rollbackIndex;
+            myRollbackCount = 1;
+        }
+
         if (myVerbose) {
-            System.out.println("rollback to index: " + myBuilder.getCurrentOffset() + ", " + myBuilder.getTokenType() + "(" + myBuilder.getTokenText() + ")");
+            System.out.println("rollback to index [#" + myRollbackCount + "]: " + rollbackIndex + ", " + myBuilder.getTokenType() + "(" + myBuilder.getTokenText() + ")");
         }
 
         Marker marker = Marker.duplicate(foundMarker);

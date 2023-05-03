@@ -38,8 +38,8 @@ public class Jsx3PropertyCompletionRESTest extends ORBasePlatformTestCase {
         myFixture.completeBasic();
 
         List<String> completions = myFixture.getLookupElementStrings();
-        assertSize(4, completions);
         assertContainsElements(completions, "key", "ref", "name", "onClose");
+        assertSize(4, completions);
     }
 
     @Test

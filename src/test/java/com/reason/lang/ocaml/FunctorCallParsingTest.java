@@ -12,7 +12,7 @@ import java.util.*;
 public class FunctorCallParsingTest extends OclParsingTestCase {
     @Test
     public void test_instantiation() {
-        RPsiInnerModule e = (RPsiInnerModule) first(moduleExpressions(parseCode("module Printing = Make(struct let encode = encode_record end)")));
+        RPsiInnerModule e = first(moduleExpressions(parseCode("module Printing = Make(struct let encode = encode_record end)")));
 
         assertTrue(e.isFunctorCall());
         RPsiFunctorCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);

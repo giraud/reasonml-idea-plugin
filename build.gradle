@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.12.0' // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.13.3' // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
@@ -34,8 +34,10 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#399 - Rescript: incorrectly parse element as tag</li>
-                    <li>#384 - Rescript compile errors not being displayed on code</li>
+                    <li>#405 - Bad parsing of if in method</li>
+                    <li>#350 - Use declaration documentation if no local documentation</li>
+                    <li>#319 - "Comment with line comment" action incorrect for lines ending with "("</li>
+                    <li>#174 - Compiler output listener needs a change for ocaml >= 4.09</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

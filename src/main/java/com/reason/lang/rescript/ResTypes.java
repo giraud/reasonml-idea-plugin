@@ -11,7 +11,6 @@ public class ResTypes extends ORLangTypes {
 
         C_CLASS_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_CLASS_DECLARATION;
         C_CLASS_METHOD = (ORCompositeType) ResStubBasedElementTypes.C_CLASS_METHOD;
-        C_FAKE_MODULE = (ORCompositeType) ResStubBasedElementTypes.C_FAKE_MODULE;
         C_EXCEPTION_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_EXCEPTION_DECLARATION;
         C_TYPE_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_TYPE_DECLARATION;
         C_EXTERNAL_DECLARATION = (ORCompositeType) ResStubBasedElementTypes.C_EXTERNAL_DECLARATION;

@@ -49,8 +49,8 @@ public class ResParser extends CommonPsiParser {
                     break;
                 }
 
-                if (tokenType == myTypes.EOL && strictlyIn(myTypes.C_LET_BINDING)) {
-                    IElementType nextElementType = lookAheadSkipEOL();
+                if (tokenType == myTypes.EOL && isRawParent(myTypes.C_LET_BINDING)) {
+                    IElementType nextElementType = lookAheadSkipEOL(1);
                     if (nextElementType != myTypes.AND && nextElementType != myTypes.LT) {
                         // let x = ... |>\n<|
                         popEndUntil(myTypes.C_LET_DECLARATION).popEnd();
@@ -634,7 +634,8 @@ public class ResParser extends CommonPsiParser {
 
         private void parseLt() {
             if (is(myTypes.C_OPTION) || in(myTypes.C_SIG_EXPR)) {
-                markScope(myTypes.C_SCOPED_EXPR, myTypes.LT);
+                markScope(myTypes.C_SCOPED_EXPR, myTypes.LT).advance()
+                        .markHolder(myTypes.H_PLACE_HOLDER);
             } else if (strictlyIn(myTypes.C_VARIANT_DECLARATION)) { // type parameters
                 // type t |> < <| 'a >
                 markScope(myTypes.C_PARAMETERS, myTypes.LT);
@@ -677,7 +678,7 @@ public class ResParser extends CommonPsiParser {
                 popEndUntilFoundIndex().advance().end();
             } else if (in(myTypes.C_SCOPED_EXPR) && isFoundScope(myTypes.LT)) {
                 popEndUntilFoundIndex().advance().popEnd();
-                if (isRawParent(myTypes.C_OPTION)) {
+                if (strictlyIn(myTypes.C_OPTION)) {
                     // option < ... |> > <| ...
                     popEnd();
                 }
@@ -830,7 +831,7 @@ public class ResParser extends CommonPsiParser {
                 // let |>{<| ..
                 markScope(myTypes.C_DECONSTRUCTION, myTypes.LBRACE);
             } else if (is(myTypes.C_TYPE_BINDING)) {
-                boolean isJsObject = lookAheadSkipEOL() == myTypes.STRING_VALUE;
+                boolean isJsObject = lookAheadSkipEOL(1) == myTypes.STRING_VALUE;
                 markScope(isJsObject ? myTypes.C_JS_OBJECT : myTypes.C_RECORD_EXPR, myTypes.LBRACE);
             } else if (is(myTypes.C_MODULE_BINDING)) {
                 // module M = |>{<| ...
@@ -866,7 +867,7 @@ public class ResParser extends CommonPsiParser {
                 }
             } else {
                 // it might be a js object
-                IElementType nextElement = lookAhead(1);
+                IElementType nextElement = lookAheadSkipEOL(1);
                 if (nextElement == myTypes.STRING_VALUE || nextElement == myTypes.DOT) {
                     boolean hasDot = nextElement == myTypes.DOT;
                     // js object detected ::  |>{<| ./"x" ___ }
@@ -881,10 +882,10 @@ public class ResParser extends CommonPsiParser {
             }
         }
 
-        @Nullable private IElementType lookAheadSkipEOL() {
-            IElementType elementType = lookAhead(1);
+        @Nullable private IElementType lookAheadSkipEOL(int steps) {
+            IElementType elementType = lookAhead(steps);
             if (elementType == myTypes.EOL) {
-                elementType = lookAhead(2);
+                elementType = lookAhead(steps + 1);
             }
             return elementType;
         }
@@ -967,7 +968,7 @@ public class ResParser extends CommonPsiParser {
                         .markDummyScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
                         .advance()
                         .mark(myTypes.C_MACRO_BODY);
-            } else if (is(myTypes.C_BINARY_CONDITION)) {
+            } else if (is(myTypes.C_BINARY_CONDITION) && !currentHasScope()) {
                 updateScopeToken(myTypes.LPAREN);
             } else if (is(myTypes.C_DECONSTRUCTION) && isRawParent(myTypes.C_LET_DECLARATION)) {
                 // let ((x |>,<| ...

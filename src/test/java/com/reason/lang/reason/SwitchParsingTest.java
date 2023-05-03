@@ -116,7 +116,7 @@ public class SwitchParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_let() {
-        RPsiLet e = first(letExpressions(parseCode("let makeId = () => switch (id) { | None => text | Some(i) => i };")));
+        RPsiLet e = firstOfType(parseCode("let makeId = () => switch (id) { | None => text | Some(i) => i };"), RPsiLet.class);
 
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
         assertEquals("switch (id) { | None => text | Some(i) => i }", function.getBody().getText());

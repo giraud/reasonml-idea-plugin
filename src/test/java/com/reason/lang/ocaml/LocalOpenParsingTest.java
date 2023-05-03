@@ -2,6 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -12,7 +13,7 @@ import java.util.*;
 public class LocalOpenParsingTest extends OclParsingTestCase {
     @Test
     public void test_local_open() {
-        List<RPsiLet> lets = letExpressions(parseCode("let _ = Int64.(x + y / of_int 2) let x = 1"));
+        List<RPsiLet> lets = ORUtil.findImmediateChildrenOfClass(parseCode("let _ = Int64.(x + y / of_int 2) let x = 1"), RPsiLet.class);
 
         assertSize(2 , lets);
         RPsiLocalOpen localOpen = PsiTreeUtil.findChildOfType(lets.get(0).getBinding(), RPsiLocalOpen.class);

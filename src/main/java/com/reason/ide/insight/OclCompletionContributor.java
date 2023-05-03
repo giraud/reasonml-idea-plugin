@@ -4,6 +4,6 @@ import com.reason.lang.ocaml.*;
 
 public class OclCompletionContributor extends ORCompletionContributor {
     OclCompletionContributor() {
-        super(OclTypes.INSTANCE, OclQNameFinder.INSTANCE);
+        super(OclTypes.INSTANCE/*, OclQNameFinder.INSTANCE*/);
     }
 }

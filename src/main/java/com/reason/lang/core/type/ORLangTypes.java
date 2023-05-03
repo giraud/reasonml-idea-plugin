@@ -6,7 +6,6 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_CLASS_DECLARATION;
     public ORCompositeType C_EXCEPTION_DECLARATION;
     public ORCompositeType C_EXTERNAL_DECLARATION;
-    public ORCompositeType C_FAKE_MODULE;
     public ORCompositeType C_FIELD_VALUE;
     public ORCompositeType C_FUNCTOR_DECLARATION;
     public ORCompositeType C_INCLUDE;

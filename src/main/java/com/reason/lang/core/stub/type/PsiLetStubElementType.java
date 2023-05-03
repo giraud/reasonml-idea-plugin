@@ -38,13 +38,14 @@ public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, RPsiLet
                 }
             }
         }
-        return new PsiLetStub(parentStub, this, psi.getName(), psi.getPath(), psi.getAlias(), psi.isFunction(), deconstructedNames);
+        return new PsiLetStub(parentStub, this, psi.getName(), psi.getPath(), psi.getAlias(), psi.isFunction(), psi.isComponent(), deconstructedNames);
     }
 
     public void serialize(@NotNull PsiLetStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         SerializerUtil.writePath(dataStream, stub.getPath());
         dataStream.writeBoolean(stub.isFunction());
+        dataStream.writeBoolean(stub.isComponent());
 
         List<String> deconstructionNames = stub.getDeconstructionNames();
         dataStream.writeByte(deconstructionNames.size());
@@ -65,6 +66,7 @@ public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, RPsiLet
         StringRef name = dataStream.readName();
         String[] path = SerializerUtil.readPath(dataStream);
         boolean isFunction = dataStream.readBoolean();
+        boolean isComponent = dataStream.readBoolean();
 
         List<String> deconstructionNames = new ArrayList<>();
         byte namesCount = dataStream.readByte();
@@ -80,7 +82,7 @@ public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, RPsiLet
             alias = dataStream.readUTFFast();
         }
 
-        return new PsiLetStub(parentStub, this, name, path, alias, isFunction, deconstructionNames);
+        return new PsiLetStub(parentStub, this, name, path, alias, isFunction, isComponent, deconstructionNames);
     }
 
     public void indexStub(@NotNull PsiLetStub stub, @NotNull IndexSink sink) {
@@ -88,19 +90,13 @@ public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, RPsiLet
         if (deconstructionNames.isEmpty()) {
             // Normal let
 
-            String name = stub.getName();
-            if (name != null) {
-                sink.occurrence(IndexKeys.LETS, name);
-            }
-
             String fqn = stub.getQualifiedName();
             sink.occurrence(IndexKeys.LETS_FQN, fqn.hashCode());
+            if (stub.isComponent()) {
+                sink.occurrence(IndexKeys.LETS_COMP_FQN, fqn.hashCode());
+            }
         } else {
             // Deconstruction
-
-            for (String name : deconstructionNames) {
-                sink.occurrence(IndexKeys.LETS, name);
-            }
 
             for (String fqn : stub.getQualifiedNames()) {
                 sink.occurrence(IndexKeys.LETS_FQN, fqn.hashCode());

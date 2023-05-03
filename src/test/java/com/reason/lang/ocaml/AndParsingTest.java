@@ -3,7 +3,7 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.RPsiType;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -14,7 +14,7 @@ import java.util.*;
 public class AndParsingTest extends OclParsingTestCase {
     @Test
     public void test_let_chaining() {
-        List<RPsiLet> lets = new ArrayList<>(letExpressions(parseCode("let rec lx x = x + 1 and ly y = 3 + (lx y)")));
+        List<RPsiLet> lets = ORUtil.findImmediateChildrenOfClass(parseCode("let rec lx x = x + 1 and ly y = 3 + (lx y)"), RPsiLet.class);
 
         assertSize(2, lets);
         assertEquals("lx", lets.get(0).getName());
@@ -23,7 +23,7 @@ public class AndParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_let_chaining_in_function() {
-        List<RPsiLet> lets = new ArrayList<>(letExpressions(parseCode("let fn x = let ax = Instance.to_array x and ay = Instance.to_array y")));
+        List<RPsiLet> lets = ORUtil.findImmediateChildrenOfClass(parseCode("let fn x = let ax = Instance.to_array x and ay = Instance.to_array y"), RPsiLet.class);
 
         assertSize(1, lets);
         assertEquals("fn", lets.get(0).getName());
@@ -64,7 +64,7 @@ public class AndParsingTest extends OclParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/135
     @Test
     public void test_GH_135() {
-        List<RPsiLet> lets = new ArrayList<>(letExpressions(parseCode("let f1 = function | _ -> ()\nand missing = ()")));
+        List<RPsiLet> lets = ORUtil.findImmediateChildrenOfClass(parseCode("let f1 = function | _ -> ()\nand missing = ()"), RPsiLet.class);
 
         assertSize(2, lets);
         assertEquals("f1", lets.get(0).getName());
@@ -74,7 +74,7 @@ public class AndParsingTest extends OclParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/175
     @Test
     public void test_GH_175() {
-        List<RPsiLet> lets = new ArrayList<>(letExpressions(parseCode("let f1 = let f11 = function | _ -> \"\" in ()\n and f2 = let f21 = function | _ -> \"\" in ()\n and f3 = ()\n")));
+        List<RPsiLet> lets = ORUtil.findImmediateChildrenOfClass(parseCode("let f1 = let f11 = function | _ -> \"\" in ()\n and f2 = let f21 = function | _ -> \"\" in ()\n and f3 = ()\n"), RPsiLet.class);
 
         assertSize(3, lets);
         assertEquals("f1", lets.get(0).getName());
@@ -85,7 +85,7 @@ public class AndParsingTest extends OclParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/271
     @Test
     public void test_GH_271() {
-        List<RPsiLet> lets = new ArrayList<>(letExpressions(parseCode("let parser_of_token_list a = \nlet loop x = () in \n() \nand parser_of_symbol b = ()")));
+        List<RPsiLet> lets = ORUtil.findImmediateChildrenOfClass(parseCode("let parser_of_token_list a = \nlet loop x = () in \n() \nand parser_of_symbol b = ()"), RPsiLet.class);
 
         assertSize(2, lets);
         assertEquals("parser_of_token_list", lets.get(0).getName());
@@ -96,7 +96,7 @@ public class AndParsingTest extends OclParsingTestCase {
     @Test
     public void test_GH_272() {
         FileBase file = parseCode("let x = match xx with | Y -> let fn y = 1 in () and z = 1 ");
-        List<RPsiLet> exps = letExpressions(file);
+        List<RPsiLet> exps = ORUtil.findImmediateChildrenOfClass(file, RPsiLet.class);
 
         assertEquals(2, exps.size());
         assertEquals("x", exps.get(0).getName());

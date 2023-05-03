@@ -16,7 +16,7 @@ public abstract class CommonPsiParser implements PsiParser {
 
     @Override
     public @NotNull ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
-        //builder.setDebugMode(false); // RELEASE: debug mode is false
+        builder.setDebugMode(true); // RELEASE: debug mode is false
         PsiBuilder.Marker r = builder.mark();
 
         ORParser<?> state = getORParser(builder);
@@ -26,8 +26,6 @@ public abstract class CommonPsiParser implements PsiParser {
         if (!state.empty()) {
             state.clear();
         }
-
-        state.eof();
 
         // end stream
         if (!builder.eof()) {

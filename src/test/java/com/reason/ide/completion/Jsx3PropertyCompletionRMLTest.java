@@ -1,5 +1,6 @@
 package com.reason.ide.completion;
 
+import com.intellij.psi.*;
 import com.reason.ide.*;
 import org.jetbrains.annotations.*;
 import org.junit.*;
@@ -25,8 +26,8 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         myFixture.completeBasic();
 
         List<String> completions = myFixture.getLookupElementStrings();
-        assertSize(4, completions);
         assertContainsElements(completions, "key", "ref", "name", "onClose");
+        assertSize(4, completions);
     }
 
     @Test
@@ -38,8 +39,8 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         myFixture.completeBasic();
 
         List<String> completions = myFixture.getLookupElementStrings();
-        assertSize(4, completions);
         assertContainsElements(completions, "key", "ref", "name", "onClose");
+        assertSize(4, completions);
     }
 
     @Test
@@ -94,5 +95,17 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
         List<String> completions = myFixture.getLookupElementStrings();
         assertContainsElements(completions, "key", "ref", "name", "enabled");
         assertSize(4, completions);
+    }
+
+    @Test
+    public void test_div() {
+        myFixture.configureByFiles("ReactDOM.res");
+        configureCode("A.re", "let _ = <div <caret>>");
+
+        myFixture.completeBasic();
+
+        List<String> completions = myFixture.getLookupElementStrings();
+        assertContainsElements(completions, "key", "ref", "ariaDetails", "className", "onClick");
+        assertSize(5, completions);
     }
 }

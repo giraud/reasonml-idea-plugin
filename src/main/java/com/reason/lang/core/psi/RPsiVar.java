@@ -1,5 +1,6 @@
 package com.reason.lang.core.psi;
 
+import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -10,6 +11,9 @@ import java.util.*;
 public interface RPsiVar {
 
     boolean isFunction();
+
+    @NotNull
+    Collection<RPsiObjectField> getJsObjectFields();
 
     @NotNull
     Collection<RPsiRecordField> getRecordFields();

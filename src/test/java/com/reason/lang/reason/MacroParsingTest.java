@@ -11,7 +11,7 @@ import org.junit.*;
 public class MacroParsingTest extends RmlParsingTestCase {
     @Test
     public void test_basic() {
-        RPsiLet expression = first(letExpressions(parseCode("let _ = [%raw \"xxx\"]")));
+        RPsiLet expression = firstOfType(parseCode("let _ = [%raw \"xxx\"]"), RPsiLet.class);
 
         PsiElement macro = expression.getBinding().getFirstChild();
         assertInstanceOf(macro, RPsiMacro.class);
@@ -32,7 +32,7 @@ public class MacroParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_multiLine() {
-        RPsiLet expression = first(letExpressions(parseCode("let _ = [%raw {|function (a) {}|}]")));
+        RPsiLet expression = firstOfType(parseCode("let _ = [%raw {|function (a) {}|}]"), RPsiLet.class);
 
         RPsiMacro macro = (RPsiMacro) expression.getBinding().getFirstChild();
 

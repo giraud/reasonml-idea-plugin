@@ -1,11 +1,11 @@
 package com.reason.ide.search.reference;
 
 import com.intellij.openapi.project.*;
+import com.intellij.openapi.util.text.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
 import com.reason.ide.files.*;
-import com.reason.ide.search.index.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -30,22 +30,29 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSym
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        //if (myElement instanceof PsiUpperIdentifier) {
         PsiElement parent = myElement.getParent();
-        if (parent instanceof RPsiModule) {
+        if (parent instanceof RPsiInnerModule) {
             if (!(parent.getParent() instanceof RPsiModuleType)) {
+                LOG.debug("Declaration found (inner module), skip reference resolution", myReferenceName);
                 return ResolveResult.EMPTY_ARRAY;
             }
-        } else if (parent instanceof RPsiException) {
+        } else if (parent instanceof RPsiFunctor || parent instanceof RPsiException || parent instanceof RPsiVariantDeclaration) {
+            LOG.debug("Declaration found, skip reference resolution", myReferenceName);
             return ResolveResult.EMPTY_ARRAY;
         }
 
         long startAll = System.currentTimeMillis();
 
+        Project project = myElement.getProject();
+        GlobalSearchScope searchScope = GlobalSearchScope.allScope(project); // ?
+
         LOG.debug("Find reference for upper symbol", myReferenceName);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(" -> search scope: " + searchScope);
+        }
 
         // Gather instructions from element up to the file root
-        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, myTypes);
+        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, false, myTypes);
         instructions.addLast(myElement);
 
         if (LOG.isTraceEnabled()) {
@@ -55,82 +62,43 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSym
         long endInstructions = System.currentTimeMillis();
 
         // Resolve aliases in the stack of instructions, this time from file down to element
-        Deque<CodeInstruction> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, myElement.getProject());
+        List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, project, searchScope);
 
         if (LOG.isTraceEnabled()) {
-            LOG.trace("  Resolved instructions: " + Joiner.join(" -> ", resolvedInstructions));
+            LOG.trace("  Resolutions", Joiner.join(", ", resolvedInstructions));
         }
 
         long endResolvedInstructions = System.currentTimeMillis();
 
-        // Find all elements by name and create a list of paths
-        Project project = myElement.getProject();
-        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-
-        Collection<RPsiModule> modules = ModuleIndex.getElements(myReferenceName, project, scope);
-        Collection<RPsiVariantDeclaration> variants = VariantIndex.getElements(myReferenceName, project, scope);
-        Collection<RPsiException> exceptions = ExceptionIndex.getElements(myReferenceName, project, scope);
-
-        long endIndexes = System.currentTimeMillis();
-
-        ORElementResolver.Resolutions resolutions = project.getService(ORElementResolver.class).getComputation();
-        resolutions.add(modules, true);
-        resolutions.add(variants, false);
-        resolutions.add(exceptions, false);
-
-        //if (LOG.isTraceEnabled()) {
-        //    LOG.trace("  Resolutions", resolutions.myResolutions.values());
-        //}
-
-        long endAddResolutions = System.currentTimeMillis();
-
-        resolutions.addIncludesEquivalence();
-
-        long endAddIncludes = System.currentTimeMillis();
-
-        // Now that everything is resolved, we can use the stack of instructions to add weight to the paths
-
-        for (CodeInstruction instruction : resolvedInstructions) {
-            if (instruction.mySource instanceof FileBase) {
-                resolutions.udpateTerminalWeight(((FileBase) instruction.mySource).getModuleName());
-            } else if (instruction.myValues != null) {
-                for (String value : instruction.myValues) {
-                    resolutions.updateWeight(value, instruction.myAlternateValues);
-                }
+        resolvedInstructions.sort((e1, e2) -> {
+            if (e1 instanceof FileBase && ((FileBase) e1).isInterface()) {
+                return 1;
             }
-        }
-
-        long endUpdateResolutions = System.currentTimeMillis();
-
-        resolutions.removeIncomplete();
-        Collection<RPsiQualifiedPathElement> sortedResult = resolutions.resolvedElements();
+            if (e2 instanceof FileBase && ((FileBase) e2).isInterface()) {
+                return -1;
+            }
+            return NaturalComparator.INSTANCE.compare(e1.getQualifiedName(), e2.getQualifiedName());
+        });
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("  => found", Joiner.join(", ", sortedResult,
+            LOG.debug("  => found", Joiner.join(", ", resolvedInstructions,
                     element -> element.getQualifiedName()
                             + " [" + Platform.getRelativePathToModule(element.getContainingFile()) + "]"));
         }
 
-        long endSort = System.currentTimeMillis();
-
-        ResolveResult[] resolveResults = new ResolveResult[sortedResult.size()];
+        ResolveResult[] resolveResults = new ResolveResult[((Collection<RPsiQualifiedPathElement>) resolvedInstructions).size()];
 
         int i = 0;
-        for (PsiElement element : sortedResult) {
-            resolveResults[i] = new UpperResolveResult(element, parent);
+        for (PsiElement element : resolvedInstructions) {
+            resolveResults[i] = new UpperResolveResult(element);
             i++;
         }
 
         long endAll = System.currentTimeMillis();
         if (LOG_PERF.isDebugEnabled()) {
             LOG_PERF.debug("Resolution of " + myReferenceName + " in " + (endAll - startAll) + "ms => " +
-                    " in: " + (endInstructions - startAll) + "ms," +
-                    " rI: " + (endResolvedInstructions - endInstructions) + "ms," +
-                    " id: " + (endIndexes - endResolvedInstructions) + "ms, " +
-                    " aR: " + (endAddResolutions - endIndexes) + "ms," +
-                    " aI: " + (endAddIncludes - endAddResolutions) + "ms," +
-                    " uR: " + (endUpdateResolutions - endAddIncludes) + "ms," +
-                    " sort: " + (endSort - endUpdateResolutions) + "ms"
+                    " instructions: " + (endInstructions - startAll) + "ms," +
+                    " resolutions: " + (endResolvedInstructions - endInstructions) + "ms,"
             );
         }
 
@@ -147,20 +115,8 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSym
     private static class UpperResolveResult implements ResolveResult {
         private final PsiElement m_referencedIdentifier;
 
-        public UpperResolveResult(@NotNull PsiElement referencedElement, @Nullable PsiElement sourceParent) {
-            if (referencedElement instanceof RPsiModule && ((RPsiModule) referencedElement).isComponent() && sourceParent instanceof RPsiTagStart) {
-                PsiElement make = ((RPsiModule) referencedElement).getComponentNavigationElement();
-                m_referencedIdentifier = make == null ? referencedElement : make;
-            } else if (referencedElement instanceof RPsiFakeModule) {
-                // A fake module resolve to its file
-                m_referencedIdentifier = referencedElement.getContainingFile();
-            } else /*if (referencedElement instanceof PsiNameIdentifierOwner)*/ {
-                m_referencedIdentifier = referencedElement;
-            }
-            //else {
-            //    RPsiUpperSymbol identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, RPsiUpperSymbol.class);
-            //    m_referencedIdentifier = identifier == null ? referencedElement : identifier;
-            //}
+        public UpperResolveResult(@NotNull PsiElement referencedElement) {
+            m_referencedIdentifier = referencedElement;
         }
 
         @Override
