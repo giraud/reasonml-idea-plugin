@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+**NOTE**: minimal version supported is **2022.2**
+
 ## 0.111 - 2023/05/03
       
 - :house: New reference resolution algorithm
@@ -24,8 +26,6 @@
 
 - :bug: ![n] [#399](https://github.com/giraud/reasonml-idea-plugin/issues/399) Rescript: incorrectly parse element as tag
 - :bug: ![n] [#384](https://github.com/giraud/reasonml-idea-plugin/issues/384) Rescript compile errors not being displayed on code
-
-- :bug: ![n] [#399](https://github.com/giraud/reasonml-idea-plugin/issues/399) Rescript: incorrectly parse element as tag
 
 ## 0.109.2 - 2023/01/24
 
