@@ -12,12 +12,13 @@
 
 ## Unreleased
 
+- :bug: ![o] [#409](https://github.com/giraud/reasonml-idea-plugin/issues/409) Wrong structure on let b = 1 = 1 in
 - :bug: ![o] [#408](https://github.com/giraud/reasonml-idea-plugin/issues/408) let ... in not shown in let a = ... structure
 - :bug: ![o] [#406](https://github.com/giraud/reasonml-idea-plugin/issues/406) Faulty let open ... in parsing
 
 **NOTE**: minimal version supported is **2022.2**
 
-## 0.111 - 2023/05/03
+## 0.111.1 - 2023/05/03
       
 - :house: New reference resolution algorithm
 - :bug: ![o] [#405](https://github.com/giraud/reasonml-idea-plugin/issues/405) Bad parsing of if in method

@@ -34,6 +34,7 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
+                    <li>#409 - Wrong structure on let b = 1 = 1 in</li>  
                     <li>#408 - let ... in not shown in let a = ... structure</li>
                     <li>#406 - Faulty let open ... in parsing</li>
                 </ul>

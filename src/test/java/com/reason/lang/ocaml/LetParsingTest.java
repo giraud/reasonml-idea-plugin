@@ -365,4 +365,20 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("let open UReStr.Make(UTF8)", ebos[2].getText());
         assertSize(3, ebos);
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/409
+    @Test
+    public void test_GH_409() {
+        RPsiLet e = firstOfType(parseCode("let f () =\n" +
+                "  let b : bool = 1 = 1 in\n" +
+                "  let x = 0 in\n" +
+                "  x"), RPsiLet.class);
+
+        assertNoParserError(e);
+        RPsiFunctionBody eb = e.getFunction().getBody();
+        RPsiLet[] ebls = PsiTreeUtil.getChildrenOfType(eb, RPsiLet.class);
+        assertEquals("let b : bool = 1 = 1", ebls[0].getText());
+        assertEquals("let x = 0", ebls[1].getText());
+        assertSize(2, ebls);
+    }
 }

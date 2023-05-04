@@ -777,7 +777,8 @@ public class OclParser extends CommonPsiParser {
                 // external e : sig |> = <| ...
                 popEndUntil(myTypes.C_SIG_EXPR).popEnd().advance();
             } else if (strictlyInAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_DECLARATION)) {
-                if (isFound(myTypes.C_LET_DECLARATION)) {
+                // if inside a let binding, do nothing
+                if (isFound(myTypes.C_LET_DECLARATION) && !isCurrent(myTypes.C_LET_BINDING)) {
                     int letPos = getIndex();
                     if (in(myTypes.C_LET_BINDING, null, letPos, false)) {
                         // in a function ::  let (x) y z |> = <| ...
