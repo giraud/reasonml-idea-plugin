@@ -34,10 +34,7 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>#405 - Bad parsing of if in method</li>
-                    <li>#350 - Use declaration documentation if no local documentation</li>
-                    <li>#319 - "Comment with line comment" action incorrect for lines ending with "("</li>
-                    <li>#174 - Compiler output listener needs a change for ocaml >= 4.09</li>
+                    <li>#406 - Faulty let open ... in parsing</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

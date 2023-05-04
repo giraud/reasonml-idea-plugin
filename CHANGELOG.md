@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: ![o] [#406](https://github.com/giraud/reasonml-idea-plugin/issues/406) Faulty let open ... in parsing
+
 **NOTE**: minimal version supported is **2022.2**
 
 ## 0.111 - 2023/05/03
