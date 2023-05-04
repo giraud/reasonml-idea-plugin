@@ -241,10 +241,14 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     private @Nullable List<TreeElement> buildLetStructure(@NotNull RPsiLet let) {
         List<TreeElement> treeElements = null;
 
-        PsiElement rootElement = let.getBinding();
-        if (rootElement != null && let.isFunction()) {
+        PsiElement rootElement = let.isFunction() ? let.getFunction() : let.getBinding();
+        if (rootElement instanceof RPsiFunction) {
+            rootElement = ((RPsiFunction) rootElement).getBody();
+        }
+
+        if (rootElement != null) {
             treeElements = new ArrayList<>();
-            rootElement.acceptChildren(new ElementVisitor(treeElements, myLevel));
+            rootElement.acceptChildren(new ElementVisitor(treeElements, myLevel + 1));
         }
 
         return treeElements;
@@ -286,14 +290,6 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                 for (RPsiStructuredElement child : children) {
                     if (child.canBeDisplayed()) {
                         m_treeElements.add(new StructureViewElement(child, m_elementLevel));
-                    }
-                }
-            } else if (element instanceof RPsiFunction && m_elementLevel < 2) {
-                RPsiFunctionBody body = ((RPsiFunction) element).getBody();
-                List<RPsiStructuredElement> children = ORUtil.findImmediateChildrenOfClass(body, RPsiStructuredElement.class);
-                for (RPsiStructuredElement child : children) {
-                    if (child.canBeDisplayed()) {
-                        m_treeElements.add(new StructureViewElement(child, m_elementLevel + 1));
                     }
                 }
             }
