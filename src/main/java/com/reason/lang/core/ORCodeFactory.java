@@ -4,7 +4,6 @@ import com.intellij.lang.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;

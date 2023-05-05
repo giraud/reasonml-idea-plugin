@@ -71,7 +71,6 @@ public class ReformatOnSave {
                                             LOG.debug(" -> Text null or unchanged, abort format");
                                             newFile.putUserData(REFORMAT_COUNT, 1);
                                         } else {
-                                            //noinspection DialogTitleCapitalization
                                             CommandProcessor.getInstance().runUndoTransparentAction(() -> {
                                                 LOG.debug(" -> Applying text formatting");
                                                 document.setText(newText);

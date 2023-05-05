@@ -26,12 +26,12 @@ public class NestedFunctionsFilter implements Filter {
         return new ActionPresentation() {
             @Override
             public @NotNull @Nls(capitalization = Nls.Capitalization.Sentence) String getText() {
-                return "Show nested Functions";
+                return "Show nested expressions";
             }
 
             @Override
             public @Nls(capitalization = Nls.Capitalization.Sentence) @NotNull String getDescription() {
-                return "Show nested functions";
+                return "Show nested expressions";
             }
 
             @Override
@@ -42,6 +42,6 @@ public class NestedFunctionsFilter implements Filter {
     }
 
     @Override public @NotNull String getName() {
-        return "ShowNestedFunctions";
+        return "ShowNestedExpressions";
     }
 }

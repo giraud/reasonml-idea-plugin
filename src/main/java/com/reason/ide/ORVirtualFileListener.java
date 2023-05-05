@@ -1,7 +1,6 @@
 package com.reason.ide;
 
 import com.intellij.openapi.application.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.*;
 import com.intellij.openapi.project.*;

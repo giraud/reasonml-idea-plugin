@@ -4,7 +4,6 @@ import com.intellij.lang.javascript.psi.*;
 import com.intellij.psi.*;
 import com.reason.comp.*;
 import com.reason.ide.*;
-import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

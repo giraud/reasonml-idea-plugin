@@ -127,6 +127,28 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertPresentation("fn2", null, ORIcons.LET, fn2.getPresentation());
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/407
+    @Test
+    public void test_GH_407() {
+        FileBase e = configureCode("A.ml", "let (!!) r = !r");
+        StructureViewModel model = new ORStructureViewModel(e);
+
+        TreeElement fn = model.getRoot().getChildren()[0];
+        assertPresentation("(!!)", null, ORIcons.LET, fn.getPresentation());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/408
+    @Test
+    public void test_GH_408() {
+        FileBase e = configureCode("A.ml", "let a =\n let x = 0 in\n x");
+        StructureViewModel model = new ORStructureViewModel(e);
+
+        TreeElement fn = model.getRoot().getChildren()[0];
+        assertPresentation("a", null, ORIcons.LET, fn.getPresentation());
+        TreeElement fn1 = fn.getChildren()[0];
+        assertPresentation("x", null, ORIcons.LET, fn1.getPresentation());
+    }
+
     private void assertPresentation(String name, String location, @Nullable Icon icon, @NotNull ItemPresentation pres) {
         assertEquals("Incorrect name", name, pres.getPresentableText());
         assertEquals("Incorrect location", location, pres.getLocationString());

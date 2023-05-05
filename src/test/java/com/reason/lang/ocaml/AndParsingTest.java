@@ -40,6 +40,16 @@ public class AndParsingTest extends OclParsingTestCase {
     }
 
     @Test
+    public void test_module_type_chaining() {
+        PsiFile file = parseCode("module rec X : sig end and Y : sig end"); // in a .mli file
+        List<RPsiModule> mods = new ArrayList<>(moduleExpressions(file));
+
+        assertSize(2, mods);
+        assertEquals("X", mods.get(0).getName());
+        assertEquals("Y", mods.get(1).getName());
+    }
+
+    @Test
     public void test_pattern_chaining() {
         PsiFile file = parseCode("match optsign with | Some sign -> let mtb1 = 1 and mtb2 = 2");
         Collection<PsiNamedElement> exps = expressions(file);

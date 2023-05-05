@@ -422,18 +422,14 @@ public class OclParser extends CommonPsiParser {
             if (in(myTypes.C_TYPE_CONSTRAINT)) {
                 popEndUntil(myTypes.C_TYPE_CONSTRAINT).popEnd()
                         .advance().mark(myTypes.C_TYPE_CONSTRAINT);
-            } else if (inAny(myTypes.C_LET_DECLARATION, myTypes.C_TYPE_DECLARATION)) {
+            } else if (inAny(myTypes.C_MODULE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_TYPE_DECLARATION)) {
                 // pop scopes until a chainable expression is found
                 popEndUntilIndex(getIndex());
                 Marker marker = getLatestMarker();
 
                 popEnd().advance();
                 if (marker != null) {
-                    if (marker.isCompositeType(myTypes.C_LET_DECLARATION)) {
-                        mark(myTypes.C_LET_DECLARATION);
-                    } else if (marker.isCompositeType(myTypes.C_TYPE_DECLARATION)) {
-                        mark(myTypes.C_TYPE_DECLARATION);
-                    }
+                    mark(marker.getCompositeType());
                 }
             }
         }
@@ -620,8 +616,8 @@ public class OclParser extends CommonPsiParser {
                 } else {
                     popEndUntil(myTypes.C_TRY_EXPR);
                 }
-            } else if (strictlyInAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_DECLARATION, myTypes.C_PATTERN_MATCH_BODY)) {
-                boolean isStart = isFound(myTypes.C_LET_DECLARATION) || isFound(myTypes.C_MODULE_DECLARATION);
+            } else if (strictlyInAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_DECLARATION, myTypes.C_PATTERN_MATCH_BODY, myTypes.C_OPEN/*local open*/)) {
+                boolean isStart = isFound(myTypes.C_LET_DECLARATION) || isFound(myTypes.C_MODULE_DECLARATION) || isFound(myTypes.C_OPEN);
                 popEndUntilFoundIndex();
                 if (isStart) {
                     popEnd();
@@ -777,7 +773,8 @@ public class OclParser extends CommonPsiParser {
                 // external e : sig |> = <| ...
                 popEndUntil(myTypes.C_SIG_EXPR).popEnd().advance();
             } else if (strictlyInAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_DECLARATION)) {
-                if (isFound(myTypes.C_LET_DECLARATION)) {
+                // if inside a let binding, do nothing
+                if (isFound(myTypes.C_LET_DECLARATION) && !isCurrent(myTypes.C_LET_BINDING)) {
                     int letPos = getIndex();
                     if (in(myTypes.C_LET_BINDING, null, letPos, false)) {
                         // in a function ::  let (x) y z |> = <| ...
@@ -931,8 +928,6 @@ public class OclParser extends CommonPsiParser {
                 if (scopeLength <= 3) {
                     // unit ::  let ()
                     lParen.updateCompositeType(myTypes.C_UNIT);
-                } else {
-                    lParen.updateCompositeType(myTypes.C_DECONSTRUCTION);
                 }
             }
 
