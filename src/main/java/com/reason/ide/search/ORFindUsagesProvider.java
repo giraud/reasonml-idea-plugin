@@ -4,7 +4,6 @@ import com.intellij.lang.*;
 import com.intellij.lang.findUsages.*;
 import com.intellij.psi.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.impl.*;
 import org.jetbrains.annotations.*;
 

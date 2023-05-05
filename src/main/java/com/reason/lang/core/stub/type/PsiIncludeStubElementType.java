@@ -10,7 +10,6 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
-import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;

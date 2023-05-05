@@ -339,4 +339,56 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("(//)", e.getName());
         assertNull(PsiTreeUtil.findChildOfType(e, PsiComment.class));
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/406
+    @Test
+    public void test_GH_406() {
+        RPsiLet e = firstOfType(parseCode("let is_uppercase s =\n" +
+                "  let x = 0 in\n" +
+                "  let open CamomileLibraryDefault.Camomile in\n" +
+                "  let open UReStr in\n" +
+                "  let open UReStr.Make(UTF8) in\n" +
+                "  let y = 0 in\n" +
+                "  let z = 0 in\n" +
+                "  false"), RPsiLet.class);
+
+        assertNoParserError(e);
+        RPsiFunctionBody eb = e.getFunction().getBody();
+        RPsiLet[] ebls = PsiTreeUtil.getChildrenOfType(eb, RPsiLet.class);
+        assertEquals("let x = 0", ebls[0].getText());
+        assertEquals("let y = 0", ebls[1].getText());
+        assertEquals("let z = 0", ebls[2].getText());
+        assertSize(3, ebls);
+        RPsiOpen[] ebos = PsiTreeUtil.getChildrenOfType(eb, RPsiOpen.class);
+        assertEquals("let open CamomileLibraryDefault.Camomile", ebos[0].getText());
+        assertEquals("let open UReStr", ebos[1].getText());
+        assertEquals("let open UReStr.Make(UTF8)", ebos[2].getText());
+        assertSize(3, ebos);
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/407
+    @Test
+    public void test_GH_407() {
+        RPsiLetImpl e = firstOfType(parseCode("let (!!) r = !r"), RPsiLetImpl.class);
+
+        assertFalse(e.isDeconstruction());
+        assertInstanceOf(e.getNameIdentifier(), RPsiScopedExpr.class);
+        assertEquals("(!!)", e.getName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/409
+    @Test
+    public void test_GH_409() {
+        RPsiLet e = firstOfType(parseCode("let f () =\n" +
+                "  let b : bool = 1 = 1 in\n" +
+                "  let x = 0 in\n" +
+                "  x"), RPsiLet.class);
+
+        assertNoParserError(e);
+        RPsiFunctionBody eb = e.getFunction().getBody();
+        RPsiLet[] ebls = PsiTreeUtil.getChildrenOfType(eb, RPsiLet.class);
+        assertEquals("let b : bool = 1 = 1", ebls[0].getText());
+        assertEquals("let x = 0", ebls[1].getText());
+        assertSize(2, ebls);
+    }
 }
