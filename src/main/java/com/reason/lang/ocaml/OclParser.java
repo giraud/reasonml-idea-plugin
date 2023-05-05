@@ -422,18 +422,14 @@ public class OclParser extends CommonPsiParser {
             if (in(myTypes.C_TYPE_CONSTRAINT)) {
                 popEndUntil(myTypes.C_TYPE_CONSTRAINT).popEnd()
                         .advance().mark(myTypes.C_TYPE_CONSTRAINT);
-            } else if (inAny(myTypes.C_LET_DECLARATION, myTypes.C_TYPE_DECLARATION)) {
+            } else if (inAny(myTypes.C_MODULE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_TYPE_DECLARATION)) {
                 // pop scopes until a chainable expression is found
                 popEndUntilIndex(getIndex());
                 Marker marker = getLatestMarker();
 
                 popEnd().advance();
                 if (marker != null) {
-                    if (marker.isCompositeType(myTypes.C_LET_DECLARATION)) {
-                        mark(myTypes.C_LET_DECLARATION);
-                    } else if (marker.isCompositeType(myTypes.C_TYPE_DECLARATION)) {
-                        mark(myTypes.C_TYPE_DECLARATION);
-                    }
+                    mark(marker.getCompositeType());
                 }
             }
         }
