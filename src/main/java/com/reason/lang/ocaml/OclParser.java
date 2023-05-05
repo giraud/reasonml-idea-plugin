@@ -932,8 +932,6 @@ public class OclParser extends CommonPsiParser {
                 if (scopeLength <= 3) {
                     // unit ::  let ()
                     lParen.updateCompositeType(myTypes.C_UNIT);
-                } else {
-                    lParen.updateCompositeType(myTypes.C_DECONSTRUCTION);
                 }
             }
 

@@ -366,6 +366,16 @@ public class LetParsingTest extends OclParsingTestCase {
         assertSize(3, ebos);
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/407
+    @Test
+    public void test_GH_407() {
+        RPsiLetImpl e = firstOfType(parseCode("let (!!) r = !r"), RPsiLetImpl.class);
+
+        assertFalse(e.isDeconstruction());
+        assertInstanceOf(e.getNameIdentifier(), RPsiScopedExpr.class);
+        assertEquals("(!!)", e.getName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/409
     @Test
     public void test_GH_409() {

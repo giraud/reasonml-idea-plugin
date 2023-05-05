@@ -36,6 +36,7 @@ intellij {
                 <ul>
                     <li>#409 - Wrong structure on let b = 1 = 1 in</li>  
                     <li>#408 - let ... in not shown in let a = ... structure</li>
+                    <li>#407 - Support operator (non-alphanum) declarations</li>
                     <li>#406 - Faulty let open ... in parsing</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
