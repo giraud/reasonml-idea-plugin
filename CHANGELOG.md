@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+## 0.112 - 2023/05/05
+
 - :bug: ![o] [#409](https://github.com/giraud/reasonml-idea-plugin/issues/409) Wrong structure on let b = 1 = 1 in
 - :bug: ![o] [#408](https://github.com/giraud/reasonml-idea-plugin/issues/408) let ... in not shown in let a = ... structure
 - :bug: ![o] [#407](https://github.com/giraud/reasonml-idea-plugin/issues/407) Support operator (non-alphanum) declarations
