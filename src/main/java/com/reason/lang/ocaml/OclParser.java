@@ -970,6 +970,8 @@ public class OclParser extends CommonPsiParser {
                     } else {
                         popEndUntilScope();
                     }
+                } else if (strictlyIn(myTypes.C_FUNCTION_CALL) && nextElementType == myTypes.EQ) { // a boolean op ?  let _ = ignore () = ()
+                    popEndUntil(myTypes.C_FUNCTION_CALL).popEnd();
                 }
             }
         }
