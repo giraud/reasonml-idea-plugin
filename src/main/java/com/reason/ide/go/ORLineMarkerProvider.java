@@ -4,196 +4,285 @@ import com.intellij.codeInsight.daemon.*;
 import com.intellij.codeInsight.navigation.*;
 import com.intellij.openapi.editor.markup.*;
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
+import com.intellij.psi.search.searches.*;
+import com.intellij.psi.util.*;
 import com.reason.ide.*;
-import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
-import com.reason.lang.core.*;
+import com.reason.lang.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import jpsplugin.com.reason.*;
+import com.reason.lang.core.type.*;
+import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.stream.*;
+
+import static java.util.Collections.*;
 
 public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
-    private static final @NotNull Predicate<PsiElement> PSI_IMPL_PREDICATE = psiElement -> {
-        FileBase psiFile = (FileBase) psiElement.getContainingFile();
-        return !psiFile.isInterface() /*&& Platform.isSourceFile(psiFile) --> Not working with webstorm for ex */;
-    };
-    private static final @NotNull Predicate<PsiElement> PSI_INTF_PREDICATE = psiElement -> {
-        FileBase psiFile = (FileBase) psiElement.getContainingFile();
-        return psiFile.isInterface() /*&& Platform.isSourceFile(psiFile) --> Not working with webstorm for ex */;
-    };
-
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
-        PsiElement parent = element.getParent();
-        if (parent instanceof RPsiDeconstruction) {
-            parent = parent.getParent();
-        }
-
         Project project = element.getProject();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        FileBase containingFile = (FileBase) element.getContainingFile();
-        boolean isInterface = containingFile.isInterface();
 
-        if (element instanceof RPsiLowerSymbol) {
-            if (parent instanceof RPsiLet) {
-                String qNameLet = ((RPsiLetImpl) parent).getQualifiedName();
-                if (((RPsiLet) parent).isDeconstruction()) {
-                    qNameLet = Joiner.join(".", ORUtil.getQualifiedPath(parent)) + "." + element.getText();
+        RelatedItemLineMarkerInfo<PsiElement> marker = null;
+
+        // LET
+        if (element instanceof RPsiLet) {
+            RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
+            boolean inInterface = module != null && module.isInterface();
+            List<? extends RPsiQualifiedPathElement> targets = null;
+            boolean isOcaml = element.getLanguage() == OclLanguage.INSTANCE;
+
+            if (module instanceof RPsiInnerModule) {
+                String elementName = ((RPsiQualifiedPathElement) element).getName();
+                if (elementName != null) {
+                    targets = inInterface ? findTargetFromInterfaceModule((RPsiInnerModule) module, elementName, RPsiVar.class)
+                            : findTargetFromImplementationModule((RPsiInnerModule) module, elementName, RPsiVar.class);
                 }
-                final String qName = qNameLet;
-
-                Collection<RPsiVal> vals = ValFqnIndex.getElements(qName, project, scope);
-                vals.stream()
-                        .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
-                        .findFirst()
-                        .ifPresentOrElse(psiVal ->
-                                        result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiVal.getContainingFile(), psiVal))
-                                , () -> {
-                                    Collection<RPsiLet> lets = LetFqnIndex.getElements(qName, project, scope);
-                                    lets.stream()
-                                            .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
-                                            .findFirst()
-                                            .ifPresent(psiLet ->
-                                                    result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiLet.getContainingFile(), psiLet))
-                                            );
-                                });
-            } else if (parent instanceof RPsiExternal) {
-                String externalQName = ((RPsiExternalImpl) parent).getQualifiedName();
-                Collection<RPsiExternal> elements = ExternalFqnIndex.getElements(externalQName, project, scope);
-                elements.stream()
-                        .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
-                        .findFirst()
-                        .ifPresent(psiTarget ->
-                                result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiTarget.getContainingFile(), psiTarget))
-                        );
-            } else if (parent instanceof RPsiValImpl) {
-                String valQName = ((RPsiValImpl) parent).getQualifiedName();
-                Collection<RPsiLet> elements = LetFqnIndex.getElements(valQName, project, scope);
-                elements.stream()
-                        .filter(PSI_IMPL_PREDICATE)
-                        .findFirst()
-                        .ifPresent(psiTarget ->
-                                result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiTarget.getContainingFile(), psiTarget))
-                        );
-            } else if (parent instanceof RPsiType) {
-                String valQName = ((RPsiTypeImpl) parent).getQualifiedName();
-                Collection<RPsiType> elements = TypeFqnIndex.getElements(valQName, project, scope);
-                elements.stream()
-                        .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
-                        .findFirst()
-                        .ifPresent(psiTarget ->
-                                result.add(createGutterIcon(element, isInterface, "type", (FileBase) psiTarget.getContainingFile(), psiTarget))
-                        );
-            } else if (parent instanceof RPsiClass) {
-                String qName = ((RPsiClassImpl) parent).getQualifiedName();
-                Collection<RPsiClass> elements = ClassFqnIndex.getElements(qName.hashCode(), project, scope);
-                elements.stream()
-                        .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
-                        .findFirst()
-                        .ifPresent(psiTarget ->
-                                result.add(createGutterIcon(element, isInterface, "class", (FileBase) psiTarget.getContainingFile(), psiTarget))
-                        );
-            } else if (parent instanceof RPsiClassMethodImpl) {
-                String qName = ((RPsiClassMethodImpl) parent).getQualifiedName();
-                Collection<RPsiClassMethod> elements = ClassMethodFqnIndex.getElements(qName.hashCode(), project, scope);
-                elements.stream()
-                        .filter(isInterface ? PSI_IMPL_PREDICATE : PSI_INTF_PREDICATE)
-                        .findFirst()
-                        .ifPresent(psiTarget ->
-                                result.add(createGutterIcon(element, isInterface, "method", (FileBase) psiTarget.getContainingFile(), psiTarget))
-                        );
-            }
-        } else if (element instanceof RPsiUpperSymbol) {
-            if (parent instanceof RPsiInnerModule) {
-                extractRelatedExpressions(
-                        element.getFirstChild(),
-                        ((RPsiInnerModule) parent).getQualifiedName(),
-                        result,
-                        containingFile,
-                        "module",
-                        RPsiInnerModule.class);
-            } else if (parent instanceof RPsiException) {
-                extractRelatedExpressions(
-                        element.getFirstChild(),
-                        ((RPsiException) parent).getQualifiedName(),
-                        result,
-                        containingFile,
-                        "exception",
-                        RPsiException.class);
-            }
-        }
-    }
-
-    @SafeVarargs
-    private <T extends PsiQualifiedNamedElement> void extractRelatedExpressions(@Nullable PsiElement element,
-                                                                                @Nullable String qname,
-                                                                                @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result,
-                                                                                @NotNull FileBase containingFile,
-                                                                                @NotNull String method,
-                                                                                @NotNull Class<? extends T>... clazz) {
-        if (element == null) {
-            return;
-        }
-
-        FileBase psiRelatedFile = findRelatedFile(containingFile);
-        if (psiRelatedFile != null) {
-            List<T> expressions = psiRelatedFile.getQualifiedExpressions(qname, clazz);
-            if (expressions.size() >= 1) {
-                // Get latest
-                T relatedElement = null;
-                for (T expression : expressions) {
-                    relatedElement = expression;
-                }
-
-                if (relatedElement != null) {
-                    result.add(createGutterIcon(element, containingFile.isInterface(), method, psiRelatedFile, relatedElement));
-                }
-            }
-        }
-    }
-
-    private @NotNull <T extends PsiQualifiedNamedElement> RelatedItemLineMarkerInfo<PsiElement> createGutterIcon(@NotNull PsiElement psiSource, boolean isInterface, @NotNull String method, @NotNull FileBase relatedFile, T relatedElement) {
-        // GutterTooltipHelper only available for java based IDE ?
-        VirtualFile virtualFile = ORFileUtils.getVirtualFile(relatedFile);
-        String tooltip = "";
-        if (virtualFile != null) {
-            String relatedFilename = virtualFile.getName();
-            tooltip = "<html><body><p>" +
-                    (isInterface ? "Implements " : "Declare ") + method + " in " +
-                    "<a href=\"#navigation/" + virtualFile.getPath() + ":0\"><code>" + relatedFilename + "</code></a>" +
-                    "</p></body></html>";
-        }
-
-        return NavigationGutterIconBuilder.create(isInterface ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
-                .setTooltipText(tooltip)
-                .setAlignment(GutterIconRenderer.Alignment.RIGHT)
-                .setTargets(Collections.singleton(relatedElement))
-                .createLineMarkerInfo(psiSource);
-    }
-
-    @Nullable
-    public FileBase findRelatedFile(@NotNull FileBase file) {
-        PsiDirectory directory = file.getParent();
-        if (directory != null) {
-            VirtualFile virtualFile = ORFileUtils.getVirtualFile(file);
-            String filename = virtualFile == null ? "" : virtualFile.getNameWithoutExtension();
-
-            String relatedExtension;
-            if (FileHelper.isReason(file.getFileType())) {
-                relatedExtension = file.isInterface() ? RmlFileType.INSTANCE.getDefaultExtension() : RmlInterfaceFileType.INSTANCE.getDefaultExtension();
             } else {
-                relatedExtension = file.isInterface() ? OclFileType.INSTANCE.getDefaultExtension() : OclInterfaceFileType.INSTANCE.getDefaultExtension();
+                // Top module navigation
+                String qName = ((RPsiQualifiedPathElement) element).getQualifiedName();
+                Collection<? extends RPsiVar> resolvedElements;
+                if (isOcaml && !inInterface) {
+                    resolvedElements = qName == null ? null : ValFqnIndex.getElements(qName, project, scope);
+                } else {
+                    resolvedElements = qName == null ? null : LetFqnIndex.getElements(qName, project, scope);
+                }
+                targets = resolveTargetFromIndex(inInterface, resolvedElements);
             }
 
-            PsiFile relatedPsiFile = directory.findFile(filename + "." + relatedExtension);
-            return relatedPsiFile instanceof FileBase ? (FileBase) relatedPsiFile : null;
+            marker = createMarkerInfo((RPsiLet) element, inInterface, "let/val", targets);
+        }
+        // VAL
+        else if (element instanceof RPsiVal) {
+            RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
+            boolean inInterface = module != null && module.isInterface();
+            List<? extends RPsiQualifiedPathElement> targets = null;
+
+            if (module instanceof RPsiInnerModule) {
+                String elementName = ((RPsiQualifiedPathElement) element).getName();
+                if (elementName != null) {
+                    targets = inInterface ? findTargetFromInterfaceModule((RPsiInnerModule) module, elementName, RPsiVar.class)
+                            : findTargetFromImplementationModule((RPsiInnerModule) module, elementName, RPsiVar.class);
+                }
+            } else {
+                // Top module navigation
+                String qName = ((RPsiQualifiedPathElement) element).getQualifiedName();
+                Collection<? extends RPsiVar> resolvedElements = qName == null ? null : LetFqnIndex.getElements(qName, project, scope);
+                targets = resolveTargetFromIndex(inInterface, resolvedElements);
+            }
+
+            marker = createMarkerInfo((PsiNameIdentifierOwner) element, inInterface, "let/val", targets);
+        }
+        // TYPE
+        else if (element instanceof RPsiType) {
+            RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
+            boolean inInterface = module != null && module.isInterface();
+            List<RPsiType> targetTypes = emptyList();
+
+            if (module instanceof RPsiInnerModule) {
+                String elementName = ((RPsiQualifiedPathElement) element).getName();
+                if (elementName != null) {
+                    targetTypes = inInterface ? findTargetFromInterfaceModule((RPsiInnerModule) module, elementName, RPsiType.class)
+                            : findTargetFromImplementationModule((RPsiInnerModule) module, elementName, RPsiType.class);
+                }
+            } else {
+                // Top module navigation
+                String qName = ((RPsiQualifiedPathElement) element).getQualifiedName();
+                Collection<RPsiType> resolvedElements = qName == null ? null : TypeFqnIndex.getElements(qName, project, scope);
+                targetTypes = resolveTargetFromIndex(inInterface, resolvedElements);
+            }
+
+            marker = createMarkerInfo((RPsiType) element, inInterface, "type", targetTypes);
+        }
+        // EXTERNAL
+        else if (element instanceof RPsiExternal) {
+            RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
+            boolean inInterface = module != null && module.isInterface();
+            List<RPsiExternal> targets = null;
+
+            if (module instanceof RPsiInnerModule) {
+                String elementName = ((RPsiQualifiedPathElement) element).getName();
+                if (elementName != null) {
+                    targets = inInterface ? findTargetFromInterfaceModule((RPsiInnerModule) module, elementName, RPsiExternal.class)
+                            : findTargetFromImplementationModule((RPsiInnerModule) module, elementName, RPsiExternal.class);
+                }
+            } else {
+                // Top module navigation
+                String qName = ((RPsiQualifiedPathElement) element).getQualifiedName();
+                Collection<RPsiExternal> resolvedElements = qName == null ? null : ExternalFqnIndex.getElements(qName, project, scope);
+                targets = resolveTargetFromIndex(inInterface, resolvedElements);
+            }
+
+            marker = createMarkerInfo((RPsiExternal) element, inInterface, "external", targets);
+        }
+        // CLASS
+        else if (element instanceof RPsiClass) {
+            RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
+            boolean inInterface = module != null && module.isInterface();
+            List<RPsiClass> targets = null;
+
+            if (module instanceof RPsiInnerModule) {
+                String elementName = ((RPsiQualifiedPathElement) element).getName();
+                if (elementName != null) {
+                    targets = inInterface ? findTargetFromInterfaceModule((RPsiInnerModule) module, elementName, RPsiClass.class)
+                            : findTargetFromImplementationModule((RPsiInnerModule) module, elementName, RPsiClass.class);
+                }
+            } else {
+                // Top module navigation
+                String qName = ((RPsiQualifiedPathElement) element).getQualifiedName();
+                Collection<RPsiClass> resolvedElements = qName == null ? null : ClassFqnIndex.getElements(qName, project, scope);
+                targets = resolveTargetFromIndex(inInterface, resolvedElements);
+            }
+
+            marker = createMarkerInfo((RPsiClass) element, inInterface, "class", targets);
+        }
+        // CLASS METHOD
+        else if (element instanceof RPsiClassMethodImpl) {
+            RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
+            boolean inInterface = module != null && module.isInterface();
+            List<RPsiClassMethod> targets = null;
+
+            if (module instanceof RPsiInnerModule) {
+                String elementName = ((RPsiQualifiedPathElement) element).getName();
+                if (elementName != null) {
+                    targets = inInterface ? findTargetFromInterfaceModule((RPsiInnerModule) module, elementName, RPsiClassMethod.class)
+                            : findTargetFromImplementationModule((RPsiInnerModule) module, elementName, RPsiClassMethod.class);
+                }
+            } else {
+                // Top module navigation
+                String qName = ((RPsiQualifiedPathElement) element).getQualifiedName();
+                Collection<RPsiClassMethod> resolvedElements = qName == null ? null : ClassMethodFqnIndex.getElements(qName, project, scope);
+                targets = resolveTargetFromIndex(inInterface, resolvedElements);
+            }
+
+            marker = createMarkerInfo((RPsiClassMethod) element, inInterface, "method", targets);
+        }
+        // EXCEPTION
+        else if (element instanceof RPsiException) {
+            RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
+            boolean inInterface = module != null && module.isInterface();
+            List<RPsiException> targets = null;
+
+            if (module instanceof RPsiInnerModule) {
+                String elementName = ((RPsiQualifiedPathElement) element).getName();
+                if (elementName != null) {
+                    targets = inInterface ? findTargetFromInterfaceModule((RPsiInnerModule) module, elementName, RPsiException.class)
+                            : findTargetFromImplementationModule((RPsiInnerModule) module, elementName, RPsiException.class);
+                }
+            } else {
+                // Top module navigation
+                String qName = ((RPsiQualifiedPathElement) element).getQualifiedName();
+                Collection<RPsiException> resolvedElements = qName == null ? null : ExceptionFqnIndex.getElements(qName, project, scope);
+                targets = resolveTargetFromIndex(inInterface, resolvedElements);
+            }
+
+            marker = createMarkerInfo((RPsiException) element, inInterface, "exception", targets);
+        }
+        // MODULE
+        else if (element instanceof RPsiInnerModule) {
+            RPsiInnerModule module = (RPsiInnerModule) element;
+            List<RPsiInnerModule> targets = null;
+
+            if (module.isInterface()) {
+                // Find module(s) from interface
+                targets = ReferencesSearch.search(module).findAll().stream()
+                        .map(searchReference -> {
+                            PsiElement referenceElement = searchReference.getElement().getParent();
+                            PsiElement targetElement = (referenceElement instanceof RPsiModuleType) ? referenceElement.getParent() : null;
+                            return (targetElement instanceof RPsiInnerModule) ? (RPsiInnerModule) targetElement : null;
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+            } else {
+                // Find interface from module
+                RPsiModuleType moduleType = module.getModuleType();
+                PsiElement lastChild = moduleType == null ? null : PsiTreeUtil.lastChild(moduleType);
+                if (lastChild instanceof RPsiUpperSymbol) {
+                    PsiElement resolvedElement = ((RPsiUpperSymbol) lastChild).getReference().resolveInterface();
+                    if (resolvedElement instanceof RPsiInnerModule) {
+                        targets = singletonList((RPsiInnerModule) resolvedElement);
+                    }
+                }
+            }
+
+            marker = createMarkerInfo(module, module.isInterface(), "module", targets);
+        }
+
+        if (marker != null) {
+            result.add(marker);
+        }
+    }
+
+    private static @NotNull <T extends RPsiQualifiedPathElement> List<T> resolveTargetFromIndex(boolean inInterface, @Nullable Collection<T> resolvedElements) {
+        if (resolvedElements != null) {
+            for (T resolvedElement : resolvedElements) {
+                RPsiModule targetModule = PsiTreeUtil.getStubOrPsiParentOfType(resolvedElement, RPsiModule.class);
+                boolean targetInterface = targetModule != null && targetModule.isInterface();
+                if (inInterface && !targetInterface) {
+                    return singletonList(resolvedElement);
+                } else if (!inInterface && targetInterface) {
+                    return singletonList(resolvedElement);
+                }
+            }
+        }
+        return emptyList();
+    }
+
+    private @NotNull <T extends RPsiQualifiedPathElement> List<T> findTargetFromImplementationModule(@NotNull RPsiInnerModule sourceModule, @NotNull String elementName, @NotNull Class<T> expectedClass) {
+        RPsiModuleType sourceModuleType = sourceModule.getModuleType();
+        PsiElement lastChild = sourceModuleType == null ? null : PsiTreeUtil.lastChild(sourceModuleType);
+        if (lastChild instanceof RPsiUpperSymbol) {
+            PsiElement resolvedElement = ((RPsiUpperSymbol) lastChild).getReference().resolveInterface();
+            if (resolvedElement instanceof RPsiInnerModule) {
+                for (T rPsiType : PsiTreeUtil.getChildrenOfTypeAsList(((RPsiInnerModule) resolvedElement).getBody(), expectedClass)) {
+                    if (elementName.equals(rPsiType.getName())) {
+                        return singletonList(rPsiType);
+                    }
+                }
+            }
+        }
+        return emptyList();
+    }
+
+    private @NotNull <T extends RPsiQualifiedPathElement> List<T> findTargetFromInterfaceModule(@NotNull RPsiInnerModule sourceModule, @NotNull String elementName, @NotNull Class<T> expectedClass) {
+        List<RPsiInnerModule> targetModules = ReferencesSearch.search(sourceModule).findAll().stream()
+                .map(searchReference -> {
+                    PsiElement referenceElement = searchReference.getElement().getParent();
+                    PsiElement targetElement = (referenceElement instanceof RPsiModuleType) ? referenceElement.getParent() : null;
+                    return (targetElement instanceof RPsiInnerModule) ? (RPsiInnerModule) targetElement : null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        if (!targetModules.isEmpty()) {
+            return targetModules.stream().map(module -> {
+                        for (T targetElement : PsiTreeUtil.getChildrenOfTypeAsList(module.getBody(), expectedClass)) {
+                            if (elementName.equals(targetElement.getName())) {
+                                return targetElement;
+                            }
+                        }
+                        return null;
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
+
+        return emptyList();
+    }
+
+    private @Nullable <T extends PsiQualifiedNamedElement> RelatedItemLineMarkerInfo<PsiElement> createMarkerInfo(@NotNull PsiNameIdentifierOwner psiSource, boolean isInterface, @NotNull String method, @Nullable Collection<T> relatedElements) {
+        PsiElement nameIdentifier = psiSource.getNameIdentifier();
+        if (nameIdentifier != null && relatedElements != null && !relatedElements.isEmpty()) {
+            return NavigationGutterIconBuilder.create(isInterface ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
+                    .setTooltipText((isInterface ? "Implements " : "Declare ") + method)
+                    .setAlignment(GutterIconRenderer.Alignment.RIGHT)
+                    .setTargets(relatedElements)
+                    .createLineMarkerInfo(nameIdentifier);
         }
         return null;
     }

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public interface RPsiInnerModule extends RPsiModule, StubBasedPsiElement<PsiModuleStub>, NavigatablePsiElement {
+public interface RPsiInnerModule extends RPsiModule, StubBasedPsiElement<PsiModuleStub>, NavigatablePsiElement, PsiNameIdentifierOwner {
     @Nullable
     String getAlias();
 

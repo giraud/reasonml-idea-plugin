@@ -7,7 +7,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public interface RPsiLet extends RPsiVar, RPsiSignatureElement, RPsiInferredType, RPsiQualifiedPathElement, NavigatablePsiElement, RPsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
+public interface RPsiLet extends RPsiVar, RPsiSignatureElement, RPsiInferredType, RPsiQualifiedPathElement, NavigatablePsiElement, RPsiStructuredElement, PsiNameIdentifierOwner, StubBasedPsiElement<PsiLetStub> {
     @Nullable
     RPsiLetBinding getBinding();
 

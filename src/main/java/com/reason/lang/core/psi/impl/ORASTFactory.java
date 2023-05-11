@@ -230,7 +230,7 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
 
     @Override
     public @Nullable LeafElement createLeaf(@NotNull IElementType type, @NotNull CharSequence text) {
-        if (type == myTypes.UIDENT || type == myTypes.A_VARIANT_NAME || type == myTypes.A_MODULE_NAME) {
+        if (type == myTypes.UIDENT || type == myTypes.A_VARIANT_NAME || type == myTypes.A_MODULE_NAME || type == myTypes.A_EXCEPTION_NAME) {
             if (!DUMMY_IDENTIFIER_TRIMMED.contentEquals(text)) {
                 return new RPsiUpperSymbol(myTypes, type, text);
             }

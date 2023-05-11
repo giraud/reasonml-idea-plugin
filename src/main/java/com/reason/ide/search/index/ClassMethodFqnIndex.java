@@ -20,7 +20,7 @@ public class ClassMethodFqnIndex extends IntStubIndexExtension<RPsiClassMethod> 
         return IndexKeys.CLASS_METHODS_FQN;
     }
 
-    public static @NotNull Collection<RPsiClassMethod> getElements(int key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.CLASS_METHODS_FQN, key, project, scope, RPsiClassMethod.class);
+    public static @NotNull Collection<RPsiClassMethod> getElements(String qName, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.CLASS_METHODS_FQN, qName.hashCode(), project, scope, RPsiClassMethod.class);
     }
 }
