@@ -69,7 +69,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     ResTypes.INSTANCE.VAL, ResTypes.INSTANCE.PUB, ResTypes.INSTANCE.PRI, ResTypes.INSTANCE.OBJECT,
                     ResTypes.INSTANCE.MUTABLE, ResTypes.INSTANCE.UNIT, ResTypes.INSTANCE.WITH, ResTypes.INSTANCE.DIRECTIVE_IF,
                     ResTypes.INSTANCE.DIRECTIVE_ELSE, ResTypes.INSTANCE.DIRECTIVE_ELIF, ResTypes.INSTANCE.DIRECTIVE_END,
-                    ResTypes.INSTANCE.DIRECTIVE_ENDIF);
+                    ResTypes.INSTANCE.DIRECTIVE_ENDIF, ResTypes.INSTANCE.UNPACK);
 
     private static final Set<IElementType> RES_OPERATION_SIGN_TYPES =
             of(
