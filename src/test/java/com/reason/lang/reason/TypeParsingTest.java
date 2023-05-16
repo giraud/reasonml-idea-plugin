@@ -72,6 +72,16 @@ public class TypeParsingTest extends RmlParsingTestCase {
     }
 
     @Test
+    public void test_extensible_variant() {
+        RPsiType e = firstOfType(parseCode("type Mod.variant +=\n | Add(List.t(Path.t));"), RPsiType.class);
+
+        assertNoParserError(e);
+        assertEquals("variant", e.getName());
+        assertEquals("| Add(List.t(Path.t))", e.getBinding().getText());
+        assertDoesntContain(extractUpperSymbolTypes(e), myTypes.A_UPPER_TAG_NAME);
+    }
+
+    @Test
     public void test_type_binding_with_record() {
         RPsiType e = first(typeExpressions(parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n};")));
 

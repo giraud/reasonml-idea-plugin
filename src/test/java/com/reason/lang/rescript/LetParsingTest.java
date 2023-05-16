@@ -156,6 +156,7 @@ public class LetParsingTest extends ResParsingTestCase {
     public void test_deconstruction() {
         RPsiLet e = firstOfType(parseCode("let (a, b) = x"), RPsiLet.class);
 
+        assertNoParserError(e);
         assertTrue(e.isDeconstruction());
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
@@ -169,6 +170,7 @@ public class LetParsingTest extends ResParsingTestCase {
     public void test_deconstruction_nested() { // belt_Map offset 2272
         RPsiLet e = firstOfType(parseCode("let ((l, r), b) = Dict.split(~cmp, m.data, x)"), RPsiLet.class);
 
+        assertNoParserError(e);
         assertTrue(e.isDeconstruction());
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(3, names);

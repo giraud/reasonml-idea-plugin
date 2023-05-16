@@ -1178,6 +1178,9 @@ public class ResParser extends CommonPsiParser {
                     markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
                             .mark(myTypes.C_PARAM_DECLARATION);
                 }
+            } else if (is(myTypes.C_TYPE_DECLARATION)) {
+              // type |>M<|.t += ...
+              remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_TYPE_BINDING)) {
                 IElementType nextToken = lookAhead(1);
                 if (nextToken == myTypes.DOT) { // a path
@@ -1328,7 +1331,7 @@ public class ResParser extends CommonPsiParser {
                     && previousType != myTypes.L_OR
             ) {
                 Marker marker = getActiveMarker();
-                boolean end = marker == null || !marker.isCompositeType(myTypes.C_BINARY_CONDITION);
+                boolean end = marker == null || !(marker.isCompositeType(myTypes.C_BINARY_CONDITION) || marker.isCompositeType(myTypes.C_PARAM));
                 if (end) {
                     popEndUntilScope();
                 }

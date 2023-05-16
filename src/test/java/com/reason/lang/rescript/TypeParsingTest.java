@@ -71,9 +71,21 @@ public class TypeParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_poly_variant() {
-        RPsiType e = first(typeExpressions(parseCode("type t = [#visible | #hidden | #collapse]")));
+        RPsiType e = firstOfType(parseCode("type t = [#visible | #hidden | #collapse]"), RPsiType.class);
+
+        assertNoParserError(e);
         assertEmpty(PsiTreeUtil.findChildrenOfType(e, RPsiPatternMatch.class));
         assertSize(3, PsiTreeUtil.findChildrenOfType(e, RPsiVariantDeclaration.class));
+    }
+
+    @Test
+    public void test_extensible_variant() {
+        RPsiType e = firstOfType(parseCode("type Mod.variant +=\n | Add(List.t<Path.t>)"), RPsiType.class);
+
+        assertNoParserError(e);
+        assertEquals("variant", e.getName() );
+        assertEquals("| Add(List.t<Path.t>)", e.getBinding().getText());
+        assertDoesntContain(extractUpperSymbolTypes(e), myTypes.A_UPPER_TAG_NAME);
     }
 
     @Test
