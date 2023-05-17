@@ -522,15 +522,14 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseModule() {
-            if (currentHasScope() && isParent(myTypes.C_SIG_ITEM)) {
-                // let fn = (~x : ( |>module<| ... ) ...
-                popEndUntil(myTypes.C_SCOPED_EXPR).dropLatest()
-                        .mark(myTypes.C_MODULE_VALUE);
-            } else if (in(myTypes.C_DEFAULT_VALUE)) {
-                // let fn = (~x:(module X)= ( |>module<| ... ) ...
-                popIfHold()
-                        .updateLatestComposite(myTypes.H_PLACE_HOLDER).dropLatest()
-                        .mark(myTypes.C_MODULE_VALUE);
+            if (strictlyInAny(myTypes.C_SIG_ITEM, myTypes.C_DEFAULT_VALUE)) {
+                if (isFound(myTypes.C_SIG_ITEM)) {
+                    // let fn = (~x : |>module<| (...) ...
+                    mark(myTypes.C_MODULE_VALUE);
+                } else if (isFound(myTypes.C_DEFAULT_VALUE)) {
+                    // let fn = (~x: module(X)= |>module<| (...) ...
+                    mark(myTypes.C_MODULE_VALUE);
+                }
             } else if (!is(myTypes.C_MACRO_NAME)) {
                 popEndUntilScope();
                 mark(myTypes.C_MODULE_DECLARATION);
