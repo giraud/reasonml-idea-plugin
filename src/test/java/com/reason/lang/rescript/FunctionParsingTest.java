@@ -312,6 +312,30 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("(. ()) => 1", f.getText());
     }
 
+    @Test
+    public void test_x() {
+        RPsiLet e = firstOfType(parseCode("\n" +
+                "  let _ = (. s) =>\n" +
+                "    memoize2(\n" +
+                "      x,\n" +
+                "      fnCall(. s),\n" +
+                "      ((\n" +
+                "        types,\n" +
+                "        aMap: Belt.Map.String.t<array<MyMod.Function.t>>,\n" +
+                "      )) => {\n" +
+                "        types\n" +
+                "        ->Belt.List.sort((type1, type2) => compare(type1.value, type2.value))\n" +
+                "      },\n" +
+                "    )\n"), RPsiLet.class);
+
+        assertNoParserError(e);
+        RPsiFunctionCall efc = (RPsiFunctionCall) e.getFunction().getBody().getFirstChild();
+        assertEquals("memoize2", efc.getName());
+        assertSize(3, efc.getParameters());
+
+        // TODO assertDoesntContain(collection, myTypes.A_LOWER_TAG_NAME);
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/113
     @Test
     public void test_GH_113() {
