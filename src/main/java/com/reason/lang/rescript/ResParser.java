@@ -1073,7 +1073,8 @@ public class ResParser extends CommonPsiParser {
         private void parseEq() {
             if (strictlyInAny(
                     myTypes.C_TYPE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_MODULE_TYPE, myTypes.C_MODULE_DECLARATION,
-                    myTypes.C_TAG_PROPERTY, myTypes.C_SIG_EXPR, myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM
+                    myTypes.C_TAG_PROPERTY, myTypes.C_SIG_EXPR, myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM,
+                    myTypes.C_TYPE_CONSTRAINT, myTypes.C_TYPE_BINDING
             )) {
 
                 if (isFound(myTypes.C_TYPE_DECLARATION)) {
@@ -1115,8 +1116,17 @@ public class ResParser extends CommonPsiParser {
                     popEndUntilFoundIndex()
                             .advance().mark(myTypes.C_DEFAULT_VALUE)
                             .markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_TYPE_CONSTRAINT)) {
+                    // ... with type t |> =<| ...
+                    advance().mark(myTypes.C_TYPE_BINDING);
+                } else if (isFound(myTypes.C_TYPE_BINDING) && strictlyIn(myTypes.C_CONSTRAINTS)) {
+                    // .. with type .. = .. |> =<| ..
+                    popEndUntilFoundIndex().popEnd();
+                    if (strictlyIn(myTypes.C_MODULE_DECLARATION)) {
+                        popEndUntilFoundIndex()
+                                .advance().mark(myTypes.C_MODULE_BINDING);
+                    }
                 }
-
             }
         }
 
@@ -1179,8 +1189,8 @@ public class ResParser extends CommonPsiParser {
                             .mark(myTypes.C_PARAM_DECLARATION);
                 }
             } else if (is(myTypes.C_TYPE_DECLARATION)) {
-              // type |>M<|.t += ...
-              remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                // type |>M<|.t += ...
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_TYPE_BINDING)) {
                 IElementType nextToken = lookAhead(1);
                 if (nextToken == myTypes.DOT) { // a path
