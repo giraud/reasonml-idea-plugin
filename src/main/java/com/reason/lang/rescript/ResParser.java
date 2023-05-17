@@ -671,24 +671,48 @@ public class ResParser extends CommonPsiParser {
                 popEnd();
             }
 
-            // else
-            if (strictlyIn(myTypes.C_PARAMETERS) && isFoundScope(myTypes.LT)) {
-                // type x< ... |> ><|
-                popEndUntilFoundIndex().advance().end();
-            } else if (in(myTypes.C_SCOPED_EXPR) && isFoundScope(myTypes.LT)) {
-                popEndUntilFoundIndex().advance().popEnd();
-                if (strictlyIn(myTypes.C_OPTION)) {
-                    // option < ... |> > <| ...
-                    popEnd();
-                }
-            } else if (inAny(myTypes.C_TAG_START, myTypes.C_TAG_CLOSE)) {
-                if (isFound(myTypes.C_TAG_START)) {
+            if (strictlyInAny(myTypes.C_PARAMETERS, myTypes.C_SCOPED_EXPR, myTypes.C_TAG_START, myTypes.C_TAG_CLOSE)) {
+                if (isFound(myTypes.C_PARAMETERS)) {
+                    if (isFoundScope(myTypes.LT)) {
+                        // type x< ... |> ><|
+                        popEndUntilFoundIndex().advance().end();
+                    }
+                } else if (isFound(myTypes.C_SCOPED_EXPR)) {
+                    if (isFoundScope(myTypes.LT)) {
+                        popEndUntilFoundIndex().advance().popEnd();
+                        if (strictlyIn(myTypes.C_OPTION)) {
+                            // option < ... |> > <| ...
+                            popEnd();
+                        }
+                    }
+                } else if (isFound(myTypes.C_TAG_START)) {
+                    // <Comp ... |> ><|
                     popEndUntilFoundIndex().advance().end();
                     mark(myTypes.C_TAG_BODY);
                 } else if (isFound(myTypes.C_TAG_CLOSE)) {
+                    // </Comp ... |> ><|
                     advance().popEndUntil(myTypes.C_TAG).end();
                 }
             }
+            //else {
+            //    if (strictlyIn(myTypes.C_PARAMETERS) && isFoundScope(myTypes.LT)) {
+            //        // type x< ... |> ><|
+            //        popEndUntilFoundIndex().advance().end();
+            //    } else if (in(myTypes.C_SCOPED_EXPR) && isFoundScope(myTypes.LT)) {
+            //        popEndUntilFoundIndex().advance().popEnd();
+            //        if (strictlyIn(myTypes.C_OPTION)) {
+            //            // option < ... |> > <| ...
+            //            popEnd();
+            //        }
+            //    } else if (inAny(myTypes.C_TAG_START, myTypes.C_TAG_CLOSE)) {
+            //        if (isFound(myTypes.C_TAG_START)) {
+            //            popEndUntilFoundIndex().advance().end();
+            //            mark(myTypes.C_TAG_BODY);
+            //        } else if (isFound(myTypes.C_TAG_CLOSE)) {
+            //            advance().popEndUntil(myTypes.C_TAG).end();
+            //        }
+            //    }
+            //}
         }
 
         private void parseGtAutoClose() {
