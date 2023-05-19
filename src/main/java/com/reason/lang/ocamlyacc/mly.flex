@@ -21,6 +21,8 @@ import static com.intellij.psi.TokenType.*;
   private CharSequence quotedStringId;
   private int braceDepth;
   private boolean rulesDone = false;
+  private boolean zzEOFDone = false;
+  private boolean zzAtBOL = false;
 
    public YaccLexer() {
       this((java.io.Reader)null);

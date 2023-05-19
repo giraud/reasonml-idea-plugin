@@ -6,8 +6,8 @@
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
+    <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="java-deps.xml">com.intellij.modules.java</depends>
-
     <depends optional="true" config-file="js-deps.xml">JavaScript</depends>
 
     <actions>
@@ -109,7 +109,7 @@
          -->
 
         <fileEditorProvider implementation="com.reason.ide.editors.CmtFileEditorProvider"/>
-        <internalFileTemplate name="Rescript Module" />
+        <internalFileTemplate name="Rescript Module"/>
         <!-- https://github.com/giraud/reasonml-idea-plugin/issues/247 -->
         <!-- internalFileTemplate name="OCaml Interface" -->
         <!-- internalFileTemplate name="OCaml Module" -->
@@ -149,9 +149,11 @@
         <lang.syntaxHighlighterFactory language="Mlg"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- OCaml - lex -->
-        <lang.parserDefinition language="Mll" implementationClass="com.reason.lang.extra.OclMllParserDefinition"/>
+        <lang.parserDefinition language="Mll" implementationClass="com.reason.lang.ocamllex.OclLexParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Mll"
-                                       implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
+                                       implementationClass="com.reason.ide.highlight.OclLexSyntaxHighlighterFactory"/>
+        <lang.fileViewProviderFactory language="Mll"
+                                      implementationClass="com.reason.ide.files.MllFileViewProviderFactory"/>
         <!-- OCaml - yacc -->
         <lang.parserDefinition language="Mly" implementationClass="com.reason.lang.ocamlyacc.OclYaccParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Mly"

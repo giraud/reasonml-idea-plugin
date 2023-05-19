@@ -19,7 +19,7 @@ public class OclParser extends CommonPsiParser {
         PsiElement parentElement = chameleon.getTreeParent().getPsi();
         Project project = parentElement.getProject();
 
-        PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new OclLexer(), root.getLanguage(), chameleon.getText());
+        PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new OclLexer(), root.getLanguage(), chameleon.getChars());
         OclParser parser = new OclParser(true);
 
         return parser.parse(root, builder).getFirstChildNode();

@@ -33,8 +33,8 @@ public class FreeExpressionCompletionProvider {
         LOG.debug("FREE expression completion");
 
         Project project = element.getProject();
-        FileBase containingFile = (FileBase) element.getContainingFile();
-        String topModuleName = containingFile.getModuleName();
+        PsiFile containingFile = element.getContainingFile();
+        String topModuleName = containingFile instanceof FileBase ? ((FileBase) containingFile).getModuleName() : null;
         ORLanguageProperties languageProperties = ORLanguageProperties.cast(element.getLanguage());
         FileModuleIndexService fileModuleIndexService = FileModuleIndexService.getService();
 

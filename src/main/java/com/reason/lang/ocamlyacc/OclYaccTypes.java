@@ -1,11 +1,21 @@
 // This is a generated file. Not intended for manual editing.
 package com.reason.lang.ocamlyacc;
 
+import com.intellij.lang.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
+import com.reason.lang.ocaml.*;
+import org.jetbrains.annotations.*;
 
 public class OclYaccTypes extends ORTypes {
     public static final OclYaccTypes INSTANCE = new OclYaccTypes();
+
+    public final ILazyParseableElementType OCAML_LAZY_NODE = new ILazyParseableElementType("OCAML_LAZY_NODE", OclYaccLanguage.INSTANCE) {
+        @Override
+        public ASTNode parseContents(@NotNull ASTNode chameleon) {
+            return OclParser.parseOcamlNode(this, chameleon);
+        }
+    };
 
     final IElementType DECLARATION = new OclYaccElementType("DECLARATION");
     final IElementType HEADER = new OclYaccElementType("HEADER");
@@ -25,7 +35,6 @@ public class OclYaccTypes extends ORTypes {
     final IElementType LBRACE = new OclYaccTokenType("LBRACE");
     final IElementType LEFT = new OclYaccTokenType("LEFT");
     final IElementType LT = new OclYaccTokenType("LT");
-    final IElementType OCAML_LAZY_NODE = new OclYaccTokenType("OCAML_LAZY_NODE");
     final IElementType PIPE = new OclYaccTokenType("PIPE");
     final IElementType RBRACE = new OclYaccTokenType("RBRACE");
     final IElementType RIGHT = new OclYaccTokenType("RIGHT");

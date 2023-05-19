@@ -29,5 +29,4 @@ public class OclYaccRuleBodyImpl extends ASTWrapperPsiElement implements OclYacc
   public List<OclYaccRulePattern> getRulePatternList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, OclYaccRulePattern.class);
   }
-
 }
