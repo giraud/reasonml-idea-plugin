@@ -336,6 +336,29 @@ public class FunctionParsingTest extends ResParsingTestCase {
         // TODO assertDoesntContain(collection, myTypes.A_LOWER_TAG_NAME);
     }
 
+    @Test
+    public void test_ternary() {
+        RPsiFunction e = firstOfType(parseCode("let fn = (p) => p == true ? Time.H12 : Time.H24\nMod.fn()"), RPsiFunction.class);
+
+        assertNoParserError(e);
+        RPsiTernary et = PsiTreeUtil.findChildOfType(e, RPsiTernary.class);
+        assertEquals("p == true", et.getCondition().getText());
+        assertEquals("Time.H12", et.getThenExpression().getText());
+        assertEquals("Time.H24", et.getElseExpression().getText());
+    }
+
+    @Test
+    public void test_current() {
+        FileBase code = parseCode("let _ = () => { v.current = () => fn(p) }");
+
+        RPsiLet e = firstOfType(code, RPsiLet.class);
+        assertNoParserError(e);
+
+        List<RPsiFunction> efs = childrenOfType(code, RPsiFunction.class);
+        assertEquals("() => { v.current = () => fn(p) }", efs.get(0).getText());
+        assertEquals("() => fn(p)", efs.get(1).getText());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/113
     @Test
     public void test_GH_113() {

@@ -49,13 +49,17 @@ public class ResParser extends CommonPsiParser {
                     break;
                 }
 
-                if (tokenType == myTypes.EOL && isRawParent(myTypes.C_LET_BINDING)) {
-                    IElementType nextElementType = lookAheadSkipEOL(1);
-                    if (nextElementType != myTypes.AND && nextElementType != myTypes.LT) {
-                        // let x = ... |>\n<|
-                        popEndUntil(myTypes.C_LET_DECLARATION).popEnd();
-                        popIfHold();
-                        markHolder(myTypes.H_PLACE_HOLDER);
+                if (tokenType == myTypes.EOL) {
+                    if (isRawParent(myTypes.C_LET_BINDING) && !currentHasScope()) {
+                        IElementType nextElementType = lookAheadSkipEOL(1);
+                        if (nextElementType != myTypes.AND && nextElementType != myTypes.LT) {
+                            // let x = ... |>\n<|
+                            popEndUntil(myTypes.C_LET_DECLARATION).popEnd();
+                            popIfHold();
+                            markHolder(myTypes.H_PLACE_HOLDER);
+                        }
+                    } else if (isCurrent(myTypes.C_IF_THEN_SCOPE) && !currentHasScope()) {
+                        endLikeSemi2();
                     }
                 }
 
@@ -905,14 +909,6 @@ public class ResParser extends CommonPsiParser {
             }
         }
 
-        @Nullable private IElementType lookAheadSkipEOL(int steps) {
-            IElementType elementType = lookAhead(steps);
-            if (elementType == myTypes.EOL) {
-                elementType = lookAhead(steps + 1);
-            }
-            return elementType;
-        }
-
         private void parseRBrace() {
             Marker scope = popEndUntilOneOfElementType(myTypes.LBRACE, myTypes.RECORD, myTypes.SWITCH);
             advance();
@@ -1150,6 +1146,9 @@ public class ResParser extends CommonPsiParser {
                                 .advance().mark(myTypes.C_MODULE_BINDING);
                     }
                 }
+            } else {
+                // nothing found, just add a placeholder
+                advance().markHolder(myTypes.H_PLACE_HOLDER);
             }
         }
 
@@ -1239,7 +1238,9 @@ public class ResParser extends CommonPsiParser {
                                 .markHolder(myTypes.H_COLLECTION_ITEM);
                     }
                 } else {
-                    endLikeSemi2();
+                    if (!isCurrent(myTypes.C_IF_THEN_SCOPE) || rawHasScope()) {   // a block less if then else
+                        endLikeSemi2();
+                    }
                     remapCurrentToken(nextToken == myTypes.RIGHT_ARROW ? myTypes.A_VARIANT_NAME : myTypes.A_MODULE_NAME)
                             .wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
@@ -1369,6 +1370,14 @@ public class ResParser extends CommonPsiParser {
                     popEndUntilScope();
                 }
             }
+        }
+
+        private @Nullable IElementType lookAheadSkipEOL(int steps) {
+            IElementType elementType = lookAhead(steps);
+            if (elementType == myTypes.EOL) {
+                elementType = lookAhead(steps + 1);
+            }
+            return elementType;
         }
 
         private void advanceSkipEOL() {
