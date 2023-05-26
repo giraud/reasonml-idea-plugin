@@ -20,7 +20,7 @@ apply plugin: 'org.jetbrains.intellij'
 group = pluginGroup
 version = pluginVersion + '-' + platformVersion
 
-java.sourceCompatibility = '11.0'
+java.sourceCompatibility = '17.0'
 compileJava.options.encoding = 'UTF-8'
 
 intellij {
