@@ -157,7 +157,9 @@
         <!-- OCaml - yacc -->
         <lang.parserDefinition language="Mly" implementationClass="com.reason.lang.ocamlyacc.OclYaccParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Mly"
-                                       implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
+                                       implementationClass="com.reason.ide.highlight.OclYaccSyntaxHighlighterFactory"/>
+        <lang.fileViewProviderFactory language="Mly"
+                                      implementationClass="com.reason.ide.files.MlyFileViewProviderFactory"/>
         <!-- Dune -->
         <lang.ast.factory language="Dune" implementationClass="com.reason.lang.dune.DuneASTFactory"/>
         <lang.parserDefinition language="Dune" implementationClass="com.reason.lang.dune.DuneParserDefinition"/>

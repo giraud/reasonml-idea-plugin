@@ -73,7 +73,7 @@ public abstract class ORParser<T extends ORTypes> {
         return latestKnownScope;
     }
 
-    public @Nullable Marker popEndUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
+    public @Nullable Marker popEndUntilScopeToken(@NotNull IElementType scopeElementType) {
         Marker scope = null;
 
         if (!myMarkers.isEmpty()) {

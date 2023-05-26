@@ -10,7 +10,8 @@ public class OclLexParser extends CommonPsiParser {
         super(isSafe);
     }
 
-    @Override protected ORParser<OclLexTypes> getORParser(@NotNull PsiBuilder builder) {
+    @Override
+    protected ORParser<OclLexTypes> getORParser(@NotNull PsiBuilder builder) {
         return new OclLexParserState(builder, !myIsSafe);
     }
 

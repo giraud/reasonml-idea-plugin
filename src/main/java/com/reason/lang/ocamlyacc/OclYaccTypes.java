@@ -1,46 +1,39 @@
 // This is a generated file. Not intended for manual editing.
 package com.reason.lang.ocamlyacc;
 
-import com.intellij.lang.*;
-import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
-import com.reason.lang.ocaml.*;
-import org.jetbrains.annotations.*;
 
 public class OclYaccTypes extends ORTypes {
     public static final OclYaccTypes INSTANCE = new OclYaccTypes();
 
-    public final ILazyParseableElementType OCAML_LAZY_NODE = new ILazyParseableElementType("OCAML_LAZY_NODE", OclYaccLanguage.INSTANCE) {
-        @Override
-        public ASTNode parseContents(@NotNull ASTNode chameleon) {
-            return OclParser.parseOcamlNode(this, chameleon);
-        }
-    };
+    ORCompositeElementType C_DECLARATION = new ORCompositeElementType("C_DECLARATION", OclYaccLanguage.INSTANCE);
+    ORCompositeElementType C_HEADER = new ORCompositeElementType("C_HEADER", OclYaccLanguage.INSTANCE);
+    ORCompositeElementType C_RULE = new ORCompositeElementType("C_RULE", OclYaccLanguage.INSTANCE);
+    ORCompositeElementType C_RULE_BODY = new ORCompositeElementType("C_RULE_BODY", OclYaccLanguage.INSTANCE);
+    ORCompositeElementType C_INJECTION = new ORCompositeElementType("C_INJECTION", OclYaccLanguage.INSTANCE);
 
-    final IElementType DECLARATION = new OclYaccElementType("DECLARATION");
-    final IElementType HEADER = new OclYaccElementType("HEADER");
-    final IElementType RULE = new OclYaccElementType("RULE");
-    final IElementType RULE_BODY = new OclYaccElementType("RULE_BODY");
-    final IElementType RULE_PATTERN = new OclYaccElementType("RULE_PATTERN");
-    final IElementType TRAILER = new OclYaccElementType("TRAILER");
+    OclYaccElementType ATOM = new OclYaccElementType("ATOM");
+    public OclYaccElementType COLON = new OclYaccElementType("COLON");
+    public OclYaccElementType SINGLE_COMMENT = new OclYaccElementType("SINGLE_COMMENT");
+    public OclYaccElementType MULTI_COMMENT = new OclYaccElementType("MULTI_COMMENT");
+    OclYaccElementType DOT = new OclYaccElementType("DOT");
+    OclYaccElementType GT = new OclYaccElementType("GT");
+    public OclYaccElementType HEADER_START = new OclYaccElementType("HEADER_START");
+    public OclYaccElementType HEADER_STOP = new OclYaccElementType("HEADER_STOP");
+    public OclYaccElementType IDENT = new OclYaccElementType("IDENT");
+    public OclYaccElementType LBRACE = new OclYaccElementType("LBRACE");
+    public OclYaccElementType LEFT = new OclYaccElementType("LEFT");
+    OclYaccElementType LT = new OclYaccElementType("LT");
+    public OclYaccElementType NON_ASSOC = new OclYaccElementType("NON_ASSOC");
+    public OclYaccElementType INLINE = new OclYaccElementType("INLINE");
+    public OclYaccElementType PIPE = new OclYaccElementType("PIPE");
+    public OclYaccElementType RBRACE = new OclYaccElementType("RBRACE");
+    public OclYaccElementType RIGHT = new OclYaccElementType("RIGHT");
+    public OclYaccElementType SECTION_SEPARATOR = new OclYaccElementType("SECTION_SEPARATOR");
+    public OclYaccElementType SEMI = new OclYaccElementType("SEMI");
+    public OclYaccElementType START = new OclYaccElementType("START");
+    public OclYaccElementType TOKEN = new OclYaccElementType("TOKEN");
+    public OclYaccElementType TYPE = new OclYaccElementType("TYPE");
+    public OclYaccElementType TEMPLATE_OCAML_TEXT = new OclYaccElementType("TEMPLATE_OCAML_TEXT");
 
-    final IElementType COLON = new OclYaccTokenType("COLON");
-    final IElementType MULTI_COMMENT = new OclYaccTokenType("MULTI_COMMENT");
-    final IElementType SINGLE_COMMENT = new OclYaccTokenType("SINGLE_COMMENT");
-    final IElementType DOT = new OclYaccTokenType("DOT");
-    final IElementType GT = new OclYaccTokenType("GT");
-    final IElementType HEADER_START = new OclYaccTokenType("HEADER_START");
-    final IElementType HEADER_STOP = new OclYaccTokenType("HEADER_STOP");
-    final IElementType IDENT = new OclYaccTokenType("IDENT");
-    final IElementType LBRACE = new OclYaccTokenType("LBRACE");
-    final IElementType LEFT = new OclYaccTokenType("LEFT");
-    final IElementType LT = new OclYaccTokenType("LT");
-    final IElementType PIPE = new OclYaccTokenType("PIPE");
-    final IElementType RBRACE = new OclYaccTokenType("RBRACE");
-    final IElementType RIGHT = new OclYaccTokenType("RIGHT");
-    final IElementType SECTION_SEPARATOR = new OclYaccTokenType("SECTION_SEPARATOR");
-    final IElementType SEMI = new OclYaccTokenType("SEMI");
-    final IElementType START = new OclYaccTokenType("START");
-    final IElementType TOKEN = new OclYaccTokenType("TOKEN");
-    final IElementType TYPE = new OclYaccTokenType("TYPE");
 }

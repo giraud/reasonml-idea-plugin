@@ -137,7 +137,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         List<TreeElement> treeElements = null;
 
         // File
-        if (myElement instanceof FileBase || myElement instanceof DuneFile || myElement instanceof MllFile) {
+        if (myElement instanceof FileBase || myElement instanceof DuneFile || myElement instanceof MllFile || myElement instanceof MlyFile) {
             treeElements = new ArrayList<>();
             myElement.acceptChildren(new ElementVisitor(treeElements, myLevel));
             if (!treeElements.isEmpty()) {
