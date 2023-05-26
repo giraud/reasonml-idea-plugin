@@ -157,8 +157,7 @@ public class FreeExpressionCompletionProvider {
 
     private static void insertExpression(@NotNull InsertionContext insertionContext, @NotNull LookupElement element) {
         PsiElement psiElement = element.getPsiElement();
-        if (psiElement instanceof RPsiLet) {
-            RPsiLet let = (RPsiLet) psiElement;
+        if (psiElement instanceof RPsiLet let) {
             if (let.isFunction()) {
                 insertionContext.setAddCompletionChar(false);
                 Editor editor = insertionContext.getEditor();

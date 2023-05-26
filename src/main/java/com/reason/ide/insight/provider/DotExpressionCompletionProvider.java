@@ -160,8 +160,7 @@ public class DotExpressionCompletionProvider {
                                     .withTypeText(signature)
                                     .withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
                 }
-                if (expression instanceof RPsiType) {
-                    RPsiType eType = (RPsiType) expression;
+                if (expression instanceof RPsiType eType) {
                     Collection<RPsiVariantDeclaration> variants = eType.getVariants();
                     if (!variants.isEmpty()) {
                         for (RPsiVariantDeclaration variant : variants) {

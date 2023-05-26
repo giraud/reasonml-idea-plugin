@@ -184,8 +184,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             marker = createMarkerInfo((RPsiException) element, inInterface, "exception", targets);
         }
         // MODULE
-        else if (element instanceof RPsiInnerModule) {
-            RPsiInnerModule module = (RPsiInnerModule) element;
+        else if (element instanceof RPsiInnerModule module) {
             List<RPsiInnerModule> targets = null;
 
             if (module.isInterface()) {

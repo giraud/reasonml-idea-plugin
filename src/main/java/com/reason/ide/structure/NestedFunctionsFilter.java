@@ -9,8 +9,7 @@ import javax.swing.*;
 public class NestedFunctionsFilter implements Filter {
     @Override
     public boolean isVisible(TreeElement treeNode) {
-        if (treeNode instanceof StructureViewElement) {
-            StructureViewElement viewElement = (StructureViewElement) treeNode;
+        if (treeNode instanceof StructureViewElement viewElement) {
             return viewElement.getLevel() < 2;
         }
         return true;

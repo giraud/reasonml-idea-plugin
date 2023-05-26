@@ -46,26 +46,35 @@ public class ORColorSettingsPage implements ColorSettingsPage {
 
     @Override
     public @NotNull String getDemoText() {
-        return ""
-                + "/* This is a comment */\n\n"
-                + "module <csModuleName>ModuleName</csModuleName> = {\n"
-                + "  type t = { key: int };\n"
-                + "  type tree 'a =\n"
-                + "    | <csVariantName>Node</csVariantName> (tree 'a) (tree 'a)\n"
-                + "    | <csVariantName>Leaf</csVariantName>;\n\n"
-                + "  [<csAnnotation>@bs.deriving</csAnnotation> {accessors: accessors}]\n"
-                + "  type t = [`Up | `Down | `Left | `Right];\n\n"
-                + "  let add = (x y) => x + y;  <csCodeLens>int -> int</csCodeLens>\n"
-                + "  let myList = [ 1.0, 2.0, 3. ];\n"
-                + "  let array = [| 1, 2, 3 |];\n"
-                + "  let choice x = switch (myOption)\n"
-                + "    | None => \"nok\"\n"
-                + "    | Some(value) => \"ok\";\n"
-                + "  let constant = \"My constant\";  <csCodeLens>string</csCodeLens>\n"
-                + "  let numericConstant = 123;  <csCodeLens>int</csCodeLens>\n"
-                + "  let interpolation = {j|$<csInterpolatedRef>var</csInterpolatedRef>|j};\n"
-                + "};\n\n"
-                + "[<csAnnotation>@react.component</csAnnotation>]\nlet make = () =>\n  <csMarkupTag><div</csMarkupTag> <csMarkupAttribute>prop</csMarkupAttribute>=value<csMarkupTag>></csMarkupTag>\n    <csMarkupTag><Button/></csMarkupTag>\n    (React.string(\"ok\") <csMarkupTag></Button></csMarkupTag>\n  <csMarkupTag></div></csMarkupTag>;";
+        return """
+                /* This is a comment */
+
+                module <csModuleName>ModuleName</csModuleName> = {
+                  type t = { key: int };
+                  type tree 'a =
+                    | <csVariantName>Node</csVariantName> (tree 'a) (tree 'a)
+                    | <csVariantName>Leaf</csVariantName>;
+
+                  [<csAnnotation>@bs.deriving</csAnnotation> {accessors: accessors}]
+                  type t = [`Up | `Down | `Left | `Right];
+
+                  let add = (x y) => x + y;  <csCodeLens>int -> int</csCodeLens>
+                  let myList = [ 1.0, 2.0, 3. ];
+                  let array = [| 1, 2, 3 |];
+                  let choice x = switch (myOption)
+                    | None => "nok"
+                    | Some(value) => "ok";
+                  let constant = "My constant";  <csCodeLens>string</csCodeLens>
+                  let numericConstant = 123;  <csCodeLens>int</csCodeLens>
+                  let interpolation = {j|$<csInterpolatedRef>var</csInterpolatedRef>|j};
+                };
+
+                [<csAnnotation>@react.component</csAnnotation>]
+                let make = () =>
+                  <csMarkupTag><div</csMarkupTag> <csMarkupAttribute>prop</csMarkupAttribute>=value<csMarkupTag>></csMarkupTag>
+                    <csMarkupTag><Button/></csMarkupTag>
+                    (React.string("ok") <csMarkupTag></Button></csMarkupTag>
+                  <csMarkupTag></div></csMarkupTag>;""";
     }
 
     private static final Map<String, TextAttributesKey> additionalTags = new HashMap<>();

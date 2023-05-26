@@ -268,8 +268,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         public void visitElement(@NotNull PsiElement element) {
             if (element instanceof RPsiStructuredElement) {
                 if (((RPsiStructuredElement) element).canBeDisplayed()) {
-                    if (element instanceof RPsiLet) {
-                        RPsiLet let = (RPsiLet) element;
+                    if (element instanceof RPsiLet let) {
                         if (let.isScopeIdentifier()) {
                             // it's a tuple! add each element of the tuple separately.
                             for (PsiElement child : let.getScopeChildren()) {

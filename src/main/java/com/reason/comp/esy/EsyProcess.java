@@ -86,16 +86,12 @@ public class EsyProcess {
     }
 
     private static @NotNull String getCommand(@NotNull CliType.Esy cliType) {
-        switch (cliType) {
-            case INSTALL:
-                return "install";
-            case BUILD:
-                return "build";
-            case SHELL:
-                return "shell";
-            default:
-                return "";
-        }
+        return switch (cliType) {
+            case INSTALL -> "install";
+            case BUILD -> "build";
+            case SHELL -> "shell";
+            default -> "";
+        };
     }
 
     private static Optional<VirtualFile> findWorkingDirectory(@NotNull Project project) {

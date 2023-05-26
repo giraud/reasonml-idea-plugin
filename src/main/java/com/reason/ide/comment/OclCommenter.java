@@ -217,8 +217,8 @@ public class OclCommenter implements SelfManagingCommenter<OclCommenter.Commente
     }
 
     static class CommenterData extends CommenterDataHolder {
-        private int myStartLine;
-        private int myEndLine;
+        private final int myStartLine;
+        private final int myEndLine;
 
         public CommenterData(int startLine, int endLine) {
             myStartLine = startLine;
