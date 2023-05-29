@@ -80,18 +80,6 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("A.X.Y.z", e.getQualifiedName());
     }
 
-/* TODO
-    @Test
-    public void test_alias_x() {
-        configureCode("A.re", "module Mode = { type t; };");
-        configureCode("B.re", "module B1 = { module Mode = A.Mode; };");
-        configureCode("C.re", "B.B1.Mode.t<caret>");
-
-        RPsiType e = (RPsiType) myFixture.getElementAtCaret();
-        assertEquals("A.Mode.t", e.getQualifiedName());
-    }
-*/
-
     @Test
     public void test_open() {
         configureCode("B.ml", "let x = 1");

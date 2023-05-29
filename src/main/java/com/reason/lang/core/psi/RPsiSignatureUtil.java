@@ -12,8 +12,7 @@ public final class RPsiSignatureUtil {
         if (element instanceof RPsiExternal) {
             RPsiSignature signature = ((RPsiExternal) element).getSignature();
             return signature == null ? "" : signature.asText(toLang);
-        } else if (element instanceof RPsiLet) {
-            RPsiLet let = (RPsiLet) element;
+        } else if (element instanceof RPsiLet let) {
             RPsiSignature signature = let.hasInferredType() ? let.getInferredType() : let.getSignature();
             return signature == null ? "" : signature.asText(toLang);
         } else if (element instanceof RPsiVal) {

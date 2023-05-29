@@ -73,7 +73,7 @@ public abstract class ORParser<T extends ORTypes> {
         return latestKnownScope;
     }
 
-    public @Nullable Marker popEndUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
+    public @Nullable Marker popEndUntilScopeToken(@NotNull IElementType scopeElementType) {
         Marker scope = null;
 
         if (!myMarkers.isEmpty()) {
@@ -324,7 +324,7 @@ public abstract class ORParser<T extends ORTypes> {
         return this;
     }
 
-    public @NotNull ORParser<T> markScope(@NotNull ORCompositeType composite, @Nullable ORTokenElementType scope) {
+    public @NotNull ORParser<T> markScope(@NotNull ORCompositeType composite, @Nullable IElementType scope) {
         mark(composite).updateScopeToken(scope);
         return this;
     }
@@ -478,7 +478,7 @@ public abstract class ORParser<T extends ORTypes> {
         return this;
     }
 
-    public @NotNull ORParser<T> updateScopeToken(@Nullable ORTokenElementType token) {
+    public @NotNull ORParser<T> updateScopeToken(@Nullable IElementType token) {
         if (token != null) {
             Marker marker = getLatestMarker();
             if (marker != null) {

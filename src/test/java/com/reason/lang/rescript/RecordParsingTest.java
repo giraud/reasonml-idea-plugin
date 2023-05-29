@@ -123,4 +123,12 @@ public class RecordParsingTest extends ResParsingTestCase {
         assertEquals("idx == 0 ? Some(dir > 0) : None", t.getText());
         assertEquals("Manual({ ascending: idx == 0 ? Some(dir > 0) : None })", f0.getValue().getText());
     }
+
+    @Test
+    public void test_inside_function() {
+        RPsiFunction e = firstOfType(parseCode("let fn = () => {\n let r = {\n f: 1\n }\n }"), RPsiFunction.class);
+
+        assertNoParserError(e);
+        assertEquals("{\n let r = {\n f: 1\n }\n }", e.getBody().getText());
+    }
 }

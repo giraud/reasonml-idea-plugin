@@ -4,7 +4,7 @@ import com.intellij.psi.*;
 import com.reason.lang.core.stub.*;
 import org.jetbrains.annotations.*;
 
-public interface RPsiExternal extends RPsiQualifiedPathElement, RPsiSignatureElement, RPsiStructuredElement, StubBasedPsiElement<PsiExternalStub> {
+public interface RPsiExternal extends RPsiQualifiedPathElement, RPsiSignatureElement, RPsiStructuredElement, PsiNameIdentifierOwner, StubBasedPsiElement<PsiExternalStub> {
     boolean isFunction();
 
     @NotNull

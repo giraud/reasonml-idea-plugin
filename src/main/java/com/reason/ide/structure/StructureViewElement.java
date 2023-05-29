@@ -9,6 +9,7 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.ocamllex.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
@@ -136,7 +137,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         List<TreeElement> treeElements = null;
 
         // File
-        if (myElement instanceof FileBase || myElement instanceof DuneFile) {
+        if (myElement instanceof FileBase || myElement instanceof DuneFile || myElement instanceof MllFile || myElement instanceof MlyFile) {
             treeElements = new ArrayList<>();
             myElement.acceptChildren(new ElementVisitor(treeElements, myLevel));
             if (!treeElements.isEmpty()) {
@@ -267,8 +268,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         public void visitElement(@NotNull PsiElement element) {
             if (element instanceof RPsiStructuredElement) {
                 if (((RPsiStructuredElement) element).canBeDisplayed()) {
-                    if (element instanceof RPsiLet) {
-                        RPsiLet let = (RPsiLet) element;
+                    if (element instanceof RPsiLet let) {
                         if (let.isScopeIdentifier()) {
                             // it's a tuple! add each element of the tuple separately.
                             for (PsiElement child : let.getScopeChildren()) {

@@ -92,8 +92,7 @@ public class OclDocConverter extends ORDocConverter {
                 } else if (tokenType == OclDocTypes.RBRACE) {
                     ORDocHtmlBuilder builder = builders.empty() ? null : builders.pop();
                     currentBuilder = builders.empty() ? currentBuilder : builders.peek();
-                    if (builder instanceof TagHtmlBuilder) {
-                        TagHtmlBuilder tagBuilder = (TagHtmlBuilder) builder;
+                    if (builder instanceof TagHtmlBuilder tagBuilder) {
                         tagBuilder.appendChildren(false);
                         currentBuilder.addChild(tagBuilder.myBuilder.wrapWith(tagBuilder.myTag));
                         if (tagBuilder.myTag.startsWith("h")) {
@@ -125,8 +124,7 @@ public class OclDocConverter extends ORDocConverter {
                     }
                 } else if (tokenType == OclDocTypes.TAG) {
                     String yyValue = extract(1, 0, myLexer.yytext());
-                    if (currentBuilder instanceof ORDocSectionsBuilder) {
-                        ORDocSectionsBuilder sectionsBuilder = (ORDocSectionsBuilder) currentBuilder;
+                    if (currentBuilder instanceof ORDocSectionsBuilder sectionsBuilder) {
                         trimEndChildren(sectionsBuilder.myChildren);
                         if (sectionsBuilder.myTag.equals(yyValue)) {
                             sectionsBuilder.myChildren.add(HtmlChunk.raw("</p><p>"));

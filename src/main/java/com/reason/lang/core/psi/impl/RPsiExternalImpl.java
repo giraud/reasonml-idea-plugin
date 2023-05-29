@@ -29,6 +29,7 @@ public class RPsiExternalImpl extends RPsiTokenStub<ORLangTypes, RPsiExternal, P
     // endregion
 
     // region PsiNamedElement
+    @Override
     public @Nullable PsiElement getNameIdentifier() {
         RPsiScopedExpr operatorOverride = findChildByClass(RPsiScopedExpr.class);
         if (operatorOverride != null) {

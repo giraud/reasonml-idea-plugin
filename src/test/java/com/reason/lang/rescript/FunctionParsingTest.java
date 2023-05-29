@@ -232,16 +232,16 @@ public class FunctionParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_first_class_module() {
-        RPsiFunction e = firstOfType(parseCode("let make = (~selectors: (module SelectorsIntf)=(module Selectors)) => {}"), RPsiFunction.class);
+        RPsiFunction e = firstOfType(parseCode("let make = (~selectors: module(SelectorsIntf)=module(Selectors)) => {}"), RPsiFunction.class);
         assertNoParserError(e);
 
         RPsiParameterDeclaration p0 = e.getParameters().get(0);
         RPsiSignature s = p0.getSignature();
         RPsiSignatureItem s0 = s.getItems().get(0);
-        assertEquals("(module SelectorsIntf)", s0.getText());
+        assertEquals("module(SelectorsIntf)", s0.getText());
         assertNull(PsiTreeUtil.findChildOfType(s, RPsiInnerModule.class));
         assertSize(2, PsiTreeUtil.findChildrenOfType(p0, RPsiModuleValue.class));
-        assertEquals("(module Selectors)", p0.getDefaultValue().getText());
+        assertEquals("module(Selectors)", p0.getDefaultValue().getText());
         assertNull(ORUtil.findImmediateFirstChildOfType(PsiTreeUtil.findChildOfType(s0, RPsiModuleValue.class), myTypes.A_VARIANT_NAME));
     }
 
@@ -310,6 +310,53 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertSize(2, e.getPatterns());
         RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
         assertEquals("(. ()) => 1", f.getText());
+    }
+
+    @Test
+    public void test_x() {
+        RPsiLet e = firstOfType(parseCode("\n" +
+                "  let _ = (. s) =>\n" +
+                "    memoize2(\n" +
+                "      x,\n" +
+                "      fnCall(. s),\n" +
+                "      ((\n" +
+                "        types,\n" +
+                "        aMap: Belt.Map.String.t<array<MyMod.Function.t>>,\n" +
+                "      )) => {\n" +
+                "        types\n" +
+                "        ->Belt.List.sort((type1, type2) => compare(type1.value, type2.value))\n" +
+                "      },\n" +
+                "    )\n"), RPsiLet.class);
+
+        assertNoParserError(e);
+        RPsiFunctionCall efc = (RPsiFunctionCall) e.getFunction().getBody().getFirstChild();
+        assertEquals("memoize2", efc.getName());
+        assertSize(3, efc.getParameters());
+
+        // TODO assertDoesntContain(collection, myTypes.A_LOWER_TAG_NAME);
+    }
+
+    @Test
+    public void test_ternary() {
+        RPsiFunction e = firstOfType(parseCode("let fn = (p) => p == true ? Time.H12 : Time.H24\nMod.fn()"), RPsiFunction.class);
+
+        assertNoParserError(e);
+        RPsiTernary et = PsiTreeUtil.findChildOfType(e, RPsiTernary.class);
+        assertEquals("p == true", et.getCondition().getText());
+        assertEquals("Time.H12", et.getThenExpression().getText());
+        assertEquals("Time.H24", et.getElseExpression().getText());
+    }
+
+    @Test
+    public void test_current() {
+        FileBase code = parseCode("let _ = () => { v.current = () => fn(p) }");
+
+        RPsiLet e = firstOfType(code, RPsiLet.class);
+        assertNoParserError(e);
+
+        List<RPsiFunction> efs = childrenOfType(code, RPsiFunction.class);
+        assertEquals("() => { v.current = () => fn(p) }", efs.get(0).getText());
+        assertEquals("() => fn(p)", efs.get(1).getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/113

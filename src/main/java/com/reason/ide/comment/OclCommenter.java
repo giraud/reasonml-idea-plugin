@@ -4,6 +4,7 @@ import com.intellij.codeInsight.generation.*;
 import com.intellij.lang.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.util.*;
+import com.intellij.openapi.util.text.*;
 import com.intellij.psi.*;
 import com.intellij.util.text.*;
 import org.jetbrains.annotations.*;
@@ -43,12 +44,14 @@ public class OclCommenter implements SelfManagingCommenter<OclCommenter.Commente
 
     @Override
     public @NotNull CommenterData createLineCommentingState(int startLine, int endLine, @NotNull Document document, @NotNull PsiFile file) {
-        return new CommenterData();
+        return new CommenterData(startLine, endLine);
     }
 
     @Override
     public @NotNull CommenterData createBlockCommentingState(int selectionStart, int selectionEnd, @NotNull Document document, @NotNull PsiFile file) {
-        return new CommenterData();
+        int startLine = StringUtil.offsetToLineNumber(document.getCharsSequence(), selectionStart);
+        int endLine = StringUtil.offsetToLineNumber(document.getCharsSequence(), selectionEnd);
+        return new CommenterData(startLine, endLine);
     }
 
     @Override
@@ -102,10 +105,16 @@ public class OclCommenter implements SelfManagingCommenter<OclCommenter.Commente
     public void uncommentBlockComment(int startOffset, int endOffset, Document document, CommenterData data) {
         CharSequence chars = document.getCharsSequence();
 
-        boolean startHasLF = chars.charAt(startOffset + 2) == '\n';
-        boolean endHasLF = chars.charAt(endOffset - 1 - 2) == '\n';
+        char startChar = chars.charAt(startOffset + 2);
+        boolean startHasLF = startChar == '\n';
+        boolean startHasSpace = startChar == ' ';
+        char endChar = chars.charAt(endOffset - 1 - 2);
+        boolean endHasLF = endChar == '\n';
+        boolean endHasSpace = endChar == ' ';
 
-        SelfManagingCommenterUtil.uncommentBlockComment(startOffset, endOffset, document, startHasLF ? "(*\n" : "(*", endHasLF ? "\n*)" : "*)");
+        String start = startHasLF ? "(*\n" : (startHasSpace ? "(* " : "(*");
+        String end = endHasLF ? "\n*)" : (endHasSpace ? " *)" : "*)");
+        SelfManagingCommenterUtil.uncommentBlockComment(startOffset, endOffset, document, start, end);
     }
 
     @Override
@@ -114,8 +123,11 @@ public class OclCommenter implements SelfManagingCommenter<OclCommenter.Commente
 
         boolean startHasLF = chars.charAt(startOffset) == '\n';
         boolean endHasLF = chars.charAt(endOffset - 1) == '\n';
+        boolean hasLF = data.getEndLine() > data.getStartLine();
 
-        return SelfManagingCommenterUtil.insertBlockComment(startOffset, endOffset, document, startHasLF ? "(*" : "(*\n", endHasLF ? "*)\n" : "*)");
+        String startComment = startHasLF ? "(*" : (hasLF ? "(*\n" : "(* ");
+        String endComment = endHasLF ? "*)\n" : " *)";
+        return SelfManagingCommenterUtil.insertBlockComment(startOffset, endOffset, document, startComment, endComment);
     }
 
     @Override
@@ -205,6 +217,20 @@ public class OclCommenter implements SelfManagingCommenter<OclCommenter.Commente
     }
 
     static class CommenterData extends CommenterDataHolder {
+        private final int myStartLine;
+        private final int myEndLine;
 
+        public CommenterData(int startLine, int endLine) {
+            myStartLine = startLine;
+            myEndLine = endLine;
+        }
+
+        public int getStartLine() {
+            return myStartLine;
+        }
+
+        public int getEndLine() {
+            return myEndLine;
+        }
     }
 }

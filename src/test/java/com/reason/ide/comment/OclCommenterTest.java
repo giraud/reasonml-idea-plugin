@@ -93,6 +93,7 @@ public class OclCommenterTest extends ORBasePlatformTestCase {
         assertEquals(19, myFixture.getCaretOffset());
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/319
     @Test
     public void test_GH_319() {
         configureCode("A.ml", "line with (<caret>");
@@ -111,5 +112,28 @@ public class OclCommenterTest extends ORBasePlatformTestCase {
         a.actionPerformedImpl(getProject(), myFixture.getEditor());
 
         myFixture.checkResult("(* line with ( *)");
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/411
+    @Test
+    public void test_GH_411_comment() {
+        configureCode("A.ml", "Infile <selection>of</selection><caret> dirpath");
+
+        CommentByBlockCommentAction commentAction = new CommentByBlockCommentAction();
+        commentAction.actionPerformedImpl(getProject(), myFixture.getEditor());
+
+        myFixture.checkResult("Infile (* of *) dirpath");
+        assertEquals(11, myFixture.getCaretOffset());
+    }
+
+    @Test
+    public void test_GH_411_uncomment() {
+        configureCode("A.ml", "Infile <selection>(* of *)</selection><caret> dirpath");
+
+        CommentByBlockCommentAction commentAction = new CommentByBlockCommentAction();
+        commentAction.actionPerformedImpl(getProject(), myFixture.getEditor());
+
+        myFixture.checkResult("Infile of dirpath");
+        assertEquals(9, myFixture.getCaretOffset());
     }
 }

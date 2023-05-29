@@ -20,7 +20,7 @@ public class TryWithParsingTest extends OclParsingTestCase {
         RPsiTryHandler eh = e.getHandlers().get(0);
         assertEquals("Not_found -> ()", eh.getText());
         assertEquals("()", eh.getBody().getText());
-        assertEquals(myTypes.EXCEPTION_NAME, eh.getFirstChild().getNode().getElementType());
+        assertEquals(myTypes.A_EXCEPTION_NAME, eh.getFirstChild().getNode().getElementType());
     }
 
     @Test

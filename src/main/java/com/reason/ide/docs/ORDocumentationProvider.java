@@ -58,8 +58,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         }
 
         // If it's an alias, resolve to the alias
-        if (docElement instanceof RPsiLet) {
-            RPsiLet let = (RPsiLet) docElement;
+        if (docElement instanceof RPsiLet let) {
             String alias = let.getAlias();
             if (alias != null) {
                 PsiElement binding = let.getBinding();
@@ -120,10 +119,9 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         if (resolvedElement instanceof ORFakeResolvedElement) {
             // A fake element, used to query inferred types
             quickDoc = "Show usages of fake element '" + resolvedElement.getText() + "'";
-        } else if (resolvedElement instanceof FileBase) {
+        } else if (resolvedElement instanceof FileBase resolvedFile) {
             LOG.debug("Quickdoc of topModule", resolvedElement);
 
-            FileBase resolvedFile = (FileBase) resolvedElement;
             String relative_path = Platform.getRelativePathToModule(resolvedFile);
             quickDoc =
                     "<div style='white-space:nowrap;font-style:italic'>"
@@ -136,8 +134,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         } else {
             LOG.trace("Resolved element", resolvedElement);
 
-            if (resolvedElement instanceof RPsiType) {
-                RPsiType type = (RPsiType) resolvedElement;
+            if (resolvedElement instanceof RPsiType type) {
                 String[] path = ORUtil.getQualifiedPath(type);
                 String typeBinding = type.isAbstract() ? "This is an abstract type" : DocFormatter.escapeCodeForHtml(type.getBinding());
                 return createQuickDocTemplate(path, "type", type.getNavigationElement().getText(), typeBinding);
@@ -147,8 +144,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
                 RPsiSignature signature = ((RPsiSignatureElement) resolvedElement).getSignature();
                 if (signature != null) {
                     String sig = DocFormatter.escapeCodeForHtml(signature.asText(languageProperties));
-                    if (resolvedElement instanceof RPsiQualifiedPathElement) {
-                        RPsiQualifiedPathElement qualifiedElement = (RPsiQualifiedPathElement) resolvedElement;
+                    if (resolvedElement instanceof RPsiQualifiedPathElement qualifiedElement) {
                         String elementType = PsiTypeElementProvider.getType(resolvedElement);
                         return createQuickDocTemplate(qualifiedElement.getPath(), elementType, qualifiedElement.getName(), sig);
                     }
@@ -251,8 +247,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
                 commentElement = prevSibling;
             } else if (prevSibling instanceof PsiWhiteSpace) {
                 prevSibling = prevSibling.getPrevSibling();
-            } else if (prevSibling instanceof RPsiAnnotation) {
-                RPsiAnnotation annotation = (RPsiAnnotation) prevSibling;
+            } else if (prevSibling instanceof RPsiAnnotation annotation) {
                 if ("@ocaml.doc".equals(annotation.getName())) {
                     search = false;
                     commentElement = annotation;

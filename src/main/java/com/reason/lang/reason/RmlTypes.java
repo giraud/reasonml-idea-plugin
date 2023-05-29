@@ -111,6 +111,7 @@ public class RmlTypes extends ORLangTypes {
         A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", RmlLanguage.INSTANCE);
         A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", RmlLanguage.INSTANCE);
         A_MODULE_NAME = new ORTokenElementType("A_MODULE_NAME", RmlLanguage.INSTANCE);
+        A_EXCEPTION_NAME = new ORTokenElementType("A_EXCEPTION_NAME", RmlLanguage.INSTANCE);
 
         // Dummy types
 
@@ -126,7 +127,6 @@ public class RmlTypes extends ORLangTypes {
         CATCH = new ORTokenElementType("CATCH", RmlLanguage.INSTANCE);
         CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", RmlLanguage.INSTANCE);
         INT_VALUE = new ORTokenElementType("INT_VALUE", RmlLanguage.INSTANCE);
-        EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", RmlLanguage.INSTANCE);
         PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", RmlLanguage.INSTANCE);
         SWITCH = new ORTokenElementType("SWITCH", RmlLanguage.INSTANCE);
         FUNCTION = new ORTokenElementType("FUNCTION", RmlLanguage.INSTANCE);

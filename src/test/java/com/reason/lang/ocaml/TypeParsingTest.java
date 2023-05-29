@@ -61,6 +61,15 @@ public class TypeParsingTest extends OclParsingTestCase {
     }
 
     @Test
+    public void test_extensible_variant() {
+        RPsiType e = firstOfType(parseCode("type Mod.variant +=\n | Add of Path.t List.t"), RPsiType.class);
+
+        assertNoParserError(e);
+        assertEquals("variant", e.getName());
+        assertEquals("| Add of Path.t List.t", e.getBinding().getText());
+    }
+
+    @Test
     public void test_binding_with_record() {
         RPsiTypeBinding e = firstOfType(parseCode("type t = { string_f_apply: ('a -> unit); string_help: string option; list_f_edit: ('a -> 'a) option; }"), RPsiTypeBinding.class);
         RPsiRecord er = ORUtil.findImmediateFirstChildOfClass(e, RPsiRecord.class);

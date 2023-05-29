@@ -111,6 +111,7 @@ public class ResTypes extends ORLangTypes {
         A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", ResLanguage.INSTANCE);
         A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", ResLanguage.INSTANCE);
         A_MODULE_NAME = new ORTokenElementType("A_MODULE_NAME", ResLanguage.INSTANCE);
+        A_EXCEPTION_NAME = new ORTokenElementType("A_EXCEPTION_NAME", ResLanguage.INSTANCE);
 
         // Dummy types
 
@@ -133,7 +134,6 @@ public class ResTypes extends ORLangTypes {
         BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", ResLanguage.INSTANCE);
         CATCH = new ORTokenElementType("CATCH", ResLanguage.INSTANCE);
         CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", ResLanguage.INSTANCE);
-        EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", ResLanguage.INSTANCE);
         FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", ResLanguage.INSTANCE);
         FUNCTION = new ORTokenElementType("FUNCTION", ResLanguage.INSTANCE);
         FUN = new ORTokenElementType("FUN", ResLanguage.INSTANCE);

@@ -7,10 +7,8 @@ import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class OclSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
-  @NotNull
-  @Override
-  public com.intellij.openapi.fileTypes.SyntaxHighlighter getSyntaxHighlighter(
-      Project project, VirtualFile virtualFile) {
-    return new ORSyntaxHighlighter(OclTypes.INSTANCE);
-  }
+    @Override
+    public @NotNull com.intellij.openapi.fileTypes.SyntaxHighlighter getSyntaxHighlighter(Project project, VirtualFile virtualFile) {
+        return new ORSyntaxHighlighter(OclTypes.INSTANCE);
+    }
 }

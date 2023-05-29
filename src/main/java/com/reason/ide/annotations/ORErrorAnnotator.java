@@ -41,14 +41,12 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
             ORResolvedCompiler<?> compiler = compilerManager.getCompiler(ORFileUtils.getVirtualFile(psiFile));
 
             if (compiler != null) {
-                switch (compiler.getType()) {
-                    case BS:
-                        return BsErrorAnnotator.collectInformation((BsResolvedCompiler) compiler, editor, psiFile);
-                    case RESCRIPT:
-                        return ResErrorAnnotator.collectInformation((ResResolvedCompiler) compiler, editor, psiFile);
-                    default:
-                        return null;
-                }
+                return switch (compiler.getType()) {
+                    case BS -> BsErrorAnnotator.collectInformation((BsResolvedCompiler) compiler, editor, psiFile);
+                    case RESCRIPT ->
+                            ResErrorAnnotator.collectInformation((ResResolvedCompiler) compiler, editor, psiFile);
+                    default -> null;
+                };
             }
         }
 
@@ -59,18 +57,11 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
     public @Nullable AnnotationResult doAnnotate(@NotNull InitialInfo<? extends ORResolvedCompiler<?>> initialInfo) {
         long compilationStartTime = System.currentTimeMillis();
 
-        AnnotationResult result;
-        switch (initialInfo.compiler.getType()) {
-            case BS:
-                result = BsErrorAnnotator.doAnnotate(initialInfo);
-                break;
-            case RESCRIPT:
-                result = ResErrorAnnotator.doAnnotate(initialInfo);
-                break;
-            default:
-                result = null;
-                break;
-        }
+        AnnotationResult result = switch (initialInfo.compiler.getType()) {
+            case BS -> BsErrorAnnotator.doAnnotate(initialInfo);
+            case RESCRIPT -> ResErrorAnnotator.doAnnotate(initialInfo);
+            default -> null;
+        };
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("Annotation done in " + (System.currentTimeMillis() - compilationStartTime) + "ms");

@@ -69,7 +69,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     ResTypes.INSTANCE.VAL, ResTypes.INSTANCE.PUB, ResTypes.INSTANCE.PRI, ResTypes.INSTANCE.OBJECT,
                     ResTypes.INSTANCE.MUTABLE, ResTypes.INSTANCE.UNIT, ResTypes.INSTANCE.WITH, ResTypes.INSTANCE.DIRECTIVE_IF,
                     ResTypes.INSTANCE.DIRECTIVE_ELSE, ResTypes.INSTANCE.DIRECTIVE_ELIF, ResTypes.INSTANCE.DIRECTIVE_END,
-                    ResTypes.INSTANCE.DIRECTIVE_ENDIF);
+                    ResTypes.INSTANCE.DIRECTIVE_ENDIF, ResTypes.INSTANCE.UNPACK);
 
     private static final Set<IElementType> RES_OPERATION_SIGN_TYPES =
             of(
@@ -152,21 +152,21 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey BAD_CHAR_ = createTextAttributesKey("REASONML_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
     private static final TextAttributesKey[] NUMBER_KEYS = new TextAttributesKey[]{NUMBER_};
-    private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{RML_COMMENT_};
-    private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
+    static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{RML_COMMENT_};
+    static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
     private static final TextAttributesKey[] TYPE_ARGUMENT_KEYS = new TextAttributesKey[]{TYPE_ARGUMENT_};
     private static final TextAttributesKey[] POLY_VARIANT_KEYS = new TextAttributesKey[]{POLY_VARIANT_};
-    private static final TextAttributesKey[] BRACKET_KEYS = new TextAttributesKey[]{BRACKETS_};
-    private static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACES_};
+    static final TextAttributesKey[] BRACKET_KEYS = new TextAttributesKey[]{BRACKETS_};
+    static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACES_};
     private static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS_};
     private static final TextAttributesKey[] OPTION_KEYS = new TextAttributesKey[]{OPTION_};
-    private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD_};
-    private static final TextAttributesKey[] SEMICOLON_KEYS = new TextAttributesKey[]{SEMICOLON_};
+    static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD_};
+    static final TextAttributesKey[] SEMICOLON_KEYS = new TextAttributesKey[]{SEMICOLON_};
     private static final TextAttributesKey[] DOT_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
     private static final TextAttributesKey[] COMMA_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
     private static final TextAttributesKey[] MARKUP_TAG_KEYS = new TextAttributesKey[]{MARKUP_TAG_};
-    private static final TextAttributesKey[] OPERATION_SIGN_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
-    private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
+    static final TextAttributesKey[] OPERATION_SIGN_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
+    static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
     private final ORLangTypes m_types;
@@ -247,7 +247,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     }
 
     @NotNull
-    private static Set<IElementType> of(IElementType... types) {
+    static Set<IElementType> of(IElementType... types) {
         Set<IElementType> result = new HashSet<>();
         Collections.addAll(result, types);
         return result;

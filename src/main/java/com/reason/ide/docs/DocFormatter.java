@@ -23,9 +23,7 @@ class DocFormatter {
     }
 
     static @NotNull String format(@NotNull PsiFile file, @NotNull PsiElement element, @Nullable ORLanguageProperties lang, @NotNull String text) {
-        if (file instanceof FileBase) {
-            FileBase source = (FileBase) file;
-
+        if (file instanceof FileBase source) {
             // Definition
 
             HtmlBuilder definitionBuilder = new HtmlBuilder();

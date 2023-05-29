@@ -20,8 +20,7 @@ public class JsIconProvider extends com.intellij.ide.IconProvider {
 
     /* needed as plugin.xml's filetype extension does NOT support extensions with multiple "." */
     private static boolean isBsJsFile(PsiFile psiFile) {
-        if (psiFile instanceof JSFile) {
-            JSFile jsFile = (JSFile) psiFile;
+        if (psiFile instanceof JSFile jsFile) {
             return jsFile.getName().endsWith("." + ORConstants.BS_JS_FILE_EXTENSION);
         }
         return false;

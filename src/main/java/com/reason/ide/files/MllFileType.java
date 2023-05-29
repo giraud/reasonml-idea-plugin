@@ -1,41 +1,38 @@
 package com.reason.ide.files;
 
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.lang.extra.OclMllLanguage;
-import com.reason.ide.ORIcons;
+import com.intellij.openapi.fileTypes.*;
+import com.reason.ide.*;
+import com.reason.ide.highlight.*;
+import com.reason.lang.ocamllex.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class MllFileType extends LanguageFileType {
-  public static final MllFileType INSTANCE = new MllFileType();
-  static final String EXTENSION = "mll";
+    public static final MllFileType INSTANCE = new MllFileType();
 
-  private MllFileType() {
-    super(OclMllLanguage.INSTANCE);
-  }
+    private MllFileType() {
+        super(OclLexLanguage.INSTANCE);
+        FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(this, (project, fileType, virtualFile, colors) -> new OclLexEditorHighlighter(project, virtualFile, colors));
+    }
 
-  @NotNull
-  @Override
-  public String getName() {
-    return "MLL";
-  }
+    @Override
+    public @NotNull String getName() {
+        return "MLL";
+    }
 
-  @NotNull
-  @Override
-  public String getDescription() {
-    return "OCaml lexer";
-  }
+    @Override
+    public @NotNull String getDescription() {
+        return "OCaml lexer";
+    }
 
-  @NotNull
-  @Override
-  public String getDefaultExtension() {
-    return EXTENSION;
-  }
+    @Override
+    public @NotNull String getDefaultExtension() {
+        return "mll";
+    }
 
-  @Nullable
-  @Override
-  public Icon getIcon() {
-    return ORIcons.OCL_GREEN_FILE;
-  }
+    @Override
+    public @Nullable Icon getIcon() {
+        return ORIcons.OCL_GREEN_FILE;
+    }
 }

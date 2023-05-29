@@ -10,7 +10,14 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## Unreleased
+## 0.113 - 2023/05/29
+
+- :bug: ![n] [#414](https://github.com/giraud/reasonml-idea-plugin/issues/414) Extensible variant incorrectly parsed in Rescript
+- :bug: ![n] [#413](https://github.com/giraud/reasonml-idea-plugin/issues/413) Unpack is a keyword in rescript
+- :bug: ![o] [#412](https://github.com/giraud/reasonml-idea-plugin/issues/412) Scope incorrectly parsed in mll file
+- :bug: ![o] [#411](https://github.com/giraud/reasonml-idea-plugin/issues/411) Block comment operation (Ctrl-Shift-/) on highlighted text should not add a newline
+- :bug: [#410](https://github.com/giraud/reasonml-idea-plugin/issues/410) Goto icons not shown between module and module type in same file
+- :bug: ![o] [#409](https://github.com/giraud/reasonml-idea-plugin/issues/409) Wrong structure on let b = 1 = 1 in
 
 ## 0.112 - 2023/05/05
 
@@ -36,24 +43,24 @@
 
 ## 0.109.2 - 2023/01/24
 
+**NOTE**: minimal supported version is **2022.1**
+
 - :bug: [#398](https://github.com/giraud/reasonml-idea-plugin/issues/398) Rescript format doesn’t respect UTF-8 encoding
 - 0.109.1
   - :bug: [#392](https://github.com/giraud/reasonml-idea-plugin/issues/392) Attempting to open editorconfig causes IDE exception
   - :bug: [#391](https://github.com/giraud/reasonml-idea-plugin/issues/391) Dune comments are broken (lexer)
   - :bug: [#390](https://github.com/giraud/reasonml-idea-plugin/issues/390) Stub mismatch exceptions fixed
 
-**NOTE**: minimal version supported is **2022.1**
-
 ## 0.108 - 2022/12/01
-          
+
+**NOTE**: minimal supported version is **2021.3**
+
 - :nail_care: Display dune-project fields in structure view
 - :bug: [#389](https://github.com/giraud/reasonml-idea-plugin/issues/389) java.util.EmptyStackException
 - :bug: [#358](https://github.com/giraud/reasonml-idea-plugin/issues/358) Incorrect resolution with module in pattern
 - :bug: [#323](https://github.com/giraud/reasonml-idea-plugin/issues/323) Method declarations in .ml files should link to their implementations
 - :house: ![o] Parse ternary if in OCaml
 - :house: ![o] Fix illegal characters in dune files
-
-**NOTE**: minimal supported version is **2021.3**
 
 ## 0.107 - 2022/09/13
 
