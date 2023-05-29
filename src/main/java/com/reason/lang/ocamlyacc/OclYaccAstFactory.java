@@ -4,28 +4,32 @@ import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
-import com.reason.lang.core.psi.ocamlyacc.impl.*;
+import com.reason.lang.core.psi.ocamlyacc.*;
 import org.jetbrains.annotations.*;
 
-class OclYaccAstFactory {
+class OclYaccAstFactory extends ASTFactory {
     private OclYaccAstFactory() {
     }
 
     public static @NotNull PsiElement createElement(@NotNull ASTNode node) {
         IElementType type = node.getElementType();
-        if (type == OclYaccTypes.INSTANCE.DECLARATION) {
-            return new OclYaccDeclarationImpl(node);
-        } else if (type == OclYaccTypes.INSTANCE.HEADER) {
-            return new OclYaccHeaderImpl(node);
-        } else if (type == OclYaccTypes.INSTANCE.RULE) {
-            return new OclYaccRuleImpl(node);
-        } else if (type == OclYaccTypes.INSTANCE.RULE_BODY) {
-            return new OclYaccRuleBodyImpl(node);
-        } else if (type == OclYaccTypes.INSTANCE.RULE_PATTERN) {
-            return new OclYaccRulePatternImpl(node);
-        } else if (type == OclYaccTypes.INSTANCE.TRAILER) {
-            return new OclYaccTrailerImpl(node);
+
+        if (type == OclYaccTypes.INSTANCE.C_HEADER) {
+            return new RPsiYaccHeader(node);
         }
+        if (type == OclYaccTypes.INSTANCE.C_DECLARATION) {
+            return new RPisYaccDeclaration(node);
+        }
+        if (type == OclYaccTypes.INSTANCE.C_RULE) {
+            return new RPsiYaccRule(node);
+        }
+        if (type == OclYaccTypes.INSTANCE.C_RULE_BODY) {
+            return new RPsiYaccRuleBody(node);
+        }
+        if (type == OclYaccTypes.INSTANCE.C_INJECTION) {
+            return new RPsiYaccInjection(node);
+        }
+
         return new ASTWrapperPsiElement(node);
     }
 }

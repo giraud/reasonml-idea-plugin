@@ -185,9 +185,8 @@ public class ORReferenceAnalyzer {
                 for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
                     ResolutionElement resolution = resolutions.get(i);
                     PsiElement resolvedElement = resolution.getOriginalElement();
-                    if (resolvedElement instanceof RPsiLet) {
+                    if (resolvedElement instanceof RPsiLet resolvedLet) {
                         String fieldName = instruction.getText();
-                        RPsiLet resolvedLet = (RPsiLet) resolvedElement;
                         Collection<? extends RPsiField> fields = isRecord ? resolvedLet.getRecordFields() : resolvedLet.getJsObjectFields();
                         RPsiField field = fields.stream().filter(f -> fieldName.equals(f.getName())).findFirst().orElse(null);
                         if (field != null) {
@@ -199,9 +198,8 @@ public class ORReferenceAnalyzer {
                             }
                         }
                         break;
-                    } else if (resolvedElement instanceof RPsiType) {
+                    } else if (resolvedElement instanceof RPsiType resolvedType) {
                         String fieldName = instruction.getText();
-                        RPsiType resolvedType = (RPsiType) resolvedElement;
                         Collection<? extends RPsiField> fields = isRecord ? resolvedType.getRecordFields() : resolvedType.getJsObjectFields();
                         RPsiField field = fields.stream().filter(f -> fieldName.equals(f.getName())).findFirst().orElse(null);
                         if (field != null) {
@@ -236,8 +234,7 @@ public class ORReferenceAnalyzer {
                 for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
                     ResolutionElement resolution = resolutions.get(i);
                     PsiElement resolvedElement = resolution.getOriginalElement();
-                    if (resolvedElement instanceof RPsiLet) {
-                        RPsiLet resolvedLet = (RPsiLet) resolvedElement;
+                    if (resolvedElement instanceof RPsiLet resolvedLet) {
                         if (resolvedLet.isDeconstruction()) {
                             boolean found = false;
                             List<PsiElement> deconstructedElements = resolvedLet.getDeconstructedElements();
@@ -261,8 +258,7 @@ public class ORReferenceAnalyzer {
                             }
                             break;
                         }
-                    } else if (resolvedElement instanceof RPsiParameterDeclaration) {
-                        RPsiParameterDeclaration resolvedParameter = (RPsiParameterDeclaration) resolvedElement;
+                    } else if (resolvedElement instanceof RPsiParameterDeclaration resolvedParameter) {
                         if (instruction.getText().equals(resolvedParameter.getName())) {
                             if (instructions.isEmpty()) {
                                 resolutions.clear();
@@ -270,8 +266,7 @@ public class ORReferenceAnalyzer {
                             }
                             break;
                         }
-                    } else if (resolvedElement instanceof RPsiType) {
-                        RPsiType resolvedType = (RPsiType) resolvedElement;
+                    } else if (resolvedElement instanceof RPsiType resolvedType) {
                         if (instruction.getText().equals(resolvedType.getName())) {
                             if (instructions.isEmpty()) {
                                 resolutions.clear();
@@ -279,8 +274,7 @@ public class ORReferenceAnalyzer {
                             }
                             break;
                         }
-                    } else if (resolvedElement instanceof RPsiExternal) {
-                        RPsiExternal resolvedExternal = (RPsiExternal) resolvedElement;
+                    } else if (resolvedElement instanceof RPsiExternal resolvedExternal) {
                         if (instruction.getText().equals(resolvedExternal.getName())) {
                             if (instructions.isEmpty()) {
                                 resolutions.clear();
@@ -385,13 +379,11 @@ public class ORReferenceAnalyzer {
                                 resolutions.clear();
                             }
                             for (RPsiModule foundModule : modules) {
-                                if (foundModule instanceof RPsiFunctor) {
-                                    RPsiFunctor foundFunctor = (RPsiFunctor) foundModule;
+                                if (foundModule instanceof RPsiFunctor foundFunctor) {
                                     resolutions.clear();
                                     result.add(foundFunctor);
                                     break;
-                                } else if (foundModule instanceof RPsiInnerModule) {
-                                    RPsiInnerModule foundInnerModule = (RPsiInnerModule) foundModule;
+                                } else if (foundModule instanceof RPsiInnerModule foundInnerModule) {
 
                                     // If it’s the last instruction, we must not resolve the aliases
                                     if (instructions.isEmpty()) {
@@ -460,8 +452,7 @@ public class ORReferenceAnalyzer {
             }
             // OPEN X
             // ------
-            else if (instruction instanceof RPsiOpen) {
-                RPsiOpen foundOpen = (RPsiOpen) instruction;
+            else if (instruction instanceof RPsiOpen foundOpen) {
 
                 // Search for alternate paths using gist
                 // This is a recursive function (if not end of instruction)
@@ -482,8 +473,7 @@ public class ORReferenceAnalyzer {
             }
             // INCLUDE X
             // ---------
-            else if (instruction instanceof RPsiInclude) {
-                RPsiInclude foundInclude = (RPsiInclude) instruction;
+            else if (instruction instanceof RPsiInclude foundInclude) {
 
                 // Search for alternate paths using gist
                 Collection<String> alternateNames = ORModuleResolutionPsiGist.getData(localFile).getElement(foundInclude);
@@ -518,8 +508,7 @@ public class ORReferenceAnalyzer {
                         }
                     }
                 }
-            } else if (instruction instanceof RPsiTagProperty) {
-                RPsiTagProperty foundProperty = (RPsiTagProperty) instruction;
+            } else if (instruction instanceof RPsiTagProperty foundProperty) {
                 // Previous element should be the start tag
                 ResolutionElement tag = resolutions.get(resolutions.size() - 1);
                 if (tag.isInContext && tag.isComponent()) {

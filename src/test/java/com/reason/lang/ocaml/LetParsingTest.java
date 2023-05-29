@@ -391,4 +391,20 @@ public class LetParsingTest extends OclParsingTestCase {
         assertEquals("let x = 0", ebls[1].getText());
         assertSize(2, ebls);
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/409
+    @Test
+    public void test_GH_409a() {
+        RPsiLet e = firstOfType(parseCode("let f () =\n" +
+                "  let b : bool = ignore () = () in\n" +
+                "  let x = 0 in\n" +
+                "  x"), RPsiLet.class);
+
+        assertNoParserError(e);
+        RPsiFunctionBody eb = e.getFunction().getBody();
+        RPsiLet[] ebls = PsiTreeUtil.getChildrenOfType(eb, RPsiLet.class);
+        assertEquals("let b : bool = ignore () = ()", ebls[0].getText());
+        assertEquals("let x = 0", ebls[1].getText());
+        assertSize(2, ebls);
+    }
 }

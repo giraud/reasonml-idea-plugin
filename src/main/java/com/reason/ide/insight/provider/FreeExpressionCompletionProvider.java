@@ -33,8 +33,8 @@ public class FreeExpressionCompletionProvider {
         LOG.debug("FREE expression completion");
 
         Project project = element.getProject();
-        FileBase containingFile = (FileBase) element.getContainingFile();
-        String topModuleName = containingFile.getModuleName();
+        PsiFile containingFile = element.getContainingFile();
+        String topModuleName = containingFile instanceof FileBase ? ((FileBase) containingFile).getModuleName() : null;
         ORLanguageProperties languageProperties = ORLanguageProperties.cast(element.getLanguage());
         FileModuleIndexService fileModuleIndexService = FileModuleIndexService.getService();
 
@@ -157,8 +157,7 @@ public class FreeExpressionCompletionProvider {
 
     private static void insertExpression(@NotNull InsertionContext insertionContext, @NotNull LookupElement element) {
         PsiElement psiElement = element.getPsiElement();
-        if (psiElement instanceof RPsiLet) {
-            RPsiLet let = (RPsiLet) psiElement;
+        if (psiElement instanceof RPsiLet let) {
             if (let.isFunction()) {
                 insertionContext.setAddCompletionChar(false);
                 Editor editor = insertionContext.getEditor();

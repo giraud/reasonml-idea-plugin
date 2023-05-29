@@ -97,8 +97,7 @@ public class ORModuleResolutionPsiGist {
                         // Iterate backward to find a matching local resolution
                         for (int i = myModulesInContext.size() - 1; i >= 0; i--) {
                             PsiElement elementInContext = myModulesInContext.get(i);
-                            if (elementInContext instanceof RPsiFunctor) { // ? common
-                                RPsiFunctor functorInContext = (RPsiFunctor) elementInContext;
+                            if (elementInContext instanceof RPsiFunctor functorInContext) { // ? common
                                 String functorInContextName = functorInContext.getModuleName() == null ? "" : functorInContext.getModuleName();
 
                                 // local functor declaration ?  module F=():S => {}; module M = F({});
@@ -158,8 +157,7 @@ public class ORModuleResolutionPsiGist {
                     // Iterate backward to find a matching local resolution
                     for (int i = myModulesInContext.size() - 1; i >= 0; i--) {
                         PsiElement elementInContext = myModulesInContext.get(i);
-                        if (elementInContext instanceof RPsiInnerModule) {
-                            RPsiInnerModule moduleInContext = (RPsiInnerModule) elementInContext;
+                        if (elementInContext instanceof RPsiInnerModule moduleInContext) {
                             String moduleInContextName = moduleInContext.getModuleName() == null ? "" : moduleInContext.getModuleName();
 
                             // alias to a local module (alias == module.name)
@@ -255,8 +253,7 @@ public class ORModuleResolutionPsiGist {
 
                     for (int i = myModulesInContext.size() - 1; i >= 0; i--) {
                         PsiElement elementInContext = myModulesInContext.get(i);
-                        if (elementInContext instanceof RPsiInnerModule) {
-                            RPsiInnerModule moduleInContext = (RPsiInnerModule) elementInContext;
+                        if (elementInContext instanceof RPsiInnerModule moduleInContext) {
                             String moduleInContextName = moduleInContext.getModuleName() == null ? "" : moduleInContext.getModuleName();
 
                             // local module type (path == module.name)
@@ -318,8 +315,7 @@ public class ORModuleResolutionPsiGist {
                 // reverse iterate to find resolution
                 for (int i = myModulesInContext.size() - 1; i >= 0; i--) {
                     PsiElement elementInContext = myModulesInContext.get(i);
-                    if (elementInContext instanceof RPsiInnerModule) {
-                        RPsiInnerModule moduleInContext = (RPsiInnerModule) elementInContext;
+                    if (elementInContext instanceof RPsiInnerModule moduleInContext) {
                         String moduleInContextName = moduleInContext.getModuleName() == null ? "" : moduleInContext.getModuleName();
 
                         // include/open local module (path == module.name)
@@ -370,8 +366,7 @@ public class ORModuleResolutionPsiGist {
                         }
                     }
                     //
-                    else if (elementInContext instanceof RPsiFunctor) {
-                        RPsiFunctor functorInContext = (RPsiFunctor) elementInContext;
+                    else if (elementInContext instanceof RPsiFunctor functorInContext) {
                         String functorInContextName = functorInContext.getModuleName() == null ? "" : functorInContext.getModuleName();
 
                         // include/open a local functor (path == module.name)
@@ -463,8 +458,7 @@ public class ORModuleResolutionPsiGist {
                     // Iterate backward to find a matching local resolution
                     for (int i = myModulesInContext.size() - 1; i >= 0; i--) {
                         PsiElement elementInContext = myModulesInContext.get(i);
-                        if (elementInContext instanceof RPsiInnerModule && ((RPsiInnerModule) elementInContext).isComponent()) {
-                            RPsiInnerModule componentInContext = (RPsiInnerModule) elementInContext;
+                        if (elementInContext instanceof RPsiInnerModule componentInContext && ((RPsiInnerModule) elementInContext).isComponent()) {
                             String componentInContextName = componentInContext.getModuleName();
 
                             // local component declaration
@@ -477,8 +471,7 @@ public class ORModuleResolutionPsiGist {
 
                                 break;
                             }
-                        } else if (elementInContext instanceof RPsiOpen) {
-                            RPsiOpen openInContext = (RPsiOpen) elementInContext;
+                        } else if (elementInContext instanceof RPsiOpen openInContext) {
                             RPsiQualifiedPathElement resolvedOpen = openInContext.getUserData(RESOLUTION);
                             String pathToTest = (resolvedOpen == null ? "" : resolvedOpen.getQualifiedName() + ".") + tagName + ".make";
                             Collection<RPsiLet> componentFunctions = LetComponentFqnIndex.getElements(pathToTest, myProject, myScope);

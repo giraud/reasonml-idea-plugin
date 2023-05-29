@@ -20,7 +20,7 @@ public class ClassFqnIndex extends IntStubIndexExtension<RPsiClass> {
         return IndexKeys.CLASSES_FQN;
     }
 
-    public static @NotNull Collection<RPsiClass> getElements(int key, @NotNull Project project, @Nullable GlobalSearchScope scope) {
-        return StubIndex.getElements(IndexKeys.CLASSES_FQN, key, project, scope, RPsiClass.class);
+    public static @NotNull Collection<RPsiClass> getElements(@NotNull String qName, @NotNull Project project, @Nullable GlobalSearchScope scope) {
+        return StubIndex.getElements(IndexKeys.CLASSES_FQN, qName.hashCode(), project, scope, RPsiClass.class);
     }
 }

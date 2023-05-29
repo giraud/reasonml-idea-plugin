@@ -38,21 +38,26 @@ public class DuneColorSettingsPage implements ColorSettingsPage {
 
     @Override
     public @NotNull String getDemoText() {
-        return "; A single line comment\n\n"
-                + "#| Block comments #| can be \"nested\" |# |#\n\n"
-                + "(<csStanza>executable</csStanza>\n"
-                + "  (<csField>names</csField> (main))\n"
-                + "  #; (this S-expression\n"
-                + "         (has been commented out)\n"
-                + "       )\n"
-                + "  (<csField>libraries</csField> (hello_world)))\n\n"
-                + "(<csStanza>install</csStanza>\n"
-                + "  (<csField>section</csField> bin)\n"
-                + "  (<csField>files</csField> ((main.exe as hello_world))))\n\n"
-                + "(<csStanza>rule</csStanza>\n"
-                + "  (<csField>targets</csField> (config.full)\n"
-                + "  (<csField>deps</csField>    (config_common.ml config))\n"
-                + "  (<csField>action</csField>  (run <csVar>%{OCAML}</csVar> <csVar>%{path:real_configure.ml}</csVar>)))";
+        return """
+                ; A single line comment
+
+                #| Block comments #| can be "nested" |# |#
+
+                (<csStanza>executable</csStanza>
+                  (<csField>names</csField> (main))
+                  #; (this S-expression
+                         (has been commented out)
+                       )
+                  (<csField>libraries</csField> (hello_world)))
+
+                (<csStanza>install</csStanza>
+                  (<csField>section</csField> bin)
+                  (<csField>files</csField> ((main.exe as hello_world))))
+
+                (<csStanza>rule</csStanza>
+                  (<csField>targets</csField> (config.full)
+                  (<csField>deps</csField>    (config_common.ml config))
+                  (<csField>action</csField>  (run <csVar>%{OCAML}</csVar> <csVar>%{path:real_configure.ml}</csVar>)))""";
     }
 
     private static final Map<String, TextAttributesKey> additionalTags = new HashMap<>();

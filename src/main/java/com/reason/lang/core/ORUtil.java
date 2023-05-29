@@ -92,10 +92,6 @@ public class ORUtil {
         return found;
     }
 
-    public static @Nullable PsiElement nextSiblingWithTokenType(@NotNull PsiElement root, @NotNull ORCompositeType elementType) {
-        return nextSiblingWithTokenType(root, (IElementType) elementType);
-    }
-
     public static @NotNull String getTextUntilTokenType(@NotNull PsiElement root, @Nullable IElementType elementType) {
         StringBuilder text = new StringBuilder(root.getText());
 
@@ -281,19 +277,6 @@ public class ORUtil {
         return null;
     }
 
-    public static @Nullable PsiElement findImmediateFirstChildWithoutClass(@NotNull PsiElement element, @NotNull Class<?> clazz) {
-        PsiElement child = element.getFirstChild();
-
-        while (child != null) {
-            if (!clazz.isInstance(child) && !(child instanceof PsiWhiteSpace)) {
-                return child;
-            }
-            child = child.getNextSibling();
-        }
-
-        return null;
-    }
-
     public static String @NotNull [] getQualifiedPath(@NotNull PsiElement element) {
         String path = "";
 
@@ -329,8 +312,9 @@ public class ORUtil {
         }
 
         try {
-            PsiFile containingFile = element.getContainingFile(); // Fail in 2019.2... ?
-            return (((FileBase) containingFile).getModuleName() + (path.isEmpty() ? "" : "." + path)).split("\\.");
+            PsiFile containingFile = element.getContainingFile();
+            String fileName = containingFile instanceof FileBase ? ((FileBase) containingFile).getModuleName() : containingFile.getName();
+            return (fileName + (path.isEmpty() ? "" : "." + path)).split("\\.");
         } catch (PsiInvalidElementAccessException e) {
             return path.split("\\.");
         }
@@ -386,11 +370,6 @@ public class ORUtil {
         PsiUpperSymbolReference reference = moduleSymbol == null ? null : moduleSymbol.getReference();
         PsiElement resolvedSymbol = reference == null ? null : reference.resolveInterface();
         return resolvedSymbol instanceof RPsiUpperSymbol ? resolvedSymbol.getParent() : resolvedSymbol;
-    }
-
-    public static @Nullable PsiElement getModuleContent(@NotNull RPsiInnerModule module) {
-        PsiElement body = module.getModuleType();
-        return (body == null) ? module.getBody() : body;
     }
 
     public static <T> @NotNull List<T> findPreviousSiblingsOrParentOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {

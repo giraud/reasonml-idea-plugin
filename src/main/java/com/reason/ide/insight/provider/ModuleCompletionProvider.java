@@ -56,13 +56,16 @@ public class ModuleCompletionProvider {
             // Empty path
 
             // First module to complete, use the list of files
-            String topModuleName = ((RPsiModule) element.getContainingFile()).getModuleName();
-            for (FileModuleData moduleData : FileModuleIndexService.getService().getTopModules(project, scope)) {
-                if (!moduleData.getModuleName().equals(topModuleName) && !moduleData.hasNamespace()) {
-                    resultSet.addElement(LookupElementBuilder.
-                            create(moduleData.getModuleName())
-                            .withTypeText(moduleData.getFullName())
-                            .withIcon(IconProvider.getDataModuleIcon(moduleData)));
+            PsiFile containingFile = element.getContainingFile();
+            if (containingFile instanceof RPsiModule) {
+                String topModuleName = ((RPsiModule) containingFile).getModuleName();
+                for (FileModuleData moduleData : FileModuleIndexService.getService().getTopModules(project, scope)) {
+                    if (!moduleData.getModuleName().equals(topModuleName) && !moduleData.hasNamespace()) {
+                        resultSet.addElement(LookupElementBuilder.
+                                create(moduleData.getModuleName())
+                                .withTypeText(moduleData.getFullName())
+                                .withIcon(IconProvider.getDataModuleIcon(moduleData)));
+                    }
                 }
             }
 

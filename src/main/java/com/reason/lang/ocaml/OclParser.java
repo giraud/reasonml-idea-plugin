@@ -19,7 +19,7 @@ public class OclParser extends CommonPsiParser {
         PsiElement parentElement = chameleon.getTreeParent().getPsi();
         Project project = parentElement.getProject();
 
-        PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new OclLexer(), root.getLanguage(), chameleon.getText());
+        PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new OclLexer(), root.getLanguage(), chameleon.getChars());
         OclParser parser = new OclParser(true);
 
         return parser.parse(root, builder).getFirstChildNode();
@@ -970,6 +970,8 @@ public class OclParser extends CommonPsiParser {
                     } else {
                         popEndUntilScope();
                     }
+                } else if (strictlyIn(myTypes.C_FUNCTION_CALL) && nextElementType == myTypes.EQ) { // a boolean op ?  let _ = ignore () = ()
+                    popEndUntil(myTypes.C_FUNCTION_CALL).popEnd();
                 }
             }
         }
@@ -1211,10 +1213,10 @@ public class OclParser extends CommonPsiParser {
                         .wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) { // Declaring an exception
                 // exception |>X<| ...
-                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (isCurrent(myTypes.C_TRY_HANDLER)) {
                 // try .. with |>X<| ..
-                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else {
                 IElementType nextToken = lookAhead(1);
 

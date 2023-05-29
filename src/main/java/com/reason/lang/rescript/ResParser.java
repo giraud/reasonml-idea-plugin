@@ -49,13 +49,17 @@ public class ResParser extends CommonPsiParser {
                     break;
                 }
 
-                if (tokenType == myTypes.EOL && isRawParent(myTypes.C_LET_BINDING)) {
-                    IElementType nextElementType = lookAheadSkipEOL(1);
-                    if (nextElementType != myTypes.AND && nextElementType != myTypes.LT) {
-                        // let x = ... |>\n<|
-                        popEndUntil(myTypes.C_LET_DECLARATION).popEnd();
-                        popIfHold();
-                        markHolder(myTypes.H_PLACE_HOLDER);
+                if (tokenType == myTypes.EOL) {
+                    if (isRawParent(myTypes.C_LET_BINDING) && !currentHasScope()) {
+                        IElementType nextElementType = lookAheadSkipEOL(1);
+                        if (nextElementType != myTypes.AND && nextElementType != myTypes.LT) {
+                            // let x = ... |>\n<|
+                            popEndUntil(myTypes.C_LET_DECLARATION).popEnd();
+                            popIfHold();
+                            markHolder(myTypes.H_PLACE_HOLDER);
+                        }
+                    } else if (isCurrent(myTypes.C_IF_THEN_SCOPE) && !currentHasScope()) {
+                        endLikeSemi2();
                     }
                 }
 
@@ -522,15 +526,14 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseModule() {
-            if (currentHasScope() && isParent(myTypes.C_SIG_ITEM)) {
-                // let fn = (~x : ( |>module<| ... ) ...
-                popEndUntil(myTypes.C_SCOPED_EXPR).dropLatest()
-                        .mark(myTypes.C_MODULE_VALUE);
-            } else if (in(myTypes.C_DEFAULT_VALUE)) {
-                // let fn = (~x:(module X)= ( |>module<| ... ) ...
-                popIfHold()
-                        .updateLatestComposite(myTypes.H_PLACE_HOLDER).dropLatest()
-                        .mark(myTypes.C_MODULE_VALUE);
+            if (strictlyInAny(myTypes.C_SIG_ITEM, myTypes.C_DEFAULT_VALUE)) {
+                if (isFound(myTypes.C_SIG_ITEM)) {
+                    // let fn = (~x : |>module<| (...) ...
+                    mark(myTypes.C_MODULE_VALUE);
+                } else if (isFound(myTypes.C_DEFAULT_VALUE)) {
+                    // let fn = (~x: module(X)= |>module<| (...) ...
+                    mark(myTypes.C_MODULE_VALUE);
+                }
             } else if (!is(myTypes.C_MACRO_NAME)) {
                 popEndUntilScope();
                 mark(myTypes.C_MODULE_DECLARATION);
@@ -672,24 +675,48 @@ public class ResParser extends CommonPsiParser {
                 popEnd();
             }
 
-            // else
-            if (strictlyIn(myTypes.C_PARAMETERS) && isFoundScope(myTypes.LT)) {
-                // type x< ... |> ><|
-                popEndUntilFoundIndex().advance().end();
-            } else if (in(myTypes.C_SCOPED_EXPR) && isFoundScope(myTypes.LT)) {
-                popEndUntilFoundIndex().advance().popEnd();
-                if (strictlyIn(myTypes.C_OPTION)) {
-                    // option < ... |> > <| ...
-                    popEnd();
-                }
-            } else if (inAny(myTypes.C_TAG_START, myTypes.C_TAG_CLOSE)) {
-                if (isFound(myTypes.C_TAG_START)) {
+            if (strictlyInAny(myTypes.C_PARAMETERS, myTypes.C_SCOPED_EXPR, myTypes.C_TAG_START, myTypes.C_TAG_CLOSE)) {
+                if (isFound(myTypes.C_PARAMETERS)) {
+                    if (isFoundScope(myTypes.LT)) {
+                        // type x< ... |> ><|
+                        popEndUntilFoundIndex().advance().end();
+                    }
+                } else if (isFound(myTypes.C_SCOPED_EXPR)) {
+                    if (isFoundScope(myTypes.LT)) {
+                        popEndUntilFoundIndex().advance().popEnd();
+                        if (strictlyIn(myTypes.C_OPTION)) {
+                            // option < ... |> > <| ...
+                            popEnd();
+                        }
+                    }
+                } else if (isFound(myTypes.C_TAG_START)) {
+                    // <Comp ... |> ><|
                     popEndUntilFoundIndex().advance().end();
                     mark(myTypes.C_TAG_BODY);
                 } else if (isFound(myTypes.C_TAG_CLOSE)) {
+                    // </Comp ... |> ><|
                     advance().popEndUntil(myTypes.C_TAG).end();
                 }
             }
+            //else {
+            //    if (strictlyIn(myTypes.C_PARAMETERS) && isFoundScope(myTypes.LT)) {
+            //        // type x< ... |> ><|
+            //        popEndUntilFoundIndex().advance().end();
+            //    } else if (in(myTypes.C_SCOPED_EXPR) && isFoundScope(myTypes.LT)) {
+            //        popEndUntilFoundIndex().advance().popEnd();
+            //        if (strictlyIn(myTypes.C_OPTION)) {
+            //            // option < ... |> > <| ...
+            //            popEnd();
+            //        }
+            //    } else if (inAny(myTypes.C_TAG_START, myTypes.C_TAG_CLOSE)) {
+            //        if (isFound(myTypes.C_TAG_START)) {
+            //            popEndUntilFoundIndex().advance().end();
+            //            mark(myTypes.C_TAG_BODY);
+            //        } else if (isFound(myTypes.C_TAG_CLOSE)) {
+            //            advance().popEndUntil(myTypes.C_TAG).end();
+            //        }
+            //    }
+            //}
         }
 
         private void parseGtAutoClose() {
@@ -882,14 +909,6 @@ public class ResParser extends CommonPsiParser {
             }
         }
 
-        @Nullable private IElementType lookAheadSkipEOL(int steps) {
-            IElementType elementType = lookAhead(steps);
-            if (elementType == myTypes.EOL) {
-                elementType = lookAhead(steps + 1);
-            }
-            return elementType;
-        }
-
         private void parseRBrace() {
             Marker scope = popEndUntilOneOfElementType(myTypes.LBRACE, myTypes.RECORD, myTypes.SWITCH);
             advance();
@@ -1073,7 +1092,8 @@ public class ResParser extends CommonPsiParser {
         private void parseEq() {
             if (strictlyInAny(
                     myTypes.C_TYPE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_MODULE_TYPE, myTypes.C_MODULE_DECLARATION,
-                    myTypes.C_TAG_PROPERTY, myTypes.C_SIG_EXPR, myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM
+                    myTypes.C_TAG_PROPERTY, myTypes.C_SIG_EXPR, myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM,
+                    myTypes.C_TYPE_CONSTRAINT, myTypes.C_TYPE_BINDING
             )) {
 
                 if (isFound(myTypes.C_TYPE_DECLARATION)) {
@@ -1115,8 +1135,20 @@ public class ResParser extends CommonPsiParser {
                     popEndUntilFoundIndex()
                             .advance().mark(myTypes.C_DEFAULT_VALUE)
                             .markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_TYPE_CONSTRAINT)) {
+                    // ... with type t |> =<| ...
+                    advance().mark(myTypes.C_TYPE_BINDING);
+                } else if (isFound(myTypes.C_TYPE_BINDING) && strictlyIn(myTypes.C_CONSTRAINTS)) {
+                    // .. with type .. = .. |> =<| ..
+                    popEndUntilFoundIndex().popEnd();
+                    if (strictlyIn(myTypes.C_MODULE_DECLARATION)) {
+                        popEndUntilFoundIndex()
+                                .advance().mark(myTypes.C_MODULE_BINDING);
+                    }
                 }
-
+            } else {
+                // nothing found, just add a placeholder
+                advance().markHolder(myTypes.H_PLACE_HOLDER);
             }
         }
 
@@ -1148,10 +1180,10 @@ public class ResParser extends CommonPsiParser {
                 }
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ...
-                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (isCurrent(myTypes.C_TRY_HANDLER)) {
                 // try .. catch { | |>X<| ..
-                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (isCurrent(myTypes.C_TAG_START) || isCurrent(myTypes.C_TAG_CLOSE)) {
                 // tag name
                 remapCurrentToken(myTypes.A_UPPER_TAG_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
@@ -1178,6 +1210,9 @@ public class ResParser extends CommonPsiParser {
                     markScope(myTypes.C_PARAMETERS, myTypes.LPAREN).advance()
                             .mark(myTypes.C_PARAM_DECLARATION);
                 }
+            } else if (is(myTypes.C_TYPE_DECLARATION)) {
+                // type |>M<|.t += ...
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_TYPE_BINDING)) {
                 IElementType nextToken = lookAhead(1);
                 if (nextToken == myTypes.DOT) { // a path
@@ -1203,7 +1238,9 @@ public class ResParser extends CommonPsiParser {
                                 .markHolder(myTypes.H_COLLECTION_ITEM);
                     }
                 } else {
-                    endLikeSemi2();
+                    if (!isCurrent(myTypes.C_IF_THEN_SCOPE) || rawHasScope()) {   // a block less if then else
+                        endLikeSemi2();
+                    }
                     remapCurrentToken(nextToken == myTypes.RIGHT_ARROW ? myTypes.A_VARIANT_NAME : myTypes.A_MODULE_NAME)
                             .wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
@@ -1328,11 +1365,19 @@ public class ResParser extends CommonPsiParser {
                     && previousType != myTypes.L_OR
             ) {
                 Marker marker = getActiveMarker();
-                boolean end = marker == null || !marker.isCompositeType(myTypes.C_BINARY_CONDITION);
+                boolean end = marker == null || !(marker.isCompositeType(myTypes.C_BINARY_CONDITION) || marker.isCompositeType(myTypes.C_PARAM));
                 if (end) {
                     popEndUntilScope();
                 }
             }
+        }
+
+        private @Nullable IElementType lookAheadSkipEOL(int steps) {
+            IElementType elementType = lookAhead(steps);
+            if (elementType == myTypes.EOL) {
+                elementType = lookAhead(steps + 1);
+            }
+            return elementType;
         }
 
         private void advanceSkipEOL() {

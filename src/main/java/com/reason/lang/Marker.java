@@ -16,11 +16,11 @@ public class Marker {
     private final int myOffset;
 
     private ORCompositeType myCompositeElementType;
-    private ORTokenElementType myScopeElementType;
+    private IElementType myScopeElementType;
     private IElementType myAtomType;
     private Status myStatus = Status.unset;
 
-    private Marker(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull ORCompositeType compositeElementType, @Nullable ORTokenElementType scopeTokenElementType) {
+    private Marker(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull ORCompositeType compositeElementType, @Nullable IElementType scopeTokenElementType) {
         myBuilder = builder;
         myMark = mark;
         myOffset = builder.getCurrentOffset();
@@ -118,11 +118,11 @@ public class Marker {
         return false;
     }
 
-    void setScopeType(@NotNull ORTokenElementType scopeType) {
+    void setScopeType(@NotNull IElementType scopeType) {
         myScopeElementType = scopeType;
     }
 
-    public void updateScope(@Nullable ORTokenElementType scopeToken) {
+    public void updateScope(@Nullable IElementType scopeToken) {
         myScopeElementType = scopeToken;
     }
 
@@ -130,7 +130,7 @@ public class Marker {
         return myScopeElementType == scopeType;
     }
 
-    public @Nullable ORTokenElementType getScopeType() {
+    public @Nullable IElementType getScopeType() {
         return myScopeElementType;
     }
 

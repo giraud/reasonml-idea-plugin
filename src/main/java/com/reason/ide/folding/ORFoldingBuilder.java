@@ -10,6 +10,7 @@ import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.ocamllex.*;
 import com.reason.lang.core.psi.ocamlyacc.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
@@ -46,11 +47,21 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
                 foldSwitch(descriptors, (RPsiSwitch) element);
             } else if (element instanceof RPsiTry) {
                 foldTry(descriptors, (RPsiTry) element);
-            } else if (element instanceof OclYaccHeader) {
-                foldHeader(descriptors, (OclYaccHeader) element);
-            } else if (element instanceof OclYaccRule) {
-                foldRule(descriptors, (OclYaccRule) element);
             } else if (types.MULTI_COMMENT == element.getNode().getElementType()) {
+                FoldingDescriptor fold = fold(element);
+                if (fold != null) {
+                    descriptors.add(fold);
+                }
+            }
+            // Lex
+            else if (element instanceof RPsiLexRule || element instanceof RPsiLexInjection) {
+                FoldingDescriptor fold = fold(element);
+                if (fold != null) {
+                    descriptors.add(fold);
+                }
+            }
+            // Yacc
+            else if (element instanceof RPsiYaccHeader || element instanceof RPsiYaccRuleBody) {
                 FoldingDescriptor fold = fold(element);
                 if (fold != null) {
                     descriptors.add(fold);
@@ -145,21 +156,6 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
 
     private void foldPatternMatch(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiPatternMatch element) {
         FoldingDescriptor fold = fold(element.getBody());
-        if (fold != null) {
-            descriptors.add(fold);
-        }
-    }
-
-    private void foldHeader(@NotNull List<FoldingDescriptor> descriptors, @NotNull OclYaccHeader root) {
-        FoldingDescriptor fold =
-                fold(ORUtil.findImmediateFirstChildOfType(root, OclYaccLazyTypes.OCAML_LAZY_NODE));
-        if (fold != null) {
-            descriptors.add(fold);
-        }
-    }
-
-    private void foldRule(@NotNull List<FoldingDescriptor> descriptors, @NotNull OclYaccRule root) {
-        FoldingDescriptor fold = fold(ORUtil.findImmediateFirstChildOfClass(root, OclYaccRuleBody.class));
         if (fold != null) {
             descriptors.add(fold);
         }

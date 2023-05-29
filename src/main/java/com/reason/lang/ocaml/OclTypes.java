@@ -112,6 +112,7 @@ public class OclTypes extends ORLangTypes {
         A_UPPER_TAG_NAME = new ORTokenElementType("A_UPPER_TAG_NAME", OclLanguage.INSTANCE);
         A_VARIANT_NAME = new ORTokenElementType("A_VARIANT_NAME", OclLanguage.INSTANCE);
         A_MODULE_NAME = new ORTokenElementType("A_MODULE_NAME", OclLanguage.INSTANCE);
+        A_EXCEPTION_NAME = new ORTokenElementType("A_EXCEPTION_NAME", OclLanguage.INSTANCE);
 
         // Dummy types
 
@@ -132,7 +133,6 @@ public class OclTypes extends ORLangTypes {
         FUN = new ORTokenElementType("FUN", OclLanguage.INSTANCE);
         FUNCTOR = new ORTokenElementType("FUNCTOR", OclLanguage.INSTANCE);
         IF = new ORTokenElementType("IF", OclLanguage.INSTANCE);
-        EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", OclLanguage.INSTANCE);
         PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", OclLanguage.INSTANCE);
         AND = new ORTokenElementType("AND", OclLanguage.INSTANCE);
         L_AND = new ORTokenElementType("L_AND", OclLanguage.INSTANCE);

@@ -1203,10 +1203,10 @@ public class RmlParser extends CommonPsiParser {
                 wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (is(myTypes.C_EXCEPTION_DECLARATION)) {
                 // exception |>E<| ..
-                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (isCurrent(myTypes.C_TRY_HANDLER)) {
                 // try .. { | |>X<| ..
-                remapCurrentToken(myTypes.EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
+                remapCurrentToken(myTypes.A_EXCEPTION_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if ((in(myTypes.C_TAG_START, /*not*/myTypes.C_TAG_PROP_VALUE) || in(myTypes.C_TAG_CLOSE)) && previousElementType(1) == myTypes.DOT) { // a namespaced custom component
                 // <X.|>Y<| ...
                 remapCurrentToken(myTypes.A_UPPER_TAG_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);

@@ -123,14 +123,11 @@ public class ResCompiler implements Compiler {
     }
 
     private @NotNull GeneralCommandLine getCommandLine(@NotNull String binPath, @NotNull CliType.Rescript cliType) {
-        switch (cliType) {
-            case MAKE:
-                return new GeneralCommandLine(binPath, "build");
-            case CLEAN:
-                return new GeneralCommandLine(binPath, "clean");
-            default:
-                return new GeneralCommandLine(binPath);
-        }
+        return switch (cliType) {
+            case MAKE -> new GeneralCommandLine(binPath, "build");
+            case CLEAN -> new GeneralCommandLine(binPath, "clean");
+            default -> new GeneralCommandLine(binPath);
+        };
     }
 
     public @NotNull Ninja readNinjaBuild(@Nullable VirtualFile contentRoot) {

@@ -54,8 +54,7 @@ public class ObjectCompletionProvider {
     }
 
     private static @Nullable Collection<RPsiObjectField> getFields(@NotNull PsiElement resolvedElement) {
-        if (resolvedElement instanceof RPsiLet) {
-            RPsiLet let = (RPsiLet) resolvedElement;
+        if (resolvedElement instanceof RPsiLet let) {
             if (let.isJsObject()) {
                 RPsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(let.getBinding(), RPsiJsObject.class);
                 return jsObject == null ? null : jsObject.getFields();

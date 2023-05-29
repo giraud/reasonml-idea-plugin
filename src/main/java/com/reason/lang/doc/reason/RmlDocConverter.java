@@ -48,8 +48,7 @@ public class RmlDocConverter extends ORDocConverter {
                     // skip
                 } else if (tokenType == RmlDocTypes.TAG) {
                     String yyValue = extract(1, 0, myLexer.yytext());
-                    if (currentBuilder instanceof ORDocSectionsBuilder) {
-                        ORDocSectionsBuilder sectionsBuilder = (ORDocSectionsBuilder) currentBuilder;
+                    if (currentBuilder instanceof ORDocSectionsBuilder sectionsBuilder) {
                         if (sectionsBuilder.myTag.equals(yyValue)) {
                             trimEndChildren(sectionsBuilder.myChildren);
                             sectionsBuilder.myChildren.add(HtmlChunk.raw("</p><p>"));

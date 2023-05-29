@@ -167,20 +167,14 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
 
         @Override
         public @NotNull String getColumnName(int col) {
-            switch (col) {
-                case 0:
-                    return "Kind";
-                case 1:
-                    return "Position";
-                case 2:
-                    return "Name";
-                case 3:
-                    return "QName";
-                case 4:
-                    return "Type";
-                default:
-                    return " ";
-            }
+            return switch (col) {
+                case 0 -> "Kind";
+                case 1 -> "Position";
+                case 2 -> "Name";
+                case 3 -> "QName";
+                case 4 -> "Type";
+                default -> " ";
+            };
         }
 
         @Override

@@ -11,12 +11,11 @@ import org.jetbrains.annotations.*;
 public class OclYaccParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
     private static final TokenSet COMMENTS = TokenSet.create(OclYaccTypes.INSTANCE.MULTI_COMMENT, OclYaccTypes.INSTANCE.SINGLE_COMMENT);
-
     private static final IFileElementType FILE = new IFileElementType(Language.findInstance(OclYaccLanguage.class));
 
     @Override
     public @NotNull Lexer createLexer(Project project) {
-        return new OclYaccLexer();
+        return new FlexAdapter(new OclYaccLexer());
     }
 
     public @NotNull TokenSet getWhitespaceTokens() {
@@ -32,7 +31,7 @@ public class OclYaccParserDefinition implements ParserDefinition {
     }
 
     public @NotNull PsiParser createParser(Project project) {
-        return new OclYaccParser();
+        return new OclYaccParser(true);
     }
 
     @Override

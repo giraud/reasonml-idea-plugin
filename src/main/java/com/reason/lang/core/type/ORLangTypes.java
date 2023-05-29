@@ -106,6 +106,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORTokenElementType A_UPPER_TAG_NAME;
     public ORTokenElementType A_VARIANT_NAME;
     public ORTokenElementType A_MODULE_NAME;
+    public ORTokenElementType A_EXCEPTION_NAME;
 
     // Dummy types
 
@@ -182,7 +183,6 @@ public abstract class ORLangTypes extends ORTypes {
     public ORTokenElementType WHILE;
     public ORTokenElementType WITH;
     public ORTokenElementType RAW;
-    public ORTokenElementType EXCEPTION_NAME;
     public ORTokenElementType PROPERTY_NAME;
     public ORTokenElementType SHARPSHARP;
     public ORTokenElementType ARROBASE;

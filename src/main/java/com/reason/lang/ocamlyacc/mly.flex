@@ -8,8 +8,9 @@ import static com.intellij.psi.TokenType.*;
 @SuppressWarnings("ALL")
 %%
 
+%public
 %unicode
-%class YaccLexer
+%class OclYaccLexer
 %implements FlexLexer
 %function advance
 %type IElementType
@@ -17,14 +18,18 @@ import static com.intellij.psi.TokenType.*;
 %eof}
 
 %{
+  private OclYaccTypes types;
   private int tokenStartIndex;
   private CharSequence quotedStringId;
   private int braceDepth;
   private boolean rulesDone = false;
+  private boolean zzEOFDone = false;
+  private boolean zzAtBOL = false;
 
-   public YaccLexer() {
+   public OclYaccLexer() {
       this((java.io.Reader)null);
-  }
+      this.types = OclYaccTypes.INSTANCE;
+   }
 
   // Store the start index of a token
   private void tokenStart() {
@@ -40,7 +45,8 @@ import static com.intellij.psi.TokenType.*;
 %state INITIAL
 %state IN_HEADER
 %state IN_SEMANTIC_ACTION
-%state IN_COMMENT
+%state IN_ML_COMMENT
+%state IN_SL_COMMENT
 %state IN_TRAILER
 
 EOL=\n|\r|\r\n
@@ -59,58 +65,66 @@ IDENT=[A-Za-z_0-9]
 <INITIAL> {
     {WHITE_SPACE}  { return WHITE_SPACE; }
 
-    "%{"           { yybegin(IN_HEADER); tokenStart(); return OclYaccTypes.INSTANCE.HEADER_START; }
-    "%}"           { return OclYaccTypes.INSTANCE.HEADER_STOP; }
-    "{"            { yybegin(IN_SEMANTIC_ACTION); braceDepth = 1; tokenStart(); return OclYaccTypes.INSTANCE.LBRACE; }
-    "}"            { return OclYaccTypes.INSTANCE.RBRACE; }
+    "%{"           { yybegin(IN_HEADER); tokenStart(); return types.HEADER_START; }
+    "%}"           { return types.HEADER_STOP; }
+    "{"            { yybegin(IN_SEMANTIC_ACTION); braceDepth = 1; tokenStart(); return types.LBRACE; }
+    "}"            { return types.RBRACE; }
 
-    "%%"           { if (rulesDone) { yybegin(IN_TRAILER); } rulesDone = true; return OclYaccTypes.INSTANCE.SECTION_SEPARATOR; }
+    "%%"           { if (rulesDone) { yybegin(IN_TRAILER); } rulesDone = true; return types.SECTION_SEPARATOR; }
 
-    "%token"       {return OclYaccTypes.INSTANCE.TOKEN; }
-    "%start"       {return OclYaccTypes.INSTANCE.START; }
-    "%type"        {return OclYaccTypes.INSTANCE.TYPE; }
-    "%left"        {return OclYaccTypes.INSTANCE.LEFT; }
-    "%right"       {return OclYaccTypes.INSTANCE.RIGHT; }
+    "%token"       { return types.TOKEN; }
+    "%start"       { return types.START; }
+    "%type"        { return types.TYPE; }
+    "%left"        { return types.LEFT; }
+    "%right"       { return types.RIGHT; }
+    "%nonassoc"    { return types.NON_ASSOC; }
+    "%inline"      { return types.INLINE; }
 
-    "."            { return OclYaccTypes.INSTANCE.DOT; }
-    ":"            { return OclYaccTypes.INSTANCE.COLON; }
-    ";"            { return OclYaccTypes.INSTANCE.SEMI; }
-    "|"            { return OclYaccTypes.INSTANCE.PIPE; }
-    "<"            { return OclYaccTypes.INSTANCE.LT; }
-    ">"            { return OclYaccTypes.INSTANCE.GT; }
+    "."            { return types.DOT; }
+    ":"            { return types.COLON; }
+    ";"            { return types.SEMI; }
+    "|"            { return types.PIPE; }
+    "<"            { return types.LT; }
+    ">"            { return types.GT; }
 
-    "/*"           { yybegin(IN_COMMENT); tokenStart(); }
-    "(*"           { yybegin(IN_COMMENT); tokenStart(); }
+    "/*"           { yybegin(IN_ML_COMMENT); tokenStart(); }
+    "(*"           { yybegin(IN_ML_COMMENT); tokenStart(); }
+    "//"           { yybegin(IN_SL_COMMENT); tokenStart(); }
 
-    {IDENT}+       { return OclYaccTypes.INSTANCE.IDENT; }
-    /*[^\ \t\f]     { return OclYaccTypes.INSTANCE.ATOM; }*/
+    {IDENT}+       { return types.IDENT; }
+    [^\ \t\f]      { return types.ATOM; }
 }
 
 <IN_HEADER> {
-    "%}"      { yypushback(2); tokenEnd(); yybegin(INITIAL); return OclYaccTypes.INSTANCE.OCAML_LAZY_NODE; }
+    "%}"      { yypushback(2); tokenEnd(); yybegin(INITIAL); return types.TEMPLATE_OCAML_TEXT; }
     .         { }
     {NEWLINE} { }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.OCAML_LAZY_NODE; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.TEMPLATE_OCAML_TEXT; }
 }
 
 <IN_SEMANTIC_ACTION> {
-    "{"       { braceDepth += 1; }
-    "}"       { braceDepth -= 1; if(braceDepth == 0) { yypushback(1); tokenEnd(); yybegin(INITIAL); return OclYaccTypes.INSTANCE.OCAML_LAZY_NODE; } }
-    .         { }
-    {NEWLINE} { }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.OCAML_LAZY_NODE; }
+    "{"           { braceDepth += 1; }
+    "}"           { braceDepth -= 1; if(braceDepth == 0) { yypushback(1); tokenEnd(); yybegin(INITIAL); return types.TEMPLATE_OCAML_TEXT; } }
+    . | {NEWLINE} { }
+    <<EOF>>       { yybegin(INITIAL); tokenEnd(); return types.TEMPLATE_OCAML_TEXT; }
 }
 
-<IN_COMMENT> {
+<IN_ML_COMMENT> {
+    "*/"          { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
+    "*)"          { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
+    . | {NEWLINE} { }
+    <<EOF>>       { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
+}
+
+<IN_SL_COMMENT> {
     .         { }
-    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.SINGLE_COMMENT; }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.SINGLE_COMMENT; }
+    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
 }
 
 <IN_TRAILER> {
-    .         { }
-    {NEWLINE} { }
-    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.INSTANCE.OCAML_LAZY_NODE; }
+    . | {NEWLINE} { }
+    <<EOF>>       { yybegin(INITIAL); tokenEnd(); return types.TEMPLATE_OCAML_TEXT; }
 }
 
 [^] { return BAD_CHARACTER; }

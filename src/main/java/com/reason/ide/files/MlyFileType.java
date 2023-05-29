@@ -2,6 +2,7 @@ package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.*;
 import com.reason.ide.*;
+import com.reason.ide.highlight.*;
 import com.reason.lang.ocamlyacc.*;
 import org.jetbrains.annotations.*;
 
@@ -12,6 +13,7 @@ public class MlyFileType extends LanguageFileType {
 
     private MlyFileType() {
         super(OclYaccLanguage.INSTANCE);
+        FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(this, (project, fileType, virtualFile, colors) -> new OclYaccEditorHighlighter(project, virtualFile, colors));
     }
 
     @Override
