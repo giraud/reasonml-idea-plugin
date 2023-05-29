@@ -35,6 +35,7 @@ intellij {
         changeNotes = """
                 <ul>
                     <li>#414 - Extensible variant incorrectly parsed in Rescript</li>
+                    <li>#412 - Scope incorrectly parsed in mll file</li>
                     <li>#413 - Unpack is a keyword in rescript</li>
                     <li>#411 - Block comment operation (Ctrl-Shift-/) on highlighted text should not add a newline</li>
                     <li>#410 - Goto icons not shown between module and module type in same file</li>

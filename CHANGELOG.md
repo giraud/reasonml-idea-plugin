@@ -10,10 +10,11 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## Unreleased
+## 0.113 - 2023/05/29
 
 - :bug: ![n] [#414](https://github.com/giraud/reasonml-idea-plugin/issues/414) Extensible variant incorrectly parsed in Rescript
 - :bug: ![n] [#413](https://github.com/giraud/reasonml-idea-plugin/issues/413) Unpack is a keyword in rescript
+- :bug: ![o] [#412](https://github.com/giraud/reasonml-idea-plugin/issues/412) Scope incorrectly parsed in mll file
 - :bug: ![o] [#411](https://github.com/giraud/reasonml-idea-plugin/issues/411) Block comment operation (Ctrl-Shift-/) on highlighted text should not add a newline
 - :bug: [#410](https://github.com/giraud/reasonml-idea-plugin/issues/410) Goto icons not shown between module and module type in same file
 - :bug: ![o] [#409](https://github.com/giraud/reasonml-idea-plugin/issues/409) Wrong structure on let b = 1 = 1 in
