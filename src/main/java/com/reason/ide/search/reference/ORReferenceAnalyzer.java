@@ -173,9 +173,12 @@ public class ORReferenceAnalyzer {
 
         List<ResolutionElement> resolutions = new ArrayList<>(); // temporary resolutions
 
-        // First instruction is always current file
-        FileBase localFile = (FileBase) instructions.removeFirst();
-        resolutions.add(new ResolutionElement(localFile, true));
+        // First instruction is always current file, if not there is a problem during parsing
+        PsiElement firstElement = instructions.removeFirst();
+        if (!(firstElement instanceof FileBase)) {
+            return result;
+        }
+        resolutions.add(new ResolutionElement(firstElement, true));
 
         while (!instructions.isEmpty()) {
             PsiElement instruction = instructions.removeFirst();
@@ -456,7 +459,7 @@ public class ORReferenceAnalyzer {
 
                 // Search for alternate paths using gist
                 // This is a recursive function (if not end of instruction)
-                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(localFile);
+                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData((FileBase) firstElement);
                 Collection<String> alternateNames = data.getElement(foundOpen); // add path to data ?
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element
@@ -476,7 +479,7 @@ public class ORReferenceAnalyzer {
             else if (instruction instanceof RPsiInclude foundInclude) {
 
                 // Search for alternate paths using gist
-                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData(localFile).getElement(foundInclude);
+                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getElement(foundInclude);
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                     resolutions.addAll(resolvePath(foundInclude.getIncludePath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList()));
@@ -494,7 +497,7 @@ public class ORReferenceAnalyzer {
                     RPsiTagStart foundTag = (RPsiTagStart) instruction;
 
                     // Search for alternate paths using gist
-                    Collection<String> alternateNames = ORModuleResolutionPsiGist.getData(localFile).getElement(foundTag);
+                    Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getElement(foundTag);
                     if (alternateNames.isEmpty()) {
                         // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                         String name = foundTag.getName();

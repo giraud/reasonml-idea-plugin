@@ -31,6 +31,7 @@ public class ORStructureViewModel extends StructureViewModelBase implements com.
                 || element instanceof ResFile
                 || element instanceof OclFile
                 || element instanceof MlyFile
+                || element instanceof MlgFile
                 || element instanceof DuneFile;
     }
 }

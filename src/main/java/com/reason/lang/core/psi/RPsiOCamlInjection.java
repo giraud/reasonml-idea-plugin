@@ -1,4 +1,4 @@
-package com.reason.lang.core.psi.ocamllex;
+package com.reason.lang.core.psi;
 
 import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;
@@ -9,8 +9,8 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class RPsiLexInjection extends ASTWrapperPsiElement implements RPsiStructuredElement {
-    public RPsiLexInjection(@NotNull ASTNode node) {
+public class RPsiOCamlInjection extends ASTWrapperPsiElement implements RPsiStructuredElement {
+    public RPsiOCamlInjection(@NotNull ASTNode node) {
         super(node);
     }
 

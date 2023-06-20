@@ -12,8 +12,8 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 
 import javax.swing.*;
 
-public class RPisYaccDeclaration extends ASTWrapperPsiElement implements RPsiStructuredElement {
-    public RPisYaccDeclaration(@NotNull ASTNode node) {
+public class RPsiYaccDeclaration extends ASTWrapperPsiElement implements RPsiStructuredElement {
+    public RPsiYaccDeclaration(@NotNull ASTNode node) {
         super(node);
     }
 

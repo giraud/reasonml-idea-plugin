@@ -10,11 +10,12 @@ import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.ocamlgrammar.*;
 import com.reason.lang.core.psi.ocamllex.*;
 import com.reason.lang.core.psi.ocamlyacc.*;
 import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
-import com.reason.lang.ocamlyacc.*;
+import com.reason.lang.ocamlgrammar.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -54,7 +55,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
                 }
             }
             // Lex
-            else if (element instanceof RPsiLexRule || element instanceof RPsiLexInjection) {
+            else if (element instanceof RPsiLexRule || element instanceof RPsiOCamlInjection) {
                 FoldingDescriptor fold = fold(element);
                 if (fold != null) {
                     descriptors.add(fold);
@@ -67,6 +68,14 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
                     descriptors.add(fold);
                 }
             }
+            // Grammar
+            else if (element instanceof RPsiGrammarVernac || element instanceof RPsiGrammarTactic || element instanceof RPsiGrammarArgument || element instanceof RPsiGrammarGrammar) {
+                FoldingDescriptor fold = fold(element);
+                if (fold != null) {
+                    descriptors.add(fold);
+                }
+            }
+
 
             return true;
         });
@@ -161,9 +170,8 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    @Nullable
     @Override
-    public String getPlaceholderText(@NotNull ASTNode node) {
+    public @Nullable String getPlaceholderText(@NotNull ASTNode node) {
         IElementType elementType = node.getElementType();
         if (elementType == RmlTypes.INSTANCE.MULTI_COMMENT) {
             return "/*...*/";
@@ -171,6 +179,16 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
             return "(*...*)";
         } else if (elementType == OclTypes.INSTANCE.C_MODULE_TYPE) {
             return "sig...";
+        } else if (elementType == OclGrammarTypes.INSTANCE.C_VERNAC) {
+            return "vernac...";
+        } else if (elementType == OclGrammarTypes.INSTANCE.C_TACTIC) {
+            return "tactic...";
+        } else if (elementType == OclGrammarTypes.INSTANCE.C_ARGUMENT) {
+            return "argument...";
+        } else if (elementType == OclGrammarTypes.INSTANCE.C_GRAMMAR) {
+            return "grammar...";
+        } else if (elementType == OclGrammarTypes.INSTANCE.C_INJECTION) {
+            return "ocaml...";
         }
 
         return "...";

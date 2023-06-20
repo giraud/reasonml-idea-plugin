@@ -158,7 +158,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] POLY_VARIANT_KEYS = new TextAttributesKey[]{POLY_VARIANT_};
     static final TextAttributesKey[] BRACKET_KEYS = new TextAttributesKey[]{BRACKETS_};
     static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACES_};
-    private static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS_};
+    static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS_};
     private static final TextAttributesKey[] OPTION_KEYS = new TextAttributesKey[]{OPTION_};
     static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD_};
     static final TextAttributesKey[] SEMICOLON_KEYS = new TextAttributesKey[]{SEMICOLON_};

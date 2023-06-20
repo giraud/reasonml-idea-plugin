@@ -145,9 +145,11 @@
         <lang.syntaxHighlighterFactory language="OCamlP4"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- OCamlMlg -->
-        <lang.parserDefinition language="Mlg" implementationClass="com.reason.lang.extra.OclMlgParserDefinition"/>
+        <lang.parserDefinition language="Mlg" implementationClass="com.reason.lang.ocamlgrammar.OclGrammarParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Mlg"
-                                       implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
+                                       implementationClass="com.reason.ide.highlight.OclGrammarSyntaxHighlighterFactory"/>
+        <lang.fileViewProviderFactory language="Mlg"
+                                      implementationClass="com.reason.ide.files.MlgFileViewProviderFactory"/>
         <!-- OCaml - lex -->
         <lang.parserDefinition language="Mll" implementationClass="com.reason.lang.ocamllex.OclLexParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Mll"
