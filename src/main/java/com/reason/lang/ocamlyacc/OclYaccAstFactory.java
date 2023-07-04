@@ -4,6 +4,7 @@ import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.ocamlyacc.*;
 import org.jetbrains.annotations.*;
 
@@ -18,7 +19,7 @@ class OclYaccAstFactory extends ASTFactory {
             return new RPsiYaccHeader(node);
         }
         if (type == OclYaccTypes.INSTANCE.C_DECLARATION) {
-            return new RPisYaccDeclaration(node);
+            return new RPsiYaccDeclaration(node);
         }
         if (type == OclYaccTypes.INSTANCE.C_RULE) {
             return new RPsiYaccRule(node);
@@ -27,7 +28,7 @@ class OclYaccAstFactory extends ASTFactory {
             return new RPsiYaccRuleBody(node);
         }
         if (type == OclYaccTypes.INSTANCE.C_INJECTION) {
-            return new RPsiYaccInjection(node);
+            return new RPsiOCamlInjection(node);
         }
 
         return new ASTWrapperPsiElement(node);

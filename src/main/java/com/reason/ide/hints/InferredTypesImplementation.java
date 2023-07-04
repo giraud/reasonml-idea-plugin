@@ -130,7 +130,14 @@ public class InferredTypesImplementation implements InferredTypes {
                 }
             }
             case RECORD_FIELD: {
-                // TODO
+                // Pattern :: name|type
+                String[] tokens = line.split("\\|", 2);
+
+                PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText("Dummy", OclLanguage.INSTANCE, "let x:" + tokens[1]);
+                RPsiSignature psiSignature = PsiTreeUtil.findChildOfType(psiFile, RPsiSignature.class);
+                if (psiSignature != null) {
+                    mySignatures.put(start, psiSignature);
+                }
             }
         }
     }
