@@ -34,6 +34,7 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
+                    <li>New URL for downloading Rincewind</li>
                     <li>#118 - Much better parsing of mlg files (ocaml injection, highlighting, folding)</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

@@ -12,6 +12,11 @@
                         
 ## Unreleased
 
+## 0.114 - 2023/07/04
+
+(!) Jfrog is no longer serving binaries for rincewind, URL is changed and you must upgrade your plugin to this revision 
+if you want to continue using it (type annotations)
+
 - :rocket: ![o] [#118](https://github.com/giraud/reasonml-idea-plugin/issues/118) Much better parsing of mlg files (ocaml injection, highlighting, folding)
 
 ## 0.113 - 2023/05/29
