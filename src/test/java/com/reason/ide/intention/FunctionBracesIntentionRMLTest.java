@@ -21,7 +21,7 @@ public class FunctionBracesIntentionRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_withSignature() {
+    public void test_with_signature() {
         configureCode("A.re", "let add = (x: int => int, y: int) => <caret>x + y;");
         IntentionAction bracesAction = myFixture.getAvailableIntention(ADD_BRACES);
         myFixture.launchAction(bracesAction);

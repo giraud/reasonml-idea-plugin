@@ -35,15 +35,13 @@ public class ORCodeFactory {
     }
 
     @Nullable
-    public static PsiElement createExpression(@NotNull Project project, @NotNull String expression) {
-        FileBase file = createFileFromText(project, RmlLanguage.INSTANCE, expression);
+    public static PsiElement createExpression(@NotNull Project project, @NotNull Language language, @NotNull String expression) {
+        FileBase file = createFileFromText(project, language, expression);
         return file.getFirstChild();
     }
 
     @NotNull
-    public static FileBase createFileFromText(
-            @NotNull Project project, @NotNull Language language, @NotNull String text) {
-        return (FileBase)
-                PsiFileFactory.getInstance(project).createFileFromText("Dummy", language, text);
+    public static FileBase createFileFromText(@NotNull Project project, @NotNull Language language, @NotNull String text) {
+        return (FileBase) PsiFileFactory.getInstance(project).createFileFromText("Dummy", language, text);
     }
 }

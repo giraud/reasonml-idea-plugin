@@ -1,47 +1,46 @@
 package com.reason.ide.intentions;
 
+import com.intellij.codeInsight.intention.*;
+import com.intellij.codeInspection.util.*;
+import com.intellij.lang.*;
+import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.type.*;
 import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
-public class FunctionBracesIntention extends AbstractBaseIntention<RPsiFunction> {
-
-    @Nls
-    @NotNull
+public class FunctionBracesIntention implements IntentionAction {
     @Override
-    public String getText() {
+    public @IntentionName @NotNull String getText() {
         return "Add braces to blockless function";
     }
 
-    @Nls
-    @NotNull
     @Override
-    public String getFamilyName() {
+    public @NotNull @IntentionFamilyName String getFamilyName() {
         return "Add braces to blockless function";
     }
 
-    @NotNull
     @Override
-    Class<RPsiFunction> getClazz() {
-        return RPsiFunction.class;
-    }
-
-    @Override
-    public boolean isAvailable(@NotNull RPsiFunction parentElement) {
-        RPsiFunctionBody body = PsiTreeUtil.findChildOfType(parentElement, RPsiFunctionBody.class);
-        if (body != null) {
-            PsiElement firstChild = body.getFirstChild();
-            if (firstChild instanceof RPsiScopedExpr) {
-                firstChild = firstChild.getFirstChild();
-                return firstChild != null
-                        && firstChild.getNode().getElementType() != RmlTypes.INSTANCE.LBRACE;
-            } else {
-                return true;
+    public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+        if (file instanceof RmlFile || file instanceof ResFile) {
+            RPsiFunction function = getTarget(editor, file);
+            if (function != null) {
+                RPsiFunctionBody body = function.getBody();
+                PsiElement firstChild = body == null ? null : body.getFirstChild();
+                if (firstChild instanceof RPsiScopedExpr) {
+                    firstChild = firstChild.getFirstChild();
+                    ORLangTypes types = ORUtil.getTypes(function.getLanguage());
+                    return firstChild != null && firstChild.getNode().getElementType() != types.LBRACE;
+                } else {
+                    return true;
+                }
             }
         }
 
@@ -49,22 +48,25 @@ public class FunctionBracesIntention extends AbstractBaseIntention<RPsiFunction>
     }
 
     @Override
-    void runInvoke(@NotNull Project project, @NotNull RPsiFunction oldFunction) {
-        RPsiFunctionBody oldBody = oldFunction.getBody();
-        if (oldBody != null) {
-            String text = oldFunction.getText();
-            int bodyOffset = oldBody.getStartOffsetInParent();
-            String def = text.substring(0, bodyOffset);
-            String body = text.substring(bodyOffset);
-            RPsiLet newSyntax =
-                    (RPsiLet) ORCodeFactory.createExpression(project, "let x = " + def + "{ " + body + "; };");
-
-            if (newSyntax != null) {
-                RPsiFunction newFunction = newSyntax.getFunction();
-                if (newFunction != null) {
-                    RPsiFunctionBody newBody = newFunction.getBody();
-                    if (newBody != null) {
-                        oldFunction.getNode().replaceChild(oldBody.getNode(), newBody.getNode());
+    public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+        RPsiFunction function = getTarget(editor, file);
+        if (function != null) {
+            RPsiFunctionBody body = function.getBody();
+            if (body != null) {
+                String text = function.getText();
+                int bodyOffset = body.getStartOffsetInParent();
+                String def = text.substring(0, bodyOffset);
+                String bodyText = text.substring(bodyOffset);
+                Language language = function.getLanguage();
+                String newExpression = language == RmlLanguage.INSTANCE ? "let x = " + def + "{ " + bodyText + "; };" : "let x = " + def + "{ " + bodyText + " }";
+                RPsiLet newSyntax = (RPsiLet) ORCodeFactory.createExpression(project, language, newExpression);
+                if (newSyntax != null) {
+                    RPsiFunction newFunction = newSyntax.getFunction();
+                    if (newFunction != null) {
+                        RPsiFunctionBody newBody = newFunction.getBody();
+                        if (newBody != null) {
+                            function.getNode().replaceChild(body.getNode(), newBody.getNode());
+                        }
                     }
                 }
             }
@@ -73,6 +75,12 @@ public class FunctionBracesIntention extends AbstractBaseIntention<RPsiFunction>
 
     @Override
     public boolean startInWriteAction() {
-        return false;
+        return true;
+    }
+
+    @Nullable
+    private RPsiFunction getTarget(@NotNull Editor editor, @NotNull PsiFile file) {
+        PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
+        return element == null ? null : PsiTreeUtil.getParentOfType(element, RPsiFunction.class);
     }
 }

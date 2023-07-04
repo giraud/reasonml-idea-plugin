@@ -19,13 +19,17 @@ import java.nio.file.*;
 public class RincewindDownloader extends Task.Backgroundable {
     private static final Log LOG = Log.create("hints");
     private static final double TOTAL_BYTES = 10_000_000.0;
-    private static final String DOWNLOAD_URL = "https://rincewind.jfrog.io/artifactory/ocaml/";
+    private static final String DOWNLOAD_DEFAULT_URL = "https://s3.eu-west-2.wasabisys.com/rincewind/";
 
     private final File myRincewindTarget;
+    private final String myDownloadURL;
 
     RincewindDownloader(@Nullable Project project, @NotNull File rincewindTarget) {
         super(project, "Downloading Rincewind binary");
         myRincewindTarget = rincewindTarget;
+        // URL has changed several times since the beginning of the project, might be better to let the user overrides it if needed
+        String systemDownloadURL = System.getProperties().getProperty("rincewindURL");
+        myDownloadURL = systemDownloadURL == null ? DOWNLOAD_DEFAULT_URL : systemDownloadURL;
     }
 
     @Override
@@ -48,7 +52,7 @@ public class RincewindDownloader extends Task.Backgroundable {
             indicator.setIndeterminate(false);
             indicator.setFraction(0.0);
 
-            boolean downloaded = WGet.apply(DOWNLOAD_URL + rincewindFilename, myRincewindTarget, indicator, TOTAL_BYTES);
+            boolean downloaded = WGet.apply(myDownloadURL + rincewindFilename, myRincewindTarget, indicator, TOTAL_BYTES);
             if (downloaded) {
                 Application application = ApplicationManager.getApplication();
                 application.executeOnPooledThread(() -> {
