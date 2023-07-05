@@ -47,7 +47,7 @@ public class ExternalParsingTest extends RmlParsingTestCase {
         RPsiExternal e = firstOfType(parseCode("external string : string => reactElement = \"%identity\""), RPsiExternal.class);
 
         assertEquals("string", e.getName());
-        assertInstanceOf(((RPsiExternalImpl) e).getNameIdentifier(), RPsiLowerSymbol.class);
+        assertInstanceOf(e.getNameIdentifier(), RPsiLowerSymbol.class);
         assertEquals("string => reactElement", e.getSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
