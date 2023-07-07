@@ -1,7 +1,10 @@
 package com.reason.ide;
 
+import com.intellij.codeInsight.daemon.*;
+import com.intellij.codeInsight.daemon.impl.*;
 import com.intellij.lang.*;
 import com.intellij.lang.documentation.*;
+import com.intellij.openapi.editor.*;
 import com.intellij.openapi.util.io.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
@@ -61,5 +64,12 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
 
     protected @NotNull List<UsageInfo> findUsages(String fileName) {
         return (List<UsageInfo>) myFixture.testFindUsages(fileName);
+    }
+
+    protected @NotNull List<LineMarkerInfo<?>> doHighlight(FileBase f) {
+        myFixture.openFileInEditor(f.getVirtualFile());
+        myFixture.doHighlighting();
+        Document document = myFixture.getEditor().getDocument();
+        return DaemonCodeAnalyzerImpl.getLineMarkers(document, myFixture.getProject());
     }
 }

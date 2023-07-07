@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.*;
 import com.intellij.codeInsight.daemon.impl.*;
 import com.intellij.openapi.editor.*;
 import com.reason.ide.*;
+import com.reason.ide.files.*;
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
@@ -14,213 +15,276 @@ import java.util.*;
 public class LineMarkerProviderRESTest extends ORBasePlatformTestCase {
     @Test
     public void test_let_files() {
-        configureCode("A.resi", "let x: int");
-        configureCode("A.res", "let x = 1");
+        FileBase intf = configureCode("A.resi", "let x: int");
+        FileBase impl = configureCode("A.res", "let x = 1");
 
-        myFixture.doHighlighting();
+        List<LineMarkerInfo<?>> markers = doHighlight(intf);
 
-        Document document = myFixture.getEditor().getDocument();
-        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(document, myFixture.getProject());
-        LineMarkerInfo<?> m0 = lineMarkers.get(0);
-        assertEquals(ORIcons.IMPLEMENTING, m0.getIcon());
-        assertEquals("Declare let/val", m0.getLineMarkerTooltip());
-        assertSize(1, lineMarkers);
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
+        assertEquals("Implements let/val", markers.get(0).getLineMarkerTooltip());
+
+        markers = doHighlight(impl);
+
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
+        assertEquals("Declare let/val", markers.get(0).getLineMarkerTooltip());
     }
 
     @Test
     public void test_let() {
-        configureCode("A.res", "module type I = {\n" +
-                "  let x: int\n" +
-                "}\n" +
-                "module M1 : I = {\n" +
-                "  let x = 1\n" +
-                "}\n" +
-                "module M2 : I = {\n" +
-                "  let x = 2\n" +
-                "}"
+        FileBase f = configureCode("A.res", """
+                module type I = {
+                  let x : int
+                }
+                                
+                module M1 : I = {
+                  let x = 1
+                }
+                                
+                module M2 : I = {
+                  let x = 2
+                }
+                """);
 
-        );
+        List<LineMarkerInfo<?>> markers = doHighlight(f);
 
-        myFixture.doHighlighting();
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
+        assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(1).getIcon());
+        assertEquals("Implements let/val", markers.get(1).getLineMarkerTooltip());
 
-        Document document = myFixture.getEditor().getDocument();
-        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(document, myFixture.getProject());
-        LineMarkerInfo<?> m1 = lineMarkers.get(1);
-        assertEquals(ORIcons.IMPLEMENTED, m1.getIcon());
-        assertEquals("Implements let/val", m1.getLineMarkerTooltip());
-        LineMarkerInfo<?> m3 = lineMarkers.get(3);
-        assertEquals(ORIcons.IMPLEMENTING, m3.getIcon());
-        assertEquals("Declare let/val", m3.getLineMarkerTooltip());
-        LineMarkerInfo<?> m5 = lineMarkers.get(5);
-        assertEquals(ORIcons.IMPLEMENTING, m5.getIcon());
-        assertEquals("Declare let/val", m5.getLineMarkerTooltip());
-        assertSize(6, lineMarkers);
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(2).getIcon());
+        assertEquals("Declare module", markers.get(2).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(3).getIcon());
+        assertEquals("Declare let/val", markers.get(3).getLineMarkerTooltip());
+
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(2).getIcon());
+        assertEquals("Declare module", markers.get(2).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(5).getIcon());
+        assertEquals("Declare let/val", markers.get(5).getLineMarkerTooltip());
     }
 
     @Test
     public void test_type_files() {
-        configureCode("A.resi", "type t");
-        configureCode("A.res", "type t\n module Inner = { type t }");
+        FileBase intf = configureCode("A.resi", "type t");
+        FileBase impl = configureCode("A.res", """
+                type t
 
-        myFixture.doHighlighting();
+                module Inner = {
+                  type t
+                }
+                """);
 
-        Document document = myFixture.getEditor().getDocument();
-        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(document, myFixture.getProject());
-        LineMarkerInfo<?> m0 = lineMarkers.get(0);
-        assertEquals(ORIcons.IMPLEMENTING, m0.getIcon());
-        assertEquals("Declare type", m0.getLineMarkerTooltip());
-        assertSize(1, lineMarkers);
+        List<LineMarkerInfo<?>> markers = doHighlight(intf);
+
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
+        assertEquals("Implements type", markers.get(0).getLineMarkerTooltip());
+
+        markers = doHighlight(impl);
+
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
+        assertEquals("Declare type", markers.get(0).getLineMarkerTooltip());
+        assertSize(1, markers);
     }
 
     @Test
     public void test_type() {
-        configureCode("A.res", "module type I = {\n" +
-                "  type t\n" +
-                "}\n" +
-                "module M1 : I = {\n" +
-                "  type t\n" +
-                "}\n" +
-                "module M2 : I = {\n" +
-                "  type t\n" +
-                "}"
+        FileBase f = configureCode("A.res", """
+                module type I = {
+                  type t
+                }
+                                
+                module M1 : I = {
+                  type t
+                }
+                                
+                module M2 : I = {
+                  type t
+                }
+                """);
 
-        );
+        List<LineMarkerInfo<?>> markers = doHighlight(f);
 
-        myFixture.doHighlighting();
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
+        assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(1).getIcon());
+        assertEquals("Implements type", markers.get(1).getLineMarkerTooltip());
 
-        Document document = myFixture.getEditor().getDocument();
-        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(document, myFixture.getProject());
-        LineMarkerInfo<?> m1 = lineMarkers.get(1);
-        assertEquals(ORIcons.IMPLEMENTED, m1.getIcon());
-        assertEquals("Implements type", m1.getLineMarkerTooltip());
-        LineMarkerInfo<?> m3 = lineMarkers.get(3);
-        assertEquals(ORIcons.IMPLEMENTING, m3.getIcon());
-        assertEquals("Declare type", m3.getLineMarkerTooltip());
-        LineMarkerInfo<?> m5 = lineMarkers.get(5);
-        assertEquals(ORIcons.IMPLEMENTING, m5.getIcon());
-        assertEquals("Declare type", m5.getLineMarkerTooltip());
-        assertSize(6, lineMarkers);
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(2).getIcon());
+        assertEquals("Declare module", markers.get(2).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(3).getIcon());
+        assertEquals("Declare type", markers.get(3).getLineMarkerTooltip());
+
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(2).getIcon());
+        assertEquals("Declare module", markers.get(2).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(5).getIcon());
+        assertEquals("Declare type", markers.get(5).getLineMarkerTooltip());
+
+        assertSize(6, markers);
     }
 
     @Test
     public void test_external_files() {
-        configureCode("A.resi", "external t: int = \"\"");
-        configureCode("A.res", "external t: int = \"\"");
+        FileBase intf = configureCode("A.resi", "external t: int = \"\"");
+        FileBase impl = configureCode("A.res", "external t: int = \"\"");
 
-        myFixture.doHighlighting();
+        List<LineMarkerInfo<?>> markers = doHighlight(intf);
 
-        Document document = myFixture.getEditor().getDocument();
-        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(document, myFixture.getProject());
-        LineMarkerInfo<?> m0 = lineMarkers.get(0);
-        assertEquals(ORIcons.IMPLEMENTING, m0.getIcon());
-        assertEquals("Declare external", m0.getLineMarkerTooltip());
-        assertSize(1, lineMarkers);
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
+        assertEquals("Implements external", markers.get(0).getLineMarkerTooltip());
+
+        markers = doHighlight(impl);
+
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
+        assertEquals("Declare external", markers.get(0).getLineMarkerTooltip());
     }
 
     @Test
     public void test_external() {
-        configureCode("A.res", "module type I = {\n" +
-                "  external t: int = \"\"\n" +
-                "}\n" +
-                "module M1 : I = {\n" +
-                "  external t: int = \"\"\n" +
-                "}\n" +
-                "module M2 : I = {\n" +
-                "  external t: int = \"\"\n" +
-                "}"
+        FileBase f = configureCode("A.res", """
+                module type I = {
+                  external t: int = ""
+                }
+                                
+                module M1 : I = {
+                  external t: int = ""
+                }
+                                
+                module M2 : I = {
+                  external t: int = ""
+                }
+                """);
 
-        );
+        List<LineMarkerInfo<?>> markers = doHighlight(f);
 
-        myFixture.doHighlighting();
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(1).getIcon());
+        assertEquals("Implements external", markers.get(1).getLineMarkerTooltip());
 
-        Document document = myFixture.getEditor().getDocument();
-        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(document, myFixture.getProject());
-        LineMarkerInfo<?> m1 = lineMarkers.get(1);
-        assertEquals(ORIcons.IMPLEMENTED, m1.getIcon());
-        assertEquals("Implements external", m1.getLineMarkerTooltip());
-        LineMarkerInfo<?> m3 = lineMarkers.get(3);
-        assertEquals(ORIcons.IMPLEMENTING, m3.getIcon());
-        assertEquals("Declare external", m3.getLineMarkerTooltip());
-        LineMarkerInfo<?> m5 = lineMarkers.get(5);
-        assertEquals(ORIcons.IMPLEMENTING, m5.getIcon());
-        assertEquals("Declare external", m5.getLineMarkerTooltip());
-        assertSize(6, lineMarkers);
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(3).getIcon());
+        assertEquals("Declare external", markers.get(3).getLineMarkerTooltip());
+
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(5).getIcon());
+        assertEquals("Declare external", markers.get(5).getLineMarkerTooltip());
+
+        assertSize(6, markers);
     }
 
     @Test
-    public void test_module() {
-        configureCode("A.res", "module type Intf = {}\n" +
-                "module Impl : Intf = {}");
+    public void test_module_type() {
+        FileBase f = configureCode("A.res", """
+                module type Intf = {}
+                module Impl : Intf = {}
+                """);
 
-        myFixture.doHighlighting();
+        List<LineMarkerInfo<?>> lineMarkers = doHighlight(f);
 
-        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), myFixture.getProject());
+        assertEquals(ORIcons.IMPLEMENTED, lineMarkers.get(0).getIcon());
+        assertEquals("Implements module", lineMarkers.get(0).getLineMarkerTooltip());
 
-        LineMarkerInfo<?> m0 = lineMarkers.get(0);
-        assertEquals(ORIcons.IMPLEMENTED, m0.getIcon());
-        assertEquals("Implements module", m0.getLineMarkerTooltip());
-        LineMarkerInfo<?> m1 = lineMarkers.get(1);
-        assertEquals(ORIcons.IMPLEMENTING, m1.getIcon());
-        assertEquals("Declare module", m1.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, lineMarkers.get(1).getIcon());
+        assertEquals("Declare module", lineMarkers.get(1).getLineMarkerTooltip());
+
         assertSize(2, lineMarkers);
     }
 
     @Test
+    public void test_module_type_files() {
+        FileBase intf = configureCode("A.resi", "module type A1 = {}");
+        FileBase impl = configureCode("A.res", "module type A1 = {}");
+
+        List<LineMarkerInfo<?>> markers = doHighlight(intf);
+
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
+        assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
+
+        markers = doHighlight(impl);
+
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
+        assertEquals("Declare module", markers.get(0).getLineMarkerTooltip());
+    }
+
+    @Test
+    public void test_module_type_both_direction() {
+        FileBase intf = configureCode("A.resi", "module type A1 = {}");
+        FileBase impl = configureCode("A.res", """
+                // ...
+                module type A1 = {};
+                                
+                module A2 : A1 = {};
+                """);
+
+        List<LineMarkerInfo<?>> markers = doHighlight(intf);
+
+        assertSize(1, markers);
+
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
+        assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
+
+        markers = doHighlight(impl);
+
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
+        assertEquals("Declare module", markers.get(0).getLineMarkerTooltip());
+    }
+
+    // TODO: test_module_deep
+
+    @Test
     public void test_modules() {
-        configureCode("A.res", "module type Intf = {}\n" +
-                "module ImplA : Intf = {}\n" +
-                "module ImplB : Intf = {}");
+        FileBase f = configureCode("A.res", """
+                module type Intf = {}
+                module ImplA : Intf = {}
+                module ImplB : Intf = {}
+                """);
 
-        myFixture.doHighlighting();
+        List<LineMarkerInfo<?>> markers = doHighlight(f);
 
-        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), myFixture.getProject());
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
+        assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
 
-        LineMarkerInfo<?> m0 = lineMarkers.get(0);
-        assertEquals(ORIcons.IMPLEMENTED, m0.getIcon());
-        assertEquals("Implements module", m0.getLineMarkerTooltip());
-        LineMarkerInfo<?> m1 = lineMarkers.get(1);
-        assertEquals(ORIcons.IMPLEMENTING, m1.getIcon());
-        assertEquals("Declare module", m1.getLineMarkerTooltip());
-        LineMarkerInfo<?> m2 = lineMarkers.get(2);
-        assertEquals(ORIcons.IMPLEMENTING, m2.getIcon());
-        assertEquals("Declare module", m2.getLineMarkerTooltip());
-        assertSize(3, lineMarkers);
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(1).getIcon());
+        assertEquals("Declare module", markers.get(1).getLineMarkerTooltip());
+
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(2).getIcon());
+        assertEquals("Declare module", markers.get(2).getLineMarkerTooltip());
+
+        assertSize(3, markers);
     }
 
     @Test
     public void test_exception_files() {
-        configureCode("A.resi", "exception X");
-        configureCode("A.res", "exception X");
+        FileBase intf = configureCode("A.resi", "exception X");
+        FileBase impl = configureCode("A.res", "exception X");
 
-        myFixture.doHighlighting();
+        List<LineMarkerInfo<?>> markers = doHighlight(intf);
 
-        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), myFixture.getProject());
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
+        assertEquals("Implements exception", markers.get(0).getLineMarkerTooltip());
 
-        LineMarkerInfo<?> m0 = lineMarkers.get(0);
-        assertEquals(ORIcons.IMPLEMENTING, m0.getIcon());
-        assertEquals("Declare exception", m0.getLineMarkerTooltip());
-        assertSize(1, lineMarkers);
+        markers = doHighlight(impl);
+
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
+        assertEquals("Declare exception", markers.get(0).getLineMarkerTooltip());
     }
 
     @Test
     public void test_exception() {
-        configureCode("A.res", "module type I = {\n" +
-                "  exception X\n" +
-                "}\n" +
-                "module M:I = {\n" +
-                "  exception X\n" +
-                "}");
+        FileBase f = configureCode("A.res", """
+                module type I = {
+                  exception X
+                }
+                                
+                module M : I = {
+                  exception X
+                }
+                """);
 
-        myFixture.doHighlighting();
+        List<LineMarkerInfo<?>> markers = doHighlight(f);
 
-        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), myFixture.getProject());
+        assertEquals(ORIcons.IMPLEMENTED, markers.get(1).getIcon());
+        assertEquals("Implements exception", markers.get(1).getLineMarkerTooltip());
 
-        LineMarkerInfo<?> m1 = lineMarkers.get(1);
-        assertEquals(ORIcons.IMPLEMENTED, m1.getIcon());
-        assertEquals("Implements exception", m1.getLineMarkerTooltip());
-        LineMarkerInfo<?> m3 = lineMarkers.get(3);
-        assertEquals(ORIcons.IMPLEMENTING, m3.getIcon());
-        assertEquals("Declare exception", m3.getLineMarkerTooltip());
-        assertSize(4, lineMarkers);
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(3).getIcon());
+        assertEquals("Declare exception", markers.get(3).getLineMarkerTooltip());
+
+        assertSize(4, markers);
     }
 }

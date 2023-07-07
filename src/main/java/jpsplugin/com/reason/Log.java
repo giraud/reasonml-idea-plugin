@@ -117,7 +117,8 @@ public class Log {
 
     public void debug(@NotNull String comment, @Nullable PsiFile t) {
         if (m_log.isDebugEnabled()) {
-            debug(comment, t == null ? null : t.getVirtualFile());
+            VirtualFile vFile = t == null ? null : t.getVirtualFile();
+            debug(comment, vFile == null ? "<NULL> (" + t + ")" : vFile.toString());
         }
     }
 

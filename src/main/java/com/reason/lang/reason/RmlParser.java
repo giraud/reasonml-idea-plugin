@@ -387,7 +387,7 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseWith() {
-            if (strictlyInAny(myTypes.C_FUNCTOR_RESULT, myTypes.C_MODULE_TYPE)) {
+            if (strictlyInAny(myTypes.C_FUNCTOR_RESULT, myTypes.C_MODULE_SIGNATURE)) {
                 // module M (X) : ( S |>with<| ... ) = ...
                 popEndUntilFoundIndex().popEnd()
                         .advance().mark(myTypes.C_CONSTRAINTS);
@@ -416,7 +416,7 @@ public class RmlParser extends CommonPsiParser {
                         advance().mark(myTypes.C_TYPE_DECLARATION);
                     } else if (scope.isCompositeType(myTypes.C_LET_DECLARATION)) {
                         advance().mark(myTypes.C_LET_DECLARATION);
-                    } else if (scope.isCompositeType(myTypes.C_MODULE_DECLARATION) || scope.isCompositeType(myTypes.C_MODULE_TYPE)) {
+                    } else if (scope.isCompositeType(myTypes.C_MODULE_DECLARATION) || scope.isCompositeType(myTypes.C_MODULE_SIGNATURE)) {
                         advance().mark(myTypes.C_MODULE_DECLARATION);
                     }
                 }
@@ -688,7 +688,7 @@ public class RmlParser extends CommonPsiParser {
                     // module M : |>(<| ...
                     advance();
                 }
-                mark(myTypes.C_MODULE_TYPE).updateScopeToken(isParen ? myTypes.LPAREN : null);
+                mark(myTypes.C_MODULE_SIGNATURE).updateScopeToken(isParen ? myTypes.LPAREN : null);
             } else if (isRawParent(myTypes.C_EXTERNAL_DECLARATION) || isRawParent(myTypes.C_LET_DECLARATION)) {
                 // external/let e |> :<| ...
                 advance().mark(myTypes.C_SIG_EXPR);
@@ -944,7 +944,7 @@ public class RmlParser extends CommonPsiParser {
                 updateScopeToken(myTypes.LBRACE);
             } else if (isCurrent(myTypes.C_IF)) {
                 markScope(myTypes.C_IF_THEN_SCOPE, myTypes.LBRACE);
-            } else if (is(myTypes.C_MODULE_TYPE)) {
+            } else if (is(myTypes.C_MODULE_SIGNATURE)) {
                 // module M : |>{<| ...
                 updateScopeToken(myTypes.LBRACE);
             } else if (in(myTypes.C_CLASS_DECLARATION)) {
@@ -1134,7 +1134,7 @@ public class RmlParser extends CommonPsiParser {
             } else if (strictlyInAny(myTypes.C_TYPE_DECLARATION, myTypes.C_TYPE_CONSTRAINT)) {
                 // type t |> =<| ...
                 advance().mark(myTypes.C_TYPE_BINDING);
-            } else if (inScopeOrAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_TYPE, myTypes.C_SIG_EXPR)) {
+            } else if (inScopeOrAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_SIGNATURE, myTypes.C_SIG_EXPR)) {
 
                 if (isFound(myTypes.C_SIG_EXPR)) {
                     popEndUntil(myTypes.C_SIG_EXPR).popEnd();
@@ -1143,7 +1143,7 @@ public class RmlParser extends CommonPsiParser {
                     } else if (in(myTypes.C_LET_DECLARATION)) {
                         parseLetBinding();
                     }
-                } else if (isFound(myTypes.C_MODULE_TYPE)) {
+                } else if (isFound(myTypes.C_MODULE_SIGNATURE)) {
                     // module M : T |> =<| ...
                     popEndUntilIndex(getIndex()).popEnd()
                             .advance().mark(myTypes.C_MODULE_BINDING);
@@ -1226,7 +1226,7 @@ public class RmlParser extends CommonPsiParser {
                     // switch (c) { | |>X<| ... / let x = |>X<| ...
                     remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 } else {
-                    remapCurrentToken(nextToken == myTypes.DOT || isCurrent(myTypes.C_MODULE_BINDING) || isCurrent(myTypes.C_MODULE_TYPE)
+                    remapCurrentToken(nextToken == myTypes.DOT || isCurrent(myTypes.C_MODULE_BINDING) || isCurrent(myTypes.C_MODULE_SIGNATURE)
                             || isCurrent(myTypes.C_OPEN) || isCurrent(myTypes.C_INCLUDE)
                             ? myTypes.A_MODULE_NAME : myTypes.A_VARIANT_NAME);
                     wrapAtom(myTypes.CA_UPPER_SYMBOL);

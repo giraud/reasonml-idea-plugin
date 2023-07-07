@@ -490,10 +490,10 @@ public class OclParser extends CommonPsiParser {
                 popEndUntil(myTypes.C_FUNCTOR_RESULT).popEnd().advance()
                         .mark(myTypes.C_CONSTRAINTS)
                         .mark(myTypes.C_TYPE_CONSTRAINT);
-            } else if (in(myTypes.C_MODULE_TYPE)) { // A module with a signature and constraints
+            } else if (in(myTypes.C_MODULE_SIGNATURE)) { // A module with a signature and constraints
                 //  module G : sig ... end |>with<| ...
                 //  module G : X |>with<| ...
-                popEndUntil(myTypes.C_MODULE_TYPE).popEnd().advance()
+                popEndUntil(myTypes.C_MODULE_SIGNATURE).popEnd().advance()
                         .mark(myTypes.C_CONSTRAINTS)
                         .mark(myTypes.C_TYPE_CONSTRAINT);
             } else if (in(myTypes.C_INCLUDE)) { // include with constraints
@@ -634,7 +634,7 @@ public class OclParser extends CommonPsiParser {
                         // module M = struct .. end |>and<|
                         advance().mark(myTypes.C_MODULE_DECLARATION);
                     }
-                } else if (is(myTypes.C_MODULE_TYPE) && getTokenType() != myTypes.WITH) {
+                } else if (is(myTypes.C_MODULE_SIGNATURE) && getTokenType() != myTypes.WITH) {
                     // module M : sig .. |>end<|
                     popEnd();
                 }
@@ -684,7 +684,7 @@ public class OclParser extends CommonPsiParser {
                 // module M |> : <| ...
                 advance();
                 markParenthesisScope(true)
-                        .mark(myTypes.C_MODULE_TYPE);
+                        .mark(myTypes.C_MODULE_SIGNATURE);
             } else if (in(myTypes.C_RECORD_FIELD)) {
                 advance();
                 parseSignatureExpression();
@@ -1265,7 +1265,7 @@ public class OclParser extends CommonPsiParser {
 
         @SuppressWarnings("StatementWithEmptyBody")
         private void parseType() {
-            if (is(myTypes.C_MODULE_DECLARATION)) {
+            if (is(myTypes.C_MODULE_DECLARATION) || is(myTypes.C_MODULE_SIGNATURE)) {
                 // module |>type<| M = ...
             } else if (is(myTypes.C_TYPE_VARIABLE)) {
                 // let x : |>type<| ...
@@ -1349,10 +1349,8 @@ public class OclParser extends CommonPsiParser {
         private void parseModule() {
             if (is(myTypes.C_LET_DECLARATION)) {
                 updateComposite(myTypes.C_MODULE_DECLARATION);
-            } else if (!is(myTypes.C_MACRO_NAME)) {
-                if (!is(myTypes.C_MODULE_TYPE)) {
-                    popEndUntilScope();
-                }
+            } else if (!is(myTypes.C_MACRO_NAME) && !is(myTypes.C_MODULE_SIGNATURE)) {
+                popEndUntilScope();
                 mark(myTypes.C_MODULE_DECLARATION);
             }
         }

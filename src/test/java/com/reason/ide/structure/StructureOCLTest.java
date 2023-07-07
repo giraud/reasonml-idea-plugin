@@ -87,7 +87,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         TreeElement e = model.getRoot().getChildren()[0];
         assertPresentation("X", "B.X", ORIcons.INNER_MODULE, e.getPresentation());
         TreeElement ee = e.getChildren()[0];
-        assertPresentation("A.S", "", ORIcons.MODULE_TYPE, ee.getPresentation());
+        assertPresentation("S", "", ORIcons.MODULE_TYPE, ee.getPresentation());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         TreeElement e = model.getRoot().getChildren()[0];
         assertPresentation("X", "B.X", ORIcons.INNER_MODULE, e.getPresentation());
         TreeElement ee = e.getChildren()[0];
-        assertPresentation("A.Vcs.Branch", "", ORIcons.MODULE_TYPE, ee.getPresentation());
+        assertPresentation("Branch", "", ORIcons.MODULE_TYPE, ee.getPresentation());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/274
@@ -140,7 +140,11 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/408
     @Test
     public void test_GH_408() {
-        FileBase e = configureCode("A.ml", "let a =\n let x = 0 in\n x");
+        FileBase e = configureCode("A.ml", """
+                let a =
+                  let x = 0 in
+                  x
+                """);
         StructureViewModel model = new ORStructureViewModel(e);
 
         TreeElement fn = model.getRoot().getChildren()[0];
