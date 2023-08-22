@@ -48,7 +48,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         RPsiInnerModule e = first(moduleExpressions(parseCode("module type Intf = sig val x : bool end")));
 
         assertEquals("Intf", e.getName());
-        assertTrue(e.isInterface());
+        assertTrue(e.isModuleType());
         assertInstanceOf(e.getBody(), RPsiModuleBinding.class);
         assertEquals("bool", firstOfType(e, RPsiVal.class).getSignature().getText());
     }
@@ -60,7 +60,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(2, expressions(file).size());
         RPsiInnerModule module = firstOfType(file, RPsiInnerModule.class);
         assertEquals("Level", module.getName());
-        assertEquals("sig end", module.getModuleType().getText());
+        assertEquals("sig end", module.getModuleSignature().getText());
     }
 
     @Test
@@ -78,7 +78,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(1, expressions(file).size());
         RPsiInnerModule e = firstOfType(file, RPsiInnerModule.class);
         assertEquals("G", e.getName());
-        assertEquals("sig end", e.getModuleType().getText());
+        assertEquals("sig end", e.getModuleSignature().getText());
         assertEquals("struct end", e.getBody().getText());
     }
 
@@ -89,7 +89,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(2, expressions(file).size());
         RPsiInnerModule module = firstOfType(file, RPsiInnerModule.class);
         assertEquals("Constraint", module.getName());
-        RPsiModuleType modType = module.getModuleType();
+        RPsiModuleSignature modType = module.getModuleSignature();
         assertEquals("Set.S", modType.getText());
     }
 
@@ -111,7 +111,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(1, expressions(file).size());
         RPsiInnerModule e = first(moduleExpressions(file));
         assertEquals("A", e.getName());
-        assertEquals("sig type output = (Constr.constr * UState.t) option type task end", e.getModuleType().getText());
+        assertEquals("sig type output = (Constr.constr * UState.t) option type task end", e.getModuleSignature().getText());
         assertEquals("struct end", e.getBody().getText());
     }
 
@@ -147,7 +147,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     @Test // coq::clib/cArray.ml
     public void test_signature() {
-        RPsiModuleType e = firstOfType(parseCode("module Smart : sig val map : ('a -> 'a) -> 'a array -> 'a array end"), RPsiModuleType.class);
+        RPsiModuleSignature e = firstOfType(parseCode("module Smart : sig val map : ('a -> 'a) -> 'a array -> 'a array end"), RPsiModuleSignature.class);
 
         RPsiVal ev = PsiTreeUtil.findChildOfType(e, RPsiVal.class);
         assertNoParserError(ev);
@@ -158,12 +158,12 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_signature_many() {
-        List<RPsiModuleType> es = childrenOfType(parseCode("module A: sig val a: int end\n module B: sig val b: int end"), RPsiModuleType.class);
+        List<RPsiModuleSignature> es = childrenOfType(parseCode("module A: sig val a: int end\n module B: sig val b: int end"), RPsiModuleSignature.class);
 
-        RPsiModuleType e0 = es.get(0);
+        RPsiModuleSignature e0 = es.get(0);
         assertNoParserError(e0);
         assertEquals("sig val a: int end", e0.getText());
-        RPsiModuleType e1 = es.get(1);
+        RPsiModuleSignature e1 = es.get(1);
         assertNoParserError(e1);
         assertEquals("sig val b: int end", e1.getText());
     }
@@ -176,8 +176,11 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(2, expressions(file).size());
         assertEquals("Branch", first(moduleExpressions(file)).getName());
         RPsiInnerModule e = (RPsiInnerModule) expressions(file).iterator().next();
-        RPsiModuleType modType = e.getModuleType();
+
+        RPsiModuleSignature modType = e.getModuleSignature();
         assertEquals("module type of Vcs_.Branch", modType.getText());
-        assertNull(modType.getName());
+        assertNull(PsiTreeUtil.findChildOfType(modType, RPsiInnerModule.class));
+        assertEquals("Branch", modType.getName());
+        //assertEquals("Vcs_.Branch", modType.getQualifiedName());
     }
 }

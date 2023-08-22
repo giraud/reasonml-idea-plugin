@@ -23,8 +23,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiInclude ei = PsiTreeUtil.findChildOfType(e, RPsiInclude.class);
-        assertEmpty(data.getElement(ei));
-        assertEmpty(data.getElement(e));
+        assertEmpty(data.getValues(ei));
+        assertEmpty(data.getValues(e));
     }
 
     @Test
@@ -34,8 +34,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiInclude ei = PsiTreeUtil.findChildOfType(e, RPsiInclude.class);
-        assertEmpty(data.getElement(ei));
-        assertEmpty(data.getElement(e));
+        assertEmpty(data.getValues(ei));
+        assertEmpty(data.getValues(e));
     }
 
     @Test
@@ -45,8 +45,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiInclude ei = PsiTreeUtil.findChildOfType(e, RPsiInclude.class);
-        assertOrderedEquals(data.getElement(ei/*A1.A2*/), "A.A1.A2");
-        assertOrderedEquals(data.getElement(e/*A.re*/), "A.A1.A2");
+        assertOrderedEquals(data.getValues(ei/*A1.A2*/), "A.A1.A2");
+        assertOrderedEquals(data.getValues(e/*A.re*/), "A.A1.A2");
     }
 
     @Test
@@ -56,8 +56,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiOpen eo = PsiTreeUtil.findChildOfType(e, RPsiOpen.class);
-        assertOrderedEquals(data.getElement(eo/*A1.A11*/), "A.A1.A2");
-        assertEmpty(data.getElement(e/*A.re*/));
+        assertOrderedEquals(data.getValues(eo/*A1.A11*/), "A.A1.A2");
+        assertEmpty(data.getValues(e/*A.re*/));
     }
 
     @Test
@@ -67,9 +67,9 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         ArrayList<RPsiInclude> eis = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiInclude.class));
-        assertOrderedEquals(data.getElement(eis.get(0/*A1*/)), "A.A1");
-        assertOrderedEquals(data.getElement(eis.get(1/*A2*/)), "A.A1.A2");
-        assertOrderedEquals(data.getElement(e/*A.re*/), "A.A1", "A.A1.A2");
+        assertOrderedEquals(data.getValues(eis.get(0/*A1*/)), "A.A1");
+        assertOrderedEquals(data.getValues(eis.get(1/*A2*/)), "A.A1.A2");
+        assertOrderedEquals(data.getValues(e/*A.re*/), "A.A1", "A.A1.A2");
     }
 
     @Test
@@ -79,9 +79,9 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         ArrayList<RPsiOpen> eos = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiOpen.class));
-        assertOrderedEquals(data.getElement(eos.get(0/*A1*/)), "A.A1");
-        assertOrderedEquals(data.getElement(eos.get(1/*A2*/)), "A.A1.A2");
-        assertEmpty(data.getElement(e/*A.re*/));
+        assertOrderedEquals(data.getValues(eos.get(0/*A1*/)), "A.A1");
+        assertOrderedEquals(data.getValues(eos.get(1/*A2*/)), "A.A1.A2");
+        assertEmpty(data.getValues(e/*A.re*/));
     }
 
     @Test
@@ -92,9 +92,9 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         ArrayList<RPsiInclude> eis = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiInclude.class));
-        assertEmpty(data.getElement(eis.get(0/*A.A1*/))); // Same
-        assertOrderedEquals(data.getElement(eis.get(1/*A2*/)), "A.A1.A2");
-        assertOrderedEquals(data.getElement(e/*B.re*/), "A.A1", "A.A1.A2");
+        assertEmpty(data.getValues(eis.get(0/*A.A1*/))); // Same
+        assertOrderedEquals(data.getValues(eis.get(1/*A2*/)), "A.A1.A2");
+        assertOrderedEquals(data.getValues(e/*B.re*/), "A.A1", "A.A1.A2");
     }
 
     @Test
@@ -105,9 +105,9 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         ArrayList<RPsiOpen> eos = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiOpen.class));
-        assertEmpty(data.getElement(eos.get(0/*A.A1*/))); // Same
-        assertOrderedEquals(data.getElement(eos.get(1/*A2*/)), "A.A1.A2");
-        assertEmpty(data.getElement(e/*B*/));
+        assertEmpty(data.getValues(eos.get(0/*A.A1*/))); // Same
+        assertOrderedEquals(data.getValues(eos.get(1/*A2*/)), "A.A1.A2");
+        assertEmpty(data.getValues(e/*B*/));
     }
 
     @Test
@@ -121,14 +121,14 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         List<RPsiInclude> eis = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiInclude.class));
-        assertOrderedEquals(data.getElement(eis.get(0/*B1*/)), "A.A1");
-        assertOrderedEquals(data.getElement(eis.get(1/*B2*/)), "A.A1.A2");
+        assertOrderedEquals(data.getValues(eis.get(0/*B1*/)), "A.A1");
+        assertOrderedEquals(data.getValues(eis.get(1/*B2*/)), "A.A1.A2");
 
         List<RPsiModule> ems = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
-        assertOrderedEquals(data.getElement(ems.get(2/*B1*/)), "A.A1");
-        assertOrderedEquals(data.getElement(ems.get(3/*B2*/)), "A.A1.A2");
+        assertOrderedEquals(data.getValues(ems.get(2/*B1*/)), "A.A1");
+        assertOrderedEquals(data.getValues(ems.get(3/*B2*/)), "A.A1.A2");
 
-        assertOrderedEquals(data.getElement(e/*A*/), "A.A1", "A.A1.A2");
+        assertOrderedEquals(data.getValues(e/*A*/), "A.A1", "A.A1.A2");
     }
 
     @Test
@@ -140,8 +140,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiInclude ei = PsiTreeUtil.findChildOfType(e, RPsiInclude.class);
-        assertOrderedEquals(data.getElement(ei/*B1.B2*/), "A.A1.A2");
-        assertOrderedEquals(data.getElement(e/*A*/), "A.A1.A2");
+        assertOrderedEquals(data.getValues(ei/*B1.B2*/), "A.A1.A2");
+        assertOrderedEquals(data.getValues(e/*A*/), "A.A1.A2");
     }
 
     @Test
@@ -152,8 +152,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiModule em = PsiTreeUtil.findChildOfType(e, RPsiModule.class);
-        assertOrderedEquals(data.getElement(em/*B1*/), "A");
-        assertEmpty(data.getElement(e/*B*/));
+        assertOrderedEquals(data.getValues(em/*B1*/), "A");
+        assertEmpty(data.getValues(e/*B*/));
     }
 
     @Test
@@ -164,11 +164,10 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
-        assertOrderedEquals(data.getElement(ems.get(0/*C*/)), "A.W.X");
-        assertOrderedEquals(data.getElement(ems.get(1/*D*/)), "A.W.X.Y.Z");
-        assertEmpty(data.getElement(e/*B*/));
+        assertOrderedEquals(data.getValues(ems.get(0/*C*/)), "A.W.X");
+        assertOrderedEquals(data.getValues(ems.get(1/*D*/)), "A.W.X.Y.Z");
+        assertEmpty(data.getValues(e/*B*/));
     }
-
 
     @Test
     public void test_include_in_module() {
@@ -178,7 +177,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiModule em = PsiTreeUtil.findChildOfType(e, RPsiModule.class);
-        assertOrderedEquals(data.getElement(em/*B.B1*/), "A");
+        assertOrderedEquals(data.getValues(em/*B.B1*/), "A");
     }
 
     @Test
@@ -188,8 +187,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         ArrayList<RPsiInclude> eis = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiInclude.class));
-        assertOrderedEquals(data.getElement(eis.get(0)/*A2*/), "A.A1.A2");
-        assertOrderedEquals(data.getElement(eis.get(1)/*A2*/), "A.A2");
+        assertOrderedEquals(data.getValues(eis.get(0)/*A2*/), "A.A1.A2");
+        assertOrderedEquals(data.getValues(eis.get(1)/*A2*/), "A.A2");
     }
 
     @Test
@@ -201,8 +200,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         List<RPsiModule> ems = ORUtil.findImmediateChildrenOfClass(e, RPsiModule.class);
-        assertOrderedEquals(data.getElement(ems.get(1)/*F*/), "A.S");
-        assertOrderedEquals(data.getElement(ems.get(2)/*M*/), "A.F");
+        assertOrderedEquals(data.getValues(ems.get(1)/*F*/), "A.S");
+        assertOrderedEquals(data.getValues(ems.get(2)/*M*/), "A.F");
     }
 
     @Test
@@ -213,7 +212,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         List<RPsiModule> ems = ORUtil.findImmediateChildrenOfClass(e, RPsiModule.class);
-        assertOrderedEquals(data.getElement(ems.get(1)/*Make*/), "A.Result");
+        assertOrderedEquals(data.getValues(ems.get(1)/*Make*/), "A.Result");
     }
 
     @Test
@@ -223,7 +222,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         List<RPsiModule> ems = ORUtil.findImmediateChildrenOfClass(e, RPsiModule.class);
-        assertOrderedEquals(data.getElement(ems.get(1)/*M*/), "A.M");
+        assertOrderedEquals(data.getValues(ems.get(1)/*M*/), "A.M");
     }
 
     @Test
@@ -234,8 +233,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiModule em = ORUtil.findImmediateFirstChildOfClass(e, RPsiModule.class);
-        assertOrderedEquals(data.getElement(em/*M*/), "A.F");
-        assertEmpty(data.getElement(e));
+        assertOrderedEquals(data.getValues(em/*M*/), "A.F");
+        assertEmpty(data.getValues(e));
     }
 
     @Test
@@ -246,8 +245,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiModule em = ORUtil.findImmediateFirstChildOfClass(e, RPsiModule.class);
-        assertOrderedEquals(data.getElement(em/*Instance*/), "A.MakeIntf");
-        assertEmpty(data.getElement(e));
+        assertOrderedEquals(data.getValues(em/*Instance*/), "A.MakeIntf");
+        assertEmpty(data.getValues(e));
     }
 
     @Test
@@ -256,7 +255,67 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
-        assertOrderedEquals(data.getElement(e), "A.Make");
+        assertOrderedEquals(data.getValues(e), "A.Make");
+    }
+
+    @Test
+    public void test_module_type_inside() {
+        FileBase e = configureCode("A.re", """
+                module type S = {};
+                module M : S = {};
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModuleSignature emt = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
+        assertOrderedEquals(data.getValues(emt/*S*/), "A.S");
+    }
+
+    //@Test TODO
+    //public void test_module_type_deep() {
+    //    FileBase e = configureCode("A.re", """
+    //            module B = {
+    //              module C = {
+    //                module type S = {};
+    //              };
+    //              module D = C;
+    //            };
+    //
+    //            module M: B.D.S = {};
+    //            """);
+    //
+    //    ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+    //
+    //    RPsiModuleSignature emt = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
+    //    assertOrderedEquals(data.getValues(emt/*S*/), "A.B.C.S");
+    //}
+
+    @Test
+    public void test_module_type_open_alias() {
+        FileBase e = configureCode("A.re", """
+                module A1 = {
+                  module type S = {};
+                };
+                module X = A1;
+                open X;
+                module M: S = {};
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModuleSignature emt = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
+        assertOrderedEquals(data.getValues(emt/*S*/), "A.A1.S");
+    }
+
+    @Test
+    public void test_module_type_outside() {
+        configureCode("A.re", "module type S = {};");
+        FileBase e = configureCode("B.re", "module M: A.S = {};");
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModuleSignature emt = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
+        assertOrderedEquals(data.getValues(emt/*S*/), "A.S");
     }
 
     @Test
@@ -266,7 +325,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiTag et = ORUtil.findImmediateFirstChildOfClass(e, RPsiTag.class);
-        assertOrderedEquals(data.getElement(et.getFirstChild()/*X*/), "A.X");
+        assertOrderedEquals(data.getValues(et.getFirstChild()/*X*/), "A.X");
     }
 
     @Test
@@ -277,7 +336,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiTagStart et = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
-        assertOrderedEquals(data.getElement(et/*X*/), "X");
+        assertOrderedEquals(data.getValues(et/*X*/), "X");
     }
 
     @Test
@@ -288,6 +347,6 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiTagStart et = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
-        assertOrderedEquals(data.getElement(et/*Y*/), "X.Y");
+        assertOrderedEquals(data.getValues(et/*Y*/), "X.Y");
     }
 }

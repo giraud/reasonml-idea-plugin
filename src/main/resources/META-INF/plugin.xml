@@ -237,6 +237,7 @@
 
         <stubIndex implementation="com.reason.ide.search.index.ModuleFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ModuleSignatureIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ClassFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ClassMethodFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetFqnIndex"/>
@@ -257,7 +258,6 @@
         <stubIndex implementation="com.reason.ide.search.index.OpenIndex"/>
 
         <fileBasedIndex implementation="com.reason.ide.search.index.FileModuleIndex"/>
-        <!--<fileBasedIndex implementation="com.reason.ide.search.index.NamespaceIndex"/> duplication -->
         <applicationService serviceImplementation="com.reason.ide.search.FileModuleIndexService"/>
         <applicationService serviceImplementation="com.reason.ide.search.ModuleIndexService"/>
 

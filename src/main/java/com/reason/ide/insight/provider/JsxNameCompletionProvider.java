@@ -62,7 +62,7 @@ public class JsxNameCompletionProvider {
             // List inner components above
             List<RPsiInnerModule> localModules = ORUtil.findPreviousSiblingsOrParentOfClass(element, RPsiInnerModule.class);
             for (RPsiInnerModule localModule : localModules) {
-                if (localModule.isComponent() && !localModule.isInterface()) {
+                if (localModule.isComponent() && !localModule.isModuleType()) {
                     expressions.add(localModule);
                 }
             }

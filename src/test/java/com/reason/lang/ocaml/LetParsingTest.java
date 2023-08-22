@@ -343,14 +343,15 @@ public class LetParsingTest extends OclParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/406
     @Test
     public void test_GH_406() {
-        RPsiLet e = firstOfType(parseCode("let is_uppercase s =\n" +
-                "  let x = 0 in\n" +
-                "  let open CamomileLibraryDefault.Camomile in\n" +
-                "  let open UReStr in\n" +
-                "  let open UReStr.Make(UTF8) in\n" +
-                "  let y = 0 in\n" +
-                "  let z = 0 in\n" +
-                "  false"), RPsiLet.class);
+        RPsiLet e = firstOfType(parseCode("""
+                let is_uppercase s =
+                  let x = 0 in
+                  let open CamomileLibraryDefault.Camomile in
+                  let open UReStr in
+                  let open UReStr.Make(UTF8) in
+                  let y = 0 in
+                  let z = 0 in
+                  false"""), RPsiLet.class);
 
         assertNoParserError(e);
         RPsiFunctionBody eb = e.getFunction().getBody();
@@ -379,15 +380,17 @@ public class LetParsingTest extends OclParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/409
     @Test
     public void test_GH_409() {
-        RPsiLet e = firstOfType(parseCode("let f () =\n" +
-                "  let b : bool = 1 = 1 in\n" +
-                "  let x = 0 in\n" +
-                "  x"), RPsiLet.class);
+        RPsiLet e = firstOfType(parseCode("""
+                let f () =
+                  let b : bool = 1 = 1 in
+                  let x = 0 in
+                  x"""), RPsiLet.class);
 
         assertNoParserError(e);
         RPsiFunctionBody eb = e.getFunction().getBody();
         RPsiLet[] ebls = PsiTreeUtil.getChildrenOfType(eb, RPsiLet.class);
         assertEquals("let b : bool = 1 = 1", ebls[0].getText());
+        assertEquals("1 = 1", PsiTreeUtil.getChildOfType(ebls[0].getBinding(), RPsiBinaryCondition.class).getText());
         assertEquals("let x = 0", ebls[1].getText());
         assertSize(2, ebls);
     }
@@ -395,16 +398,29 @@ public class LetParsingTest extends OclParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/409
     @Test
     public void test_GH_409a() {
-        RPsiLet e = firstOfType(parseCode("let f () =\n" +
-                "  let b : bool = ignore () = () in\n" +
-                "  let x = 0 in\n" +
-                "  x"), RPsiLet.class);
+        RPsiLet e = firstOfType(parseCode("""
+                let f () =
+                  let b : bool = ignore () = () in
+                  let x = 0 in
+                  x"""), RPsiLet.class);
 
         assertNoParserError(e);
         RPsiFunctionBody eb = e.getFunction().getBody();
         RPsiLet[] ebls = PsiTreeUtil.getChildrenOfType(eb, RPsiLet.class);
         assertEquals("let b : bool = ignore () = ()", ebls[0].getText());
+        assertEquals("ignore () = ()", PsiTreeUtil.getChildOfType(ebls[0].getBinding(), RPsiBinaryCondition.class).getText());
         assertEquals("let x = 0", ebls[1].getText());
         assertSize(2, ebls);
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/409
+    @Test
+    public void test_GH_409_binary_condition() {
+        RPsiLet e = firstOfType(parseCode("let b = ignore \"\" = ()"), RPsiLet.class);
+
+        assertNoParserError(e);
+        assertEquals("ignore \"\" = ()", e.getBinding().getText());
+        assertEquals("ignore \"\" = ()", PsiTreeUtil.getChildOfType(e.getBinding(), RPsiBinaryCondition.class).getText());
+        assertEquals("ignore \"\"", PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class).getText());
     }
 }

@@ -55,7 +55,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_MACRO_NAME;
     public ORCompositeType C_MACRO_BODY;
     public ORCompositeType C_MODULE_BINDING;
-    public ORCompositeType C_MODULE_TYPE;
+    public ORCompositeType C_MODULE_SIGNATURE;
     public ORCompositeType C_MODULE_VALUE;
     public ORCompositeType C_JS_OBJECT;
     public ORCompositeType C_MATCH_EXPR;

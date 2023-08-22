@@ -65,7 +65,7 @@ public class OclTypes extends ORLangTypes {
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", OclLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", OclLanguage.INSTANCE);
-        C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", OclLanguage.INSTANCE);
+        C_MODULE_SIGNATURE = new ORCompositeElementType("C_MODULE_SIGNATURE", OclLanguage.INSTANCE);
         C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", OclLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", OclLanguage.INSTANCE);

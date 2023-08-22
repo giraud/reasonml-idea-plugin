@@ -101,7 +101,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
     }
 
     private void foldModule(@NotNull List<FoldingDescriptor> descriptors, @NotNull RPsiInnerModule module) {
-        FoldingDescriptor foldSignature = fold(module.getModuleType());
+        FoldingDescriptor foldSignature = fold(module.getModuleSignature());
         if (foldSignature != null) {
             descriptors.add(foldSignature);
         }
@@ -177,7 +177,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
             return "/*...*/";
         } else if (elementType == OclTypes.INSTANCE.MULTI_COMMENT) {
             return "(*...*)";
-        } else if (elementType == OclTypes.INSTANCE.C_MODULE_TYPE) {
+        } else if (elementType == OclTypes.INSTANCE.C_MODULE_SIGNATURE) {
             return "sig...";
         } else if (elementType == OclGrammarTypes.INSTANCE.C_VERNAC) {
             return "vernac...";

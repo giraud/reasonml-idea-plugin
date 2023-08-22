@@ -12,6 +12,11 @@
                         
 ## Unreleased
 
+## 0.115 - 2023/08/22
+
+- :house: [#416](https://github.com/giraud/reasonml-idea-plugin/issues/416) Excessive CPU use
+- :bug: ![o] [#409](https://github.com/giraud/reasonml-idea-plugin/issues/409) Wrong structure on let b = 1 = 1 in (OCaml)
+
 ## 0.114 - 2023/07/04
 
 (!) Jfrog is no longer serving binaries for rincewind, URL is changed and you must upgrade your plugin to this revision 

@@ -11,34 +11,37 @@ public class PsiModuleStub extends NamedStubBase<RPsiModule> {
     private final String myQname;
     private final String myAlias;
     private final boolean myIsComponent;
-    private final boolean myIsInterface;
+    private final boolean myIsModuleType;
     private final boolean myIsTopLevel;
     private final boolean myIsFunctorCall;
+    private final String myReturnTypeName;
 
     public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable String name,
                          String @Nullable [] path, @Nullable String namespace, String alias, boolean isComponent,
-                         boolean isInterface, boolean isTopLevel, boolean isFunctorCall) {
+                         boolean isModuleType, boolean isTopLevel, boolean isFunctorCall, @Nullable String returnTypeName) {
         super(parent, elementType, name);
         myPath = path;
         myQname = namespace == null ? path != null && path.length > 0 ? Joiner.join(".", path) + "." + name : "" + name : namespace;
         myAlias = alias;
         myIsComponent = isComponent;
-        myIsInterface = isInterface;
+        myIsModuleType = isModuleType;
         myIsTopLevel = isTopLevel;
         myIsFunctorCall = isFunctorCall;
+        myReturnTypeName = returnTypeName;
     }
 
     public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name,
                          String @Nullable [] path, @Nullable String namespace, String alias, boolean isComponent,
-                         boolean isInterface, boolean isTopLevel, boolean isFunctorCall) {
+                         boolean isModuleType, boolean isTopLevel, boolean isFunctorCall, @Nullable StringRef returnTypeNameRef) {
         super(parent, elementType, name);
         myPath = path;
         myQname = namespace == null ? path != null && path.length > 0 ? Joiner.join(".", path) + "." + name : "" + name : namespace;
         myAlias = alias;
         myIsComponent = isComponent;
-        myIsInterface = isInterface;
+        myIsModuleType = isModuleType;
         myIsTopLevel = isTopLevel;
         myIsFunctorCall = isFunctorCall;
+        myReturnTypeName = returnTypeNameRef != null ? returnTypeNameRef.getString() : null;
     }
 
     public String @Nullable [] getPath() {
@@ -57,8 +60,8 @@ public class PsiModuleStub extends NamedStubBase<RPsiModule> {
         return myIsComponent;
     }
 
-    public boolean isInterface() {
-        return myIsInterface;
+    public boolean isModuleType() {
+        return myIsModuleType;
     }
 
     public boolean isTopLevel() {
@@ -67,5 +70,9 @@ public class PsiModuleStub extends NamedStubBase<RPsiModule> {
 
     public boolean isFunctorCall() {
         return myIsFunctorCall;
+    }
+
+    public String getSignatureName() {
+        return myReturnTypeName;
     }
 }

@@ -9,7 +9,6 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.psi.ocamllex.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
@@ -115,19 +114,23 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return new ItemPresentation() {
             @Override
             public @NotNull String getPresentableText() {
+                if (myElement instanceof PsiNamedElement namedElement) {
+                    String name = namedElement.getName();
+                    if (name != null) {
+                        return name;
+                    }
+                }
                 return "Unknown presentation for element " + myElement.getText();
             }
 
-            @Nullable
             @Override
-            public String getLocationString() {
-                return null;
+            public @NotNull String getLocationString() {
+                return "";
             }
 
-            @Nullable
             @Override
-            public Icon getIcon(boolean unused) {
-                return null;
+            public @Nullable Icon getIcon(boolean unused) {
+                return PsiIconUtil.getProvidersIcon(myElement, 0);
             }
         };
     }
@@ -172,19 +175,21 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     private @NotNull List<TreeElement> buildModuleStructure(@NotNull RPsiInnerModule moduleElement) {
         List<TreeElement> treeElements = new ArrayList<>();
 
-        RPsiModuleType moduleType = moduleElement.getModuleType();
-        PsiElement rootElement = moduleType;
-        if (rootElement == null) {
-            rootElement = moduleElement.getBody();
+        RPsiModuleSignature moduleSignature = moduleElement.getModuleSignature();
+        if (moduleSignature != null) {
+            treeElements.add(new StructureViewElement(moduleSignature, myLevel + 1));
         }
 
-        if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements, myLevel));
+        if (moduleSignature == null) {
+            PsiElement body = moduleElement.getBody();
+            if (body != null) {
+                body.acceptChildren(new ElementVisitor(treeElements, myLevel));
+            }
         }
 
         // Process body if there is a signature
-        if (moduleType != null) {
-            rootElement = moduleElement.getBody();
+        if (moduleSignature != null) {
+            PsiElement rootElement = moduleElement.getBody();
             if (rootElement != null) {
                 treeElements.add(new StructureModuleImplView(rootElement));
             }
@@ -257,12 +262,12 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     }
 
     static class ElementVisitor extends PsiElementVisitor {
-        private final List<TreeElement> m_treeElements;
-        private final int m_elementLevel;
+        private final List<TreeElement> myTreeElements;
+        private final int myElementLevel;
 
         ElementVisitor(List<TreeElement> elements, int elementLevel) {
-            m_treeElements = elements;
-            m_elementLevel = elementLevel;
+            myTreeElements = elements;
+            myElementLevel = elementLevel;
         }
 
         @Override
@@ -274,23 +279,23 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                             // it's a tuple! add each element of the tuple separately.
                             for (PsiElement child : let.getScopeChildren()) {
                                 if (child instanceof RPsiLowerSymbol) {
-                                    m_treeElements.add(new StructureViewElement(child, element, true, m_elementLevel));
+                                    myTreeElements.add(new StructureViewElement(child, element, true, myElementLevel));
                                 }
                             }
                             return;
                         }
                     }
-                    m_treeElements.add(new StructureViewElement(element, m_elementLevel));
+                    myTreeElements.add(new StructureViewElement(element, myElementLevel));
                 }
             } else if (element instanceof RPsiRecord) {
                 for (RPsiRecordField field : ((RPsiRecord) element).getFields()) {
-                    m_treeElements.add(new StructureViewElement(field, m_elementLevel));
+                    myTreeElements.add(new StructureViewElement(field, myElementLevel));
                 }
-            } else if (element instanceof RPsiScopedExpr && m_elementLevel < 2) {
+            } else if (element instanceof RPsiScopedExpr && myElementLevel < 2) {
                 List<RPsiStructuredElement> children = ORUtil.findImmediateChildrenOfClass(element, RPsiStructuredElement.class);
                 for (RPsiStructuredElement child : children) {
                     if (child.canBeDisplayed()) {
-                        m_treeElements.add(new StructureViewElement(child, m_elementLevel));
+                        myTreeElements.add(new StructureViewElement(child, myElementLevel));
                     }
                 }
             }

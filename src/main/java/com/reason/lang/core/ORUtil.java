@@ -325,7 +325,7 @@ public class ORUtil {
         String qualifiedPath = Joiner.join(".", getQualifiedPath(element));
         String name = element.getName();
         if (name == null) {
-            String nullifier = element instanceof RPsiModuleType ? "" : ".<UNKNOWN>";  // anonymous signature type is ok
+            String nullifier = element instanceof RPsiModuleSignature ? "" : ".<UNKNOWN>";  // anonymous signature type is ok
             return qualifiedPath + nullifier;
         }
         return qualifiedPath + "." + name;
