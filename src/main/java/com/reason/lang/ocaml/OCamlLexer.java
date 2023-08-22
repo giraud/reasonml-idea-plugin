@@ -1171,7 +1171,7 @@ public class OCamlLexer implements FlexLexer {
             // fall through
           case 202: break;
           case 54:
-            { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; tokenStart();
+            { yybegin(IN_OCAML_ML_COMMENT); inCommentString = false; commentDepth = 1; tokenStart();
             }
             // fall through
           case 203: break;
