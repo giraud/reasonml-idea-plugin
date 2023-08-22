@@ -645,16 +645,8 @@ public class ResFlexLexer implements FlexLexer {
       from input */
   private int zzEndRead;
 
-  /**
-   * zzAtBOL == true <=> the scanner is currently at the beginning of a line
-   */
-  private boolean zzAtBOL = true;
-
   /** zzAtEOF == true <=> the scanner is at the EOF */
   private boolean zzAtEOF;
-
-  /** denotes if the user-EOF-code has already been executed */
-  private boolean zzEOFDone;
 
   /* user code: */
     public ResFlexLexer(ORLangTypes types) {
@@ -723,7 +715,6 @@ public class ResFlexLexer implements FlexLexer {
     zzBuffer = buffer;
     zzCurrentPos = zzMarkedPos = zzStartRead = start;
     zzAtEOF  = false;
-    zzAtBOL = true;
     zzEndRead = end;
     yybegin(initialState);
   }
@@ -834,18 +825,6 @@ public class ResFlexLexer implements FlexLexer {
 
 
   /**
-   * Contains user EOF-code, which will be executed exactly once,
-   * when the end of file is reached
-   */
-  private void zzDoEOF() {
-    if (!zzEOFDone) {
-      zzEOFDone = true;
-
-    }
-  }
-
-
-  /**
    * Resumes scanning until the next regular expression is matched,
    * the end of input is encountered or an I/O-Error occurs.
    *
@@ -931,7 +910,6 @@ public class ResFlexLexer implements FlexLexer {
 
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
-        zzDoEOF();
         switch (zzLexicalState) {
             case IN_TEMPLATE: {
               yybegin(INITIAL);

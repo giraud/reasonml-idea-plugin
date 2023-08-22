@@ -11,25 +11,25 @@ import static com.intellij.psi.TokenType.*;
 
 %{
     public ResFlexLexer(ORLangTypes types) {
-            this.types = types;
-        }
+        this.types = types;
+    }
 
-        private int yyline;
-        private ORLangTypes types;
-        private int tokenStartIndex;
-        private CharSequence quotedStringId;
-        private int commentDepth;
-        private boolean inCommentString = false;
+    private int yyline;
+    private ORLangTypes types;
+    private int tokenStartIndex;
+    private CharSequence quotedStringId;
+    private int commentDepth;
+    private boolean inCommentString = false;
 
-        //Store the start index of a token
-        private void tokenStart() {
-            tokenStartIndex = zzStartRead;
-        }
+    //Store the start index of a token
+    private void tokenStart() {
+        tokenStartIndex = zzStartRead;
+    }
 
-        //Set the start index of the token to the stored index
-        private void tokenEnd() {
-            zzStartRead = tokenStartIndex;
-        }
+    //Set the start index of the token to the stored index
+    private void tokenEnd() {
+        zzStartRead = tokenStartIndex;
+    }
 %}
 
 %public
@@ -38,8 +38,6 @@ import static com.intellij.psi.TokenType.*;
 %unicode
 %function advance
 %type IElementType
-%eof{  return;
-%eof}
 
 EOL=\n|\r|\r\n
 WHITE_SPACE_CHAR=[\ \t\f]

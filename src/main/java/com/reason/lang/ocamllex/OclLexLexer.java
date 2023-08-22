@@ -422,18 +422,6 @@ public class OclLexLexer implements FlexLexer {
 
 
   /**
-   * Contains user EOF-code, which will be executed exactly once,
-   * when the end of file is reached
-   */
-  private void zzDoEOF() {
-    if (!zzEOFDone) {
-      zzEOFDone = true;
-    
-    }
-  }
-
-
-  /**
    * Resumes scanning until the next regular expression is matched,
    * the end of input is encountered or an I/O-Error occurs.
    *
@@ -519,7 +507,6 @@ public class OclLexLexer implements FlexLexer {
 
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
-        zzDoEOF();
         switch (zzLexicalState) {
             case IN_COMMENT: {
               yybegin(INITIAL); tokenEnd(); return OclLexTypes.INSTANCE.SINGLE_COMMENT;

@@ -34,8 +34,6 @@ import static com.intellij.psi.TokenType.*;
 %unicode
 %function advance
 %type IElementType
-%eof{  return;
-%eof}
 
 EOL=\n|\r|\r\n
 WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
