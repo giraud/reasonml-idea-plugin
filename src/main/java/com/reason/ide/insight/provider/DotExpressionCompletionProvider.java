@@ -99,7 +99,7 @@ public class DotExpressionCompletionProvider {
     }
 
     private static void addFileExpressions(@NotNull FileBase file, @NotNull Collection<PsiNamedElement> expressions, @NotNull GlobalSearchScope scope) {
-        Collection<String> alternativeQNames = ORModuleResolutionPsiGist.getData(file).getElement(file);
+        Collection<String> alternativeQNames = ORModuleResolutionPsiGist.getData(file).getValues(file);
         for (String alternativeQName : alternativeQNames) {
             for (RPsiModule module : ModuleFqnIndex.getElements(alternativeQName, file.getProject(), scope)) {
                 addModuleExpressions(module, expressions, scope);
@@ -141,7 +141,7 @@ public class DotExpressionCompletionProvider {
                 addModuleExpressions(resolvedElement, expressions, scope);
             }
         } else {
-            PsiElement body = module.getModuleType();
+            PsiElement body = module.getModuleSignature();
             if (body == null) {
                 body = module.getBody();
             }

@@ -598,7 +598,7 @@ public class ResParser extends CommonPsiParser {
                 } else if (isFound(myTypes.C_MODULE_DECLARATION)) {
                     // module M |> :<| ...
                     popEndUntilFoundIndex().advance()
-                            .mark(myTypes.C_MODULE_TYPE);
+                            .mark(myTypes.C_MODULE_SIGNATURE);
                 } else if (isFound(myTypes.C_EXTERNAL_DECLARATION) || isFound(myTypes.C_LET_DECLARATION)) {
                     // external/let x |> :<| ...
                     popEndUntilFoundIndex().advance().mark(myTypes.C_SIG_EXPR);
@@ -870,7 +870,7 @@ public class ResParser extends CommonPsiParser {
                 // A scoped property
                 popIfHold().markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACE)
                         .advance().markHolder(myTypes.H_PLACE_HOLDER);
-            } else if (is(myTypes.C_MODULE_TYPE)) {
+            } else if (is(myTypes.C_MODULE_SIGNATURE)) {
                 // module M : |>{<| ...
                 updateScopeToken(myTypes.LBRACE);
             } else if (isDone(myTypes.C_TRY_BODY)) { // A try expression
@@ -1091,7 +1091,7 @@ public class ResParser extends CommonPsiParser {
 
         private void parseEq() {
             if (strictlyInAny(
-                    myTypes.C_TYPE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_MODULE_TYPE, myTypes.C_MODULE_DECLARATION,
+                    myTypes.C_TYPE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_MODULE_SIGNATURE, myTypes.C_MODULE_DECLARATION,
                     myTypes.C_TAG_PROPERTY, myTypes.C_SIG_EXPR, myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM,
                     myTypes.C_TYPE_CONSTRAINT, myTypes.C_TYPE_BINDING
             )) {
@@ -1105,7 +1105,7 @@ public class ResParser extends CommonPsiParser {
                     popEndUntilFoundIndex().advance()
                             .mark(myTypes.C_LET_BINDING)
                             .markHolder(myTypes.H_PLACE_HOLDER);
-                } else if (isFound(myTypes.C_MODULE_TYPE)) {
+                } else if (isFound(myTypes.C_MODULE_SIGNATURE)) {
                     // module M : T |> = <| ...
                     popEndUntilFoundIndex().end()
                             .advance()
@@ -1289,7 +1289,7 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseWith() {
-            if (strictlyInAny(myTypes.C_FUNCTOR_RESULT, myTypes.C_MODULE_TYPE)) {
+            if (strictlyInAny(myTypes.C_FUNCTOR_RESULT, myTypes.C_MODULE_SIGNATURE)) {
                 // module M (X) : ( S |>with<| ... ) = ...
                 popEndUntilFoundIndex().popEnd().advance()
                         .mark(myTypes.C_CONSTRAINTS);

@@ -39,8 +39,10 @@ public class IconProvider extends com.intellij.ide.IconProvider {
             }
         } else if (element instanceof RPsiException) {
             return ORIcons.EXCEPTION;
-        } else if (element instanceof RPsiInnerModule) {
-            return ((RPsiInnerModule) element).isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE;
+        } else if (element instanceof RPsiInnerModule innerModule) {
+            return innerModule.isModuleType() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE;
+        } else if (element instanceof RPsiModuleSignature) {
+            return ORIcons.MODULE_TYPE;
         } else if (element instanceof RPsiFunctor) {
             return ORIcons.FUNCTOR;
         } else if (element instanceof RPsiType) {

@@ -58,7 +58,7 @@ public class FreeExpressionCompletionProvider {
 
         // Resolve alternate names of current file (includes)
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(containingFile);
-        for (String alternateName : data.getElement(containingFile)) {
+        for (String alternateName : data.getValues(containingFile)) {
             for (RPsiModule alternateModule : ModuleIndexService.getService().getModules(alternateName, project, searchScope)) {
                 addModuleExpressions(alternateModule, languageProperties, resultSet);
             }

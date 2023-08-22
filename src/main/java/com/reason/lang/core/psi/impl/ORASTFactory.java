@@ -104,8 +104,8 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         if (type == myTypes.C_MODULE_BINDING) {
             return new RPsiModuleBinding(myTypes, type);
         }
-        if (type == myTypes.C_MODULE_TYPE) {
-            return new RPsiModuleType(myTypes, type);
+        if (type == myTypes.C_MODULE_SIGNATURE) {
+            return new RPsiModuleSignature(myTypes, type);
         }
         if (type == myTypes.C_MODULE_VALUE) {
             return new RPsiModuleValue(myTypes, type);

@@ -48,12 +48,11 @@ public class InsightManagerImpl implements InsightManager {
 
     @Override
     public void queryTypes(@Nullable VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ORProcessTerminated<InferredTypes> runAfter) {
-        if (sourceFile != null) {
-            String rincewindName = getRincewindFilename(sourceFile.getParent(), "");
-            File rincewindFile = rincewindName == null ? null : getRincewindTarget(rincewindName);
-            if (rincewindFile != null) {
-                myProject.getService(RincewindProcess.class).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
-            }
+        VirtualFile sourceParentFile = sourceFile != null ? sourceFile.getParent() : null;
+        String rincewindName = getRincewindFilename(sourceParentFile, "");
+        File rincewindFile = getRincewindTarget(rincewindName);
+        if (sourceFile != null && rincewindFile != null) {
+            myProject.getService(RincewindProcess.class).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
         }
     }
 
@@ -84,29 +83,30 @@ public class InsightManagerImpl implements InsightManager {
                 : myProject.getService(RincewindProcess.class).dumpTypes(rincewindFile.getPath(), cmtFile);
     }
 
-    public @Nullable File getRincewindTarget(@NotNull String filename) {
+    public @Nullable File getRincewindTarget(@Nullable String filename) {
         Path pluginLocation = getPluginLocation();
         String pluginPath = pluginLocation == null ? System.getProperty("java.io.tmpdir") : pluginLocation.toFile().getPath();
         if (LOG.isTraceEnabled()) {
             LOG.trace("Rincewind filename: " + filename + " at " + pluginPath);
         }
-        return new File(pluginPath, filename);
+        return filename == null ? null : new File(pluginPath, filename);
     }
 
-    public @Nullable String getRincewindFilename(@NotNull VirtualFile sourceFile, @NotNull String excludedVersion) {
-        ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
-        ORResolvedCompiler<?> compiler = compilerManager.getCompiler(sourceFile);
-        String fullVersion = compiler == null ? null : compiler.getFullVersion(sourceFile);
-        String ocamlVersion = Rincewind.extractOcamlVersion(fullVersion);
-        String rincewindVersion = Rincewind.getLatestVersion(ocamlVersion);
+    public @Nullable String getRincewindFilename(@Nullable VirtualFile sourceFile, @NotNull String excludedVersion) {
+        if (sourceFile != null) {
+            ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
+            ORResolvedCompiler<?> compiler = compilerManager.getCompiler(sourceFile);
+            String fullVersion = compiler != null ? compiler.getFullVersion(sourceFile) : null;
+            String ocamlVersion = Rincewind.extractOcamlVersion(fullVersion);
+            String rincewindVersion = Rincewind.getLatestVersion(ocamlVersion);
 
-        // ocaml version default - opam -> use ocaml -version ??
-        // opam switch different from default
-        // opam settings set correctly (not default)
+            // ocaml version default - opam -> use ocaml -version ??
+            // opam switch different from default
+            // opam settings set correctly (not default)
 
-
-        if (ocamlVersion != null && !rincewindVersion.equals(excludedVersion)) {
-            return "rincewind_" + getOsPrefix() + ocamlVersion + "-" + rincewindVersion + ".exe";
+            if (ocamlVersion != null && !rincewindVersion.equals(excludedVersion)) {
+                return "rincewind_" + getOsPrefix() + ocamlVersion + "-" + rincewindVersion + ".exe";
+            }
         }
 
         return null;

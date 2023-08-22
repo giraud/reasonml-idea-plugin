@@ -113,7 +113,7 @@ public class ORReferenceAnalyzer {
                     break;
                 } else if (item instanceof RPsiModuleBinding) {
                     item = item.getParent();
-                } else if (item instanceof RPsiModuleType) {
+                } else if (item instanceof RPsiModuleSignature) {
                     // equivalent to a RPsiModule also
                     instructions.push(item);
                     item = item.getParent();
@@ -399,7 +399,7 @@ public class ORReferenceAnalyzer {
                                             found = true;
                                         } else {
                                             ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(foundInnerModule.getContainingFile());
-                                            Collection<String> alternateNames = data.getElement(foundInnerModule);
+                                            Collection<String> alternateNames = data.getValues(foundInnerModule);
                                             if (alternateNames.isEmpty()) {
                                                 if (foundInnerModule.isFunctorCall()) {
                                                     // Resolve using qName
@@ -433,7 +433,7 @@ public class ORReferenceAnalyzer {
                                     // Search for alternate paths using gist
                                     ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(foundTopLevelModule);
                                     // resolve alternate top level modules
-                                    for (String alternateName : data.getElement(foundTopLevelModule)) {
+                                    for (String alternateName : data.getValues(foundTopLevelModule)) {
                                         Collection<RPsiModule> alternateElements = ModuleIndexService.getService().getModules(alternateName, project, scope);
                                         resolutions.addAll(alternateElements.stream().map(module -> new ResolutionElement(module, true)).collect(Collectors.toList()));
                                     }
@@ -460,7 +460,7 @@ public class ORReferenceAnalyzer {
                 // Search for alternate paths using gist
                 // This is a recursive function (if not end of instruction)
                 ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData((FileBase) firstElement);
-                Collection<String> alternateNames = data.getElement(foundOpen); // add path to data ?
+                Collection<String> alternateNames = data.getValues(foundOpen); // add path to data ?
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element
                     // We need to analyze the path and resolve each part
@@ -479,7 +479,7 @@ public class ORReferenceAnalyzer {
             else if (instruction instanceof RPsiInclude foundInclude) {
 
                 // Search for alternate paths using gist
-                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getElement(foundInclude);
+                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getValues(foundInclude);
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                     resolutions.addAll(resolvePath(foundInclude.getIncludePath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList()));
@@ -497,7 +497,7 @@ public class ORReferenceAnalyzer {
                     RPsiTagStart foundTag = (RPsiTagStart) instruction;
 
                     // Search for alternate paths using gist
-                    Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getElement(foundTag);
+                    Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getValues(foundTag);
                     if (alternateNames.isEmpty()) {
                         // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                         String name = foundTag.getName();
@@ -534,7 +534,7 @@ public class ORReferenceAnalyzer {
         if (element instanceof FileBase && ((FileBase) element).isInterface()) {
             return true;
         }
-        return element instanceof RPsiInnerModule && ((RPsiInnerModule) element).isInterface();
+        return element instanceof RPsiInnerModule && ((RPsiInnerModule) element).isModuleType();
     }
 
     public static List<PsiElement> resolvePath(@NotNull String path, @NotNull Project project, @NotNull GlobalSearchScope scope, int level) {
@@ -550,7 +550,7 @@ public class ORReferenceAnalyzer {
 
                 // Get all alternate resolutions for top level file
                 ORModuleResolutionPsiGist.Data topLevelData = ORModuleResolutionPsiGist.getData((FileBase) topLevel);
-                for (String topLevelAlternateName : topLevelData.getElement(topLevel)) {
+                for (String topLevelAlternateName : topLevelData.getValues(topLevel)) {
                     Collection<RPsiModule> topLevelAlternates = ModuleIndexService.getService().getModules(topLevelAlternateName, project, scope);
                     if (!topLevelAlternates.isEmpty()) {
                         PsiFile topLevelAlternate = topLevelAlternates.iterator().next().getContainingFile();
@@ -570,7 +570,7 @@ public class ORReferenceAnalyzer {
                             newPathResolutions.add(module);
                             PsiFile containingFile = module.getContainingFile();
                             ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(containingFile);
-                            for (String alternateModuleQName : data.getElement(module)) {
+                            for (String alternateModuleQName : data.getValues(module)) {
                                 if (!pathToResolve.equals(alternateModuleQName)) {
                                     // try to find references of coq cSig.mli Sets.exits: Stm.VCS => Stm.VCS.Branch.Vcs_  (fixme)
                                     newPathResolutions.addAll(resolvePath(alternateModuleQName, project, scope, level + 1));

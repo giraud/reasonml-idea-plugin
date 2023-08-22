@@ -24,7 +24,7 @@ public class ValParsingTest extends OclParsingTestCase {
     public void test_name() {
         RPsiVal e = first(valExpressions(parseCode("val x : int")));
 
-        assertInstanceOf(((RPsiValImpl) e).getNameIdentifier(), RPsiLowerSymbol.class);
+        assertInstanceOf(e.getNameIdentifier(), RPsiLowerSymbol.class);
         assertEquals("x", e.getName());
     }
 
@@ -32,7 +32,7 @@ public class ValParsingTest extends OclParsingTestCase {
     public void test_special_name() {
         RPsiVal e = first(valExpressions(parseCode("val (>>=) : 'a -> 'a t")));
 
-        assertInstanceOf(((RPsiValImpl) e).getNameIdentifier(), RPsiScopedExpr.class);
+        assertInstanceOf(e.getNameIdentifier(), RPsiScopedExpr.class);
         assertEquals("(>>=)", e.getName());
     }
 

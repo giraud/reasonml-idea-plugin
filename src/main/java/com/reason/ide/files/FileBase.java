@@ -86,6 +86,11 @@ public abstract class FileBase extends PsiFileBase implements RPsiModule, Naviga
         return result;
     }
 
+    @Override
+    public boolean isInterfaceFile() {
+        return FileHelper.isInterface(getFileType());
+    }
+
     public boolean isInterface() {
         return FileHelper.isInterface(getFileType());
     }

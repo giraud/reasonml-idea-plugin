@@ -21,8 +21,10 @@ public interface RPsiInnerModule extends RPsiModule, StubBasedPsiElement<PsiModu
     @Nullable
     RPsiFunctorCall getFunctorCall();
 
+    boolean isModuleType();
+
     @Nullable
-    RPsiModuleType getModuleType();
+    RPsiModuleSignature getModuleSignature();
 
     @Nullable
     PsiElement getBody();

@@ -32,7 +32,7 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSym
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
         PsiElement parent = myElement.getParent();
         if (parent instanceof RPsiInnerModule) {
-            if (!(parent.getParent() instanceof RPsiModuleType)) {
+            if (!(parent.getParent() instanceof RPsiModuleSignature)) {
                 LOG.debug("Declaration found (inner module), skip reference resolution", myReferenceName);
                 return ResolveResult.EMPTY_ARRAY;
             }

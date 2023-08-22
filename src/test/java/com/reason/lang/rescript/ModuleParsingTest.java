@@ -56,7 +56,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         RPsiInnerModule module = firstOfType(parseCode("module type RedFlagsSig = {}"), RPsiInnerModule.class);
 
         assertEquals("RedFlagsSig", module.getName());
-        assertTrue(module.isInterface());
+        assertTrue(module.isModuleType());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
 
         assertEquals(1, expressions(file).size());
         assertEquals("Router", module.getName());
-        assertEquals("{ let watchUrl: (url => unit) => watcherID }", module.getModuleType().getText());
+        assertEquals("{ let watchUrl: (url => unit) => watcherID }", module.getModuleSignature().getText());
         assertNull(module.getBody());
         assertNull(PsiTreeUtil.findChildOfType(file, RPsiScopedExpr.class));
         RPsiLet let = PsiTreeUtil.findChildOfType(file, RPsiLet.class);
@@ -88,7 +88,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         RPsiInnerModule e = firstOfType(parseCode("module M: MType = { type t = int }"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
-        assertEquals("MType", e.getModuleType().getText());
+        assertEquals("MType", e.getModuleSignature().getText());
         assertEquals("{ type t = int }", e.getBody().getText());
     }
 
@@ -97,8 +97,8 @@ public class ModuleParsingTest extends ResParsingTestCase {
         RPsiInnerModule e = firstOfType(parseCode("module M: I with type t = X.t = {}"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
-        assertEquals("I", e.getModuleType().getText());
-        assertEquals(myTypes.A_MODULE_NAME, e.getModuleType().getFirstChild().getNode().getElementType());
+        assertEquals("I", e.getModuleSignature().getText());
+        assertEquals(myTypes.A_MODULE_NAME, e.getModuleSignature().getFirstChild().getNode().getElementType());
         assertSize(1, e.getConstraints());
         assertEquals("type t = X.t", e.getConstraints().get(0).getText());
         assertEquals("{}", e.getBody().getText());
@@ -110,7 +110,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
 
         assertNoParserError(e);
         assertEquals("M", e.getName());
-        assertEquals("{ type t }", e.getModuleType().getText());
+        assertEquals("{ type t }", e.getModuleSignature().getText());
         assertEquals("{ type t = int }", e.getBody().getText());
     }
 

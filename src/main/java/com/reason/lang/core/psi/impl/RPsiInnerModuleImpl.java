@@ -12,6 +12,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
+import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
@@ -101,18 +102,8 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
     }
 
     @Override
-    public boolean isInterface() {
-        PsiModuleStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.isInterface();
-        }
-
-        if (((FileBase) getContainingFile()).isInterface()) {
-            return true;
-        }
-
-        PsiElement psiElement = ORUtil.nextSibling(getFirstChild());
-        return psiElement != null && psiElement.getNode().getElementType() == myTypes.TYPE;
+    public boolean isInterfaceFile() {
+        return ((FileBase) getContainingFile()).isInterface();
     }
 
     @Override
@@ -132,21 +123,24 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
     }
 
     @Override
-    public @Nullable RPsiModuleType getModuleType() {
-        PsiElement child = ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiModuleType.class, RPsiScopedExpr.class);
+    public @Nullable RPsiModuleSignature getModuleSignature() {
+        PsiElement child = ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiModuleSignature.class, RPsiScopedExpr.class);
         if (child instanceof RPsiScopedExpr) {
-            child = ORUtil.findImmediateFirstChildOfClass(child, RPsiModuleType.class);
+            child = ORUtil.findImmediateFirstChildOfClass(child, RPsiModuleSignature.class);
         }
-        return child instanceof RPsiModuleType ? (RPsiModuleType) child : null;
+        return child instanceof RPsiModuleSignature ? (RPsiModuleSignature) child : null;
     }
 
-    private boolean isModuleTypeOf() {
-        PsiElement nextSibling = ORUtil.nextSibling(getFirstChild());
-        PsiElement nextNextSibling = ORUtil.nextSibling(nextSibling);
-        return nextSibling != null
-                && nextNextSibling != null
-                && nextSibling.getNode().getElementType() == myTypes.TYPE
-                && nextNextSibling.getNode().getElementType() == myTypes.OF;
+
+    @Override
+    public boolean isModuleType() {
+        PsiModuleStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isModuleType();
+        }
+
+        PsiElement psiElement = ORUtil.nextSibling(getFirstChild());
+        return psiElement != null && psiElement.getNode().getElementType() == myTypes.TYPE;
     }
 
     @Override
@@ -190,35 +184,31 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
     }
 
     public ItemPresentation getPresentation() {
-        boolean isModuleTypeOf = isModuleTypeOf();
+        //RPsiModuleSignature moduleSignature = getModuleSignature();
 
         return new ItemPresentation() {
             @Override
             public @Nullable String getPresentableText() {
-                if (isModuleTypeOf) {
-                    PsiElement of = ORUtil.findImmediateFirstChildOfType(RPsiInnerModuleImpl.this, myTypes.OF);
-                    assert of != null;
-                    return getText().substring(of.getStartOffsetInParent() + 3);
-                }
                 return getName();
             }
 
             @Override
             public @NotNull String getLocationString() {
-                return isModuleTypeOf ? "" : getQualifiedName();
+                //return moduleSignature != null ? moduleSignature.getQualifiedName() : getQualifiedName();
+                return getQualifiedName();
             }
 
             @Override
             public @NotNull Icon getIcon(boolean unused) {
-                return isInterface()
+                return isModuleType()
                         ? ORIcons.MODULE_TYPE
-                        : (isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE);
+                        : (isInterfaceFile() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE);
             }
         };
     }
 
     @Override
     public String toString() {
-        return "RPsiModule:" + getModuleName();
+        return super.toString() + ":" + getModuleName();
     }
 }
