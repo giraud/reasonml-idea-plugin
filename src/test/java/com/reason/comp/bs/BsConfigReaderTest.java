@@ -110,4 +110,13 @@ public class BsConfigReaderTest extends ORBasePlatformTestCase {
         BsConfig bsConfig = BsConfigReader.parse(loadFile("deps.json"));
         assertSize(2, bsConfig.getDependencies());
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/418
+    @Test
+    public void testBscFlags() {
+        BsConfig bsConfig = BsConfigReader.parse(toJson("{'name': 'x', 'bsc-flags': ['-no-alias-deps', '-open RescriptCore']}"));
+        assertSize(2, bsConfig.getBscFlags());
+        assertSize(1, bsConfig.getOpenedDeps());
+        assertEquals("RescriptCore", bsConfig.getOpenedDeps().iterator().next());
+    }
 }
