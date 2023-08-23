@@ -30,7 +30,6 @@ public class BsConfigReader {
     @NotNull
     public static BsConfig read(@NotNull VirtualFile bsConfigFile, boolean useExternalAsSource) {
         BsConfig config = parse(FileUtil.readFileContent(bsConfigFile));
-        config.setRootFile(bsConfigFile.getParent());
         config.setUseExternalAsSource(useExternalAsSource);
         return config;
     }

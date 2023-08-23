@@ -116,7 +116,7 @@ public class BsConfigReaderTest extends ORBasePlatformTestCase {
     public void testBscFlags() {
         BsConfig bsConfig = BsConfigReader.parse(toJson("{'name': 'x', 'bsc-flags': ['-no-alias-deps', '-open RescriptCore']}"));
         assertSize(2, bsConfig.getBscFlags());
-        assertSize(1, bsConfig.getOpenedDeps());
-        assertEquals("RescriptCore", bsConfig.getOpenedDeps().iterator().next());
+        assertSize(2, bsConfig.getOpenedDeps());
+        assertContainsElements(bsConfig.getOpenedDeps(), "Pervasives", "RescriptCore");
     }
 }
