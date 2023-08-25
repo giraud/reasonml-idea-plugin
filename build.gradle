@@ -34,6 +34,7 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
+                    <li>422 - Plugin "failed to save settings and has been disabled" in PyCharm</li>
                     <li>421 - End of comments containing quotes not always detected</li>
                     <li>418 - Globally opened modules don’t participate in autocomplete resolution</li>
                 </ul>

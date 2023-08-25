@@ -12,6 +12,7 @@
                         
 ## Unreleased
 
+- :bug: [#422](https://github.com/giraud/reasonml-idea-plugin/issues/422) Plugin "failed to save settings and has been disabled" in PyCharm
 - :bug: ![o] [#421](https://github.com/giraud/reasonml-idea-plugin/issues/421) End of comments containing quotes not always detected
 - :bug: ![r] ![n] [#418](https://github.com/giraud/reasonml-idea-plugin/issues/418) Globally opened modules don’t participate in autocomplete resolution
 
