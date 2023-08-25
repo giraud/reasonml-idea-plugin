@@ -12,6 +12,9 @@
                         
 ## Unreleased
 
+- :bug: ![o] [#421](https://github.com/giraud/reasonml-idea-plugin/issues/421) End of comments containing quotes not always detected
+- :bug: ![r] ![n] [#418](https://github.com/giraud/reasonml-idea-plugin/issues/418) Globally opened modules don’t participate in autocomplete resolution
+
 ## 0.115 - 2023/08/22
 
 - :house: [#416](https://github.com/giraud/reasonml-idea-plugin/issues/416) Excessive CPU use
