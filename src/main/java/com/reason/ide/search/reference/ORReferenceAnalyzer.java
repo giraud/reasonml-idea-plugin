@@ -168,7 +168,7 @@ public class ORReferenceAnalyzer {
         return instructions;
     }
 
-    static @NotNull List<RPsiQualifiedPathElement> resolveInstructions(@NotNull Deque<PsiElement> instructions, @NotNull Project project, @NotNull GlobalSearchScope scope) {
+    static @NotNull List<RPsiQualifiedPathElement> resolveInstructions(@NotNull Deque<PsiElement> instructions, @Nullable Set<String> openedModules, @NotNull Project project, @NotNull GlobalSearchScope scope) {
         List<RPsiQualifiedPathElement> result = new ArrayList<>();
 
         List<ResolutionElement> resolutions = new ArrayList<>(); // temporary resolutions
@@ -179,6 +179,19 @@ public class ORReferenceAnalyzer {
             return result;
         }
         resolutions.add(new ResolutionElement(firstElement, true));
+
+        PsiManager psiManager = PsiManager.getInstance(project);
+
+        // Add all globally opened elements (implicit open)
+        if (openedModules != null) {
+            for (String openedModuleName : openedModules) {
+                List<RPsiModule> modules = getTopModules(openedModuleName, psiManager, scope);
+                RPsiModule module = modules.isEmpty() ? null : modules.get(0);
+                if (module != null) {
+                    resolutions.add(new ResolutionElement(module, true));
+                }
+            }
+        }
 
         while (!instructions.isEmpty()) {
             PsiElement instruction = instructions.removeFirst();
@@ -375,7 +388,7 @@ public class ORReferenceAnalyzer {
                         Collection<RPsiModule> modules = ModuleFqnIndex.getElements(pathToResolve, project, scope);
                         if (modules.isEmpty()) {
                             // Try to resolve top module directly
-                            modules = getTopModules(instruction.getText(), project, scope);
+                            modules = getTopModules(instruction.getText(), psiManager, scope);
                         }
                         if (!modules.isEmpty()) {
                             if (instructions.isEmpty()) {
@@ -405,7 +418,7 @@ public class ORReferenceAnalyzer {
                                                     // Resolve using qName
                                                     RPsiFunctorCall functorCall = foundInnerModule.getFunctorCall();
                                                     String functorQName = ORUtil.getLongIdent(functorCall == null ? null : functorCall.getFirstChild());
-                                                    List<ResolutionElement> elements = resolvePath(functorQName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList());
+                                                    List<ResolutionElement> elements = resolvePath(functorQName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                                                     resolutions.addAll(elements);
                                                     found = !elements.isEmpty();
                                                 }
@@ -413,7 +426,7 @@ public class ORReferenceAnalyzer {
                                                 // resolve alternate modules
                                                 for (String alternateName : alternateNames) {
                                                     // Sort interface first
-                                                    List<ResolutionElement> elements = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList());
+                                                    List<ResolutionElement> elements = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                                                     resolutions.addAll(elements);
                                                     found = !elements.isEmpty();
                                                 }
@@ -435,7 +448,7 @@ public class ORReferenceAnalyzer {
                                     // resolve alternate top level modules
                                     for (String alternateName : data.getValues(foundTopLevelModule)) {
                                         Collection<RPsiModule> alternateElements = ModuleIndexService.getService().getModules(alternateName, project, scope);
-                                        resolutions.addAll(alternateElements.stream().map(module -> new ResolutionElement(module, true)).collect(Collectors.toList()));
+                                        resolutions.addAll(alternateElements.stream().map(module -> new ResolutionElement(module, true)).toList());
                                     }
                                 }
                                 // else
@@ -464,12 +477,12 @@ public class ORReferenceAnalyzer {
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element
                     // We need to analyze the path and resolve each part
-                    List<ResolutionElement> psiElements = resolvePath(foundOpen.getPath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList());
+                    List<ResolutionElement> psiElements = resolvePath(foundOpen.getPath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                     resolutions.addAll(psiElements);
                 } else {
                     // resolve alternate top level modules
                     for (String alternateName : alternateNames) {
-                        List<ResolutionElement> psiElements = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList());
+                        List<ResolutionElement> psiElements = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                         resolutions.addAll(psiElements);
                     }
                 }
@@ -482,11 +495,11 @@ public class ORReferenceAnalyzer {
                 Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getValues(foundInclude);
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element, we need to analyze the path and resolve each part
-                    resolutions.addAll(resolvePath(foundInclude.getIncludePath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList()));
+                    resolutions.addAll(resolvePath(foundInclude.getIncludePath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                 } else {
                     // Resolve alternate top level modules
                     for (String alternateName : alternateNames) {
-                        resolutions.addAll(resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList()));
+                        resolutions.addAll(resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                     }
                 }
             }
@@ -502,12 +515,12 @@ public class ORReferenceAnalyzer {
                         // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                         String name = foundTag.getName();
                         if (name != null) {
-                            resolutions.addAll(resolvePath(name, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList()));
+                            resolutions.addAll(resolvePath(name, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                         }
                     } else {
                         // Resolve alternate top level modules
                         for (String alternateName : alternateNames) {
-                            resolutions.addAll(resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList()));
+                            resolutions.addAll(resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                         }
                     }
                 }
@@ -543,7 +556,7 @@ public class ORReferenceAnalyzer {
         if (level < MAX_PATH_RESOLUTION_LEVEL) {
             String[] pathTokens = path.split("\\.");
 
-            List<RPsiModule> topModules = getTopModules(pathTokens[0], project, scope);
+            List<RPsiModule> topModules = getTopModules(pathTokens[0], PsiManager.getInstance(project), scope);
             if (!topModules.isEmpty()) {
                 RPsiModule topLevel = topModules.get(0);
                 pathResolutions.add(topLevel);
@@ -589,8 +602,7 @@ public class ORReferenceAnalyzer {
         return pathResolutions;
     }
 
-    private static List<RPsiModule> getTopModules(@NotNull String name, @NotNull Project project, @NotNull GlobalSearchScope scope) {
-        PsiManager psiManager = PsiManager.getInstance(project);
+    private static List<RPsiModule> getTopModules(@NotNull String name, @NotNull PsiManager psiManager, @NotNull GlobalSearchScope scope) {
         FileModuleIndex index = FileModuleIndex.getInstance();
         ID<String, FileModuleData> indexId = index == null ? null : index.getName();
         if (indexId != null) {
@@ -642,7 +654,7 @@ public class ORReferenceAnalyzer {
 
         @Override public String toString() {
             PsiElement originalElement = getOriginalElement();
-            return originalElement + (isInContext ? "-> in context" : "");
+            return originalElement + (isInContext ? " -> in context" : "");
         }
     }
 

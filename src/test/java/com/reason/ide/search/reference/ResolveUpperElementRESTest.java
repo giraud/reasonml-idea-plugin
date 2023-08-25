@@ -1,5 +1,6 @@
 package com.reason.ide.search.reference;
 
+import com.intellij.psi.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
@@ -266,5 +267,16 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("A.Styles", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/418
+    @Test
+    public void test_with_globally_opened_module() {
+        myFixture.configureByText("bsconfig.json", toJson("{ 'name': 'foo', 'bsc-flags': ['-open Core'] }"));
+        configureCode("Core.res", "module Console = { }");
+        configureCode("A.res", "Console<caret>.log()");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Core.Console", ((RPsiModule) e).getQualifiedName());
     }
 }

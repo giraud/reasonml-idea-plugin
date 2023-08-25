@@ -46,7 +46,7 @@ public class JsxAttributeCompletionProvider {
         PsiElement tagName = tag == null ? null : tag.getNameIdentifier();
         if (tagName instanceof RPsiUpperSymbol) {
             // Custom component
-            PsiUpperSymbolReference tagReference = (PsiUpperSymbolReference) tagName.getReference();
+            RPsiUpperSymbolReference tagReference = (RPsiUpperSymbolReference) tagName.getReference();
             PsiElement resolvedModule = tagReference == null ? null : tagReference.resolve();
             PsiElement resolvedElement = resolvedModule == null ? null : resolvedModule.getNavigationElement();
 

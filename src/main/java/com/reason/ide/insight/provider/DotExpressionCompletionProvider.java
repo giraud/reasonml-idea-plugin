@@ -37,7 +37,7 @@ public class DotExpressionCompletionProvider {
 
             LOG.debug(" -> upper symbol", previousElement);
 
-            PsiUpperSymbolReference reference = (PsiUpperSymbolReference) previousElement.getReference();
+            RPsiUpperSymbolReference reference = (RPsiUpperSymbolReference) previousElement.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
             LOG.debug(" -> resolved to", resolvedElement);
 
@@ -89,7 +89,7 @@ public class DotExpressionCompletionProvider {
                 addChildren(((RPsiFunctor) resolvedElement).getBody(), expressions);
             } else {
                 RPsiUpperSymbol referenceIdentifier = ORUtil.findImmediateLastChildOfClass(returnType, RPsiUpperSymbol.class);
-                PsiUpperSymbolReference reference = referenceIdentifier == null ? null : referenceIdentifier.getReference();
+                RPsiUpperSymbolReference reference = referenceIdentifier == null ? null : referenceIdentifier.getReference();
                 PsiElement resolvedResult = reference == null ? null : reference.resolveInterface();
                 if (resolvedResult != null) {
                     addModuleExpressions(resolvedResult, expressions, scope);
@@ -135,7 +135,7 @@ public class DotExpressionCompletionProvider {
             RPsiFunctorCall functorCall = module.getFunctorCall();
 
             RPsiUpperSymbol referenceIdentifier = functorCall == null ? null : functorCall.getReferenceIdentifier();
-            PsiUpperSymbolReference reference = referenceIdentifier == null ? null : referenceIdentifier.getReference();
+            RPsiUpperSymbolReference reference = referenceIdentifier == null ? null : referenceIdentifier.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
             if (resolvedElement != null) {
                 addModuleExpressions(resolvedElement, expressions, scope);
