@@ -188,11 +188,16 @@ public class ORReferenceAnalyzer {
 
         // Add all globally opened elements (implicit open)
         if (openedModules != null) {
+            LOG.trace("Processing globally opened modules");
             for (String openedModuleName : openedModules) {
                 List<RPsiModule> modules = getTopModules(openedModuleName, psiManager, scope);
                 RPsiModule module = modules.isEmpty() ? null : modules.get(0);
                 if (module != null) {
-                    resolutions.add(new ResolutionElement(module, true));
+                    ResolutionElement resolutionElement = new ResolutionElement(module, true);
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(" > global module, add [" + resolutionElement + "]");
+                    }
+                    resolutions.add(resolutionElement);
                 }
             }
         }
@@ -436,6 +441,10 @@ public class ORReferenceAnalyzer {
                                         } else {
                                             ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(foundInnerModule.getContainingFile());
                                             Collection<String> alternateNames = data.getValues(foundInnerModule);
+                                            if (LOG.isTraceEnabled()) {
+                                                LOG.trace(" > alias found [" + foundAlias + "], alternateNames: [" + Joiner.join(", ", alternateNames) + "]");
+                                            }
+
                                             if (alternateNames.isEmpty()) {
                                                 if (foundInnerModule.isFunctorCall()) {
                                                     // Resolve using qName

@@ -179,6 +179,20 @@ public class DotExpressionCompletionProvider {
     }
 
     private static void addChildren(@Nullable PsiElement body, @NotNull Collection<PsiNamedElement> expressions) {
+        List<RPsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiInclude.class);
+        for (RPsiInclude include : includes) {
+            RPsiUpperSymbol referenceIdentifier = include.getModuleReference();
+            RPsiUpperSymbolReference reference = referenceIdentifier == null ? null : referenceIdentifier.getReference();
+            PsiElement resolvedResult = reference == null ? null : reference.resolveInterface();
+            if (resolvedResult instanceof RPsiModule resolvedModule) {
+                PsiElement resolvedBody = resolvedModule instanceof RPsiInnerModule ? ((RPsiInnerModule) resolvedModule).getModuleSignature() : null;
+                if (resolvedBody == null) {
+                    resolvedBody = resolvedModule.getBody();
+                }
+                addChildren(resolvedBody, expressions);
+            }
+        }
+
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiType.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiLet.class));
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiVal.class));

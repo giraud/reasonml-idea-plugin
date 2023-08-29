@@ -60,7 +60,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSym
         }
 
         if (LOG.isTraceEnabled()) {
-            LOG.trace("  Instructions: ", Joiner.join(" -> ", instructions));
+            LOG.trace("  Instructions: [" + Joiner.join(" -> ", instructions) + "]");
         }
 
         long endInstructions = System.currentTimeMillis();
@@ -73,7 +73,7 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSym
         List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, openedModules, project, searchScope);
 
         if (LOG.isTraceEnabled()) {
-            LOG.trace("  Resolved instructions: " + Joiner.join(" -> ", resolvedInstructions));
+            LOG.trace("  Resolved instructions: [" + Joiner.join(" -> ", resolvedInstructions) + "]");
         }
 
         long endResolvedInstructions = System.currentTimeMillis();
