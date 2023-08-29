@@ -13,6 +13,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -21,6 +22,7 @@ import java.util.stream.*;
 import static java.util.Collections.*;
 
 public class ORReferenceAnalyzer {
+    private static final Log LOG = Log.create("ref.analyzer");
     private static final int MAX_PATH_RESOLUTION_LEVEL = 10;
     private static final Comparator<PsiElement> SORT_INTERFACE_FIRST = (e1, e2) -> {
         if (isInterface(e1)) {
@@ -88,6 +90,8 @@ public class ORReferenceAnalyzer {
                             instructions.push(isRecordField ? new LowerSymbolField(item, true) : item);
                         }
                     }
+                } else if (item instanceof RPsiInnerModule) {
+                    instructions.push(item);
                 } else if (item instanceof RPsiFunctor) {
                     instructions.push(item);
                 } else if (item instanceof RPsiOpen || item instanceof RPsiInclude) {
@@ -197,6 +201,10 @@ public class ORReferenceAnalyzer {
             PsiElement instruction = instructions.removeFirst();
 
             if (instruction instanceof LowerSymbolField) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing field", instruction);
+                }
+
                 boolean isRecord = ((LowerSymbolField) instruction).isRecord;
                 for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
                     ResolutionElement resolution = resolutions.get(i);
@@ -245,7 +253,11 @@ public class ORReferenceAnalyzer {
                         break;
                     }
                 }
-            } else if (instruction instanceof RPsiLowerSymbol) {
+            } else if (instruction instanceof RPsiLowerSymbol foundLower) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing lower symbol", foundLower.getText());
+                }
+
                 // build potential paths by iterating backward the resolutions
                 for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
                     ResolutionElement resolution = resolutions.get(i);
@@ -349,7 +361,11 @@ public class ORReferenceAnalyzer {
             }
             // X.Y  (module path)
             // ------------------
-            else if (instruction instanceof RPsiUpperSymbol) {
+            else if (instruction instanceof RPsiUpperSymbol foundUpper) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing Upper symbol", foundUpper.getText());
+                }
+
                 boolean found = false;
                 for (int i = resolutions.size() - 1; i >= 0; i--) {
                     ResolutionElement resolution = resolutions.get(i);
@@ -387,9 +403,13 @@ public class ORReferenceAnalyzer {
 
                         Collection<RPsiModule> modules = ModuleFqnIndex.getElements(pathToResolve, project, scope);
                         if (modules.isEmpty()) {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace(" > No modules found (fqn=" + pathToResolve + "), try top modules");
+                            }
                             // Try to resolve top module directly
                             modules = getTopModules(instruction.getText(), psiManager, scope);
                         }
+
                         if (!modules.isEmpty()) {
                             if (instructions.isEmpty()) {
                                 resolutions.clear();
@@ -400,7 +420,6 @@ public class ORReferenceAnalyzer {
                                     result.add(foundFunctor);
                                     break;
                                 } else if (foundModule instanceof RPsiInnerModule foundInnerModule) {
-
                                     // If it’s the last instruction, we must not resolve the aliases
                                     if (instructions.isEmpty()) {
                                         resolutions.clear();
@@ -408,7 +427,11 @@ public class ORReferenceAnalyzer {
                                     } else {
                                         String foundAlias = foundInnerModule.getAlias();
                                         if (foundAlias == null && !(foundInnerModule.isFunctorCall())) {
-                                            resolutions.add(new ResolutionElement(foundInnerModule, true));
+                                            ResolutionElement resolutionElement = new ResolutionElement(foundInnerModule, true);
+                                            if (LOG.isTraceEnabled()) {
+                                                LOG.trace(" > no alias, inner module found, add [" + resolutionElement + "]");
+                                            }
+                                            resolutions.add(resolutionElement);
                                             found = true;
                                         } else {
                                             ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(foundInnerModule.getContainingFile());
@@ -440,7 +463,11 @@ public class ORReferenceAnalyzer {
                                         continue;
                                     }
 
-                                    resolutions.add(new ResolutionElement(foundTopLevelModule, true));
+                                    ResolutionElement resolutionElement = new ResolutionElement(foundTopLevelModule, true);
+                                    if (LOG.isTraceEnabled()) {
+                                        LOG.trace(" > top module found, add [" + resolutionElement + "]");
+                                    }
+                                    resolutions.add(resolutionElement);
                                     found = true;
 
                                     // Search for alternate paths using gist
@@ -469,6 +496,9 @@ public class ORReferenceAnalyzer {
             // OPEN X
             // ------
             else if (instruction instanceof RPsiOpen foundOpen) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing open", foundOpen.getPath());
+                }
 
                 // Search for alternate paths using gist
                 // This is a recursive function (if not end of instruction)
@@ -477,19 +507,26 @@ public class ORReferenceAnalyzer {
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element
                     // We need to analyze the path and resolve each part
-                    List<ResolutionElement> psiElements = resolvePath(foundOpen.getPath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
-                    resolutions.addAll(psiElements);
+                    List<ResolutionElement> resolvedPaths = resolvePath(foundOpen.getPath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(" > no alternate names, add resolutions: [" + Joiner.join(", ", resolvedPaths) + "]");
+                    }
+                    resolutions.addAll(resolvedPaths);
                 } else {
                     // resolve alternate top level modules
                     for (String alternateName : alternateNames) {
-                        List<ResolutionElement> psiElements = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
-                        resolutions.addAll(psiElements);
+                        List<ResolutionElement> resolvedPaths = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace(" > alternate name [" + alternateName + "], add resolutions: [" + Joiner.join(", ", resolvedPaths) + "]");
+                        }
+                        resolutions.addAll(resolvedPaths);
                     }
                 }
             }
             // INCLUDE X
             // ---------
             else if (instruction instanceof RPsiInclude foundInclude) {
+                LOG.trace("Processing include");
 
                 // Search for alternate paths using gist
                 Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getValues(foundInclude);
@@ -506,6 +543,8 @@ public class ORReferenceAnalyzer {
             // START TAG
             // ---------
             else if (instruction instanceof RPsiTagStart) {
+                LOG.trace("Processing start tag", instruction);
+
                 if (instructions.getLast() instanceof RPsiTagProperty) {
                     RPsiTagStart foundTag = (RPsiTagStart) instruction;
 
@@ -525,6 +564,10 @@ public class ORReferenceAnalyzer {
                     }
                 }
             } else if (instruction instanceof RPsiTagProperty foundProperty) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing property", instruction);
+                }
+
                 // Previous element should be the start tag
                 ResolutionElement tag = resolutions.get(resolutions.size() - 1);
                 if (tag.isInContext && tag.isComponent()) {
@@ -536,7 +579,11 @@ public class ORReferenceAnalyzer {
                     }
                 }
             } else {
-                resolutions.add(new ResolutionElement(instruction));
+                ResolutionElement res = new ResolutionElement(instruction);
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Add instruction [" + res + "]");
+                }
+                resolutions.add(res);
             }
         }
 
