@@ -182,6 +182,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "/*" { yybegin(IN_ML_COMMENT); commentDepth = 1; tokenStart(); }
     "//" { yybegin(IN_SL_COMMENT); tokenStart(); }
 
+    "++"  { return types.STRING_CONCAT; }
     "##"  { return types.SHARPSHARP; }
     "::"  { return types.SHORTCUT; }
     "=>"  { return types.ARROW; }

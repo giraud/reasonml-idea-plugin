@@ -1364,6 +1364,7 @@ public class ResParser extends CommonPsiParser {
                     && previousType != myTypes.COLON
                     && previousType != myTypes.COMMA
                     && previousType != myTypes.L_OR
+                    && previousType != myTypes.STRING_CONCAT
             ) {
                 Marker marker = getActiveMarker();
                 boolean end = marker == null || !(marker.isCompositeType(myTypes.C_BINARY_CONDITION) || marker.isCompositeType(myTypes.C_PARAM));
