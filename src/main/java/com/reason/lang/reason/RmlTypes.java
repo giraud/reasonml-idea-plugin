@@ -52,7 +52,7 @@ public class RmlTypes extends ORLangTypes {
         C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", RmlLanguage.INSTANCE);
         C_GUARD = new ORCompositeElementType("C_GUARD", RmlLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", RmlLanguage.INSTANCE);
-        C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", RmlLanguage.INSTANCE);
+        C_IF_THEN_ELSE = new ORCompositeElementType("C_IF_THEN_ELSE", RmlLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", RmlLanguage.INSTANCE);
         C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", RmlLanguage.INSTANCE);
         C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", RmlLanguage.INSTANCE);

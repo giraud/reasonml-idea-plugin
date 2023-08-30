@@ -19,11 +19,11 @@ public class RPsiIfStatement extends ORCompositePsiElement<ORLangTypes> implemen
 
     @Override
     public @Nullable PsiElement getThenExpression() {
-        return ORUtil.findImmediateFirstChildOfType(this, myTypes.C_IF_THEN_SCOPE);
+        return ORUtil.findImmediateFirstChildOfType(this, myTypes.C_IF_THEN_ELSE);
     }
 
     @Override
     public @Nullable PsiElement getElseExpression() {
-        return ORUtil.findImmediateLastChildOfType(this, myTypes.C_IF_THEN_SCOPE);
+        return ORUtil.findImmediateLastChildOfType(this, myTypes.C_IF_THEN_ELSE);
     }
 }
