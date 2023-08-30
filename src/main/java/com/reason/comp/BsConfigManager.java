@@ -2,14 +2,14 @@ package com.reason.comp;
 
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
-import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-import static com.reason.comp.ORConstants.BS_CONFIG_FILENAME;
+import static com.reason.comp.ORConstants.*;
 
 /**
  * Caches BsConfig available for project.
@@ -56,5 +56,10 @@ public class BsConfigManager {
     public @Nullable BsConfig getNearest(@Nullable VirtualFile sourceFile) {
         VirtualFile bsConfigFile = sourceFile == null ? null : findBsConfig(sourceFile);
         return getConfig(bsConfigFile);
+    }
+
+    public BsConfig getNearest(@Nullable PsiFile psiFile) {
+        VirtualFile virtualFile = psiFile == null ? null : psiFile.getOriginalFile().getVirtualFile();
+        return getNearest(virtualFile);
     }
 }

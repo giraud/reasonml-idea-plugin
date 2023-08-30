@@ -66,8 +66,11 @@ public class PsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSym
         long endInstructions = System.currentTimeMillis();
 
         BsConfigManager service = project.getService(BsConfigManager.class);
-        BsConfig bsConfig = service.getNearest(myElement.getContainingFile().getVirtualFile());
+        BsConfig bsConfig = service.getNearest(myElement.getContainingFile());
         Set<String> openedModules = bsConfig == null ? null : bsConfig.getOpenedDeps();
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("  virtual file", myElement.getContainingFile().getOriginalFile().getVirtualFile());
+        }
 
         // Resolve aliases in the stack of instructions, this time from file down to element
         List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, openedModules, project, searchScope);
