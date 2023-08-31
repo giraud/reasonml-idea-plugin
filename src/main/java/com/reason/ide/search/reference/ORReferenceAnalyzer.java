@@ -13,6 +13,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -21,6 +22,7 @@ import java.util.stream.*;
 import static java.util.Collections.*;
 
 public class ORReferenceAnalyzer {
+    private static final Log LOG = Log.create("ref.analyzer");
     private static final int MAX_PATH_RESOLUTION_LEVEL = 10;
     private static final Comparator<PsiElement> SORT_INTERFACE_FIRST = (e1, e2) -> {
         if (isInterface(e1)) {
@@ -88,6 +90,8 @@ public class ORReferenceAnalyzer {
                             instructions.push(isRecordField ? new LowerSymbolField(item, true) : item);
                         }
                     }
+                } else if (item instanceof RPsiInnerModule) {
+                    instructions.push(item);
                 } else if (item instanceof RPsiFunctor) {
                     instructions.push(item);
                 } else if (item instanceof RPsiOpen || item instanceof RPsiInclude) {
@@ -168,7 +172,7 @@ public class ORReferenceAnalyzer {
         return instructions;
     }
 
-    static @NotNull List<RPsiQualifiedPathElement> resolveInstructions(@NotNull Deque<PsiElement> instructions, @NotNull Project project, @NotNull GlobalSearchScope scope) {
+    static @NotNull List<RPsiQualifiedPathElement> resolveInstructions(@NotNull Deque<PsiElement> instructions, @Nullable Set<String> openedModules, @NotNull Project project, @NotNull GlobalSearchScope scope) {
         List<RPsiQualifiedPathElement> result = new ArrayList<>();
 
         List<ResolutionElement> resolutions = new ArrayList<>(); // temporary resolutions
@@ -180,10 +184,32 @@ public class ORReferenceAnalyzer {
         }
         resolutions.add(new ResolutionElement(firstElement, true));
 
+        PsiManager psiManager = PsiManager.getInstance(project);
+
+        // Add all globally opened elements (implicit open)
+        if (openedModules != null) {
+            LOG.trace("Processing globally opened modules");
+            for (String openedModuleName : openedModules) {
+                List<RPsiModule> modules = getTopModules(openedModuleName, psiManager, scope);
+                RPsiModule module = modules.isEmpty() ? null : modules.get(0);
+                if (module != null) {
+                    ResolutionElement resolutionElement = new ResolutionElement(module, true);
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(" > global module, add [" + resolutionElement + "]");
+                    }
+                    resolutions.add(resolutionElement);
+                }
+            }
+        }
+
         while (!instructions.isEmpty()) {
             PsiElement instruction = instructions.removeFirst();
 
             if (instruction instanceof LowerSymbolField) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing field", instruction);
+                }
+
                 boolean isRecord = ((LowerSymbolField) instruction).isRecord;
                 for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
                     ResolutionElement resolution = resolutions.get(i);
@@ -232,7 +258,11 @@ public class ORReferenceAnalyzer {
                         break;
                     }
                 }
-            } else if (instruction instanceof RPsiLowerSymbol) {
+            } else if (instruction instanceof RPsiLowerSymbol foundLower) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing lower symbol", foundLower.getText());
+                }
+
                 // build potential paths by iterating backward the resolutions
                 for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
                     ResolutionElement resolution = resolutions.get(i);
@@ -336,7 +366,11 @@ public class ORReferenceAnalyzer {
             }
             // X.Y  (module path)
             // ------------------
-            else if (instruction instanceof RPsiUpperSymbol) {
+            else if (instruction instanceof RPsiUpperSymbol foundUpper) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing Upper symbol", foundUpper.getText());
+                }
+
                 boolean found = false;
                 for (int i = resolutions.size() - 1; i >= 0; i--) {
                     ResolutionElement resolution = resolutions.get(i);
@@ -374,9 +408,13 @@ public class ORReferenceAnalyzer {
 
                         Collection<RPsiModule> modules = ModuleFqnIndex.getElements(pathToResolve, project, scope);
                         if (modules.isEmpty()) {
+                            if (LOG.isTraceEnabled()) {
+                                LOG.trace(" > No modules found (fqn=" + pathToResolve + "), try top modules");
+                            }
                             // Try to resolve top module directly
-                            modules = getTopModules(instruction.getText(), project, scope);
+                            modules = getTopModules(instruction.getText(), psiManager, scope);
                         }
+
                         if (!modules.isEmpty()) {
                             if (instructions.isEmpty()) {
                                 resolutions.clear();
@@ -387,7 +425,6 @@ public class ORReferenceAnalyzer {
                                     result.add(foundFunctor);
                                     break;
                                 } else if (foundModule instanceof RPsiInnerModule foundInnerModule) {
-
                                     // If it’s the last instruction, we must not resolve the aliases
                                     if (instructions.isEmpty()) {
                                         resolutions.clear();
@@ -395,25 +432,44 @@ public class ORReferenceAnalyzer {
                                     } else {
                                         String foundAlias = foundInnerModule.getAlias();
                                         if (foundAlias == null && !(foundInnerModule.isFunctorCall())) {
-                                            resolutions.add(new ResolutionElement(foundInnerModule, true));
+                                            ResolutionElement resolutionElement = new ResolutionElement(foundInnerModule, true);
+                                            if (LOG.isTraceEnabled()) {
+                                                LOG.trace(" > no alias, inner module found, add [" + resolutionElement + "]");
+                                            }
+                                            resolutions.add(resolutionElement);
                                             found = true;
                                         } else {
                                             ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(foundInnerModule.getContainingFile());
                                             Collection<String> alternateNames = data.getValues(foundInnerModule);
+                                            if (LOG.isTraceEnabled()) {
+                                                LOG.trace(" > alias found [" + foundAlias + "], alternateNames: [" + Joiner.join(", ", alternateNames) + "]");
+                                            }
+
                                             if (alternateNames.isEmpty()) {
                                                 if (foundInnerModule.isFunctorCall()) {
                                                     // Resolve using qName
                                                     RPsiFunctorCall functorCall = foundInnerModule.getFunctorCall();
                                                     String functorQName = ORUtil.getLongIdent(functorCall == null ? null : functorCall.getFirstChild());
-                                                    List<ResolutionElement> elements = resolvePath(functorQName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList());
+                                                    List<ResolutionElement> elements = resolvePath(functorQName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                                                     resolutions.addAll(elements);
                                                     found = !elements.isEmpty();
+                                                } else if (foundAlias != null) {
+                                                    // Maybe an aliased top module (it shouldn't happen, but well...)
+                                                    List<ResolutionElement> resolutionElements = resolvePath(foundAlias, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                                                    if (LOG.isTraceEnabled()) {
+                                                        LOG.trace(" > top module alias found, add [" + Joiner.join(", ", resolutionElements) + "]");
+                                                    }
+                                                    resolutions.addAll(resolutionElements);
+                                                    found = !resolutionElements.isEmpty();
                                                 }
                                             } else {
                                                 // resolve alternate modules
                                                 for (String alternateName : alternateNames) {
                                                     // Sort interface first
-                                                    List<ResolutionElement> elements = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList());
+                                                    List<ResolutionElement> elements = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                                                    if (LOG.isTraceEnabled()) {
+                                                        LOG.trace("  alternate names, add [" + Joiner.join(", ", elements) + "]");
+                                                    }
                                                     resolutions.addAll(elements);
                                                     found = !elements.isEmpty();
                                                 }
@@ -427,7 +483,11 @@ public class ORReferenceAnalyzer {
                                         continue;
                                     }
 
-                                    resolutions.add(new ResolutionElement(foundTopLevelModule, true));
+                                    ResolutionElement resolutionElement = new ResolutionElement(foundTopLevelModule, true);
+                                    if (LOG.isTraceEnabled()) {
+                                        LOG.trace(" > top module found, add [" + resolutionElement + "]");
+                                    }
+                                    resolutions.add(resolutionElement);
                                     found = true;
 
                                     // Search for alternate paths using gist
@@ -435,7 +495,7 @@ public class ORReferenceAnalyzer {
                                     // resolve alternate top level modules
                                     for (String alternateName : data.getValues(foundTopLevelModule)) {
                                         Collection<RPsiModule> alternateElements = ModuleIndexService.getService().getModules(alternateName, project, scope);
-                                        resolutions.addAll(alternateElements.stream().map(module -> new ResolutionElement(module, true)).collect(Collectors.toList()));
+                                        resolutions.addAll(alternateElements.stream().map(module -> new ResolutionElement(module, true)).toList());
                                     }
                                 }
                                 // else
@@ -456,6 +516,9 @@ public class ORReferenceAnalyzer {
             // OPEN X
             // ------
             else if (instruction instanceof RPsiOpen foundOpen) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing open", foundOpen.getPath());
+                }
 
                 // Search for alternate paths using gist
                 // This is a recursive function (if not end of instruction)
@@ -464,35 +527,44 @@ public class ORReferenceAnalyzer {
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element
                     // We need to analyze the path and resolve each part
-                    List<ResolutionElement> psiElements = resolvePath(foundOpen.getPath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList());
-                    resolutions.addAll(psiElements);
+                    List<ResolutionElement> resolvedPaths = resolvePath(foundOpen.getPath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(" > no alternate names, add resolutions: [" + Joiner.join(", ", resolvedPaths) + "]");
+                    }
+                    resolutions.addAll(resolvedPaths);
                 } else {
                     // resolve alternate top level modules
                     for (String alternateName : alternateNames) {
-                        List<ResolutionElement> psiElements = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList());
-                        resolutions.addAll(psiElements);
+                        List<ResolutionElement> resolvedPaths = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace(" > alternate name [" + alternateName + "], add resolutions: [" + Joiner.join(", ", resolvedPaths) + "]");
+                        }
+                        resolutions.addAll(resolvedPaths);
                     }
                 }
             }
             // INCLUDE X
             // ---------
             else if (instruction instanceof RPsiInclude foundInclude) {
+                LOG.trace("Processing include");
 
                 // Search for alternate paths using gist
                 Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getValues(foundInclude);
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element, we need to analyze the path and resolve each part
-                    resolutions.addAll(resolvePath(foundInclude.getIncludePath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList()));
+                    resolutions.addAll(resolvePath(foundInclude.getIncludePath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                 } else {
                     // Resolve alternate top level modules
                     for (String alternateName : alternateNames) {
-                        resolutions.addAll(resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList()));
+                        resolutions.addAll(resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                     }
                 }
             }
             // START TAG
             // ---------
             else if (instruction instanceof RPsiTagStart) {
+                LOG.trace("Processing start tag", instruction);
+
                 if (instructions.getLast() instanceof RPsiTagProperty) {
                     RPsiTagStart foundTag = (RPsiTagStart) instruction;
 
@@ -502,16 +574,20 @@ public class ORReferenceAnalyzer {
                         // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                         String name = foundTag.getName();
                         if (name != null) {
-                            resolutions.addAll(resolvePath(name, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList()));
+                            resolutions.addAll(resolvePath(name, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                         }
                     } else {
                         // Resolve alternate top level modules
                         for (String alternateName : alternateNames) {
-                            resolutions.addAll(resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).collect(Collectors.toList()));
+                            resolutions.addAll(resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                         }
                     }
                 }
             } else if (instruction instanceof RPsiTagProperty foundProperty) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing property", instruction);
+                }
+
                 // Previous element should be the start tag
                 ResolutionElement tag = resolutions.get(resolutions.size() - 1);
                 if (tag.isInContext && tag.isComponent()) {
@@ -523,7 +599,11 @@ public class ORReferenceAnalyzer {
                     }
                 }
             } else {
-                resolutions.add(new ResolutionElement(instruction));
+                ResolutionElement res = new ResolutionElement(instruction);
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Add instruction [" + res + "]");
+                }
+                resolutions.add(res);
             }
         }
 
@@ -543,7 +623,7 @@ public class ORReferenceAnalyzer {
         if (level < MAX_PATH_RESOLUTION_LEVEL) {
             String[] pathTokens = path.split("\\.");
 
-            List<RPsiModule> topModules = getTopModules(pathTokens[0], project, scope);
+            List<RPsiModule> topModules = getTopModules(pathTokens[0], PsiManager.getInstance(project), scope);
             if (!topModules.isEmpty()) {
                 RPsiModule topLevel = topModules.get(0);
                 pathResolutions.add(topLevel);
@@ -589,8 +669,7 @@ public class ORReferenceAnalyzer {
         return pathResolutions;
     }
 
-    private static List<RPsiModule> getTopModules(@NotNull String name, @NotNull Project project, @NotNull GlobalSearchScope scope) {
-        PsiManager psiManager = PsiManager.getInstance(project);
+    private static List<RPsiModule> getTopModules(@NotNull String name, @NotNull PsiManager psiManager, @NotNull GlobalSearchScope scope) {
         FileModuleIndex index = FileModuleIndex.getInstance();
         ID<String, FileModuleData> indexId = index == null ? null : index.getName();
         if (indexId != null) {
@@ -642,7 +721,7 @@ public class ORReferenceAnalyzer {
 
         @Override public String toString() {
             PsiElement originalElement = getOriginalElement();
-            return originalElement + (isInContext ? "-> in context" : "");
+            return originalElement + (isInContext ? " -> in context" : "");
         }
     }
 

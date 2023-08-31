@@ -185,13 +185,34 @@ public class ResolveUpperElementOCLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_outside() {
-        configureCode("F.ml", "module type S  = sig module X : sig  end end\n" +
-                "module M() : S = struct module X = struct  end end \n" +
-                "module A = M(struct  end)");
+        configureCode("F.ml", """
+                module type S  = sig module X : sig  end end
+                module M() : S = struct module X = struct  end end
+                module A = M(struct  end)""");
         configureCode("B.ml", "module X2 = struct module X1 = struct module X = struct end end end\n" +
                 "module V = F.A.X<caret>");
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("F.M.X", e.getQualifiedName());
     }
-}
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/426
+    @Test
+    public void test_alias_resolution_same_file() {
+        configureCode("Dummy.ml", """
+                module A = struct
+                  module B = struct
+                    module C = struct
+                      module D = struct
+                      end
+                    end
+                  end
+                end
+                                
+                module Bbb = A.B
+                module Ddd = Bbb.C<caret>.D
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Dummy.A.B.C", ((RPsiModule) e).getQualifiedName());
+    }}

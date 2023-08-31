@@ -81,7 +81,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_alias_x() {
+    public void test_alias_01() {
         configureCode("A.res", "module Mode = { type t }");
         configureCode("B.res", "module B1 = { module Mode = A.Mode }");
         configureCode("C.res", "B.B1.Mode.t<caret>");        // B.B1.Mode.t -> A.Mode.t
@@ -430,6 +430,24 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals("Pervasives.compare", e.getQualifiedName());
     }
 
+    @Test
+    public void test_global_local() {
+        configureCode("Styles.res", "");
+        configureCode("B.res", "");
+        configureCode("A.res", """
+                open B
+                                
+                module Styles = {
+                  let x = 1
+                }
+                                
+                let x = Styles.x<caret>
+                """);
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.Styles.x", e.getQualifiedName());
+    }
+
     //region record
 /* TODO
     @Test
@@ -491,6 +509,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
         assertEquals("A.oo.deep.other", e.getQualifiedName());
     }
+    //endregion
 
     @Test
     public void test_GH_167_deconstruction() {
@@ -521,9 +540,18 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/358
     @Test
     public void test_GH_358() {
-        configureCode("A.re", "let clearPath = () => ()\n " +
-                "module Xxx = { type t = | ClearPath\n let clearPath = () => () }\n " +
-                "let reducer = x => switch x { | Xxx.ClearPath => clearPath<caret>() }");
+        configureCode("A.re", """
+                let clearPath = () => ()
+                
+                module Xxx = {
+                  type t = | ClearPath
+                  let clearPath = () => ()
+                }
+                
+                let reducer = x => switch x {
+                  | Xxx.ClearPath => clearPath<caret>()
+                }
+                """);
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.clearPath", e.getQualifiedName());

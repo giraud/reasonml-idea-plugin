@@ -4,10 +4,13 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
 import com.intellij.util.indexing.*;
+import com.reason.comp.*;
+import com.reason.comp.bs.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
@@ -22,6 +25,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.stream.*;
+
+import static com.reason.ide.ORFileUtils.getVirtualFile;
 
 public class FreeExpressionCompletionProvider {
     private static final Log LOG = Log.create("insight.free");
@@ -64,7 +69,17 @@ public class FreeExpressionCompletionProvider {
             }
         }
 
-        // Add Pervasives expressions (always opened)
+        // Add expressions from opened dependencies in config
+        VirtualFile virtualFile = getVirtualFile(containingFile);
+        BsConfig config = project.getService(BsConfigManager.class).getNearest(virtualFile);
+        if (config != null) {
+            for (String dependency : config.getOpenedDeps()) {
+                for (RPsiModule module : getTopModules(dependency, project, searchScope)) {
+                    addModuleExpressions(module, languageProperties, resultSet);
+                }
+            }
+        }
+        // Pervasives is always included
         for (RPsiModule module : getTopModules("Pervasives", project, searchScope)) {
             addModuleExpressions(module, languageProperties, resultSet);
         }

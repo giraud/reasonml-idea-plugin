@@ -31,8 +31,6 @@ public interface Compiler {
 
     @NotNull String getFullVersion(@Nullable VirtualFile file);
 
-    void refresh(@NotNull VirtualFile configFile);
-
     void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated);
 
     void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated);

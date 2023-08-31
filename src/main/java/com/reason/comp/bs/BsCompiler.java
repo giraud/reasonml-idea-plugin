@@ -6,8 +6,6 @@ import com.reason.comp.Compiler;
 import org.jetbrains.annotations.*;
 
 public interface BsCompiler extends Compiler {
-    boolean isDependency(@Nullable VirtualFile file);
-
     @NotNull
     String getNamespace(@NotNull VirtualFile sourceFile);
 

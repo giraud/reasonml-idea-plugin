@@ -46,7 +46,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_FUNCTOR_RESULT;
     public ORCompositeType C_GUARD;
     public ORCompositeType C_IF;
-    public ORCompositeType C_IF_THEN_SCOPE;
+    public ORCompositeType C_IF_THEN_ELSE;
     public ORCompositeType C_LET_ATTR;
     public ORCompositeType C_LET_BINDING;
     public ORCompositeType C_LOCAL_OPEN;

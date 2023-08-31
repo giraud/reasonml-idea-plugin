@@ -68,7 +68,7 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         if (type == myTypes.C_FUNCTION_EXPR) {
             return new RPsiFunction(myTypes, type);
         }
-        if (type == myTypes.C_CUSTOM_OPERATOR || type == myTypes.C_SCOPED_EXPR || type == myTypes.C_IF_THEN_SCOPE || type == myTypes.C_DO_LOOP) {
+        if (type == myTypes.C_CUSTOM_OPERATOR || type == myTypes.C_SCOPED_EXPR || type == myTypes.C_IF_THEN_ELSE || type == myTypes.C_DO_LOOP) {
             return new RPsiScopedExpr(myTypes, type);
         }
         if (type == myTypes.C_FOR_LOOP) {
