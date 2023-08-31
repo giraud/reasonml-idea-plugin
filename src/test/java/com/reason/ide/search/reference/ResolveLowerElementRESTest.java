@@ -81,7 +81,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_alias_x() {
+    public void test_alias_01() {
         configureCode("A.res", "module Mode = { type t }");
         configureCode("B.res", "module B1 = { module Mode = A.Mode }");
         configureCode("C.res", "B.B1.Mode.t<caret>");        // B.B1.Mode.t -> A.Mode.t
@@ -540,9 +540,18 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/358
     @Test
     public void test_GH_358() {
-        configureCode("A.re", "let clearPath = () => ()\n " +
-                "module Xxx = { type t = | ClearPath\n let clearPath = () => () }\n " +
-                "let reducer = x => switch x { | Xxx.ClearPath => clearPath<caret>() }");
+        configureCode("A.re", """
+                let clearPath = () => ()
+                
+                module Xxx = {
+                  type t = | ClearPath
+                  let clearPath = () => ()
+                }
+                
+                let reducer = x => switch x {
+                  | Xxx.ClearPath => clearPath<caret>()
+                }
+                """);
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.clearPath", e.getQualifiedName());

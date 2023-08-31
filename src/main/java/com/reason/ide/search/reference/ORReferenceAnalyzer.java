@@ -453,12 +453,23 @@ public class ORReferenceAnalyzer {
                                                     List<ResolutionElement> elements = resolvePath(functorQName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                                                     resolutions.addAll(elements);
                                                     found = !elements.isEmpty();
+                                                } else if (foundAlias != null) {
+                                                    // Maybe an aliased top module (it shouldn't happen, but well...)
+                                                    List<ResolutionElement> resolutionElements = resolvePath(foundAlias, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                                                    if (LOG.isTraceEnabled()) {
+                                                        LOG.trace(" > top module alias found, add [" + Joiner.join(", ", resolutionElements) + "]");
+                                                    }
+                                                    resolutions.addAll(resolutionElements);
+                                                    found = !resolutionElements.isEmpty();
                                                 }
                                             } else {
                                                 // resolve alternate modules
                                                 for (String alternateName : alternateNames) {
                                                     // Sort interface first
                                                     List<ResolutionElement> elements = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                                                    if (LOG.isTraceEnabled()) {
+                                                        LOG.trace("  alternate names, add [" + Joiner.join(", ", elements) + "]");
+                                                    }
                                                     resolutions.addAll(elements);
                                                     found = !elements.isEmpty();
                                                 }
