@@ -297,6 +297,7 @@
          -->
 
         <projectService serviceImplementation="com.reason.comp.ORCompilerManager"/>
+        <projectService serviceImplementation="com.reason.comp.BsConfigManager"/>
 
         <projectService serviceInterface="com.reason.comp.bs.BsCompiler"
                         serviceImplementation="com.reason.comp.bs.BsCompilerImpl"/>

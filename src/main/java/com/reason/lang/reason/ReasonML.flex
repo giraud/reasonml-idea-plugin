@@ -3,7 +3,6 @@ package com.reason.lang.reason;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORLangTypes;
 import com.intellij.lexer.FlexLexer;
-import com.reason.lang.ocaml.*;
 
 import static com.intellij.psi.TokenType.*;
 
@@ -38,8 +37,6 @@ import static com.intellij.psi.TokenType.*;
 %unicode
 %function advance
 %type IElementType
-%eof{  return;
-%eof}
 
 EOL=\n|\r|\r\n
 WHITE_SPACE_CHAR=[\ \t\f]|{EOL}

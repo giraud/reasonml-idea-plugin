@@ -4,6 +4,9 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
+import com.reason.comp.*;
+import com.reason.comp.bs.*;
+import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -58,8 +61,15 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLe
 
         long endInstructions = System.currentTimeMillis();
 
+        BsConfigManager service = project.getService(BsConfigManager.class);
+        BsConfig bsConfig = service.getNearest(myElement.getContainingFile());
+        Set<String> openedModules = bsConfig == null ? null : bsConfig.getOpenedDeps();
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("  virtual file", ORFileUtils.getVirtualFile(myElement.getContainingFile()));
+        }
+
         // Resolve aliases in the stack of instructions, this time from file down to element
-        List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, project, searchScope);
+        List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, openedModules, project, searchScope);
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("  Resolved instructions: " + Joiner.join(" -> ", resolvedInstructions));

@@ -52,7 +52,7 @@ public class ResTypes extends ORLangTypes {
         C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", ResLanguage.INSTANCE);
         C_GUARD = new ORCompositeElementType("C_GUARD", ResLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", ResLanguage.INSTANCE);
-        C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", ResLanguage.INSTANCE);
+        C_IF_THEN_ELSE = new ORCompositeElementType("C_IF_THEN_ELSE", ResLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", ResLanguage.INSTANCE);
         C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", ResLanguage.INSTANCE);
         C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", ResLanguage.INSTANCE);

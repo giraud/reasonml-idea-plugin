@@ -121,13 +121,4 @@ public class Platform {
         PsiFile psiFile = file == null ? null : PsiManager.getInstance(project).findFile(file);
         return psiFile == null ? null : ModuleUtil.findModuleForFile(psiFile);
     }
-
-    public static boolean isSourceFile(@NotNull PsiFile psiFile) {
-        Module module = ModuleUtil.findModuleForFile(psiFile);
-        ModuleRootManager rootManager = module == null ? null : ModuleRootManager.getInstance(module);
-        ModuleFileIndex fileIndex = rootManager == null ? null : rootManager.getFileIndex();
-
-        VirtualFile virtualFile = ORFileUtils.getVirtualFile(psiFile);
-        return fileIndex != null && virtualFile != null && fileIndex.isInSourceContent(virtualFile);
-    }
 }

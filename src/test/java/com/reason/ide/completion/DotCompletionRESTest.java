@@ -84,6 +84,19 @@ public class DotCompletionRESTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias() {
+        configureCode("A.res", "module A1 = {}");
+        configureCode("B.res", "module B1 = { include A }");
+        configureCode("C.res", "module C1 = B.B1.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSize(1, elements);
+        assertEquals("A1", elements.get(0));
+    }
+
+    @Test
     public void test_uncurried() {
         configureCode("A.res", "let x = 1");
         configureCode("B.res", "send(. <caret>)"); // should use free completion

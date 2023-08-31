@@ -32,10 +32,6 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
         return (FileBase) file;
     }
 
-    protected @Nullable PsiElement getFromCaret(@NotNull PsiFile f) {
-        return f.findElementAt(myFixture.getCaretOffset() - 1);
-    }
-
     protected @NotNull String toJson(@NotNull String value) {
         return value.replaceAll("'", "\"").replaceAll("@", "\n");
     }

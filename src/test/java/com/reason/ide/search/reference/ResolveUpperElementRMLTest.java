@@ -229,11 +229,13 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_inside() {
-        configureCode("F.re", "module type S = {module X: {};};\n" +
-                "module M = () : S => { module X = {}; };\n" +
-                "module A = M({});\n" +
-                "module X2 = { module X1 = { module X = {}; }; };\n" +
-                "module V = A.X<caret>");
+        configureCode("F.re", """
+                module type S = {module X: {};};
+                module M = () : S => { module X = {}; };
+                module A = M({});
+                module X2 = { module X1 = { module X = {}; }; };
+                module V = A.X<caret>
+                """);
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("F.M.X", e.getQualifiedName());
@@ -241,9 +243,11 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_outside() {
-        configureCode("F.re", "module type S = {module X: {};};\n" +
-                "module M = () : S => { module X = {}; };\n" +
-                "module A = M({});");
+        configureCode("F.re", """
+                module type S = {module X: {};};
+                module M = () : S => { module X = {}; };
+                module A = M({});
+                """);
         configureCode("B.re", "module X2 = { module X1 = { module X = {}; }; }; module V = F.A.X<caret>");
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
@@ -266,5 +270,36 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("A.Styles", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/418
+    @Test
+    public void test_with_globally_opened_module() {
+        myFixture.configureByText("bsconfig.json", toJson("{ 'name': 'foo', 'bsc-flags': ['-open Core'] }"));
+        configureCode("Core.re", "module Console = { };");
+        configureCode("A.re", "Console<caret>.log()");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Core.Console", ((RPsiModule) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/426
+    @Test
+    public void test_alias_resolution_same_file() {
+        configureCode("Dummy.re", """
+                module A = {
+                  module B = {
+                    module C = {
+                      module D = {};
+                    };
+                  };
+                };
+                                
+                module Bbb = A.B;
+                module Ddd = Bbb.C<caret>.D;
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Dummy.A.B.C", ((RPsiModule) e).getQualifiedName());
     }
 }

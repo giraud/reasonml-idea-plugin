@@ -48,7 +48,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     RmlTypes.INSTANCE.GT_OR_EQUAL, RmlTypes.INSTANCE.AMPERSAND, RmlTypes.INSTANCE.LEFT_ARROW,
                     RmlTypes.INSTANCE.RIGHT_ARROW, RmlTypes.INSTANCE.COLON_EQ, RmlTypes.INSTANCE.COLON_GT,
                     RmlTypes.INSTANCE.GT, RmlTypes.INSTANCE.GT_BRACE, RmlTypes.INSTANCE.GT_BRACKET, RmlTypes.INSTANCE.BRACKET_GT,
-                    RmlTypes.INSTANCE.BRACKET_LT, RmlTypes.INSTANCE.BRACE_LT, RmlTypes.INSTANCE.DOTDOT);
+                    RmlTypes.INSTANCE.BRACKET_LT, RmlTypes.INSTANCE.BRACE_LT, RmlTypes.INSTANCE.DOTDOT, RmlTypes.INSTANCE.STRING_CONCAT);
 
     private static final Set<IElementType> RML_OPTIONS_TYPES =
             of(RmlTypes.INSTANCE.NONE, RmlTypes.INSTANCE.SOME);
@@ -85,7 +85,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                     ResTypes.INSTANCE.LEFT_ARROW, ResTypes.INSTANCE.RIGHT_ARROW, ResTypes.INSTANCE.COLON_EQ, ResTypes.INSTANCE.COLON_GT,
                     ResTypes.INSTANCE.LT, ResTypes.INSTANCE.GT, ResTypes.INSTANCE.GT_BRACE, ResTypes.INSTANCE.GT_BRACKET,
                     ResTypes.INSTANCE.BRACKET_GT, ResTypes.INSTANCE.BRACKET_LT, ResTypes.INSTANCE.BRACE_LT,
-                    ResTypes.INSTANCE.DOTDOT);
+                    ResTypes.INSTANCE.DOTDOT, ResTypes.INSTANCE.STRING_CONCAT);
 
     private static final Set<IElementType> RES_OPTIONS_TYPES =
             of(ResTypes.INSTANCE.NONE, ResTypes.INSTANCE.SOME);

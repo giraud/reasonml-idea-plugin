@@ -2,7 +2,6 @@ package com.reason.ide.hints;
 
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.util.*;
-import gnu.trove.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -11,7 +10,7 @@ public class CodeLens {
   public static final Key<CodeLens> CODE_LENS = Key.create("reasonml.codelens");
 
   @NotNull
-  final Map<Integer, InferredTypes.LogicalPositionSignature> m_signatures = new THashMap<>();
+  final Map<Integer, InferredTypes.LogicalPositionSignature> m_signatures = new HashMap<>();
 
   public synchronized @Nullable String get(int line) {
     InferredTypes.LogicalPositionSignature signature = m_signatures.get(line);
@@ -24,7 +23,7 @@ public class CodeLens {
   }
 
   public synchronized void move(@NotNull LogicalPosition cursorPosition, int direction) {
-    Map<Integer, InferredTypes.LogicalPositionSignature> newSignatures = new THashMap<>();
+    Map<Integer, InferredTypes.LogicalPositionSignature> newSignatures = new HashMap<>();
 
     int startLine = cursorPosition.line;
     for (Map.Entry<Integer, InferredTypes.LogicalPositionSignature> signatureEntry : m_signatures.entrySet()) {

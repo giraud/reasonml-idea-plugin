@@ -6,6 +6,7 @@ import com.intellij.openapi.module.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.vfs.newvfs.events.*;
+import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.esy.*;
 import com.reason.hints.*;
@@ -90,7 +91,10 @@ class ORVirtualFileListener implements AsyncFileListener {
         }
 
         private static void handleBsConfigContentChange(@NotNull VirtualFile bsConfigFile) {
+            LOG.debug("BsConfig content change");
+
             for (Project project : ProjectManager.getInstance().getOpenProjects()) {
+                project.getService(BsConfigManager.class).refresh(bsConfigFile);
                 Module module = ModuleUtil.findModuleForFile(bsConfigFile, project);
                 if (module != null) {
                     project.getService(InsightManager.class).downloadRincewindIfNeeded(bsConfigFile);

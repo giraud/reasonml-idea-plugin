@@ -16,9 +16,7 @@ import com.reason.ide.console.bs.*;
 import com.reason.ide.settings.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
-import org.jetbrains.coverage.gnu.trove.*;
 
-import java.util.*;
 import java.util.concurrent.atomic.*;
 
 import static com.reason.comp.ORConstants.*;
@@ -27,7 +25,7 @@ public class BsCompilerImpl implements BsCompiler {
     private static final Log LOG = Log.create("compiler.bs");
 
     private final Project myProject;
-    private final Map<String, BsConfig> myConfigs = new THashMap<>();
+
     private final AtomicBoolean myRefreshNinjaIsNeeded = new AtomicBoolean(true);
     private final AtomicBoolean myProcessStarted = new AtomicBoolean(false);
 
@@ -59,22 +57,18 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public @NotNull String getNamespace(@NotNull VirtualFile sourceFile) {
-        VirtualFile bsConfigFile = BsPlatform.findBsConfig(myProject, sourceFile);
-        if (bsConfigFile != null) {
-            BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile);
-            return bsConfig == null ? "" : bsConfig.getNamespace();
-        }
-        return "";
+        BsConfig bsConfig = myProject.getService(BsConfigManager.class).getNearest(sourceFile);
+        return bsConfig == null ? "" : bsConfig.getNamespace();
     }
 
-    @Override
-    public void refresh(@NotNull VirtualFile bsConfigFile) {
-        VirtualFile file = bsConfigFile.isDirectory() ? bsConfigFile.findChild(ORConstants.BS_CONFIG_FILENAME) : bsConfigFile;
-        if (file != null) {
-            BsConfig updatedConfig = BsConfigReader.read(file);
-            myConfigs.put(file.getCanonicalPath(), updatedConfig);
-        }
-    }
+    //@Override
+    //public void refresh(@NotNull VirtualFile bsConfigFile) {
+    //    VirtualFile file = bsConfigFile.isDirectory() ? bsConfigFile.findChild(ORConstants.BS_CONFIG_FILENAME) : bsConfigFile;
+    //    if (file != null) {
+    //        BsConfig updatedConfig = BsConfigReader.read(file);
+    //        myConfigs.put(file.getCanonicalPath(), updatedConfig);
+    //    }
+    //}
 
     @Override
     public void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
@@ -85,11 +79,10 @@ public class BsCompilerImpl implements BsCompiler {
     public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         if (!isDisabled() && myProject.getService(ORSettings.class).isBsEnabled()) {
             VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : file;
-            VirtualFile bsConfigFile = sourceFile == null ? null : BsPlatform.findBsConfig(myProject, sourceFile);
-            if (bsConfigFile == null) {
+            BsConfig bsConfig = myProject.getService(BsConfigManager.class).getNearest(sourceFile);
+            if (sourceFile == null || bsConfig == null) {
                 return;
             }
-            getOrRefreshBsConfig(bsConfigFile);
 
             if (myProcessStarted.compareAndSet(false, true)) {
                 ProcessHandler bscHandler = new BsProcess(myProject).create(sourceFile, cliType, onProcessTerminated);
@@ -132,16 +125,6 @@ public class BsCompilerImpl implements BsCompiler {
     }
 
     @Override
-    public boolean isDependency(@Nullable VirtualFile file) {
-        if (file == null) {
-            return false;
-        }
-        VirtualFile bsConfigFile = BsPlatform.findBsConfig(myProject, file);
-        BsConfig bsConfig = bsConfigFile == null ? null : getOrRefreshBsConfig(bsConfigFile);
-        return bsConfig == null || bsConfig.accept(file.getPath());
-    }
-
-    @Override
     public @Nullable String convert(@Nullable VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
         String result = null;
         if (virtualFile != null) {
@@ -164,17 +147,6 @@ public class BsCompilerImpl implements BsCompiler {
         }
 
         return myNinja;
-    }
-
-    @Nullable
-    private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
-        String bsConfigPath = bsConfigFile.getCanonicalPath();
-        BsConfig bsConfig = myConfigs.get(bsConfigPath);
-        if (bsConfig == null) {
-            refresh(bsConfigFile);
-            bsConfig = myConfigs.get(bsConfigPath);
-        }
-        return bsConfig;
     }
     // endregion
 

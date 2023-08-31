@@ -18,8 +18,8 @@ public class RPsiUpperSymbol extends LeafPsiElement implements RPsiAtom {
     // endregion
 
     @Override
-    public @NotNull PsiUpperSymbolReference getReference() {
-        return new PsiUpperSymbolReference(this, myTypes);
+    public @NotNull RPsiUpperSymbolReference getReference() {
+        return new RPsiUpperSymbolReference(this, myTypes);
     }
 
     @Override public String toString() {

@@ -196,7 +196,7 @@ public class ORModuleResolutionPsiGist {
                                 //   module A = X.Y; module B = A.Z;
                                 if (path[0].equals(moduleInContextName)) {
                                     RPsiQualifiedPathElement resolvedModule = moduleInContext.getUserData(RESOLUTION);
-                                    String resolvedModuleQName = resolvedModule == null ? "" : resolvedModule.getQualifiedName();
+                                    String resolvedModuleQName = resolvedModule == null ? moduleInContext.getQualifiedName() : resolvedModule.getQualifiedName();
                                     String newAlias = alias.replace(moduleInContextName, resolvedModuleQName == null ? "" : resolvedModuleQName);
                                     Collection<RPsiModule> psiModules = ModuleFqnIndex.getElements(newAlias, myProject, myScope);
                                     if (!psiModules.isEmpty()) {
