@@ -37,11 +37,6 @@ public class EsyCompiler implements Compiler {
     }
 
     @Override
-    public void refresh(@NotNull VirtualFile configFile) {
-        // Nothing to do
-    }
-
-    @Override
     public void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         run(file, CliType.Esy.BUILD, onProcessTerminated);
     }

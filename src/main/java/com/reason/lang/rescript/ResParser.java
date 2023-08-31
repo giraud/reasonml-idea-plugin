@@ -58,7 +58,7 @@ public class ResParser extends CommonPsiParser {
                             popIfHold();
                             markHolder(myTypes.H_PLACE_HOLDER);
                         }
-                    } else if (isCurrent(myTypes.C_IF_THEN_SCOPE) && !currentHasScope()) {
+                    } else if (isCurrent(myTypes.C_IF_THEN_ELSE) && !currentHasScope()) {
                         endLikeSemi2();
                     }
                 }
@@ -337,7 +337,7 @@ public class ResParser extends CommonPsiParser {
         private void parseElse() {
             // if ... |>else<| ...
             popEndUntil(myTypes.C_IF)
-                    .advance().mark(myTypes.C_IF_THEN_SCOPE);
+                    .advance().mark(myTypes.C_IF_THEN_ELSE);
         }
 
         private void parseDotDotDot() {
@@ -361,7 +361,7 @@ public class ResParser extends CommonPsiParser {
                 // ... |>?<| ...
                 popEndUntilFoundIndex().end()
                         .advance()
-                        .mark(myTypes.C_IF_THEN_SCOPE);
+                        .mark(myTypes.C_IF_THEN_ELSE);
             } else if (!inAny(myTypes.C_TERNARY) && previousElementType(1) != myTypes.EQ) {
                 if (inScopeOrAny(myTypes.H_PLACE_HOLDER, myTypes.H_COLLECTION_ITEM)) { // a new ternary
                     parseTernary();
@@ -376,14 +376,14 @@ public class ResParser extends CommonPsiParser {
                 markBefore(foundPos, myTypes.C_TERNARY)
                         .updateCompositeAt(foundPos, myTypes.C_BINARY_CONDITION)
                         .popEndUntilIndex(foundPos).end()
-                        .advance().mark(myTypes.C_IF_THEN_SCOPE)
+                        .advance().mark(myTypes.C_IF_THEN_ELSE)
                         .markHolder(myTypes.H_PLACE_HOLDER);
             } else if (isAtIndex(foundPos, myTypes.H_COLLECTION_ITEM)) {
                 markHolderBefore(foundPos, myTypes.H_COLLECTION_ITEM)
                         .markBefore(foundPos, myTypes.C_TERNARY)
                         .updateCompositeAt(foundPos, myTypes.C_BINARY_CONDITION)
                         .popEndUntilIndex(foundPos).end()
-                        .advance().mark(myTypes.C_IF_THEN_SCOPE);
+                        .advance().mark(myTypes.C_IF_THEN_ELSE);
             }
         }
 
@@ -587,7 +587,7 @@ public class ResParser extends CommonPsiParser {
             if (strictlyInAny(
                     myTypes.C_MODULE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_EXTERNAL_DECLARATION,
                     myTypes.C_PARAM_DECLARATION, myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.H_NAMED_PARAM_DECLARATION,
-                    myTypes.C_IF_THEN_SCOPE)) {
+                    myTypes.C_IF_THEN_ELSE)) {
 
                 if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.H_NAMED_PARAM_DECLARATION)) {
                     // let x = (y |> :<| ...
@@ -621,10 +621,11 @@ public class ResParser extends CommonPsiParser {
                         mark(myTypes.C_FIELD_VALUE)
                                 .markHolder(myTypes.H_PLACE_HOLDER);
                     }
-                } else if (isFound(myTypes.C_IF_THEN_SCOPE)) {
+                } else if (isFound(myTypes.C_IF_THEN_ELSE)) {
+                    // ternary ::  cond ? x |> :<| ...
                     popEndUntilFoundIndex().popEnd()
                             .advance()
-                            .mark(myTypes.C_IF_THEN_SCOPE);
+                            .mark(myTypes.C_IF_THEN_ELSE);
                 }
 
             }
@@ -878,7 +879,7 @@ public class ResParser extends CommonPsiParser {
                 markScope(myTypes.C_TRY_HANDLERS, myTypes.LBRACE);
             } else if (isDone(myTypes.C_BINARY_CONDITION) && isRawParent(myTypes.C_IF)) {
                 // if x |>{<| ... }
-                markScope(myTypes.C_IF_THEN_SCOPE, myTypes.LBRACE);
+                markScope(myTypes.C_IF_THEN_ELSE, myTypes.LBRACE);
             } else if (isDone(myTypes.C_BINARY_CONDITION) && isRawParent(myTypes.C_SWITCH_EXPR)) {
                 // switch (x) |>{<| ... }
                 markScope(myTypes.C_SWITCH_BODY, myTypes.LBRACE);
@@ -887,7 +888,7 @@ public class ResParser extends CommonPsiParser {
                 if (isCurrent(myTypes.C_IF)) {
                     // if ... |>{<|
                     pop();
-                    markScope(myTypes.C_IF_THEN_SCOPE, myTypes.LBRACE);
+                    markScope(myTypes.C_IF_THEN_ELSE, myTypes.LBRACE);
                 } else if (strictlyIn(myTypes.C_SWITCH_EXPR)) {
                     // switch x |>{<| ... }
                     markScope(myTypes.C_SWITCH_BODY, myTypes.LBRACE);
@@ -1031,7 +1032,7 @@ public class ResParser extends CommonPsiParser {
                 end();
                 if (isRawParent(myTypes.C_IF) && nextTokenType != myTypes.LBRACE) {
                     // if ( x ) |><| ...
-                    mark(myTypes.C_IF_THEN_SCOPE);
+                    mark(myTypes.C_IF_THEN_ELSE);
                 }
             } else if (lParen != null) {
                 if (isRawParent(myTypes.C_FUNCTOR_DECLARATION)) {
@@ -1238,7 +1239,7 @@ public class ResParser extends CommonPsiParser {
                                 .markHolder(myTypes.H_COLLECTION_ITEM);
                     }
                 } else {
-                    if (!isCurrent(myTypes.C_IF_THEN_SCOPE) || rawHasScope()) {   // a block less if then else
+                    if (!isCurrent(myTypes.C_IF_THEN_ELSE) || rawHasScope()) {   // a block less if then else
                         endLikeSemi2();
                     }
                     remapCurrentToken(nextToken == myTypes.RIGHT_ARROW ? myTypes.A_VARIANT_NAME : myTypes.A_MODULE_NAME)
@@ -1363,11 +1364,33 @@ public class ResParser extends CommonPsiParser {
                     && previousType != myTypes.COLON
                     && previousType != myTypes.COMMA
                     && previousType != myTypes.L_OR
+                    && previousType != myTypes.STRING_CONCAT
             ) {
                 Marker marker = getActiveMarker();
                 boolean end = marker == null || !(marker.isCompositeType(myTypes.C_BINARY_CONDITION) || marker.isCompositeType(myTypes.C_PARAM));
                 if (end) {
-                    popEndUntilScope();
+                    // popEndUntilScope();
+                    if (!myMarkers.isEmpty()) {
+                        Marker latestMarker = myMarkers.peek();
+                        while (latestMarker != null && !latestMarker.hasScope()) {
+                            // A return inside a if/then without scope has no effect
+                            if (latestMarker.isCompositeType(myTypes.C_IF_THEN_ELSE)) {
+                                Marker ifType = find(2);
+                                if (ifType != null && ifType.isCompositeType(myTypes.C_TERNARY)) {
+                                    IElementType nextELement = lookAheadSkipEOL(1);
+                                    if (nextELement == myTypes.COLON) {
+                                        break;
+                                    }
+                                }
+                            }
+
+                            latestMarker = pop();
+                            if (latestMarker != null) {
+                                latestMarker.end();
+                            }
+                            latestMarker = getLatestMarker();
+                        }
+                    }
                 }
             }
         }

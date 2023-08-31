@@ -14,8 +14,6 @@ import static com.intellij.psi.TokenType.*;
 %implements FlexLexer
 %function advance
 %type IElementType
-%eof{  return;
-%eof}
 
 %{
   private int tokenStartIndex;

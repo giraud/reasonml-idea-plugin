@@ -430,6 +430,24 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Pervasives.compare", e.getQualifiedName());
     }
 
+    @Test
+    public void test_global_local() {
+        configureCode("Styles.re", "");
+        configureCode("B.re", "");
+        configureCode("A.re", """
+                open B;
+                                
+                module Styles = {
+                  let x = 1;
+                };
+                                
+                let x = Styles.x<caret>;
+                """);
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.Styles.x", e.getQualifiedName());
+    }
+
     //region record
 /* TODO
     @Test
@@ -491,7 +509,6 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
         assertEquals("A.oo.deep.other", e.getQualifiedName());
     }
-
     //endregion
 
     @Test

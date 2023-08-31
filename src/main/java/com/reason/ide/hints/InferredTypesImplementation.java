@@ -8,10 +8,11 @@ import com.intellij.util.containers.Stack;
 import com.reason.lang.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.ocaml.*;
-import gnu.trove.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.*;
 
 public class InferredTypesImplementation implements InferredTypes {
@@ -22,12 +23,12 @@ public class InferredTypesImplementation implements InferredTypes {
     private static final String PARAM = "Pa";
     private static final String RECORD_FIELD = "Rf";
 
-    private final Map<String, Stack<OpenModule>> myOpens = new THashMap<>();
-    private final Map<Integer, LogicalORSignature> myVals = new THashMap<>();
-    private final Map<LogicalPosition, RPsiSignature> mySignatures = new THashMap<>();
+    private final Map<String, Stack<OpenModule>> myOpens = new HashMap<>();
+    private final Map<Integer, LogicalORSignature> myVals = new HashMap<>();
+    private final Map<LogicalPosition, RPsiSignature> mySignatures = new HashMap<>();
 
     public @NotNull Map<Integer, LogicalPositionSignature> signaturesByLines(@Nullable ORLanguageProperties lang) {
-        Map<Integer, LogicalPositionSignature> result = new THashMap<>();
+        Map<Integer, LogicalPositionSignature> result = new HashMap<>();
 
         for (Stack<OpenModule> openStack : myOpens.values()) {
             for (OpenModule openModule : openStack) {
@@ -152,7 +153,7 @@ public class InferredTypesImplementation implements InferredTypes {
     static class OpenModule {
         @NotNull
         private final LogicalPosition m_position;
-        private final Set<String> m_values = new THashSet<>();
+        private final Set<String> m_values = new HashSet<>();
 
         OpenModule(@NotNull LogicalPosition start) {
             m_position = start;

@@ -531,14 +531,14 @@ public class OclParser extends CommonPsiParser {
             if (!in(myTypes.C_DIRECTIVE)) {
                 // if ... |>then<| ...
                 popEndUntil(myTypes.C_IF).advance()
-                        .mark(myTypes.C_IF_THEN_SCOPE);
+                        .mark(myTypes.C_IF_THEN_ELSE);
             }
         }
 
         private void parseElse() {
             // if ... then ... |>else<| ...
             popEndUntil(myTypes.C_IF).advance()
-                    .mark(myTypes.C_IF_THEN_SCOPE);
+                    .mark(myTypes.C_IF_THEN_ELSE);
         }
 
         private void parseStruct() {
@@ -669,7 +669,7 @@ public class OclParser extends CommonPsiParser {
                 if (isFound(myTypes.C_TERNARY)) {
                     // x ? y |> :<| ...
                     popEndUntilFoundIndex()
-                            .advance().mark(myTypes.C_IF_THEN_SCOPE).markHolder(myTypes.H_PLACE_HOLDER);
+                            .advance().mark(myTypes.C_IF_THEN_ELSE).markHolder(myTypes.H_PLACE_HOLDER);
                 } else {
                     // external x |> : <| ...  OR  val x |> : <| ...  OR  let x |> : <| ...
                     advance();
@@ -711,7 +711,7 @@ public class OclParser extends CommonPsiParser {
                         markBefore(nextPos, myTypes.C_TERNARY)
                                 .updateCompositeAt(nextPos, myTypes.C_BINARY_CONDITION)
                                 .popEndUntilIndex(nextPos).end()
-                                .advance().mark(myTypes.C_IF_THEN_SCOPE);
+                                .advance().mark(myTypes.C_IF_THEN_ELSE);
                         markHolder(myTypes.H_PLACE_HOLDER);
                     }
                 }

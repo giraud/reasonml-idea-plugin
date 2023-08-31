@@ -11,7 +11,8 @@ import java.util.*;
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
 public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
-    @Override protected String getTestDataPath() {
+    @Override
+    protected String getTestDataPath() {
         return "src/test/testData/ns";
     }
 

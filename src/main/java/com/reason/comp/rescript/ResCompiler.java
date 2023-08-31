@@ -57,10 +57,6 @@ public class ResCompiler implements Compiler {
     }
 
     @Override
-    public void refresh(@NotNull VirtualFile bsConfigFile) {
-    }
-
-    @Override
     public void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         run(file, MAKE, onProcessTerminated);
     }

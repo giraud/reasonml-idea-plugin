@@ -4,6 +4,7 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.indexing.*;
 import com.intellij.util.io.*;
+import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
@@ -74,7 +75,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
 
                 String namespace = "";
 
-                VirtualFile bsconfigFile = BsPlatform.findBsConfig(inputData.getProject(), inputData.getFile());
+                VirtualFile bsconfigFile = inputData.getProject().getService(BsConfigManager.class).findBsConfig(inputData.getFile());
                 if (bsconfigFile != null) {
                     VirtualFile parent = bsconfigFile.getParent();
                     boolean useExternalAsSource = "bs-platform".equals(parent.getName());

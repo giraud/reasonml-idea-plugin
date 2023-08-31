@@ -14,6 +14,7 @@ import java.util.*;
 
 import static java.util.List.copyOf;
 
+@SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
 public class ORModuleResolutionPsiGistRESTest extends ORBasePlatformTestCase {
     @Test
@@ -180,6 +181,22 @@ public class ORModuleResolutionPsiGistRESTest extends ORBasePlatformTestCase {
         assertEmpty(data.getValues(e/*B*/));
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/426
+    @Test
+    public void test_aliases_05_same_file() {
+        FileBase e = configureCode("A.res", """
+                module W = { module X = { module Y = { module Z = {} } } }
+                module C = W.X
+                module D = C.Y.Z
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModule[] ems = PsiTreeUtil.getChildrenOfType(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(ems[1/*C*/]), "A.W.X");
+        assertOrderedEquals(data.getValues(ems[2/*D*/]), "A.W.X.Y.Z");
+        assertEmpty(data.getValues(e/*B*/));
+    }
 
     @Test
     public void test_include_in_module() {

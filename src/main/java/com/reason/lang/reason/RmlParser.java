@@ -280,12 +280,12 @@ public class RmlParser extends CommonPsiParser {
                         .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace())
                         .advance()
                         .remapCurrentToken(myTypes.PROPERTY_NAME);
-            } else if (strictlyIn(myTypes.C_IF_THEN_SCOPE)) {
+            } else if (strictlyIn(myTypes.C_IF_THEN_ELSE)) {
                 // if_then_scope can be inside a ternary
                 parseTernary();
             } else if (!strictlyInAny(myTypes.C_TERNARY) && previousElementType(1) != myTypes.EQ /*default optional value*/) {
                 if (inScopeOrAny(myTypes.C_LET_BINDING, myTypes.C_FIELD_VALUE, myTypes.C_PARAM_DECLARATION, myTypes.C_PARAM,
-                        myTypes.C_PATTERN_MATCH_BODY, myTypes.C_IF_THEN_SCOPE, myTypes.C_FUNCTION_BODY, myTypes.H_COLLECTION_ITEM,
+                        myTypes.C_PATTERN_MATCH_BODY, myTypes.C_IF_THEN_ELSE, myTypes.C_FUNCTION_BODY, myTypes.H_COLLECTION_ITEM,
                         myTypes.C_DEFAULT_VALUE)) {
                     // a new ternary
                     parseTernary();
@@ -301,14 +301,14 @@ public class RmlParser extends CommonPsiParser {
                 markBefore(nextPos, myTypes.C_TERNARY)
                         .updateCompositeAt(nextPos, myTypes.C_BINARY_CONDITION)
                         .popEndUntilIndex(nextPos).end()
-                        .advance().mark(myTypes.C_IF_THEN_SCOPE);
+                        .advance().mark(myTypes.C_IF_THEN_ELSE);
                 markHolder(myTypes.H_PLACE_HOLDER);
             } else if (isAtIndex(foundPos, myTypes.H_COLLECTION_ITEM)) {
                 markHolderBefore(foundPos, myTypes.H_COLLECTION_ITEM)
                         .markBefore(foundPos, myTypes.C_TERNARY)
                         .updateCompositeAt(foundPos, myTypes.C_BINARY_CONDITION)
                         .popEndUntilIndex(foundPos).end()
-                        .advance().mark(myTypes.C_IF_THEN_SCOPE);
+                        .advance().mark(myTypes.C_IF_THEN_ELSE);
             }
         }
 
@@ -355,13 +355,13 @@ public class RmlParser extends CommonPsiParser {
         private void parseThen() {
             // if ... |>then<| ...
             popEndUntil(myTypes.C_IF).advance()
-                    .mark(myTypes.C_IF_THEN_SCOPE);
+                    .mark(myTypes.C_IF_THEN_ELSE);
         }
 
         private void parseElse() {
             // if ... then ... |>else<| ...
             popEndUntil(myTypes.C_IF).advance()
-                    .mark(myTypes.C_IF_THEN_SCOPE);
+                    .mark(myTypes.C_IF_THEN_ELSE);
         }
 
         private void parseDot() {
@@ -724,7 +724,7 @@ public class RmlParser extends CommonPsiParser {
                 } else if (isFound(myTypes.C_TERNARY)) {
                     // x ? y |> :<| ...
                     popEndUntilFoundIndex()
-                            .advance().mark(myTypes.C_IF_THEN_SCOPE);
+                            .advance().mark(myTypes.C_IF_THEN_ELSE);
                     markHolder(myTypes.H_PLACE_HOLDER);
                 }
             }
@@ -943,7 +943,7 @@ public class RmlParser extends CommonPsiParser {
                 // module M = (...) => |>{<| ...
                 updateScopeToken(myTypes.LBRACE);
             } else if (isCurrent(myTypes.C_IF)) {
-                markScope(myTypes.C_IF_THEN_SCOPE, myTypes.LBRACE);
+                markScope(myTypes.C_IF_THEN_ELSE, myTypes.LBRACE);
             } else if (is(myTypes.C_MODULE_SIGNATURE)) {
                 // module M : |>{<| ...
                 updateScopeToken(myTypes.LBRACE);
@@ -1079,7 +1079,7 @@ public class RmlParser extends CommonPsiParser {
                 // if ( x |>)<| ...
                 end();
                 if (getTokenType() != myTypes.LBRACE) {
-                    mark(myTypes.C_IF_THEN_SCOPE);
+                    mark(myTypes.C_IF_THEN_ELSE);
                 }
             } else if (lParen != null) {
                 IElementType nextTokenType = getTokenType();

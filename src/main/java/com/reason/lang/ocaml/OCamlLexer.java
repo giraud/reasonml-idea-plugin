@@ -626,16 +626,8 @@ public class OCamlLexer implements FlexLexer {
       from input */
   private int zzEndRead;
 
-  /**
-   * zzAtBOL == true <=> the scanner is currently at the beginning of a line
-   */
-  private boolean zzAtBOL = true;
-
   /** zzAtEOF == true <=> the scanner is at the EOF */
   private boolean zzAtEOF;
-
-  /** denotes if the user-EOF-code has already been executed */
-  private boolean zzEOFDone;
 
   /* user code: */
     public OCamlLexer() {
@@ -648,12 +640,12 @@ public class OCamlLexer implements FlexLexer {
     private int commentDepth;
     private boolean inCommentString = false;
 
-    //Store the start index of a token
+    // Store the start index of a token
     private void tokenStart() {
         tokenStartIndex = zzStartRead;
     }
 
-    //Set the start index of the token to the stored index
+    // Set the start index of the token to the stored index
     private void tokenEnd() {
         zzStartRead = tokenStartIndex;
     }
@@ -703,7 +695,6 @@ public class OCamlLexer implements FlexLexer {
     zzBuffer = buffer;
     zzCurrentPos = zzMarkedPos = zzStartRead = start;
     zzAtEOF  = false;
-    zzAtBOL = true;
     zzEndRead = end;
     yybegin(initialState);
   }
@@ -814,18 +805,6 @@ public class OCamlLexer implements FlexLexer {
 
 
   /**
-   * Contains user EOF-code, which will be executed exactly once,
-   * when the end of file is reached
-   */
-  private void zzDoEOF() {
-    if (!zzEOFDone) {
-      zzEOFDone = true;
-
-    }
-  }
-
-
-  /**
    * Resumes scanning until the next regular expression is matched,
    * the end of input is encountered or an I/O-Error occurs.
    *
@@ -911,7 +890,6 @@ public class OCamlLexer implements FlexLexer {
 
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
-        zzDoEOF();
         switch (zzLexicalState) {
             case IN_STRING: {
               yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE;
@@ -1193,7 +1171,7 @@ public class OCamlLexer implements FlexLexer {
             // fall through
           case 202: break;
           case 54:
-            { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; tokenStart();
+            { yybegin(IN_OCAML_ML_COMMENT); inCommentString = false; commentDepth = 1; tokenStart();
             }
             // fall through
           case 203: break;

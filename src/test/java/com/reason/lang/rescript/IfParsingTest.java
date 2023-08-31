@@ -176,4 +176,18 @@ public class IfParsingTest extends ResParsingTestCase {
         List<RPsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiTernary.class));
         assertEquals("x ? Some(x) : None", ts.get(0).getText());
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/424
+    @Test
+    public void test_ternary_new_line() {
+        RPsiLet e = firstOfType(parseCode("""
+                let fn = x => x
+                  ? "a"
+                  : "b" ++
+                    "c"
+                """), RPsiLet.class);
+
+        RPsiTernary t = PsiTreeUtil.findChildOfType(e, RPsiTernary.class);
+        assertEquals("x\n  ? \"a\"\n  : \"b\" ++\n    \"c\"", t.getText());
+    }
 }

@@ -52,7 +52,7 @@ public class OclTypes extends ORLangTypes {
         C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", OclLanguage.INSTANCE);
         C_GUARD = new ORCompositeElementType("C_GUARD", OclLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", OclLanguage.INSTANCE);
-        C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", OclLanguage.INSTANCE);
+        C_IF_THEN_ELSE = new ORCompositeElementType("C_IF_THEN_ELSE", OclLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", OclLanguage.INSTANCE);
         C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", OclLanguage.INSTANCE);
         C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", OclLanguage.INSTANCE);

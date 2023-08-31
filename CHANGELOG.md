@@ -12,10 +12,20 @@
                         
 ## Unreleased
 
+## 0.116 - 2023/08/31
+
+- :bug: [#426](https://github.com/giraud/reasonml-idea-plugin/issues/426) Module alias must be resolved for resolution (same file)
+- :bug: ![n] [#424](https://github.com/giraud/reasonml-idea-plugin/issues/424) Incorrect ternary parsing in Rescript when using newline
+- :bug: [#422](https://github.com/giraud/reasonml-idea-plugin/issues/422) Plugin "failed to save settings and has been disabled" in PyCharm
+- :bug: ![o] [#421](https://github.com/giraud/reasonml-idea-plugin/issues/421) End of comments containing quotes not always detected
+- :bug: ![r] ![n] [#418](https://github.com/giraud/reasonml-idea-plugin/issues/418) Globally opened modules don’t participate in autocomplete resolution
+
 ## 0.115 - 2023/08/22
 
 - :house: [#416](https://github.com/giraud/reasonml-idea-plugin/issues/416) Excessive CPU use
 - :bug: ![o] [#409](https://github.com/giraud/reasonml-idea-plugin/issues/409) Wrong structure on let b = 1 = 1 in (OCaml)
+
+**NOTE**: Added support for version **2023.2**
 
 ## 0.114 - 2023/07/04
 
@@ -801,10 +811,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 * :rocket: Parse Bsb super errors and use them to annotate source code
 
-[0.82]: https://github.com/giraud/reasonml-idea-plugin/compare/0.81...0.82
-[0.81]: https://github.com/giraud/reasonml-idea-plugin/compare/0.80...0.81
-[0.80]: https://github.com/giraud/reasonml-idea-plugin/compare/0.79...0.80
-[0.79]: https://github.com/giraud/reasonml-idea-plugin/compare/v0.78.3...0.79
+
 [r]: website/static/img/reason-file.png
 [o]: website/static/img/ocaml-file.png
 [n]: website/static/img/rescript-file.png

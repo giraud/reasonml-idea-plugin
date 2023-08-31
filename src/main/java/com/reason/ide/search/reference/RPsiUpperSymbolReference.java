@@ -5,6 +5,9 @@ import com.intellij.openapi.util.text.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
+import com.reason.comp.*;
+import com.reason.comp.bs.*;
+import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -14,11 +17,11 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSymbol> {
+public class RPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSymbol> {
     private static final Log LOG = Log.create("ref.upper");
     private static final Log LOG_PERF = Log.create("ref.perf.upper");
 
-    public PsiUpperSymbolReference(@NotNull RPsiUpperSymbol element, @NotNull ORLangTypes types) {
+    public RPsiUpperSymbolReference(@NotNull RPsiUpperSymbol element, @NotNull ORLangTypes types) {
         super(element, types);
     }
 
@@ -61,8 +64,15 @@ public class PsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSym
 
         long endInstructions = System.currentTimeMillis();
 
+        BsConfigManager service = project.getService(BsConfigManager.class);
+        BsConfig bsConfig = service.getNearest(myElement.getContainingFile());
+        Set<String> openedModules = bsConfig == null ? null : bsConfig.getOpenedDeps();
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("  virtual file", ORFileUtils.getVirtualFile(myElement.getContainingFile()));
+        }
+
         // Resolve aliases in the stack of instructions, this time from file down to element
-        List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, project, searchScope);
+        List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, openedModules, project, searchScope);
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("  Resolutions", Joiner.join(", ", resolvedInstructions));

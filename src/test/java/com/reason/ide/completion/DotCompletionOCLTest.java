@@ -51,6 +51,19 @@ public class DotCompletionOCLTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias() {
+        configureCode("A.ml", "module A1 = struct end");
+        configureCode("B.ml", "module B1 = struct include A end");
+        configureCode("C.ml", "module C1 = B.B1.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSize(1, elements);
+        assertEquals("A1", elements.get(0));
+    }
+
+    @Test
     public void test_no_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
         configureCode("belt_Array.mli", "val length: t -> int");
