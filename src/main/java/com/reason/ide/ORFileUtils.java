@@ -97,7 +97,12 @@ public class ORFileUtils {
     // RELEASE: check no direct getVirtualFile() in code
     // Because psiFile.getVirtualFile() is not annotated with @Nullable !
     public static @Nullable VirtualFile getVirtualFile(@Nullable PsiFile psiFile) {
-        return psiFile == null ? null : psiFile.getVirtualFile();
+        VirtualFile virtualFile = psiFile == null ? null : psiFile.getVirtualFile();
+        // If file is memory only, use original file
+        if (psiFile != null && virtualFile == null) {
+            virtualFile = psiFile.getOriginalFile().getVirtualFile();
+        }
+        return virtualFile;
     }
 
     public static String getVirtualPath(@Nullable PsiFile file) {

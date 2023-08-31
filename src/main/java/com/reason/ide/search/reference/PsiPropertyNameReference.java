@@ -6,6 +6,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
+import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -64,7 +65,7 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLe
         BsConfig bsConfig = service.getNearest(myElement.getContainingFile());
         Set<String> openedModules = bsConfig == null ? null : bsConfig.getOpenedDeps();
         if (LOG.isTraceEnabled()) {
-            LOG.trace("  virtual file", myElement.getContainingFile().getOriginalFile().getVirtualFile());
+            LOG.trace("  virtual file", ORFileUtils.getVirtualFile(myElement.getContainingFile()));
         }
 
         // Resolve aliases in the stack of instructions, this time from file down to element

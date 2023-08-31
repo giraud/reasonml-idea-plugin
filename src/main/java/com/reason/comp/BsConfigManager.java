@@ -59,7 +59,7 @@ public class BsConfigManager {
     }
 
     public BsConfig getNearest(@Nullable PsiFile psiFile) {
-        VirtualFile virtualFile = psiFile == null ? null : psiFile.getOriginalFile().getVirtualFile();
+        VirtualFile virtualFile = psiFile == null ? null : ORFileUtils.getVirtualFile(psiFile);
         return getNearest(virtualFile);
     }
 }
