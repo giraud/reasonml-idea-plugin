@@ -300,12 +300,25 @@ public class ORReferenceAnalyzer {
                             break;
                         }
                     } else if (resolvedElement instanceof RPsiType resolvedType) {
-                        if (instruction.getText().equals(resolvedType.getName())) {
+                        // Referencing the type itself
+                        String instructionText = instruction.getText();
+                        if (instructionText.equals(resolvedType.getName())) {
                             if (instructions.isEmpty()) {
                                 resolutions.clear();
                                 result.add(resolvedType);
                             }
                             break;
+                        } else if (resolvedType.isRecord()) {
+                            // Maybe referencing a field inside the type (record)
+                            for (RPsiRecordField field : resolvedType.getRecordFields()) {
+                                if (instructionText.equals(field.getName())) {
+                                    if (instructions.isEmpty()) {
+                                        resolutions.clear();
+                                        result.add(field);
+                                    }
+                                    break;
+                                }
+                            }
                         }
                     } else if (resolvedElement instanceof RPsiExternal resolvedExternal) {
                         if (instruction.getText().equals(resolvedExternal.getName())) {

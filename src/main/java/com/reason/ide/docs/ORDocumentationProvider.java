@@ -63,7 +63,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
             if (alias != null) {
                 PsiElement binding = let.getBinding();
                 RPsiLowerSymbol lSymbol = binding == null ? null : ORUtil.findImmediateLastChildOfClass(binding, RPsiLowerSymbol.class);
-                PsiLowerSymbolReference lReference = lSymbol == null ? null : lSymbol.getReference();
+                RPsiLowerSymbolReference lReference = lSymbol == null ? null : lSymbol.getReference();
                 PsiElement resolvedAlias = lReference == null ? null : lReference.resolveInterface();
                 if (resolvedAlias != null) {
                     docElement = resolvedAlias;
@@ -203,13 +203,13 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         if (contextElement != null && parent instanceof RPsiLowerSymbol) {
             PsiReference reference = parent.getReference();
             if (reference instanceof PsiPolyVariantReference) {
-                PsiLowerSymbolReference lowerReference = (PsiLowerSymbolReference) reference;
+                RPsiLowerSymbolReference lowerReference = (RPsiLowerSymbolReference) reference;
                 ResolveResult[] resolveResults = lowerReference.multiResolve(false);
                 if (0 < resolveResults.length) {
                     Arrays.sort(resolveResults, (rr1, rr2) ->
-                            ((PsiLowerSymbolReference.LowerResolveResult) rr1).isInterface()
+                            ((RPsiLowerSymbolReference.LowerResolveResult) rr1).isInterface()
                                     ? -1
-                                    : (((PsiLowerSymbolReference.LowerResolveResult) rr2).isInterface() ? 1 : 0));
+                                    : (((RPsiLowerSymbolReference.LowerResolveResult) rr2).isInterface() ? 1 : 0));
                     return resolveResults[0].getElement();
                 }
             }
