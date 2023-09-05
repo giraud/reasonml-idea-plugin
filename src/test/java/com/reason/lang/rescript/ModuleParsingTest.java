@@ -15,7 +15,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
         RPsiInnerModule e = firstOfType(parseCode("module M = {}"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
-        assertEquals(ResTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
+        assertEquals(ResTypes.INSTANCE.A_MODULE_NAME, e.getNameIdentifier().getNode().getElementType());
         assertEquals("{}", e.getBody().getText());
     }
 

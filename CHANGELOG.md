@@ -12,6 +12,9 @@
                         
 ## Unreleased
 
+- :bug: [#427](https://github.com/giraud/reasonml-idea-plugin/issues/427) Preview not working in 'find in files'
+- :bug: [#425](https://github.com/giraud/reasonml-idea-plugin/issues/425) Structure panel Some variables have the icon indicating a functions
+
 ## 0.116 - 2023/08/31
 
 - :bug: [#426](https://github.com/giraud/reasonml-idea-plugin/issues/426) Module alias must be resolved for resolution (same file)

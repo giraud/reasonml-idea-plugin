@@ -21,12 +21,6 @@ public class RPsiFunctorCall extends ORCompositePsiElement<ORLangTypes> {
     }
 
     @Override
-    public @NotNull PsiElement getNavigationElement() {
-        RPsiUpperSymbol id = getReferenceIdentifier();
-        return id == null ? this : id;
-    }
-
-    @Override
     public int getTextOffset() {
         RPsiUpperSymbol id = getReferenceIdentifier();
         return id == null ? 0 : id.getTextOffset();

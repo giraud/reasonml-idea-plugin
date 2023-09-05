@@ -35,8 +35,8 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         ORLanguageProperties languageProperties = ORLanguageProperties.cast(originalElement == null ? null : originalElement.getLanguage());
 
         PsiElement docElement = resolvedElement;
-        if (resolvedElement instanceof RPsiModule && ((RPsiModule) resolvedElement).isComponent()) {
-            docElement = resolvedElement.getNavigationElement();
+        if (resolvedElement instanceof RPsiModule module && module.isComponent()) {
+            docElement = module.getMakeFunction();
         } else if (resolvedElement instanceof FileBase) {
             PsiElement child = resolvedElement.getFirstChild();
             String text = "";
@@ -137,7 +137,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
             if (resolvedElement instanceof RPsiType type) {
                 String[] path = ORUtil.getQualifiedPath(type);
                 String typeBinding = type.isAbstract() ? "This is an abstract type" : DocFormatter.escapeCodeForHtml(type.getBinding());
-                return createQuickDocTemplate(path, "type", type.getNavigationElement().getText(), typeBinding);
+                return createQuickDocTemplate(path, "type", type.getName(), typeBinding);
             }
 
             if (resolvedElement instanceof RPsiSignatureElement) {

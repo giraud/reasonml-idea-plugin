@@ -1,5 +1,6 @@
 package com.reason.ide.insight.provider;
 
+import com.intellij.codeInsight.*;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.*;
 import com.intellij.openapi.editor.*;
@@ -48,7 +49,7 @@ public class JsxAttributeCompletionProvider {
             // Custom component
             RPsiUpperSymbolReference tagReference = (RPsiUpperSymbolReference) tagName.getReference();
             PsiElement resolvedModule = tagReference == null ? null : tagReference.resolve();
-            PsiElement resolvedElement = resolvedModule == null ? null : resolvedModule.getNavigationElement();
+            PsiElement resolvedElement = resolvedModule instanceof RPsiModule ? ((RPsiModule) resolvedModule).getMakeFunction() : null;
 
             // Additional attributes for UpperSymbol => only key and ref
             if (resolvedElement != null) {

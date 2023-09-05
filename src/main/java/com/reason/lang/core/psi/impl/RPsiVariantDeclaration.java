@@ -82,12 +82,6 @@ public class RPsiVariantDeclaration extends RPsiTokenStub<ORLangTypes, RPsiVaria
     }
     //endregion
 
-    @Override
-    public @NotNull PsiElement getNavigationElement() {
-        RPsiUpperSymbol id = ORUtil.findImmediateFirstChildOfClass(this, RPsiUpperSymbol.class);
-        return id == null ? this : id;
-    }
-
     @Nullable
     public PsiElement getVariant() {
         return ORUtil.findImmediateFirstChildOfClass(this, RPsiUpperSymbol.class);

@@ -265,7 +265,11 @@ public class ORReferenceAnalyzer {
 
                 // build potential paths by iterating backward the resolutions
                 for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
+                    if (resolutions.isEmpty()) { // maybe
+                        break;
+                    }
                     ResolutionElement resolution = resolutions.get(i);
+
                     PsiElement resolvedElement = resolution.getOriginalElement();
                     if (resolvedElement instanceof RPsiLet resolvedLet) {
                         if (resolvedLet.isDeconstruction()) {

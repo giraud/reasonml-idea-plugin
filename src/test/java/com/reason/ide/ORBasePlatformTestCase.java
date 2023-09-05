@@ -1,5 +1,6 @@
 package com.reason.ide;
 
+import com.intellij.codeInsight.*;
 import com.intellij.codeInsight.daemon.*;
 import com.intellij.codeInsight.daemon.impl.*;
 import com.intellij.lang.*;
@@ -60,6 +61,11 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
 
     protected @NotNull List<UsageInfo> findUsages(String fileName) {
         return (List<UsageInfo>) myFixture.testFindUsages(fileName);
+    }
+
+    protected @NotNull PsiElement getNavigationElementAtCaret() {
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        return TargetElementUtil.getInstance().getGotoDeclarationTarget(elementAtCaret, elementAtCaret.getNavigationElement());
     }
 
     protected @NotNull List<LineMarkerInfo<?>> doHighlight(FileBase f) {

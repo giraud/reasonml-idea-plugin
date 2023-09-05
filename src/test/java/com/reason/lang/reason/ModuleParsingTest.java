@@ -17,7 +17,7 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals(1, modules.size());
         RPsiInnerModule e = first(modules);
         assertEquals("M", e.getName());
-        assertEquals(RmlTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
+        assertEquals(RmlTypes.INSTANCE.A_MODULE_NAME, e.getNameIdentifier().getNode().getElementType());
         assertEquals("{}", e.getBody().getText());
     }
 
