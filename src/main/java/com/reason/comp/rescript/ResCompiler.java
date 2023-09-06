@@ -122,7 +122,6 @@ public class ResCompiler implements Compiler {
         return switch (cliType) {
             case MAKE -> new GeneralCommandLine(binPath, "build");
             case CLEAN -> new GeneralCommandLine(binPath, "clean");
-            default -> new GeneralCommandLine(binPath);
         };
     }
 

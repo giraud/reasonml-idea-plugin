@@ -12,7 +12,6 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
-import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

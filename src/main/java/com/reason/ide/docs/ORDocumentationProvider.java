@@ -36,7 +36,10 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
 
         PsiElement docElement = resolvedElement;
         if (resolvedElement instanceof RPsiModule module && module.isComponent()) {
-            docElement = module.getMakeFunction();
+            PsiElement make = module.getMakeFunction();
+            if (make != null) {
+                docElement = make;
+            }
         } else if (resolvedElement instanceof FileBase) {
             PsiElement child = resolvedElement.getFirstChild();
             String text = "";
@@ -218,7 +221,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         return null;
     }
 
-    private @Nullable PsiElement findComment(@NotNull PsiElement resolvedElement, @NotNull Language lang) {
+    private @Nullable PsiElement findComment(@Nullable PsiElement resolvedElement, @NotNull Language lang) {
         // Try to find a comment just below (OCaml only)
         if (lang == OclLanguage.INSTANCE) {
             PsiElement belowComment = findBelowComment(resolvedElement);

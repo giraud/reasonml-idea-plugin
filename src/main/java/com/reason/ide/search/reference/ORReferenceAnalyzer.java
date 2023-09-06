@@ -669,7 +669,6 @@ public class ORReferenceAnalyzer {
                             ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(containingFile);
                             for (String alternateModuleQName : data.getValues(module)) {
                                 if (!pathToResolve.equals(alternateModuleQName)) {
-                                    // try to find references of coq cSig.mli Sets.exits: Stm.VCS => Stm.VCS.Branch.Vcs_  (fixme)
                                     newPathResolutions.addAll(resolvePath(alternateModuleQName, project, scope, level + 1));
                                 }
                             }

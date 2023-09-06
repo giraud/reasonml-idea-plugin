@@ -3,14 +3,11 @@ package com.reason.lang.core.psi.ocamllex;
 import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;
 import com.intellij.navigation.*;
-import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
-import com.intellij.psi.tree.*;
 import com.intellij.util.*;
 import com.reason.ide.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.type.*;
 import com.reason.lang.ocamllex.*;
 import org.jetbrains.annotations.*;
 
@@ -22,6 +19,7 @@ public class RPsiLexLet extends ASTWrapperPsiElement implements RPsiStructuredEl
     }
 
     // region PsiNamedElement
+    @Override
     public @Nullable PsiElement getNameIdentifier() {
         return ORUtil.findImmediateFirstChildOfType(this, OclLexTypes.INSTANCE.IDENT);
     }
@@ -39,9 +37,9 @@ public class RPsiLexLet extends ASTWrapperPsiElement implements RPsiStructuredEl
     // endregion
 
     // region RPsiStructuredElement
-    @Nullable
+
     @Override
-    public ItemPresentation getPresentation() {
+    public @NotNull ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Override
             public @NotNull String getPresentableText() {

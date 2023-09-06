@@ -25,7 +25,6 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.*;
 
 import static com.reason.ide.annotations.ORErrorAnnotator.*;
 
@@ -83,8 +82,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
 
         List<Annotation> annotations = annotationResult.outputInfo.stream()
                 .map(info -> makeAnnotation(info, editor))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .filter(Objects::nonNull).toList();
 
         WolfTheProblemSolver problemSolver = WolfTheProblemSolver.getInstance(project);
 

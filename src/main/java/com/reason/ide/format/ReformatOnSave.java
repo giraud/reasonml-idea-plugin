@@ -20,7 +20,7 @@ import org.jetbrains.annotations.*;
  * <p>
  * When we detect that a document is about to be saved, we run an async write command
  * on the main thread that will change the edited document.
- * This write action is run after the initial save (We also use a command to have undo).
+ * This writes action is run after the initial save (We also use a command to have undo).
  * Then we save the document again, ie we will always generate a minimum of 2 document saves.
  */
 public class ReformatOnSave {
