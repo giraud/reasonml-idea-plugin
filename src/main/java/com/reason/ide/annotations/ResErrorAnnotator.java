@@ -15,7 +15,6 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.*;
 
 import static com.reason.ide.annotations.ORErrorAnnotator.*;
 import static java.util.Collections.*;
@@ -109,7 +108,7 @@ public class ResErrorAnnotator {
     static @NotNull List<OutputInfo> compile(@NotNull ResResolvedCompiler compiler, @NotNull List<String> arguments, @NotNull VirtualFile workDir) {
         List<String> command = new ArrayList<>();
         command.add(compiler.getPath());
-        command.addAll(arguments.stream().filter(s -> !"-bin-annot".equals(s)).collect(Collectors.toList()));
+        command.addAll(arguments.stream().filter(s -> !"-bin-annot".equals(s)).toList());
 
         if (LOG.isTraceEnabled()) {
             LOG.trace(Joiner.join(" ", command.toArray(new String[0])));

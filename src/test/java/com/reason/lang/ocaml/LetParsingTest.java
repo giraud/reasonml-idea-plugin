@@ -27,7 +27,6 @@ public class LetParsingTest extends OclParsingTestCase {
     public void test_underscore() {
         RPsiLet e = firstOfType(parseCode("let _ = ()"), RPsiLet.class);
         assertNull(e.getName());
-        assertNotNull(e.getNavigationElement());
     }
 
     @Test

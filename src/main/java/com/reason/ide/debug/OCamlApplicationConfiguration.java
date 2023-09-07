@@ -11,7 +11,6 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-
 public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCamlModuleBasedConfiguration, RPsiModule> {
     public OCamlApplicationConfiguration(String name, @NotNull OCamlModuleBasedConfiguration configurationModule, @NotNull ConfigurationFactory factory) {
         super(name, configurationModule, factory);
@@ -33,7 +32,7 @@ public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCam
                     }
 
                     @Override public @NotNull JComponent createCompoundEditor() {
-                        return new JPanel(); // fixme
+                        return new JPanel();
                     }
                 };
             }

@@ -16,4 +16,7 @@ public interface RPsiModule extends RPsiQualifiedPathElement, RPsiStructuredElem
     boolean isInterfaceFile();
 
     boolean isComponent();
+
+    @Nullable
+    PsiElement getMakeFunction();
 }

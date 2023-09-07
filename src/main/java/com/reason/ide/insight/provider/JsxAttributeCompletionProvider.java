@@ -48,7 +48,7 @@ public class JsxAttributeCompletionProvider {
             // Custom component
             RPsiUpperSymbolReference tagReference = (RPsiUpperSymbolReference) tagName.getReference();
             PsiElement resolvedModule = tagReference == null ? null : tagReference.resolve();
-            PsiElement resolvedElement = resolvedModule == null ? null : resolvedModule.getNavigationElement();
+            PsiElement resolvedElement = resolvedModule instanceof RPsiModule ? ((RPsiModule) resolvedModule).getMakeFunction() : null;
 
             // Additional attributes for UpperSymbol => only key and ref
             if (resolvedElement != null) {

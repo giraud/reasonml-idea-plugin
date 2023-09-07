@@ -4,12 +4,10 @@ import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
-import com.intellij.psi.tree.*;
 import com.intellij.util.*;
 import com.reason.ide.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.type.*;
 import com.reason.lang.ocamllex.*;
 import org.jetbrains.annotations.*;
 
@@ -21,6 +19,7 @@ public class RPsiLexRule extends ASTWrapperPsiElement implements RPsiStructuredE
     }
 
     // region PsiNamedElement
+    @Override
     public @Nullable PsiElement getNameIdentifier() {
         return ORUtil.findImmediateFirstChildOfType(this, OclLexTypes.INSTANCE.IDENT);
     }

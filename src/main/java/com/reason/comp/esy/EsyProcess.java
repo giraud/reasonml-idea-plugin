@@ -90,7 +90,6 @@ public class EsyProcess {
             case INSTALL -> "install";
             case BUILD -> "build";
             case SHELL -> "shell";
-            default -> "";
         };
     }
 

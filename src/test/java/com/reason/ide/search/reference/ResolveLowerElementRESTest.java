@@ -161,15 +161,16 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals("A.e", e.getQualifiedName());
     }
 
-    /*
-    @Test // TODO
+    @Test
     public void test_record_field() {
-        configureCode("A.re", "type t = { f1: bool, f2: int }; let x = { f1: true, f2<caret>: 421 };");
+        configureCode("A.res", """
+                type t = { f1: bool, f2: int }
+                let x  = { f1: true, f2<caret>: 421 }
+                """);
 
         RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.t.f2", e.getQualifiedName());
     }
-    */
 
     @Test
     public void test_function() {
@@ -542,12 +543,12 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     public void test_GH_358() {
         configureCode("A.re", """
                 let clearPath = () => ()
-                
+                                
                 module Xxx = {
                   type t = | ClearPath
                   let clearPath = () => ()
                 }
-                
+                                
                 let reducer = x => switch x {
                   | Xxx.ClearPath => clearPath<caret>()
                 }

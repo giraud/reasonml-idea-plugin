@@ -78,7 +78,6 @@ public final class BsProcess {
         GeneralCommandLine cli = switch (cliType) {
             case MAKE -> new GeneralCommandLine(bsbPath, "-make-world");
             case CLEAN_MAKE -> new GeneralCommandLine(bsbPath, "-clean-world", "-make-world");
-            default -> new GeneralCommandLine(bsbPath);
         };
         cli.withWorkDirectory(bsContentRootPath);
         cli.withEnvironment("NINJA_ANSI_FORCED", "1");

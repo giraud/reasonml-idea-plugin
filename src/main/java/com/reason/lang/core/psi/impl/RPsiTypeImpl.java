@@ -60,12 +60,6 @@ public class RPsiTypeImpl extends RPsiTokenStub<ORLangTypes, RPsiType, PsiTypeSt
     // endregion
 
     @Override
-    public @NotNull PsiElement getNavigationElement() {
-        PsiElement id = getNameIdentifier();
-        return id == null ? this : id;
-    }
-
-    @Override
     public int getTextOffset() {
         PsiElement id = getNameIdentifier();
         return id == null ? 0 : id.getTextOffset();

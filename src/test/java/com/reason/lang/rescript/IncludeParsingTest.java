@@ -33,7 +33,7 @@ public class IncludeParsingTest extends ResParsingTestCase {
 
         assertTrue(e.useFunctor());
         RPsiFunctorCall c = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);
-        assertEquals(myTypes.A_MODULE_NAME, c.getNavigationElement().getNode().getElementType());
+        assertEquals(myTypes.A_MODULE_NAME, c.getReferenceIdentifier().getNode().getElementType());
         assertEquals("Make", c.getName());
         assertEquals("Make", e.getIncludePath());
     }

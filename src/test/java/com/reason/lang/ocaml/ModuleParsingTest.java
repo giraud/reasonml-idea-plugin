@@ -18,7 +18,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(1, modules.size());
         RPsiInnerModule e = first(modules);
         assertEquals("M", e.getName());
-        assertEquals(OclTypes.INSTANCE.A_MODULE_NAME, e.getNavigationElement().getNode().getElementType());
+        assertEquals(OclTypes.INSTANCE.A_MODULE_NAME, e.getNameIdentifier().getNode().getElementType());
         assertEquals("Dummy.M", e.getQualifiedName());
         assertEquals("struct end", e.getBody().getText());
     }

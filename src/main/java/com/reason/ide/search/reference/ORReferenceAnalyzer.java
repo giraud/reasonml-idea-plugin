@@ -265,7 +265,11 @@ public class ORReferenceAnalyzer {
 
                 // build potential paths by iterating backward the resolutions
                 for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
+                    if (resolutions.isEmpty()) { // maybe
+                        break;
+                    }
                     ResolutionElement resolution = resolutions.get(i);
+
                     PsiElement resolvedElement = resolution.getOriginalElement();
                     if (resolvedElement instanceof RPsiLet resolvedLet) {
                         if (resolvedLet.isDeconstruction()) {
@@ -300,12 +304,25 @@ public class ORReferenceAnalyzer {
                             break;
                         }
                     } else if (resolvedElement instanceof RPsiType resolvedType) {
-                        if (instruction.getText().equals(resolvedType.getName())) {
+                        // Referencing the type itself
+                        String instructionText = instruction.getText();
+                        if (instructionText.equals(resolvedType.getName())) {
                             if (instructions.isEmpty()) {
                                 resolutions.clear();
                                 result.add(resolvedType);
                             }
                             break;
+                        } else if (resolvedType.isRecord()) {
+                            // Maybe referencing a field inside the type (record)
+                            for (RPsiRecordField field : resolvedType.getRecordFields()) {
+                                if (instructionText.equals(field.getName())) {
+                                    if (instructions.isEmpty()) {
+                                        resolutions.clear();
+                                        result.add(field);
+                                    }
+                                    break;
+                                }
+                            }
                         }
                     } else if (resolvedElement instanceof RPsiExternal resolvedExternal) {
                         if (instruction.getText().equals(resolvedExternal.getName())) {
@@ -652,7 +669,6 @@ public class ORReferenceAnalyzer {
                             ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(containingFile);
                             for (String alternateModuleQName : data.getValues(module)) {
                                 if (!pathToResolve.equals(alternateModuleQName)) {
-                                    // try to find references of coq cSig.mli Sets.exits: Stm.VCS => Stm.VCS.Branch.Vcs_  (fixme)
                                     newPathResolutions.addAll(resolvePath(alternateModuleQName, project, scope, level + 1));
                                 }
                             }
