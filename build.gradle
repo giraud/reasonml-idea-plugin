@@ -35,7 +35,7 @@ intellij {
         changeNotes = """
                 <ul>
                     <li>427 - Preview not working in 'find in files'</li>
-                    <li>425 - Structure panel Some variables have the icon indicating a functions</li>
+                    <li>425 - Structure panel Some variables have the icon indicating a function</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

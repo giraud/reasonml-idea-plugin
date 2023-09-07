@@ -11,9 +11,11 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
                         
 ## Unreleased
+                  
+## 0.117 - 2023/09/07
 
 - :bug: [#427](https://github.com/giraud/reasonml-idea-plugin/issues/427) Preview not working in 'find in files'
-- :bug: [#425](https://github.com/giraud/reasonml-idea-plugin/issues/425) Structure panel Some variables have the icon indicating a functions
+- :bug: [#425](https://github.com/giraud/reasonml-idea-plugin/issues/425) Structure panel Some variables have the icon indicating a function
 
 ## 0.116 - 2023/08/31
 
