@@ -1,8 +1,6 @@
 package com.reason.ide.search.reference;
 
-import com.intellij.psi.*;
 import com.reason.ide.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import org.junit.*;
 import org.junit.runner.*;
@@ -138,9 +136,7 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
     public void test_type_with_path_2() {
         configureCode("A.ml", "type t\n type y = X.Y.t<caret>");
 
-        assertThrows(AssertionError.class, "element not found in file A.ml", () -> {
-            PsiElement e = myFixture.getElementAtCaret();
-        });
+        assertThrows(AssertionError.class, "element not found in file A.ml", () -> myFixture.getElementAtCaret());
     }
 
     @Test
@@ -151,15 +147,16 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("A.e", e.getQualifiedName());
     }
 
-    /*
-    @Test // TODO
+    @Test
     public void test_record_field() {
-        configureCode("A.re", "type t = { f1: bool, f2: int }; let x = { f1: true, f2<caret>: 421 };");
+        configureCode("A.ml", """
+                type t = { f1: bool; f2: int; }
+                let x  = { f1 = true; f2<caret> = 421 }
+                """);
 
         RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.t.f2", e.getQualifiedName());
     }
-    */
 
     @Test
     public void test_function() {
@@ -187,33 +184,27 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_local_open_parens() {
+    public void test_local_open() {
         configureCode("A.ml", "module A1 = struct external a : int = \"\" end");
-        configureCode("B.ml", "let b = A.(A1.a<caret>)");
+        configureCode("B.ml", "let _ = let open A.A1 in a<caret>");
 
         RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
         assertEquals("A.A1.a", e.getQualifiedName());
     }
 
     @Test
-    public void test_local_open_parens_2() {
-        configureCode("A.ml", "module A1 = struct external a : int = \"\" end");
-        configureCode("B.ml", "let a = A.A1.(a<caret>)");
-
-        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
-        assertEquals("A.A1.a", e.getQualifiedName());
-    }
-
-/* TODO
-    @Test
-    public void test_local_open_parens_3() {
-        configureCode("A.re", "module A1 = { type t = | Variant; let toString = x => x; };");
-        configureCode("B.re", "A.A1.(Variant->toString<caret>);");
+    public void test_local_open_2() {
+        configureCode("A.ml", """
+                module A1 = struct
+                  type t = | Variant
+                  let toString = x => x
+                end
+                """);
+        configureCode("B.ml", "let _ = let open A.A1 in Variant |. toString<caret>");
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.A1.toString", e.getQualifiedName());
     }
-*/
 
     @Test
     public void test_include() {
@@ -223,10 +214,16 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("A.B.t", e.getQualifiedName());
     }
 
-    /* TODO
     @Test
     public void test_include_alias() {
-        configureCode("A.re", "module B = { type t; }; module C = B; include C; type x = t<caret>;");
+        configureCode("A.ml", """
+                module B = struct
+                  type t
+                end
+                module C = B
+                include C
+                type x = t<caret>
+                """);
 
         RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.B.t", e.getQualifiedName());
@@ -234,15 +231,14 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_2() {
-        configureCode("Css_AtomicTypes.rei", "module Visibility: { type t = [ | `visible | `hidden | `collapse]; };");
-        configureCode("Css_Legacy_Core.re", "module Types = Css_AtomicTypes;");
-        configureCode("Css.re", "include Css_Legacy_Core;");
-        configureCode("A.re", "type layoutRule; let visibility: [< Css.Types.Length.t | Css.Types.Visibility.t<caret> ] => layoutRule;");
+        configureCode("Css_AtomicTypes.mli", "module Visibility: sig\n type t = [ | `visible | `hidden | `collapse]\n end");
+        configureCode("Css_Legacy_Core.ml", "module Types = Css_AtomicTypes");
+        configureCode("Css.ml", "include Css_Legacy_Core");
+        configureCode("A.ml", "type layoutRule\n let visibility: [< Css.Types.Length.t | Css.Types.Visibility.t<caret> ] -> layoutRule");
 
         RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("Css_AtomicTypes.Visibility.t", e.getQualifiedName());
     }
-*/
 
     @Test
     public void test_include_qualified() {
@@ -523,11 +519,14 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/358
     @Test
     public void test_GH_358() {
-        configureCode("A.ml", "let clearPath () = ()\n " +
-                "module Xxx = struct\n" +
-                "  type t = | ClearPath\n let clearPath () = ()\n" +
-                "end\n " +
-                "let reducer = function | Xxx.ClearPath -> clearPath<caret>()");
+        configureCode("A.ml", """
+                let clearPath () = ()
+                module Xxx = struct
+                  type t = | ClearPath
+                  let clearPath () = ()
+                end
+                let reducer = function | Xxx.ClearPath -> clearPath<caret>()
+                """);
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.clearPath", e.getQualifiedName());

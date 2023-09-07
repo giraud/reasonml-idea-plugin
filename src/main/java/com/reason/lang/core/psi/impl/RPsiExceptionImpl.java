@@ -70,13 +70,6 @@ public class RPsiExceptionImpl extends RPsiTokenStub<ORLangTypes, RPsiException,
     }
     //endregion
 
-
-    @Override
-    public @NotNull PsiElement getNavigationElement() {
-        PsiElement id = getNameIdentifier();
-        return id == null ? this : id;
-    }
-
     @Override
     public int getTextOffset() {
         PsiElement id = getNameIdentifier();

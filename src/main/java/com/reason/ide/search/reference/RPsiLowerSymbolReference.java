@@ -17,11 +17,11 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSymbol> {
+public class RPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSymbol> {
     private static final Log LOG = Log.create("ref.lower");
     private static final Log LOG_PERF = Log.create("ref.perf.lower");
 
-    public PsiLowerSymbolReference(@NotNull RPsiLowerSymbol element, @NotNull ORLangTypes types) {
+    public RPsiLowerSymbolReference(@NotNull RPsiLowerSymbol element, @NotNull ORLangTypes types) {
         super(element, types);
     }
 

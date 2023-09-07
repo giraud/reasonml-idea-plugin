@@ -79,12 +79,6 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
     //endregion
 
     @Override
-    public @NotNull PsiElement getNavigationElement() {
-        PsiElement id = getNameIdentifier();
-        return id == null ? this : id;
-    }
-
-    @Override
     public boolean isInterfaceFile() {
         return ((FileBase) getContainingFile()).isInterface();
     }
@@ -92,6 +86,11 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
     @Override
     public boolean isComponent() {
         return false;
+    }
+
+    @Override
+    public @Nullable PsiElement getMakeFunction() {
+        return null;
     }
 
     @Override

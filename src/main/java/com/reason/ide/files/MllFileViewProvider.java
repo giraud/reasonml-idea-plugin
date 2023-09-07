@@ -13,8 +13,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class MllFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProvider implements TemplateLanguageFileViewProvider {
-    public static IElementType OUTER_ELEMENT = new OuterLanguageElementType("OUTER_ELEMENT", OclLexLanguage.INSTANCE);
-
+    public static final IElementType OUTER_ELEMENT = new OuterLanguageElementType("OUTER_ELEMENT", OclLexLanguage.INSTANCE);
     private static final IElementType TEMPLATE_DATA = new TemplateDataElementType("TEMPLATE_DATA", OclLexLanguage.INSTANCE, OclLexTypes.INSTANCE.TEMPLATE_OCAML_TEXT, OUTER_ELEMENT);
 
     public MllFileViewProvider(@NotNull PsiManager manager, @NotNull VirtualFile file, boolean eventSystemEnabled) {
@@ -41,8 +40,8 @@ public class MllFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProv
         return new MllFileViewProvider(getManager(), fileCopy, false);
     }
 
-    @Nullable
-    protected PsiFile createFile(@NotNull Language lang) {
+    @Override
+    protected @Nullable PsiFile createFile(@NotNull Language lang) {
         ParserDefinition parser = LanguageParserDefinitions.INSTANCE.forLanguage(lang);
         if (parser == null) {
             return null;

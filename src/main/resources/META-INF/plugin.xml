@@ -273,6 +273,12 @@
         <gotoClassContributor implementation="com.reason.ide.go.ORModuleContributor"/>
         <gotoDeclarationHandler implementation="com.reason.ide.go.ORGotoDeclarationHandler"/>
 
+        <!-- Navigate to make function if top level module is a component -->
+        <targetElementEvaluator language="Reason"
+                                implementationClass="com.reason.ide.files.ORTargetElementEvaluator"/>
+        <targetElementEvaluator language="Rescript"
+                                implementationClass="com.reason.ide.files.ORTargetElementEvaluator"/>
+
         <!--
          | SDK / Libs / Settings
          -->
@@ -450,7 +456,6 @@
                                         implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="Rescript"
                                         implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
-
     </extensions>
 
 </idea-plugin>

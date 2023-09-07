@@ -35,8 +35,11 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         ORLanguageProperties languageProperties = ORLanguageProperties.cast(originalElement == null ? null : originalElement.getLanguage());
 
         PsiElement docElement = resolvedElement;
-        if (resolvedElement instanceof RPsiModule && ((RPsiModule) resolvedElement).isComponent()) {
-            docElement = resolvedElement.getNavigationElement();
+        if (resolvedElement instanceof RPsiModule module && module.isComponent()) {
+            PsiElement make = module.getMakeFunction();
+            if (make != null) {
+                docElement = make;
+            }
         } else if (resolvedElement instanceof FileBase) {
             PsiElement child = resolvedElement.getFirstChild();
             String text = "";
@@ -63,7 +66,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
             if (alias != null) {
                 PsiElement binding = let.getBinding();
                 RPsiLowerSymbol lSymbol = binding == null ? null : ORUtil.findImmediateLastChildOfClass(binding, RPsiLowerSymbol.class);
-                PsiLowerSymbolReference lReference = lSymbol == null ? null : lSymbol.getReference();
+                RPsiLowerSymbolReference lReference = lSymbol == null ? null : lSymbol.getReference();
                 PsiElement resolvedAlias = lReference == null ? null : lReference.resolveInterface();
                 if (resolvedAlias != null) {
                     docElement = resolvedAlias;
@@ -137,7 +140,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
             if (resolvedElement instanceof RPsiType type) {
                 String[] path = ORUtil.getQualifiedPath(type);
                 String typeBinding = type.isAbstract() ? "This is an abstract type" : DocFormatter.escapeCodeForHtml(type.getBinding());
-                return createQuickDocTemplate(path, "type", type.getNavigationElement().getText(), typeBinding);
+                return createQuickDocTemplate(path, "type", type.getName(), typeBinding);
             }
 
             if (resolvedElement instanceof RPsiSignatureElement) {
@@ -203,13 +206,13 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         if (contextElement != null && parent instanceof RPsiLowerSymbol) {
             PsiReference reference = parent.getReference();
             if (reference instanceof PsiPolyVariantReference) {
-                PsiLowerSymbolReference lowerReference = (PsiLowerSymbolReference) reference;
+                RPsiLowerSymbolReference lowerReference = (RPsiLowerSymbolReference) reference;
                 ResolveResult[] resolveResults = lowerReference.multiResolve(false);
                 if (0 < resolveResults.length) {
                     Arrays.sort(resolveResults, (rr1, rr2) ->
-                            ((PsiLowerSymbolReference.LowerResolveResult) rr1).isInterface()
+                            ((RPsiLowerSymbolReference.LowerResolveResult) rr1).isInterface()
                                     ? -1
-                                    : (((PsiLowerSymbolReference.LowerResolveResult) rr2).isInterface() ? 1 : 0));
+                                    : (((RPsiLowerSymbolReference.LowerResolveResult) rr2).isInterface() ? 1 : 0));
                     return resolveResults[0].getElement();
                 }
             }
@@ -218,7 +221,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
         return null;
     }
 
-    private @Nullable PsiElement findComment(@NotNull PsiElement resolvedElement, @NotNull Language lang) {
+    private @Nullable PsiElement findComment(@Nullable PsiElement resolvedElement, @NotNull Language lang) {
         // Try to find a comment just below (OCaml only)
         if (lang == OclLanguage.INSTANCE) {
             PsiElement belowComment = findBelowComment(resolvedElement);

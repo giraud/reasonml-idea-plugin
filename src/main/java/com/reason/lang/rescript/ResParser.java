@@ -1239,7 +1239,7 @@ public class ResParser extends CommonPsiParser {
                                 .markHolder(myTypes.H_COLLECTION_ITEM);
                     }
                 } else {
-                    if (!isCurrent(myTypes.C_IF_THEN_ELSE) || rawHasScope()) {   // a block less if then else
+                    if (!isCurrent(myTypes.C_IF_THEN_ELSE) || rawHasScope()) {   // a block-less 'if then else'
                         endLikeSemi2();
                     }
                     remapCurrentToken(nextToken == myTypes.RIGHT_ARROW ? myTypes.A_VARIANT_NAME : myTypes.A_MODULE_NAME)
@@ -1373,7 +1373,7 @@ public class ResParser extends CommonPsiParser {
                     if (!myMarkers.isEmpty()) {
                         Marker latestMarker = myMarkers.peek();
                         while (latestMarker != null && !latestMarker.hasScope()) {
-                            // A return inside a if/then without scope has no effect
+                            // A return inside a 'if/then' without scope has no effect
                             if (latestMarker.isCompositeType(myTypes.C_IF_THEN_ELSE)) {
                                 Marker ifType = find(2);
                                 if (ifType != null && ifType.isCompositeType(myTypes.C_TERNARY)) {

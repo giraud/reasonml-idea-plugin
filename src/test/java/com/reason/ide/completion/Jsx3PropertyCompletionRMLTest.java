@@ -85,10 +85,17 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
     @Test
     public void test_interface_local() {
         myFixture.configureByFiles("pervasives.ml");
-        configureCode("A.re",
-                "module type CompType = { [@react.component] let make : (~name:string, ~enabled:bool) => <div/>; };\n" +
-                        "module rec Comp:CompType = { [@react.component] let make = (~name, ~enabled) => <div/>; let y = 1; };\n" +
-                        "[@react.component] let make = () => <Comp <caret> />;");
+        configureCode("A.re", """
+                module type CompType = {
+                  [@react.component] let make : (~name:string, ~enabled:bool) => <div/>;
+                };
+                
+                module rec Comp:CompType = {
+                  [@react.component] let make = (~name, ~enabled) => <div/>; let y = 1;
+                };
+                
+                [@react.component] let make = () => <Comp <caret> />;
+                """);
 
         myFixture.completeBasic();
 

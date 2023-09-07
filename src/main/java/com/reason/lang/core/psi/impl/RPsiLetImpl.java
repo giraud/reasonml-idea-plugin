@@ -5,7 +5,6 @@ import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.psi.tree.*;
-import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.*;
 import com.reason.lang.*;
@@ -13,7 +12,6 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
-import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
@@ -65,12 +63,6 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
         return this;
     }
     // endregion
-
-    @Override
-    public @NotNull PsiElement getNavigationElement() {
-        PsiElement id = getNameIdentifier();
-        return id == null ? this : id;
-    }
 
     @Override
     public int getTextOffset() {
@@ -163,12 +155,8 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
             }
         }
 
-        if (myTypes instanceof RmlTypes) {
-            RPsiLetBinding binding = findChildByClass(RPsiLetBinding.class);
-            return binding != null && binding.getFirstChild() instanceof RPsiFunction;
-        }
-
-        return PsiTreeUtil.findChildOfType(this, RPsiFunction.class) != null;
+        RPsiLetBinding binding = findChildByClass(RPsiLetBinding.class);
+        return binding != null && binding.getFirstChild() instanceof RPsiFunction;
     }
 
     public @Nullable RPsiFunction getFunction() {

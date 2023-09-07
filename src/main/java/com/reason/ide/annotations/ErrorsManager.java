@@ -1,23 +1,11 @@
 package com.reason.ide.annotations;
 
-import com.intellij.openapi.util.Pair;
-import java.util.Collection;
-import java.util.Set;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public interface ErrorsManager {
+    void addAllInfo(@NotNull Collection<OutputInfo> bsbInfo);
 
-  void addAllInfo(@NotNull Collection<OutputInfo> bsbInfo);
-
-  @NotNull
-  Collection<OutputInfo> getInfo(@NotNull String moduleName);
-
-  boolean hasErrors(@NotNull String moduleName, int lineNumber);
-
-  void clearErrors();
-
-  void clearErrors(@NotNull String moduleName);
-
-  @NotNull
-  Pair<Set<String>, Set<String>> getKeys();
+    void clearErrors();
 }

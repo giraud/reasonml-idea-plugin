@@ -104,9 +104,4 @@ public class ORFileUtils {
         }
         return virtualFile;
     }
-
-    public static String getVirtualPath(@Nullable PsiFile file) {
-        VirtualFile virtualFile = getVirtualFile(file);
-        return virtualFile == null ? null : virtualFile.getPath();
-    }
 }
