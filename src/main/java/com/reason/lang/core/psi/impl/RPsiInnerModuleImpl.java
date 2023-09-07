@@ -12,7 +12,6 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
-import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
@@ -79,22 +78,6 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
     }
     //endregion
 
-    //region Navigatable
-    @Override
-    public @NotNull PsiElement getNavigationElement() {
-        PsiElement comp = null;
-        if (isComponent()) {
-            comp = ORUtil.findImmediateNamedChildOfClass(getBody(), RPsiLet.class, "make");
-            if (comp == null) {
-                comp = ORUtil.findImmediateNamedChildOfClass(getBody(), RPsiExternal.class, "make");
-            }
-        }
-
-        PsiElement id = comp == null ? getNameIdentifier() : comp;
-        return id == null ? this : id;
-    }
-    //endregion
-
     @Override
     public @NotNull String getModuleName() {
         String name = getName();
@@ -151,6 +134,15 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
         }
 
         return ModuleHelper.isComponent(getBody());
+    }
+
+    @Override
+    public @Nullable PsiElement getMakeFunction() {
+        PsiElement make = ORUtil.findImmediateNamedChildOfClass(getBody(), RPsiLet.class, "make");
+        if (make == null) {
+            make = ORUtil.findImmediateNamedChildOfClass(getBody(), RPsiExternal.class, "make");
+        }
+        return make;
     }
 
     @Override

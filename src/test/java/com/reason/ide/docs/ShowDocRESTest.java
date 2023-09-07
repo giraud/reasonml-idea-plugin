@@ -41,18 +41,21 @@ public class ShowDocRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_GH_359() {
-        FileBase a = configureCode("A.res", "module InnerComp = {\n" +
-                "  /**\n" +
-                "   Doc for my component\n" +
-                "   @param text Label\n" +
-                "   */\n" +
-                "  @react.component\n" +
-                "  let make = (~text) => <div> {text->React.string} </div>\n" +
-                "}\n" +
-                "\n" +
-                "@react.component\n" +
-                "let make = () => <InnerComp<caret> text=\"my text\" />");
+        FileBase a = configureCode("A.res", """
+                module InnerComp = {
+                  /**
+                   Doc for my component
+                   @param text Label
+                   */
+                  @react.component
+                  let make = (~text) => <div> {text->React.string} </div>
+                }
 
-        assertEquals("<div class=\"definition\"><b>A.InnerComp</b><p><i>let make</i></p></div><div class=\"content\"><p>Doc for my component</p><table class=\"sections\"><tr><td class=\"section\" valign=\"top\"><p>Param:</p></td><td valign=\"top\"><p>text - Label</p></td></tr></table></div>", getDoc(a, LANG));
+                @react.component
+                let make = () => <InnerComp<caret> text="my text" />
+                """);
+
+        String doc = getDoc(a, LANG);
+        assertEquals("<div class=\"definition\"><b>A.InnerComp</b><p><i>let make</i></p></div><div class=\"content\"><p>Doc for my component</p><table class=\"sections\"><tr><td class=\"section\" valign=\"top\"><p>Param:</p></td><td valign=\"top\"><p>text - Label</p></td></tr></table></div>", doc);
     }
 }

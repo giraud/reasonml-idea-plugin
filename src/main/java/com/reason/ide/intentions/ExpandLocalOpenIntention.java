@@ -12,7 +12,6 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
-import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
 public class ExpandLocalOpenIntention implements IntentionAction {

@@ -17,7 +17,7 @@ public class FunctorCallParsingTest extends OclParsingTestCase {
         assertTrue(e.isFunctorCall());
         RPsiFunctorCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);
         assertEquals("Make(struct let encode = encode_record end)", call.getText());
-        assertEquals(myTypes.A_MODULE_NAME, call.getNavigationElement().getNode().getElementType());
+        assertEquals(myTypes.A_MODULE_NAME, call.getReferenceIdentifier().getNode().getElementType());
         assertSize(1, call.getParameters());
         assertEquals("struct let encode = encode_record end", call.getParameters().iterator().next().getText());
         RPsiLet let = PsiTreeUtil.findChildOfType(e, RPsiLet.class);

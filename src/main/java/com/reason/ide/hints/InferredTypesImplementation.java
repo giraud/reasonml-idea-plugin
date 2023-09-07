@@ -11,8 +11,6 @@ import com.reason.lang.ocaml.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.*;
 
 public class InferredTypesImplementation implements InferredTypes {

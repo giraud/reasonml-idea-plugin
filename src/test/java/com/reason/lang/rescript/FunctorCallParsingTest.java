@@ -17,7 +17,7 @@ public class FunctorCallParsingTest extends ResParsingTestCase {
         assertTrue(e.isFunctorCall());
         RPsiFunctorCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);
         assertEquals("Make({ let encode = encode_record })", call.getText());
-        assertEquals(myTypes.A_MODULE_NAME, call.getNavigationElement().getNode().getElementType());
+        assertEquals(myTypes.A_MODULE_NAME, call.getReferenceIdentifier().getNode().getElementType());
         assertSize(1, call.getParameters());
         assertEquals("{ let encode = encode_record }", call.getParameters().iterator().next().getText());
         RPsiLet let = PsiTreeUtil.findChildOfType(e, RPsiLet.class);

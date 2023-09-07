@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Handle the prompt commands history.
+ * Handle the prompt history of commands.
  */
 final class PromptHistory {
     private final List<String> m_history = new LinkedList<>();

@@ -50,25 +50,15 @@ public abstract class FileBase extends PsiFileBase implements RPsiModule, Naviga
         return ModuleHelper.isComponent(this);
     }
 
-    //region Navigatable
     @Override
-    public PsiElement getNavigationElement() {
-        if (isComponent()) {
-            for (RPsiLet let : PsiTreeUtil.getStubChildrenOfTypeAsList(this, RPsiLet.class)) {
-                if ("make".equals(let.getName())) {
-                    return let;
-                }
-            }
-            for (RPsiExternal external : PsiTreeUtil.getStubChildrenOfTypeAsList(this, RPsiExternal.class)) {
-                if ("make".equals(external.getName())) {
-                    return external;
-                }
-            }
+    public @Nullable PsiElement getMakeFunction() {
+        PsiElement make = ORUtil.findImmediateNamedChildOfClass(this, RPsiLet.class, "make");
+        if (make == null) {
+            make = ORUtil.findImmediateNamedChildOfClass(this, RPsiExternal.class, "make");
         }
 
-        return this;
+        return make;
     }
-    //endregion
 
     @SafeVarargs
     public @NotNull final <T extends PsiQualifiedNamedElement> List<T> getQualifiedExpressions(@Nullable String name, @NotNull Class<? extends T>... clazz) {

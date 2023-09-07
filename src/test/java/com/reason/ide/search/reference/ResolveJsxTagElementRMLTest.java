@@ -14,7 +14,7 @@ public class ResolveJsxTagElementRMLTest extends ORBasePlatformTestCase {
         configureCode("X.re", "[@react.component] let make = (~value) => <div/>;");
         configureCode("A.re", "<X<caret> ></X>;");
 
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret().getNavigationElement();
+        RPsiLet e = (RPsiLet) getNavigationElementAtCaret();
         assertEquals("X.make", e.getQualifiedName());
     }
 
@@ -23,7 +23,7 @@ public class ResolveJsxTagElementRMLTest extends ORBasePlatformTestCase {
         configureCode("X.re", "[@react.component] external make : (~value:string) => React.element = \"Xx\";");
         configureCode("A.re", "<X<caret> ></X>;");
 
-        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret().getNavigationElement();
+        RPsiExternal e = (RPsiExternal) getNavigationElementAtCaret();
         assertEquals("X.make", e.getQualifiedName());
     }
 
@@ -32,7 +32,7 @@ public class ResolveJsxTagElementRMLTest extends ORBasePlatformTestCase {
         configureCode("X.re", "let make = (~value) => <div/>;");
         configureCode("A.re", "<X<caret> ></X>;");
 
-        PsiQualifiedNamedElement e = (PsiQualifiedNamedElement) myFixture.getElementAtCaret();
+        PsiQualifiedNamedElement e = (PsiQualifiedNamedElement) getNavigationElementAtCaret();
         assertEquals("X", e.getQualifiedName());
     }
 
@@ -40,7 +40,7 @@ public class ResolveJsxTagElementRMLTest extends ORBasePlatformTestCase {
     public void test_nested_let() {
         configureCode("A.re", "module X = { module Y = { [@react.component] let make = (~value) => <div/>; }; }; <X.Y<caret> ></X>;");
 
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret().getNavigationElement();
+        RPsiLet e = (RPsiLet) getNavigationElementAtCaret();
         assertEquals("A.X.Y.make", e.getQualifiedName());
     }
 
@@ -48,7 +48,7 @@ public class ResolveJsxTagElementRMLTest extends ORBasePlatformTestCase {
     public void test_nested_external() {
         configureCode("A.re", "module X = { module Y = { [@react.component] external make : (~value:string) => React.element = \"XY\"; }; }; <X.Y<caret> ></X>;");
 
-        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret().getNavigationElement();
+        RPsiExternal e = (RPsiExternal) getNavigationElementAtCaret();
         assertEquals("A.X.Y.make", e.getQualifiedName());
     }
 
@@ -57,7 +57,7 @@ public class ResolveJsxTagElementRMLTest extends ORBasePlatformTestCase {
         configureCode("X.re", "[@react.component] let make = (~value) => <div/>;");
         configureCode("A.re", "<X<caret> />;");
 
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret().getNavigationElement();
+        RPsiLet e = (RPsiLet) getNavigationElementAtCaret();
         assertEquals("X.make", e.getQualifiedName());
     }
 
@@ -66,7 +66,7 @@ public class ResolveJsxTagElementRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module X = { [@react.component] let make = (~value) => <div/>; };");
         configureCode("B.re", "open A; <X<caret> ");
 
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret().getNavigationElement();
+        RPsiLet e = (RPsiLet) getNavigationElementAtCaret();
         assertEquals("A.X.make", e.getQualifiedName());
     }
 }

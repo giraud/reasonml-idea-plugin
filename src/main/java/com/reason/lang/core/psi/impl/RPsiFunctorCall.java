@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
@@ -18,12 +17,6 @@ public class RPsiFunctorCall extends ORCompositePsiElement<ORLangTypes> {
 
     public @Nullable RPsiUpperSymbol getReferenceIdentifier() {
         return ORUtil.findImmediateLastChildOfClass(this, RPsiUpperSymbol.class);
-    }
-
-    @Override
-    public @NotNull PsiElement getNavigationElement() {
-        RPsiUpperSymbol id = getReferenceIdentifier();
-        return id == null ? this : id;
     }
 
     @Override

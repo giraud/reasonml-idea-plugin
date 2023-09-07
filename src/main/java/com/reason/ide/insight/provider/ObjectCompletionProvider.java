@@ -29,7 +29,7 @@ public class ObjectCompletionProvider {
         if (previousElement instanceof RPsiLowerSymbol) {
             LOG.debug(" -> lower symbol", previousElement);
 
-            PsiLowerSymbolReference reference = (PsiLowerSymbolReference) previousElement.getReference();
+            RPsiLowerSymbolReference reference = (RPsiLowerSymbolReference) previousElement.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
             if (LOG.isDebugEnabled()) {
                 LOG.debug(" -> resolved to", resolvedElement == null ? null : resolvedElement.getParent());
@@ -64,7 +64,7 @@ public class ObjectCompletionProvider {
                     LOG.debug("Testing let signature", letSignature.getText());
 
                     RPsiLowerSymbol sigTerm = ORUtil.findImmediateLastChildOfClass(letSignature.getItems().get(0), RPsiLowerSymbol.class);
-                    PsiLowerSymbolReference sigReference = sigTerm == null ? null : sigTerm.getReference();
+                    RPsiLowerSymbolReference sigReference = sigTerm == null ? null : sigTerm.getReference();
                     PsiElement resolvedSignature = sigReference == null ? null : sigReference.resolve();
 
                     if (resolvedSignature instanceof RPsiType && ((RPsiType) resolvedSignature).isJsObject()) {
@@ -79,13 +79,13 @@ public class ObjectCompletionProvider {
                 return ((RPsiJsObject) valueElement).getFields();
             } else if (valueElement instanceof RPsiLowerSymbol) {
                 // Must be an object defined outside
-                PsiLowerSymbolReference valueReference = (PsiLowerSymbolReference) valueElement.getReference();
+                RPsiLowerSymbolReference valueReference = (RPsiLowerSymbolReference) valueElement.getReference();
                 PsiElement valueResolvedElement = valueReference == null ? null : valueReference.resolveInterface();
                 return valueResolvedElement == null ? null : getFields(valueResolvedElement);
             } else if (valueElement instanceof RPsiUpperSymbol) {
                 // Must be a path of an object defined outside
                 PsiElement lSymbol = ORUtil.nextSiblingWithTokenType(valueElement, ORUtil.getTypes(resolvedElement.getLanguage()).LIDENT);
-                PsiLowerSymbolReference valueReference = lSymbol == null ? null : (PsiLowerSymbolReference) lSymbol.getReference();
+                RPsiLowerSymbolReference valueReference = lSymbol == null ? null : (RPsiLowerSymbolReference) lSymbol.getReference();
                 PsiElement valueResolvedElement = valueReference == null ? null : valueReference.resolveInterface();
                 return valueResolvedElement == null ? null : getFields(valueResolvedElement);
             }

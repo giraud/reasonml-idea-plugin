@@ -1,7 +1,6 @@
 // This is a generated file. Not intended for manual editing.
 package com.reason.lang.ocamllex;
 
-import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 
 public class OclLexTypes extends ORTypes {

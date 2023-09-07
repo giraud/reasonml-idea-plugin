@@ -34,11 +34,8 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>426 - Module alias must be resolved for resolution (same file)</li>
-                    <li>424 - Incorrect ternary parsing in Rescript when using newline</li>
-                    <li>422 - Plugin "failed to save settings and has been disabled" in PyCharm</li>
-                    <li>421 - End of comments containing quotes not always detected</li>
-                    <li>418 - Globally opened modules don’t participate in autocomplete resolution</li>
+                    <li>427 - Preview not working in 'find in files'</li>
+                    <li>425 - Structure panel Some variables have the icon indicating a function</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

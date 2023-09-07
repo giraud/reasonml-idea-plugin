@@ -83,12 +83,6 @@ public class RPsiExternalImpl extends RPsiTokenStub<ORLangTypes, RPsiExternal, P
     //endregion
 
     @Override
-    public @NotNull PsiElement getNavigationElement() {
-        PsiElement id = getNameIdentifier();
-        return id == null ? this : id;
-    }
-
-    @Override
     public int getTextOffset() {
         PsiElement id = getNameIdentifier();
         return id == null ? 0 : id.getTextOffset();

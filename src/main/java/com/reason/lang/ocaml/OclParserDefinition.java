@@ -1,13 +1,11 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.extapi.psi.*;
 import com.intellij.lang.*;
 import com.intellij.lexer.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.ocamllex.*;
 import com.reason.lang.core.stub.type.*;
 import org.jetbrains.annotations.*;
 
@@ -16,52 +14,50 @@ public class OclParserDefinition implements ParserDefinition {
     private static final TokenSet COMMENTS = TokenSet.create(OclTypes.INSTANCE.MULTI_COMMENT);
     private static final TokenSet STRINGS = TokenSet.create(OclTypes.INSTANCE.STRING_VALUE);
 
-    @NotNull
     @Override
-    public Lexer createLexer(Project project) {
+    public @NotNull Lexer createLexer(Project project) {
         return new OclLexer();
     }
 
-    @NotNull
-    public TokenSet getWhitespaceTokens() {
+    @Override
+    public @NotNull TokenSet getWhitespaceTokens() {
         return WHITE_SPACES;
     }
 
-    @NotNull
-    public TokenSet getCommentTokens() {
+    @Override
+    public @NotNull TokenSet getCommentTokens() {
         return COMMENTS;
     }
 
-    @NotNull
-    public TokenSet getStringLiteralElements() {
+    @Override
+    public @NotNull TokenSet getStringLiteralElements() {
         return STRINGS;
     }
 
-    @NotNull
-    public PsiParser createParser(final Project project) {
+    @Override
+    public @NotNull PsiParser createParser(final Project project) {
         return new OclParser(false);
     }
 
-    @NotNull
     @Override
-    public IFileElementType getFileNodeType() {
+    public @NotNull IFileElementType getFileNodeType() {
         return OclFileStubElementType.INSTANCE;
     }
 
-    @NotNull
-    public PsiFile createFile(@NotNull FileViewProvider viewProvider) {
+    @Override
+    public @NotNull PsiFile createFile(@NotNull FileViewProvider viewProvider) {
         return viewProvider.getFileType() instanceof OclInterfaceFileType
                 ? new OclInterfaceFile(viewProvider)
                 : new OclFile(viewProvider);
     }
 
-    @NotNull
-    public SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
+    @Override
+    public @NotNull SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
         return SpaceRequirements.MAY;
     }
 
-    @NotNull
-    public PsiElement createElement(@NotNull ASTNode node) {
+    @Override
+    public @NotNull PsiElement createElement(@NotNull ASTNode node) {
         IElementType type = node.getElementType();
         if (type instanceof ORStubElementType) {
             //noinspection rawtypes
