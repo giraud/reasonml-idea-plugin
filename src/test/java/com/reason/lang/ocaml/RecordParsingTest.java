@@ -52,7 +52,8 @@ public class RecordParsingTest extends OclParsingTestCase {
         assertEquals("b11", allFields.get(1).getName());
     }
 
-    //public void test_mixin() {   TODO
+    //TODO
+    //public void test_mixin() {
     //    RPsiLet let = firstOfType(parseCode("let x = { component with otherField = 1 }"), RPsiLet.class);
     //
     //    RPsiRecord record = (RPsiRecord) let.getBinding().getFirstChild();
@@ -60,6 +61,7 @@ public class RecordParsingTest extends OclParsingTestCase {
     //    assertEquals(field.getName(), "otherField");
     //}
 
+    //TODO
     //public void test_annotations() {
     //    RPsiType e = first(typeExpressions(parseCode("type props = { [@bs.optional] key: string, [@bs.optional] [@bs.as \"aria-label\"] ariaLabel: string, };")));
     //    RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
