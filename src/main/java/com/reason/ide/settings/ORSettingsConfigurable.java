@@ -71,10 +71,9 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         return getHelpTopic();
     }
 
-    @NotNull
     @Nls
     @Override
-    public String getDisplayName() {
+    public @NotNull String getDisplayName() {
         return "OCaml(Reason) / Rescript";
     }
 
