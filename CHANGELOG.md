@@ -12,11 +12,10 @@
                         
 ## Unreleased
 
+## 0.117.1 - 2023/09/11
+
 - :bug: [#429](https://github.com/giraud/reasonml-idea-plugin/issues/429) Structure panel shows "Unknown presentation ..." for "module X : sig ..."
 - :bug: [#428](https://github.com/giraud/reasonml-idea-plugin/issues/428) Webstorm error: No display name specified in plugin descriptor...
- 
-## 0.117 - 2023/09/07
-
 - :bug: [#427](https://github.com/giraud/reasonml-idea-plugin/issues/427) Preview not working in 'find in files'
 - :bug: [#425](https://github.com/giraud/reasonml-idea-plugin/issues/425) Structure panel Some variables have the icon indicating a function
 
