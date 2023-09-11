@@ -34,6 +34,8 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
+                    <li>429 - Structure panel shows "Unknown presentation ..." for "module X : sig ..."</li>
+                    <li>428 - Webstorm error: No display name specified in plugin descriptor...</li>
                     <li>427 - Preview not working in 'find in files'</li>
                     <li>425 - Structure panel Some variables have the icon indicating a function</li>
                 </ul>
