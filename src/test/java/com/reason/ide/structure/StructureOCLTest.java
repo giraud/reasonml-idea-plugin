@@ -153,6 +153,23 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertPresentation("x", null, ORIcons.LET, fn1.getPresentation());
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/429
+    @Test
+    public void test_GH_429() {
+        FileBase e = configureCode("A.mli", """
+                module X : sig
+                    type t
+                end
+                """);
+
+        StructureViewModel model = new ORStructureViewModel(e);
+
+        TreeElement x = model.getRoot().getChildren()[0];
+        assertPresentation("X", "A.X", ORIcons.INNER_MODULE_INTF, x.getPresentation());
+        TreeElement xt = x.getChildren()[0];
+        assertPresentation("t", null, ORIcons.TYPE, xt.getPresentation());
+
+    }
     private void assertPresentation(String name, String location, @Nullable Icon icon, @NotNull ItemPresentation pres) {
         assertEquals("Incorrect name", name, pres.getPresentableText());
         assertEquals("Incorrect location", location, pres.getLocationString());

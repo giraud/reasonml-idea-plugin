@@ -20,7 +20,6 @@ public class RPsiModuleSignature extends ORCompositePsiElement<ORLangTypes> impl
     @Override
     public String @Nullable [] getPath() {
         return ORUtil.getQualifiedPath(this);
-
     }
 
     public @Nullable RPsiUpperSymbol getNameIdentifier() {
