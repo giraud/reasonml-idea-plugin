@@ -85,9 +85,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                     return m_viewElement.getText();
                 }
 
-                @Nullable
                 @Override
-                public String getLocationString() {
+                public @Nullable String getLocationString() {
                     if (myElement instanceof RPsiLet && ((RPsiLet) myElement).isDeconstruction()) {
                         return "";
                     }
@@ -96,9 +95,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                             : "";
                 }
 
-                @Nullable
                 @Override
-                public Icon getIcon(boolean unused) {
+                public @Nullable Icon getIcon(boolean unused) {
                     return PsiIconUtil.getProvidersIcon(myElement, 0);
                 }
             };
@@ -177,7 +175,14 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         RPsiModuleSignature moduleSignature = moduleElement.getModuleSignature();
         if (moduleSignature != null) {
-            treeElements.add(new StructureViewElement(moduleSignature, myLevel + 1));
+            RPsiUpperSymbol nameIdentifier = moduleSignature.getNameIdentifier();
+            if (nameIdentifier != null) {
+                // module type of ...
+                treeElements.add(new StructureViewElement(moduleSignature, myLevel + 1));
+            } else {
+                // sig ... end
+                moduleSignature.acceptChildren(new ElementVisitor(treeElements, myLevel));
+            }
         }
 
         if (moduleSignature == null) {

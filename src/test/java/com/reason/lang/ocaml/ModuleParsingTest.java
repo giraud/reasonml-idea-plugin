@@ -106,12 +106,17 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_rec_signature() {
-        PsiFile file = parseCode("module rec A : sig type output = (Constr.constr * UState.t) option type task end = struct end");
+        RPsiInnerModule e = firstOfType(parseCode("""
+                module rec A : sig
+                  type output = (Constr.constr * UState.t) option
+                  type task
+                end = struct end
+                """), RPsiInnerModule.class);
 
-        assertEquals(1, expressions(file).size());
-        RPsiInnerModule e = first(moduleExpressions(file));
         assertEquals("A", e.getName());
-        assertEquals("sig type output = (Constr.constr * UState.t) option type task end", e.getModuleSignature().getText());
+        RPsiModuleSignature es = e.getModuleSignature();
+        assertNull(PsiTreeUtil.findChildOfType(es, RPsiSignature.class));
+        assertEquals("sig\n  type output = (Constr.constr * UState.t) option\n  type task\nend", es.getText());
         assertEquals("struct end", e.getBody().getText());
     }
 

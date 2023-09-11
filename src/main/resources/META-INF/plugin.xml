@@ -291,7 +291,7 @@
         <additionalLibraryRootsProvider implementation="com.reason.ide.library.OclLibraryRootProvider"/>
 
         <projectService serviceImplementation="com.reason.ide.settings.ORSettings"/>
-        <projectConfigurable id="settings.reason" groupId="language"
+        <projectConfigurable id="settings.reason" groupId="language" displayName="OCaml(Reason) / Rescript"
                              instance="com.reason.ide.settings.ORSettingsConfigurable"/>
 
         <projectSdkSetupValidator implementation="com.reason.ide.library.OclSdkSetupValidator"/>
@@ -389,7 +389,7 @@
          | Templates
          -->
 
-        <liveTemplateContext implementation="com.reason.ide.template.RmlContextType$Generic"/>
+        <liveTemplateContext id="REASON_CODE" implementation="com.reason.ide.template.RmlContextType$Generic"/>
         <defaultLiveTemplates file="liveTemplates/Reason.xml"/>
 
         <liveTemplateContext implementation="com.reason.ide.template.ResContextType$Generic"/>

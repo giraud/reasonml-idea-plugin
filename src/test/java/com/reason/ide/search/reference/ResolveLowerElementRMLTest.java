@@ -288,7 +288,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_pipe_first() {
-        configureCode("Css.mli", "val px: int => string;");
+        configureCode("Css.mli", "val px: int -> string");
         configureCode("A.re", "Dimensions.spacing.small->Css.px<caret>");
 
         RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
@@ -297,7 +297,7 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_pipe_first_open() {
-        configureCode("Css.mli", "val px: int => string;");
+        configureCode("Css.mli", "val px: int -> string");
         configureCode("A.re", "let make = () => { open Css; Dimensions.Spacing.small->px<caret>; }");
 
         RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
@@ -450,15 +450,13 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     }
 
     //region record
-/* TODO
     @Test
     public void test_record_type() {
         configureCode("A.re", "type t = { f1: bool, f2: int }; let x = { f1: true, f2<caret>: 421 };");
 
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.t.f2", e.getQualifiedName());
     }
-*/
 
     @Test
     public void test_record() {
@@ -549,9 +547,11 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/358
     @Test
     public void test_GH_358() {
-        configureCode("A.re", "let clearPath = () => ();\n " +
-                "module Xxx = { type t = | ClearPath; let clearPath = () => (); };\n " +
-                "let reducer = fun | Xxx.ClearPath => clearPath<caret>();");
+        configureCode("A.re", """
+                let clearPath = () => ();
+                module Xxx = { type t = | ClearPath; let clearPath = () => (); };
+                let reducer = fun | Xxx.ClearPath => clearPath<caret>();
+                """);
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.clearPath", e.getQualifiedName());

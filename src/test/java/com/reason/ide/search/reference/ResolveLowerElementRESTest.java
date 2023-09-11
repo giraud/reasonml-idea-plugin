@@ -148,9 +148,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     public void test_type_with_path_2() {
         configureCode("A.res", "type t\n type y = X.Y.t<caret>");
 
-        assertThrows(AssertionError.class, "element not found in file A.res", () -> {
-            PsiElement e = myFixture.getElementAtCaret();
-        });
+        assertThrows(AssertionError.class, "element not found in file A.res", () -> myFixture.getElementAtCaret());
     }
 
     @Test
@@ -288,7 +286,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_pipe_first() {
-        configureCode("Css.mli", "val px: int => string");
+        configureCode("Css.mli", "val px: int -> string");
         configureCode("A.res", "Dimensions.spacing.small->Css.px<caret>");
 
         RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
@@ -297,7 +295,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_pipe_first_open() {
-        configureCode("Css.mli", "val px: int => string");
+        configureCode("Css.mli", "val px: int -> string");
         configureCode("A.res", "let make = () => { open Css; Dimensions.spacing.small->px<caret> }");
 
         RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
@@ -450,15 +448,16 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     }
 
     //region record
-/* TODO
     @Test
     public void test_record_type() {
-        configureCode("A.res", "type t = { f1: bool, f2: int }\n let x = { f1: true, f2<caret>: 421 }");
+        configureCode("A.res", """
+                type t = { f1: bool, f2: int }
+                let x = { f1: true, f2<caret>: 421 }
+                """);
 
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.t.f2", e.getQualifiedName());
     }
-*/
 
     @Test
     public void test_record() {
