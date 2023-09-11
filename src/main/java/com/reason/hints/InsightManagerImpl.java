@@ -70,7 +70,7 @@ public class InsightManagerImpl implements InsightManager {
         String rincewindName = getRincewindFilename(cmtFile.getParent(), "");
         File rincewindFile = rincewindName == null ? null : getRincewindTarget(rincewindName);
         return rincewindFile == null
-                ? "<unknown>\n  <reason>rincewindFile not found</reason>\n  <file>" + cmtFile.getPath() + "</file>\n</unknow/>"
+                ? "<unknown>\n  <reason>rincewindFile not found</reason>\n  <file>" + cmtFile.getPath() + "</file>\n</unknown/>"
                 : myProject.getService(RincewindProcess.class).dumpTree(cmtFile, rincewindFile.getPath());
     }
 

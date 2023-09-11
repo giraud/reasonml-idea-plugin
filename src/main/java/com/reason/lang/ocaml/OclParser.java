@@ -557,6 +557,9 @@ public class OclParser extends CommonPsiParser {
             if (is(myTypes.C_MODULE_BINDING)) { // This is the body of a module type
                 // module type X = |>sig<| ...
                 updateScopeToken(myTypes.SIG);
+            } else if (is(myTypes.C_MODULE_SIGNATURE)) {
+                // module X : |>sig<| ...
+                markDummyScope(myTypes.C_SCOPED_EXPR, myTypes.SIG);
             } else {
                 markScope(myTypes.C_SIG_EXPR, myTypes.SIG);
             }
