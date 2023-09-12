@@ -96,7 +96,9 @@ public class JsxAttributeCompletionProvider {
             if (props != null) {
                 for (RPsiRecordField field : props.getRecordFields()) {
                     RPsiSignature signature = field.getSignature();
-                    boolean isMandatory = true; // TODO: hmSignature.isMandatory(0);
+                    List<RPsiSignatureItem> items = signature == null ? null : signature.getItems();
+                    RPsiSignatureItem firstSigItem = items == null || items.isEmpty() ? null : items.get(0);
+                    boolean isMandatory = firstSigItem != null && !firstSigItem.isOptional();
                     for (RPsiAnnotation annotation : ORUtil.prevAnnotations(field)) {
                         if ("@bs.optional".equals(annotation.getName())) {
                             isMandatory = false;

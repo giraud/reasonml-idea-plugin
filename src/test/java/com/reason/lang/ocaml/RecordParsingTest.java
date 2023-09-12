@@ -52,23 +52,23 @@ public class RecordParsingTest extends OclParsingTestCase {
         assertEquals("b11", allFields.get(1).getName());
     }
 
-    //TODO
-    //public void test_mixin() {
-    //    RPsiLet let = firstOfType(parseCode("let x = { component with otherField = 1 }"), RPsiLet.class);
-    //
-    //    RPsiRecord record = (RPsiRecord) let.getBinding().getFirstChild();
-    //    RPsiRecordField field = record.getFields().iterator().next();
-    //    assertEquals(field.getName(), "otherField");
-    //}
+    @Test
+    public void test_mixin() {
+        RPsiRecord e = firstOfType(parseCode("let x = { component with otherField = 1}"), RPsiRecord.class);
 
-    //TODO
-    //public void test_annotations() {
-    //    RPsiType e = first(typeExpressions(parseCode("type props = { [@bs.optional] key: string, [@bs.optional] [@bs.as \"aria-label\"] ariaLabel: string, };")));
-    //    RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
-    //
-    //    List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
-    //    assertSize(2, fields);
-    //    assertEquals("key", fields.get(0).getName());
-    //    assertEquals("ariaLabel", fields.get(1).getName());
-    //}
+        assertEquals("component", PsiTreeUtil.findChildOfType(e, RPsiMixinField.class).getText());
+        RPsiRecordField field = e.getFields().iterator().next();
+        assertEquals("otherField", field.getName());
+    }
+
+    @Test
+    public void test_annotations() {
+        RPsiType e = first(typeExpressions(parseCode("type props = { key: string [@bs.optional]; ariaLabel: string [@bs.optional] [@bs.as \"aria-label\"]; }")));
+        RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
+
+        List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
+        assertSize(2, fields);
+        assertEquals("key", fields.get(0).getName());
+        assertEquals("ariaLabel", fields.get(1).getName());
+    }
 }

@@ -71,7 +71,7 @@ public class TypeParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_binding_with_record() {
-        RPsiTypeBinding e = firstOfType(parseCode("type t = { string_f_apply: ('a -> unit); string_help: string option; list_f_edit: ('a -> 'a) option; }"), RPsiTypeBinding.class);
+        RPsiTypeBinding e = firstOfType(parseCode("type 'a t = { string_f_apply: ('a -> unit); string_help: string option; list_f_edit: ('a -> 'a) option; }"), RPsiTypeBinding.class);
         RPsiRecord er = ORUtil.findImmediateFirstChildOfClass(e, RPsiRecord.class);
 
         assertNoParserError(e);

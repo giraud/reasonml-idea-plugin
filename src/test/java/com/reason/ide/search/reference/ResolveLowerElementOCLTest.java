@@ -306,22 +306,28 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
     //TODO
     //@Test
     //public void test_pipe_first_open_2() {
-    //    configureCode("Core.re", "module Async = { let get = x => x; };");
-    //    configureCode("A.re", "open Core.Async; request->get<caret>(\"windows/settings\")");
+    //    configureCode("Core.ml", """
+    //            module Async = struct
+    //              let get x = x
+    //            end
+    //            """);
+    //    configureCode("A.ml", """
+    //            open Core.Async
+    //            request |. get<caret> "windows/settings"
+    //            """);
     //
     //    RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
     //    assertEquals("Core.Async.get", e.getQualifiedName());
     //}
 
-    //TODO
-    //@Test
-    //public void test_pipe_first_open_with_path() {
-    //    configureCode("Css.mli", "module Rule = { val px: int => string; };");
-    //    configureCode("A.re", "let make = () => { open Css; Dimensions.spacing.small->Rule.px<caret>; }");
-    //
-    //    RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
-    //    assertEquals("Css.Rule.px", e.getQualifiedName());
-    //}
+    @Test
+    public void test_pipe_first_open_with_path() {
+        configureCode("Css.mli", "module Rule = struct val px: int -> string end");
+        configureCode("A.ml", "let make () = let open Css in Dimensions.spacing.small |. Rule.px<caret>");
+
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
+        assertEquals("Css.Rule.px", e.getQualifiedName());
+    }
 
     @Test
     public void test_multiple_module() {
@@ -332,25 +338,23 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("Command.Settings.Action.convert", e.getQualifiedName());
     }
 
-    //TODO
-    //@Test
-    //public void test_variant_constructor() {
-    //    configureCode("B.re", "let convert = x => x;");
-    //    configureCode("A.re", "X.Variant(B.convert<caret>())");
-    //
-    //    RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-    //    assertEquals("B.convert", e.getQualifiedName());
-    //}
+    @Test
+    public void test_variant_constructor() {
+        configureCode("B.ml", "let convert x = x");
+        configureCode("A.re", "let _ = X.Variant(B.convert<caret> 1)");
 
-    //TODO
-    //@Test
-    //public void test_variant_constructor_tuple() {
-    //    configureCode("B.re", "type t('a) = | Variant('a, 'b);");
-    //    configureCode("A.re", "let x = 1; B.Variant(X.Y, x<caret>)");
-    //
-    //    RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-    //    assertEquals("A.x", e.getQualifiedName());
-    //}
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("B.convert", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_variant_constructor_tuple() {
+        configureCode("B.ml", "type ('a, 'b) t = | Variant of 'a * 'b");
+        configureCode("A.ml", "let x = 1\n let _ = B.Variant(X.Y, x<caret>)");
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.x", e.getQualifiedName());
+    }
 
     @Test
     public void test_open_include() {
@@ -373,72 +377,72 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("Css_Rule.fontStyle", e.getQualifiedName());
     }
 
-    //TODO
-    //@Test
-    //public void test_resolution_1() {
-    //    configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
-    //    configureCode("Belt_Map.ml", "module String = Belt_MapString;");
-    //    configureCode("Belt_Option.mli", "val flatMap : 'a option -> ('a -> 'b option) -> 'b option");
-    //    configureCode("Belt.re", "module Option = Belt_Option; module Map = Belt_Map;");
-    //    configureCode("A.re", "let x = (dict, locale) => locale->Belt.Option.flatMap<caret>(dict->Belt.Map.String.get);");
-    //
-    //    RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
-    //    assertEquals("Belt_Option.flatMap", e.getQualifiedName());
-    //}
+    @Test
+    public void test_resolution_1() {
+        configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
+        configureCode("Belt_Map.ml", "module String = Belt_MapString");
+        configureCode("Belt_Option.mli", "val flatMap : 'a option -> ('a -> 'b option) -> 'b option");
+        configureCode("Belt.ml", "module Option = Belt_Option\n module Map = Belt_Map");
+        configureCode("A.ml", "let fn dict locale = (locale |. Belt.Option.flatMap<caret>) (dict |. Belt.Map.String.get)");
 
-    //TODO
-    //@Test
-    //public void test_resolution_2() {
-    //    configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
-    //    configureCode("Belt_Map.ml", "module String = Belt_MapString;");
-    //    configureCode("Belt_Option.mli", "val flatMap : 'a option -> ('a -> 'b option) -> 'b option");
-    //    configureCode("Belt.re", "module Option = Belt_Option; module Map = Belt_Map;");
-    //    configureCode("A.re", "let x = (dict, locale) => locale->Belt.Option.flatMap(dict->Belt.Map.String.get<caret>);");
-    //
-    //    RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
-    //    assertEquals("Belt_MapString.get", e.getQualifiedName());
-    //}
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
+        assertEquals("Belt_Option.flatMap", e.getQualifiedName());
+    }
 
-    //TODO
-    //@Test
-    //public void test_functor_body() {
-    //    configureCode("A.ml", "module Make(M:I) = struct let a = 3 end");
-    //    configureCode("B.ml", "module Instance = A.Make(struct end) let b = Instance.a<caret>");
-    //
-    //    PsiElement e = myFixture.getElementAtCaret();
-    //    assertEquals("A.Make.a", e.getQualifiedName());
-    //}
+    @Test
+    public void test_resolution_2() {
+        configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
+        configureCode("Belt_Map.ml", "module String = Belt_MapString");
+        configureCode("Belt_Option.mli", "val flatMap : 'a option -> ('a -> 'b option) -> 'b option");
+        configureCode("Belt.ml", "module Option = Belt_Option\n module Map = Belt_Map");
+        configureCode("A.ml", "let x dict locale = (locale |. Belt.Option.flatMap) (dict |. Belt.Map.String.get<caret>)");
 
-    //TODO
-    //@Test
-    //public void test_file_include_functor() {
-    //    configureCode("A.re", "module Make = (M:I) => { let a = 3; }; include Make({})");
-    //    configureCode("B.re", "let b = A.a<caret>;");
-    //
-    //    PsiElement e = myFixture.getElementAtCaret();
-    //    assertEquals("A.Make.a", e.getQualifiedName());
-    //}
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
+        assertEquals("Belt_MapString.get", e.getQualifiedName());
+    }
 
-    //TODO
+    @Test
+    public void test_functor_body() {
+        configureCode("A.ml", "module Make(M:I) = struct let a = 3 end");
+        configureCode("B.ml", "module Instance = A.Make(struct end)\n let b = Instance.a<caret>");
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.Make.a", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_file_include_functor() {
+        configureCode("A.ml", """
+                module Make (M:I) = struct
+                  let a = 3
+                end
+                include Make(struct end)
+                """);
+        configureCode("B.ml", "let b = A.a<caret>;");
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.Make.a", e.getQualifiedName());
+    }
+
+    // TODO
     //@Test
     //public void test_functor_result_with_alias() {
     //    configureCode("A.ml", "module type Result = sig let a: int end");
     //    configureCode("B.ml", "module T = A\n module Make(M:Intf): T.Result = struct let b = 3 end");
-    //    configureCode("C.ml", "module Instance = Make(struct end) let c = Instance.a<caret>");
+    //    configureCode("C.ml", "module Instance = Make(struct end)\n let c = Instance.a<caret>");
     //
-    //    PsiElement e = myFixture.getElementAtCaret();
+    //    RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
     //    assertEquals("A.Result.a", e.getQualifiedName());
     //}
 
-    //TODO
-    //@Test
-    //public void test_path_functor() {
-    //    configureCode("pervasives.mli", "external compare : 'a -> 'a -> int = \"%compare\"");
-    //    configureCode("A.re", "module B = X.Functor({ let cmp = Pervasives.compare<caret>; })");
-    //
-    //    RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
-    //    assertEquals("Pervasives.compare", e.getQualifiedName());
-    //}
+    @Test
+    public void test_path_functor() {
+        configureCode("pervasives.mli", "external compare : 'a -> 'a -> int = \"%compare\"");
+        configureCode("A.ml", "module B = X.Functor(struct let cmp = Pervasives.compare<caret> end)");
+
+        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
+        assertEquals("Pervasives.compare", e.getQualifiedName());
+    }
 
     //region record
     @Test
@@ -484,36 +488,6 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
     //
     //    RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
     //    assertEquals("A.a.b.c.d", e.getQualifiedName());
-    //}
-    //endregion
-
-    //region object
-    // TODO
-    //@Test
-    //public void test_object_l1() {
-    //    configureCode("A.re", "let a = { \"b\": 1, \"c\": 2 }; a##b<caret>");
-    //
-    //    RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
-    //    assertEquals("A.a.b", e.getQualifiedName());
-    //}
-
-    // TODO
-    //@Test
-    //public void test_object_l3() {
-    //    configureCode("A.re", "let a = { \"b\": { \"c\": { \"d\": 1 } } }; a##b##c##d<caret>");
-    //
-    //    RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
-    //    assertEquals("A.a.b.c.d", e.getQualifiedName());
-    //}
-
-    // TODO
-    //@Test
-    //public void test_deep_open() {
-    //    configureCode("A.re", "let oo = {\"first\": {\"deep\": true}, \"deep\": {\"other\": {\"asd\": 1} } }");
-    //    configureCode("B.re", "open A; oo##deep##other<caret>");
-    //
-    //    RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
-    //    assertEquals("A.oo.deep.other", e.getQualifiedName());
     //}
     //endregion
 

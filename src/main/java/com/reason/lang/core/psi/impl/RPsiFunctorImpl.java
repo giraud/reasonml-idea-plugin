@@ -112,7 +112,13 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
 
     @Override
     public @Nullable RPsiFunctorResult getReturnType() {
-        return ORUtil.findImmediateFirstChildOfClass(this, RPsiFunctorResult.class);
+        RPsiFunctorResult result = ORUtil.findImmediateFirstChildOfClass(this, RPsiFunctorResult.class);
+        if (result == null) {
+            // maybe it is a signature only
+            RPsiModuleSignature signature = ORUtil.findImmediateFirstChildOfClass(this, RPsiModuleSignature.class);
+            result = signature == null ? null : ORUtil.findImmediateFirstChildOfClass(signature, RPsiFunctorResult.class);
+        }
+        return result;
     }
 
     @Override
