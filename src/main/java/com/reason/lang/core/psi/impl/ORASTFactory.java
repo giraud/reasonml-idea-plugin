@@ -204,6 +204,9 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         if (type == myTypes.C_DIRECTIVE) {
             return new RPsiDirective(myTypes, type);
         }
+        if (type == myTypes.C_SOME) {
+            return new RPsiOptionValue(myTypes, type);
+        }
         if (type == myTypes.C_STRUCT_EXPR) {
             return new RPsiStruct(myTypes, type);
         }

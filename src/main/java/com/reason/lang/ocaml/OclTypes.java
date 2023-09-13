@@ -69,6 +69,7 @@ public class OclTypes extends ORLangTypes {
         C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", OclLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", OclLanguage.INSTANCE);
+        C_NONE = new ORCompositeElementType("C_NONE", OclLanguage.INSTANCE);
         C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
         C_PARAM = new ORCompositeElementType("C_PARAM", OclLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", OclLanguage.INSTANCE);
@@ -116,6 +117,7 @@ public class OclTypes extends ORLangTypes {
 
         // Dummy types
 
+        H_ATOM = new ORCompositeElementType("H_ATOM", OclLanguage.INSTANCE);
         H_PLACE_HOLDER = new ORCompositeElementType("H_PLACE_HOLDER", OclLanguage.INSTANCE);
         H_COLLECTION_ITEM = new ORCompositeElementType("H_COLLECTION_ITEM", OclLanguage.INSTANCE);
         H_NAMED_PARAM_DECLARATION = new ORCompositeElementType("H_NAMED_PARAM_DECLARATION", OclLanguage.INSTANCE);

@@ -77,16 +77,23 @@ public class SignatureParsingTest extends ResParsingTestCase {
         RPsiFunction function = (RPsiFunction) let.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
 
-        assertFalse(parameters.get(0).getSignature().getItems().get(0).isOptional());
-        assertEquals("Js.t", parameters.get(0).getSignature().getItems().get(0).getText());
-        assertFalse(parameters.get(1).getSignature().getItems().get(0).isOptional());
-        assertEquals("option<(. unit) => unit>", parameters.get(1).getSignature().getItems().get(0).getText());
-        assertEquals("bool", parameters.get(2).getSignature().asText(getLangProps()));
-        assertTrue(parameters.get(2).isOptional());
-        assertEquals("false", parameters.get(2).getDefaultValue().getText());
-        assertEquals("float", parameters.get(3).getSignature().asText(getLangProps()));
-        assertTrue(parameters.get(3).isOptional());
-        assertEquals("?", parameters.get(3).getDefaultValue().getText());
+        RPsiParameterDeclaration p0 = parameters.get(0);
+        assertFalse(p0.getSignature().getItems().get(0).isOptional());
+        assertEquals("Js.t", p0.getSignature().getItems().get(0).getText());
+
+        RPsiParameterDeclaration p1 = parameters.get(1);
+        assertFalse(p1.getSignature().getItems().get(0).isOptional());
+        assertEquals("option<(. unit) => unit>", p1.getSignature().getItems().get(0).getText());
+
+        RPsiParameterDeclaration p2 = parameters.get(2);
+        assertEquals("bool", p2.getSignature().asText(getLangProps()));
+        assertTrue(p2.isOptional());
+        assertEquals("false", p2.getDefaultValue().getText());
+
+        RPsiParameterDeclaration p3 = parameters.get(3);
+        assertEquals("float", p3.getSignature().asText(getLangProps()));
+        assertTrue(p3.isOptional());
+        assertEquals("?", p3.getDefaultValue().getText());
     }
 
     @Test

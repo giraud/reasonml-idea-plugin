@@ -35,7 +35,12 @@ public class AnnotationParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_eol() {
-        RPsiType e = firstOfType(parseCode("type t = { @optional\n fn: unit => string }"), RPsiType.class);
+        RPsiType e = firstOfType(parseCode("""
+                type t = {
+                  @optional
+                  fn: unit => string }
+                """), RPsiType.class);
+        assertNoParserError(e);
 
         RPsiRecord r = (RPsiRecord) e.getBinding().getFirstChild();
         RPsiAnnotation a = PsiTreeUtil.findChildOfType(r, RPsiAnnotation.class);
@@ -45,7 +50,11 @@ public class AnnotationParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_doc() {
-        RPsiAnnotation e = firstOfType(parseCode("@ocaml.doc(\n \"something\" \n )"), RPsiAnnotation.class);
+        RPsiAnnotation e = firstOfType(parseCode("""
+                @ocaml.doc(
+                  "something"
+                )
+                """), RPsiAnnotation.class);
 
         assertEquals("@ocaml.doc", e.getName());
         assertEquals("\"something\"", e.getValue().getText());

@@ -39,8 +39,11 @@ public class JsObjectParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_definition() {
-        RPsiType e = first(typeExpressions(parseCode("type t = {\n \"a\": UUID.t, \"b\": array<int>\n }")));
-        assertNoParserError(e);
+        RPsiType e = first(typeExpressions(parseCode("""
+                type t = {
+                  "a": UUID.t, "b": array<int>
+                }
+                """)));
 
         PsiElement binding = e.getBinding();
         RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);

@@ -70,6 +70,7 @@ public class ResTypes extends ORLangTypes {
         C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", ResLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", ResLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", ResLanguage.INSTANCE);
+        C_NONE = new ORCompositeElementType("C_NONE", ResLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", ResLanguage.INSTANCE);
         C_OPEN_VARIANT = new ORCompositeElementType("C_OPEN_VARIANT", ResLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", ResLanguage.INSTANCE);
@@ -115,6 +116,7 @@ public class ResTypes extends ORLangTypes {
 
         // Dummy types
 
+        H_ATOM = new ORCompositeElementType("H_ATOM", ResLanguage.INSTANCE);
         H_PLACE_HOLDER = new ORCompositeElementType("H_PLACE_HOLDER", ResLanguage.INSTANCE);
         H_COLLECTION_ITEM = new ORCompositeElementType("H_COLLECTION_ITEM", ResLanguage.INSTANCE);
         H_NAMED_PARAM_DECLARATION = new ORCompositeElementType("H_NAMED_PARAM_DECLARATION", ResLanguage.INSTANCE);

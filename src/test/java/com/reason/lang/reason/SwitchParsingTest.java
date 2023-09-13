@@ -145,12 +145,12 @@ public class SwitchParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_switch_of_switch() {
-        RPsiSwitch e = firstOfType(parseCode("switch (a) { | None => switch (b) { | X => 1 | Y => 2 } | Some => 3 }"), RPsiSwitch.class);
+        RPsiSwitch e = firstOfType(parseCode("switch (a) { | None => switch (b) { | X => 1 | Y => 2 } | Some(_) => 3 }"), RPsiSwitch.class);
 
         List<RPsiPatternMatch> patterns = e.getPatterns();
         assertSize(2, patterns);
         assertEquals("None => switch (b) { | X => 1 | Y => 2 }", patterns.get(0).getText());
-        assertEquals("Some => 3", patterns.get(1).getText());
+        assertEquals("Some(_) => 3", patterns.get(1).getText());
         RPsiSwitch inner = PsiTreeUtil.findChildOfType(patterns.get(0), RPsiSwitch.class);
         assertSize(2, inner.getPatterns());
     }

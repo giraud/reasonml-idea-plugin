@@ -111,7 +111,11 @@ public class RecordParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_if() {
-        RPsiRecord e = firstOfType(parseCode("let _ = { sortable: Manual({ ascending: idx == 0 ? Some(dir > 0) : None }) }"), RPsiRecord.class);
+        RPsiRecord e = firstOfType(parseCode("""
+                let _ = {
+                  sortable: Manual({ ascending: idx == 0 ? Some(dir > 0) : None })
+                }
+                """), RPsiRecord.class);
 
         assertSize(1, e.getFields());
         RPsiRecordField f0 = e.getFields().get(0);

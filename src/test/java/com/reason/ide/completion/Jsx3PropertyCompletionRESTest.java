@@ -80,4 +80,16 @@ public class Jsx3PropertyCompletionRESTest extends ORBasePlatformTestCase {
         assertSize(3, completions);
         assertContainsElements(completions, "key", "ref", "name");
     }
+
+    @Test
+    public void test_div() {
+        myFixture.configureByFiles("ReactDOM.res");
+        configureCode("A.res", "let _ = <div <caret>>");
+
+        myFixture.completeBasic();
+
+        List<String> completions = myFixture.getLookupElementStrings();
+        assertContainsElements(completions, "key", "ref", "ariaDetails", "className", "onClick");
+        assertSize(5, completions);
+    }
 }

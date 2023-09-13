@@ -73,4 +73,12 @@ public class VariantCallParsingTest extends ResParsingTestCase {
         RPsiUpperSymbol upper = PsiTreeUtil.findChildOfType(e, RPsiUpperSymbol.class);
         assertEquals("SetErrorMessage", upper.getText());
     }
+
+    @Test
+    public void test_ternary() {
+        RPsiTernary e = firstOfType(parseCode("let _ = true ? Checkbox.Checked : Checkbox.NotChecked"), RPsiTernary.class);
+
+        assertEquals(myTypes.A_VARIANT_NAME, e.getThenExpression().getLastChild().getNode().getElementType());
+        assertEquals(myTypes.A_VARIANT_NAME, e.getElseExpression().getLastChild().getNode().getElementType());
+    }
 }

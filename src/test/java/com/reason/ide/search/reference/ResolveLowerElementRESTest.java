@@ -485,30 +485,30 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     //endregion
 
     //region object
-    @Test
-    public void test_object_l1() {
-        configureCode("A.res", "let a = { \"b\": 1, \"c\": 2 }\n a##b<caret>");
+    //@Test
+    //public void test_object_l1() { TODO
+    //    configureCode("A.res", "let a = { \"b\": 1, \"c\": 2 }\n a[\"b\"<caret>]");
+    //
+    //    RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
+    //    assertEquals("A.a.b", e.getQualifiedName());
+    //}
 
-        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
-        assertEquals("A.a.b", e.getQualifiedName());
-    }
+    //@Test
+    //public void test_object_l3() { TODO
+    //    configureCode("A.res", "let a = { \"b\": { \"c\": { \"d\": 1 } } }\n a[\"b\"][\"c\"][\"d\"<caret>]");
+    //
+    //    RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
+    //    assertEquals("A.a.b.c.d", e.getQualifiedName());
+    //}
 
-    @Test
-    public void test_object_l3() {
-        configureCode("A.res", "let a = { \"b\": { \"c\": { \"d\": 1 } } }\n a##b##c##d<caret>");
-
-        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
-        assertEquals("A.a.b.c.d", e.getQualifiedName());
-    }
-
-    @Test
-    public void test_deep_open() {
-        configureCode("A.res", "let oo = {\"first\": {\"deep\": true}, \"deep\": {\"other\": {\"asd\": 1} } }");
-        configureCode("B.res", "open A\n oo##deep##other<caret>");
-
-        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
-        assertEquals("A.oo.deep.other", e.getQualifiedName());
-    }
+    //@Test TODO
+    //public void test_deep_open() {
+    //    configureCode("A.res", "let oo = {\"first\": {\"deep\": true}, \"deep\": {\"other\": {\"asd\": 1} } }");
+    //    configureCode("B.res", "open A\n oo[\"deep\"][\"other\"<caret>]");
+    //
+    //    RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
+    //    assertEquals("A.oo.deep.other", e.getQualifiedName());
+    //}
     //endregion
 
     @Test

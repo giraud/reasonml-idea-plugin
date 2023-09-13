@@ -89,7 +89,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
     @Test
     public void test_namespace() {
         myFixture.configureByFile("bsconfig.json");
-        myFixture.configureByFile("src/A.re");
+        configureCode("A.re", "module A1 = {};");
         configureCode("B.re", "<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);

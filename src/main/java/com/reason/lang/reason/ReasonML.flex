@@ -42,7 +42,6 @@ EOL=\n|\r|\r\n
 WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
 WHITE_SPACE={WHITE_SPACE_CHAR}+
 
-NEWLINE=("\r"* "\n")
 LOWERCASE=[a-z_]
 UPPERCASE=[A-Z]
 IDENTCHAR=[A-Za-z_0-9']
@@ -259,13 +258,13 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 
 <IN_STRING> {
     "\"" { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
-    "\\" { NEWLINE } ([ \t] *) { }
+    "\\" {EOL} ([ \t] *) { }
     "\\" [\\\'\"ntbr ] { }
     "\\" [0-9] [0-9] [0-9] { }
     "\\" "o" [0-3] [0-7] [0-7] { }
     "\\" "x" [0-9a-fA-F] [0-9a-fA-F] { }
     "\\" . { }
-    { NEWLINE } { }
+    {EOL}  { }
     . { }
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
 }
@@ -274,13 +273,13 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "/*" { if (!inCommentString) commentDepth += 1; }
     "*/" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
     "\"" { inCommentString = !inCommentString; }
-    . | {NEWLINE} { }
+    . | {EOL} { }
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 <IN_REASON_SL_COMMENT> {
     .         { }
-    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
+    {EOL} { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
     <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
 }
 

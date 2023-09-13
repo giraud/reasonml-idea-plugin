@@ -23,6 +23,25 @@ public class VariantDeclarationParsingTest extends ResParsingTestCase {
     }
 
     @Test
+    public void test_basic_eol() {
+        RPsiType e = first(typeExpressions(parseCode("""
+                type precision =
+                  | YearDay
+                  | YearDayMinute
+                  | YearDayMinuteSecond
+                """)));
+
+        List<RPsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), RPsiVariantDeclaration.class);
+        //assertEquals(3, declarations.size());
+        assertEquals("YearDay", declarations.get(0).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
+        assertEquals("YearDayMinute", declarations.get(1).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
+        assertEquals("YearDayMinuteSecond", declarations.get(2).getVariant().getText());
+        assertEquals(myTypes.A_VARIANT_NAME, declarations.get(2).getVariant().getNode().getElementType());
+    }
+
+    @Test
     public void test_basic2() {
         RPsiType e = first(typeExpressions(parseCode("type t = Black | White")));
 

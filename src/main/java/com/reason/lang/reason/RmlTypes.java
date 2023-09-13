@@ -70,6 +70,7 @@ public class RmlTypes extends ORLangTypes {
         C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", RmlLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", RmlLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", RmlLanguage.INSTANCE);
+        C_NONE = new ORCompositeElementType("C_NONE", RmlLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", RmlLanguage.INSTANCE);
         C_OPEN_VARIANT = new ORCompositeElementType("C_OPEN_VARIANT", RmlLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", RmlLanguage.INSTANCE);
@@ -115,6 +116,7 @@ public class RmlTypes extends ORLangTypes {
 
         // Dummy types
 
+        H_ATOM = new ORCompositeElementType("H_ATOM", RmlLanguage.INSTANCE);
         H_PLACE_HOLDER = new ORCompositeElementType("H_PLACE_HOLDER", RmlLanguage.INSTANCE);
         H_COLLECTION_ITEM = new ORCompositeElementType("H_COLLECTION_ITEM", RmlLanguage.INSTANCE);
         H_NAMED_PARAM_DECLARATION = new ORCompositeElementType("H_NAMED_PARAM_DECLARATION", RmlLanguage.INSTANCE);

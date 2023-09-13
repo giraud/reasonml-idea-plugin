@@ -62,6 +62,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_MIXIN_FIELD;
     public ORCompositeType C_ML_INTERPOLATOR;
     public ORCompositeType C_NAMED_PARAM;
+    public ORCompositeType C_NONE;
     public ORCompositeType C_OBJECT;
     public ORCompositeType C_OPEN_VARIANT;
     public ORCompositeType C_OPTION;
@@ -110,6 +111,7 @@ public abstract class ORLangTypes extends ORTypes {
 
     // Dummy types
 
+    public ORCompositeType H_ATOM;
     public ORCompositeType H_PLACE_HOLDER;
     public ORCompositeType H_COLLECTION_ITEM;
     public ORCompositeType H_NAMED_PARAM_DECLARATION;
