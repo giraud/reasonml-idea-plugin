@@ -12,6 +12,8 @@
                         
 ## Unreleased
 
+- :bug: [#433](https://github.com/giraud/reasonml-idea-plugin/issues/433) Gutter icon in ml file pointing to mli file disappears when it shouldn't
+
 ## 0.117.1 - 2023/09/11
 
 - :bug: [#429](https://github.com/giraud/reasonml-idea-plugin/issues/429) Structure panel shows "Unknown presentation ..." for "module X : sig ..."
