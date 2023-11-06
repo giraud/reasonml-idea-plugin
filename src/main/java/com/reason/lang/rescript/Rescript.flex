@@ -91,6 +91,8 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     {WHITE_SPACE} { return WHITE_SPACE; }
     {EOL}         { return types.EOL; }
 
+    "async"       { return types.ASYNC; }
+    "await"       { return types.AWAIT; }
     "and"         { return types.AND; }
     "as"          { return types.AS; }
     "assert"      { return types.ASSERT; }
@@ -132,7 +134,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "struct"      { return types.STRUCT; }
     "switch"      { return types.SWITCH; }
     "then"        { return types.THEN; }
-    "to"          { return types.TO; }
     "try"         { return types.TRY; }
     "type"        { return types.TYPE; }
     "unpack"      { return types.UNPACK; }

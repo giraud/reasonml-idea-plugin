@@ -124,6 +124,8 @@ public abstract class ORLangTypes extends ORTypes {
     public ORTokenElementType CHAR_VALUE;
     public ORTokenElementType INT_VALUE;
 
+    public ORTokenElementType ASYNC;
+    public ORTokenElementType AWAIT;
     public ORTokenElementType AND;
     public ORTokenElementType ASSERT;
     public ORTokenElementType BACKSLASH;

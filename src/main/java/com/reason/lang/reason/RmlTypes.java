@@ -123,6 +123,8 @@ public class RmlTypes extends ORLangTypes {
 
         // Token element types
 
+        ASYNC = new ORTokenElementType("ASYNC", RmlLanguage.INSTANCE);
+        AWAIT = new ORTokenElementType("AWAIT", RmlLanguage.INSTANCE);
         BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", RmlLanguage.INSTANCE);
         STRING_VALUE = new ORTokenElementType("STRING_VALUE", RmlLanguage.INSTANCE);
         FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", RmlLanguage.INSTANCE);

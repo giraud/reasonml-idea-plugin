@@ -124,6 +124,8 @@ public class OclTypes extends ORLangTypes {
 
         // Token element types
 
+        ASYNC = new ORTokenElementType("ASYNC", OclLanguage.INSTANCE);
+        AWAIT = new ORTokenElementType("AWAIT", OclLanguage.INSTANCE);
         BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", OclLanguage.INSTANCE);
         STRING_VALUE = new ORTokenElementType("STRING_VALUE", OclLanguage.INSTANCE);
         FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", OclLanguage.INSTANCE);

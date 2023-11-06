@@ -123,6 +123,8 @@ public class ResTypes extends ORLangTypes {
 
         // Token element types from lexer
 
+        ASYNC = new ORTokenElementType("ASYNC", ResLanguage.INSTANCE);
+        AWAIT = new ORTokenElementType("AWAIT", ResLanguage.INSTANCE);
         AND = new ORTokenElementType("AND", ResLanguage.INSTANCE);
         L_AND = new ORTokenElementType("L_AND", ResLanguage.INSTANCE);
         L_OR = new ORTokenElementType("L_OR", ResLanguage.INSTANCE);
