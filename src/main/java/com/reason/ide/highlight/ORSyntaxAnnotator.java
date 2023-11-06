@@ -1,5 +1,6 @@
 package com.reason.ide.highlight;
 
+import com.intellij.lang.*;
 import com.intellij.lang.annotation.*;
 import com.intellij.openapi.editor.colors.*;
 import com.intellij.openapi.editor.markup.*;
@@ -21,7 +22,8 @@ public abstract class ORSyntaxAnnotator implements Annotator {
     }
 
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
-        IElementType elementType = element.getNode().getElementType();
+        ASTNode elementNode = element.getNode();
+        IElementType elementType = elementNode.getElementType();
 
         if (elementType == myTypes.C_TAG_START) {
             PsiElement nameIdentifier = ((RPsiTagStart) element).getNameIdentifier();
@@ -49,12 +51,22 @@ public abstract class ORSyntaxAnnotator implements Annotator {
         }
         // remapped tokens are not seen by syntaxAnnotator
         else if (elementType == myTypes.A_VARIANT_NAME) {
-            color(holder, element, VARIANT_NAME_);
+            enforceColor(holder, element, VARIANT_NAME_);
         } else if (elementType == myTypes.A_MODULE_NAME) {
-            color(holder, element, MODULE_NAME_);
+            enforceColor(holder, element, MODULE_NAME_);
+        } else if (elementType == myTypes.LIDENT) {
+            IElementType parentElementType = elementNode.getTreeParent().getElementType();
+            if (parentElementType == myTypes.C_TYPE_DECLARATION || parentElementType == myTypes.C_EXTERNAL_DECLARATION || parentElementType == myTypes.C_RECORD_FIELD) {
+                eraseColor(element, holder);
+            }
         }
     }
 
+    private static void eraseColor(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
+        holder.newSilentAnnotation(INFORMATION).range(element).enforcedTextAttributes(TextAttributes.ERASE_MARKER).create();
+    }
+
+    @SuppressWarnings("SameParameterValue")
     private void enforceColor(@NotNull AnnotationHolder holder, @NotNull TextRange range, @NotNull TextAttributesKey key) {
         holder.newSilentAnnotation(INFORMATION).range(range).enforcedTextAttributes(TextAttributes.ERASE_MARKER).create();
         holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(key).create();
@@ -63,12 +75,6 @@ public abstract class ORSyntaxAnnotator implements Annotator {
     private void enforceColor(@NotNull AnnotationHolder holder, @Nullable PsiElement element, @NotNull TextAttributesKey key) {
         if (element != null) {
             holder.newSilentAnnotation(INFORMATION).range(element).enforcedTextAttributes(TextAttributes.ERASE_MARKER).create();
-            holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(key).create();
-        }
-    }
-
-    private void color(@NotNull AnnotationHolder holder, @Nullable PsiElement element, @NotNull TextAttributesKey key) {
-        if (element != null) {
             holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(key).create();
         }
     }

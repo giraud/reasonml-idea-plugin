@@ -21,7 +21,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> RML_KEYWORD_TYPES =
             of(RmlTypes.INSTANCE.OPEN, RmlTypes.INSTANCE.MODULE, RmlTypes.INSTANCE.FUN, RmlTypes.INSTANCE.LET, RmlTypes.INSTANCE.TYPE,
                     RmlTypes.INSTANCE.INCLUDE, RmlTypes.INSTANCE.EXTERNAL, RmlTypes.INSTANCE.IF, RmlTypes.INSTANCE.ELSE,
-                    RmlTypes.INSTANCE.ENDIF, RmlTypes.INSTANCE.SWITCH, RmlTypes.INSTANCE.TRY, RmlTypes.INSTANCE.RAISE,
+                    RmlTypes.INSTANCE.SWITCH, RmlTypes.INSTANCE.TRY, RmlTypes.INSTANCE.RAISE,
                     RmlTypes.INSTANCE.FOR, RmlTypes.INSTANCE.IN, RmlTypes.INSTANCE.TO, RmlTypes.INSTANCE.BOOL_VALUE,
                     RmlTypes.INSTANCE.REF, RmlTypes.INSTANCE.EXCEPTION, RmlTypes.INSTANCE.WHEN, RmlTypes.INSTANCE.AND,
                     RmlTypes.INSTANCE.REC, RmlTypes.INSTANCE.WHILE, RmlTypes.INSTANCE.ASR, RmlTypes.INSTANCE.CLASS,
@@ -57,7 +57,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
             of(
                     ResTypes.INSTANCE.OPEN, ResTypes.INSTANCE.MODULE, ResTypes.INSTANCE.FUN, ResTypes.INSTANCE.LET,
                     ResTypes.INSTANCE.TYPE, ResTypes.INSTANCE.INCLUDE, ResTypes.INSTANCE.EXTERNAL, ResTypes.INSTANCE.LIST,
-                    ResTypes.INSTANCE.IF, ResTypes.INSTANCE.ELSE, ResTypes.INSTANCE.ENDIF, ResTypes.INSTANCE.SWITCH,
+                    ResTypes.INSTANCE.IF, ResTypes.INSTANCE.ELSE, ResTypes.INSTANCE.SWITCH,
                     ResTypes.INSTANCE.TRY, ResTypes.INSTANCE.CATCH, ResTypes.INSTANCE.RAISE, ResTypes.INSTANCE.FOR, ResTypes.INSTANCE.IN,
                     ResTypes.INSTANCE.TO, ResTypes.INSTANCE.BOOL_VALUE, ResTypes.INSTANCE.REF, ResTypes.INSTANCE.EXCEPTION,
                     ResTypes.INSTANCE.WHEN, ResTypes.INSTANCE.AND, ResTypes.INSTANCE.REC, ResTypes.INSTANCE.WHILE,
@@ -92,24 +92,28 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
 
     private static final Set<IElementType> OCL_KEYWORD_TYPES =
             of(
-                    OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.MODULE, OclTypes.INSTANCE.FUN, OclTypes.INSTANCE.LET,
-                    OclTypes.INSTANCE.TYPE, OclTypes.INSTANCE.INCLUDE, OclTypes.INSTANCE.EXTERNAL, OclTypes.INSTANCE.IF,
-                    OclTypes.INSTANCE.ELSE, OclTypes.INSTANCE.ENDIF, OclTypes.INSTANCE.SWITCH, OclTypes.INSTANCE.TRY,
-                    OclTypes.INSTANCE.RAISE, OclTypes.INSTANCE.FOR, OclTypes.INSTANCE.IN, OclTypes.INSTANCE.TO,
-                    OclTypes.INSTANCE.BOOL_VALUE, OclTypes.INSTANCE.REF, OclTypes.INSTANCE.EXCEPTION, OclTypes.INSTANCE.WHEN,
-                    OclTypes.INSTANCE.AND, OclTypes.INSTANCE.REC, OclTypes.INSTANCE.WHILE, OclTypes.INSTANCE.ASR,
-                    OclTypes.INSTANCE.CLASS, OclTypes.INSTANCE.CONSTRAINT, OclTypes.INSTANCE.DOWNTO, OclTypes.INSTANCE.FUNCTOR,
-                    OclTypes.INSTANCE.INHERIT, OclTypes.INSTANCE.INITIALIZER, OclTypes.INSTANCE.LAND, OclTypes.INSTANCE.LOR,
-                    OclTypes.INSTANCE.LSL, OclTypes.INSTANCE.LSR, OclTypes.INSTANCE.LXOR, OclTypes.INSTANCE.METHOD,
-                    OclTypes.INSTANCE.MOD, OclTypes.INSTANCE.NEW, OclTypes.INSTANCE.NONREC, OclTypes.INSTANCE.OR,
-                    OclTypes.INSTANCE.PRIVATE, OclTypes.INSTANCE.VIRTUAL, OclTypes.INSTANCE.AS, OclTypes.INSTANCE.MUTABLE,
-                    OclTypes.INSTANCE.OF, OclTypes.INSTANCE.VAL, OclTypes.INSTANCE.PRI,
-                    // OCaml
-                    OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.WITH, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.DONE,
-                    OclTypes.INSTANCE.RECORD, OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.END, OclTypes.INSTANCE.LAZY,
-                    OclTypes.INSTANCE.ASSERT, OclTypes.INSTANCE.THEN, OclTypes.INSTANCE.FUNCTION, OclTypes.INSTANCE.STRUCT,
-                    OclTypes.INSTANCE.SIG, OclTypes.INSTANCE.OBJECT, OclTypes.INSTANCE.DIRECTIVE_IF, OclTypes.INSTANCE.DIRECTIVE_ELSE,
-                    OclTypes.INSTANCE.DIRECTIVE_ELIF, OclTypes.INSTANCE.DIRECTIVE_END, OclTypes.INSTANCE.DIRECTIVE_ENDIF);
+                    // reserved
+                    OclTypes.INSTANCE.ASSERT, OclTypes.INSTANCE.AND, OclTypes.INSTANCE.ASR, OclTypes.INSTANCE.AS,
+                    OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.CLASS, OclTypes.INSTANCE.CONSTRAINT, OclTypes.INSTANCE.DOWNTO,
+                    OclTypes.INSTANCE.DONE, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.EXCEPTION, OclTypes.INSTANCE.EXTERNAL,
+                    OclTypes.INSTANCE.ELSE, OclTypes.INSTANCE.END, OclTypes.INSTANCE.FUNCTION, OclTypes.INSTANCE.FUNCTOR,
+                    OclTypes.INSTANCE.BOOL_VALUE/*false*/, OclTypes.INSTANCE.FUN, OclTypes.INSTANCE.FOR,
+                    OclTypes.INSTANCE.INITIALIZER, OclTypes.INSTANCE.INCLUDE, OclTypes.INSTANCE.INHERIT,
+                    OclTypes.INSTANCE.IF, OclTypes.INSTANCE.IN, OclTypes.INSTANCE.LAND, OclTypes.INSTANCE.LAZY,
+                    OclTypes.INSTANCE.LXOR, OclTypes.INSTANCE.LET, OclTypes.INSTANCE.LOR, OclTypes.INSTANCE.LSL,
+                    OclTypes.INSTANCE.LSR, OclTypes.INSTANCE.MUTABLE, OclTypes.INSTANCE.METHOD, OclTypes.INSTANCE.MODULE,
+                    OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.MOD, OclTypes.INSTANCE.NONREC, OclTypes.INSTANCE.NEW,
+                    OclTypes.INSTANCE.OBJECT, OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.OF, OclTypes.INSTANCE.OR,
+                    OclTypes.INSTANCE.PRIVATE, OclTypes.INSTANCE.REC, OclTypes.INSTANCE.STRUCT, OclTypes.INSTANCE.SIG,
+                    OclTypes.INSTANCE.THEN, /*true, */ OclTypes.INSTANCE.TYPE, OclTypes.INSTANCE.TRY, OclTypes.INSTANCE.TO,
+                    OclTypes.INSTANCE.VIRTUAL, OclTypes.INSTANCE.VAL, OclTypes.INSTANCE.WHEN,
+                    // not reserved
+                    OclTypes.INSTANCE.RAISE, OclTypes.INSTANCE.WHILE, OclTypes.INSTANCE.PRI, OclTypes.INSTANCE.WITH,
+                    OclTypes.INSTANCE.RECORD, OclTypes.INSTANCE.REF);
+
+    private static final Set<IElementType> OCL_MACRO_TYPES = of(
+            OclTypes.INSTANCE.DIRECTIVE_IF, OclTypes.INSTANCE.DIRECTIVE_ELSE,
+            OclTypes.INSTANCE.DIRECTIVE_ELIF, OclTypes.INSTANCE.DIRECTIVE_END, OclTypes.INSTANCE.DIRECTIVE_ENDIF);
 
     private static final Set<IElementType> OCL_OPERATION_SIGN_TYPES =
             of(
@@ -135,6 +139,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey BRACKETS_ = createTextAttributesKey("REASONML_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
     public static final TextAttributesKey CODE_LENS_ = createTextAttributesKey("REASONML_CODE_LENS", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
     public static final TextAttributesKey KEYWORD_ = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+    public static final TextAttributesKey MACRO_ = createTextAttributesKey("REASONML_MACRO", DefaultLanguageHighlighterColors.KEYWORD);
     public static final TextAttributesKey INTERPOLATED_REF_ = createTextAttributesKey("REASONML_INTERPOLATED_REF", DefaultLanguageHighlighterColors.IDENTIFIER);
     public static final TextAttributesKey MARKUP_TAG_ = createTextAttributesKey("REASONML_MARKUP_TAG", DefaultLanguageHighlighterColors.MARKUP_TAG);
     public static final TextAttributesKey MARKUP_ATTRIBUTE_ = createTextAttributesKey("REASONML_MARKUP_ATTRIBUTE", DefaultLanguageHighlighterColors.MARKUP_ATTRIBUTE);
@@ -161,6 +166,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS_};
     private static final TextAttributesKey[] OPTION_KEYS = new TextAttributesKey[]{OPTION_};
     static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD_};
+    static final TextAttributesKey[] MACRO_KEYS = new TextAttributesKey[]{MACRO_};
     static final TextAttributesKey[] SEMICOLON_KEYS = new TextAttributesKey[]{SEMICOLON_};
     private static final TextAttributesKey[] DOT_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
     private static final TextAttributesKey[] COMMA_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
@@ -234,6 +240,8 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
         } else if (m_types == OclTypes.INSTANCE) {
             if (OCL_KEYWORD_TYPES.contains(tokenType)) {
                 return KEYWORD_KEYS;
+            } else if (OCL_MACRO_TYPES.contains(tokenType)) {
+                return MACRO_KEYS;
             } else if (OCL_OPERATION_SIGN_TYPES.contains(tokenType)) {
                 return OPERATION_SIGN_KEYS;
             } else if (OCL_OPTIONS_TYPES.contains(tokenType)) {

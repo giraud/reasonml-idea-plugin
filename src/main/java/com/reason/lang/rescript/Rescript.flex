@@ -103,7 +103,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "downto"      { return types.DOWNTO; }
     "else"        { return types.ELSE; }
     "end"         { return types.END; }
-    "endif"       { return types.ENDIF; }
     "exception"   { return types.EXCEPTION; }
     "external"    { return types.EXTERNAL; }
     "for"         { return types.FOR; }

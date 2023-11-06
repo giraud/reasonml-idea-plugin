@@ -1350,7 +1350,7 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseRef() {
-            if (is(myTypes.C_RECORD_FIELD)) {
+            if (is(myTypes.C_RECORD_FIELD) || is(myTypes.C_TYPE_DECLARATION) || is(myTypes.C_EXTERNAL_DECLARATION)) {
                 remapCurrentToken(myTypes.LIDENT).wrapAtom(myTypes.CA_LOWER_SYMBOL);
             }
         }

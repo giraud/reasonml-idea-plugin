@@ -168,7 +168,6 @@ public class ResTypes extends ORLangTypes {
         EOL = new ORTokenElementType("EOL", ResLanguage.INSTANCE);
         ELSE = new ORTokenElementType("ELSE", ResLanguage.INSTANCE);
         END = new ORTokenElementType("END", ResLanguage.INSTANCE);
-        ENDIF = new ORTokenElementType("ENDIF", ResLanguage.INSTANCE);
         NOT_EQ = new ORTokenElementType("EQ", ResLanguage.INSTANCE);
         NOT_EQEQ = new ORTokenElementType("EQEQ", ResLanguage.INSTANCE);
         EQ = new ORTokenElementType("EQ", ResLanguage.INSTANCE);

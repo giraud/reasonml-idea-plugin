@@ -19,6 +19,7 @@ public class ORColorSettingsPage implements ColorSettingsPage {
                     new AttributesDescriptor("Code lens", ORSyntaxHighlighter.CODE_LENS_),
                     new AttributesDescriptor("Comment", ORSyntaxHighlighter.RML_COMMENT_),
                     new AttributesDescriptor("Keyword", ORSyntaxHighlighter.KEYWORD_),
+                    new AttributesDescriptor("Macro", ORSyntaxHighlighter.MACRO_),
                     new AttributesDescriptor("Markup attribute", ORSyntaxHighlighter.MARKUP_ATTRIBUTE_),
                     new AttributesDescriptor("Markup tag", ORSyntaxHighlighter.MARKUP_TAG_),
                     new AttributesDescriptor("Module name", ORSyntaxHighlighter.MODULE_NAME_),

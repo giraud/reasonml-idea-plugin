@@ -166,7 +166,6 @@ public class RmlTypes extends ORLangTypes {
         DONE = new ORTokenElementType("DONE", RmlLanguage.INSTANCE);
         ELSE = new ORTokenElementType("ELSE", RmlLanguage.INSTANCE);
         END = new ORTokenElementType("END", RmlLanguage.INSTANCE);
-        ENDIF = new ORTokenElementType("ENDIF", RmlLanguage.INSTANCE);
         NOT_EQ = new ORTokenElementType("EQ", RmlLanguage.INSTANCE);
         NOT_EQEQ = new ORTokenElementType("EQEQ", RmlLanguage.INSTANCE);
         EQ = new ORTokenElementType("EQ", RmlLanguage.INSTANCE);

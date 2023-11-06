@@ -167,7 +167,6 @@ public class OclTypes extends ORLangTypes {
         DONE = new ORTokenElementType("DONE", OclLanguage.INSTANCE);
         ELSE = new ORTokenElementType("ELSE", OclLanguage.INSTANCE);
         END = new ORTokenElementType("END", OclLanguage.INSTANCE);
-        ENDIF = new ORTokenElementType("ENDIF", OclLanguage.INSTANCE);
         NOT_EQ = new ORTokenElementType("EQ", OclLanguage.INSTANCE);
         NOT_EQEQ = new ORTokenElementType("EQEQ", OclLanguage.INSTANCE);
         EQ = new ORTokenElementType("EQ", OclLanguage.INSTANCE);
