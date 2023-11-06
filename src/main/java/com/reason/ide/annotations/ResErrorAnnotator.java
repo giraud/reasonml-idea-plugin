@@ -26,8 +26,9 @@ public class ResErrorAnnotator {
     }
 
     public static @Nullable ORErrorAnnotator.InitialInfo<ResResolvedCompiler> collectInformation(@NotNull ResResolvedCompiler compiler, @NotNull Editor editor, @NotNull PsiFile psiFile) {
+        ORCompilerConfigManager configManager = psiFile.getProject().getService(ORCompilerConfigManager.class);
+        BsConfig config = configManager.getConfig(compiler.getConfigFile());
         VirtualFile contentRoot = compiler.getContentRoot();
-        BsConfig config = contentRoot == null ? null : ResPlatform.readConfig(contentRoot);
         VirtualFile libRoot = contentRoot == null ? null : contentRoot.findFileByRelativePath("lib/bs");
         Ninja ninja = contentRoot == null ? null : compiler.readNinjaBuild();
 

@@ -4,6 +4,7 @@ import com.intellij.lang.documentation.*;
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.util.text.*;
 import com.intellij.psi.*;
+import com.reason.*;
 import com.reason.ide.files.*;
 import com.reason.lang.*;
 import com.reason.lang.core.psi.*;

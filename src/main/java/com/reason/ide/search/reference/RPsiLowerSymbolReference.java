@@ -4,10 +4,10 @@ import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
+import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
-import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -66,9 +66,8 @@ public class RPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSy
 
         long endInstructions = System.currentTimeMillis();
 
-        BsConfigManager service = project.getService(BsConfigManager.class);
-        BsConfig bsConfig = service.getNearest(myElement.getContainingFile());
-        Set<String> openedModules = bsConfig == null ? null : bsConfig.getOpenedDeps();
+        BsConfig config = project.getService(ORCompilerConfigManager.class).getNearestConfig(myElement.getContainingFile());
+        Set<String> openedModules = config == null ? null : config.getOpenedDeps();
         if (LOG.isTraceEnabled()) {
             LOG.trace("  virtual file", ORFileUtils.getVirtualFile(myElement.getContainingFile()));
         }

@@ -3,7 +3,7 @@ package com.reason.ide.annotations;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.ide.files.FileHelper;
+import com.reason.FileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class ErrorFileHighlighter implements Condition<VirtualFile> {

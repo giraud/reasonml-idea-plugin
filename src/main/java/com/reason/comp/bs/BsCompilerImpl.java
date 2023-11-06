@@ -8,9 +8,7 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
-import com.reason.comp.rescript.*;
 import com.reason.hints.*;
-import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.bs.*;
 import com.reason.ide.settings.*;
@@ -19,10 +17,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.concurrent.atomic.*;
 
-import static com.reason.comp.ORConstants.*;
-
 public class BsCompilerImpl implements BsCompiler {
-    private static final Log LOG = Log.create("compiler.bs");
+    private static final Log LOG = Log.create("bs.compiler");
 
     private final Project myProject;
 
@@ -48,27 +44,14 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public @NotNull String getFullVersion(@Nullable VirtualFile file) {
-        VirtualFile root = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, file);
-        if (root != null) {
-            return new BsProcess(myProject).getFullVersion(root);
-        }
-        return "unknown (content root not found)";
+        return new BsProcess(myProject).getFullVersion(file);
     }
 
     @Override
     public @NotNull String getNamespace(@NotNull VirtualFile sourceFile) {
-        BsConfig bsConfig = myProject.getService(BsConfigManager.class).getNearest(sourceFile);
+        BsConfig bsConfig = myProject.getService(ORCompilerConfigManager.class).getNearestConfig(sourceFile);
         return bsConfig == null ? "" : bsConfig.getNamespace();
     }
-
-    //@Override
-    //public void refresh(@NotNull VirtualFile bsConfigFile) {
-    //    VirtualFile file = bsConfigFile.isDirectory() ? bsConfigFile.findChild(ORConstants.BS_CONFIG_FILENAME) : bsConfigFile;
-    //    if (file != null) {
-    //        BsConfig updatedConfig = BsConfigReader.read(file);
-    //        myConfigs.put(file.getCanonicalPath(), updatedConfig);
-    //    }
-    //}
 
     @Override
     public void runDefault(@NotNull VirtualFile file, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
@@ -78,14 +61,14 @@ public class BsCompilerImpl implements BsCompiler {
     @Override
     public void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         if (!isDisabled() && myProject.getService(ORSettings.class).isBsEnabled()) {
-            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : file;
-            BsConfig bsConfig = myProject.getService(BsConfigManager.class).getNearest(sourceFile);
-            if (sourceFile == null || bsConfig == null) {
+            VirtualFile configFile = BsPlatform.findConfigFile(myProject, file);
+            BsConfig bsConfig = myProject.getService(ORCompilerConfigManager.class).getConfig(configFile);
+            if (configFile == null || bsConfig == null) {
                 return;
             }
 
             if (myProcessStarted.compareAndSet(false, true)) {
-                ProcessHandler bscHandler = new BsProcess(myProject).create(sourceFile, cliType, onProcessTerminated);
+                ProcessHandler bscHandler = new BsProcess(myProject).create(configFile, cliType, onProcessTerminated);
                 ConsoleView console = myProject.getService(ORToolWindowManager.class).getConsoleView(BsToolWindowFactory.ID);
                 if (bscHandler != null && console != null) {
                     long start = System.currentTimeMillis();
@@ -101,7 +84,7 @@ public class BsCompilerImpl implements BsCompiler {
 
                     console.attachToProcess(bscHandler);
                     bscHandler.startNotify();
-                    myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
+                    myProject.getService(InsightManager.class).downloadRincewindIfNeeded(configFile);
                 }
             } else {
                 myProcessStarted.compareAndSet(true, false);
@@ -117,11 +100,7 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public boolean isAvailable(@NotNull Project project) {
-        VirtualFile bsConfig = ORProjectManager.findFirstBsConfigurationFile(project).orElse(null);
-        VirtualFile bsbBin = bsConfig == null ? null : BsPlatform.findBinaryPathForConfigFile(project, bsConfig);
-        VirtualFile resBin = bsConfig == null ? null : ResPlatform.findBinaryPathForConfigFile(project, bsConfig);
-
-        return bsbBin != null && resBin == null;
+        return !BsPlatform.findConfigFiles(project).isEmpty();
     }
 
     @Override

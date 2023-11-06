@@ -12,7 +12,7 @@ import java.util.*;
 import static com.reason.ide.highlight.ORSyntaxHighlighter.*;
 
 public class RmlSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
-    public static final Set<IElementType> KEYWORD_TYPES = // zzz private ?
+    public static final Set<IElementType> KEYWORD_TYPES =
             of(RmlTypes.INSTANCE.OPEN, RmlTypes.INSTANCE.MODULE, RmlTypes.INSTANCE.FUN, RmlTypes.INSTANCE.LET, RmlTypes.INSTANCE.TYPE,
                     RmlTypes.INSTANCE.INCLUDE, RmlTypes.INSTANCE.EXTERNAL, RmlTypes.INSTANCE.IF, RmlTypes.INSTANCE.ELSE,
                     RmlTypes.INSTANCE.SWITCH, RmlTypes.INSTANCE.TRY, RmlTypes.INSTANCE.RAISE,

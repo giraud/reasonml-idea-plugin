@@ -128,7 +128,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         OpamEnv opamEnv = myProject.getService(OpamEnv.class);
         opamEnv.computeEnv(mySettings.getOpamLocation(), mySettings.getSwitchName(), mySettings.getCygwinBash(), null);
         // Display compiler info in console (if any)
-        myProject.getService(ORToolWindowManager.class).showShowToolWindows();
+        myProject.getService(ORToolWindowManager.class).shouldShowToolWindows();
     }
 
     private void createExternalLibraryDependency(@NotNull ORSettings settings) {
@@ -165,7 +165,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
                 }
 
                 // Find module that contains dune config root file
-                Map<Module, VirtualFile> duneContentRoots = Platform.findContentRootsFor(project, DunePlatform.DUNE_PROJECT_FILENAME);
+                Map<Module, VirtualFile> duneContentRoots = Platform.findModulesFor(project, DunePlatform.DUNE_PROJECT_FILENAME);
                 for (Module module : duneContentRoots.keySet()) {
                     ModuleRootModificationUtil.updateModel(module, moduleModel -> {
                         // Remove all libraries entries that are of type Ocaml

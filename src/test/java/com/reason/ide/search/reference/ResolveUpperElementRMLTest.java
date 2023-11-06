@@ -1,6 +1,7 @@
 package com.reason.ide.search.reference;
 
 import com.intellij.psi.*;
+import com.reason.comp.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
@@ -275,7 +276,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/418
     @Test
     public void test_with_globally_opened_module() {
-        myFixture.configureByText("bsconfig.json", toJson("{ 'name': 'foo', 'bsc-flags': ['-open Core'] }"));
+        myFixture.configureByText(ORConstants.BS_CONFIG_FILENAME, toJson("{ 'name': 'foo', 'bsc-flags': ['-open Core'] }"));
         configureCode("Core.re", "module Console = { };");
         configureCode("A.re", "Console<caret>.log()");
 

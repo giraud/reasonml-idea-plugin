@@ -1,6 +1,7 @@
 package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.*;
+import com.reason.comp.*;
 import com.reason.ide.*;
 import org.junit.*;
 import org.junit.runner.*;
@@ -88,7 +89,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_namespace() {
-        myFixture.configureByFile("bsconfig.json");
+        myFixture.configureByFile(ORConstants.BS_CONFIG_FILENAME);
         configureCode("A.re", "module A1 = {};");
         configureCode("B.re", "<caret>");
 

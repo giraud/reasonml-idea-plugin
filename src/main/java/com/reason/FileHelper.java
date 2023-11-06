@@ -1,9 +1,11 @@
-package com.reason.ide.files;
+package com.reason;
 
+import com.intellij.json.*;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
+import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.lang.core.psi.*;
 import jpsplugin.com.reason.Platform;
@@ -11,6 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.*;
+
+import static com.reason.comp.ORConstants.BS_CONFIG_FILENAME;
+import static com.reason.comp.ORConstants.RESCRIPT_CONFIG_FILENAME;
 
 public class FileHelper {
     private FileHelper() {
@@ -22,6 +27,22 @@ public class FileHelper {
                 || isOCaml(fileType)
                 || isOCamlLexer(fileType)
                 || isOCamlParser(fileType);
+    }
+
+    public static boolean isBsConfigJson(@Nullable VirtualFile file) {
+        return file != null && BS_CONFIG_FILENAME.equals(file.getName());
+    }
+
+    public static boolean isRescriptConfigJson(@Nullable VirtualFile file) {
+        return file != null && RESCRIPT_CONFIG_FILENAME.equals(file.getName());
+    }
+
+    public static boolean isCompilerConfigJson(@Nullable VirtualFile file) {
+        if (file != null && file.getFileType() instanceof JsonFileType) {
+            String fileName = file.getName();
+            return RESCRIPT_CONFIG_FILENAME.equals(fileName) || BS_CONFIG_FILENAME.equals(fileName);
+        }
+        return false;
     }
 
     public static boolean isReason(@Nullable FileType fileType) {

@@ -92,10 +92,10 @@
         <!-- OCaml - Yacc -->
         <fileType extensions="mly" name="MlY" fieldName="INSTANCE" language="Mly"
                   implementationClass="com.reason.ide.files.MlyFileType"/>
-        <!-- BuckleScript Configuration (bsconfig.json) -->
-        <fileType name="BuckleScript Configuration" fieldName="INSTANCE" language="JSON"
-                  fileNames="bsconfig.json"
-                  implementationClass="com.reason.ide.files.BsConfigJsonFileType"/>
+        <!-- Configuration files -->
+        <fileType name="Compiler configuration" fieldName="INSTANCE" language="JSON"
+                  fileNames="bsconfig.json;rescript.json"
+                  implementationClass="com.reason.ide.files.ORConfigJsonFileType"/>
         <!-- Dune -->
         <fileType name="DUNE" fieldName="INSTANCE" language="Dune"
                   fileNames="dune;dune-project;jbuild"
@@ -145,7 +145,8 @@
         <lang.syntaxHighlighterFactory language="OCamlP4"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- OCamlMlg -->
-        <lang.parserDefinition language="Mlg" implementationClass="com.reason.lang.ocamlgrammar.OclGrammarParserDefinition"/>
+        <lang.parserDefinition language="Mlg"
+                               implementationClass="com.reason.lang.ocamlgrammar.OclGrammarParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Mlg"
                                        implementationClass="com.reason.ide.highlight.OclGrammarSyntaxHighlighterFactory"/>
         <lang.fileViewProviderFactory language="Mlg"
@@ -303,7 +304,7 @@
          -->
 
         <projectService serviceImplementation="com.reason.comp.ORCompilerManager"/>
-        <projectService serviceImplementation="com.reason.comp.BsConfigManager"/>
+        <projectService serviceImplementation="com.reason.comp.ORCompilerConfigManager"/>
 
         <projectService serviceInterface="com.reason.comp.bs.BsCompiler"
                         serviceImplementation="com.reason.comp.bs.BsCompilerImpl"/>

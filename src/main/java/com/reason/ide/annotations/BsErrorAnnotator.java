@@ -26,13 +26,13 @@ public class BsErrorAnnotator {
     }
 
     public static @Nullable ORErrorAnnotator.InitialInfo<BsResolvedCompiler> collectInformation(@NotNull BsResolvedCompiler compiler, @NotNull Editor editor, @NotNull PsiFile psiFile) {
-        VirtualFile contentRoot = compiler.getContentRoot();
-        BsConfig config = contentRoot == null ? null : BsPlatform.readConfig(contentRoot);
+        BsConfig config = psiFile.getProject().getService(ORCompilerConfigManager.class).getConfig(compiler.getConfigFile());
         if (config == null) {
-            LOG.info("No bsconfig.json found for content root: " + contentRoot);
+            LOG.info("No config file found for: " + compiler.getConfigFile());
             return null;
         }
 
+        VirtualFile contentRoot = compiler.getConfigFile();
         VirtualFile libRoot = contentRoot.findFileByRelativePath("lib/bs");
         if (libRoot == null) {
             LOG.info("Unable to find BuckleScript lib root.");

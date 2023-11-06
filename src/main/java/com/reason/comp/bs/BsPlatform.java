@@ -2,9 +2,10 @@ package com.reason.comp.bs;
 
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
+import com.intellij.psi.search.*;
 import com.reason.comp.*;
-import com.reason.comp.esy.*;
-import com.reason.ide.settings.*;
+import com.reason.ide.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -12,63 +13,67 @@ import java.util.*;
 import static com.reason.comp.ORConstants.*;
 
 public class BsPlatform {
+    private static final Log LOG = Log.create("bs.platform");
+
     private BsPlatform() {
     }
 
-    public static @Nullable VirtualFile findBinaryPathForConfigFile(@NotNull Project project, @NotNull VirtualFile configFile) {
-        return ORPlatform.findCompilerPathInNodeModules(project, configFile, BS_DIR, BSC_EXE_NAME);
-    }
+    public static @NotNull List<VirtualFile> findConfigFiles(@NotNull Project project) {
+        GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
 
-    public static @Nullable VirtualFile findContentRoot(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        VirtualFile bsConfig = project.getService(BsConfigManager.class).findBsConfig(sourceFile);
-        return bsConfig == null ? null : bsConfig.getParent();
-    }
+        List<VirtualFile> validConfigs = FilenameIndex.getVirtualFilesByName(BS_CONFIG_FILENAME, scope).stream()
+                .filter(bsConfigFile -> {
+                    VirtualFile bsbBin = ORPlatform.findCompilerPathInNodeModules(project, bsConfigFile, BS_DIR, BSC_EXE_NAME);
+                    VirtualFile resBin = ORPlatform.findCompilerPathInNodeModules(project, bsConfigFile, RESCRIPT_DIR, BSC_EXE_NAME);
+                    return bsbBin != null && resBin == null;
+                })
+                .sorted(ORFileUtils.FILE_DEPTH_COMPARATOR)
+                .toList();
 
-    public static @Nullable VirtualFile findBsbExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        VirtualFile bsConfig = project.getService(BsConfigManager.class).findBsConfig(sourceFile);
-        VirtualFile binDir = bsConfig == null ? null : ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSB_EXE_NAME);
-        return binDir == null ? null : ORPlatform.findBinary(binDir, BSB_EXE_NAME);
-    }
-
-    public static @Nullable VirtualFile findBscExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        VirtualFile bsConfig = project.getService(BsConfigManager.class).findBsConfig(sourceFile);
-        VirtualFile binDir = bsConfig == null ? null : ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSC_EXE_NAME);
-        return binDir == null ? null : ORPlatform.findBinary(binDir, BSC_EXE_NAME);
-    }
-
-    public static Optional<VirtualFile> findEsyExecutable(@NotNull Project project) {
-        String esyExecutable = project.getService(ORSettings.class).getEsyExecutable();
-        if (esyExecutable.isEmpty()) {
-            return Esy.findEsyExecutable();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Valid configs for project=\"" + project.getName() + "\": [" + Joiner.join(",", validConfigs) + "]");
         }
-        return Optional.ofNullable(LocalFileSystem.getInstance().findFileByPath(esyExecutable));
+
+        return validConfigs;
+    }
+
+    public static @Nullable VirtualFile findConfigFile(@NotNull Project project, @Nullable VirtualFile sourceFile) {
+        return sourceFile != null
+                ? ORFileUtils.findAncestor(project, sourceFile, BS_CONFIG_FILENAME)
+                : findConfigFiles(project).stream().findFirst().orElse(null);
+    }
+
+    public static @Nullable VirtualFile findBsbExecutable(@NotNull Project project, @Nullable VirtualFile sourceFile) {
+        VirtualFile configFile = findConfigFile(project, sourceFile);
+        VirtualFile binDir = ORPlatform.findCompilerPathInNodeModules(project, configFile, BS_DIR, BSB_EXE_NAME);
+        return binDir != null ? ORPlatform.findBinary(binDir, BSB_EXE_NAME) : null;
+    }
+
+    public static @Nullable VirtualFile findBscExecutable(@NotNull Project project, @Nullable VirtualFile sourceFile) {
+        VirtualFile configFile = findConfigFile(project, sourceFile);
+        VirtualFile binDir = ORPlatform.findCompilerPathInNodeModules(project, configFile, BS_DIR, BSC_EXE_NAME);
+        return binDir != null ? ORPlatform.findBinary(binDir, BSC_EXE_NAME) : null;
     }
 
     public static @Nullable VirtualFile findRefmtExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        VirtualFile bsConfig = project.getService(BsConfigManager.class).findBsConfig(sourceFile);
-        VirtualFile bsPlatformDir = bsConfig == null ? null : ORPlatform.findCompilerPathInNodeModules(project, bsConfig, BS_DIR, BSC_EXE_NAME);
-        if (bsPlatformDir == null) {
+        VirtualFile bsConfigFile = ORFileUtils.findAncestor(project, sourceFile, BS_CONFIG_FILENAME);
+        VirtualFile bsDir = ORPlatform.findCompilerPathInNodeModules(project, bsConfigFile, BS_DIR, BSC_EXE_NAME);
+        if (bsDir == null) {
             return null;
         }
 
         VirtualFile binaryInBsPlatform;
 
         // first, try standard name
-        binaryInBsPlatform = ORPlatform.findBinary(bsPlatformDir, REFMT_EXE_NAME);
+        binaryInBsPlatform = ORPlatform.findBinary(bsDir, REFMT_EXE_NAME);
         if (binaryInBsPlatform == null) {
             // next, try alternative names
-            binaryInBsPlatform = ORPlatform.findBinary(bsPlatformDir, "refmt3");
+            binaryInBsPlatform = ORPlatform.findBinary(bsDir, "refmt3");
             if (binaryInBsPlatform == null) {
-                binaryInBsPlatform = ORPlatform.findBinary(bsPlatformDir, "bsrefmt");
+                binaryInBsPlatform = ORPlatform.findBinary(bsDir, "bsrefmt");
             }
         }
 
         return binaryInBsPlatform;
-    }
-
-    public static @Nullable BsConfig readConfig(@NotNull VirtualFile contentRoot) {
-        // Read bsConfig to get the compilation directives
-        VirtualFile bsConfigFile = contentRoot.findChild(BS_CONFIG_FILENAME);
-        return bsConfigFile == null ? null : BsConfigReader.read(bsConfigFile);
     }
 }

@@ -8,7 +8,7 @@ import java.util.regex.*;
 
 public interface CompilerOutputAnalyzer {
     Pattern FILE_LOCATION = Pattern.compile("\\s*File \"(.+)\", lines? (\\d+)(?:-(\\d+))?, characters (\\d+)-(\\d+):");
-    Pattern SYNTAX_LOCATION = Pattern.compile("\\s*(.+):(\\d+):(\\d+)(?:-(\\d+))?");
+    Pattern SYNTAX_LOCATION = Pattern.compile("\\s*(.+):(\\d+):(\\d+)(?:-(\\d+)(?::(\\d+))?)?");
 
     @NotNull List<OutputInfo> getOutputInfo();
 

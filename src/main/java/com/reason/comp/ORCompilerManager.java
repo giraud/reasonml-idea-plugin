@@ -2,6 +2,7 @@ package com.reason.comp;
 
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
+import com.reason.*;
 import com.reason.comp.Compiler.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.dune.*;
@@ -16,7 +17,7 @@ import java.util.*;
 import static com.reason.comp.ORConstants.*;
 
 public class ORCompilerManager {
-    private static final Log LOG = Log.create("manager.compiler");
+    private static final Log LOG = Log.create("compiler.manager");
     private final @NotNull Project myProject;
 
     public ORCompilerManager(@NotNull Project project) {
@@ -29,6 +30,11 @@ public class ORCompilerManager {
 
     public @Nullable Compiler getCompiler(@NotNull CompilerType compilerType) {
         Compiler compiler = myProject.getService(getCompilerClass(compilerType));
+        return compiler != null && compiler.isConfigured(myProject) ? compiler : null;
+    }
+
+    public @Nullable <T extends Compiler> T getCompiler(@NotNull Class<T> clazz) {
+        T compiler = myProject.getService(clazz);
         return compiler != null && compiler.isConfigured(myProject) ? compiler : null;
     }
 
@@ -96,25 +102,30 @@ public class ORCompilerManager {
             }
 
             if (EsyPackageJson.isEsyPackageJson(file)) {
-                Compiler compiler = getCompiler(CompilerType.ESY);
-                myCompiler = compiler == null ? null : new ORResolvedCompiler<>(compiler, file, null);
+                EsyCompiler compiler = getCompiler(EsyCompiler.class);
+                myCompiler = compiler != null ? new ORResolvedCompiler<>(compiler, file, null) : null;
             } else if (DuneFileType.isDuneFile(file)) {
-                // will be empty if dune isn't configured, might be an esy project
-                Compiler compiler = getCompiler(CompilerType.DUNE);
-                myCompiler = compiler == null ? null : new ORResolvedCompiler<>(compiler, file, null);
-            } else if (BsConfigJsonFileType.isBsConfigFile(file)) {
-                // could be a rescript or a bucklescript installation
-                Compiler rescript = getCompiler(CompilerType.RESCRIPT);
-                VirtualFile binDir = ResPlatform.findBinaryPathForConfigFile(myProject, file);
-                VirtualFile binFile = binDir == null ? null : ORPlatform.findBinary(binDir, BSC_EXE_NAME);
-                if (rescript instanceof ResCompiler && binFile != null) {
-                    myCompiler = new ResResolvedCompiler((ResCompiler) rescript, file, binFile);
+                // Will be empty if dune isn't configured, might be an esy project
+                DuneCompiler compiler = getCompiler(DuneCompiler.class);
+                myCompiler = compiler != null ? new ORResolvedCompiler<>(compiler, file, null) : null;
+            } else if (FileHelper.isRescriptConfigJson(file)) {
+                LOG.debug("Detected rescript(only) config", file);
+                ResCompiler rescript = getCompiler(ResCompiler.class);
+                if (rescript != null) {
+                    VirtualFile binFile = ResPlatform.findBscExecutable(myProject, file);
+                    myCompiler = binFile != null ? new ResResolvedCompiler(rescript, file, binFile) : null;
+                }
+            } else if (FileHelper.isBsConfigJson(file)) {
+                // Could be either a Rescript or a Bucklescript installation
+                ResCompiler rescript = getCompiler(ResCompiler.class);
+                VirtualFile binFile = ResPlatform.findBscExecutable(myProject, file);
+                if (rescript != null && binFile != null) {
+                    myCompiler = new ResResolvedCompiler(rescript, file, binFile);
                 } else {
-                    Compiler bucklescript = getCompiler(CompilerType.BS);
-                    binDir = BsPlatform.findBinaryPathForConfigFile(myProject, file);
-                    binFile = binDir == null ? null : ORPlatform.findBinary(binDir, BSC_EXE_NAME);
-                    if (bucklescript instanceof BsCompiler && binFile != null) {
-                        myCompiler = new BsResolvedCompiler((BsCompiler) bucklescript, file, binFile);
+                    BsCompiler bucklescript = getCompiler(BsCompiler.class);
+                    binFile = BsPlatform.findBscExecutable(myProject, file);
+                    if (bucklescript != null && binFile != null) {
+                        myCompiler = new BsResolvedCompiler(bucklescript, file, binFile);
                     }
                 }
             }

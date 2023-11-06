@@ -4,7 +4,7 @@ import com.intellij.execution.filters.*;
 import com.intellij.execution.impl.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.ide.*;
+import com.reason.comp.dune.*;
 import org.jetbrains.annotations.*;
 
 import java.util.regex.*;
@@ -35,8 +35,10 @@ public class EsyConsoleView extends ConsoleViewImpl {
             Matcher matcher = OCAML_PATTERN.matcher(line);
             if (matcher.find()) {
                 String filePath = matcher.group(1);
-                VirtualFile duneRoot = ORProjectManager.findFirstDuneContentRoot(getProject());
-                VirtualFile virtualFile = duneRoot == null ? null : duneRoot.findFileByRelativePath(filePath);
+                VirtualFile virtualFile = DunePlatform.findConfigFiles(getProject()).stream()
+                        .findFirst()
+                        .map(configFile -> configFile.getParent().findFileByRelativePath(filePath))
+                        .orElse(null);
                 if (virtualFile != null) {
                     boolean multiline = matcher.groupCount() == 5;
                     int startPoint = entireLength - line.length();
