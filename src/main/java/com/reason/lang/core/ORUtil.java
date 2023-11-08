@@ -155,8 +155,7 @@ public class ORUtil {
         return nextSibling;
     }
 
-    @Nullable
-    public static PsiElement nextSibling(@Nullable PsiElement element) {
+    public static @Nullable PsiElement nextSibling(@Nullable PsiElement element) {
         if (element == null) {
             return null;
         }

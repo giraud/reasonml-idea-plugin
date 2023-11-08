@@ -358,13 +358,25 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseQuestionMark() {
-            if (strictlyInAny(myTypes.C_TAG_START, myTypes.C_TAG_PROP_VALUE)) {
+            if (strictlyInAny(myTypes.C_TAG_START, myTypes.C_TAG_PROP_VALUE, myTypes.C_RECORD_FIELD, myTypes.C_FIELD_VALUE)) {
                 // <jsx |>?<|prop ...
                 if (isFound(myTypes.C_TAG_START)) {
                     mark(myTypes.C_TAG_PROPERTY)
                             .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace())
                             .advance()
                             .remapCurrentToken(myTypes.PROPERTY_NAME);
+                }
+                // type t = { key|>?<|: ... }
+                //else if (isFound(myTypes.C_RECORD_FIELD)) {
+                // skip
+                //}
+                // let _ = { key: a |>?<| ... }
+                else if (isFound(myTypes.C_FIELD_VALUE)) {
+                    if (!inAny(myTypes.C_TERNARY) && previousElementType(1) != myTypes.EQ) {
+                        if (inScopeOrAny(myTypes.H_PLACE_HOLDER, myTypes.H_COLLECTION_ITEM)) { // a new ternary
+                            parseTernary(getIndex());
+                        }
+                    }
                 }
             } else if (isDone(myTypes.C_BINARY_CONDITION) || strictlyIn(myTypes.C_BINARY_CONDITION)) { // a ternary in progress
                 // ... |>?<| ...

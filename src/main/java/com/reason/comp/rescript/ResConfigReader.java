@@ -15,7 +15,7 @@ public class ResConfigReader {
     }
 
     public static @NotNull BsConfig read(@NotNull VirtualFile configFile, boolean useExternalAsSource) {
-        // For now, the same than bsconfig
+        // For now, the same as bsconfig
         return BsConfigReader.read(configFile, useExternalAsSource);
     }
 }

@@ -9,6 +9,8 @@ import com.intellij.psi.impl.source.tree.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.util.*;
 import com.intellij.ui.*;
+import com.reason.comp.*;
+import com.reason.comp.bs.*;
 import com.reason.ide.*;
 import com.reason.ide.search.index.*;
 import com.reason.ide.search.reference.*;
@@ -16,6 +18,7 @@ import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.type.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -57,7 +60,7 @@ public class JsxAttributeCompletionProvider {
                     addProperty(null, "key", "string=?", false, resultSet);
                 }
                 if (!usedNames.contains("ref")) {
-                    addProperty(null, "ref", "Js.nullable(Dom.element) => unit=?", false, resultSet);
+                    addProperty(null, "ref", "domRef=?", false, resultSet);
                 }
             }
 
@@ -82,30 +85,61 @@ public class JsxAttributeCompletionProvider {
                 }
             }
         } else if (tagName instanceof LeafPsiElement) {
-            // no tag name, it's not a custom tag
-            Collection<RPsiType> propsType = TypeFqnIndex.getElements("ReactDOM.Props.domProps", project, scope);
-            if (propsType.isEmpty()) {
-                // Old bindings
-                propsType = TypeFqnIndex.getElements("ReactDom.props", project, scope);
+            LOG.debug("Completion of a standard tag");
+
+            Collection<RPsiType> propsType;
+
+            // Try to locate the definition of the react props
+            // -----------------------------------------------
+
+            BsConfig config = project.getService(ORCompilerConfigManager.class).getNearestConfig(element.getContainingFile());
+            String jsxVersion = config != null && config.getJsxVersion() != null ? config.getJsxVersion() : "3";
+            if (jsxVersion.equals("4")) {
+                String domPropsQName = "JsxDOM" + (config.isUncurried() ? "U" : "C") + ".domProps";
+                LOG.debug("New Jsx props, using", domPropsQName);
+                propsType = TypeFqnIndex.getElements(domPropsQName, project, scope);
+            } else {
+                propsType = TypeFqnIndex.getElements("ReactDOM.Props.domProps", project, scope);
                 if (propsType.isEmpty()) {
-                    propsType = TypeFqnIndex.getElements("ReactDomRe.props", project, scope);
+                    // Old bindings
+                    propsType = TypeFqnIndex.getElements("ReactDom.props", project, scope);
+                    if (propsType.isEmpty()) {
+                        propsType = TypeFqnIndex.getElements("ReactDomRe.props", project, scope);
+                    }
                 }
             }
 
+            // Add props to the list of completions
+            // ------------------------------------
+
             RPsiType props = propsType.isEmpty() ? null : propsType.iterator().next();
             if (props != null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Properties found", props.getRecordFields().size());
+                }
+
+                ORLangTypes types = ORUtil.getTypes(tag.getLanguage());
+
                 for (RPsiRecordField field : props.getRecordFields()) {
+                    String fieldName = field.getName();
+                    if (usedNames.contains(fieldName) || "children".equals(fieldName)) {
+                        continue;
+                    }
+
                     RPsiSignature signature = field.getSignature();
-                    List<RPsiSignatureItem> items = signature == null ? null : signature.getItems();
+                    List<RPsiSignatureItem> items = signature != null ? signature.getItems() : null;
                     RPsiSignatureItem firstSigItem = items == null || items.isEmpty() ? null : items.get(0);
-                    boolean isMandatory = firstSigItem != null && !firstSigItem.isOptional();
+
+                    PsiElement nextSibling = ORUtil.nextSibling(field.getNameIdentifier());
+                    boolean isOptionalKey = nextSibling != null && nextSibling.getNode().getElementType() == types.QUESTION_MARK;
+                    boolean isMandatory = !isOptionalKey && firstSigItem != null && !firstSigItem.isOptional();
                     for (RPsiAnnotation annotation : ORUtil.prevAnnotations(field)) {
                         if ("@bs.optional".equals(annotation.getName())) {
                             isMandatory = false;
                             break;
                         }
                     }
-                    addProperty(field, field.getName(), signature == null ? "" : signature.asText(langProperties), isMandatory, resultSet);
+                    addProperty(field, field.getName(), signature != null ? signature.asText(langProperties) : "", isMandatory, resultSet);
                 }
             }
         }
@@ -114,7 +148,7 @@ public class JsxAttributeCompletionProvider {
     private static @NotNull String getParameterSignature(RPsiParameterDeclaration param, @Nullable ORLanguageProperties languageProperties) {
         RPsiSignature signature = param.getSignature();
         if (signature == null) {
-            return (param.getDefaultValue() == null ? "" : "=" + param.getDefaultValue().getText());
+            return (param.getDefaultValue() != null ? "=" + param.getDefaultValue().getText() : "");
         }
 
         return signature.asText(languageProperties);

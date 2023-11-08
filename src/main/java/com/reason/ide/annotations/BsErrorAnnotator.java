@@ -48,7 +48,7 @@ public class BsErrorAnnotator {
 
         if (ninja != null && ninja.isRescriptFormat()) {
             List<String> args = isDevSource(sourceFile, contentRoot, config) ? ninja.getArgsDev() : ninja.getArgs();
-            return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, null, editor, args, config.getJsxVersion());
+            return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, null, editor, args, config.getJsxVersion(), config.getJsxMode(), config.isUncurried());
         }
 
         // create temporary compilation directory
@@ -108,7 +108,7 @@ public class BsErrorAnnotator {
         arguments.add(cmtFile.getPath());
         arguments.add(sourceTempFile.getPath());
 
-        return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, sourceTempFile, editor, arguments, jsxVersion);
+        return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, sourceTempFile, editor, arguments, jsxVersion, null, false);
     }
 
     public static @Nullable AnnotationResult doAnnotate(@NotNull InitialInfo<? extends ORResolvedCompiler<?>> initialInfo) {

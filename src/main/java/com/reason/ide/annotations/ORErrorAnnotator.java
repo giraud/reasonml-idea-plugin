@@ -243,8 +243,10 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         final List<String> arguments;
         final boolean oldFormat;
         final String jsxVersion;
+        final String jsxMode; // classic or automatic
+        final boolean uncurried;
 
-        InitialInfo(R compiler, @NotNull PsiFile sourcePsiFile, @NotNull VirtualFile libRoot, @Nullable File tempFile, @NotNull Editor editor, @NotNull List<String> arguments, String jsxVersion) {
+        InitialInfo(R compiler, @NotNull PsiFile sourcePsiFile, @NotNull VirtualFile libRoot, @Nullable File tempFile, @NotNull Editor editor, @NotNull List<String> arguments, @Nullable String jsxVersion, @Nullable String jsxMode, boolean uncurried) {
             this.compiler = compiler;
             this.sourcePsiFile = sourcePsiFile;
             this.libRoot = libRoot;
@@ -253,6 +255,8 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
             this.arguments = arguments;
             this.oldFormat = tempFile != null;
             this.jsxVersion = jsxVersion;
+            this.jsxMode = jsxMode;
+            this.uncurried = uncurried;
         }
     }
 
