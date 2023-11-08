@@ -15,12 +15,6 @@ import java.util.regex.*;
 public class OpamProcess {
     private static final Pattern SEXP = Pattern.compile("\\(\"([^\"]+)\" \"([^\"]+)\"\\)");
 
-    private final @NotNull Project myProject;
-
-    public OpamProcess(@NotNull Project project) {
-        myProject = project;
-    }
-
     public void list(@NotNull String opamLocation, @NotNull String version, @Nullable String cygwinBash, @NotNull ORProcessTerminated<List<String[]>> onProcessTerminated) {
         ArrayList<String[]> installedLibs = new ArrayList<>();
 
@@ -33,7 +27,7 @@ public class OpamProcess {
         cli.setRedirectErrorStream(true);
 
         OCamlExecutable executable = OCamlExecutable.getExecutable(opamLocation, cygwinBash);
-        executable.patchCommandLine(cli, null, true, myProject);
+        executable.patchCommandLine(cli, null, true);
 
         KillableProcessHandler processHandler;
         try {
@@ -80,7 +74,7 @@ public class OpamProcess {
         cli.setRedirectErrorStream(true);
 
         OCamlExecutable executable = OCamlExecutable.getExecutable(opamLocation, cygwinBash);
-        executable.patchCommandLine(cli, null, true, myProject);
+        executable.patchCommandLine(cli, null, true);
 
         KillableProcessHandler processHandler;
         try {
@@ -134,7 +128,7 @@ public class OpamProcess {
 
         OCamlExecutable executable = OCamlExecutable.getExecutable(opamRootPath, cygwinBash);
         GeneralCommandLine cli = new GeneralCommandLine("opam", "switch", "list", "--color=never");
-        executable.patchCommandLine(cli, null, true, myProject);
+        executable.patchCommandLine(cli, null, true);
 
         KillableProcessHandler processHandler;
         try {

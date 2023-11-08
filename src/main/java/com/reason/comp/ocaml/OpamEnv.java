@@ -1,5 +1,6 @@
 package com.reason.comp.ocaml;
 
+import com.intellij.openapi.application.*;
 import com.intellij.openapi.project.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -21,12 +22,14 @@ public class OpamEnv {
     public void computeEnv(@Nullable String opamLocation, @Nullable String switchName, @Nullable String cygwinBash,
                            @Nullable ORProcessTerminated<Map<String, String>> onEnvTerminated) {
         if (opamLocation != null && switchName != null) {
-            myProject.getService(OpamProcess.class).env(opamLocation, switchName, cygwinBash, data -> {
-                myEnvs.put(switchName, data);
-                if (onEnvTerminated != null) {
-                    onEnvTerminated.run(data);
-                }
-            });
+            ApplicationManager.getApplication()
+                    .getService(OpamProcess.class)
+                    .env(opamLocation, switchName, cygwinBash, data -> {
+                        myEnvs.put(switchName, data);
+                        if (onEnvTerminated != null) {
+                            onEnvTerminated.run(data);
+                        }
+                    });
         }
     }
 }

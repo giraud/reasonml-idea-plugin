@@ -296,7 +296,7 @@
                              instance="com.reason.ide.settings.ORSettingsConfigurable"/>
 
         <projectSdkSetupValidator implementation="com.reason.ide.library.OclSdkSetupValidator"/>
-        <projectService serviceImplementation="com.reason.comp.ocaml.OpamProcess"/>
+        <applicationService serviceImplementation="com.reason.comp.ocaml.OpamProcess"/>
         <projectService serviceImplementation="com.reason.comp.ocaml.OpamEnv"/>
 
         <!--

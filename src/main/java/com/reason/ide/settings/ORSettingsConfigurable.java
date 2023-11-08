@@ -11,8 +11,6 @@ import com.intellij.openapi.roots.libraries.ui.*;
 import com.intellij.openapi.roots.libraries.ui.impl.*;
 import com.intellij.openapi.ui.*;
 import com.intellij.openapi.vfs.*;
-import com.intellij.openapi.vfs.impl.wsl.*;
-import com.intellij.util.ui.*;
 import com.intellij.workspaceModel.ide.impl.legacyBridge.library.*;
 import com.reason.comp.dune.*;
 import com.reason.comp.ocaml.*;
@@ -22,8 +20,6 @@ import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
-import javax.swing.table.*;
-import java.awt.event.*;
 import java.nio.file.*;
 import java.util.*;
 
@@ -35,12 +31,10 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
 
     private final @NotNull Project myProject;
     private ORSettings mySettings;
-    private final List<String[]> myEnv = new ArrayList<>();
 
     private JPanel myRootPanel;
     private JTabbedPane myTabs;
 
-    private TextFieldWithBrowseButton myOpamLocation;
     private boolean myIsWsl = false;
     private String myCygwinBash;
 
@@ -53,13 +47,9 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     private JCheckBox f_bsIsEnabled;
     private TextFieldWithBrowseButton f_bsPlatformLocation;
 
-    // Opam
-    private JComboBox<String> mySwitchSelect;
-
     // Esy
     private TextFieldWithBrowseButton f_esyExecutable;
-    private JLabel myDetectionLabel;
-    private JTable myOpamLibraries;
+    private OpamConfigurationTab myOpamConfigurationTab;
 
     public ORSettingsConfigurable(@NotNull Project project) {
         myProject = project;
@@ -87,20 +77,11 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     @Override
     public JComponent createComponent() {
         mySettings = myProject.getService(ORSettings.class);
+
         createGeneralTab();
         createBsTab();
-        createOpamTab();
+        myOpamConfigurationTab.createComponent(mySettings.getProject(), mySettings.getSwitchName());
         createEsyTab();
-
-        mySwitchSelect.addItemListener(itemEvent -> {
-            if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                String version = (String) itemEvent.getItem();
-                clearEnv();
-                listLibraries(version);
-            }
-        });
-        myOpamLibraries.setBorder(BorderFactory.createLineBorder(JBUI.CurrentTheme.DefaultTabs.borderColor()));
-        listLibraries(mySettings.getSwitchName());
 
         return myRootPanel;
     }
@@ -109,21 +90,21 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     public void apply() {
         // General
         mySettings.setFormatOnSaveEnabled(f_generalIsFormatOnSave.isSelected());
-        mySettings.setFormatColumnWidth(sanitizeInput(f_generalFormatWidthColumns));
+        mySettings.setFormatColumnWidth(sanitizeInput(f_generalFormatWidthColumns.getText()));
         mySettings.setUseSuperErrors(myUseSuperErrorsCheckBox.isSelected());
         // BuckleScript
         mySettings.setBsEnabled(f_bsIsEnabled.isSelected());
         mySettings.setBsPlatformLocation(sanitizeInput(f_bsPlatformLocation));
         // Opam
-        mySettings.setOpamLocation(sanitizeInput(myOpamLocation));
+        mySettings.setOpamLocation(sanitizeInput(myOpamConfigurationTab.getOpamLocation()));
         mySettings.setCygwinBash(myCygwinBash);
         mySettings.setIsWsl(myIsWsl);
-        mySettings.setSwitchName((String) mySwitchSelect.getSelectedItem());
+        mySettings.setSwitchName(myOpamConfigurationTab.getSelectedSwitch());
         // Esy
         mySettings.setEsyExecutable(sanitizeInput(f_esyExecutable));
 
         // Create external library based on the selected opam switch
-        createExternalLibraryDependency(mySettings);
+        createExternalLibraryDependency(mySettings.getProject(), mySettings.getSwitchName(), mySettings.getOpamLocation());
         // Compute env
         OpamEnv opamEnv = myProject.getService(OpamEnv.class);
         opamEnv.computeEnv(mySettings.getOpamLocation(), mySettings.getSwitchName(), mySettings.getCygwinBash(), null);
@@ -131,20 +112,19 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         myProject.getService(ORToolWindowManager.class).shouldShowToolWindows();
     }
 
-    private void createExternalLibraryDependency(@NotNull ORSettings settings) {
-        Project project = settings.getProject();
-        if (settings.getSwitchName().isEmpty()) {
+    private void createExternalLibraryDependency(@NotNull Project project, @NotNull String switchName, String opamLocation) {
+        if (switchName.isEmpty()) {
             return;
         }
 
         LibraryTable projectLibraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project);
         LibraryTable.ModifiableModel projectLibraryTableModel = projectLibraryTable.getModifiableModel();
 
-        String libraryName = "switch:" + settings.getSwitchName();
+        String libraryName = "switch:" + switchName;
 
         // Remove existing lib
         Library oldLibrary = projectLibraryTableModel.getLibraryByName(libraryName);
-        VirtualFile opamRootCandidate = VirtualFileManager.getInstance().findFileByNioPath(Path.of(settings.getOpamLocation(), settings.getSwitchName()));
+        VirtualFile opamRootCandidate = VirtualFileManager.getInstance().findFileByNioPath(Path.of(opamLocation, switchName));
         if (opamRootCandidate != null && opamRootCandidate.exists() && opamRootCandidate.isValid()) {
             Library library = oldLibrary == null ? projectLibraryTableModel.createLibrary(libraryName, OclLibraryKind.INSTANCE) : null;
             Library.ModifiableModel libraryModel = library == null ? null : library.getModifiableModel();
@@ -186,44 +166,6 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         }
     }
 
-
-    private void listLibraries(@NotNull String version) {
-        myProject.getService(OpamProcess.class)
-                .list(myOpamLocation.getText(), version, myCygwinBash, libs -> {
-                    myEnv.clear();
-                    if (libs != null) {
-                        myEnv.addAll(libs);
-                    }
-                    myOpamLibraries.setModel(createDataModel());
-                });
-    }
-
-    @NotNull
-    private AbstractTableModel createDataModel() {
-        return new AbstractTableModel() {
-            @Override
-            public int getRowCount() {
-                return myEnv.size();
-            }
-
-            @Override
-            public int getColumnCount() {
-                return 3;
-            }
-
-            @Override
-            public @NotNull Object getValueAt(int rowIndex, int columnIndex) {
-                String[] columns = myEnv.get(rowIndex);
-                return columns.length <= columnIndex ? "" : columns[columnIndex];
-            }
-        };
-    }
-
-    private void clearEnv() {
-        myEnv.clear();
-        myOpamLibraries.setModel(createDataModel());
-    }
-
     @Override
     public boolean isModified() {
         // General
@@ -237,9 +179,8 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         boolean isBsPlatformLocationModified =
                 !f_bsPlatformLocation.getText().equals(mySettings.getBsPlatformLocation());
         // Opam
-        boolean isOpamLocationModified =
-                !myOpamLocation.getText().equals(mySettings.getOpamLocation());
-        boolean isOpamSwitchModified = !mySettings.getSwitchName().equals(mySwitchSelect.getSelectedItem());
+        boolean isOpamLocationModified = myOpamConfigurationTab.isOpamLocationModified(mySettings.getOpamLocation());
+        boolean isOpamSwitchModified = myOpamConfigurationTab.isOpamSwitchModified(mySettings.getSwitchName());
         // Esy
         boolean isEsyExecutableModified =
                 !f_esyExecutable.getText().equals(mySettings.getEsyExecutable());
@@ -259,27 +200,16 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         f_bsIsEnabled.setSelected(mySettings.isBsEnabled());
         f_bsPlatformLocation.setText(mySettings.getBsPlatformLocation());
         // Opam
-        myOpamLocation.setText(mySettings.getOpamLocation());
         myCygwinBash = mySettings.getCygwinBash();
         myIsWsl = mySettings.isWsl();
+        myOpamConfigurationTab.setOpamLocation(mySettings.getOpamLocation());
+        myOpamConfigurationTab.setDetectionText();
+        myOpamConfigurationTab.createSwitch(mySettings.getOpamLocation(), mySettings.getSwitchName());
         // Esy
         f_esyExecutable.setText(mySettings.getEsyExecutable());
-
-        setDetectionText();
-        createSwitch(mySettings.getOpamLocation());
     }
 
     private void createGeneralTab() {
-    }
-
-    private void setDetectionText() {
-        if (myCygwinBash != null) {
-            myDetectionLabel.setText("Cygwin detected");
-        } else if (myIsWsl) {
-            myDetectionLabel.setText("WSL detected");
-        } else {
-            myDetectionLabel.setText("");
-        }
     }
 
     private void createBsTab() {
@@ -288,108 +218,10 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
                 FileChooserDescriptorFactory.createSingleFolderDescriptor());
     }
 
-    private void detectSwitchSystem(@NotNull VirtualFile dir) {
-        myIsWsl = dir.getPath().replace("/", "\\").startsWith(WslConstants.UNC_PREFIX);
-        myCygwinBash = null;
-        if (!myIsWsl && Platform.isWindows()) { // cygwin
-            VirtualFile binDir = findBinary(dir);
-            if (binDir != null && binDir.isValid()) {
-                VirtualFile opam = binDir.findChild("bash.exe");
-                if (opam != null && opam.isValid()) {
-                    myCygwinBash = opam.getPath();
-                }
-            }
-        }
-    }
-
-    private void createOpamTab() {
-        Project project = mySettings.getProject();
-        TextBrowseFolderListener browseListener = new TextBrowseFolderListener(FileChooserDescriptorFactory.createSingleFolderDescriptor(), project) {
-            @Override
-            protected void onFileChosen(@NotNull VirtualFile chosenDir) {
-                super.onFileChosen(chosenDir);
-
-                detectSwitchSystem(chosenDir);
-                setDetectionText();
-                createSwitch(chosenDir.getPath());
-            }
-
-        };
-
-        final String[] previousOpamLocation = new String[1];
-
-        FocusListener focusListener = new FocusListener() {
-            @Override public void focusGained(FocusEvent e) {
-                previousOpamLocation[0] = myOpamLocation.getText();
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                String path = myOpamLocation.getText();
-                String oldPath = previousOpamLocation[0];
-                if (!path.equals(oldPath)) {
-                    VirtualFile chosenDir = VirtualFileManager.getInstance().findFileByNioPath(Path.of(path));
-                    if (chosenDir == null) {
-                        createSwitch("");
-                        clearEnv();
-                    } else {
-                        detectSwitchSystem(chosenDir);
-                        setDetectionText();
-                        createSwitch(chosenDir.getPath());
-                    }
-                }
-            }
-        };
-
-        myOpamLocation.getTextField().addFocusListener(focusListener);
-        myOpamLocation.addBrowseFolderListener(browseListener);
-    }
-
-    private VirtualFile findBinary(@Nullable VirtualFile dir) {
-        if (dir == null) {
-            return null;
-        }
-
-        VirtualFile child = dir.findChild("bin");
-        if (child != null) {
-            return child;
-        }
-
-        return findBinary(dir.getParent());
-    }
-
-    private void createSwitch(@NotNull String opamLocation) {
-        OpamProcess opamProcess = new OpamProcess(myProject);
-        opamProcess.listSwitch(opamLocation, myCygwinBash, opamSwitches -> {
-            boolean switchEnabled = opamSwitches != null && !opamSwitches.isEmpty();
-            mySwitchSelect.removeAllItems();
-            mySwitchSelect.setEnabled(switchEnabled);
-            if (switchEnabled) {
-                boolean useOpamSelection = mySettings.getSwitchName().isEmpty();
-                //System.out.println("Add: [" + Joiner.join(", ", opamSwitches) + "]");
-                for (OpamProcess.OpamSwitch opamSwitch : opamSwitches) {
-                    mySwitchSelect.addItem(opamSwitch.name);
-                    if (opamSwitch.isSelected && useOpamSelection) {
-                        mySwitchSelect.setSelectedIndex(mySwitchSelect.getItemCount() - 1);
-                    }
-                }
-                if (!useOpamSelection) {
-                    mySwitchSelect.setSelectedItem(mySettings.getSwitchName());
-                }
-            } else {
-                clearEnv();
-            }
-        });
-    }
-
     private void createEsyTab() {
         Project project = mySettings.getProject();
         f_esyExecutable.addBrowseFolderListener(ESY_EXECUTABLE_LABEL, null, project,
                 FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
-    }
-
-    private static @NotNull String sanitizeInput(@NotNull JTextField textField) {
-        return sanitizeInput(textField.getText());
     }
 
     private static @NotNull String sanitizeInput(@NotNull TextFieldWithBrowseButton textFieldWithBrowseButton) {

@@ -61,7 +61,7 @@ public class ReplGenericState implements RunProfileState {
         }
 
         OCamlExecutable executable = OCamlExecutable.getExecutable(opamLocation, null);
-        executable.patchCommandLine(cli, opamLocation + "/" + switchName + "/bin", false, project);
+        executable.patchCommandLine(cli, opamLocation + "/" + switchName + "/bin", false);
 
         OSProcessHandler handler = new OSProcessHandler(cli);
         ProcessTerminatedListener.attach(handler, project);
