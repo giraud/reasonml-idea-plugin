@@ -1,6 +1,5 @@
 package com.reason.lang.rescript;
 
-import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
@@ -10,7 +9,7 @@ import org.junit.*;
 
 import java.util.*;
 
-@SuppressWarnings({"ConstantConditions", "AssertBetweenInconvertibleTypes"})
+@SuppressWarnings({"ConstantConditions"})
 public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_anonymous_function() {
@@ -405,6 +404,18 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("(_)", ecf.getParameters().get(0).getText());
         assertEquals("(_)", ecf.getParameters().get(1).getText());
         assertEquals("true", ecf.getBody().getText());
+    }
+
+    @Test
+    public void test_nested() {
+        RPsiFunctionCall e = firstOfType(parseCode("let _ = useMemo(() => (p: string) => ())"), RPsiFunctionCall.class);
+
+        RPsiFunction ep0 = (RPsiFunction) e.getParameters().get(0).getFirstChild();
+        assertSize(0, ep0.getParameters());
+        assertEquals("(p: string) => ()", ep0.getBody().getText());
+        RPsiFunction ep0b = (RPsiFunction) ep0.getBody().getFirstChild();
+        assertSize(1, ep0b.getParameters());
+        assertEquals("(p: string) => ()", ep0b.getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/113

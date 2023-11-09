@@ -1068,14 +1068,14 @@ public class ResParser extends CommonPsiParser {
                     popEnd();
                     if (strictlyInAny(myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_TRY_HANDLER, myTypes.C_PARAM, myTypes.C_PARAMETERS,
                             myTypes.C_SIG_ITEM, myTypes.C_SIG_EXPR, myTypes.C_DEFAULT_VALUE, myTypes.C_SCOPED_EXPR,
-                            myTypes.C_LET_BINDING)) {
+                            myTypes.C_LET_BINDING, myTypes.H_PLACE_HOLDER)) {
                         int foundIndex = getIndex();
                         if (isFound(myTypes.C_DEFAULT_VALUE) && isHold()) {
                             // fn(~p=() |>=><| ...
                             rollbackToIndex(0);
                             mark(myTypes.C_FUNCTION_EXPR);
                             mark(myTypes.C_PARAMETERS).markHolder(myTypes.H_COLLECTION_ITEM);
-                        } else if (isFound(myTypes.C_PARAM) || (isFound(myTypes.C_PARAMETERS) && isAtIndex(foundIndex + 1, myTypes.C_SOME))) {
+                        } else if (isFound(myTypes.C_PARAM) || isFound(myTypes.H_PLACE_HOLDER) || (isFound(myTypes.C_PARAMETERS) && isAtIndex(foundIndex + 1, myTypes.C_SOME))) {
                             rollbackToFoundIndex();
                             mark(myTypes.C_FUNCTION_EXPR);
                             if (getTokenType() == myTypes.LPAREN) {
