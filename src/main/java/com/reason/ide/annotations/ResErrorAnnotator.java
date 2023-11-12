@@ -80,11 +80,6 @@ public class ResErrorAnnotator {
             arguments.add(jsxMode);
         }
 
-        // new Rescript feature
-        if (initialInfo.uncurried) {
-            arguments.add("-uncurried");
-        }
-
         arguments.add("-bin-annot");
         arguments.add("-o");
         arguments.add(cmtFile.getPath());

@@ -34,8 +34,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
-        RPsiInclude ei = PsiTreeUtil.findChildOfType(e, RPsiInclude.class);
-        assertEmpty(data.getValues(ei));
+        RPsiOpen eo = PsiTreeUtil.findChildOfType(e, RPsiOpen.class);
+        assertEmpty(data.getValues(eo));
         assertEmpty(data.getValues(e));
     }
 
