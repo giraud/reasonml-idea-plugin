@@ -33,7 +33,8 @@ public class RescriptConsoleFilter extends ORConsoleFilter {
                 boolean multiline = matcher.groupCount() >= 5;
                 int startPoint = entireLength - line.length();
                 int documentLine = parseInt(matcher.group(2)) - 1;
-                int documentColumn = parseInt(matcher.group(multiline ? 4 : 3));
+                String multilineGroup = matcher.group(multiline ? 4 : 3);
+                int documentColumn = multilineGroup != null ? parseInt(multilineGroup) : 0;
                 OpenFileHyperlinkInfo hyperlinkInfo = getHyperlinkInfo(matcher.group(1), documentLine, documentColumn);
 
                 return new Result(startPoint + matcher.start(1), startPoint + matcher.end(1), hyperlinkInfo);
