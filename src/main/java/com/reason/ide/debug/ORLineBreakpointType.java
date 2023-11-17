@@ -10,7 +10,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Processor;
 import com.intellij.xdebugger.XDebuggerUtil;
 import com.intellij.xdebugger.breakpoints.XLineBreakpointType;
-import com.reason.ide.files.FileHelper;
+import com.reason.FileHelper;
 import com.reason.lang.core.type.ORLangTypes;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlTypes;

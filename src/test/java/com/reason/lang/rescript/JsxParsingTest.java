@@ -2,6 +2,7 @@ package com.reason.lang.rescript;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -23,8 +24,11 @@ public class JsxParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_empty_tag_with_lf() {
-        RPsiTag e = firstOfType(parseCode("let _ = <div>\n\tchildren\n</div>"), RPsiTag.class);
-        assertNoParserError(e);
+        RPsiTag e = firstOfType(parseCode("""
+                let _ = <div>
+                \tchildren
+                </div>
+                """), RPsiTag.class);
 
         RPsiTagStart tag = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
         assertEquals("div", tag.getNameIdentifier().getText());
@@ -155,8 +159,22 @@ public class JsxParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_optional_prop() {
+        RPsiTag e = (RPsiTag) firstElement(parseCode("<div ?layout></div>"));
+
+        assertNoParserError(e);
+        List<RPsiTagProperty> props = new ArrayList<>(e.getProperties());
+        assertSize(1, props);
+        assertEquals("?layout", props.get(0).getText());
+        assertEquals("layout", props.get(0).getName());
+        assertNull(PsiTreeUtil.findChildOfType(e, RPsiTernary.class));
+    }
+
+
+    @Test
+    public void test_optional_props() {
         RPsiTag e = (RPsiTag) firstElement(parseCode("<div ?layout ?style onClick=?cb ?other></div>"));
 
+        assertNoParserError(e);
         List<RPsiTagProperty> props = new ArrayList<>(e.getProperties());
         assertSize(4, props);
         assertEquals("?layout", props.get(0).getText());
@@ -259,12 +277,12 @@ public class JsxParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_prop03() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<PageContentGrid onClick={(. _e) => action(true, ())} title=\"X\"/>"));
+        RPsiTagStart e = firstOfType(parseCode("<PageContentGrid onClick={(. _e) => action(true, ())} title=\"X\"/>"), RPsiTagStart.class);
 
-        List<RPsiTagProperty> properties = ((RPsiTagStart) e.getFirstChild()).getProperties();
-        assertEquals(2, properties.size());
-        assertEquals("{(. _e) => action(true, ())}", properties.get(0).getValue().getText());
-        assertEquals("\"X\"", properties.get(1).getValue().getText());
+        List<RPsiTagProperty> ep = e.getProperties();
+        assertEquals(2, ep.size());
+        assertEquals("{(. _e) => action(true, ())}", ep.get(0).getValue().getText());
+        assertEquals("\"X\"", ep.get(1).getValue().getText());
 
         RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
         assertEquals("_e", f.getParameters().get(0).getText());
@@ -318,12 +336,26 @@ public class JsxParsingTest extends ResParsingTestCase {
     }
 
     @Test
+    public void test_prop_func() {
+        RPsiTag e = (RPsiTag) firstElement(parseCode("<QueryAttributeSelectionDialog onSelect={(indicator:GlobalStateTypes.AttributeEntity.t) => {()}} onCancel={(.) => closeAttributeSelector()}/>"));
+
+        RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
+        assertEmpty(PsiTreeUtil.findChildrenOfType(f, RPsiUpperTagName.class));
+        assertSize(2, PsiTreeUtil.findChildrenOfType(f, RPsiUpperSymbol.class));
+    }
+
+    @Test
     public void test_ternary_01() {
-        RPsiTag e = firstOfType(parseCode(//
-                "<>\n" +
-                        "  <div> {test ? React.null : <div> {(. x) => <div onClick={(e: option(string), _) => ()} />} </div>} </div>\n" +
-                        "  <div className=Styles.s> <Title text=\"title\" /> </div>\n" +
-                        "</>"), RPsiTag.class);
+        RPsiTag e = firstOfType(parseCode("""
+                <>
+                  <div> {test ? React.null : <div> {(. x) => <div onClick={(e: option(string), _) => ()} />} </div>} </div>
+                  <div className=Styles.s> <Title text="title" /> </div>
+                </>
+                """), RPsiTag.class);
+
+        RPsiTagBody body = e.getBody();
+        List<RPsiTag> ets = ORUtil.findImmediateChildrenOfClass(body, RPsiTag.class);
+        assertSize(2, ets);
 
         List<RPsiTagProperty> ps = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiTagProperty.class));
         RPsiTagProperty p0 = ps.get(0);
@@ -374,13 +406,20 @@ public class JsxParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_if() {
-        RPsiTagPropertyValue e = firstOfType(parseCode("let _ = <InputText onKeyDown={(e) => {\n let key = false\n if true {\n ()\n }\n }}/>"), RPsiTagPropertyValue.class);
+        RPsiTagPropertyValue e = firstOfType(parseCode("""
+                let _ = <InputText onKeyDown={(e) => {
+                  let key = false
+                  if true {
+                    ()
+                  }
+                }}/>
+                """), RPsiTagPropertyValue.class);
 
         RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
         RPsiLet l = PsiTreeUtil.findChildOfType(f.getBody(), RPsiLet.class);
         assertEquals("let key = false", l.getText());
         RPsiIfStatement i = PsiTreeUtil.findChildOfType(f.getBody(), RPsiIfStatement.class);
-        assertEquals("if true {\n ()\n }", i.getText());
+        assertEquals("if true {\n    ()\n  }", i.getText());
     }
 
     @Test

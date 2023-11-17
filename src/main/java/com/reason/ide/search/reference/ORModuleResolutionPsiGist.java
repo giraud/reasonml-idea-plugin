@@ -1,5 +1,6 @@
 package com.reason.ide.search.reference;
 
+import com.intellij.extapi.psi.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
@@ -15,7 +16,6 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
-import it.unimi.dsi.fastutil.ints.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -31,10 +31,10 @@ import java.util.*;
  */
 public class ORModuleResolutionPsiGist {
     private static final Log LOG = Log.create("gist");
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final String ID = "reasonml.gist.openincludeqnames";
     private static final Key<RPsiQualifiedPathElement> RESOLUTION = Key.create(ID);
-    private static final Key<Integer> ELEMENT_INDEX = Key.create("reasonml.gist.elementindex");
+    private static final Key<String> ELEMENT_INDEX = Key.create("reasonml.gist.elementindex");
     private static final PsiFileGist<Data> myGist = GistManager.getInstance().newPsiFileGist(ID, VERSION, new ORModuleResolutionPsiGist.Externalizer(), ORModuleResolutionPsiGist::getFileData);
 
     private ORModuleResolutionPsiGist() {
@@ -64,7 +64,6 @@ public class ORModuleResolutionPsiGist {
         final List<PsiElement> myModulesInContext = new ArrayList<>();
         final Map<PsiElement, Integer> myModuleBinding = new HashMap<>();
         final Data myResult;
-        int myCurrentIndex = 0;
 
         public PsiWalker(FileBase file) {
             myTypes = ORTypesUtil.getInstance(file.getLanguage());
@@ -88,12 +87,6 @@ public class ORModuleResolutionPsiGist {
             super.visitElement(element);
             IElementType type = element.getNode().getElementType();
 
-            // Compute index during scan
-            if (type == myTypes.C_MODULE_DECLARATION || type == myTypes.C_FUNCTOR_DECLARATION ||
-                    type == myTypes.C_INCLUDE || type == myTypes.C_OPEN || type == myTypes.C_TAG_START) {
-                myCurrentIndex++;
-            }
-
             // MODULE
             // ------
             if (type == myTypes.C_MODULE_DECLARATION) {
@@ -115,9 +108,8 @@ public class ORModuleResolutionPsiGist {
                                     found = true;
 
                                     element.putUserData(RESOLUTION, functorInContext);
-                                    element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                     myModulesInContext.add(element);
-                                    myResult.addValue(myCurrentIndex, functorInContext.getQualifiedName());
+                                    myResult.addValue(getIndex(element), functorInContext.getQualifiedName());
 
                                     break;
                                 }
@@ -136,9 +128,8 @@ public class ORModuleResolutionPsiGist {
                                         if (moduleQName != null) {
                                             found = true;
                                             element.putUserData(RESOLUTION, resolvedModule);
-                                            element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                             myModulesInContext.add(element);
-                                            myResult.addValue(myCurrentIndex, moduleQName);
+                                            myResult.addValue(getIndex(element), moduleQName);
 
                                             break;
                                         }
@@ -157,9 +148,8 @@ public class ORModuleResolutionPsiGist {
                                 String moduleQName = module.getQualifiedName();
                                 if (moduleQName != null) {
                                     element.putUserData(RESOLUTION, module);
-                                    element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                     myModulesInContext.add(element);
-                                    myResult.addValue(myCurrentIndex, moduleQName);
+                                    myResult.addValue(getIndex(element), moduleQName);
 
                                     break;
                                 }
@@ -169,8 +159,6 @@ public class ORModuleResolutionPsiGist {
                         RPsiModuleSignature moduleType = visitedModule.getModuleSignature();
                         if (moduleType != null) {
                             visitModuleResultType(moduleType);
-                        } else {
-                            visitedModule.putUserData(ELEMENT_INDEX, myCurrentIndex);
                         }
                     }
                 } else {
@@ -185,9 +173,8 @@ public class ORModuleResolutionPsiGist {
                             if (alias.equals(moduleInContextName)) {
                                 found = true;
                                 element.putUserData(RESOLUTION, moduleInContext);
-                                element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                 myModulesInContext.add(element);
-                                myResult.addValue(myCurrentIndex, moduleInContext.getQualifiedName());
+                                myResult.addValue(getIndex(element), moduleInContext.getQualifiedName());
 
                                 break;
                             } else {
@@ -205,9 +192,8 @@ public class ORModuleResolutionPsiGist {
                                         if (moduleQName != null) {
                                             found = true;
                                             element.putUserData(RESOLUTION, finalModule);
-                                            element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                             myModulesInContext.add(element);
-                                            myResult.addValue(myCurrentIndex, moduleQName);
+                                            myResult.addValue(getIndex(element), moduleQName);
 
                                             break;
                                         }
@@ -229,9 +215,8 @@ public class ORModuleResolutionPsiGist {
                                     if (moduleQName != null) {
                                         found = true;
                                         element.putUserData(RESOLUTION, resolvedModule);
-                                        element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                         myModulesInContext.add(element);
-                                        myResult.addValue(myCurrentIndex, moduleQName);
+                                        myResult.addValue(getIndex(element), moduleQName);
 
                                         break;
                                     }
@@ -246,9 +231,8 @@ public class ORModuleResolutionPsiGist {
                             String moduleQName = module.getQualifiedName();
                             if (moduleQName != null) {
                                 element.putUserData(RESOLUTION, module);
-                                element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                 myModulesInContext.add(element);
-                                myResult.addValue(myCurrentIndex, moduleQName);
+                                myResult.addValue(getIndex(element), moduleQName);
 
                                 break;
                             }
@@ -269,7 +253,7 @@ public class ORModuleResolutionPsiGist {
                 RPsiUpperSymbol moduleType = returnType == null ? null : returnType.getModuleType();
                 if (moduleType == null) {
                     myModulesInContext.add(element);
-                    myResult.addValue(myCurrentIndex, functor.getQualifiedName());
+                    myResult.addValue(getIndex(element), functor.getQualifiedName());
                 } else {
                     // Try to fullResolution type
                     boolean found = false;
@@ -289,9 +273,8 @@ public class ORModuleResolutionPsiGist {
                                 found = true;
 
                                 element.putUserData(RESOLUTION, finalResolution);
-                                element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                 myModulesInContext.add(element);
-                                myResult.addValue(myCurrentIndex, resolvedQName);
+                                myResult.addValue(getIndex(element), resolvedQName);
 
                                 break;
                             } else {
@@ -304,9 +287,8 @@ public class ORModuleResolutionPsiGist {
                                     if (resolvedModuleQName != null) {
                                         found = true;
                                         element.putUserData(RESOLUTION, resolvedModule);
-                                        element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                         myModulesInContext.add(element);
-                                        myResult.addValue(myCurrentIndex, resolvedModuleQName);
+                                        myResult.addValue(getIndex(element), resolvedModuleQName);
 
                                         break;
                                     }
@@ -320,9 +302,8 @@ public class ORModuleResolutionPsiGist {
                             String moduleQName = module.getQualifiedName();
                             if (moduleQName != null) {
                                 element.putUserData(RESOLUTION, module);
-                                element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                 myModulesInContext.add(element);
-                                myResult.addValue(myCurrentIndex, moduleQName);
+                                myResult.addValue(getIndex(element), moduleQName);
 
                                 break;
                             }
@@ -354,15 +335,14 @@ public class ORModuleResolutionPsiGist {
                             found = true;
 
                             element.putUserData(RESOLUTION, finalResolution);
-                            element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                             myModulesInContext.add(element);
 
                             String resolvedQName = finalResolution.getQualifiedName();
-                            myResult.addValue(myCurrentIndex, resolvedQName);
+                            myResult.addValue(getIndex(element), resolvedQName);
 
                             // File A: include X  -->  A === X
                             if (topLevel && isInclude) {
-                                myResult.addValue(0, resolvedQName);
+                                myResult.addValue("", resolvedQName);
                             }
 
                             break;
@@ -380,13 +360,12 @@ public class ORModuleResolutionPsiGist {
                                 if (resolvedModuleQName != null) {
                                     found = true;
                                     element.putUserData(RESOLUTION, resolvedModule);
-                                    element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                     myModulesInContext.add(element);
-                                    myResult.addValue(myCurrentIndex, resolvedModuleQName);
+                                    myResult.addValue(getIndex(element), resolvedModuleQName);
 
                                     // File A: include X  -->  A === X
                                     if (topLevel && isInclude) {
-                                        myResult.addValue(0, resolvedModuleQName);
+                                        myResult.addValue("", resolvedModuleQName);
                                     }
 
                                     break;
@@ -407,15 +386,14 @@ public class ORModuleResolutionPsiGist {
                             found = true;
 
                             element.putUserData(RESOLUTION, finalResolution);
-                            element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                             myModulesInContext.add(element);
 
                             String resolvedQName = finalResolution.getQualifiedName();
-                            myResult.addValue(myCurrentIndex, resolvedQName);
+                            myResult.addValue(getIndex(element), resolvedQName);
 
                             // File A: include X  -->  A === X
                             if (topLevel && isInclude) {
-                                myResult.addValue(0, resolvedQName);
+                                myResult.addValue("", resolvedQName);
                             }
 
                             break;
@@ -439,15 +417,14 @@ public class ORModuleResolutionPsiGist {
                                 if (moduleQName != null) {
                                     found = true;
                                     element.putUserData(RESOLUTION, resolvedModule);
-                                    element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                     myModulesInContext.add(element);
 
                                     // File A: include A1; include A2  -->  A2 === A1.A2
-                                    myResult.addValue(myCurrentIndex, moduleQName);
+                                    myResult.addValue(getIndex(element), moduleQName);
 
                                     // File A: include X  -->  A === X
                                     if (topLevel && isInclude) {
-                                        myResult.addValue(0, moduleQName);
+                                        myResult.addValue("", moduleQName);
                                     }
 
                                     break;
@@ -463,17 +440,16 @@ public class ORModuleResolutionPsiGist {
                         String moduleQName = module.getQualifiedName();
                         if (moduleQName != null) {
                             element.putUserData(RESOLUTION, module);
-                            element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                             myModulesInContext.add(element);
 
                             // File A: include X  -->  A === X
                             if (topLevel && isInclude) {
-                                myResult.addValue(0, moduleQName);
+                                myResult.addValue("", moduleQName);
                             }
 
                             if (!moduleQName.equals(visitedPath)) {
                                 // File A: open B; include B2  -->  B2 === B.B2
-                                myResult.addValue(myCurrentIndex, moduleQName);
+                                myResult.addValue(getIndex(element), moduleQName);
                             }
                             break;
                         }
@@ -498,9 +474,8 @@ public class ORModuleResolutionPsiGist {
                                 found = true;
 
                                 element.putUserData(RESOLUTION, componentInContext);
-                                element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                 myModulesInContext.add(element);
-                                myResult.addValue(myCurrentIndex, componentInContext.getQualifiedName());
+                                myResult.addValue(getIndex(element), componentInContext.getQualifiedName());
 
                                 break;
                             }
@@ -515,9 +490,8 @@ public class ORModuleResolutionPsiGist {
                                 if (moduleQName != null) {
                                     found = true;
                                     element.putUserData(RESOLUTION, resolvedModule);
-                                    element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                     myModulesInContext.add(element);
-                                    myResult.addValue(myCurrentIndex, moduleQName);
+                                    myResult.addValue(getIndex(element), moduleQName);
                                     break;
                                 }
                             }
@@ -531,9 +505,8 @@ public class ORModuleResolutionPsiGist {
                             String moduleQName = module == null ? null : module.getQualifiedName();
                             if (moduleQName != null) {
                                 element.putUserData(RESOLUTION, module);
-                                element.putUserData(ELEMENT_INDEX, myCurrentIndex);
                                 myModulesInContext.add(element);
-                                myResult.addValue(myCurrentIndex, moduleQName);
+                                myResult.addValue(getIndex(element), moduleQName);
                                 break;
                             }
                         }
@@ -569,8 +542,7 @@ public class ORModuleResolutionPsiGist {
 
                         if (resolvedModule != null) {
                             element.putUserData(RESOLUTION, resolvedModule);
-                            element.putUserData(ELEMENT_INDEX, myCurrentIndex);
-                            myResult.addValue(myCurrentIndex, resolvedModule.getQualifiedName());
+                            myResult.addValue(getIndex(element), resolvedModule.getQualifiedName());
                             return;
                         }
                     }
@@ -588,8 +560,7 @@ public class ORModuleResolutionPsiGist {
                             String moduleQName = resolvedModule == null ? null : resolvedModule.getQualifiedName();
                             if (moduleQName != null) {
                                 element.putUserData(RESOLUTION, resolvedModule);
-                                element.putUserData(ELEMENT_INDEX, myCurrentIndex);
-                                myResult.addValue(myCurrentIndex, moduleQName);
+                                myResult.addValue(getIndex(element), moduleQName);
                                 return;
                             }
                         }
@@ -602,8 +573,7 @@ public class ORModuleResolutionPsiGist {
                 String moduleQName = module.getQualifiedName();
                 if (moduleQName != null) {
                     element.putUserData(RESOLUTION, module);
-                    element.putUserData(ELEMENT_INDEX, myCurrentIndex);
-                    myResult.addValue(myCurrentIndex, moduleQName);
+                    myResult.addValue(getIndex(element), moduleQName);
                 }
             }
         }
@@ -617,15 +587,12 @@ public class ORModuleResolutionPsiGist {
                 // If there are any (top-binding) includes in the module, they are equivalent
                 List<RPsiInclude> includes = ORUtil.findImmediateChildrenOfClass(module.getBody(), RPsiInclude.class);
                 if (!includes.isEmpty()) {
-                    Integer moduleIndex = module.getUserData(ELEMENT_INDEX);
-                    if (moduleIndex != null) {
-                        for (RPsiInclude moduleInclude : includes) {
-                            Collection<String> includeResolutions = myResult.getValues(moduleInclude);
-                            if (includeResolutions.isEmpty()) {
-                                myResult.addValue(moduleIndex, moduleInclude.getIncludePath());
-                            } else {
-                                myResult.addValues(moduleIndex, includeResolutions);
-                            }
+                    for (RPsiInclude moduleInclude : includes) {
+                        Collection<String> includeResolutions = myResult.getValues(moduleInclude);
+                        if (includeResolutions.isEmpty()) {
+                            myResult.addValue(getIndex(module), moduleInclude.getIncludePath());
+                        } else {
+                            myResult.addValues(getIndex(module), includeResolutions);
                         }
                     }
                 }
@@ -658,40 +625,65 @@ public class ORModuleResolutionPsiGist {
         }
     }
 
-    public static class Data extends Int2ObjectOpenHashMap<Collection<String>> {
-        public Data() {
-            super();
+
+    public static @NotNull String getIndex(@NotNull PsiElement element) {
+        if (element instanceof PsiFile) {
+            return "";
         }
 
-        public Data(int expectedSize) {
-            super(expectedSize);
+        String index = element.getUserData(ELEMENT_INDEX);
+        if (index != null) {
+            return index;
         }
+
+        ORLangTypes types = ORUtil.getTypes(element.getLanguage());
+        int count = 0;
+
+        PsiElement prevSibling = element.getPrevSibling();
+        IElementType prevElementType = prevSibling != null ? prevSibling.getNode().getElementType() : null;
+        while (prevElementType != null) {
+            if (prevElementType == types.C_MODULE_DECLARATION || prevElementType == types.C_FUNCTOR_DECLARATION ||
+                    prevElementType == types.C_INCLUDE || prevElementType == types.C_OPEN || prevElementType == types.C_TAG_START) {
+                count++;
+            }
+            prevSibling = prevSibling.getPrevSibling();
+            prevElementType = prevSibling != null ? prevSibling.getNode().getElementType() : null;
+        }
+
+        PsiElement parent = element.getParent();
+        String parentIndex = parent != null ? getIndex(parent) : "";
+
+        String result = (parentIndex.isEmpty() ? "" : parentIndex + ".") + count;
+        element.putUserData(ELEMENT_INDEX, result);
+
+        return result;
+    }
+
+    public static class Data {
+        Map<String, Collection<String>> items = new HashMap<>();
 
         public @NotNull Collection<String> getValues(@Nullable PsiElement element) {
-            int index = -1;
-            if (element instanceof FileBase) {
-                index = 0;
-            } else if (element != null) {
-                Integer elementIndex = element.getUserData(ELEMENT_INDEX);
-                index = elementIndex == null ? -1 : elementIndex;
+            Collection<String> values = null;
+            if (element != null) {
+                values = items.get(getIndex(element));
             }
-
-            Collection<String> values = index < 0 ? null : get(index);
-            return values == null ? Collections.emptyList() : values;
+            return values != null ? values : Collections.emptyList();
         }
 
-        public void addValue(Integer key, String value) {
-            if (key >= 0) {
-                Collection<String> keyValues = computeIfAbsent(key, k -> new TreeSet<>(String::compareTo));
+        public void addValue(@NotNull String key, @Nullable String value) {
+            if (value != null) {
+                Collection<String> keyValues = items.computeIfAbsent(key, k -> new ArrayList<>());
                 keyValues.add(value);
             }
         }
 
-        public void addValues(Integer key, Collection<String> values) {
-            if (key >= 0) {
-                Collection<String> keyValues = computeIfAbsent(key, k -> new TreeSet<>(String::compareTo));
-                keyValues.addAll(values);
-            }
+        public void addValues(@NotNull String key, @NotNull Collection<String> values) {
+            Collection<String> keyValues = items.computeIfAbsent(key, k -> new TreeSet<>(String::compareTo));
+            keyValues.addAll(values);
+        }
+
+        public int size() {
+            return items.size();
         }
     }
 
@@ -699,8 +691,8 @@ public class ORModuleResolutionPsiGist {
         @Override
         public void save(@NotNull DataOutput out, Data values) throws IOException {
             DataInputOutputUtil.writeINT(out, values.size());
-            for (Int2ObjectMap.Entry<Collection<String>> entry : Int2ObjectMaps.fastIterable(values)) {
-                DataInputOutputUtil.writeINT(out, entry.getIntKey());
+            for (Map.Entry<String, Collection<String>> entry : values.items.entrySet()) {
+                out.writeUTF(entry.getKey());
                 DataInputOutputUtil.writeSeq(out, entry.getValue(), out::writeUTF);
             }
         }
@@ -708,14 +700,10 @@ public class ORModuleResolutionPsiGist {
         @Override
         public Data read(@NotNull DataInput in) throws IOException {
             int size = DataInputOutputUtil.readINT(in);
-            if (size == 0) {
-                return new Data();
-            }
-
-            Data result = new Data(size);
+            Data result = new Data();
             for (int i = 0; i < size; i++) {
-                int key = DataInputOutputUtil.readINT(in);
-                result.put(key, DataInputOutputUtil.readSeq(in, in::readUTF));
+                String key = in.readUTF();
+                result.addValues(key, DataInputOutputUtil.readSeq(in, in::readUTF));
             }
 
             return result;

@@ -5,8 +5,8 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
+import com.reason.comp.esy.*;
 import com.reason.hints.*;
-import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.dune.*;
 import com.reason.ide.settings.*;
@@ -73,7 +73,7 @@ public class DuneCompiler implements Compiler {
 
     @Override
     public boolean isAvailable(@NotNull Project project) {
-        return true; // Not implemented yet
+        return !EsyPlatform.isEsyProject(project) && !DunePlatform.findConfigFiles(project).isEmpty();
     }
 
     @Override
@@ -92,7 +92,7 @@ public class DuneCompiler implements Compiler {
         }
 
         if (myProcessStarted.compareAndSet(false, true)) {
-            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstDuneConfigFile(myProject) : file;
+            VirtualFile sourceFile = DunePlatform.findConfigFiles(myProject).stream().findFirst().orElse(null);
             DuneConsoleView console = (DuneConsoleView) myProject.getService(ORToolWindowManager.class).getConsoleView(DuneToolWindowFactory.ID);
             DuneProcess process = new DuneProcess(myProject);
             ProcessHandler processHandler = sourceFile == null ? null : process.create(sourceFile, cliType, onProcessTerminated);

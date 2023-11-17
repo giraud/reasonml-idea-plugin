@@ -65,7 +65,12 @@ public class BsConfigReader {
                 }
             }
 
+            // JSX
+
             String jsxVersion = null;
+            String jsxMode = null;
+
+            // BS config: {reason: {react-jsx: 3}}
             JsonElement reason = top.get("reason");
             JsonObject reasonProp =
                     reason != null && reason.isJsonObject() ? top.getAsJsonObject("reason") : null;
@@ -74,7 +79,30 @@ public class BsConfigReader {
                 if (jsxProp != null && jsxProp.isNumber()) {
                     jsxVersion = Integer.toString(jsxProp.getAsInt());
                 }
+            } else {
+                JsonObject jsxProp = top.getAsJsonObject("jsx");
+                if (jsxProp != null) {
+                    JsonPrimitive jsxVersionProp = jsxProp.getAsJsonPrimitive("version");
+                    if (jsxVersionProp != null && jsxVersionProp.isNumber()) {
+                        jsxVersion = Integer.toString(jsxVersionProp.getAsInt());
+                    }
+
+                    JsonPrimitive jsxModeProp = jsxProp.getAsJsonPrimitive("mode");
+                    if (jsxModeProp != null && jsxModeProp.isString()) {
+                        jsxMode = jsxModeProp.getAsString();
+                    }
+                }
             }
+
+            // Uncurried
+
+            boolean uncurried = true; // by default
+            JsonPrimitive uncurriedProp = top.getAsJsonPrimitive("uncurried");
+            if (uncurriedProp != null && uncurriedProp.isBoolean()) {
+                uncurried = uncurriedProp.getAsBoolean();
+            }
+
+            // PPX
 
             List<String> ppx = new ArrayList<>();
             JsonArray ppxProp = top.getAsJsonArray("ppx-flags");
@@ -136,7 +164,7 @@ public class BsConfigReader {
                 }
             }
 
-            return new BsConfig(name, namespace, jsxVersion, sources, devSources, externals, deps, flags, ppx);
+            return new BsConfig(name, namespace, sources, devSources, externals, deps, flags, ppx, jsxVersion, jsxMode, uncurried);
         }
 
         throw new RuntimeException("Not a Bucklescript config");

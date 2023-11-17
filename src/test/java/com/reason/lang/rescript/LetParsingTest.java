@@ -228,7 +228,12 @@ public class LetParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_chaining_1() {
-        FileBase e = parseCode("let x = cond ? yes : no\n console(. any)");
+        FileBase e = parseCode("""
+                let x = cond ? yes : no
+                console(. any)
+                """);
+        assertNoParserError(e);
+
         RPsiLet l = firstOfType(e, RPsiLet.class);
         RPsiFunctionCall f = firstOfType(e, RPsiFunctionCall.class);
 

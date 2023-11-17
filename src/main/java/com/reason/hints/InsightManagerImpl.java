@@ -96,7 +96,7 @@ public class InsightManagerImpl implements InsightManager {
         if (sourceFile != null) {
             ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
             ORResolvedCompiler<?> compiler = compilerManager.getCompiler(sourceFile);
-            String fullVersion = compiler != null ? compiler.getFullVersion(sourceFile) : null;
+            String fullVersion = compiler != null ? compiler.getFullVersion() : null;
             String ocamlVersion = Rincewind.extractOcamlVersion(fullVersion);
             String rincewindVersion = Rincewind.getLatestVersion(ocamlVersion);
 

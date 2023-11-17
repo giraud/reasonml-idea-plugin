@@ -13,8 +13,22 @@
          | External system integration (the import from model...)
          -->
 
+<!--        <externalSystemManager implementation="com.reason.ide.importWizard.DuneExternalSystemManager"/>-->
+<!--        <projectService serviceImplementation="com.reason.ide.importWizard.settings.DuneSettings"/>-->
+<!--        <projectService serviceImplementation="com.reason.ide.importWizard.settings.DuneLocalSettings"/>-->
+<!--        <projectService serviceImplementation="com.reason.ide.importWizard.settings.DuneProjectSettings"/>-->
+
+        <!--        <externalProjectDataService implementation="com.reason.ide.importWizard.DuneProjectDataService"/>-->
+<!--        <moduleBuilder builderClass="com.reason.ide.importWizard.DuneModuleBuilder"/>-->
+
+        <moduleConfigurationEditorProvider implementation="com.reason.ide.module.DuneModuleEditorProvider"/>
+
         <projectImportProvider implementation="com.reason.ide.importWizard.DuneProjectImportProvider"/>
         <projectImportBuilder implementation="com.reason.ide.importWizard.DuneProjectImportBuilder"/>
+        <projectOpenProcessor implementation="com.reason.ide.importWizard.DuneProjectOpenProcessor"/>
+
+        <!--        <toolWindow id="Dune" anchor="right" icon="com.reason.ide.ORIcons.DUNE_TOOL"-->
+<!--                    factoryClass="com.reason.ide.toolWindow.DuneToolWindowExternalFactory"/>-->
 
         <!--
          | UI

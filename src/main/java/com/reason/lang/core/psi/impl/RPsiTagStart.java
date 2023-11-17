@@ -45,4 +45,9 @@ public class RPsiTagStart extends ORCompositePsiElement<ORLangTypes> implements 
     public @NotNull List<RPsiTagProperty> getProperties() {
         return ORUtil.findImmediateChildrenOfClass(this, RPsiTagProperty.class);
     }
+
+    @Override
+    public String toString() {
+        return "RPsiTagStart: " + getName();
+    }
 }

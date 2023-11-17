@@ -12,6 +12,15 @@
                         
 ## Unreleased
 
+## 0.118 - 2023/11/17
+
+- :rocket: Support for JSX 4
+- :bug: [#434](https://github.com/giraud/reasonml-idea-plugin/issues/435) Rescript 11 deprecate bsconfig.json, wants rescript.json
+- :bug: [#434](https://github.com/giraud/reasonml-idea-plugin/issues/434) Update rescript keywords
+- :bug: [#433](https://github.com/giraud/reasonml-idea-plugin/issues/433) Gutter icon in ml file pointing to mli file disappears when it shouldn't
+- :bug: [#430](https://github.com/giraud/reasonml-idea-plugin/issues/430) No SDK created when importing a dune project
+- :bug: [#423](https://github.com/giraud/reasonml-idea-plugin/issues/423) Incorrect parsing when 'ref' is used as identifier
+
 ## 0.117.1 - 2023/09/11
 
 - :bug: [#429](https://github.com/giraud/reasonml-idea-plugin/issues/429) Structure panel shows "Unknown presentation ..." for "module X : sig ..."

@@ -11,6 +11,6 @@ public class ResResolvedCompiler extends ORResolvedCompiler<ResCompiler> {
     }
 
     public @Nullable Ninja readNinjaBuild() {
-        return myCompiler.readNinjaBuild(myContentRootFile.getParent());
+        return myCompiler.readNinjaBuild(getContentRoot());
     }
 }

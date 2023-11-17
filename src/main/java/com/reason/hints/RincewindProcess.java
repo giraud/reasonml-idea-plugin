@@ -7,7 +7,6 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.dune.*;
-import com.reason.ide.*;
 import com.reason.ide.hints.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -31,13 +30,10 @@ public class RincewindProcess {
 
         LOG.debug("Looking for types for file", sourceFile);
 
-        VirtualFile processDir;
-
-        boolean isDuneProject = ORProjectManager.isDuneProject(myProject);
-        if (isDuneProject) {
-            processDir = DunePlatform.findContentRoot(myProject, sourceFile);
-        } else {
-            processDir = BsPlatform.findContentRoot(myProject, sourceFile);
+        VirtualFile processDir = DunePlatform.findContentRoot(myProject, sourceFile);
+        if (processDir == null) {
+            VirtualFile configFile = BsPlatform.findConfigFile(myProject, sourceFile);
+            processDir = configFile != null ? configFile.getParent() : null;
         }
 
         if (processDir == null) {
@@ -138,11 +134,10 @@ public class RincewindProcess {
             return;
         }
 
-        VirtualFile contentRoot;
-        if (ORProjectManager.isDuneProject(myProject)) {
-            contentRoot = DunePlatform.findContentRoot(myProject, cmtFile);
-        } else {
-            contentRoot = BsPlatform.findContentRoot(myProject, cmtFile);
+        VirtualFile contentRoot = DunePlatform.findContentRoot(myProject, cmtFile);
+        if (contentRoot == null) {
+            VirtualFile configFile = BsPlatform.findConfigFile(myProject, cmtFile);
+            contentRoot = configFile != null ? configFile.getParent() : null;
         }
 
         if (contentRoot != null) {

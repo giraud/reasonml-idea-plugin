@@ -373,10 +373,10 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     @Test
     public void test_resolution_1() {
         configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
-        configureCode("Belt_Map.ml", "module String = Belt_MapString;");
+        configureCode("Belt_Map.ml", "module String = Belt_MapString");
         configureCode("Belt_Option.mli", "val flatMap : 'a option -> ('a -> 'b option) -> 'b option");
         configureCode("Belt.re", "module Option = Belt_Option; module Map = Belt_Map;");
-        configureCode("A.re", "let x = (dict, locale) => locale->Belt.Option.flatMap<caret>(dict->Belt.Map.String.get);");
+        configureCode("A.re", "let fn = (dict, locale) => locale->Belt.Option.flatMap<caret>(dict->Belt.Map.String.get);");
 
         RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
         assertEquals("Belt_Option.flatMap", e.getQualifiedName());

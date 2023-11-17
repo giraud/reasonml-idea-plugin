@@ -11,7 +11,6 @@ import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.hints.*;
-import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.rescript.*;
 import com.reason.ide.settings.*;
@@ -22,7 +21,6 @@ import java.io.*;
 import java.util.concurrent.atomic.*;
 
 import static com.reason.comp.CliType.Rescript.*;
-import static com.reason.comp.ORConstants.*;
 
 public class ResCompiler implements Compiler {
     private static final Log LOG = Log.create("compiler.rescript");
@@ -41,9 +39,7 @@ public class ResCompiler implements Compiler {
 
     @Override
     public @NotNull String getFullVersion(@Nullable VirtualFile file) {
-        VirtualFile bsConfig = file == null ? ResPlatform.findConfigFile(myProject) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, file);
-        VirtualFile bscExecutable = bsConfig == null ? null : ResPlatform.findBscExecutable(myProject, bsConfig);
-
+        VirtualFile bscExecutable = ResPlatform.findBscExecutable(myProject, file);
         if (bscExecutable != null) {
             try (InputStream inputStream = Runtime.getRuntime().exec(bscExecutable.getPath() + " -version").getInputStream()) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -63,29 +59,28 @@ public class ResCompiler implements Compiler {
 
     @Override
     public void run(@Nullable VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
+        LOG.debug("Run compiler");
+
         ORSettings settings = myProject.getService(ORSettings.class);
         if (!isDisabled() && settings.isBsEnabled()) {
             if (sourceFile != null) {
                 myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
             }
 
-            // ResPlatform.findRescriptExe
-            VirtualFile bsConfig = sourceFile == null ? ResPlatform.findConfigFile(myProject) : ORFileUtils.findAncestor(myProject, BS_CONFIG_FILENAME, sourceFile);
-            if (bsConfig == null) {
-                return;
-            }
-
-            VirtualFile binDir = ResPlatform.findBinaryPathForConfigFile(myProject, bsConfig);
-            VirtualFile bin = binDir == null ? null : ORPlatform.findBinary(binDir, RESCRIPT_EXE_NAME);
+            VirtualFile configFile = ResPlatform.findConfigFile(myProject, sourceFile);
+            VirtualFile bin = ResPlatform.findRescriptExecutable(myProject, configFile);
 
             ConsoleView console = myProject.getService(ORToolWindowManager.class).getConsoleView(RescriptToolWindowFactory.ID);
 
-            if (bin != null && console != null) {
+            if (configFile != null && bin != null && console != null) {
                 try {
                     if (myProcessStarted.compareAndSet(false, true)) {
                         GeneralCommandLine cli = getCommandLine(bin.getPath(), (CliType.Rescript) cliType);
 
-                        cli.withWorkDirectory(bsConfig.getParent().getPath());
+                        VirtualFile configParent = configFile.getParent();
+                        if (configParent != null) {
+                            cli.withWorkDirectory(configParent.getPath());
+                        }
                         cli.withEnvironment("NINJA_ANSI_FORCED", "1");
                         if (!settings.isUseSuperErrors()) {
                             cli.withEnvironment("BS_VSCODE", "1");
@@ -145,10 +140,8 @@ public class ResCompiler implements Compiler {
 
     @Override
     public boolean isAvailable(@NotNull Project project) {
-        VirtualFile bsConfig = ORProjectManager.findFirstBsConfigurationFile(project).orElse(null);
-        VirtualFile rescriptBin = bsConfig == null ? null : ResPlatform.findBinaryPathForConfigFile(project, bsConfig);
-
-        return rescriptBin != null;
+        VirtualFile bin = ResPlatform.findBscExecutable(project, null);
+        return bin != null;
     }
 
     private boolean isDisabled() {

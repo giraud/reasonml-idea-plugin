@@ -10,6 +10,6 @@ public class BsResolvedCompiler extends ORResolvedCompiler<BsCompiler> {
     }
 
     public @Nullable Ninja readNinja() {
-        return myCompiler.readNinjaBuild(myContentRootFile.getParent());
+        return myCompiler.readNinjaBuild(getContentRoot());
     }
 }

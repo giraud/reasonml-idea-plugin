@@ -8,7 +8,6 @@ import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.dune.*;
 import com.reason.hints.*;
-import com.reason.ide.*;
 import com.reason.ide.console.*;
 import com.reason.ide.console.esy.*;
 import jpsplugin.com.reason.*;
@@ -52,7 +51,7 @@ public class EsyCompiler implements Compiler {
         }
 
         if (myProcessStarted.compareAndSet(false, true)) {
-            VirtualFile sourceFile = file == null ? ORProjectManager.findFirstBsContentRoot(myProject) : file;
+            VirtualFile sourceFile = file != null ? file : EsyPlatform.findConfigFiles(myProject).stream().findFirst().orElse(null);
             ConsoleView console = myProject.getService(ORToolWindowManager.class).getConsoleView(EsyToolWindowFactory.ID);
 
             if (sourceFile != null && console != null) {
@@ -86,7 +85,7 @@ public class EsyCompiler implements Compiler {
 
     @Override
     public boolean isAvailable(@NotNull Project project) {
-        return true; // not implemented yet
+        return EsyPlatform.isEsyProject(myProject);
     }
 
     @Override

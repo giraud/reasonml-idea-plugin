@@ -55,7 +55,7 @@ public abstract class OpamCommandLine {
                 }
 
                 OCamlExecutable executable = OCamlExecutable.getExecutable(opamLocation, settings.getCygwinBash());
-                return executable.patchCommandLine(cli, null, false, myProject);
+                return executable.patchCommandLine(cli, null, false);
             } else {
                 LOG.debug("Content roots", contentRoots);
                 LOG.debug("Binary directory", binPath);

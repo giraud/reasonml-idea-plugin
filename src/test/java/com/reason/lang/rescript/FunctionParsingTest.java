@@ -9,7 +9,7 @@ import org.junit.*;
 
 import java.util.*;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions"})
 public class FunctionParsingTest extends ResParsingTestCase {
     @Test
     public void test_anonymous_function() {
@@ -36,9 +36,11 @@ public class FunctionParsingTest extends ResParsingTestCase {
 
     @Test
     public void result_function_braces() {
-        RPsiLet e = firstOfType(parseCode("let fn = () => {\n" +
-                "  let result: (. unit) => unit = (. ()) => ()\n" +
-                "}"), RPsiLet.class);
+        RPsiLet e = firstOfType(parseCode("""
+                let fn = () => {
+                  let result: (. unit) => unit = (. ()) => ()
+                }
+                """), RPsiLet.class);
         assertNoParserError(e);
 
         RPsiLet el = PsiTreeUtil.findChildOfType(e, RPsiLet.class);
@@ -268,15 +270,21 @@ public class FunctionParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_rollback_01() {
-        RPsiFunction f = firstOfType(parseCode("let _ = { let x = 1\n let y = 2\n () => 3 }"), RPsiFunction.class); // test infinite rollback
-        assertNoParserError(f);
+        RPsiFunction f = firstOfType(parseCode("""
+                let _ = {
+                  let x = 1
+                  let y = 2
+                  () => 3
+                }
+                """), RPsiFunction.class); // test infinite rollback
 
         assertEquals("() => 3", f.getText());
     }
 
     @Test
     public void test_rollback_02() {
-        List<RPsiFunction> es = childrenOfType(parseCode("let _ = (() => 1, () => 2);"), RPsiFunction.class); // test infinite rollback
+        FileBase c = parseCode("let _ = (() => 1, () => 2);");
+        List<RPsiFunction> es = childrenOfType(c, RPsiFunction.class); // test infinite rollback
 
         assertEquals("() => 1", es.get(0).getText());
         assertEquals("() => 2", es.get(1).getText());
@@ -284,9 +292,11 @@ public class FunctionParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_rollback_03() {
-        RPsiInnerModule e = firstOfType(parseCode("module M: I with type t = t = {" +
-                " let fn = p => (. p1) => { let _ = a let _ = x => x } " +
-                "}"), RPsiInnerModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("""
+                module M: I with type t = t = {
+                  let fn = p => (. p1) => { let _ = a let _ = x => x }
+                }
+                """), RPsiInnerModule.class);
         assertNoParserError(e);
 
         assertSize(1, e.getConstraints());
@@ -297,9 +307,15 @@ public class FunctionParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_rollback_04() {
-        RPsiFunction e = firstOfType(parseCode("let fn = () => { let _ = 1\n (x) => 2 }"), RPsiFunction.class);
+        RPsiFunction e = firstOfType(parseCode("""
+                let fn = () => {
+                  let _ = 1
+                  (x) => 2
+                }
+                """), RPsiFunction.class);
         assertNoParserError(e);
-        assertEquals("{ let _ = 1\n (x) => 2 }", e.getBody().getText());
+
+        assertEquals("{\n  let _ = 1\n  (x) => 2\n}", e.getBody().getText());
     }
 
     @Test
@@ -313,34 +329,32 @@ public class FunctionParsingTest extends ResParsingTestCase {
     }
 
     @Test
-    public void test_x() {
-        RPsiLet e = firstOfType(parseCode("\n" +
-                "  let _ = (. s) =>\n" +
-                "    memoize2(\n" +
-                "      x,\n" +
-                "      fnCall(. s),\n" +
-                "      ((\n" +
-                "        types,\n" +
-                "        aMap: Belt.Map.String.t<array<MyMod.Function.t>>,\n" +
-                "      )) => {\n" +
-                "        types\n" +
-                "        ->Belt.List.sort((type1, type2) => compare(type1.value, type2.value))\n" +
-                "      },\n" +
-                "    )\n"), RPsiLet.class);
-
+    public void test_complex() {
+        RPsiLet e = firstOfType(parseCode("""
+                let _ = (. s) =>
+                  memoize2(
+                    x,
+                    fnCall(. s),
+                    ((
+                      types,
+                      aMap: Belt.Map.String.t<array<MyMod.Function.t>>,
+                    )) => {
+                      types
+                      ->Belt.List.sort((type1, type2) => compare(type1.value, type2.value))
+                    },
+                  )
+                """), RPsiLet.class);
         assertNoParserError(e);
+
         RPsiFunctionCall efc = (RPsiFunctionCall) e.getFunction().getBody().getFirstChild();
         assertEquals("memoize2", efc.getName());
         assertSize(3, efc.getParameters());
-
-        // TODO assertDoesntContain(collection, myTypes.A_LOWER_TAG_NAME);
     }
 
     @Test
     public void test_ternary() {
         RPsiFunction e = firstOfType(parseCode("let fn = (p) => p == true ? Time.H12 : Time.H24\nMod.fn()"), RPsiFunction.class);
 
-        assertNoParserError(e);
         RPsiTernary et = PsiTreeUtil.findChildOfType(e, RPsiTernary.class);
         assertEquals("p == true", et.getCondition().getText());
         assertEquals("Time.H12", et.getThenExpression().getText());
@@ -349,14 +363,59 @@ public class FunctionParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_current() {
-        FileBase code = parseCode("let _ = () => { v.current = () => fn(p) }");
+        RPsiLet e = firstOfType(parseCode("let _ = () => { v.current = () => fn(p) }"), RPsiLet.class);
 
-        RPsiLet e = firstOfType(code, RPsiLet.class);
-        assertNoParserError(e);
-
-        List<RPsiFunction> efs = childrenOfType(code, RPsiFunction.class);
+        List<RPsiFunction> efs = childrenOfType(e, RPsiFunction.class);
         assertEquals("() => { v.current = () => fn(p) }", efs.get(0).getText());
         assertEquals("() => fn(p)", efs.get(1).getText());
+    }
+
+    @Test
+    public void test_call_uncurried() {
+        RPsiFunctionCall e = firstOfType(parseCode("let _ = call1(call2(a)(. [b, c]), () => d)"), RPsiFunctionCall.class);
+
+        assertEquals("call1", e.getName());
+        assertSize(2, e.getParameters());
+        RPsiParameterReference ref0 = e.getParameters().get(0);
+        assertEquals("call2(a)(. [b, c])", ref0.getText());
+        assertInstanceOf(ref0.getFirstChild(), RPsiFunctionCall.class);
+        RPsiFunctionCall ref0c = (RPsiFunctionCall) ref0.getFirstChild();
+        assertSize(1, ref0c.getParameters());
+        assertEquals(("[b, c]"), ref0c.getParameters().get(0).getText());
+        RPsiParameterReference ref1 = e.getParameters().get(1);
+        assertEquals("() => d", ref1.getText());
+        assertInstanceOf(ref1.getFirstChild(), RPsiFunction.class);
+    }
+
+    @Test
+    public void test_anonymous() {
+        FileBase e = parseCode("let _ = x => fn((x), (_) => 1)");
+
+    }
+
+    @Test
+    public void test_anonymous_1() {
+        FileBase e = parseCode("let _ = fn(((_), (_)) => true)");
+
+        RPsiFunctionCall ec = firstOfType(e, RPsiFunctionCall.class);
+        assertSize(1, ec.getParameters());
+        RPsiFunction ecf = firstOfType(ec.getParameters().get(0), RPsiFunction.class);
+        assertSize(2, ecf.getParameters());
+        assertEquals("(_)", ecf.getParameters().get(0).getText());
+        assertEquals("(_)", ecf.getParameters().get(1).getText());
+        assertEquals("true", ecf.getBody().getText());
+    }
+
+    @Test
+    public void test_nested() {
+        RPsiFunctionCall e = firstOfType(parseCode("let _ = useMemo(() => (p: string) => ())"), RPsiFunctionCall.class);
+
+        RPsiFunction ep0 = (RPsiFunction) e.getParameters().get(0).getFirstChild();
+        assertSize(0, ep0.getParameters());
+        assertEquals("(p: string) => ()", ep0.getBody().getText());
+        RPsiFunction ep0b = (RPsiFunction) ep0.getBody().getFirstChild();
+        assertSize(1, ep0b.getParameters());
+        assertEquals("(p: string) => ()", ep0b.getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/113

@@ -34,8 +34,10 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
     private void runActivityLater(@NotNull Project project) {
         LOG.info("run Js library manager");
 
-        ReadAction.nonBlocking(() -> ORProjectManager.findFirstBsConfigurationFile(project)).
-                finishOnUiThread(ModalityState.defaultModalityState(), bsConfigFileOptional -> {
+        // TODO deprecated
+        ReadAction.nonBlocking(() ->
+                        BsPlatform.findConfigFiles(project).stream().findFirst())
+                .finishOnUiThread(ModalityState.defaultModalityState(), bsConfigFileOptional -> {
                     if (bsConfigFileOptional.isPresent()) {
                         VirtualFile bsConfigFile = bsConfigFileOptional.get();
                         LOG.debug("bucklescript config file", bsConfigFile);
@@ -67,8 +69,8 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
 
                         WriteCommandAction.runWriteCommandAction(project, (Runnable) jsLibraryManager::commitChanges);
                     }
-                }).
-                submit(AppExecutorUtil.getAppExecutorService());
+                })
+                .submit(AppExecutorUtil.getAppExecutorService());
     }
 
     private @NotNull List<VirtualFile> readBsConfigDependencies(@NotNull Project project, @NotNull String nodeModulesDir, @NotNull VirtualFile bsConfigFile) {

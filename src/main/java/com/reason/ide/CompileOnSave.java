@@ -5,12 +5,15 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
 import com.reason.comp.Compiler;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.beans.*;
 import java.lang.*;
 
 public class CompileOnSave implements PropertyChangeListener {
+    private static final Log LOG = Log.create("compileOnSaveListener");
+
     private final @NotNull Project myProject;
     private final @NotNull VirtualFile myFile;
 
@@ -26,7 +29,9 @@ public class CompileOnSave implements PropertyChangeListener {
         if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE) {
             ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
             ORResolvedCompiler<? extends Compiler> compiler = compilerManager == null ? null : compilerManager.getCompiler(myFile);
-            if (compiler != null) {
+            if (compiler == null) {
+                LOG.debug("No compiler found", myFile);
+            } else {
                 // We invokeLater because compiler needs access to index files and can't do it in the event thread
                 ApplicationManagerEx.getApplicationEx()
                         .invokeLater(() -> {

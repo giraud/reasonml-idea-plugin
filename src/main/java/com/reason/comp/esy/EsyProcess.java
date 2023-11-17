@@ -6,8 +6,6 @@ import com.intellij.execution.process.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
-import com.reason.comp.bs.*;
-import com.reason.ide.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -40,17 +38,16 @@ public class EsyProcess {
     public ProcessHandler create(@NotNull VirtualFile source, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
         killIt();
 
-        Optional<VirtualFile> workingDirOptional = findWorkingDirectory(myProject);
-        if (workingDirOptional.isEmpty()) {
+        VirtualFile workingDir = findWorkingDirectory(myProject);
+        if (workingDir == null) {
             return null;
         }
 
-        Optional<VirtualFile> esyExecutableOptional = BsPlatform.findEsyExecutable(myProject);
+        Optional<VirtualFile> esyExecutableOptional = EsyPlatform.findEsyExecutable(myProject);
         if (esyExecutableOptional.isEmpty()) {
             return null;
         }
 
-        VirtualFile workingDir = workingDirOptional.get();
         VirtualFile esyExecutable = esyExecutableOptional.get();
 
         GeneralCommandLine cli = newCommandLine(esyExecutable, workingDir, (CliType.Esy) cliType);
@@ -93,14 +90,12 @@ public class EsyProcess {
         };
     }
 
-    private static Optional<VirtualFile> findWorkingDirectory(@NotNull Project project) {
-        Optional<VirtualFile> esyContentRootOptional =
-                ORProjectManager.findFirstEsyContentRoot(project);
-        if (esyContentRootOptional.isEmpty()) {
+    private static @Nullable VirtualFile findWorkingDirectory(@NotNull Project project) {
+        VirtualFile contentRoot = EsyPlatform.findEsyContentRoots(project).stream().findFirst().orElse(null);
+        if (contentRoot == null) {
             EsyNotification.showEsyProjectNotFound();
-            return Optional.empty();
         }
-        return esyContentRootOptional;
+        return contentRoot;
     }
 
     private static final Function<ORProcessTerminated<Void>, ProcessListener> processTerminatedListener = (onProcessTerminated) ->

@@ -93,8 +93,7 @@ public class IfParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_ternary_call() {
-        PsiFile psiFile = parseCode("let _ = fn(a) ? b : c");
-        RPsiTernary e = firstOfType(psiFile, RPsiTernary.class);
+        RPsiTernary e = firstOfType(parseCode("let _ = fn(a) ? b : c"), RPsiTernary.class);
 
         assertNotNull(e);
         assertNotNull(e.getCondition());
@@ -116,7 +115,7 @@ public class IfParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_ternary_array() {
-        RPsiScopedExpr e = firstOfType(parseCode("let x = [ x ? a : b, y ? c : d  ]"), RPsiScopedExpr.class);
+        RPsiArray e = firstOfType(parseCode("let x = [ x ? a : b, y ? c : d  ]"), RPsiArray.class);
 
         List<RPsiTernary> ts = ORUtil.findImmediateChildrenOfClass(e, RPsiTernary.class);
         assertEquals("x ? a : b", ts.get(0).getText());
@@ -175,6 +174,24 @@ public class IfParsingTest extends ResParsingTestCase {
 
         List<RPsiTernary> ts = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiTernary.class));
         assertEquals("x ? Some(x) : None", ts.get(0).getText());
+    }
+
+    @Test
+    public void test_ternary_jsx() {
+        RPsiLet e = firstOfType(parseCode("""
+                let _ =
+                  hasWarnings
+                  ? <Alert>
+                    {<>
+                      <ul></ul>
+                    </>}
+                    </Alert>
+                 : React.null
+                """), RPsiLet.class);
+
+        assertNoParserError(e);
+        RPsiTernary et = firstOfType(e.getBinding(), RPsiTernary.class);
+        assertEquals("hasWarnings", et.getCondition().getText());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/424

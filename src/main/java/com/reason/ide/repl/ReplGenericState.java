@@ -6,8 +6,8 @@ import com.intellij.execution.process.*;
 import com.intellij.execution.runners.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
+import com.reason.comp.dune.*;
 import com.reason.comp.ocaml.*;
-import com.reason.ide.*;
 import com.reason.ide.settings.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -45,7 +45,7 @@ public class ReplGenericState implements RunProfileState {
             return null;
         }
 
-        VirtualFile baseRoot = ORProjectManager.findFirstDuneContentRoot(project);
+        VirtualFile baseRoot = DunePlatform.findConfigFiles(project).stream().findFirst().map(VirtualFile::getParent).orElse(null);
 
         GeneralCommandLine cli = new GeneralCommandLine("ocaml");
         cli.setRedirectErrorStream(true);
@@ -61,7 +61,7 @@ public class ReplGenericState implements RunProfileState {
         }
 
         OCamlExecutable executable = OCamlExecutable.getExecutable(opamLocation, null);
-        executable.patchCommandLine(cli, opamLocation + "/" + switchName + "/bin", false, project);
+        executable.patchCommandLine(cli, opamLocation + "/" + switchName + "/bin", false);
 
         OSProcessHandler handler = new OSProcessHandler(cli);
         ProcessTerminatedListener.attach(handler, project);

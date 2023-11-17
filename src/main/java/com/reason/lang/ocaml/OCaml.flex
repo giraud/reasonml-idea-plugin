@@ -88,77 +88,75 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 <INITIAL> {
     {WHITE_SPACE} { return WHITE_SPACE; }
 
-    "and"         { return types.AND; }
-    "as"          { return types.AS; }
+    // OCaml reserved keywords
+    // https://v2.ocaml.org/manual/lex.html#sss:keywords
     "assert"      { return types.ASSERT; }
+    "and"         { return types.AND; }
+    "asr"         { return types.ASR; }
+    "as"          { return types.AS; }
     "begin"       { return types.BEGIN; }
     "class"       { return types.CLASS; }
     "constraint"  { return types.CONSTRAINT; }
-    "do"          { return types.DO; }
-    "done"        { return types.DONE; }
     "downto"      { return types.DOWNTO; }
-    "else"        { return types.ELSE; }
-    "end"         { return types.END; }
-    "endif"       { return types.ENDIF; }
+    "done"        { return types.DONE; }
+    "do"          { return types.DO; }
     "exception"   { return types.EXCEPTION; }
     "external"    { return types.EXTERNAL; }
-    "for"         { return types.FOR; }
-    "fun"         { return types.FUN; }
+    "else"        { return types.ELSE; }
+    "end"         { return types.END; }
     "function"    { return types.FUNCTION; }
     "functor"     { return types.FUNCTOR; }
-    "if"          { return types.IF; }
-    "in"          { return types.IN; }
+    "false"       { return types.BOOL_VALUE; }
+    "fun"         { return types.FUN; }
+    "for"         { return types.FOR; }
+    "initializer" { return types.INITIALIZER; }
     "include"     { return types.INCLUDE; }
     "inherit"     { return types.INHERIT; }
-    "initializer" { return types.INITIALIZER; }
+    "if"          { return types.IF; }
+    "in"          { return types.IN; }
+    "land"        { return types.LAND; }
     "lazy"        { return types.LAZY; }
+    "lxor"        { return types.LXOR; }
     "let"         { return types.LET; }
-    "module"      { return types.MODULE;}
+    "lor"         { return types.LOR; }
+    "lsl"         { return types.LSL; }
+    "lsr"         { return types.LSR; }
     "mutable"     { return types.MUTABLE; }
-    "new"         { return types.NEW; }
+    "method"      { return types.METHOD; }
+    "module"      { return types.MODULE;}
+    "match"       { return types.MATCH; }
+    "mod"         { return types.MOD; }
     "nonrec"      { return types.NONREC; }
+    "new"         { return types.NEW; }
     "object"      { return types.OBJECT; }
-    "of"          { return types.OF; }
     "open"        { return types.OPEN; }
+    "of"          { return types.OF; }
     "or"          { return types.OR; }
+    "private"     { return types.PRIVATE; }
+    "rec"         { return types.REC; }
+    "struct"      { return types.STRUCT; }
+    "sig"         { return types.SIG; }
+    "then"        { return types.THEN; }
+    "true"        { return types.BOOL_VALUE; }
+    "type"        { return types.TYPE; }
+    "try"         { return types.TRY; }
+    "to"          { return types.TO; }
+    "virtual"     { return types.VIRTUAL; }
+    "val"         { return types.VAL; }
+    "when"        { return types.WHEN; }
+
+    // ??
     "pub"         { return types.PUB; }
     "pri"         { return types.PRI; }
-    "rec"         { return types.REC; }
-    "sig"         { return types.SIG; }
-    "struct"      { return types.STRUCT; }
-    "switch"      { return types.SWITCH; }
-    "then"        { return types.THEN; }
-    "to"          { return types.TO; }
-    "try"         { return types.TRY; }
-    "type"        { return types.TYPE; }
-    "val"         { return types.VAL; }
-    "virtual"     { return types.VIRTUAL; }
-    "when"        { return types.WHEN; }
     "while"       { return types.WHILE; }
     "with"        { return types.WITH; }
     "raw"         { return types.RAW; }
-
-    "mod"         { return types.MOD; }
-    "land"        { return types.LAND; }
-    "lor"         { return types.LOR; }
-    "lxor"        { return types.LXOR; }
-    "lsl"         { return types.LSL; }
-    "lsr"         { return types.LSR; }
-    "asr"         { return types.ASR; }
-
     "unit"        { return types.UNIT; }
     "ref"         { return types.REF; }
     "raise"       { return types.RAISE; }
-    "method"      { return types.METHOD; }
-    "private"     { return types.PRIVATE; }
-    "match"       { return types.MATCH; }
-
-    "option"    { return types.OPTION; }
-    "None"      { return types.NONE; }
-    "Some"      { return types.SOME; }
-
-    "false"     { return types.BOOL_VALUE; }
-    "true"      { return types.BOOL_VALUE; }
+    "option"      { return types.OPTION; }
+    "None"        { return types.NONE; }
+    "Some"        { return types.SOME; }
 
     "_"   { return types.UNDERSCORE; }
 

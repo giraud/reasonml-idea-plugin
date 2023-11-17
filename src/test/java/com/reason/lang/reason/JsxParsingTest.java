@@ -2,6 +2,7 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -306,11 +307,16 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_ternary_01() {
-        RPsiTag e = firstOfType(parseCode(//
-                "<>\n" +
-                        "  <div> {test ? React.null : <div> {(. x) => <div onClick={(e: option(string), _) => ()} />} </div>} </div>\n" +
-                        "  <div className=Styles.s> <Title text=\"title\" /> </div>\n" +
-                        "</>"), RPsiTag.class);
+        RPsiTag e = firstOfType(parseCode("""
+                <>
+                  <div> {test ? React.null : <div> {(. x) => <div onClick={(e: option(string), _) => ()} />} </div>} </div>
+                  <div className=Styles.s> <Title text="title" /> </div>
+                </>
+                """), RPsiTag.class);
+
+        RPsiTagBody body = e.getBody();
+        List<RPsiTag> ets = ORUtil.findImmediateChildrenOfClass(body, RPsiTag.class);
+        assertSize(2, ets);
 
         List<RPsiTagProperty> ps = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiTagProperty.class));
         RPsiTagProperty p0 = ps.get(0);
