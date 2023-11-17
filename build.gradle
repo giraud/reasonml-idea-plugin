@@ -34,10 +34,12 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>429 - Structure panel shows "Unknown presentation ..." for "module X : sig ..."</li>
-                    <li>428 - Webstorm error: No display name specified in plugin descriptor...</li>
-                    <li>427 - Preview not working in 'find in files'</li>
-                    <li>425 - Structure panel Some variables have the icon indicating a function</li>
+                    <li>Support for JSX 4</li>
+                    <li>435 - Rescript 11 deprecate bsconfig.json, wants rescript.json</li>
+                    <li>434 - Update rescript keywords</li>
+                    <li>433 - Gutter icon in ml file pointing to mli file disappears when it shouldn't</li>
+                    <li>430 - No SDK created when importing a dune project</li>
+                    <li>423 - Incorrect parsing when 'ref' is used as identifier</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
