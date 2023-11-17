@@ -12,24 +12,24 @@ import java.util.*;
 public class FunctorParsingTest extends OclParsingTestCase {
     @Test
     public void test_basic() {
-        RPsiFunctor e = firstOfType(parseCode("module Make (M:T0) (N:T1) : S = struct end"),RPsiFunctor.class);
+        RPsiFunctor e = firstOfType(parseCode("module Make (M:T0) (N:T1) : S = struct end"), RPsiFunctor.class);
 
         assertNoParserError(e);
-        assertEquals("struct end", e.getBody().getText());
         assertEquals("S", e.getReturnType().getText());
+        assertEquals("struct end", e.getBody().getText());
         List<RPsiParameterDeclaration> eps = e.getParameters();
         assertSize(2, eps);
         assertEquals("(M:T0)", eps.get(0).getText());   // parens outside ?
-        //assertEquals("T0", eps.get(0).getSignature().getText());          TODO
+        assertEquals("T0", eps.get(0).getSignature().getText());
         assertEquals("(N:T1)", eps.get(1).getText());
-        //assertEquals("T1", eps.get(1).getSignature().getText());          TODO
-        assertEquals(OclTypes.INSTANCE.C_PARAM_DECLARATION, eps.get(0).getNode().getElementType());
+        assertEquals("T1", eps.get(1).getSignature().getText());
+        assertEquals(myTypes.C_PARAM_DECLARATION, eps.get(0).getNode().getElementType());
         assertDoesntContain(extractUpperSymbolTypes(e), myTypes.A_VARIANT_NAME);
     }
 
     @Test
     public void test_struct() {
-        RPsiFunctor e = firstOfType(parseCode("module Make (struct type t end) : S = struct end"), RPsiFunctor.class);
+        RPsiFunctor e = firstOfType(parseCode("module Make (_:sig type t end) : S = struct end"), RPsiFunctor.class);
 
         assertEquals("struct end", e.getBody().getText());
         assertEquals("S", e.getReturnType().getText());
@@ -41,6 +41,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
     public void test_implicit_result() {
         RPsiFunctor e = firstOfType(parseCode("module Make (M:Def) = struct end"), RPsiFunctor.class);
 
+        assertNoParserError(e);
         assertEquals("struct end", e.getBody().getText());
     }
 
@@ -51,6 +52,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertEquals(1, expressions.size());
         RPsiFunctor f = (RPsiFunctor) first(expressions);
 
+        assertNoParserError(f);
         assertEquals("(M: Input)", first(f.getParameters()).getText());
         assertEquals("S", f.getReturnType().getText());
 
@@ -68,7 +70,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
 
         assertNoParserError(e);
         assertEquals("(M: SeqType)", e.getParameters().get(0).getText());
-        //assertEquals("SeqType", e.getParameters().get(0).getSignature().getText()); TODO
+        assertEquals("SeqType", e.getParameters().get(0).getSignature().getText());
         assertEquals("S", e.getReturnType().getText());
 
         assertEquals(1, ec.size());
@@ -78,15 +80,20 @@ public class FunctorParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_signature() {
-        Collection<RPsiFunctor> functors = functorExpressions(parseCode( //
-                "module GlobalBindings (M : sig\n" + //
-                        "val relation_classes : string list\n" + //
-                        "val morphisms : string list\n" + //
-                        "val arrow : evars -> evars * constr\n" + //
-                        "end) = struct  open M  end"));
+        Collection<RPsiFunctor> functors = functorExpressions(parseCode(
+                """
+                module GlobalBindings (M : sig
+                  val relation_classes : string list
+                  val morphisms : string list
+                  val arrow : evars -> evars * constr
+                end) = struct
+                  open M
+                end
+                """));
 
         assertEquals(1, functors.size());
         RPsiFunctor functor = first(functors);
+        assertNoParserError(functor);
         assertEquals("GlobalBindings", functor.getName());
         assertEquals("Dummy.GlobalBindings", functor.getQualifiedName());
         Collection<RPsiParameterDeclaration> parameters = functor.getParameters();

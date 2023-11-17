@@ -144,17 +144,17 @@ public abstract class ORParser<T extends ORTypes> {
 
         // find start
         int startIndex = 0;
-        while (startIndex < markersCount && myMarkers.get(startIndex).isHold()) {
+        while (startIndex < markersCount && !myMarkers.get(startIndex).isUnset()) {
             startIndex++;
         }
 
         // find parent
         int parentIndex = startIndex + 1;
         while (parentIndex < markersCount && !found) {
-            if (myMarkers.get(parentIndex).isHold()) {
-                parentIndex++;
-            } else {
+            if (myMarkers.get(parentIndex).isUnset()) {
                 found = true;
+            } else {
+                parentIndex++;
             }
         }
 
@@ -261,11 +261,11 @@ public abstract class ORParser<T extends ORTypes> {
         return -1;
     }
 
-    public int latestIndexOfCompositeAtMost(@NotNull ORCompositeType composite, int maxIndex) {
+    public int latestIndexOfCompositeAtMost(int maxIndex, @NotNull ORCompositeType... composites) {
         int max = Math.min(maxIndex, myMarkers.size());
         for (int i = 0; i < max; i++) {
             Marker markerScope = myMarkers.get(i);
-            if (markerScope.isCompositeType(composite)) {
+            if (markerScope.isCompositeIn(composites)) {
                 return i;
             }
         }
@@ -303,14 +303,14 @@ public abstract class ORParser<T extends ORTypes> {
         return latest != null && latest.isScopeToken(scopeType);
     }
 
-    public boolean isScopeAtIndex(int pos, @Nullable ORTokenElementType scopeType) {
-        Marker marker = find(pos);
-        return marker != null && marker.isScopeToken(scopeType);
-    }
-
     public boolean isCurrentScope(@Nullable ORTokenElementType scopeType) {
         Marker latest = getCurrentMarker();
         return latest != null && latest.isScopeToken(scopeType);
+    }
+
+    public boolean isScopeAtIndex(int pos, @Nullable ORTokenElementType scopeType) {
+        Marker marker = find(pos);
+        return marker != null && marker.isScopeToken(scopeType);
     }
 
     protected boolean isFoundScope(@Nullable ORTokenElementType expectedScope) {
@@ -378,7 +378,7 @@ public abstract class ORParser<T extends ORTypes> {
 
     public @NotNull ORParser<T> popEnd() {
         Marker scope = pop();
-        if (scope != null) {
+        if (scope != null && !scope.isDone()) {
             scope.end();
         }
         return this;
@@ -583,7 +583,7 @@ public abstract class ORParser<T extends ORTypes> {
 
     public @NotNull ORParser<T> rollbackToIndex(int index) {
         if (myRollbackCount > 10) {
-            myBuilder.error("Too many rollbacks");
+            //myBuilder.error("Plugin error! Too many rollbacks"); // RELEASE: comment that line
             return this;
         }
 
@@ -628,6 +628,10 @@ public abstract class ORParser<T extends ORTypes> {
         return myIndex;
     }
 
+    public int getParentIndex() {
+        return myIndex < 0 ? myIndex : myIndex + 1;
+    }
+
     public boolean isFound(@Nullable ORCompositeType expectedType) {
         Marker scope = find(myIndex);
         return scope != null && scope.isCompositeType(expectedType);
@@ -648,6 +652,7 @@ public abstract class ORParser<T extends ORTypes> {
     public @NotNull ORParser<T> end() {
         Marker marker = getLatestMarker();
         if (marker != null) {
+            marker.updateScope(null);
             marker.end();
         }
         return this;

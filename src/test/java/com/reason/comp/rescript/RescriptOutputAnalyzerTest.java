@@ -208,25 +208,116 @@ FAILED: cannot make progress due to previous errors.                          * 
         assertEquals(18, outputInfo.colEnd);
     }
 
-    // ---- SUPER ERRORS
+    /*
+     */
+    @Test
+    public void test_error_06() {
+        String error = """
+                FAILED: src/NotGood.cmj
+                    
+                  We've found a bug for you!
+                  C:\\project\\src\\NotGood.res:3:9
+                    
+                  1 │ let x = (a, b) => a + b
+                  2 │ 
+                  3 │ let y = x(10)
+                    
+                  This uncurried function has type (int, int) => int
+                  It is applied with 1 arguments but it requires 2.
+                    
+                FAILED: cannot make progress due to previous errors.
+                """;
+        String[] lines = error.split("\n");
 
-/*
-FAILED: src/InputTest.cmj
+        RescriptOutputAnalyzer analyzer = new RescriptOutputAnalyzer();
+        for (String line : lines) {
+            analyzer.onTextAvailable(line);
+        }
 
-  We've found a bug for you!
-  T:\reason\projects\re-basic\src\InputTest.res:3:9
+        assertSize(1, analyzer.getOutputInfo());
 
-  1 │ let x = (. x) => x
-  2 │
-  3 │ let y = x(10)
+        OutputInfo outputInfo = analyzer.getOutputInfo().get(0);
+        assertTrue(outputInfo.isError);
+        assertEquals("This uncurried function has type (int, int) => int It is applied with 1 arguments but it requires 2.", outputInfo.message);
+        assertEquals(3, outputInfo.lineStart);
+        assertEquals(3, outputInfo.lineEnd);
+        assertEquals(9, outputInfo.colStart);
+        assertEquals(10, outputInfo.colEnd);
+    }
 
-  This is an uncurried ReScript function. It must be applied with a dot.
+    @Test
+    public void test_multi() {
+        String error = """
+                FAILED: src/Colors.ast
+                                
+                  Syntax error!
+                  C:\\myProject\\src\\Colors.res:31:23-28
+                                
+                  29 │   let mainColor = #hex("9D4B70")
+                  30 │   let dark = #hex("6C1D45)
+                  31 │   let lighter = #hex("EFE7EB")
+                  32 │   let light = #hex("C3A4B4")
+                  33 │ }
+                                
+                  Did you forget a `,` here?
+                                
+                                
+                  Syntax error!
+                  C:\\myProject\\src\\Colors.res:163:13-165:1
+                                
+                  161 │     "#FFFFFF"
+                  162 │   } else {
+                  163 │     "#000000"
+                  164 │   }
+                  165 │ }
+                                
+                  This string is missing a double quote at the end
+                                
+                                
+                  Syntax error!
+                  C:\\myProject\\src\\Colors.res:165:2
+                                
+                  163 │     "#000000"
+                  164 │   }
+                  165 │ }
+                                
+                  Did you forget a `}` here?
+                                
+                FAILED: cannot make progress due to previous errors.
+                Process finished in 97ms
+                """;
 
-  Like this: foo(. a, b)
-  Not like this: foo(a, b)
+        String[] lines = error.split("\n");
 
-  This guarantees that your function is fully applied. More info here:
-  https://rescript-lang.org/docs/manual/latest/function#uncurried-function
+        RescriptOutputAnalyzer analyzer = new RescriptOutputAnalyzer();
+        for (String line : lines) {
+            analyzer.onTextAvailable(line);
+        }
 
- */
+        assertSize(3, analyzer.getOutputInfo());
+
+        OutputInfo outputInfo = analyzer.getOutputInfo().get(0);
+        assertTrue(outputInfo.isError);
+        assertEquals("Did you forget a `,` here?", outputInfo.message);
+        assertEquals(31, outputInfo.lineStart);
+        assertEquals(31, outputInfo.lineEnd);
+        assertEquals(23, outputInfo.colStart);
+        assertEquals(28, outputInfo.colEnd);
+
+         outputInfo = analyzer.getOutputInfo().get(1);
+        assertTrue(outputInfo.isError);
+        assertEquals("This string is missing a double quote at the end", outputInfo.message);
+        assertEquals(163, outputInfo.lineStart);
+        assertEquals(165, outputInfo.lineEnd);
+        assertEquals(13, outputInfo.colStart);
+        assertEquals(1, outputInfo.colEnd);
+
+         outputInfo = analyzer.getOutputInfo().get(2);
+        assertTrue(outputInfo.isError);
+        assertEquals("Did you forget a `}` here?", outputInfo.message);
+        assertEquals(165, outputInfo.lineStart);
+        assertEquals(165, outputInfo.lineEnd);
+        assertEquals(2, outputInfo.colStart);
+        assertEquals(3, outputInfo.colEnd);
+    }
 }

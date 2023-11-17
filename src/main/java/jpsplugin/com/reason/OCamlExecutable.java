@@ -40,8 +40,7 @@ public abstract class OCamlExecutable {
     }
 
     public abstract @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine,
-                                                                 String pathToBinary, boolean login,
-                                                                 @NotNull Project project);
+                                                                 String pathToBinary, boolean login);
 
     // From GitExecutableManager
     @Nullable
@@ -96,9 +95,9 @@ public abstract class OCamlExecutable {
         @Override
         @NotNull
         public GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine, @Nullable String pathToBinary,
-                                                   boolean login, @NotNull Project project) {
+                                                   boolean login) {
             try {
-                return m_distribution.patchCommandLine(commandLine, project, new WSLCommandLineOptions());
+                return m_distribution.patchCommandLine(commandLine, null, new WSLCommandLineOptions());
             } catch (ExecutionException e) {
                 throw new IllegalStateException("Cannot patch command line for WSL", e);
             }
@@ -119,7 +118,7 @@ public abstract class OCamlExecutable {
         }
 
         @Override
-        public @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine, @Nullable String pathToBinary, boolean login, @NotNull Project project) {
+        public @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine, @Nullable String pathToBinary, boolean login) {
             ParametersList parametersList = commandLine.getParametersList();
             List<String> realParamsList = parametersList.getList();
             boolean isCygwin = myCygwinBash != null;
@@ -159,9 +158,7 @@ public abstract class OCamlExecutable {
         }
 
         @Override
-        public @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine,
-                                                            String pathToBinary, boolean login,
-                                                            @NotNull Project project) {
+        public @NotNull GeneralCommandLine patchCommandLine(@NotNull GeneralCommandLine commandLine, String pathToBinary, boolean login) {
             throw new RuntimeException("Unknown WSL distribution");
         }
 

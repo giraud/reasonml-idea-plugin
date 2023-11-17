@@ -8,6 +8,8 @@ public class BsConfig {
     private final String myName;
     private final String myNamespace;
     private final String myJsxVersion;
+    private final String myJsxMode;
+    private final boolean myUncurried;
     private final Set<String> myExternals = new HashSet<>();
     private final Set<String> mySources = new HashSet<>();
     private final Set<String> myDevSources = new HashSet<>();
@@ -17,11 +19,15 @@ public class BsConfig {
     private final String[] myPpx;
     private boolean myUseExternalAsSource = false;
 
-    BsConfig(@NotNull String name, @Nullable String namespace, @Nullable String jsxVersion, @Nullable Set<String> sources,
-             @Nullable Set<String> devSources, @Nullable Set<String> externals, @Nullable Set<String> deps, @NotNull Set<String> bscFlags, @Nullable List<String> ppx) {
+    BsConfig(@NotNull String name, @Nullable String namespace, @Nullable Set<String> sources,
+             @Nullable Set<String> devSources, @Nullable Set<String> externals, @Nullable Set<String> deps,
+             @NotNull Set<String> bscFlags, @Nullable List<String> ppx,
+             @Nullable String jsxVersion, @Nullable String jsxMode, boolean uncurried) {
         myName = name;
         myNamespace = namespace == null ? "" : namespace;
         myJsxVersion = jsxVersion;
+        myJsxMode = jsxMode;
+        myUncurried = uncurried;
         myPpx = ppx == null ? new String[0] : ppx.toArray(new String[0]);
         if (sources != null) {
             mySources.addAll(sources);
@@ -81,6 +87,14 @@ public class BsConfig {
 
     public @Nullable String getJsxVersion() {
         return myJsxVersion;
+    }
+
+    public @Nullable String getJsxMode() {
+        return myJsxMode;
+    }
+
+    public boolean isUncurried() {
+        return myUncurried;
     }
 
     public String @NotNull [] getPpx() {

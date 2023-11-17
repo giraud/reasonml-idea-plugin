@@ -207,7 +207,7 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseSome() {
-            markHolder(myTypes.C_SOME); // holder or real ?
+            mark(myTypes.C_SOME);
             advance();
             if (getTokenType() != myTypes.LPAREN) {
                 error("Missing parenthesis");
@@ -268,7 +268,9 @@ public class RmlParser extends CommonPsiParser {
                     } else {
                         mark(myTypes.C_NAMED_PARAM);
                     }
-                    advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                    popIfHold()
+                            .advance()
+                            .wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 }
             }
         }
@@ -752,7 +754,8 @@ public class RmlParser extends CommonPsiParser {
                 // a React fragment start
                 mark(myTypes.C_TAG)
                         .mark(myTypes.C_TAG_START)
-                        .advance().advance().popEnd();
+                        .advance().advance().popEnd()
+                        .mark(myTypes.C_TAG_BODY);
             }
         }
 
@@ -1107,6 +1110,10 @@ public class RmlParser extends CommonPsiParser {
                         }
                     } else if (isCurrent(myTypes.C_TAG_PROP_VALUE)) {
                         popEndUntil(myTypes.C_TAG_PROP_VALUE).popEnd();
+                    } else if (strictlyInAny(myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_PATTERN_MATCH_BODY, myTypes.C_TERNARY)) {
+                        if (!isFound(myTypes.C_TERNARY) && !isFound(myTypes.C_PATTERN_MATCH_BODY)) {
+                            popEndUntilFoundIndex();
+                        }
                     }
                 }
             }
@@ -1119,7 +1126,7 @@ public class RmlParser extends CommonPsiParser {
             } else if (isCurrent(myTypes.C_MODULE_DECLARATION) || isRawParent(myTypes.C_MODULE_DECLARATION)) {
                 // module M |> =<| ...
                 advance().mark(myTypes.C_MODULE_BINDING);
-            } else if (isParent(myTypes.C_PARAM_DECLARATION) || isParent(myTypes.C_NAMED_PARAM)) {
+            } else if (isParent(myTypes.C_PARAM_DECLARATION) || isRawParent(myTypes.C_NAMED_PARAM)) {
                 // ( ~x |> =<| ...
                 popEndUntilFoundIndex()
                         .advance().mark(myTypes.C_DEFAULT_VALUE)

@@ -26,13 +26,13 @@ public class BsErrorAnnotator {
     }
 
     public static @Nullable ORErrorAnnotator.InitialInfo<BsResolvedCompiler> collectInformation(@NotNull BsResolvedCompiler compiler, @NotNull Editor editor, @NotNull PsiFile psiFile) {
-        VirtualFile contentRoot = compiler.getContentRoot();
-        BsConfig config = contentRoot == null ? null : BsPlatform.readConfig(contentRoot);
+        BsConfig config = psiFile.getProject().getService(ORCompilerConfigManager.class).getConfig(compiler.getConfigFile());
         if (config == null) {
-            LOG.info("No bsconfig.json found for content root: " + contentRoot);
+            LOG.info("No config file found for: " + compiler.getConfigFile());
             return null;
         }
 
+        VirtualFile contentRoot = compiler.getConfigFile();
         VirtualFile libRoot = contentRoot.findFileByRelativePath("lib/bs");
         if (libRoot == null) {
             LOG.info("Unable to find BuckleScript lib root.");
@@ -48,7 +48,7 @@ public class BsErrorAnnotator {
 
         if (ninja != null && ninja.isRescriptFormat()) {
             List<String> args = isDevSource(sourceFile, contentRoot, config) ? ninja.getArgsDev() : ninja.getArgs();
-            return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, null, editor, args, config.getJsxVersion());
+            return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, null, editor, args, config.getJsxVersion(), config.getJsxMode(), config.isUncurried());
         }
 
         // create temporary compilation directory
@@ -108,7 +108,7 @@ public class BsErrorAnnotator {
         arguments.add(cmtFile.getPath());
         arguments.add(sourceTempFile.getPath());
 
-        return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, sourceTempFile, editor, arguments, jsxVersion);
+        return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, sourceTempFile, editor, arguments, jsxVersion, null, false);
     }
 
     public static @Nullable AnnotationResult doAnnotate(@NotNull InitialInfo<? extends ORResolvedCompiler<?>> initialInfo) {

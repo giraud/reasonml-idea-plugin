@@ -6,12 +6,12 @@ import com.intellij.openapi.module.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.vfs.newvfs.events.*;
+import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.esy.*;
 import com.reason.hints.*;
 import com.reason.ide.console.*;
-import com.reason.ide.files.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -24,7 +24,7 @@ import static com.reason.comp.ORConstants.*;
  * This class receives events from all projects.
  */
 class ORVirtualFileListener implements AsyncFileListener {
-    private static final Log LOG = Log.create("VFSlistener");
+    private static final Log LOG = Log.create("VFSListener");
 
     @Override
     public @Nullable ChangeApplier prepareChange(@NotNull List<? extends VFileEvent> events) {
@@ -66,13 +66,13 @@ class ORVirtualFileListener implements AsyncFileListener {
 
             String fileName = modifiedFile.getName();
             boolean potentialToolWindowUpdate = NODE_MODULES.equals(fileName) || RESCRIPT_DIR.equals(fileName) || BS_DIR.equals(fileName)
-                    || BsConfigJson.isBsConfigJson(modifiedFile) || EsyPackageJson.isEsyPackageJson(modifiedFile);
+                    || FileHelper.isCompilerConfigJson(modifiedFile) || EsyPackageJson.isEsyPackageJson(modifiedFile);
 
             if (potentialToolWindowUpdate) {
                 LOG.info("Update tool windows visibility");
                 for (Project project : ProjectManager.getInstance().getOpenProjects()) {
                     ORToolWindowManager toolWindowManager = project.getService(ORToolWindowManager.class);
-                    ApplicationManager.getApplication().invokeLater(toolWindowManager::showShowToolWindows);
+                    ApplicationManager.getApplication().invokeLater(toolWindowManager::shouldShowToolWindows);
                 }
             }
         }
@@ -80,8 +80,8 @@ class ORVirtualFileListener implements AsyncFileListener {
         private static void handleFileContentChangeEvent(@NotNull VFileContentChangeEvent event) {
             VirtualFile file = event.getFile();
 
-            if (BsConfigJson.isBsConfigJson(file)) {
-                handleBsConfigContentChange(file);
+            if (FileHelper.isCompilerConfigJson(file)) {
+                handleCompilerConfigContentChange(file);
             } else if (FileHelper.isNinja(file)) {
                 LOG.debug("Refresh ninja build", file);
                 for (Project project : ProjectManager.getInstance().getOpenProjects()) {
@@ -90,14 +90,14 @@ class ORVirtualFileListener implements AsyncFileListener {
             }
         }
 
-        private static void handleBsConfigContentChange(@NotNull VirtualFile bsConfigFile) {
-            LOG.debug("BsConfig content change");
+        private static void handleCompilerConfigContentChange(@NotNull VirtualFile compilerConfigFile) {
+            LOG.debug("CompilerConfig content change", compilerConfigFile);
 
             for (Project project : ProjectManager.getInstance().getOpenProjects()) {
-                project.getService(BsConfigManager.class).refresh(bsConfigFile);
-                Module module = ModuleUtil.findModuleForFile(bsConfigFile, project);
+                project.getService(ORCompilerConfigManager.class).refresh(compilerConfigFile);
+                Module module = ModuleUtil.findModuleForFile(compilerConfigFile, project);
                 if (module != null) {
-                    project.getService(InsightManager.class).downloadRincewindIfNeeded(bsConfigFile);
+                    project.getService(InsightManager.class).downloadRincewindIfNeeded(compilerConfigFile);
                 }
             }
         }

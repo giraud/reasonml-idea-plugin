@@ -64,9 +64,8 @@ public class RPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSy
 
         long endInstructions = System.currentTimeMillis();
 
-        BsConfigManager service = project.getService(BsConfigManager.class);
-        BsConfig bsConfig = service.getNearest(myElement.getContainingFile());
-        Set<String> openedModules = bsConfig == null ? null : bsConfig.getOpenedDeps();
+        BsConfig config = project.getService(ORCompilerConfigManager.class).getNearestConfig(myElement.getContainingFile());
+        Set<String> openedModules = config == null ? null : config.getOpenedDeps();
         if (LOG.isTraceEnabled()) {
             LOG.trace("  virtual file", ORFileUtils.getVirtualFile(myElement.getContainingFile()));
         }
@@ -114,7 +113,6 @@ public class RPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSy
 
         return resolveResults;
     }
-
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {

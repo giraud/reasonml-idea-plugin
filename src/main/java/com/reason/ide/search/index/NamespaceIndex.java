@@ -1,11 +1,10 @@
 package com.reason.ide.search.index;
 
-import com.intellij.json.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.util.indexing.*;
 import com.intellij.util.io.*;
+import com.reason.*;
 import com.reason.comp.bs.*;
-import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.impl.*;
@@ -23,20 +22,17 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
     private static final ID<String, Void> NAME = ID.create("reason.index.bsconfig");
     private static final NamespaceIndex INSTANCE = new NamespaceIndex();
 
-    @NotNull
-    public static NamespaceIndex getInstance() {
+    public static @NotNull NamespaceIndex getInstance() {
         return INSTANCE;
     }
 
-    @NotNull
     @Override
-    public ID<String, Void> getName() {
+    public @NotNull ID<String, Void> getName() {
         return NAME;
     }
 
-    @NotNull
     @Override
-    public DataIndexer<String, Void, FileContent> getIndexer() {
+    public @NotNull DataIndexer<String, Void, FileContent> getIndexer() {
         return inputData -> {
             VirtualFile dataFile = inputData.getFile();
             if (inputData.getFileType() instanceof DuneFileType) {
@@ -53,11 +49,11 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
                     }
                 }
             } else {
-                BsConfig configFile = BsConfigReader.read(dataFile);
-                if (configFile.hasNamespace()) {
-                    VirtualFile contentRoot = ORProjectManager.findFirstBsContentRoot(inputData.getProject());
+                BsConfig config = BsConfigReader.read(dataFile);
+                if (config.hasNamespace()) {
+                    VirtualFile contentRoot = BsPlatform.findConfigFiles(inputData.getProject()).stream().findFirst().orElse(null);
                     if (contentRoot != null) {
-                        String namespace = configFile.getNamespace();
+                        String namespace = config.getNamespace();
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
                         }
@@ -70,19 +66,14 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
         };
     }
 
-    @NotNull
     @Override
-    public KeyDescriptor<String> getKeyDescriptor() {
+    public @NotNull KeyDescriptor<String> getKeyDescriptor() {
         return EnumeratorStringDescriptor.INSTANCE;
     }
 
-    @NotNull
     @Override
-    public FileBasedIndex.InputFilter getInputFilter() {
-        return file ->
-                file.getFileType() instanceof DuneFileType
-                        || (file.getFileType() instanceof JsonFileType
-                        && "bsconfig.json".equals(file.getName()));
+    public @NotNull FileBasedIndex.InputFilter getInputFilter() {
+        return file -> file.getFileType() instanceof DuneFileType || FileHelper.isRescriptConfigJson(file);
     }
 
     @Override

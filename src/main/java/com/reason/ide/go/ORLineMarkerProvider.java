@@ -13,6 +13,7 @@ import com.reason.ide.search.reference.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.ocaml.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -21,14 +22,15 @@ import java.util.stream.*;
 import static java.util.Collections.*;
 
 public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
+    private static final Log LOG = Log.create("goto");
+
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
         Project project = element.getProject();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+        LOG.trace("collectNavigationMarkers", element, project, scope);
 
-        if (element instanceof RPsiLet letElement) {
-            collectLetNavigationMarkers(letElement, project, scope, result);
-        } else if (element instanceof RPsiVal valElement) {
+        if (element instanceof RPsiVal valElement) {
             collectValNavigationMarkers(valElement, project, scope, result);
         } else if (element instanceof RPsiType typeElement) {
             collectTypeNavigationMarkers(typeElement, project, scope, result);
@@ -42,16 +44,23 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             collectExceptionNavigationMarkers(exceptionElement, project, scope, result);
         } else if (element instanceof RPsiInnerModule innerModule) {
             collectInnerModuleNavigationMarkers(innerModule, project, scope, result);
+        } else if (element instanceof RPsiLowerSymbol lSymbolElement) {
+            if (lSymbolElement.getParent() instanceof RPsiLet letElement) {
+                collectLetNavigationMarkers(letElement, project, scope, result);
+            }
         }
     }
 
     private void collectLetNavigationMarkers(@NotNull RPsiLet element, @NotNull Project project, @NotNull GlobalSearchScope scope, @NotNull Collection<? super RelatedItemLineMarkerInfo<PsiElement>> result) {
+        LOG.debug("collect_LET_NavigationMarkers", element);
+
         List<? extends RPsiVar> targets = null;
         boolean isOcaml = element.getLanguage() == OclLanguage.INSTANCE;
         RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
         boolean inInterface = module != null && module.isInterfaceFile();
 
         if (module instanceof RPsiInnerModule innerModule) {
+            LOG.trace("  from inner module", innerModule);
             inInterface = innerModule.isModuleType() || inInterface;
             String letName = element.getName();
             if (letName != null) {
@@ -60,6 +69,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                         : findTargetFromImplementationModule(innerModule, letName, RPsiVar.class);
             }
         } else if (module != null) {
+            LOG.trace("  from file module", module);
             // Top module navigation
             String qName = element.getQualifiedName();
             Collection<? extends RPsiVar> resolvedElements;

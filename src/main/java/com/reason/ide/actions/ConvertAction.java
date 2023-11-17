@@ -10,16 +10,16 @@ import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
+import com.reason.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
-import com.reason.ide.files.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
 
 import static com.intellij.openapi.actionSystem.CommonDataKeys.*;
-import static com.reason.ide.files.FileHelper.*;
+import static com.reason.FileHelper.*;
 
 public class ConvertAction extends AnAction {
     @Override

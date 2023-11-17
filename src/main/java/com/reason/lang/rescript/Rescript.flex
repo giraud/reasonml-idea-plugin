@@ -43,7 +43,6 @@ EOL=\n|\r|\r\n
 WHITE_SPACE_CHAR=[\ \t\f]
 WHITE_SPACE={WHITE_SPACE_CHAR}+
 
-NEWLINE=("\r"* "\n")
 LOWERCASE=[a-z_]
 UPPERCASE=[A-Z]
 IDENTCHAR=[A-Za-z_0-9']
@@ -92,6 +91,8 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     {WHITE_SPACE} { return WHITE_SPACE; }
     {EOL}         { return types.EOL; }
 
+    "async"       { return types.ASYNC; }
+    "await"       { return types.AWAIT; }
     "and"         { return types.AND; }
     "as"          { return types.AS; }
     "assert"      { return types.ASSERT; }
@@ -104,7 +105,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "downto"      { return types.DOWNTO; }
     "else"        { return types.ELSE; }
     "end"         { return types.END; }
-    "endif"       { return types.ENDIF; }
     "exception"   { return types.EXCEPTION; }
     "external"    { return types.EXTERNAL; }
     "for"         { return types.FOR; }
@@ -134,7 +134,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "struct"      { return types.STRUCT; }
     "switch"      { return types.SWITCH; }
     "then"        { return types.THEN; }
-    "to"          { return types.TO; }
     "try"         { return types.TRY; }
     "type"        { return types.TYPE; }
     "unpack"      { return types.UNPACK; }
@@ -243,25 +242,24 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 
 <IN_TEMPLATE> {
     {WHITE_SPACE} { return WHITE_SPACE; }
-    {EOL}         { return types.EOL; }
     "$"           { return types.DOLLAR; }
     "{"           { return types.LBRACE; }
     "}"           { return types.RBRACE; }
     "`"           { yybegin(INITIAL); return types.JS_STRING_CLOSE; }
-    {NEWLINE}     { yybegin(INITIAL); }
+    {EOL}         { yybegin(INITIAL); }
     <<EOF>>       { yybegin(INITIAL); }
     ([^`{}$])+    { return types.STRING_VALUE; }
 }
 
 <IN_STRING> {
     "\"" { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
-    "\\" { NEWLINE } ([ \t] *) { }
+    "\\" { EOL } ([ \t] *) { }
     "\\" [\\\'\"ntbr ] { }
     "\\" [0-9] [0-9] [0-9] { }
     "\\" "o" [0-3] [0-7] [0-7] { }
     "\\" "x" [0-9a-fA-F] [0-9a-fA-F] { }
     "\\" . { }
-    { NEWLINE } { }
+    { EOL } { }
     . { }
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
 }
@@ -270,13 +268,13 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "/*" { if (!inCommentString) commentDepth += 1; }
     "*/" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
     "\"" { inCommentString = !inCommentString; }
-    . | {NEWLINE} { }
+    . | {EOL} { }
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 <IN_SL_COMMENT> {
     .         { }
-    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
+    {EOL}     { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
     <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT; }
 }
 

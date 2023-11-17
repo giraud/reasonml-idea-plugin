@@ -2,8 +2,7 @@ package com.reason.ide.console.dune;
 
 import com.intellij.execution.filters.*;
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.vfs.*;
-import com.reason.ide.*;
+import com.reason.comp.dune.*;
 import com.reason.ide.console.*;
 import org.jetbrains.annotations.*;
 
@@ -50,14 +49,10 @@ public class OCamlConsoleFilter extends ORConsoleFilter {
 
     @Override
     protected @Nullable OpenFileHyperlinkInfo getHyperlinkInfo(String filePath, int documentLine, int documentColumn) {
-        OpenFileHyperlinkInfo hyperlinkInfo = null;
-
-        VirtualFile duneRoot = ORProjectManager.findFirstDuneContentRoot(myProject);
-        VirtualFile virtualFile = duneRoot == null ? null : duneRoot.findFileByRelativePath(filePath);
-        if (virtualFile != null) {
-            hyperlinkInfo = new OpenFileHyperlinkInfo(myProject, virtualFile, documentLine, documentColumn);
-        }
-
-        return hyperlinkInfo;
+        return DunePlatform.findConfigFiles(myProject).stream()
+                .findFirst()
+                .map(configFile -> configFile.getParent().findFileByRelativePath(filePath))
+                .map(virtualFile -> new OpenFileHyperlinkInfo(myProject, virtualFile, documentLine, documentColumn))
+                .orElse(null);
     }
 }

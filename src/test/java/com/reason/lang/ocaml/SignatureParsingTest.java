@@ -193,9 +193,14 @@ public class SignatureParsingTest extends OclParsingTestCase {
         assertEquals("int option", option.getText());
     }
 
-    //@Test // coq:: clib/diff2.mli
+    @Test // coq:: clib/diff2.mli
     public void test_functor() {
-        RPsiFunctor e = firstOfType(parseCode("module M: functor (I: T) -> (S)"), RPsiFunctor.class);     // TODO
+        RPsiFunctor e = firstOfType(parseCode("module M: functor (I: T) -> (S with type t = I.t)"), RPsiFunctor.class);
+
+        assertNoParserError(e);
+        assertEquals("M", e.getName());
+        assertEquals("S", e.getReturnType().getText());
+        assertNotEmpty(e.getConstraints());
     }
 
     @Test

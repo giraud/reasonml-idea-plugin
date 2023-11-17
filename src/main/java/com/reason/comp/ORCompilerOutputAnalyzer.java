@@ -40,15 +40,27 @@ public abstract class ORCompilerOutputAnalyzer implements CompilerOutputAnalyzer
         return null;
     }
 
-    //  C:\bla\bla\src\InputTest.res:1:11(-12)?
+    //  C:\bla\bla\src\InputTest.res:1:11(-12(:22)?)?
     protected @Nullable OutputInfo extractSyntaxErrorFilePosition(@NotNull Log LOG, @NotNull String line) {
         Matcher matcher = SYNTAX_LOCATION.matcher(line);
         if (matcher.matches()) {
             String path = matcher.group(1);
             String lineStart = matcher.group(2);
             String colStart = matcher.group(3);
-            String colEnd = matcher.group(4);
-            OutputInfo info = addInfo(path, lineStart, null, colStart, colEnd);
+
+            String lineEnd = null;
+            String colEnd = null;
+
+            String end1 = matcher.group(4);
+            String end2 = matcher.group(5);
+            if (end2 == null && end1 != null) {
+                colEnd = end1;
+            } else if (end2 != null) {
+                lineEnd = end1;
+                colEnd = end2;
+            }
+
+            OutputInfo info = addInfo(path, lineStart, lineEnd, colStart, colEnd);
             if (info.colStart < 0 || info.colEnd < 0) {
                 LOG.error("Can't decode columns for [" + line.replace("\n", "") + "]");
                 return null;

@@ -11,13 +11,13 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.*;
 import com.intellij.problems.*;
 import com.intellij.psi.*;
+import com.reason.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.rescript.*;
 import com.reason.hints.*;
 import com.reason.ide.*;
-import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
 import com.reason.lang.*;
 import jpsplugin.com.reason.*;
@@ -243,8 +243,10 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         final List<String> arguments;
         final boolean oldFormat;
         final String jsxVersion;
+        final String jsxMode; // classic or automatic
+        final boolean uncurried;
 
-        InitialInfo(R compiler, @NotNull PsiFile sourcePsiFile, @NotNull VirtualFile libRoot, @Nullable File tempFile, @NotNull Editor editor, @NotNull List<String> arguments, String jsxVersion) {
+        InitialInfo(R compiler, @NotNull PsiFile sourcePsiFile, @NotNull VirtualFile libRoot, @Nullable File tempFile, @NotNull Editor editor, @NotNull List<String> arguments, @Nullable String jsxVersion, @Nullable String jsxMode, boolean uncurried) {
             this.compiler = compiler;
             this.sourcePsiFile = sourcePsiFile;
             this.libRoot = libRoot;
@@ -253,14 +255,12 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
             this.arguments = arguments;
             this.oldFormat = tempFile != null;
             this.jsxVersion = jsxVersion;
+            this.jsxMode = jsxMode;
+            this.uncurried = uncurried;
         }
     }
 
-    static class AnnotationResult {
-        final List<OutputInfo> outputInfo;
-        final Editor editor;
-        public final File cmtFile;
-
+    record AnnotationResult(List<OutputInfo> outputInfo, Editor editor, File cmtFile) {
         AnnotationResult(@NotNull List<OutputInfo> outputInfo, @NotNull Editor editor, @NotNull File cmtFile) {
             this.outputInfo = outputInfo;
             this.editor = editor;
@@ -268,16 +268,11 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         }
     }
 
-    static class Annotation {
-        final boolean isError;
-        final String message;
-        final TextRangeInterval range;
-        final LogicalPosition startPos;
-
-        Annotation(boolean isError, @NotNull String message, @NotNull TextRangeInterval textRange, @NotNull LogicalPosition startPos) {
+    record Annotation(boolean isError, String message, TextRangeInterval range, LogicalPosition startPos) {
+        Annotation(boolean isError, @NotNull String message, @NotNull TextRangeInterval range, @NotNull LogicalPosition startPos) {
             this.isError = isError;
             this.message = message;
-            this.range = textRange;
+            this.range = range;
             this.startPos = startPos;
         }
     }

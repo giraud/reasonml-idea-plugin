@@ -25,7 +25,24 @@ public class RescriptOutputAnalyzer extends ORCompilerOutputAnalyzer {
 
     @Override
     public void onTextAvailable(@NotNull String line) {
-        if (line.startsWith("File") && (myCurrentState == OutputState.unknown || myCurrentState == OutputState.errorMessage || myCurrentState == OutputState.warningMessage)) {
+        // FAILED: src/NotGood.cmj
+        //   -> Reset the state and info, starts a new analysis
+        if (line.startsWith("FAILED:")) {
+            myCurrentState = OutputState.unknown;
+            myCurrentInfo = null;
+        }
+        // Syntax error  ||  We've found a bug for you
+        //   -> Error level, next line is the location
+        else if (myCurrentState == OutputState.unknown && (line.startsWith("  Syntax error") || line.startsWith("  We've found a bug"))) {
+            myCurrentState = OutputState.syntaxError;
+        }
+        //   -> Multiple syntax errors can be displayed, reset message
+        else if (myCurrentState == OutputState.syntaxErrorMessage && line.startsWith("  Syntax error")) {
+            myCurrentState = OutputState.syntaxError;
+            myCurrentInfo = null;
+        }
+        //
+        else if (line.startsWith("File") && (myCurrentState == OutputState.unknown || myCurrentState == OutputState.errorMessage || myCurrentState == OutputState.warningMessage)) {
             myCurrentInfo = extractExtendedFilePositions(LOG, line);
             myCurrentState = OutputState.fileLocation;
         } else if (line.startsWith("Error") && myCurrentState == OutputState.fileLocation) {
@@ -35,24 +52,19 @@ public class RescriptOutputAnalyzer extends ORCompilerOutputAnalyzer {
                 myCurrentInfo.message = pos > 0 ? line.substring(pos + 1).trim() : "";
             }
             myCurrentState = OutputState.errorMessage;
-        }  else if (line.startsWith("Warning") && myCurrentState == OutputState.fileLocation) {
+        } else if (line.startsWith("Warning") && myCurrentState == OutputState.fileLocation) {
             if (myCurrentInfo != null) {
                 myCurrentInfo.isError = false;
                 int pos = line.indexOf(':');
                 myCurrentInfo.message = pos > 0 ? line.substring(pos + 1).trim() : "";
             }
             myCurrentState = OutputState.warningMessage;
-        } else if (line.startsWith("  Syntax error") && myCurrentState == OutputState.unknown) {
-            myCurrentState = OutputState.syntaxError;
         } else if (myCurrentState == OutputState.syntaxError) {
             myCurrentInfo = extractSyntaxErrorFilePosition(LOG, line);
             if (myCurrentInfo != null) {
                 myCurrentInfo.isError = true;
             }
             myCurrentState = OutputState.syntaxErrorLocation;
-        } else if (line.startsWith("FAILED:")) {
-            myCurrentState = OutputState.unknown;
-            myCurrentInfo = null;
         } else if (line.startsWith(" ") && myCurrentState == OutputState.errorMessage) {
             if (myCurrentInfo != null) {
                 myCurrentInfo.message += " " + line.trim();
@@ -66,7 +78,5 @@ public class RescriptOutputAnalyzer extends ORCompilerOutputAnalyzer {
         } else if (line.isEmpty() && myCurrentState == OutputState.syntaxErrorSourceCode) {
             myCurrentState = OutputState.syntaxErrorMessage;
         }
-
     }
-
 }

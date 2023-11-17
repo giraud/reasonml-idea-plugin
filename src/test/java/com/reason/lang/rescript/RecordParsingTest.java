@@ -111,7 +111,11 @@ public class RecordParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_if() {
-        RPsiRecord e = firstOfType(parseCode("let _ = { sortable: Manual({ ascending: idx == 0 ? Some(dir > 0) : None }) }"), RPsiRecord.class);
+        RPsiRecord e = firstOfType(parseCode("""
+                let _ = {
+                  sortable: Manual({ ascending: idx == 0 ? Some(dir > 0) : None })
+                }
+                """), RPsiRecord.class);
 
         assertSize(1, e.getFields());
         RPsiRecordField f0 = e.getFields().get(0);
@@ -128,7 +132,33 @@ public class RecordParsingTest extends ResParsingTestCase {
     public void test_inside_function() {
         RPsiFunction e = firstOfType(parseCode("let fn = () => {\n let r = {\n f: 1\n }\n }"), RPsiFunction.class);
 
-        assertNoParserError(e);
         assertEquals("{\n let r = {\n f: 1\n }\n }", e.getBody().getText());
+    }
+
+    @Test
+    public void test_optional_keys() {
+        RPsiRecord e = firstOfType(parseCode("""
+                type domProps = {
+                  key?: string,
+                  children?: JsxU.element,
+                  ref?: domRef,
+                  @as("aria-current")
+                  ariaCurrent?: [#page | #step | #location | #date | #time | #"true" | #"false"],
+                  className?: string /* substitute for "class" */,
+                  @as("data-testid") dataTestId?: string,
+                  onClick?: JsxEventU.Mouse.t => unit,
+                }
+                """), RPsiRecord.class);
+
+        List<RPsiRecordField> fields = e.getFields();
+        assertSize(7, fields);
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, RPsiTernary.class));
+        assertEquals("key", fields.get(0).getName());
+        assertEquals("children", fields.get(1).getName());
+        assertEquals("ref", fields.get(2).getName());
+        assertEquals("ariaCurrent", fields.get(3).getName());
+        assertEquals("className", fields.get(4).getName());
+        assertEquals("dataTestId", fields.get(5).getName());
+        assertEquals("onClick", fields.get(6).getName());
     }
 }

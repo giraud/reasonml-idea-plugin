@@ -1,6 +1,6 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.core.psi.RPsiExternal;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.psi.impl.RPsiLowerSymbol;
 import org.junit.*;
@@ -123,5 +123,13 @@ public class ExternalParsingTest extends OclParsingTestCase {
         assertInstanceOf(e.getNameIdentifier(), RPsiScopedExpr.class);
         assertEquals("'a -> 'a -> bool", e.getSignature().getText());
         assertEquals("%greaterequal", e.getExternalName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/423
+    @Test
+    public void test_GH_423() {
+        RPsiExternal e = firstOfType(parseCode("external ref : 'a -> 'a ref = \"%makemutable\""), RPsiExternal.class);
+
+        assertEquals("ref", e.getName());
     }
 }

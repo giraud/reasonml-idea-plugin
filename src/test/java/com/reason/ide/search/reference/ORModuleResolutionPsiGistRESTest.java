@@ -34,8 +34,8 @@ public class ORModuleResolutionPsiGistRESTest extends ORBasePlatformTestCase {
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
-        RPsiInclude ei = PsiTreeUtil.findChildOfType(e, RPsiInclude.class);
-        assertEmpty(data.getValues(ei));
+        RPsiOpen eo = PsiTreeUtil.findChildOfType(e, RPsiOpen.class);
+        assertEmpty(data.getValues(eo));
         assertEmpty(data.getValues(e));
     }
 
@@ -222,9 +222,11 @@ public class ORModuleResolutionPsiGistRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_in_file() {
-        FileBase e = configureCode("A.res", "module type S = { module P: {} }\n" +
-                "module F = () : S => { module P = {} }\n" +
-                "module M = F({})");
+        FileBase e = configureCode("A.res", """
+                module type S = { module P: {} }
+                module F = () : S => { module P = {} }
+                module M = F({})
+                """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 

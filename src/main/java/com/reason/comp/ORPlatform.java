@@ -16,12 +16,16 @@ public class ORPlatform {
     private ORPlatform() {
     }
 
-    public static @Nullable VirtualFile findCompilerPathInNodeModules(@NotNull Project project, @NotNull VirtualFile configFile, @NotNull String dirName, @NotNull String binName) {
+    public static @Nullable VirtualFile findCompilerPathInNodeModules(@NotNull Project project, @Nullable VirtualFile configFile, @NotNull String dirName, @NotNull String binName) {
+        if (configFile == null) {
+            return null;
+        }
+
         VirtualFile parentDir = configFile.getParent();
         VirtualFile nodeModules = parentDir == null ? null : parentDir.findFileByRelativePath(NODE_MODULES);
         if (parentDir != null && nodeModules == null) {
             // In yarn workspaces, node_modules can be in a parent directory
-            nodeModules = ORFileUtils.findAncestor(project, NODE_MODULES, parentDir);
+            nodeModules = ORFileUtils.findAncestor(project, parentDir, NODE_MODULES);
         }
 
         VirtualFile binRootDir = nodeModules == null ? null : nodeModules.findFileByRelativePath(dirName);
@@ -40,7 +44,7 @@ public class ORPlatform {
                         return canonicalDirectory;
                     } else {
                         // Windows: no symlinks, only bat files
-                        VirtualFile nodModules = ORFileUtils.findAncestor(project, NODE_MODULES, nodeModules.getParent());
+                        VirtualFile nodModules = ORFileUtils.findAncestor(project, nodeModules.getParent(), NODE_MODULES);
                         return nodModules == null ? null : nodeModules.findFileByRelativePath(dirName);
                     }
                 }

@@ -1,32 +1,42 @@
 package com.reason.ide.importWizard;
 
 import com.intellij.ide.util.projectWizard.*;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.*;
 import com.intellij.projectImport.*;
 import org.jetbrains.annotations.*;
 
 /**
- * A {@link ProjectImportProvider} with ability to import Dune projects.
+ * An extension point for 'Import Module from Existing Sources' with ability to import Dune projects.
  */
 public class DuneProjectImportProvider extends ProjectImportProvider {
     @Override
-    protected @NotNull ProjectImportBuilder<Module> doGetBuilder() {
-        return new DuneProjectImportBuilder();
-    }
-
-    public ModuleWizardStep @NotNull [] createSteps(@NotNull WizardContext context) {
-        return new ModuleWizardStep[]{/*new OclProjectJdkWizardStep(context)*/};
+    protected ProjectImportBuilder<ImportedDuneBuild> doGetBuilder() {
+        return ProjectImportBuilder.EXTENSIONS_POINT_NAME.findExtensionOrFail(DuneProjectImportBuilder.class);
     }
 
     @Override
-    protected boolean canImportFromFile(@NotNull VirtualFile file) {
-        return "dune-project".equals(file.getName());
+    public ModuleWizardStep[] createSteps(WizardContext context) {
+        return new ModuleWizardStep[]{
+                new DuneProjectRootStep(context)
+        };
+    }
+
+    public static boolean canImport(@NotNull VirtualFile entry) {
+        if (entry.isDirectory()) {
+            entry = entry.findChild(DuneExternalConstants.PROJECT_BUILD_FILE);
+        }
+        return entry != null && !entry.isDirectory() && DuneExternalConstants.PROJECT_BUILD_FILE.equals(entry.getName());
+    }
+
+
+    @Override
+    protected boolean canImportFromFile(@NotNull VirtualFile entry) {
+        return canImport(entry);
     }
 
     @Override
     public @NotNull String getPathToBeImported(@NotNull VirtualFile file) {
-        return file.getPath();
+        return file.isDirectory() ? file.getPath() : file.getParent().getPath();
     }
 
     @Override

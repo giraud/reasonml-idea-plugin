@@ -1,13 +1,14 @@
 package com.reason.ide.js;
 
 import com.intellij.lang.javascript.modules.*;
+import com.reason.comp.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
 
 public class ORIndexableFileNamesProvider extends NodeModulesIndexableFileNamesProvider {
-    private static final List<String> EXTENSIONS = new ArrayList<>(4);
-    private static final List<String> FILES = new ArrayList<>(1);
+    private static final List<String> EXTENSIONS = new ArrayList<>(6);
+    private static final List<String> FILES = new ArrayList<>(2);
 
     static {
         EXTENSIONS.add("ml");
@@ -16,7 +17,8 @@ public class ORIndexableFileNamesProvider extends NodeModulesIndexableFileNamesP
         EXTENSIONS.add("rei");
         EXTENSIONS.add("res");
         EXTENSIONS.add("resi");
-        FILES.add("bsconfig.json");
+        FILES.add(ORConstants.BS_CONFIG_FILENAME);
+        FILES.add(ORConstants.RESCRIPT_CONFIG_FILENAME);
     }
 
     @Override

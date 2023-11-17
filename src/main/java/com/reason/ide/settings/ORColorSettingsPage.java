@@ -1,6 +1,7 @@
 package com.reason.ide.settings;
 
 import com.intellij.openapi.editor.colors.*;
+import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.options.colors.*;
 import com.reason.ide.*;
 import com.reason.ide.highlight.*;
@@ -19,6 +20,7 @@ public class ORColorSettingsPage implements ColorSettingsPage {
                     new AttributesDescriptor("Code lens", ORSyntaxHighlighter.CODE_LENS_),
                     new AttributesDescriptor("Comment", ORSyntaxHighlighter.RML_COMMENT_),
                     new AttributesDescriptor("Keyword", ORSyntaxHighlighter.KEYWORD_),
+                    new AttributesDescriptor("Macro", ORSyntaxHighlighter.MACRO_),
                     new AttributesDescriptor("Markup attribute", ORSyntaxHighlighter.MARKUP_ATTRIBUTE_),
                     new AttributesDescriptor("Markup tag", ORSyntaxHighlighter.MARKUP_TAG_),
                     new AttributesDescriptor("Module name", ORSyntaxHighlighter.MODULE_NAME_),
@@ -40,8 +42,8 @@ public class ORColorSettingsPage implements ColorSettingsPage {
     }
 
     @Override
-    public @NotNull com.intellij.openapi.fileTypes.SyntaxHighlighter getHighlighter() {
-        return new ORSyntaxHighlighter(RmlTypes.INSTANCE);
+    public @NotNull SyntaxHighlighter getHighlighter() {
+        return new ORSyntaxHighlighter(RmlTypes.INSTANCE, RmlSyntaxHighlighterFactory.KEYWORD_TYPES, RmlSyntaxHighlighterFactory.OPERATION_SIGN_TYPES, RmlSyntaxHighlighterFactory.OPTION_TYPES, RmlSyntaxHighlighterFactory.MACRO_TYPES);
     }
 
     @Override

@@ -71,7 +71,7 @@ public class TypeParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_binding_with_record() {
-        RPsiTypeBinding e = firstOfType(parseCode("type t = { string_f_apply: ('a -> unit); string_help: string option; list_f_edit: ('a -> 'a) option; }"), RPsiTypeBinding.class);
+        RPsiTypeBinding e = firstOfType(parseCode("type 'a t = { string_f_apply: ('a -> unit); string_help: string option; list_f_edit: ('a -> 'a) option; }"), RPsiTypeBinding.class);
         RPsiRecord er = ORUtil.findImmediateFirstChildOfClass(e, RPsiRecord.class);
 
         assertNoParserError(e);
@@ -174,8 +174,11 @@ public class TypeParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_qname_functor() {
-        RPsiType e = first(typeExpressions(parseCode("module Coll = Hash.Make(struct type nonrec t = t\n let equal = " +
-                "Bsb_pkg_types.equal\n let hash (x : t) = Hashtbl.hash x\n end)")));
+        RPsiType e = first(typeExpressions(parseCode("""
+                module Coll = Hash.Make(struct type nonrec t = t
+                  let equal = Bsb_pkg_types.equal
+                  let hash (x : t) = Hashtbl.hash x
+                end)""")));
 
         assertEquals("Dummy.Coll.Make[0].t", e.getQualifiedName());
     }
@@ -210,5 +213,13 @@ public class TypeParsingTest extends OclParsingTestCase {
 
         RPsiSignature signature = e.getSignature();
         assertEquals("exn -> Exninfo.iexn", signature.getText());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/423
+    @Test
+    public void test_GH_423() {
+        RPsiType e = firstOfType(parseCode("type 'a ref = { mutable contents: 'a }"), RPsiType.class);
+
+        assertEquals("ref", e.getName());
     }
 }

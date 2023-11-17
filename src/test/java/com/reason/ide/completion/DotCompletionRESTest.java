@@ -14,7 +14,12 @@ public class DotCompletionRESTest extends ORBasePlatformTestCase {
     @Test
     public void test_basic() {
         configureCode("A.res", "let x = 1");
-        configureCode("B.res", "type t\n let y = 2\n module B = {}\n A.<caret>");
+        configureCode("B.res", """
+                type t
+                let y = 2
+                module B = {}
+                A.<caret>
+                """);
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
@@ -98,13 +103,13 @@ public class DotCompletionRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_uncurried() {
-        configureCode("A.res", "let x = 1");
+        configureCode("Aa.res", "let x = 1");
         configureCode("B.res", "send(. <caret>)"); // should use free completion
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings, "A");
+        assertSameElements(strings, "Aa");
     }
 
     @Test

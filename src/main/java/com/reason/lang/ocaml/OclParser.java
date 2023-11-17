@@ -116,6 +116,8 @@ public class OclParser extends CommonPsiParser {
                     parseArrobase3();
                 } else if (tokenType == myTypes.OPTION) {
                     parseOption();
+                } else if (tokenType == myTypes.FUNCTOR) {
+                    parseFunctor();
                 }
                 // while ... do ... done
                 else if (tokenType == myTypes.WHILE) {
@@ -256,6 +258,14 @@ public class OclParser extends CommonPsiParser {
             }
         }
 
+        private void parseFunctor() {
+            if (strictlyIn(myTypes.C_MODULE_SIGNATURE)) {
+                if (strictlyIn(myTypes.C_MODULE_DECLARATION)) {
+                    updateCompositeAt(getIndex(), myTypes.C_FUNCTOR_DECLARATION);
+                }
+            }
+        }
+
         private void parseRaise() {
             if (is(myTypes.C_EXTERNAL_DECLARATION)) {
                 // external |>raise<| ...
@@ -377,6 +387,11 @@ public class OclParser extends CommonPsiParser {
                 }
                 advance();
                 markParenthesisScope(true).mark(myTypes.C_SIG_ITEM);
+            } else if (isCurrent(myTypes.C_MODULE_SIGNATURE) && isRawGrandParent(myTypes.C_FUNCTOR_DECLARATION)) {
+                // signature of a functor in an interface file
+                // module M : function (...) |>-><| ...
+                advance();
+                markParenthesisScope(true).mark(myTypes.C_FUNCTOR_RESULT);
             }
             // same priority
             else if (strictlyInAny(
@@ -500,6 +515,12 @@ public class OclParser extends CommonPsiParser {
                 // include M |>with<| ...
                 mark(myTypes.C_CONSTRAINTS).advance()
                         .mark(myTypes.C_TYPE_CONSTRAINT);
+            } else if (isRawParent(myTypes.C_MIXIN_FIELD)) {
+                // ... = { mixinField |>with<| ...
+                popEndUntil(myTypes.C_RECORD_EXPR).advance();
+                if (getTokenType() != myTypes.RBRACE) {
+                    mark(myTypes.C_RECORD_FIELD);
+                }
             } else if (inAny(myTypes.C_TRY_BODY, myTypes.C_BINARY_CONDITION)) {
                 if (isFound(myTypes.C_TRY_BODY)) {
                     // try ... |>with<| ...
@@ -666,7 +687,7 @@ public class OclParser extends CommonPsiParser {
                 advance().mark(myTypes.C_DEFAULT_VALUE);
             } else if (inAny(
                     myTypes.C_EXTERNAL_DECLARATION, myTypes.C_CLASS_METHOD, myTypes.C_VAL_DECLARATION, myTypes.C_LET_DECLARATION,
-                    myTypes.C_TERNARY
+                    myTypes.C_TERNARY, myTypes.C_PARAM_DECLARATION
             )) {
 
                 if (isFound(myTypes.C_TERNARY)) {
@@ -984,11 +1005,17 @@ public class OclParser extends CommonPsiParser {
             }
 
             if (is(myTypes.C_LET_DECLARATION)) {
-                // let |>{<| .. ,
+                // let |>{<| ... ,
                 markScope(myTypes.C_DECONSTRUCTION, myTypes.LBRACE);
             } else {
-                markScope(myTypes.C_RECORD_EXPR, myTypes.LBRACE).advance()
-                        .mark(myTypes.C_RECORD_FIELD);
+                // ... = |>{<| ...
+                markScope(myTypes.C_RECORD_EXPR, myTypes.LBRACE).advance();
+                if (lookAhead(1) == myTypes.WITH) {
+                    // a mixin
+                    mark(myTypes.C_MIXIN_FIELD);
+                } else {
+                    mark(myTypes.C_RECORD_FIELD);
+                }
             }
         }
 
@@ -1323,7 +1350,7 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseRef() {
-            if (is(myTypes.C_RECORD_FIELD)) {
+            if (is(myTypes.C_RECORD_FIELD) || is(myTypes.C_TYPE_DECLARATION) || is(myTypes.C_EXTERNAL_DECLARATION)) {
                 remapCurrentToken(myTypes.LIDENT).wrapAtom(myTypes.CA_LOWER_SYMBOL);
             }
         }

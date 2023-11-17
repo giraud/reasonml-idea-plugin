@@ -8,8 +8,8 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.ui.*;
+import com.reason.*;
 import com.reason.comp.dune.*;
-import com.reason.ide.files.*;
 import com.reason.ide.settings.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -34,7 +34,7 @@ public class OclSdkSetupValidator implements ProjectSdkSetupValidator {
         // Checking for Opam switch
         ORSettings orSettings = project.getService(ORSettings.class);
         if (orSettings.getSwitchName().isEmpty()) {
-            Map<Module, VirtualFile> contentRootsFor = Platform.findContentRootsFor(project, DunePlatform.DUNE_PROJECT_FILENAME);
+            Map<Module, VirtualFile> contentRootsFor = Platform.findModulesFor(project, DunePlatform.DUNE_PROJECT_FILENAME);
             if (!contentRootsFor.isEmpty()) {
                 // Error: this is a dune project, and no opam switch is selected
                 return CONFIGURE_OCAML_SDK;
