@@ -1,6 +1,5 @@
 package com.reason.ide.completion;
 
-import com.intellij.psi.*;
 import com.reason.ide.*;
 import org.jetbrains.annotations.*;
 import org.junit.*;

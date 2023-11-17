@@ -30,7 +30,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     // Esy
     private String m_esyExecutable = "";
 
-    private ORSettings(@NotNull Project project) {
+    public ORSettings(@NotNull Project project) {
         m_project = project;
     }
 

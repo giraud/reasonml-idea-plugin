@@ -89,6 +89,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
 
         assertEquals("M", e.getName());
         assertEquals("MType", e.getModuleSignature().getText());
+        assertEquals(myTypes.A_MODULE_NAME, ORUtil.findImmediateLastChildOfClass(e.getModuleSignature(), RPsiUpperSymbol.class).getNode().getElementType());
         assertEquals("{ type t = int }", e.getBody().getText());
     }
 

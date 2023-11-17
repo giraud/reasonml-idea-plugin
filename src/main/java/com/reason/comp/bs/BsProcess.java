@@ -63,7 +63,7 @@ public final class BsProcess {
 
     @Nullable
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType) {
-        VirtualFile bsContentRoot = BsPlatform.findContentRoot(myProject, sourceFile);
+        VirtualFile bsContentRoot = BsPlatform.findConfigFile(myProject, sourceFile);
         if (bsContentRoot == null) {
             BsNotification.showWorkingDirectoryNotFound();
             return null;
@@ -84,7 +84,7 @@ public final class BsProcess {
         return cli;
     }
 
-    public @NotNull String getFullVersion(@NotNull VirtualFile sourceFile) {
+    public @NotNull String getFullVersion(@Nullable VirtualFile sourceFile) {
         VirtualFile bsc = BsPlatform.findBscExecutable(myProject, sourceFile);
         if (bsc != null) {
             try (InputStream inputStream = Runtime.getRuntime().exec(bsc.getPath() + " -version").getInputStream()) {

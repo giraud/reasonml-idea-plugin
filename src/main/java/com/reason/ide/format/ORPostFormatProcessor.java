@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.*;
 import com.intellij.psi.impl.source.codeStyle.*;
+import com.reason.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.ocaml.*;
 import com.reason.comp.rescript.*;

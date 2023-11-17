@@ -69,6 +69,7 @@ public class OclTypes extends ORLangTypes {
         C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", OclLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", OclLanguage.INSTANCE);
+        C_NONE = new ORCompositeElementType("C_NONE", OclLanguage.INSTANCE);
         C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
         C_PARAM = new ORCompositeElementType("C_PARAM", OclLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", OclLanguage.INSTANCE);
@@ -116,12 +117,15 @@ public class OclTypes extends ORLangTypes {
 
         // Dummy types
 
+        H_ATOM = new ORCompositeElementType("H_ATOM", OclLanguage.INSTANCE);
         H_PLACE_HOLDER = new ORCompositeElementType("H_PLACE_HOLDER", OclLanguage.INSTANCE);
         H_COLLECTION_ITEM = new ORCompositeElementType("H_COLLECTION_ITEM", OclLanguage.INSTANCE);
         H_NAMED_PARAM_DECLARATION = new ORCompositeElementType("H_NAMED_PARAM_DECLARATION", OclLanguage.INSTANCE);
 
         // Token element types
 
+        ASYNC = new ORTokenElementType("ASYNC", OclLanguage.INSTANCE);
+        AWAIT = new ORTokenElementType("AWAIT", OclLanguage.INSTANCE);
         BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", OclLanguage.INSTANCE);
         STRING_VALUE = new ORTokenElementType("STRING_VALUE", OclLanguage.INSTANCE);
         FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", OclLanguage.INSTANCE);
@@ -165,7 +169,6 @@ public class OclTypes extends ORLangTypes {
         DONE = new ORTokenElementType("DONE", OclLanguage.INSTANCE);
         ELSE = new ORTokenElementType("ELSE", OclLanguage.INSTANCE);
         END = new ORTokenElementType("END", OclLanguage.INSTANCE);
-        ENDIF = new ORTokenElementType("ENDIF", OclLanguage.INSTANCE);
         NOT_EQ = new ORTokenElementType("EQ", OclLanguage.INSTANCE);
         NOT_EQEQ = new ORTokenElementType("EQEQ", OclLanguage.INSTANCE);
         EQ = new ORTokenElementType("EQ", OclLanguage.INSTANCE);

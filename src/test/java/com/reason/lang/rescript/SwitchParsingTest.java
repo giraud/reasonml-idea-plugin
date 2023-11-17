@@ -45,7 +45,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_pattern_option() {
-        FileBase f = parseCode("switch x { | Some(x) => x\n () | None => () }");
+        FileBase f = parseCode("switch x { | Some(y) => z\n () | None => () }");
 
         assertEquals(1, childrenCount(f));
         RPsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(f, RPsiSwitch.class));
@@ -62,7 +62,7 @@ public class SwitchParsingTest extends ResParsingTestCase {
         // first pattern
         RPsiPatternMatch p1 = patterns.get(0);
         RPsiPatternMatchBody p1Body = p1.getBody();
-        assertEquals("x\n ()", p1Body.getText());
+        assertEquals("z\n ()", p1Body.getText());
         // assertNotNull(ORUtil.findImmediateFirstChildOfClass(p1Body, RPsiUnit.class));
 
         // second pattern
@@ -143,12 +143,12 @@ public class SwitchParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_switch_of_switch() {
-        RPsiSwitch e = firstOfType(parseCode("switch a { | None => switch b { | X => 1 | Y => 2 } | Some => 3 }"), RPsiSwitch.class);
+        RPsiSwitch e = firstOfType(parseCode("switch a { | None => switch b { | X => 1 | Y => 2 } | Some(_) => 3 }"), RPsiSwitch.class);
 
         List<RPsiPatternMatch> patterns = e.getPatterns();
         assertSize(2, patterns);
         assertEquals("None => switch b { | X => 1 | Y => 2 }", patterns.get(0).getText());
-        assertEquals("Some => 3", patterns.get(1).getText());
+        assertEquals("Some(_) => 3", patterns.get(1).getText());
         RPsiSwitch inner = PsiTreeUtil.findChildOfType(patterns.get(0), RPsiSwitch.class);
         assertSize(2, inner.getPatterns());
     }
@@ -169,7 +169,6 @@ public class SwitchParsingTest extends ResParsingTestCase {
     public void test_guard() {
         RPsiSwitch e = firstOfType(parseCode("let _ = switch x { | M1 if x == 1 => 2 | _ => 3 }"), RPsiSwitch.class);
 
-        assertNoParserError(e);
         assertSize(2, e.getPatterns());
         assertEquals("2", e.getPatterns().get(0).getBody().getText());
         assertEquals("3", e.getPatterns().get(1).getBody().getText());

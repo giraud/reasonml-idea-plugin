@@ -26,16 +26,16 @@ public class ResErrorAnnotator {
     }
 
     public static @Nullable ORErrorAnnotator.InitialInfo<ResResolvedCompiler> collectInformation(@NotNull ResResolvedCompiler compiler, @NotNull Editor editor, @NotNull PsiFile psiFile) {
+        BsConfig config = psiFile.getProject().getService(ORCompilerConfigManager.class).getConfig(compiler.getConfigFile());
         VirtualFile contentRoot = compiler.getContentRoot();
-        BsConfig config = contentRoot == null ? null : ResPlatform.readConfig(contentRoot);
-        VirtualFile libRoot = contentRoot == null ? null : contentRoot.findFileByRelativePath("lib/bs");
-        Ninja ninja = contentRoot == null ? null : compiler.readNinjaBuild();
+        VirtualFile libRoot = contentRoot != null ? contentRoot.findFileByRelativePath("lib/bs") : null;
+        Ninja ninja = contentRoot != null ? compiler.readNinjaBuild() : null;
 
         if (ninja != null && config != null && libRoot != null) {
             VirtualFile virtualFile = ORFileUtils.getVirtualFile(psiFile);
             if (virtualFile != null) {
                 List<String> args = ResPlatform.isDevSource(virtualFile, contentRoot, config) ? ninja.getArgsDev() : ninja.getArgs();
-                return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, null, editor, args, config.getJsxVersion());
+                return new ORErrorAnnotator.InitialInfo<>(compiler, psiFile, libRoot, null, editor, args, config.getJsxVersion(), config.getJsxMode(), config.isUncurried());
             }
         }
 
@@ -67,11 +67,19 @@ public class ResErrorAnnotator {
         File cmtFile = new File(tempCompilationDirectory, nameWithoutExtension + ".cmt");
 
         List<String> arguments = new ArrayList<>(initialInfo.arguments);
+
+        // React/jsx flags
         String jsxVersion = initialInfo.jsxVersion;
         if (jsxVersion != null) {
             arguments.add("-bs-jsx");
             arguments.add(jsxVersion);
         }
+        String jsxMode = initialInfo.jsxMode;
+        if (jsxMode != null) {
+            arguments.add("-bs-jsx-mode");
+            arguments.add(jsxMode);
+        }
+
         arguments.add("-bin-annot");
         arguments.add("-o");
         arguments.add(cmtFile.getPath());

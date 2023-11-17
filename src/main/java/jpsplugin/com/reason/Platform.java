@@ -19,7 +19,6 @@ import java.nio.file.*;
 import java.util.*;
 
 public class Platform {
-
     public static final Charset UTF8 = StandardCharsets.UTF_8;
     public static final String WINDOWS_EXECUTABLE_SUFFIX = ".exe";
 
@@ -55,7 +54,7 @@ public class Platform {
         return plugin == null ? null : plugin.getPluginPath();
     }
 
-    public static @NotNull Map<Module, VirtualFile> findContentRootsFor(@NotNull Project project, @NotNull String filename) {
+    public static @NotNull Map<Module, VirtualFile> findModulesFor(@NotNull Project project, @NotNull String filename) {
         Map<Module, VirtualFile> rootContents = new HashMap<>();
 
         ModuleManager moduleManager = ModuleManager.getInstance(project);
@@ -66,6 +65,10 @@ public class Platform {
                     rootContents.put(module, child);
                 }
             }
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Modules for file [" + filename + "] in project=\"" + project.getName() + "\": [" + Joiner.join(",", rootContents.entrySet(), entry -> entry.getKey().getName() + " -> " + entry.getValue().getCanonicalPath()) + "]");
         }
 
         return rootContents;

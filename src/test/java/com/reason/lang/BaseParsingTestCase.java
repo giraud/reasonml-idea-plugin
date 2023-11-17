@@ -143,6 +143,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     @NotNull
     protected FileBase parseCode(@NotNull String code) {
         parseRawCode(code);
+        assertNoParserError(myFile);
         return (FileBase) myFile;
     }
 

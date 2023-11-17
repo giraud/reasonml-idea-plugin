@@ -62,6 +62,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_MIXIN_FIELD;
     public ORCompositeType C_ML_INTERPOLATOR;
     public ORCompositeType C_NAMED_PARAM;
+    public ORCompositeType C_NONE;
     public ORCompositeType C_OBJECT;
     public ORCompositeType C_OPEN_VARIANT;
     public ORCompositeType C_OPTION;
@@ -110,6 +111,7 @@ public abstract class ORLangTypes extends ORTypes {
 
     // Dummy types
 
+    public ORCompositeType H_ATOM;
     public ORCompositeType H_PLACE_HOLDER;
     public ORCompositeType H_COLLECTION_ITEM;
     public ORCompositeType H_NAMED_PARAM_DECLARATION;
@@ -122,6 +124,8 @@ public abstract class ORLangTypes extends ORTypes {
     public ORTokenElementType CHAR_VALUE;
     public ORTokenElementType INT_VALUE;
 
+    public ORTokenElementType ASYNC;
+    public ORTokenElementType AWAIT;
     public ORTokenElementType AND;
     public ORTokenElementType ASSERT;
     public ORTokenElementType BACKSLASH;
@@ -139,7 +143,6 @@ public abstract class ORLangTypes extends ORTypes {
     public ORTokenElementType DOWNTO;
     public ORTokenElementType ELSE;
     public ORTokenElementType END;
-    public ORTokenElementType ENDIF;
     public ORTokenElementType EXCEPTION;
     public ORTokenElementType EXTERNAL;
     public ORTokenElementType FOR;

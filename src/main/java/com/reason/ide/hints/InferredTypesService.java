@@ -8,6 +8,7 @@ import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.util.concurrency.*;
+import com.reason.*;
 import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.hints.*;
@@ -60,7 +61,7 @@ public class InferredTypesService {
                 final String[] namespace = {""};
                 ORResolvedCompiler<? extends Compiler> compiler = project.getService(ORCompilerManager.class).getCompiler(sourceFile);
                 if (compiler != null && compiler.getType() == DUNE) {
-                    VirtualFile duneSource = ORFileUtils.findAncestor(project, "dune", sourceFile);
+                    VirtualFile duneSource = ORFileUtils.findAncestor(project, sourceFile, "dune");
                     PsiFile dune = duneSource == null ? null : PsiManager.getInstance(project).findFile(duneSource);
                     if (dune instanceof DuneFile) {
                         RPsiDuneStanza library = ((DuneFile) dune).getStanza("library");

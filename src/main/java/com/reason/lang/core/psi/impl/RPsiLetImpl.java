@@ -326,6 +326,6 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
 
     @Override
     public String toString() {
-        return "RPsiLet:" + getName();
+        return "RPsiLet: " + getName();
     }
 }

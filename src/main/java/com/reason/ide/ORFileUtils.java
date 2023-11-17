@@ -6,12 +6,15 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.reason.comp.bs.*;
 import jpsplugin.com.reason.*;
+import org.apache.commons.lang3.*;
 import org.jetbrains.annotations.*;
 
 import java.nio.file.*;
 import java.util.*;
 
 public class ORFileUtils {
+    public static final Comparator<VirtualFile> FILE_DEPTH_COMPARATOR = Comparator.comparingInt(file -> StringUtils.countMatches(file.getPath(), '/'));
+
     private static final Log LOG = Log.create("file");
 
     private ORFileUtils() {
@@ -56,11 +59,11 @@ public class ORFileUtils {
      * directories until either `target` is found or the project base path is reached.
      *
      * @param project project to use
-     * @param target  file being searched for
      * @param start   starting directory (or file) to begin searching for `target`
+     * @param target  file being searched for
      * @return found target file
      */
-    public static @Nullable VirtualFile findAncestor(@NotNull Project project, @NotNull String target, @Nullable VirtualFile start) {
+    public static @Nullable VirtualFile findAncestor(@NotNull Project project, @Nullable VirtualFile start, @NotNull String target) {
         if (start == null) {
             return null;
         }
@@ -91,7 +94,52 @@ public class ORFileUtils {
         if (parent == null) {
             return null;
         }
-        return findAncestor(project, target, parent);
+        return findAncestor(project, parent, target);
+    }
+
+    public static @Nullable VirtualFile findOneOfAncestor(@NotNull Project project, @Nullable VirtualFile start, @NotNull String target1, @NotNull String target2) {
+        if (start == null) {
+            return null;
+        }
+
+        // start must be a directory, should only happen on first iteration
+        if (!start.isDirectory()) {
+            String startName = start.getName();
+            if (target1.equals(startName) || target2.equals(startName)) {
+                return start;
+            }
+
+            return oneOfAncestor(project.getBasePath(), start.getParent(), target1, target2);
+        }
+
+        return oneOfAncestor(project.getBasePath(), start, target1, target2);
+    }
+
+    public static @Nullable VirtualFile oneOfAncestor(@Nullable String basePath, @Nullable VirtualFile start, @NotNull String target1, @NotNull String target2) {
+        if (start == null) {
+            return null;
+        }
+
+        // target found, done
+
+        VirtualFile foundTarget1 = start.findChild(target1);
+        if (foundTarget1 != null) {
+            return foundTarget1;
+        }
+        VirtualFile foundTarget2 = start.findChild(target2);
+        if (foundTarget2 != null) {
+            return foundTarget2;
+        }
+
+        // just checked project root, done
+
+        if (start.getPath().equals(basePath)) {
+            return null;
+        }
+
+        // Continue
+
+        return oneOfAncestor(basePath, start.getParent(), target1, target2);
     }
 
     // RELEASE: check no direct getVirtualFile() in code

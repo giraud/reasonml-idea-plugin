@@ -7,6 +7,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
+import com.intellij.psi.search.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -310,6 +311,12 @@ public class Log {
     public void trace(@NotNull String msg, @NotNull PsiElement element) {
         if (m_log.isTraceEnabled()) {
             m_log.trace(msg + SEP + element + (element instanceof PsiNamedElement ? ", name=[" + ((PsiNamedElement) element).getName() + "]" : ""));
+        }
+    }
+
+    public void trace(String msg, PsiElement element, Project project, GlobalSearchScope scope) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(msg + SEP + element + " <" + element.getClass().getSimpleName() + ">, project=[" + project.getName() + "], scope=[" + scope + "]");
         }
     }
 

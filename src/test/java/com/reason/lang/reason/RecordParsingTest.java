@@ -69,10 +69,10 @@ public class RecordParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_mixin() {
-        RPsiLet let = firstOfType(parseCode("let x = {...component, otherField: 1};"), RPsiLet.class);
+        RPsiRecord e = firstOfType(parseCode("let x = {...component, otherField: 1};"), RPsiRecord.class);
 
-        RPsiRecord record = (RPsiRecord) let.getBinding().getFirstChild();
-        RPsiRecordField field = record.getFields().iterator().next();
+        assertEquals("...component", PsiTreeUtil.findChildOfType(e, RPsiMixinField.class).getText());
+        RPsiRecordField field = e.getFields().iterator().next();
         assertEquals("otherField", field.getName());
     }
 

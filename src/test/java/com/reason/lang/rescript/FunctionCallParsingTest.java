@@ -82,8 +82,15 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
     public void test_params() {
         RPsiFunctionCall e = firstOfType(parseCode(" call(~decode=x => Ok(), ~task=() => y)"), RPsiFunctionCall.class);
 
-        assertNoParserError(e);
         assertSize(2, e.getParameters());
+        RPsiParameterReference e0 = e.getParameters().get(0);
+        assertEquals("decode", e0.getName());
+        RPsiFunction e0f = firstOfType(e0, RPsiFunction.class);
+        assertEquals("x => Ok()", e0f.getText());
+        RPsiParameterReference e1 = e.getParameters().get(1);
+        assertEquals("task", e1.getName());
+        RPsiFunction e1f = firstOfType(e1, RPsiFunction.class);
+        assertEquals("() => y", e1f.getText());
     }
 
     @Test
@@ -91,7 +98,6 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         List<RPsiLet> expressions = letAllExpressions(parseCode("describe(\"context\", () => { test(\"should do something\", () => { let inner = 1 }) })"));
         RPsiLet e = first(expressions);
 
-        assertNoParserError(e);
         assertEquals("Dummy.describe[1].test[1].inner", e.getQualifiedName());
     }
 

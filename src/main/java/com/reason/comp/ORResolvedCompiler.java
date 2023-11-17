@@ -10,12 +10,12 @@ import org.jetbrains.annotations.*;
  */
 public class ORResolvedCompiler<C extends Compiler> {
     protected final C myCompiler;
-    protected final VirtualFile myContentRootFile; // Compiler configuration file, like bsconfig.json or dune-project
+    protected final VirtualFile myConfigFile; // Compiler configuration file, like bsconfig.json or dune-project
     protected final VirtualFile myBinFile;
 
-    public ORResolvedCompiler(@NotNull C compiler, @NotNull VirtualFile contentRootFile, @Nullable VirtualFile binFile) {
+    public ORResolvedCompiler(@NotNull C compiler, @NotNull VirtualFile configFile, @Nullable VirtualFile binFile) {
         myCompiler = compiler;
-        myContentRootFile = contentRootFile;
+        myConfigFile = configFile;
         myBinFile = binFile;
     }
 
@@ -27,12 +27,16 @@ public class ORResolvedCompiler<C extends Compiler> {
         myCompiler.runDefault(file, onProcessTerminated);
     }
 
-    public @NotNull String getFullVersion(@Nullable VirtualFile file) {
-        return myCompiler.getFullVersion(file); // TODO use contentRoot / remove file param
+    public @NotNull String getFullVersion() {
+        return myCompiler.getFullVersion(myConfigFile);
+    }
+
+    public @NotNull VirtualFile getConfigFile() {
+        return myConfigFile;
     }
 
     public @Nullable VirtualFile getContentRoot() {
-        return myContentRootFile.getParent();
+        return myConfigFile.getParent();
     }
 
     public @NotNull String getPath() {

@@ -8,4 +8,9 @@ public class RPsiTagClose extends ORCompositePsiElement<ORLangTypes> {
     protected RPsiTagClose(@NotNull ORLangTypes types, @NotNull IElementType elementType) {
         super(types, elementType);
     }
+
+    @Override
+    public @NotNull String toString() {
+        return "RPsiTagClose: " + getName();
+    }
 }

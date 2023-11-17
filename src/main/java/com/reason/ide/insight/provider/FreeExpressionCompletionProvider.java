@@ -71,7 +71,7 @@ public class FreeExpressionCompletionProvider {
 
         // Add expressions from opened dependencies in config
         VirtualFile virtualFile = getVirtualFile(containingFile);
-        BsConfig config = project.getService(BsConfigManager.class).getNearest(virtualFile);
+        BsConfig config = project.getService(ORCompilerConfigManager.class).getNearestConfig(virtualFile);
         if (config != null) {
             for (String dependency : config.getOpenedDeps()) {
                 for (RPsiModule module : getTopModules(dependency, project, searchScope)) {

@@ -5,6 +5,7 @@ import com.intellij.lang.*;
 import com.intellij.pom.*;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
+import com.reason.*;
 import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
