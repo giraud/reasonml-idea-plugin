@@ -12,6 +12,8 @@
                         
 ## Unreleased
 
+**NOTE**: minimal version supported is **2022.3**
+
 ## 0.118 - 2023/11/17
 
 - :rocket: Support for JSX 4
