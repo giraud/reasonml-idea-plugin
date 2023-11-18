@@ -1,7 +1,8 @@
 <templateSet group="Rescript">
     <template name="rrc"
-              value="@react.component&#10;let make = (~$PROP$, ~children) =&gt; {&#10;  $END$&#10;}&#10;"
+              value="module $MOD$ = {&#10;  @react.component&#10;  let make = (~$PROP$, ~children) =&gt; {&#10;    $END$&#10;  }&#10;}&#10;"
               description="Rescript React component" toReformat="false" toShortenFQNames="true">
+        <variable name="MOD" expression="" defaultValue="" alwaysStopAt="true"/>
         <variable name="PROP" expression="" defaultValue="" alwaysStopAt="true"/>
         <context>
             <option name="RESCRIPT_CODE" value="true"/>
