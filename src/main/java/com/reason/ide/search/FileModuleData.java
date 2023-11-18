@@ -99,7 +99,7 @@ public class FileModuleData implements Comparable<FileModuleData>, IndexedFileMo
         if (comp == 0) {
             comp = Comparing.compare(myModuleName, o.myModuleName);
             if (comp == 0) {
-                comp = Comparing.compare(myIsInterface, o.myIsInterface);
+                comp = Boolean.compare(myIsInterface, o.myIsInterface);
             }
         }
         return comp;

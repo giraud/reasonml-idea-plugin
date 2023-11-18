@@ -37,7 +37,7 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
         // using workaround found at https://youtrack.jetbrains.com/issue/IDEA-272890
         // myRootTabbedPane = new JBTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         PrevNextActionsDescriptor descriptor = new PrevNextActionsDescriptor(IdeActions.ACTION_NEXT_EDITOR_TAB, IdeActions.ACTION_PREVIOUS_EDITOR_TAB);
-        myRootTabbedPane = new TabbedPaneWrapper.AsJBTabs(myProject, SwingConstants.TOP, descriptor, this);
+        myRootTabbedPane = TabbedPaneWrapper.createJbTabs(myProject, SwingConstants.TOP, descriptor, this);
 
         InsightManager insightManager = myProject.getService(InsightManager.class);
         List<String> meta = insightManager.dumpMeta(myFile);
