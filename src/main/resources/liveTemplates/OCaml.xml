@@ -3,54 +3,54 @@
     <variable name="condition" expression="" defaultValue="&quot;condition&quot;" alwaysStopAt="true" />
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="type" value="type $name$ = $value$" description="type" toReformat="false" toShortenFQNames="true">
     <variable name="name" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true" />
     <variable name="value" expression="" defaultValue="&quot;expr&quot;" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="try" value="try&#10;&#9;$code$&#10;with&#10;&#9;| _ -&gt; failwith &quot;Unknown&quot;" description="try" toReformat="false" toShortenFQNames="true">
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="thread" value="ignore (Thread.create (fun () -&gt; &#10;    $code$&#10;  ) ())" description="create thread" toReformat="false" toShortenFQNames="true">
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="mtype" value="module type $Name$ = sig&#10;&#9;$code$&#10;end" description="module type" toReformat="false" toShortenFQNames="true">
     <variable name="Name" expression="" defaultValue="&quot;Name&quot;" alwaysStopAt="true" />
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="msig" value="module $Name$ : sig&#10;&#9;$code$&#10;end" description="module signature" toReformat="false" toShortenFQNames="true">
     <variable name="Name" expression="" defaultValue="&quot;Name&quot;" alwaysStopAt="true" />
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="mstruct" value="module $Name$ = struct&#10;&#9;$code$&#10;end" description="module struct" toReformat="false" toShortenFQNames="true">
     <variable name="Name" expression="" defaultValue="&quot;Name&quot;" alwaysStopAt="true" />
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="method" value="method $name$ = $code$" description="method" toReformat="false" toShortenFQNames="true">
     <variable name="name" expression="" defaultValue="&quot;name&quot;" alwaysStopAt="true" />
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="match" value="match $value$ with&#10;| $patt$ -&gt; $expr$&#10;| $_$ -&gt; $expr2$" description="match" toReformat="false" toShortenFQNames="true">
@@ -60,7 +60,7 @@
     <variable name="_" expression="" defaultValue="&quot;_&quot;" alwaysStopAt="true" />
     <variable name="expr2" expression="" defaultValue="&quot;expr2&quot;" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="lin" value="let $var$ = $expr$ in $expr2$" description="let in" toReformat="false" toShortenFQNames="true">
@@ -68,14 +68,14 @@
     <variable name="expr" expression="" defaultValue="&quot;expr&quot;" alwaysStopAt="true" />
     <variable name="expr2" expression="" defaultValue="&quot;expr2&quot;" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="fun" value="(fun $p$ -&gt; $body$)" description="fun" toReformat="false" toShortenFQNames="true">
     <variable name="p" expression="" defaultValue="&quot;()&quot;" alwaysStopAt="true" />
     <variable name="body" expression="" defaultValue="&quot;body&quot;" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="func" value="(function&#10;| $patt1$ -&gt; $expr1$&#10;| $patt2$ -&gt; $expr2$)" description="function alt" toReformat="false" toShortenFQNames="true">
@@ -84,7 +84,7 @@
     <variable name="patt2" expression="" defaultValue="&quot;patt2&quot;" alwaysStopAt="true" />
     <variable name="expr2" expression="" defaultValue="&quot;expr2&quot;" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="if" value="if ($cond$) then $expr$ else $expr2$" description="if" toReformat="false" toShortenFQNames="true">
@@ -92,14 +92,14 @@
     <variable name="expr" expression="" defaultValue="&quot;expr&quot;" alwaysStopAt="true" />
     <variable name="expr2" expression="" defaultValue="&quot;expr2&quot;" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="let" value="let $var$ = $expr$" description="let" toReformat="false" toShortenFQNames="true">
     <variable name="var" expression="" defaultValue="&quot;var(s)&quot;" alwaysStopAt="true" />
     <variable name="expr" expression="" defaultValue="&quot;expr&quot;" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="class" value="class $name$ =&#10;&#9;object $self$&#10;&#9;&#9;$contents$&#10;&#9;end" description="class" toReformat="false" toShortenFQNames="true">
@@ -107,13 +107,13 @@
     <variable name="self" expression="" defaultValue="&quot;(self)&quot;" alwaysStopAt="true" />
     <variable name="contents" expression="" defaultValue="&quot;contents&quot;" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="begin" value="begin&#10;&#9;$code$&#10;end" description="begin" toReformat="false" toShortenFQNames="true">
     <variable name="code" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
   <template name="for" value="for $i$ = $startval$ to $endval$ do&#10;&#9;$code$&#10;done" description="for loop" toReformat="false" toShortenFQNames="true">
@@ -122,7 +122,7 @@
     <variable name="endval" expression="" defaultValue="&quot;endval&quot;" alwaysStopAt="true" />
     <variable name="code" expression="" defaultValue="&quot;code&quot;" alwaysStopAt="true" />
     <context>
-      <option name="OCAML.Expression" value="true" />
+      <option name="OCAML_CODE" value="true" />
     </context>
   </template>
 </templateSet>

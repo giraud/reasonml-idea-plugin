@@ -390,15 +390,20 @@
          | Templates
          -->
 
-        <liveTemplateContext id="REASON_CODE" implementation="com.reason.ide.template.RmlContextType$Generic"/>
+        <liveTemplateContext contextId="REASON_CODE"
+                             implementation="com.reason.ide.template.RmlBaseLiveTemplateContextType"/>
         <defaultLiveTemplates file="liveTemplates/Reason.xml"/>
 
-        <liveTemplateContext implementation="com.reason.ide.template.ResContextType$Generic"/>
+        <liveTemplateContext contextId="RESCRIPT_CODE"
+                             implementation="com.reason.ide.template.ResBaseLiveTemplateContextType"/>
         <defaultLiveTemplates file="liveTemplates/Rescript.xml"/>
 
-        <liveTemplateContext implementation="com.reason.ide.template.OCamlContentType"/>
-        <liveTemplateContext implementation="com.reason.ide.template.OCamlContentType$OCamlExpressionTemplates"/>
-        <liveTemplateContext implementation="com.reason.ide.template.OCamlContentType$OCamlCommentTemplates"/>
+        <liveTemplateContext contextId="OCAML"
+                             implementation="com.reason.ide.template.OCamlBaseLiveTemplateContextType"/>
+        <liveTemplateContext contextId="OCAML_CODE" baseContextId="OCAML"
+                             implementation="com.reason.ide.template.OCamlCodeLiveTemplateContextType"/>
+        <liveTemplateContext contextId="OCAML_COMMENT" baseContextId="OCAML"
+                             implementation="com.reason.ide.template.OCamlCommentLiveTemplateContextType"/>
         <defaultLiveTemplates file="liveTemplates/OCaml.xml"/>
 
         <!--
