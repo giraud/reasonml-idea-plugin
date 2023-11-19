@@ -78,11 +78,6 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
     }
 
     @Override
-    public @Nullable FileEditorLocation getCurrentLocation() {
-        return null;
-    }
-
-    @Override
     public void setState(@NotNull FileEditorState state) {
     }
 
