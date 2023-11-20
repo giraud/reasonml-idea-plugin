@@ -253,10 +253,11 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertNoParserError(e);
 
         RPsiParameterDeclaration p0 = e.getParameters().get(0);
-        assertEquals("(option(string), option(int)) => unit", p0.getSignature().getText());
-        //assertEquals("option(string)", p0.getSignature().getItems().get(0).getText());       TODO
-        //assertEquals("option(int)", p0.getSignature().getItems().get(1).getText());
-        //assertEquals("unit", p0.getSignature().getItems().get(2).getText());
+        RPsiSignature p0s = p0.getSignature();
+        assertEquals("(option(string), option(int)) => unit", p0s.getText());
+        assertSize(2, p0s.getItems());
+        assertEquals("(option(string), option(int))", p0s.getItems().get(0).getText());
+        assertEquals("unit", p0s.getItems().get(1).getText());
     }
 
     @Test
