@@ -246,20 +246,20 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "{"           { return types.LBRACE; }
     "}"           { return types.RBRACE; }
     "`"           { yybegin(INITIAL); return types.JS_STRING_CLOSE; }
-    {EOL}         { yybegin(INITIAL); }
+    {EOL}         { }
     <<EOF>>       { yybegin(INITIAL); }
     ([^`{}$])+    { return types.STRING_VALUE; }
 }
 
 <IN_STRING> {
     "\"" { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
-    "\\" { EOL } ([ \t] *) { }
+    "\\" {EOL} ([ \t] *) { }
     "\\" [\\\'\"ntbr ] { }
     "\\" [0-9] [0-9] [0-9] { }
     "\\" "o" [0-3] [0-7] [0-7] { }
     "\\" "x" [0-9a-fA-F] [0-9a-fA-F] { }
     "\\" . { }
-    { EOL } { }
+    {EOL}  { }
     . { }
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
 }

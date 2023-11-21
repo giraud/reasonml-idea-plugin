@@ -80,28 +80,28 @@ public class ResFlexLexer implements FlexLexer {
     "\1\20\1\21\1\22\1\23\1\24\1\25\1\26\1\27"+
     "\1\30\1\31\1\32\1\33\1\34\1\35\1\36\1\37"+
     "\1\40\1\41\1\42\1\43\1\44\1\45\1\46\1\47"+
-    "\2\50\1\4\1\51\1\52\3\53\1\54\1\55\2\53"+
-    "\2\56\1\0\1\57\1\0\1\10\1\60\1\0\3\5"+
-    "\2\10\1\0\1\61\2\5\1\62\1\5\1\63\3\5"+
-    "\1\64\1\65\12\5\1\66\11\5\1\67\1\70\1\71"+
-    "\15\5\2\6\1\72\1\73\1\74\1\75\1\76\1\77"+
-    "\1\100\1\101\1\102\1\103\1\104\1\105\1\106\1\107"+
-    "\1\110\1\111\1\112\1\113\1\114\1\115\1\116\5\53"+
-    "\1\117\1\120\1\121\1\57\2\121\3\0\2\60\1\0"+
-    "\1\122\2\5\3\10\4\5\1\123\2\5\1\124\1\5"+
-    "\1\125\1\126\1\5\1\127\1\130\3\5\1\131\1\132"+
-    "\1\133\1\5\1\134\1\135\5\5\1\136\14\5\1\137"+
-    "\1\140\2\5\1\141\1\142\3\5\1\143\3\5\1\144"+
-    "\1\5\2\6\1\145\1\146\6\0\1\5\1\60\1\10"+
-    "\1\5\1\147\4\5\1\150\2\5\1\151\1\152\1\153"+
-    "\11\5\1\154\1\155\4\5\1\156\1\5\1\157\1\160"+
-    "\1\161\1\162\1\5\1\163\5\5\1\164\1\165\2\0"+
-    "\1\5\1\60\2\5\1\166\4\5\1\167\1\5\1\170"+
-    "\1\171\3\5\1\172\1\173\1\174\7\5\1\175\4\5"+
-    "\1\176\1\177\3\5\1\200\1\201\1\202\1\203\4\5"+
-    "\1\204\1\205\1\206\1\207\2\5\1\210\3\5\1\211"+
-    "\1\5\1\212\1\5\1\213\1\214\1\215\1\216\1\217"+
-    "\3\5\1\220\2\5\1\221\1\5\1\222";
+    "\2\50\1\4\1\51\1\52\3\50\1\53\1\54\2\50"+
+    "\2\55\1\0\1\56\1\0\1\10\1\57\1\0\3\5"+
+    "\2\10\1\0\1\60\2\5\1\61\1\5\1\62\3\5"+
+    "\1\63\1\64\12\5\1\65\11\5\1\66\1\67\1\70"+
+    "\15\5\2\6\1\71\1\72\1\73\1\74\1\75\1\76"+
+    "\1\77\1\100\1\101\1\102\1\103\1\104\1\105\1\106"+
+    "\1\107\1\110\1\111\1\112\1\113\1\114\1\115\5\50"+
+    "\1\116\1\117\1\120\1\56\2\120\3\0\2\57\1\0"+
+    "\1\121\2\5\3\10\4\5\1\122\2\5\1\123\1\5"+
+    "\1\124\1\125\1\5\1\126\1\127\3\5\1\130\1\131"+
+    "\1\132\1\5\1\133\1\134\5\5\1\135\14\5\1\136"+
+    "\1\137\2\5\1\140\1\141\3\5\1\142\3\5\1\143"+
+    "\1\5\2\6\1\144\1\145\6\0\1\5\1\57\1\10"+
+    "\1\5\1\146\4\5\1\147\2\5\1\150\1\151\1\152"+
+    "\11\5\1\153\1\154\4\5\1\155\1\5\1\156\1\157"+
+    "\1\160\1\161\1\5\1\162\5\5\1\163\1\164\2\0"+
+    "\1\5\1\57\2\5\1\165\4\5\1\166\1\5\1\167"+
+    "\1\170\3\5\1\171\1\172\1\173\7\5\1\174\4\5"+
+    "\1\175\1\176\3\5\1\177\1\200\1\201\1\202\4\5"+
+    "\1\203\1\204\1\205\1\206\2\5\1\207\3\5\1\210"+
+    "\1\5\1\211\1\5\1\212\1\213\1\214\1\215\1\216"+
+    "\3\5\1\217\2\5\1\220\1\5\1\221";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[371];
@@ -942,732 +942,727 @@ public class ResFlexLexer implements FlexLexer {
             { yybegin(INITIAL); yypushback(1);
             }
             // fall through
-          case 147: break;
+          case 146: break;
           case 2:
             { return BAD_CHARACTER;
             }
             // fall through
-          case 148: break;
+          case 147: break;
           case 3:
             { return types.EOL;
             }
             // fall through
-          case 149: break;
+          case 148: break;
           case 4:
             { return WHITE_SPACE;
             }
             // fall through
-          case 150: break;
+          case 149: break;
           case 5:
             { return types.LIDENT;
             }
             // fall through
-          case 151: break;
+          case 150: break;
           case 6:
             { return types.UIDENT;
             }
             // fall through
-          case 152: break;
+          case 151: break;
           case 7:
             { return types.SINGLE_QUOTE;
             }
             // fall through
-          case 153: break;
+          case 152: break;
           case 8:
             { return types.INT_VALUE;
             }
             // fall through
-          case 154: break;
+          case 153: break;
           case 9:
             { return types.UNDERSCORE;
             }
             // fall through
-          case 155: break;
+          case 154: break;
           case 10:
             { return types.DOT;
             }
             // fall through
-          case 156: break;
+          case 155: break;
           case 11:
             { return types.MINUS;
             }
             // fall through
-          case 157: break;
+          case 156: break;
           case 12:
             { return types.BACKSLASH;
             }
             // fall through
-          case 158: break;
+          case 157: break;
           case 13:
             { yybegin(IN_STRING); tokenStart();
             }
             // fall through
-          case 159: break;
+          case 158: break;
           case 14:
             { return types.SHARP;
             }
             // fall through
-          case 160: break;
+          case 159: break;
           case 15:
             { yybegin(IN_TEMPLATE); return types.JS_STRING_OPEN;
             }
             // fall through
-          case 161: break;
+          case 160: break;
           case 16:
             { return types.SLASH;
             }
             // fall through
-          case 162: break;
+          case 161: break;
           case 17:
             { return types.STAR;
             }
             // fall through
-          case 163: break;
+          case 162: break;
           case 18:
             { return types.PLUS;
             }
             // fall through
-          case 164: break;
+          case 163: break;
           case 19:
             { return types.COLON;
             }
             // fall through
-          case 165: break;
+          case 164: break;
           case 20:
             { return types.EQ;
             }
             // fall through
-          case 166: break;
+          case 165: break;
           case 21:
             { return types.GT;
             }
             // fall through
-          case 167: break;
+          case 166: break;
           case 22:
             { return types.LT;
             }
             // fall through
-          case 168: break;
+          case 167: break;
           case 23:
             { return types.PIPE;
             }
             // fall through
-          case 169: break;
+          case 168: break;
           case 24:
             { return types.EXCLAMATION_MARK;
             }
             // fall through
-          case 170: break;
+          case 169: break;
           case 25:
             { return types.AMPERSAND;
             }
             // fall through
-          case 171: break;
+          case 170: break;
           case 26:
             { return types.COMMA;
             }
             // fall through
-          case 172: break;
+          case 171: break;
           case 27:
             { return types.SEMI;
             }
             // fall through
-          case 173: break;
+          case 172: break;
           case 28:
             { return types.LPAREN;
             }
             // fall through
-          case 174: break;
+          case 173: break;
           case 29:
             { return types.RPAREN;
             }
             // fall through
-          case 175: break;
+          case 174: break;
           case 30:
             { return types.LBRACE;
             }
             // fall through
-          case 176: break;
+          case 175: break;
           case 31:
             { return types.RBRACE;
             }
             // fall through
-          case 177: break;
+          case 176: break;
           case 32:
             { return types.LBRACKET;
             }
             // fall through
-          case 178: break;
+          case 177: break;
           case 33:
             { return types.RBRACKET;
             }
             // fall through
-          case 179: break;
+          case 178: break;
           case 34:
             { return types.ARROBASE;
             }
             // fall through
-          case 180: break;
+          case 179: break;
           case 35:
             { return types.QUESTION_MARK;
             }
             // fall through
-          case 181: break;
+          case 180: break;
           case 36:
             { return types.TILDE;
             }
             // fall through
-          case 182: break;
+          case 181: break;
           case 37:
             { return types.CARRET;
             }
             // fall through
-          case 183: break;
+          case 182: break;
           case 38:
             { return types.PERCENT;
             }
             // fall through
-          case 184: break;
+          case 183: break;
           case 39:
             { return types.STRING_VALUE;
             }
             // fall through
-          case 185: break;
+          case 184: break;
           case 40:
-            { yybegin(INITIAL);
+            {
             }
             // fall through
-          case 186: break;
+          case 185: break;
           case 41:
             { yybegin(INITIAL); return types.JS_STRING_CLOSE;
             }
             // fall through
-          case 187: break;
+          case 186: break;
           case 42:
             { return types.DOLLAR;
             }
             // fall through
-          case 188: break;
+          case 187: break;
           case 43:
-            {
-            }
-            // fall through
-          case 189: break;
-          case 44:
             { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE;
             }
             // fall through
-          case 190: break;
-          case 45:
+          case 188: break;
+          case 44:
             { inCommentString = !inCommentString;
             }
             // fall through
-          case 191: break;
-          case 46:
+          case 189: break;
+          case 45:
             { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT;
             }
             // fall through
-          case 192: break;
-          case 47:
+          case 190: break;
+          case 46:
             { return types.TYPE_ARGUMENT;
             }
             // fall through
-          case 193: break;
-          case 48:
+          case 191: break;
+          case 47:
             { return types.FLOAT_VALUE;
             }
             // fall through
-          case 194: break;
-          case 49:
+          case 192: break;
+          case 48:
             { return types.OF;
             }
             // fall through
-          case 195: break;
-          case 50:
+          case 193: break;
+          case 49:
             { return types.OR;
             }
             // fall through
-          case 196: break;
-          case 51:
+          case 194: break;
+          case 50:
             { return types.DOTDOT;
             }
             // fall through
-          case 197: break;
-          case 52:
+          case 195: break;
+          case 51:
             { return types.MINUSDOT;
             }
             // fall through
-          case 198: break;
-          case 53:
+          case 196: break;
+          case 52:
             { return types.RIGHT_ARROW;
             }
             // fall through
-          case 199: break;
-          case 54:
+          case 197: break;
+          case 53:
             { return types.AS;
             }
             // fall through
-          case 200: break;
-          case 55:
+          case 198: break;
+          case 54:
             { return types.IF;
             }
             // fall through
-          case 201: break;
-          case 56:
+          case 199: break;
+          case 55:
             { return types.IN;
             }
             // fall through
-          case 202: break;
-          case 57:
+          case 200: break;
+          case 56:
             { return types.DO;
             }
             // fall through
-          case 203: break;
-          case 58:
+          case 201: break;
+          case 57:
             { return types.POLY_VARIANT;
             }
             // fall through
-          case 204: break;
-          case 59:
+          case 202: break;
+          case 58:
             { return types.SHARPSHARP;
             }
             // fall through
-          case 205: break;
-          case 60:
+          case 203: break;
+          case 59:
             { return types.SLASHDOT;
             }
             // fall through
-          case 206: break;
-          case 61:
+          case 204: break;
+          case 60:
             { yybegin(IN_SL_COMMENT); tokenStart();
             }
             // fall through
-          case 207: break;
-          case 62:
+          case 205: break;
+          case 61:
             { yybegin(IN_ML_COMMENT); commentDepth = 1; tokenStart();
             }
             // fall through
-          case 208: break;
-          case 63:
+          case 206: break;
+          case 62:
             { return types.TAG_AUTO_CLOSE;
             }
             // fall through
-          case 209: break;
-          case 64:
+          case 207: break;
+          case 63:
             { return types.STARDOT;
             }
             // fall through
-          case 210: break;
-          case 65:
+          case 208: break;
+          case 64:
             { return types.PLUSDOT;
             }
             // fall through
-          case 211: break;
-          case 66:
+          case 209: break;
+          case 65:
             { return types.STRING_CONCAT;
             }
             // fall through
-          case 212: break;
-          case 67:
+          case 210: break;
+          case 66:
             { return types.SHORTCUT;
             }
             // fall through
-          case 213: break;
-          case 68:
+          case 211: break;
+          case 67:
             { return types.COLON_EQ;
             }
             // fall through
-          case 214: break;
-          case 69:
+          case 212: break;
+          case 68:
             { return types.COLON_GT;
             }
             // fall through
-          case 215: break;
-          case 70:
+          case 213: break;
+          case 69:
             { return types.EQEQ;
             }
             // fall through
-          case 216: break;
-          case 71:
+          case 214: break;
+          case 70:
             { return types.ARROW;
             }
             // fall through
-          case 217: break;
-          case 72:
+          case 215: break;
+          case 71:
             { return types.LEFT_ARROW;
             }
             // fall through
-          case 218: break;
-          case 73:
+          case 216: break;
+          case 72:
             { return types.TAG_LT_SLASH;
             }
             // fall through
-          case 219: break;
-          case 74:
+          case 217: break;
+          case 73:
             { return types.LT_OR_EQUAL;
             }
             // fall through
-          case 220: break;
-          case 75:
+          case 218: break;
+          case 74:
             { return types.PIPE_FORWARD;
             }
             // fall through
-          case 221: break;
-          case 76:
+          case 219: break;
+          case 75:
             { return types.L_OR;
             }
             // fall through
-          case 222: break;
-          case 77:
+          case 220: break;
+          case 76:
             { return types.NOT_EQ;
             }
             // fall through
-          case 223: break;
-          case 78:
+          case 221: break;
+          case 77:
             { return types.L_AND;
             }
             // fall through
-          case 224: break;
-          case 79:
+          case 222: break;
+          case 78:
             { if (!inCommentString) commentDepth += 1;
             }
             // fall through
-          case 225: break;
-          case 80:
+          case 223: break;
+          case 79:
             { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } }
             }
             // fall through
-          case 226: break;
-          case 81:
+          case 224: break;
+          case 80:
             { return types.CHAR_VALUE;
             }
             // fall through
-          case 227: break;
-          case 82:
+          case 225: break;
+          case 81:
             { return types.FOR;
             }
             // fall through
-          case 228: break;
-          case 83:
+          case 226: break;
+          case 82:
             { return types.DOTDOTDOT;
             }
             // fall through
-          case 229: break;
-          case 84:
+          case 227: break;
+          case 83:
             { return types.END;
             }
             // fall through
-          case 230: break;
-          case 85:
+          case 228: break;
+          case 84:
             { return types.PRI;
             }
             // fall through
-          case 231: break;
-          case 86:
+          case 229: break;
+          case 85:
             { return types.PUB;
             }
             // fall through
-          case 232: break;
-          case 87:
+          case 230: break;
+          case 86:
             { return types.NEW;
             }
             // fall through
-          case 233: break;
-          case 88:
+          case 231: break;
+          case 87:
             { return types.TRY;
             }
             // fall through
-          case 234: break;
-          case 89:
+          case 232: break;
+          case 88:
             { return types.REF;
             }
             // fall through
-          case 235: break;
-          case 90:
+          case 233: break;
+          case 89:
             { return types.REC;
             }
             // fall through
-          case 236: break;
-          case 91:
+          case 234: break;
+          case 90:
             { return types.RAW;
             }
             // fall through
-          case 237: break;
-          case 92:
+          case 235: break;
+          case 91:
             { return types.AND;
             }
             // fall through
-          case 238: break;
-          case 93:
+          case 236: break;
+          case 92:
             { return types.ASR;
             }
             // fall through
-          case 239: break;
-          case 94:
+          case 237: break;
+          case 93:
             { return types.SIG;
             }
             // fall through
-          case 240: break;
-          case 95:
+          case 238: break;
+          case 94:
             { return types.LOR;
             }
             // fall through
-          case 241: break;
-          case 96:
+          case 239: break;
+          case 95:
             { return types.LET;
             }
             // fall through
-          case 242: break;
-          case 97:
+          case 240: break;
+          case 96:
             { return types.LSR;
             }
             // fall through
-          case 243: break;
-          case 98:
+          case 241: break;
+          case 97:
             { return types.LSL;
             }
             // fall through
-          case 244: break;
-          case 99:
+          case 242: break;
+          case 98:
             { return types.MOD;
             }
             // fall through
-          case 245: break;
-          case 100:
+          case 243: break;
+          case 99:
             { return types.VAL;
             }
             // fall through
-          case 246: break;
-          case 101:
+          case 244: break;
+          case 100:
             { return types.EQEQEQ;
             }
             // fall through
-          case 247: break;
-          case 102:
+          case 245: break;
+          case 101:
             { return types.NOT_EQEQ;
             }
             // fall through
-          case 248: break;
-          case 103:
+          case 246: break;
+          case 102:
             { return types.OPEN;
             }
             // fall through
-          case 249: break;
-          case 104:
+          case 247: break;
+          case 103:
             { return types.ELSE;
             }
             // fall through
-          case 250: break;
-          case 105:
+          case 248: break;
+          case 104:
             { return types.BOOL_VALUE;
             }
             // fall through
-          case 251: break;
-          case 106:
+          case 249: break;
+          case 105:
             { return types.TYPE;
             }
             // fall through
-          case 252: break;
-          case 107:
+          case 250: break;
+          case 106:
             { return types.THEN;
             }
             // fall through
-          case 253: break;
-          case 108:
+          case 251: break;
+          case 107:
             { return types.WITH;
             }
             // fall through
-          case 254: break;
-          case 109:
+          case 252: break;
+          case 108:
             { return types.WHEN;
             }
             // fall through
-          case 255: break;
-          case 110:
+          case 253: break;
+          case 109:
             { return types.DONE;
             }
             // fall through
-          case 256: break;
-          case 111:
+          case 254: break;
+          case 110:
             { return types.LXOR;
             }
             // fall through
-          case 257: break;
-          case 112:
+          case 255: break;
+          case 111:
             { return types.LAND;
             }
             // fall through
-          case 258: break;
-          case 113:
+          case 256: break;
+          case 112:
             { return types.LAZY;
             }
             // fall through
-          case 259: break;
-          case 114:
+          case 257: break;
+          case 113:
             { return types.LIST;
             }
             // fall through
-          case 260: break;
-          case 115:
+          case 258: break;
+          case 114:
             { return types.UNIT;
             }
             // fall through
-          case 261: break;
-          case 116:
+          case 259: break;
+          case 115:
             { return types.NONE;
             }
             // fall through
-          case 262: break;
-          case 117:
+          case 260: break;
+          case 116:
             { return types.SOME;
             }
             // fall through
-          case 263: break;
-          case 118:
+          case 261: break;
+          case 117:
             { return types.BEGIN;
             }
             // fall through
-          case 264: break;
-          case 119:
+          case 262: break;
+          case 118:
             { return types.RAISE;
             }
             // fall through
-          case 265: break;
-          case 120:
+          case 263: break;
+          case 119:
             { return types.ASYNC;
             }
             // fall through
-          case 266: break;
-          case 121:
+          case 264: break;
+          case 120:
             { return types.AWAIT;
             }
             // fall through
-          case 267: break;
-          case 122:
+          case 265: break;
+          case 121:
             { return types.CATCH;
             }
             // fall through
-          case 268: break;
-          case 123:
+          case 266: break;
+          case 122:
             { return types.CLASS;
             }
             // fall through
-          case 269: break;
-          case 124:
+          case 267: break;
+          case 123:
             { return types.WHILE;
             }
             // fall through
-          case 270: break;
-          case 125:
+          case 268: break;
+          case 124:
             { return types.MATCH;
             }
             // fall through
-          case 271: break;
-          case 126:
+          case 269: break;
+          case 125:
             { return types.OBJECT;
             }
             // fall through
-          case 272: break;
-          case 127:
+          case 270: break;
+          case 126:
             { return types.OPTION;
             }
             // fall through
-          case 273: break;
-          case 128:
+          case 271: break;
+          case 127:
             { return types.NONREC;
             }
             // fall through
-          case 274: break;
-          case 129:
+          case 272: break;
+          case 128:
             { return types.ASSERT;
             }
             // fall through
-          case 275: break;
-          case 130:
+          case 273: break;
+          case 129:
             { return types.STRUCT;
             }
             // fall through
-          case 276: break;
-          case 131:
+          case 274: break;
+          case 130:
             { return types.SWITCH;
             }
             // fall through
-          case 277: break;
-          case 132:
+          case 275: break;
+          case 131:
             { return types.DOWNTO;
             }
             // fall through
-          case 278: break;
-          case 133:
+          case 276: break;
+          case 132:
             { return types.UNPACK;
             }
             // fall through
-          case 279: break;
-          case 134:
+          case 277: break;
+          case 133:
             { return types.MODULE;
             }
             // fall through
-          case 280: break;
-          case 135:
+          case 278: break;
+          case 134:
             { return types.METHOD;
             }
             // fall through
-          case 281: break;
-          case 136:
+          case 279: break;
+          case 135:
             { return types.FUNCTOR;
             }
             // fall through
-          case 282: break;
-          case 137:
+          case 280: break;
+          case 136:
             { return types.PRIVATE;
             }
             // fall through
-          case 283: break;
-          case 138:
+          case 281: break;
+          case 137:
             { return types.INCLUDE;
             }
             // fall through
-          case 284: break;
-          case 139:
+          case 282: break;
+          case 138:
             { return types.INHERIT;
             }
             // fall through
-          case 285: break;
-          case 140:
+          case 283: break;
+          case 139:
             { return types.MUTABLE;
             }
             // fall through
-          case 286: break;
-          case 141:
+          case 284: break;
+          case 140:
             { return types.VIRTUAL;
             }
             // fall through
-          case 287: break;
-          case 142:
+          case 285: break;
+          case 141:
             { return types.FUNCTION;
             }
             // fall through
-          case 288: break;
-          case 143:
+          case 286: break;
+          case 142:
             { return types.EXTERNAL;
             }
             // fall through
-          case 289: break;
-          case 144:
+          case 287: break;
+          case 143:
             { return types.EXCEPTION;
             }
             // fall through
-          case 290: break;
-          case 145:
+          case 288: break;
+          case 144:
             { return types.CONSTRAINT;
             }
             // fall through
-          case 291: break;
-          case 146:
+          case 289: break;
+          case 145:
             { return types.INITIALIZER;
             }
             // fall through
-          case 292: break;
+          case 290: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }
