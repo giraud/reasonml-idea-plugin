@@ -12,7 +12,7 @@
                         
 ## Unreleased
 
-## 0.118 - 2023/11/17
+## 0.118.1 - 2023/11/21
 
 - :rocket: Support for JSX 4
 - :bug: [#434](https://github.com/giraud/reasonml-idea-plugin/issues/435) Rescript 11 deprecate bsconfig.json, wants rescript.json

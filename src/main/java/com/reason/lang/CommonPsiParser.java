@@ -1,6 +1,5 @@
 package com.reason.lang;
 
-import com.intellij.core.*;
 import com.intellij.lang.*;
 import com.intellij.psi.tree.*;
 import org.jetbrains.annotations.*;
@@ -29,7 +28,7 @@ public abstract class CommonPsiParser implements PsiParser {
 
         // end stream
         if (!builder.eof()) {
-            builder.mark().error(JavaPsiBundle.message("unexpected.token"));
+            builder.mark().error("Unexpected token");
             while (!builder.eof()) {
                 builder.advanceLexer();
             }
