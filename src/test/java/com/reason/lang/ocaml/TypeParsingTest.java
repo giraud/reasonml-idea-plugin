@@ -71,7 +71,13 @@ public class TypeParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_binding_with_record() {
-        RPsiTypeBinding e = firstOfType(parseCode("type 'a t = { string_f_apply: ('a -> unit); string_help: string option; list_f_edit: ('a -> 'a) option; }"), RPsiTypeBinding.class);
+        RPsiTypeBinding e = firstOfType(parseCode("""
+                type 'a t = {
+                    string_f_apply: ('a -> unit);
+                    string_help: string;
+                    list_f_edit: ('a -> 'a) option;
+                }
+                """), RPsiTypeBinding.class);
         RPsiRecord er = ORUtil.findImmediateFirstChildOfClass(e, RPsiRecord.class);
 
         assertNoParserError(e);
@@ -80,15 +86,19 @@ public class TypeParsingTest extends OclParsingTestCase {
         List<RPsiSignatureItem> er0i = er0.getSignature().getItems();
         assertEquals("string_f_apply", er0.getName());
         assertSize(2, er0i);
+
         RPsiRecordField er1 = er.getFields().get(1);
-        List<RPsiSignatureItem> er1i = er1.getSignature().getItems();
         assertEquals("string_help", er1.getName());
+        List<RPsiSignatureItem> er1i = er1.getSignature().getItems();
         assertSize(1, er1i);
+        assertEquals("string", er1i.get(0).getText());
+
         RPsiRecordField er2 = er.getFields().get(2);
-        List<RPsiSignatureItem> er2i = er2.getSignature().getItems();
         assertEquals("list_f_edit", er2.getName());
-        //assertSize(1, er2i); TODO
-        //assertEquals("('a -> 'a) option", er2i.get(0).getText());
+        List<RPsiSignatureItem> er2i = er2.getSignature().getItems();
+        assertSize(1, er2i);
+        assertInstanceOf(er2i.get(0).getFirstChild(), RPsiOption.class);
+        assertEquals("('a -> 'a) option", er2i.get(0).getText());
     }
 
     @Test

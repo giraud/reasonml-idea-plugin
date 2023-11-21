@@ -379,14 +379,6 @@ public class OclParser extends CommonPsiParser {
             if (is(myTypes.C_SIG_EXPR)) {
                 advance();
                 markParenthesisScope(true).mark(myTypes.C_SIG_ITEM);
-            } else if (strictlyIn(myTypes.C_SIG_ITEM)) {
-                popEndUntilFoundIndex().popEnd();
-                if (in(myTypes.H_NAMED_PARAM_DECLARATION) && !isFoundScope(myTypes.LPAREN)) { // can't have an arrow in a named param signature
-                    // let fn x:int |>-><| y:int
-                    popEnd().popEndUntil(myTypes.C_SIG_EXPR);
-                }
-                advance();
-                markParenthesisScope(true).mark(myTypes.C_SIG_ITEM);
             } else if (isCurrent(myTypes.C_MODULE_SIGNATURE) && isRawGrandParent(myTypes.C_FUNCTOR_DECLARATION)) {
                 // signature of a functor in an interface file
                 // module M : function (...) |>-><| ...
@@ -395,7 +387,7 @@ public class OclParser extends CommonPsiParser {
             }
             // same priority
             else if (strictlyInAny(
-                    myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_FUNCTION_EXPR, myTypes.C_TRY_HANDLER
+                    myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_FUNCTION_EXPR, myTypes.C_TRY_HANDLER, myTypes.C_SIG_ITEM
             )) {
 
                 if (isFound(myTypes.C_PATTERN_MATCH_EXPR)) {
@@ -410,6 +402,14 @@ public class OclParser extends CommonPsiParser {
                     // try .. with .. |>-><|
                     popEndUntilFoundIndex().advance()
                             .mark(myTypes.C_TRY_HANDLER_BODY);
+                } else if (isFound(myTypes.C_SIG_ITEM)) {
+                    popEndUntilFoundIndex().popEnd();
+                    if (in(myTypes.H_NAMED_PARAM_DECLARATION) && !isFoundScope(myTypes.LPAREN)) { // can't have an arrow in a named param signature
+                        // let fn x:int |>-><| y:int
+                        popEnd().popEndUntil(myTypes.C_SIG_EXPR);
+                    }
+                    advance();
+                    markParenthesisScope(true).mark(myTypes.C_SIG_ITEM);
                 }
 
             }

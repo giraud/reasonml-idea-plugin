@@ -566,8 +566,8 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseMlStringOpen() {
-            if (is(myTypes.C_MACRO_EXPR)) {
-                mark(myTypes.C_MACRO_BODY);
+            if (strictlyIn(myTypes.C_MACRO_EXPR)) {
+                popEndUntilFoundIndex().mark(myTypes.C_MACRO_BODY);
             }
 
             markScope(myTypes.C_ML_INTERPOLATOR, myTypes.ML_STRING_OPEN);
