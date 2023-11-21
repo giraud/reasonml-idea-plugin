@@ -12,7 +12,6 @@ import com.intellij.openapi.vfs.pointers.*;
 import com.intellij.util.concurrency.*;
 import com.intellij.webcore.libraries.*;
 import com.reason.comp.bs.*;
-import com.reason.ide.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -34,7 +33,6 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
     private void runActivityLater(@NotNull Project project) {
         LOG.info("run Js library manager");
 
-        // TODO deprecated
         ReadAction.nonBlocking(() ->
                         BsPlatform.findConfigFiles(project).stream().findFirst())
                 .finishOnUiThread(ModalityState.defaultModalityState(), bsConfigFileOptional -> {
@@ -67,7 +65,7 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
                                     EMPTY_STRING_ARRAY);
                         }
 
-                        WriteCommandAction.runWriteCommandAction(project, (Runnable) jsLibraryManager::commitChanges);
+                        WriteCommandAction.runWriteCommandAction(project, () -> jsLibraryManager.commitChanges(RootsChangeRescanningInfo.TOTAL_RESCAN));
                     }
                 })
                 .submit(AppExecutorUtil.getAppExecutorService());
@@ -111,7 +109,7 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
                                                 changedSources.toArray(new VirtualFile[0]),
                                                 EMPTY_ARRAY,
                                                 EMPTY_STRING_ARRAY);
-                                        WriteCommandAction.runWriteCommandAction(project, (Runnable) jsLibraryManager::commitChanges);
+                                        WriteCommandAction.runWriteCommandAction(project, () -> jsLibraryManager.commitChanges(RootsChangeRescanningInfo.TOTAL_RESCAN));
                                     }
                                 }
                             }

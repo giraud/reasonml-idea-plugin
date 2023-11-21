@@ -29,7 +29,7 @@ public abstract class CommonPsiParser implements PsiParser {
 
         // end stream
         if (!builder.eof()) {
-            builder.mark().error(JavaPsiBundle.message("unexpected.token"));
+            builder.mark().error("Unexpected token");
             while (!builder.eof()) {
                 builder.advanceLexer();
             }
