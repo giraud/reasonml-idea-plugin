@@ -40,4 +40,24 @@ public class MacroParsingTest extends RmlParsingTestCase {
         assertEquals("{|function (a) {}|}", macro.getContent().getText());
         assertEquals(new TextRange(2, 17), macro.getContent().getMacroTextRange()); // exclude {| |}
     }
+
+
+    @Test
+    public void test_GH_xxx() {
+        RPsiMacro e = firstOfType(parseCode("""
+                module GetOperatorBasesQuery = [%graphql {|
+                  query SchedGetOperatorBases {
+                    operatorBases {
+                      baseNid
+                      name
+                      utcOffset
+                    }
+                  }
+                |}]
+                let x = 1
+                """), RPsiMacro.class);
+
+        assertEquals("%graphql", e.getName());
+        assertEquals("{|\n  query SchedGetOperatorBases {\n    operatorBases {\n      baseNid\n      name\n      utcOffset\n    }\n  }\n|}", e.getContent().getText());
+    }
 }
