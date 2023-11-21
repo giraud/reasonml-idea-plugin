@@ -12,9 +12,10 @@
                         
 ## Unreleased
 
-## 0.118.1 - 2023/11/21
+## 0.118.2 - 2023/11/21
 
 - :rocket: Support for JSX 4
+- :bug: [#436](https://github.com/giraud/reasonml-idea-plugin/issues/436) Macro parsing error
 - :bug: [#434](https://github.com/giraud/reasonml-idea-plugin/issues/435) Rescript 11 deprecate bsconfig.json, wants rescript.json
 - :bug: [#434](https://github.com/giraud/reasonml-idea-plugin/issues/434) Update rescript keywords
 - :bug: [#433](https://github.com/giraud/reasonml-idea-plugin/issues/433) Gutter icon in ml file pointing to mli file disappears when it shouldn't
