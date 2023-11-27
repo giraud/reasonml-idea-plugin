@@ -36,7 +36,7 @@ public class RPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSy
         PsiElement parent = myElement.getParent();
         if (parent instanceof RPsiInnerModule) {
             if (!(parent.getParent() instanceof RPsiModuleSignature)) {
-                LOG.debug("Declaration found (inner module), skip reference resolution", myReferenceName);
+                LOG.debug("Declaration found (inner module), skip reference resolution", myElement);
                 return ResolveResult.EMPTY_ARRAY;
             }
         } else if (parent instanceof RPsiFunctor || parent instanceof RPsiException || parent instanceof RPsiVariantDeclaration) {

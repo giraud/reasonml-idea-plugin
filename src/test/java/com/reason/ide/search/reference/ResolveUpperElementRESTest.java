@@ -231,11 +231,13 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_inside() {
-        configureCode("F.res", "module type S = { module X: {} }\n" +
-                "module M = () : S => { module X = {} }\n" +
-                "module A = M({})\n" +
-                "module X2 = { module X1 = { module X = {} } }\n" +
-                "module V = A.X<caret>");
+        configureCode("F.res", """
+                module type S = { module X: {} }
+                module M = () : S => { module X = {} }
+                module A = M({})
+                module X2 = { module X1 = { module X = {} } }
+                module V = A.X<caret>
+                """);
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("F.M.X", e.getQualifiedName());
@@ -243,9 +245,11 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_outside() {
-        configureCode("F.res", "module type S = { module X: {} }\n" +
-                "module M = () : S => { module X = {} }\n" +
-                "module A = M({})");
+        configureCode("F.res", """
+                module type S = { module X: {} }
+                module M = () : S => { module X = {} }
+                module A = M({})
+                """);
         configureCode("B.res", "module X2 = { module X1 = { module X = {} } }\n module V = F.A.X<caret>");
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
@@ -265,6 +269,24 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
     public void test_with_tag_1() {
         configureCode("Form.res", "module Styles = {}");
         configureCode("A.res", "module Styles = {}\n let _ = <Form className=Styles<caret> />");
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("A.Styles", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_module_in_between() {
+        configureCode("Styles.res", "let myDiv = 1");
+        configureCode("A.res", """
+                module Styles = { let myDiv = CssJs.style(. []) }
+                                
+                module Layouts = {}
+                                
+                @react.component
+                let make = () => {
+                  <div className=Styl<caret>es.myDiv />
+                }
+                """);
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("A.Styles", e.getQualifiedName());
