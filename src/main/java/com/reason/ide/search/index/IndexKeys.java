@@ -12,8 +12,8 @@ public class IndexKeys {
         void process(@NotNull T element);
     }
 
-    public static final StubIndexKey<String, RPsiInnerModule> MODULES_SIGNATURE = StubIndexKey.createIndexKey("reason.module_signature");
-    public static final StubIndexKey<String, RPsiInnerModule> MODULES = StubIndexKey.createIndexKey("reason.module");
+    public static final StubIndexKey<String, RPsiModule> MODULES_SIGNATURE = StubIndexKey.createIndexKey("reason.module_signature");
+    public static final StubIndexKey<String, RPsiModule> MODULES = StubIndexKey.createIndexKey("reason.module");
     public static final StubIndexKey<Integer, RPsiModule> MODULES_FQN = StubIndexKey.createIndexKey("reason.module.fqn");
     public static final StubIndexKey<Integer, RPsiClass> CLASSES_FQN = StubIndexKey.createIndexKey("reason.class.fqn");
     public static final StubIndexKey<Integer, RPsiClassMethod> CLASS_METHODS_FQN = StubIndexKey.createIndexKey("reason.method.fqn");
