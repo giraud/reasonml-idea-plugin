@@ -156,6 +156,30 @@ public class SwitchParsingTest extends RmlParsingTestCase {
     }
 
     @Test
+    public void test_switch_of_switch_2() {
+        RPsiFunction e = firstOfType(parseCode("""
+                <Table prop={(. x) => {
+                    switch (x) {
+                    | Some(_) =>
+                        switch (colIndex) {
+                        | 2 => rowIndex > keys->length ? React.null : <Comp />
+                        | _ => React.null
+                        }
+                    }
+                }}/>
+                """), RPsiFunction.class);
+
+        List<RPsiSwitch> ess = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e.getBody(), RPsiSwitch.class));
+        RPsiSwitch es0 = ess.get(0);
+        RPsiSwitch es1 = ess.get(1);
+        assertSize(1, es0.getPatterns());
+        assertSize(2, es1.getPatterns());
+        assertEquals("rowIndex > keys->length ? React.null : <Comp />", es1.getPatterns().get(0).getBody().getText());
+        RPsiTernary es1t = PsiTreeUtil.findChildOfType(es1.getPatterns().get(0).getBody(), RPsiTernary.class);
+        assertEquals("rowIndex > keys->length", es1t.getCondition().getText());
+    }
+
+    @Test
     public void test_group() {
         RPsiSwitch e = firstOfType(parseCode("switch (x) { | V1(y) => Some(y) | V2(_) | Empty | Unknown => None }"), RPsiSwitch.class);
 

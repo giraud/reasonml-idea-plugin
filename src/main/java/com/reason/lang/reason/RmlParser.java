@@ -788,8 +788,12 @@ public class RmlParser extends CommonPsiParser {
                 popEnd();
             }
 
-            if (in(myTypes.C_TAG)) {
-                if (inScopeOrAny(myTypes.C_TAG_PROP_VALUE, myTypes.C_TAG_START, myTypes.C_TAG_CLOSE)) {
+            //if (inAny(myTypes.C_TAG, myTypes.C_PATTERN_MATCH_BODY)) {
+            //    if (isFound())
+            if (inScopeOrAny(myTypes.C_TAG_PROP_VALUE, myTypes.C_TAG_START, myTypes.C_TAG_CLOSE, myTypes.C_PATTERN_MATCH_BODY)) {
+                if (isFound(myTypes.C_PATTERN_MATCH_BODY)) {
+                    // nope
+                } else {
                     advance().popEndUntilFoundIndex();
                     if (is(myTypes.C_TAG_START)) {
                         popEnd().mark(myTypes.C_TAG_BODY);
@@ -799,6 +803,7 @@ public class RmlParser extends CommonPsiParser {
                     }
                 }
             }
+            //}
         }
 
         private void parseGtAutoClose() {

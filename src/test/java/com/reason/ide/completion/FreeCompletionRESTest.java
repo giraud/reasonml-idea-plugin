@@ -51,16 +51,19 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
         assertSize(2, strings);
     }
 
-    // TODO
-    //@Test
-    //public void test_include_eof() {
-    //    myFixture.configureByText("A.res", "let x = 1");
-    //    myFixture.configureByText("B.res", "include A\n let y = 2\n <caret>");
-    //
-    //    myFixture.complete(CompletionType.BASIC, 1);
-    //    List<String> strings = myFixture.getLookupElementStrings();
-    //
-    //    assertSize(10, strings);
-    //    assertSameElements(strings, "exception", "external", "include", "let", "module", "open", "type", "A", "y", "x");
-    //}
+    //@Test TODO
+    public void test_include_eof() {
+        myFixture.configureByText("A.res", "let x = 1");
+        myFixture.configureByText("B.res", """
+                include A
+                let y = 2
+                <caret>
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertSameElements(strings, "exception", "external", "include", "let", "module", "open", "type", "A", "y", "x");
+        assertSize(10, strings);
+    }
 }
