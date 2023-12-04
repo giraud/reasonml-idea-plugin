@@ -26,13 +26,16 @@ public class RecordParsingTest extends OclParsingTestCase {
         RPsiLet e = firstOfType(parseCode("let r = { a = 1; b = 2; c = 3 }"), RPsiLet.class);
         RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
 
-        List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
+        List<RPsiRecordField> fields = record.getFields();
         assertSize(3, fields);
         assertEquals("a", fields.get(0).getName());
+        assertEquals("1", fields.get(0).getValue().getText());
         assertNull(fields.get(0).getSignature());
         assertEquals("b", fields.get(1).getName());
+        assertEquals("2", fields.get(1).getValue().getText());
         assertNull(fields.get(1).getSignature());
         assertEquals("c", fields.get(2).getName());
+        assertEquals("3", fields.get(2).getValue().getText());
         assertNull(fields.get(2).getSignature());
     }
 
@@ -44,8 +47,11 @@ public class RecordParsingTest extends OclParsingTestCase {
         List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
         assertSize(3, fields);
         assertEquals("a", fields.get(0).getName());
+        assertEquals("[| 1; 2 |]", fields.get(0).getValue().getText());
         assertEquals("b", fields.get(1).getName());
+        assertEquals("{ b1 = { b11 = 3 } }", fields.get(1).getValue().getText());
         assertEquals("c", fields.get(2).getName());
+        assertEquals("4", fields.get(2).getValue().getText());
 
         List<RPsiRecordField> allFields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fields.get(1), RPsiRecordField.class));
         assertEquals("b1", allFields.get(0).getName());

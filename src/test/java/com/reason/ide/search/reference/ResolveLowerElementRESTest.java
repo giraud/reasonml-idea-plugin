@@ -3,7 +3,6 @@ package com.reason.ide.search.reference;
 import com.intellij.psi.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
@@ -477,7 +476,10 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_record_l3() {
-        configureCode("A.res", "let a = { b: { c: { d: 1 } } }\n a.b.c.d<caret>");
+        configureCode("A.res", """
+                let a = { b: { c: { d: 1 } } }
+                a.b.c.d<caret>
+                """);
 
         RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.a.b.c.d", e.getQualifiedName());

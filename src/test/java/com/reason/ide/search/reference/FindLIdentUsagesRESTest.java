@@ -42,13 +42,16 @@ public class FindLIdentUsagesRESTest extends ORBasePlatformTestCase {
         assertEquals("A.B.toString", ((RPsiQualifiedPathElement) usageInfo.getElement().getParent().getParent().getParent()).getQualifiedName());
     }
 
-/*    @Test    TODO
+    @Test
     public void test_record() {
-        configureCode("A.res", "type t = { f1: bool, f2<caret>: int }\n let x = { f1: true, f2: 421 }");
+        configureCode("A.res", """
+                type t = { f1: bool, f2<caret>: int }
+                let x = { f1: true, f2: 421 }
+                """);
 
         List<UsageInfo> usages = findUsages("A.res");
         assertSize(1, usages);
         UsageInfo usageInfo = usages.get(0);
-        assertEquals("A.x.f2", ((RPsiQualifiedPathElement) usageInfo.getValues().getParent()).getQualifiedName());
-    }*/
+        assertEquals("A.x.f2", ((RPsiQualifiedPathElement) usageInfo.getElement().getParent()).getQualifiedName());
+    }
 }

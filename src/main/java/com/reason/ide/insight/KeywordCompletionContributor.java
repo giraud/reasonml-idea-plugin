@@ -7,6 +7,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -27,20 +29,21 @@ abstract class KeywordCompletionContributor extends com.intellij.codeInsight.com
                 PsiElement element = originalPosition == null ? position : originalPosition;
                 IElementType prevNodeType = CompletionUtils.getPrevNodeType(element);
                 PsiElement parent = element.getParent();
-                PsiElement grandParent = parent == null ? null : parent.getParent();
 
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("»» Completion: position: " + position + ", " + position.getText());
                     LOG.trace("               original: " + originalPosition + ", " + (originalPosition == null ? null : originalPosition.getText()));
                     LOG.trace("                element: " + element);
                     LOG.trace("                 parent: " + parent);
-                    LOG.trace("           grand-parent: " + grandParent);
                     LOG.trace("                   file: " + parameters.getOriginalFile());
                 }
 
-                if (originalPosition == null && parent instanceof FileBase) {
-                    if (prevNodeType != types.DOT && prevNodeType != types.SHARPSHARP && prevNodeType != types.LIDENT) {
-                        addFileKeywords(result);
+                if (originalPosition == null || originalPosition instanceof PsiWhiteSpace) {
+                    if (prevNodeType != types.DOT && prevNodeType != types.SHARPSHARP && prevNodeType != types.LIDENT
+                            && prevNodeType != types.EQ && prevNodeType != types.LT) {
+                        if (!(parent instanceof RPsiTagStart || parent instanceof RPsiOpen || parent instanceof RPsiInclude)) {
+                            addFileKeywords(result);
+                        }
                     }
                 }
             }

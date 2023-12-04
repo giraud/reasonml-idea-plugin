@@ -47,11 +47,10 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings, "x", "Aa");
-        assertSize(2, strings);
+        assertContainsElements(strings, "x", "Aa");
     }
 
-    //@Test TODO
+    @Test
     public void test_include_eof() {
         myFixture.configureByText("A.res", "let x = 1");
         myFixture.configureByText("B.res", """
