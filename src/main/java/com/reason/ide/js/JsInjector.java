@@ -9,14 +9,20 @@ import org.jetbrains.annotations.*;
 
 public class JsInjector implements LanguageInjector {
     public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
-        if (host instanceof RPsiMacroBody) {
-            FileType jsFileType = FileTypeManager.getInstance().getFileTypeByExtension("js");
-            if (jsFileType instanceof LanguageFileType) {
-                Language jsLanguage = ((LanguageFileType) jsFileType).getLanguage();
-                RPsiMacroBody macroHost = (RPsiMacroBody) host;
-                TextRange macroTextRange = macroHost.getMacroTextRange();
-                if (macroTextRange != null) {
-                    injectionPlacesRegistrar.addPlace(jsLanguage, macroTextRange, null, null);
+        if (host instanceof RPsiMacroBody body) {
+            PsiElement parent = body.getParent();
+            if (parent instanceof RPsiMacro macro) {
+                String name = macro.getName();
+                if ("%raw".equals(name) || "%%raw".equals(name)) {
+                    FileType jsFileType = FileTypeManager.getInstance().getFileTypeByExtension("js");
+                    if (jsFileType instanceof LanguageFileType jsLanguageFileType) {
+                        Language jsLanguage = jsLanguageFileType.getLanguage();
+                        RPsiMacroBody macroHost = (RPsiMacroBody) host;
+                        TextRange macroTextRange = macroHost.getMacroTextRange();
+                        if (macroTextRange != null) {
+                            injectionPlacesRegistrar.addPlace(jsLanguage, macroTextRange, null, null);
+                        }
+                    }
                 }
             }
         }

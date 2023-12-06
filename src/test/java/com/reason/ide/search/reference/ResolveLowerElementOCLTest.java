@@ -478,17 +478,16 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("B.b.b", e.getQualifiedName());
     }
 
-    // TODO
-    //@Test
-    //public void test_record_l3() {
-    //    configureCode("A.ml", """
-    //            let a = { b = { c = { d = 1 } } }
-    //            let _ = a.b.c.d<caret>
-    //            """);
-    //
-    //    RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
-    //    assertEquals("A.a.b.c.d", e.getQualifiedName());
-    //}
+    @Test
+    public void test_record_l3() {
+        configureCode("A.ml", """
+                let a = { b = { c = { d = 1 } } }
+                let _ = a.b.c.d<caret>
+                """);
+
+        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
+        assertEquals("A.a.b.c.d", e.getQualifiedName());
+    }
     //endregion
 
     @Test

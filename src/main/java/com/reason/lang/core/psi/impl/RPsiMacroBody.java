@@ -41,7 +41,7 @@ public class RPsiMacroBody extends ORCompositePsiElement<ORLangTypes> implements
     public @Nullable TextRange getMacroTextRange() {
         ASTNode firstChildNode = getNode().getFirstChildNode();
         IElementType elementType = firstChildNode == null ? null : firstChildNode.getElementType();
-        if (elementType == myTypes.STRING_VALUE || elementType == myTypes.ML_STRING_VALUE) {
+        if (elementType == myTypes.STRING_VALUE || elementType == myTypes.ML_STRING_VALUE || elementType == myTypes.C_INTERPOLATION_EXPR) {
             int max = getTextLength() - 1;
             if (1 <= max) {
                 return new TextRange(1, max);

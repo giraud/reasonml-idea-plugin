@@ -63,15 +63,16 @@ public final class BsProcess {
 
     @Nullable
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType) {
-        VirtualFile bsContentRoot = BsPlatform.findConfigFile(myProject, sourceFile);
-        if (bsContentRoot == null) {
+        VirtualFile bsConfigFile = BsPlatform.findConfigFile(myProject, sourceFile);
+        VirtualFile bsConfigDir = bsConfigFile != null ? bsConfigFile.getParent() : null;
+        if (bsConfigDir == null) {
             BsNotification.showWorkingDirectoryNotFound();
             return null;
         }
-        String bsContentRootPath = bsContentRoot.getPath();
+        String bsConfigRootPath = bsConfigDir.getPath();
         VirtualFile bsbExecutable = BsPlatform.findBsbExecutable(myProject, sourceFile);
         if (bsbExecutable == null) {
-            BsNotification.showBsbNotFound(bsContentRootPath);
+            BsNotification.showBsbNotFound(bsConfigRootPath);
             return null;
         }
         String bsbPath = bsbExecutable.getPath();
@@ -79,7 +80,7 @@ public final class BsProcess {
             case MAKE -> new GeneralCommandLine(bsbPath, "-make-world");
             case CLEAN_MAKE -> new GeneralCommandLine(bsbPath, "-clean-world", "-make-world");
         };
-        cli.withWorkDirectory(bsContentRootPath);
+        cli.withWorkDirectory(bsConfigRootPath);
         cli.withEnvironment("NINJA_ANSI_FORCED", "1");
         return cli;
     }

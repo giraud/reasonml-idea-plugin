@@ -229,7 +229,7 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
         assertEquals("Declare module", markers.get(0).getLineMarkerTooltip());
     }
 
-    //@Test TODO
+    //@Test TODO test_module_deep
     //public void test_module_deep() {
     //    configureCode("A.re", """
     //            module B = {

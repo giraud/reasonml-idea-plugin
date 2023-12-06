@@ -1,7 +1,6 @@
 package com.reason.lang.rescript;
 
 import com.intellij.openapi.util.*;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 
@@ -9,39 +8,39 @@ import org.junit.*;
 public class MacroParsingTest extends ResParsingTestCase {
     @Test
     public void test_basic() {
-        RPsiLet expression = firstOfType(parseCode("let _ = %raw(\"xxx\")"), RPsiLet.class);
+        RPsiMacro e = firstOfType(parseCode("let _ = %raw(\"xxx\")"), RPsiMacro.class);
 
-        RPsiMacro macro = (RPsiMacro) expression.getBinding().getFirstChild();
-
-        RPsiMacroBody rawMacroBody = macro.getContent();
-        assertEquals("%raw", macro.getName());
-        assertEquals("\"xxx\"", rawMacroBody.getText());
-        assertEquals(new TextRange(1, 4), rawMacroBody.getMacroTextRange());
+        assertEquals("%raw", e.getName());
+        assertEquals("\"xxx\"", e.getContent().getText());
+        assertEquals(new TextRange(1, e.getContent().getTextLength() - 1), e.getContent().getMacroTextRange()); // exclude "
     }
 
     @Test
-    public void test_rootRaw() {
-        RPsiMacro e = firstOfType(parseCode("%%raw(\"xxx\")"), RPsiMacro.class);
+    public void test_root_raw() {
+        RPsiMacro e = firstOfType(parseCode("%%raw(\"import * from 'react'\")"), RPsiMacro.class);
 
         assertTrue(e.isRoot());
         assertEquals("%%raw", e.getName());
-        assertEquals("\"xxx\"", e.getContent().getText());
+        assertEquals("\"import * from 'react'\"", e.getContent().getText());
+        assertEquals(new TextRange(1, e.getContent().getTextLength() - 1), e.getContent().getMacroTextRange()); // exclude "
     }
 
     @Test
-    public void test_multiLine() {
-        RPsiLet expression = firstOfType(parseCode("let _ = %raw(\"function (a) {}\")"), RPsiLet.class);
+    public void test_multi_line() {
+        RPsiMacro e = firstOfType(parseCode("""
+                let _ = %raw(`
+                    function (a) {
+                    }
+                `)
+                """), RPsiMacro.class);
 
-        RPsiMacro macro = (RPsiMacro) expression.getBinding().getFirstChild();
-
-        RPsiMacroBody body = macro.getContent();
-        assertEquals("%raw", macro.getName());
-        assertEquals("\"function (a) {}\"", body.getText());
-        assertEquals(new TextRange(1, 16), body.getMacroTextRange());  // exclude `
+        assertEquals("%raw", e.getName());
+        assertEquals("`\n    function (a) {\n    }\n`", e.getContent().getText());
+        assertEquals(new TextRange(1, e.getContent().getTextLength() - 1), e.getContent().getMacroTextRange());  // exclude `
     }
 
     @Test
-    public void test_GH_xxx() {
+    public void test_GH_436() {
         RPsiMacro e = firstOfType(parseCode("""
                 module GetOperatorBasesQuery = %graphql(`
                   query SchedGetOperatorBases {
@@ -57,6 +56,7 @@ public class MacroParsingTest extends ResParsingTestCase {
 
         assertEquals("%graphql", e.getName());
         assertEquals("`\n  query SchedGetOperatorBases {\n    operatorBases {\n      baseNid\n      name\n      utcOffset\n    }\n  }\n`", e.getContent().getText());
+        assertEquals(new TextRange(1, e.getContent().getTextLength() - 1), e.getContent().getMacroTextRange());  // exclude `
     }
 
 
