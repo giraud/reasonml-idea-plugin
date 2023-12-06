@@ -34,12 +34,10 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>Support for JSX 4</li>
-                    <li>435 - Rescript 11 deprecate bsconfig.json, wants rescript.json</li>
-                    <li>434 - Update rescript keywords</li>
-                    <li>433 - Gutter icon in ml file pointing to mli file disappears when it shouldn't</li>
-                    <li>430 - No SDK created when importing a dune project</li>
-                    <li>423 - Incorrect parsing when 'ref' is used as identifier</li>
+                    <li>437 - Incorrect language injection in macro</li>
+                    <li>Removing some TODOs in code</li>
+                    <li>Fix cast exception in ORModuleContributor</li>
+                    <li>Fix some parser errors</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
