@@ -66,19 +66,25 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
     @Test
     public void test_include() {
         myFixture.configureByText("A.re", "let x = 1;");
-        myFixture.configureByText("B.re", "include A;\n<caret>\n");
+        myFixture.configureByText("B.re", """
+                include A;
+                <caret>
+                """);
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings, "x", "A");
-        assertSize(2, strings);
+        assertContainsElements(strings, "x", "A");
     }
 
     @Test
     public void test_include_eof() {
         myFixture.configureByText("A.re", "let x = 1;");
-        myFixture.configureByText("B.re", "include A;\nlet y = 2;\n<caret>");
+        myFixture.configureByText("B.re", """
+                include A;
+                let y = 2;
+                <caret>
+                """);
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();

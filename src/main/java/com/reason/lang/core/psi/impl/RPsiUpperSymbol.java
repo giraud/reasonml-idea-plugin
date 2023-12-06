@@ -22,7 +22,8 @@ public class RPsiUpperSymbol extends LeafPsiElement implements RPsiAtom {
         return new RPsiUpperSymbolReference(this, myTypes);
     }
 
-    @Override public String toString() {
-        return "RPsiUpperSymbol:" + getElementType();
+    @Override
+    public String toString() {
+        return "RPsiUpperSymbol:" + getElementType() + " (" + getText() + ")";
     }
 }

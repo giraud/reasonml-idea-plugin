@@ -12,6 +12,13 @@
                         
 ## Unreleased
 
+## 0.119 - 2023/12/06
+
+- :bug: [#437](https://github.com/giraud/reasonml-idea-plugin/issues/437) Incorrect language injection in macro
+- :house: Removing some TODOs in code
+- :house: Fix cast exception in ORModuleContributor
+- :house: Fix some parser errors 
+
 **NOTE**: minimal version supported is **2022.3**
 
 ## 0.118.2 - 2023/11/21

@@ -280,7 +280,6 @@ public class OclParser extends CommonPsiParser {
             } else if (inAny( // all same priority
                     myTypes.C_LET_DECLARATION, myTypes.C_SIG_ITEM, myTypes.C_MATCH_EXPR, myTypes.C_PARAM_DECLARATION, myTypes.C_SCOPED_EXPR
             )) {
-
                 if (isFound(myTypes.C_LET_DECLARATION)) {
                     if (in(myTypes.C_DECONSTRUCTION)) {
                         popEndUntilFoundIndex();
@@ -770,7 +769,9 @@ public class OclParser extends CommonPsiParser {
                 advance().mark(myTypes.C_DEFAULT_VALUE);
             } else if (in(myTypes.C_RECORD_FIELD)) {
                 // { x |> = <| ... }
-                // nope
+                advance();
+                mark(myTypes.C_FIELD_VALUE)
+                        .markHolder(myTypes.H_PLACE_HOLDER);
             } else if (in(myTypes.C_FOR_LOOP)) {
                 // for x |> = <| ...
                 // nope

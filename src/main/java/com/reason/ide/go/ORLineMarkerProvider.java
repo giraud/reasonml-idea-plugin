@@ -240,8 +240,8 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     }
 
     private void collectInnerModuleNavigationMarkers(@NotNull RPsiInnerModule element, @NotNull Project project, @NotNull GlobalSearchScope scope, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
-        List<RPsiInnerModule> implementsModules = new ArrayList<>();
-        List<RPsiInnerModule> declareModules = new ArrayList<>();
+        List<RPsiModule> implementsModules = new ArrayList<>();
+        List<RPsiModule> declareModules = new ArrayList<>();
 
         String qName = element.getQualifiedName();
 
@@ -250,9 +250,11 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             String signatureName = element.getModuleName();
             if (signatureName != null) {
                 // Find module(s) that use the interface as a result
-                List<RPsiInnerModule> signatureModules = ModuleSignatureIndex.getElements(signatureName, project, scope)
-                        .stream().map(m -> {
-                            RPsiModuleSignature moduleSignature = m.getModuleSignature();
+                List<RPsiModule> signatureModules = ModuleSignatureIndex.getElements(signatureName, project, scope)
+                        .stream()
+                        .filter(m -> m instanceof RPsiInnerModule)
+                        .map(m -> {
+                            RPsiModuleSignature moduleSignature = ((RPsiInnerModule) m).getModuleSignature();
                             ORModuleResolutionPsiGist.Data data = moduleSignature != null ? ORModuleResolutionPsiGist.getData(m.getContainingFile()) : null;
                             Collection<String> values = data != null ? data.getValues(moduleSignature) : emptyList();
                             return values.contains(qName) ? m : null;
@@ -335,10 +337,12 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         // Find all modules that return that type name
         String interfaceQName = sourceModule.getQualifiedName();
         String interfaceName = sourceModule.getModuleName();
-        List<RPsiInnerModule> refModules = interfaceName != null ? ModuleSignatureIndex.getElements(interfaceName, sourceModule.getProject(), scope).stream().toList() : emptyList();
+        List<RPsiModule> refModules = interfaceName != null ? ModuleSignatureIndex.getElements(interfaceName, sourceModule.getProject(), scope).stream().toList() : emptyList();
 
-        List<RPsiInnerModule> targetModules = refModules.stream().map(module -> {
-                    RPsiModuleSignature moduleType = module.getModuleSignature();
+        List<RPsiModule> targetModules = refModules.stream()
+                .filter(m -> m instanceof RPsiInnerModule)
+                .map(module -> {
+                    RPsiModuleSignature moduleType = ((RPsiInnerModule) module).getModuleSignature();
                     ORModuleResolutionPsiGist.Data data = moduleType != null ? ORModuleResolutionPsiGist.getData(module.getContainingFile()) : null;
                     Collection<String> values = data != null ? data.getValues(moduleType) : Collections.emptyList();
                     return values.contains(interfaceQName) ? module : null;

@@ -50,13 +50,15 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
         }
 
         // Inner modules
-        for (RPsiInnerModule module : ModuleIndex.getElements(name, project, scope)) {
-            processor.process(module);
+        for (RPsiModule module : ModuleIndex.getElements(name, project, scope)) {
+            if (module instanceof NavigationItem) {
+                processor.process((NavigationItem) module);
+            }
         }
     }
 
     @Override
-    public @Nullable String getQualifiedName(NavigationItem item) {
+    public @Nullable String getQualifiedName(@NotNull NavigationItem item) {
         if (item instanceof FileBase) {
             return ((FileBase) item).getModuleName();
         } else if (item instanceof PsiQualifiedNamedElement) {
@@ -78,7 +80,7 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
         }
 
         @Override
-        public String getPresentableText() {
+        public @Nullable String getPresentableText() {
             return myItem.getModuleName();
         }
 
