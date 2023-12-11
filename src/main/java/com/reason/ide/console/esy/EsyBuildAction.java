@@ -31,4 +31,9 @@ public class EsyBuildAction extends CompilerAction {
             doAction(project, CliType.Esy.BUILD, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
     }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 }

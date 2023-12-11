@@ -37,8 +37,8 @@ public class DotExpressionCompletionProvider {
 
             LOG.debug(" -> upper symbol", previousElement);
 
-            RPsiUpperSymbolReference reference = (RPsiUpperSymbolReference) previousElement.getReference();
-            PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
+            PsiReference reference = previousElement.getReference();
+            PsiElement resolvedElement = reference instanceof RPsiUpperSymbolReference ? ((RPsiUpperSymbolReference) reference).resolveInterface() : null;
             LOG.debug(" -> resolved to", resolvedElement);
 
             Collection<PsiNamedElement> expressions = new ArrayList<>();

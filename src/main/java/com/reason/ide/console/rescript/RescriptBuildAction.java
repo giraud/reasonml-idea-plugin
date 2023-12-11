@@ -10,7 +10,6 @@ import com.reason.ide.console.*;
 import org.jetbrains.annotations.*;
 
 public class RescriptBuildAction extends CompilerAction {
-
     public RescriptBuildAction() {
         super("Build", "Build", AllIcons.Actions.Compile);
     }
@@ -31,5 +30,10 @@ public class RescriptBuildAction extends CompilerAction {
         if (compiler != null) {
             doAction(project, CliType.Rescript.MAKE, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

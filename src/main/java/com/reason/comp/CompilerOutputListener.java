@@ -29,10 +29,6 @@ public class CompilerOutputListener implements ProcessListener {
     }
 
     @Override
-    public void processWillTerminate(@NotNull ProcessEvent event, boolean willBeDestroyed) {
-    }
-
-    @Override
     public void processTerminated(@NotNull ProcessEvent event) {
         List<OutputInfo> outputInfo = myOutputAnalyzer.getOutputInfo();
         if (!outputInfo.isEmpty() && !myProject.isDisposed()) {

@@ -51,7 +51,7 @@ public class ExpandLocalOpenIntention implements IntentionAction {
                     && (sibling.getNode().getElementType() == types.A_MODULE_NAME
                     || sibling.getNode().getElementType() == types.DOT)) {
                 ASTNode currentNode = sibling.getNode();
-                if ((modulePath.length() > 0) || currentNode.getElementType() != types.DOT) {
+                if (!modulePath.isEmpty() || currentNode.getElementType() != types.DOT) {
                     modulePath.insert(0, sibling.getText());
                 }
                 sibling = PsiTreeUtil.prevVisibleLeaf(sibling);

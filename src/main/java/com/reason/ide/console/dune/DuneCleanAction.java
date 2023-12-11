@@ -30,4 +30,9 @@ public class DuneCleanAction extends CompilerAction {
             doAction(project, CliType.Dune.CLEAN, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
     }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 }

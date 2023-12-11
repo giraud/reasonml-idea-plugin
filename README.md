@@ -29,25 +29,25 @@ for the latest documentation and more information on how to get started.
 
  
 | **Feature**           | **OCaml (.ml)** | **Reason (.re, .rei)** | **ReScript (.res, .resi)** |
-|-----------------------|:---------:|:----------:|:------------:|
-| Syntax Support        |     ✅     |     ✅     |      ✅       |
-| Reformat Code         |     ✅     |     ✅     |              |
-| Structured View       |     ✅     |     ✅     |      ✅       |
-| Code Folding          |     ✅     |     ✅     |      ✅       |
-| JSX Support           |     ✅     |     ✅     |      ✅       |
-| JS Language Injection |     ✅     |     ✅     |      ✅       |
-| Line & Block Comments |     ✅     |     ✅     |      ✅       |
-| Type Annotations      |           |     ✅     |      ✅       |
-| Code Intentions       |     ✅     |     ✅     |      ✅       |
-| Pair Braces Matching  |     ✅     |     ✅     |      ✅       |
+|-----------------------|:---------------:|:----------------------:|:--------------------------:|
+| Syntax Support        |        ✅        |           ✅            |             ✅              |
+| Reformat Code         |        ✅        |           ✅            |                            |
+| Structured View       |        ✅        |           ✅            |             ✅              |
+| Code Folding          |        ✅        |           ✅            |             ✅              |
+| JSX Support           |        ✅        |           ✅            |             ✅              |
+| JS Language Injection |        ✅        |           ✅            |             ✅              |
+| Line & Block Comments |        ✅        |           ✅            |             ✅              |
+| Type Annotations      |                 |           ✅            |             ✅              |
+| Code Intentions       |        ✅        |           ✅            |             ✅              |
+| Pair Braces Matching  |        ✅        |           ✅            |             ✅              |
 
 ## 🛠 Build Tool Support 
 
 | **Feature**          | **BuckleScript** | **Dune** | **Esy** |
 |----------------------|:----------------:|:--------:|:-------:|
-| Install Dependencies |         ✅        |    ✅    |    ✅    |
-| Build Project        |         ✅        |    ✅    |    ✅    |
-| Error Reporting      |         ✅        |    ✅    |    ✅    |
+| Install Dependencies |        ✅         |    ✅     |    ✅    |
+| Build Project        |        ✅         |    ✅     |    ✅    |
+| Error Reporting      |        ✅         |    ✅     |    ✅    |
 
 ## 📝 Questions & Feedback  
 

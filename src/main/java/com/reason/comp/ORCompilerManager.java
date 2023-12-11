@@ -14,8 +14,6 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-import static com.reason.comp.ORConstants.*;
-
 public class ORCompilerManager {
     private static final Log LOG = Log.create("compiler.manager");
     private final @NotNull Project myProject;
@@ -72,20 +70,12 @@ public class ORCompilerManager {
     }
 
     private static @NotNull Class<? extends Compiler> getCompilerClass(@NotNull CompilerType compilerType) {
-        switch (compilerType) {
-            case BS:
-                return BsCompiler.class;
-            case RESCRIPT:
-                return ResCompiler.class;
-            case DUNE:
-                return DuneCompiler.class;
-            case ESY:
-                return EsyCompiler.class;
-            default:
-                // this shouldn't happen. fall back to BuckleScript
-                LOG.error("Unsupported or null compilerType. compilerType = " + compilerType);
-                return BsCompiler.class;
-        }
+        return switch (compilerType) {
+            case BS -> BsCompiler.class;
+            case RESCRIPT -> ResCompiler.class;
+            case DUNE -> DuneCompiler.class;
+            case ESY -> EsyCompiler.class;
+        };
     }
 
     private class CompilerVisitor extends VirtualFileVisitor<VirtualFile> {
