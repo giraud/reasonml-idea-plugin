@@ -83,7 +83,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
             String elementQName = ((RPsiQualifiedPathElement) docElement).getQualifiedName();
             if (elementQName != null) {
                 Collection<RPsiVal> vals = ValFqnIndex.getElements(elementQName, project, scope);
-                if (vals.size() > 0) {
+                if (!vals.isEmpty()) {
                     RPsiVal next = vals.iterator().next();
                     comment = findComment(next, next.getLanguage());
                 } else {

@@ -1,6 +1,5 @@
 package com.reason.ide.search.reference;
 
-import com.intellij.extapi.psi.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
@@ -660,7 +659,7 @@ public class ORModuleResolutionPsiGist {
     }
 
     public static class Data {
-        Map<String, Collection<String>> items = new HashMap<>();
+        private final Map<String, Collection<String>> items = new HashMap<>();
 
         public @NotNull Collection<String> getValues(@Nullable PsiElement element) {
             Collection<String> values = null;

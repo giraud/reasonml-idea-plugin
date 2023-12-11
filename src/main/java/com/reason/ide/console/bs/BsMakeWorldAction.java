@@ -30,4 +30,9 @@ public class BsMakeWorldAction extends CompilerAction {
             doAction(project, CliType.Bs.CLEAN_MAKE, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
     }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 }

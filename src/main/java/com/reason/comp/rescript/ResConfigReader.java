@@ -4,8 +4,6 @@ import com.intellij.openapi.vfs.*;
 import com.reason.comp.bs.*;
 import org.jetbrains.annotations.*;
 
-import java.util.regex.*;
-
 public class ResConfigReader {
     private ResConfigReader() {
     }

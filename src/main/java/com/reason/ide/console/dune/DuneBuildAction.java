@@ -31,4 +31,9 @@ public class DuneBuildAction extends CompilerAction {
             doAction(project, CliType.Dune.BUILD, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
         }
     }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 }

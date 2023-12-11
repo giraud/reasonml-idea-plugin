@@ -1,6 +1,5 @@
 package com.reason.lang;
 
-import com.intellij.core.*;
 import com.intellij.lang.*;
 import com.intellij.psi.tree.*;
 import org.jetbrains.annotations.*;

@@ -3,7 +3,6 @@ package com.reason.comp.ocaml;
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
-import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.text.StringUtil;
 import jpsplugin.com.reason.*;
@@ -33,10 +32,6 @@ public class OpamProcess {
         try {
             processHandler = new KillableProcessHandler(cli);
             processHandler.addProcessListener(new ProcessListener() {
-                @Override
-                public void startNotified(@NotNull ProcessEvent event) {
-                }
-
                 @Override
                 public void processTerminated(@NotNull ProcessEvent event) {
                     onProcessTerminated.run(installedLibs);
@@ -80,10 +75,6 @@ public class OpamProcess {
         try {
             processHandler = new KillableProcessHandler(cli);
             processHandler.addProcessListener(new ProcessListener() {
-                @Override
-                public void startNotified(@NotNull ProcessEvent event) {
-                }
-
                 @Override
                 public void processTerminated(@NotNull ProcessEvent event) {
                     onProcessTerminated.run(result);
@@ -136,10 +127,6 @@ public class OpamProcess {
             processHandler.addProcessListener(new ProcessListener() {
                 boolean isHeader = true;
                 boolean isFooter = false;
-
-                @Override
-                public void startNotified(@NotNull ProcessEvent event) {
-                }
 
                 @Override
                 public void processTerminated(@NotNull ProcessEvent event) {
