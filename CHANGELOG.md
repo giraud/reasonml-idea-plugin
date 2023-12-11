@@ -12,6 +12,8 @@
                         
 ## Unreleased
 
+**NOTE**: minimal version supported is **2023.1**
+
 ## 0.119 - 2023/12/06
 
 - :bug: [#437](https://github.com/giraud/reasonml-idea-plugin/issues/437) Incorrect language injection in macro
