@@ -383,7 +383,7 @@
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
         <languageInjector implementation="com.reason.ide.js.JsInjector"/>
-        <lang.elementManipulator forClass="com.reason.lang.core.psi.impl.RPsiLiteralExpression"
+        <lang.elementManipulator forClass="com.reason.lang.core.psi.impl.RPsiLiteralString"
                                  implementationClass="com.reason.lang.core.LiteralStringManipulator"/>
 
         <!--
@@ -411,17 +411,10 @@
          -->
 
         <intentionAction>
-            <language>Reason</language>
             <className>com.reason.ide.intentions.FunctionBracesIntention</className>
         </intentionAction>
         <intentionAction>
-            <language>Reason</language>
             <className>com.reason.ide.intentions.ExpandLocalOpenIntention</className>
-        </intentionAction>
-
-        <intentionAction>
-            <language>Rescript</language>
-            <className>com.reason.ide.intentions.FunctionBracesIntention</className>
         </intentionAction>
 
         <!--

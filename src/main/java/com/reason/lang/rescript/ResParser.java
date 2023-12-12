@@ -838,13 +838,13 @@ public class ResParser extends CommonPsiParser {
                 // |> [ <| > ... ]
                 markScope(myTypes.C_OPEN_VARIANT, myTypes.LBRACKET).advance().advance();
                 if (getTokenType() != myTypes.RBRACKET) {
-                    mark(myTypes.C_VARIANT_DECLARATION).advance();
+                    mark(myTypes.C_VARIANT_DECLARATION);
                 }
             } else if (nextType == myTypes.LT) {
                 // |> [ <| < ... ]
                 markScope(myTypes.C_CLOSED_VARIANT, myTypes.LBRACKET).advance().advance();
                 if (getTokenType() != myTypes.RBRACKET) {
-                    mark(myTypes.C_VARIANT_DECLARATION); //.advance();
+                    mark(myTypes.C_VARIANT_DECLARATION);
                 }
             } else {
                 markScope(myTypes.C_ARRAY, myTypes.LBRACKET).advance();

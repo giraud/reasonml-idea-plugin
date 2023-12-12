@@ -248,7 +248,7 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
             return new RPsiLeafPropertyName(type, text);
         }
         if (type == myTypes.STRING_VALUE) {
-            return new RPsiLiteralExpression(type, text);
+            return new RPsiLiteralString(myTypes, type, text);
         }
 
         return super.createLeaf(type, text);

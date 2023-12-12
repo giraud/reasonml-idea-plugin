@@ -13,6 +13,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
+import com.reason.lang.rescript.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -46,7 +47,7 @@ public class ORReferenceAnalyzer {
         if ((sourceElement instanceof RPsiUpperSymbol || sourceElement instanceof RPsiLowerSymbol) && prevItem != null) {
             IElementType prevType = prevItem.getNode().getElementType();
             if (prevType == types.RIGHT_ARROW || prevType == types.PIPE_FORWARD || prevType == types.COMMA) {
-                // -> A.B   |> A.B
+                // ->A.B  or  |>A.B  or ,A.B
                 // we are no more in a path, skip path
                 prevItem = prevItem.getPrevSibling();
                 ASTNode prevItemNode = prevItem == null ? null : prevItem.getNode();
@@ -66,6 +67,14 @@ public class ORReferenceAnalyzer {
                 }
             }
         }
+        // if caret is in a js field index (rescript), we need to position the item to the previous element
+        // a["b<caret>"]["c"]
+        else if ((sourceElement instanceof RPsiLiteralString) && prevItem != null) {
+            IElementType prevType = prevItem.getNode().getElementType();
+            if (prevType == types.LBRACKET) {
+                prevItem = ORUtil.prevSibling(sourceElement.getParent());
+            }
+        }
 
         PsiElement item = prevItem == null ? sourceElement.getParent() : prevItem;
 
@@ -75,19 +84,34 @@ public class ORReferenceAnalyzer {
 
         while (item != null) {
             ASTNode itemNode = item.getNode();
-            if (itemNode != null && itemNode.getElementType() != types.SEMI) {
+            IElementType itemType = itemNode != null ? itemNode.getElementType() : null;
+            if (itemType != null && itemType != types.SEMI) {
                 if (startPath && (item instanceof RPsiUpperSymbol || item instanceof RPsiLowerSymbol)) {
                     // only add if it's from a local path
                     //   can be a real path from a record : a.b.c
-                    //   or a simulated path from a js object field : a##b##c
-                    IElementType nextSiblingNodeType = item.getNextSibling().getNode().getElementType();
-                    if ((nextSiblingNodeType == types.DOT || nextSiblingNodeType == types.SHARPSHARP)) {
+                    //   or a simulated path from a js object field : a##b##c (.re) / a["b"] (.res)
+                    PsiElement nextSibling = item.getNextSibling();
+                    IElementType nextSiblingNodeType = nextSibling != null ? nextSibling.getNode().getElementType() : null;
+                    if (types instanceof ResTypes && nextSiblingNodeType == types.C_ARRAY) {
+                        instructions.push(item);
+                    } else if ((nextSiblingNodeType == types.DOT || nextSiblingNodeType == types.SHARPSHARP)) {
                         boolean isJsObjectField = item instanceof RPsiLowerSymbol && ORUtil.isPrevType(item, types.SHARPSHARP);
                         if (isJsObjectField) {
-                            instructions.push(new LowerSymbolField(item, false));
+                            instructions.push(new SymbolField(item, false));
                         } else {
                             boolean isRecordField = item instanceof RPsiLowerSymbol && ORUtil.isPrevType(item, types.DOT) && ORUtil.prevPrevSibling(item) instanceof RPsiLowerSymbol;
-                            instructions.push(isRecordField ? new LowerSymbolField(item, true) : item);
+                            instructions.push(isRecordField ? new SymbolField(item, true) : item);
+                        }
+                    }
+                } else if (startPath && types instanceof ResTypes && item instanceof RPsiArray) {
+                    PsiElement nextSibling = item.getNextSibling();
+                    IElementType nextSiblingNodeType = nextSibling != null ? nextSibling.getNode().getElementType() : null;
+                    if (nextSiblingNodeType == types.C_ARRAY) {
+                        // a|>["b"]<|["c"]
+                        PsiElement firstChild = item.getFirstChild();
+                        PsiElement arrayItem = ORUtil.nextSibling(firstChild);
+                        if (arrayItem != null) {
+                            instructions.push(new SymbolField(arrayItem, false));
                         }
                     }
                 } else if (item instanceof RPsiInnerModule) {
@@ -143,17 +167,22 @@ public class ORReferenceAnalyzer {
                 if (item instanceof RPsiPatternMatchBody) {
                     startPath = false;
                 } else if (prevType == null) {
-                    // if LPAREN, we need to analyze context: a localOpen is still part of the path
-                    IElementType itemType = itemNode == null ? null : itemNode.getElementType();
+                    // if LPAREN or LBRACKET, context can still be part of the path
+                    //   can be a localOpen     A.(b)   (.re)
+                    //   can be a field indexer a["b"]  (.res)
                     PsiElement parent = item.getParent();
-                    startPath = itemType == types.LPAREN && parent instanceof RPsiLocalOpen;
+                    if (types instanceof ResTypes) {
+                        startPath = itemType == types.LBRACKET /*&& parent instanceof RPsiArray*/;
+                    } else {
+                        startPath = itemType == types.LPAREN && parent instanceof RPsiLocalOpen;
+                    }
                 } else if (prevType != types.DOT && prevType != types.A_MODULE_NAME && prevType != types.A_UPPER_TAG_NAME && prevType != types.LIDENT && prevType != types.SHARPSHARP/*Rml*/) {
                     // if LocalOpen found, it is still a path
                     if (prevType == types.LPAREN) {
                         PsiElement parent = prevItem.getParent();
                         startPath = parent instanceof RPsiLocalOpen;
                     } else {
-                        startPath = false;
+                        startPath = types instanceof ResTypes && prevType == types.C_ARRAY;
                     }
                 }
             }
@@ -207,17 +236,17 @@ public class ORReferenceAnalyzer {
         while (!instructions.isEmpty()) {
             PsiElement instruction = instructions.removeFirst();
 
-            if (instruction instanceof LowerSymbolField) {
+            if (instruction instanceof SymbolField foundSymbol) {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Processing field", instruction);
                 }
 
-                boolean isRecord = ((LowerSymbolField) instruction).isRecord;
+                boolean isRecord = foundSymbol.isRecord;
                 for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
                     ResolutionElement resolution = resolutions.get(i);
                     PsiElement resolvedElement = resolution.getOriginalElement();
                     if (resolvedElement instanceof RPsiLet resolvedLet) {
-                        String fieldName = instruction.getText();
+                        String fieldName = foundSymbol.getValue();
                         Collection<? extends RPsiField> fields = isRecord ? resolvedLet.getRecordFields() : resolvedLet.getJsObjectFields();
                         RPsiField field = fields.stream().filter(f -> fieldName.equals(f.getName())).findFirst().orElse(null);
                         if (field != null) {
@@ -230,7 +259,7 @@ public class ORReferenceAnalyzer {
                         }
                         break;
                     } else if (resolvedElement instanceof RPsiType resolvedType) {
-                        String fieldName = instruction.getText();
+                        String fieldName = foundSymbol.getValue();
                         Collection<? extends RPsiField> fields = isRecord ? resolvedType.getRecordFields() : resolvedType.getJsObjectFields();
                         RPsiField field = fields.stream().filter(f -> fieldName.equals(f.getName())).findFirst().orElse(null);
                         if (field != null) {
@@ -238,13 +267,13 @@ public class ORReferenceAnalyzer {
                                 resolutions.clear();
                                 result.add(field);
                             } else {
-                                resolutions.add(new ResolutionElement(field));
+                                resolutions.add(new ResolutionElement(field, true));
                             }
                         }
                         break;
-                    } else if (resolvedElement instanceof RPsiField) {
-                        String fieldName = instruction.getText();
-                        RPsiFieldValue resolvedFieldValue = ((RPsiField) resolvedElement).getValue();
+                    } else if (resolvedElement instanceof RPsiField resolvedField) {
+                        String fieldName = foundSymbol.getValue();
+                        RPsiFieldValue resolvedFieldValue = resolvedField.getValue();
                         PsiElement resolvedValue = resolvedFieldValue == null ? null : resolvedFieldValue.getFirstChild();
                         // field of field
                         Collection<? extends RPsiField> fields = resolvedValue instanceof RPsiJsObject ? ((RPsiJsObject) resolvedValue).getFields() : resolvedValue instanceof RPsiRecord ? ((RPsiRecord) resolvedValue).getFields() : emptyList();
@@ -254,7 +283,7 @@ public class ORReferenceAnalyzer {
                                 resolutions.clear();
                                 result.add(field);
                             } else {
-                                resolutions.add(new ResolutionElement(field));
+                                resolutions.add(new ResolutionElement(field, true));
                             }
                         }
                         break;
@@ -710,15 +739,25 @@ public class ORReferenceAnalyzer {
         return Collections.emptyList();
     }
 
-    static class LowerSymbolField extends ORFakeResolvedElement {
+    static class SymbolField extends ORFakeResolvedElement {
         final boolean isRecord;
 
-        public LowerSymbolField(@NotNull PsiElement element, boolean isRecord) {
+        public SymbolField(@NotNull PsiElement element, boolean isRecord) {
             super(element);
             this.isRecord = isRecord;
         }
 
-        @Override public String toString() {
+        public @NotNull String getValue() {
+            boolean isString = getOriginalElement() instanceof RPsiLiteralString;
+            String text = getText();
+            if (text == null) {
+                return "";
+            }
+            return isString ? text.substring(1, text.length() - 1) : text;
+        }
+
+        @Override
+        public String toString() {
             return getOriginalElement() + " (" + getOriginalElement().getText() + ") " + (isRecord ? "record" : "jsField");
         }
     }
