@@ -875,14 +875,17 @@ public class OclParser extends CommonPsiParser {
                 }
             } else if (inAny(//
                     myTypes.C_PARAM_DECLARATION, myTypes.C_PARAMETERS, myTypes.C_PARAM, myTypes.C_SIG_ITEM, myTypes.C_FUNCTION_BODY,
-                    myTypes.C_LET_BINDING, myTypes.C_CLASS_DECLARATION, myTypes.C_DEFAULT_VALUE, myTypes.C_TUPLE
+                    myTypes.C_LET_BINDING, myTypes.C_CLASS_DECLARATION, myTypes.C_DEFAULT_VALUE, myTypes.C_TUPLE, myTypes.C_FIELD_VALUE
             )) {
                 boolean isDeclaration = isFound(myTypes.C_PARAM_DECLARATION);
                 boolean isParam = isFound(myTypes.C_PARAM);
                 boolean isFoundScopeLParen = isFoundScope(myTypes.LPAREN);
                 int foundIndex = getIndex();
 
-                if (isFound(myTypes.C_PARAMETERS) || isFound(myTypes.C_DEFAULT_VALUE)) {
+                if (isFound(myTypes.C_FIELD_VALUE)) {
+                    // Tuple in field value (destructuring)
+                    markScope(myTypes.C_TUPLE, myTypes.LPAREN);
+                } else if (isFound(myTypes.C_PARAMETERS) || isFound(myTypes.C_DEFAULT_VALUE)) {
                     markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
                 } else if (isFound(myTypes.C_CLASS_DECLARATION)) {
                     // class x |>(<| ...

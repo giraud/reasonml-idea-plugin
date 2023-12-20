@@ -11,7 +11,7 @@ import java.util.*;
 public class RecordParsingTest extends OclParsingTestCase {
     @Test
     public void test_declaration() {
-        RPsiType e = first(typeExpressions(parseCode("type r = { a: int; b: string list }")));
+        RPsiType e = firstOfType(parseCode("type r = { a: int; b: string list }"), RPsiType.class);
         RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
 
         List<RPsiRecordField> fields = record.getFields();
@@ -69,12 +69,32 @@ public class RecordParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_annotations() {
-        RPsiType e = first(typeExpressions(parseCode("type props = { key: string [@bs.optional]; ariaLabel: string [@bs.optional] [@bs.as \"aria-label\"]; }")));
+        RPsiType e = firstOfType(parseCode("type props = { key: string [@bs.optional]; ariaLabel: string [@bs.optional] [@bs.as \"aria-label\"]; }"), RPsiType.class);
         RPsiRecord record = (RPsiRecord) e.getBinding().getFirstChild();
 
         List<RPsiRecordField> fields = new ArrayList<>(record.getFields());
         assertSize(2, fields);
         assertEquals("key", fields.get(0).getName());
         assertEquals("ariaLabel", fields.get(1).getName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/440
+    @Test
+    public void test_GH_440() {
+        RPsiFunction e = firstOfType(parseCode("let fn {a; b=(x,y)} = a"), RPsiFunction.class);
+
+        assertSize(1, e.getParameters());
+        RPsiParameterDeclaration ep0 = e.getParameters().get(0);
+        RPsiRecord r = (RPsiRecord) ep0.getFirstChild();
+        assertSize(2, r.getFields());
+        RPsiRecordField f0 = r.getFields().get(0);
+        assertEquals("a", f0.getName());
+        assertNull(f0.getValue());
+        RPsiRecordField f1 = r.getFields().get(1);
+        assertEquals("b", f1.getName());
+        RPsiFieldValue value = f1.getValue();
+        RPsiTuple f1t = (RPsiTuple) value.getFirstChild();
+        assertEquals("(x,y)", f1t.getText());
+        assertEquals("a", e.getBody().getText());
     }
 }

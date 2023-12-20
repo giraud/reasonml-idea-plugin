@@ -488,6 +488,7 @@ public abstract class ORParser<T extends ORTypes> {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public @NotNull ORParser<T> wrapWith(@NotNull ORCompositeType compositeType) {
         mark(compositeType).advance();
         myMarkers.getFirst().end();
@@ -502,6 +503,7 @@ public abstract class ORParser<T extends ORTypes> {
         return this;
     }
 
+    @SuppressWarnings("unused")
     public void error(@NotNull String message) {
         //myBuilder.error("Plugin error! " + message); // RELEASE: comment that line
     }
@@ -567,6 +569,7 @@ public abstract class ORParser<T extends ORTypes> {
         return null;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public @NotNull ORParser<T> rollbackToPos(int pos) {
         for (int i = 0; i < pos; i++) {
             myMarkers.pop();
@@ -626,10 +629,6 @@ public abstract class ORParser<T extends ORTypes> {
 
     public int getIndex() {
         return myIndex;
-    }
-
-    public int getParentIndex() {
-        return myIndex < 0 ? myIndex : myIndex + 1;
     }
 
     public boolean isFound(@Nullable ORCompositeType expectedType) {
