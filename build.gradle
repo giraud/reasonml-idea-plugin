@@ -34,10 +34,7 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>437 - Incorrect language injection in macro</li>
-                    <li>Removing some TODOs in code</li>
-                    <li>Fix cast exception in ORModuleContributor</li>
-                    <li>Fix some parser errors</li>
+                    <li>438 - Resolution of js object field references in Rescript</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

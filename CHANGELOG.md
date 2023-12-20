@@ -12,6 +12,8 @@
                         
 ## Unreleased
 
+- :bug: [#438](https://github.com/giraud/reasonml-idea-plugin/issues/438) Resolution of js object field references in Rescript
+
 **NOTE**: minimal version supported is **2023.1**
 
 ## 0.119 - 2023/12/06
