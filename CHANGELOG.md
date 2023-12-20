@@ -12,7 +12,8 @@
                         
 ## Unreleased
 
-- :bug: [#438](https://github.com/giraud/reasonml-idea-plugin/issues/438) Resolution of js object field references in Rescript
+- :bug: ![o] [#440](https://github.com/giraud/reasonml-idea-plugin/issues/440) Incorrect parsing of record (OCaml)
+- :bug: ![n] [#438](https://github.com/giraud/reasonml-idea-plugin/issues/438) Resolution of js object field references in Rescript
 
 **NOTE**: minimal version supported is **2023.1**
 

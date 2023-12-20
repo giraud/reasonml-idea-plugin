@@ -34,6 +34,7 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
+                    <li>440 - Incorrect parsing of record (OCaml)</li>
                     <li>438 - Resolution of js object field references in Rescript</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
