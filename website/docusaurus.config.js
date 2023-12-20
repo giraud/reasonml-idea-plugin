@@ -1,42 +1,43 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const {themes} = require('prism-react-renderer');
+const lightCodeTheme = themes.github;
+const darkCodeTheme = themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-    title:                 'Reason IDEA Plugin',
-    tagline:               'Language Plugin for <code>OCaml</code>, <code>Reason</code> and <code>ReScript</code>',
-    url:                   'https://reasonml-idea-plugin.github.io/',
-    baseUrl:               '/reasonml-idea-plugin/',
-    onBrokenLinks:         'throw',
+    title: 'Reason IDEA Plugin',
+    tagline: 'Language Plugin for <code>OCaml</code>, <code>Reason</code> and <code>ReScript</code>',
+    url: 'https://reasonml-idea-plugin.github.io/',
+    baseUrl: '/reasonml-idea-plugin/',
+    onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
-    favicon:               'img/favicon.svg',
+    favicon: 'img/favicon.svg',
 
     // GitHub pages deployment config.
     organizationName: 'giraud',
-    projectName:      'reasonml-idea-plugin',
+    projectName: 'reasonml-idea-plugin',
 
     // Even if you don't use internalization, you can use this field to set useful metadata like html lang.
     i18n: {
         defaultLocale: 'en',
-        locales:       ['en'],
+        locales: ['en'],
     },
 
     presets: [
         [
             'classic', /** @type {import('@docusaurus/preset-classic').Options} */
             ({
-                docs:  {
+                docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
-                    editUrl:     'https://github.com/giraud/reasonml-idea-plugin/edit/master/website/',
+                    editUrl: 'https://github.com/giraud/reasonml-idea-plugin/edit/master/website/',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
                 },
-                gtag:  {
-                    trackingID:  'G-HN9MJXSN5F',
+                gtag: {
+                    trackingID: 'G-HN9MJXSN5F',
                     anonymizeIP: true,
                 },
             }),
@@ -47,35 +48,35 @@ const config = {
         ({
             navbar: {
                 title: 'Reason IDEA Plugin',
-                logo:  {
+                logo: {
                     alt: 'Reason IDEA Plugin Logo',
                     src: 'img/logo.svg',
                 },
                 items: [
                     {
-                        type:     'doc',
-                        docId:    'intro',
+                        type: 'doc',
+                        docId: 'intro',
                         position: 'left',
-                        label:    'Documentation',
+                        label: 'Documentation',
                     }, {
-                        href:     'https://github.com/giraud/reasonml-idea-plugin',
-                        label:    'GitHub',
+                        href: 'https://github.com/giraud/reasonml-idea-plugin',
+                        label: 'GitHub',
                         position: 'right',
                     }
                 ],
             },
             footer: {
-                style:     'dark',
-                links:     [
+                style: 'dark',
+                links: [
                     {
                         title: 'Docs',
                         items: [
                             {
                                 label: 'Get Started',
-                                to:    'docs/intro',
+                                to: 'docs/intro',
                             }, {
                                 label: 'How to Contribute',
-                                to:    'docs/contributing/how-to-contribute',
+                                to: 'docs/contributing/how-to-contribute',
                             },
                         ],
                     }, {
@@ -83,16 +84,16 @@ const config = {
                         items: [
                             {
                                 label: 'Our Discord',
-                                href:  'https://discord.gg/65fz5jb',
+                                href: 'https://discord.gg/65fz5jb',
                             }, {
                                 label: 'OCaml',
-                                href:  'https://ocaml.org/',
+                                href: 'https://ocaml.org/',
                             }, {
                                 label: 'ReasonML',
-                                href:  'https://reasonml.github.io/',
+                                href: 'https://reasonml.github.io/',
                             }, {
                                 label: 'ReScript',
-                                href:  'https://rescript-lang.org/',
+                                href: 'https://rescript-lang.org/',
                             },
                         ],
                     }, {
@@ -100,15 +101,15 @@ const config = {
                         items: [
                             {
                                 label: 'GitHub',
-                                href:  'https://github.com/giraud/reasonml-idea-plugin',
+                                href: 'https://github.com/giraud/reasonml-idea-plugin',
                             },
                         ],
                     },
                 ],
                 copyright: `Copyright © ${new Date().getFullYear()} Reason IDEA Plugin`,
             },
-            prism:  {
-                theme:     lightCodeTheme,
+            prism: {
+                theme: lightCodeTheme,
                 darkTheme: darkCodeTheme,
             },
         }),
