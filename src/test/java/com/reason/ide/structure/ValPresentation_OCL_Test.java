@@ -8,7 +8,7 @@ import org.junit.runners.*;
 
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
-public class ValPresentationOCLTest extends ORBasePlatformTestCase {
+public class ValPresentation_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_noSig() {
         RPsiVal e = configureCode("A.ml", "val x = 1").getQualifiedExpressions("A.x", RPsiVal.class).get(0);
