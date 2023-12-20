@@ -23,6 +23,8 @@ import javax.swing.*;
 import java.nio.file.*;
 import java.util.*;
 
+import static com.intellij.openapi.application.ApplicationManager.getApplication;
+
 public class ORSettingsConfigurable implements SearchableConfigurable, Configurable.NoScroll {
     @Nls
     private static final String BS_PLATFORM_LOCATION_LABEL = "Choose bs-platform Directory: ";
@@ -106,7 +108,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         // Create external library based on the selected opam switch
         createExternalLibraryDependency(mySettings.getProject(), mySettings.getSwitchName(), mySettings.getOpamLocation());
         // Compute env
-        OpamEnv opamEnv = myProject.getService(OpamEnv.class);
+        OpamEnv opamEnv = getApplication().getService(OpamEnv.class);
         opamEnv.computeEnv(mySettings.getOpamLocation(), mySettings.getSwitchName(), mySettings.getCygwinBash(), null);
         // Display compiler info in console (if any)
         myProject.getService(ORToolWindowManager.class).shouldShowToolWindows();
