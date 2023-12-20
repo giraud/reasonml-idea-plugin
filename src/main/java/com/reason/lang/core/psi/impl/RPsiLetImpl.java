@@ -279,7 +279,7 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
 
         PsiElement underscore = ORUtil.findImmediateFirstChildOfType(this, myTypes.UNDERSCORE);
         if (underscore != null) {
-            return true;
+            return false;
         }
 
         RPsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, RPsiScopedExpr.class);
