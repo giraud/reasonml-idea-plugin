@@ -13,7 +13,7 @@ import org.junit.runners.*;
 import javax.swing.*;
 
 @RunWith(JUnit4.class)
-public class StructureOCLTest extends ORBasePlatformTestCase {
+public class ProjectStructure_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_let() {
         FileBase a = configureCode("A.ml", "let x = 1");
@@ -24,14 +24,13 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertEquals("x", pres.getPresentableText());
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/439
     @Test
     public void test_let_underscore() {
         FileBase a = configureCode("A.ml", "let _ = ()");
         StructureViewModel model = new ORStructureViewModel(a);
 
-        TreeElement e = model.getRoot().getChildren()[0];
-        ItemPresentation pres = e.getPresentation();
-        assertEquals("_", pres.getPresentableText());
+        assertEmpty(model.getRoot().getChildren());
     }
 
     @Test
@@ -170,6 +169,7 @@ public class StructureOCLTest extends ORBasePlatformTestCase {
         assertPresentation("t", null, ORIcons.TYPE, xt.getPresentation());
 
     }
+
     private void assertPresentation(String name, String location, @Nullable Icon icon, @NotNull ItemPresentation pres) {
         assertEquals("Incorrect name", name, pres.getPresentableText());
         assertEquals("Incorrect location", location, pres.getLocationString());
