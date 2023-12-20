@@ -297,7 +297,7 @@
 
         <projectSdkSetupValidator implementation="com.reason.ide.library.OclSdkSetupValidator"/>
         <applicationService serviceImplementation="com.reason.comp.ocaml.OpamProcess"/>
-        <projectService serviceImplementation="com.reason.comp.ocaml.OpamEnv"/>
+        <applicationService serviceImplementation="com.reason.comp.ocaml.OpamEnv"/>
 
         <!--
          | Compiler

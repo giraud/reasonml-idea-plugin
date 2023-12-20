@@ -116,7 +116,7 @@ public class DuneCompiler implements Compiler {
     }
 
     @Override
-    public boolean isRunning() {
-        return myProcessStarted.get();
+    public boolean isAvailable() {
+        return !myProcessStarted.get();
     }
 }

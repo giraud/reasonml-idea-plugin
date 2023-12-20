@@ -142,7 +142,7 @@ public class BsCompilerImpl implements BsCompiler {
     }
 
     @Override
-    public boolean isRunning() {
-        return myProcessStarted.get();
+    public boolean isAvailable() {
+        return !myProcessStarted.get();
     }
 }

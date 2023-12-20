@@ -62,7 +62,7 @@ public class ResCompiler implements Compiler {
         LOG.debug("Run compiler");
 
         ORSettings settings = myProject.getService(ORSettings.class);
-        if (!isDisabled() && settings.isBsEnabled()) {
+        if (settings.isBsEnabled()) {
             if (sourceFile != null) {
                 myProject.getService(InsightManager.class).downloadRincewindIfNeeded(sourceFile);
             }
@@ -144,12 +144,8 @@ public class ResCompiler implements Compiler {
         return bin != null;
     }
 
-    private boolean isDisabled() {
-        return false;
-    }
-
     @Override
-    public boolean isRunning() {
-        return myProcessStarted.get();
+    public boolean isAvailable() {
+        return !myProcessStarted.get();
     }
 }

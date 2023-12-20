@@ -14,6 +14,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
+import static com.intellij.openapi.application.ApplicationManager.getApplication;
+
 public class ReplGenericState implements RunProfileState {
     private final ExecutionEnvironment myEnvironment;
 
@@ -53,7 +55,7 @@ public class ReplGenericState implements RunProfileState {
             cli.setWorkDirectory(baseRoot.getPath());
         }
 
-        Map<String, String> env = project.getService(OpamEnv.class).getEnv(switchName);
+        Map<String, String> env = getApplication().getService(OpamEnv.class).getEnv(switchName);
         if (env != null) {
             for (Map.Entry<String, String> entry : env.entrySet()) {
                 cli.withEnvironment(entry.getKey(), entry.getValue());

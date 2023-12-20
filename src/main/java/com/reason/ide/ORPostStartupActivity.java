@@ -8,6 +8,8 @@ import com.reason.ide.settings.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
+import static com.intellij.openapi.application.ApplicationManager.getApplication;
+
 /**
  * Ensure all services have started after the startup.
  */
@@ -22,7 +24,7 @@ public class ORPostStartupActivity implements StartupActivity, DumbAware {
         DumbService.getInstance(project).smartInvokeLater(() -> {
             ORSettings settings = project.getService(ORSettings.class);
 
-            OpamEnv opamEnv = project.getService(OpamEnv.class);
+            OpamEnv opamEnv = getApplication().getService(OpamEnv.class);
             opamEnv.computeEnv(settings.getOpamLocation(), settings.getSwitchName(), settings.getCygwinBash(),
                     data -> LOG.debug("Computed opam env for " + settings.getSwitchName()));
 
