@@ -22,7 +22,7 @@ public class RPsiLowerSymbol extends LeafPsiElement {
     }
 
     @Override
-    public String toString() {
-        return "RPsiLowerSymbol:" + getElementType();
+    public @NotNull String toString() {
+        return "RPsiLowerSymbol:" + getElementType() + " (" + getText() + ")";
     }
 }

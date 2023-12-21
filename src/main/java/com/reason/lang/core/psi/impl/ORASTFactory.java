@@ -101,6 +101,9 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         if (type == myTypes.C_RECORD_EXPR) {
             return new RPsiRecord(myTypes, type);
         }
+        if (type == myTypes.C_METHOD_CALL) {
+            return new RPsiMethodCall(myTypes, type);
+        }
         if (type == myTypes.C_MODULE_BINDING) {
             return new RPsiModuleBinding(myTypes, type);
         }
@@ -136,6 +139,9 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         }
         if (type == myTypes.C_OPTION) {
             return new RPsiOption(myTypes, type);
+        }
+        if (type == myTypes.C_INHERIT) {
+            return new RPsiInherit(myTypes, type);
         }
         if (type == myTypes.C_CLASS_CONSTR) {
             return new RPsiClassConstructor(myTypes, type);
