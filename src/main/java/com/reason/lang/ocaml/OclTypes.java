@@ -53,6 +53,7 @@ public class OclTypes extends ORLangTypes {
         C_GUARD = new ORCompositeElementType("C_GUARD", OclLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", OclLanguage.INSTANCE);
         C_IF_THEN_ELSE = new ORCompositeElementType("C_IF_THEN_ELSE", OclLanguage.INSTANCE);
+        C_INHERIT = new ORCompositeElementType("C_INHERIT", OclLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", OclLanguage.INSTANCE);
         C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", OclLanguage.INSTANCE);
         C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", OclLanguage.INSTANCE);
@@ -64,6 +65,7 @@ public class OclTypes extends ORLangTypes {
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", OclLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", OclLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);
+        C_METHOD_CALL = new ORCompositeElementType("C_METHOD_CALL", OclLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", OclLanguage.INSTANCE);
         C_MODULE_SIGNATURE = new ORCompositeElementType("C_MODULE_SIGNATURE", OclLanguage.INSTANCE);
         C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", OclLanguage.INSTANCE);

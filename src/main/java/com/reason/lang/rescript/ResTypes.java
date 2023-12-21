@@ -53,6 +53,7 @@ public class ResTypes extends ORLangTypes {
         C_GUARD = new ORCompositeElementType("C_GUARD", ResLanguage.INSTANCE);
         C_IF = new ORCompositeElementType("C_IF", ResLanguage.INSTANCE);
         C_IF_THEN_ELSE = new ORCompositeElementType("C_IF_THEN_ELSE", ResLanguage.INSTANCE);
+        C_INHERIT = new ORCompositeElementType("C_INHERIT", ResLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", ResLanguage.INSTANCE);
         C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", ResLanguage.INSTANCE);
         C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", ResLanguage.INSTANCE);
@@ -64,6 +65,7 @@ public class ResTypes extends ORLangTypes {
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", ResLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", ResLanguage.INSTANCE);
         C_MACRO_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", ResLanguage.INSTANCE);
+        C_METHOD_CALL = new ORCompositeElementType("C_METHOD_CALL", ResLanguage.INSTANCE);
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", ResLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", ResLanguage.INSTANCE);
         C_MODULE_SIGNATURE = new ORCompositeElementType("C_MODULE_SIGNATURE", ResLanguage.INSTANCE);

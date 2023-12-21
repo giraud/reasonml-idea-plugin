@@ -98,6 +98,8 @@ public class OclParser extends CommonPsiParser {
                     parseDot();
                 } else if (tokenType == myTypes.DOTDOT) {
                     parseDotDot();
+                } else if (tokenType == myTypes.SHARP) {
+                    parseSharp();
                 } else if (tokenType == myTypes.FUNCTION) { // function is a shortcut for a pattern match
                     parseFunction();
                 } else if (tokenType == myTypes.FUN) {
@@ -184,6 +186,8 @@ public class OclParser extends CommonPsiParser {
                     parseModule();
                 } else if (tokenType == myTypes.CLASS) {
                     parseClass();
+                } else if (tokenType == myTypes.INHERIT) {
+                    parseInherit();
                 } else if (tokenType == myTypes.LET) {
                     parseLet();
                 } else if (tokenType == myTypes.VAL) {
@@ -445,6 +449,12 @@ public class OclParser extends CommonPsiParser {
         private void parseDotDot() {
             if (is(myTypes.C_OBJECT_FIELD)) {
                 advance().popEnd();
+            }
+        }
+
+        private void parseSharp() {
+            if (previousElementType(1) == myTypes.LIDENT) {
+                markBefore(0, myTypes.C_METHOD_CALL);
             }
         }
 
@@ -1170,16 +1180,23 @@ public class OclParser extends CommonPsiParser {
                 wrapAtom(myTypes.CA_LOWER_SYMBOL);
             } else if (is(myTypes.C_PARAMETERS) && !rawHasScope()) {
                 // ... ( xxx |>yyy<| ) ..
+                IElementType nextElementType = lookAhead(1);
                 popEndUntil(myTypes.C_PARAMETERS);
-                boolean isCall = strictlyIn(myTypes.C_FUNCTION_CALL);
-                mark(isCall ? myTypes.C_PARAM : myTypes.C_PARAM_DECLARATION)
-                        .wrapAtom(myTypes.CA_LOWER_SYMBOL).popEndUntil(myTypes.C_PARAMETERS);
+                boolean isCall = strictlyIn(myTypes.C_FUNCTION_CALL) || nextElementType == myTypes.SHARP;
+                mark(isCall ? myTypes.C_PARAM : myTypes.C_PARAM_DECLARATION).wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                if (nextElementType != myTypes.SHARP) {
+                    popEndUntil(myTypes.C_PARAMETERS);
+                }
             } else {
                 IElementType nextTokenType = lookAhead(1);
 
                 if (nextTokenType == myTypes.COLON && isCurrent(myTypes.C_SIG_ITEM)) {
                     // let fn: |>x<| : ...
                     mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
+                } else if (nextTokenType == myTypes.LIDENT/*or !EOL ? */ && isRawParent(myTypes.C_INHERIT)) {
+                    // inherit [M.]classType |>x<|
+                    wrapAtom(myTypes.CA_LOWER_SYMBOL).mark(myTypes.C_PARAMETERS);
+                    return;
                 } else if (!in(myTypes.C_SIG_ITEM) && !is(myTypes.C_TYPE_VARIABLE) && !is(myTypes.C_TYPE_CONSTRAINT)
                         && !is(myTypes.C_BINARY_CONDITION) && !is(myTypes.C_CLASS_FIELD) && !in(myTypes.C_TYPE_BINDING)
                         && !is(myTypes.C_PARAMETERS) && !strictlyIn(myTypes.C_DEFAULT_VALUE)) {
@@ -1392,6 +1409,11 @@ public class OclParser extends CommonPsiParser {
         private void parseClass() {
             endLikeSemi();
             mark(myTypes.C_CLASS_DECLARATION);
+        }
+
+        private void parseInherit() {
+            endLikeSemi();
+            mark(myTypes.C_INHERIT);
         }
 
         private void endLikeSemi() {

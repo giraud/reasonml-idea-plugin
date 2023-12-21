@@ -1,7 +1,9 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.*;
+import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -67,6 +69,7 @@ public class ClassParsingTest extends OclParsingTestCase {
         assertEquals(clazz.getMethods().size(), 2);
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/268
     @Test
     public void test_GH_268() {
         RPsiClass clazz = first(classExpressions(parseCode(
@@ -75,10 +78,55 @@ public class ClassParsingTest extends OclParsingTestCase {
         assertSize(2, clazz.getMethods());
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/444
+    @Test
+    public void test_inherit_object_no_parameter() { // GH_444
+        RPsiObject e = firstOfType(parseCode("""
+                let pf = object (self)
+                   inherit GObj.widget
+                   method destroy : unit -> unit
+                end
+                """), RPsiObject.class);
+
+        RPsiInherit ei = PsiTreeUtil.findChildOfType(e, RPsiInherit.class);
+        assertTextEquals("inherit GObj.widget", ei.getText());
+        assertTextEquals("widget", ei.getClassTypeIdentifier().getText());
+        assertSize(0, ei.getParameters());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/444
+    @Test
+    public void test_inherit_object_parenless_parameter() { // GH_444
+        RPsiObject e = firstOfType(parseCode("""
+                let pf = object (self)
+                   inherit GObj.widget view#as_widget
+                   method destroy : unit -> unit
+                end
+                """), RPsiObject.class);
+
+        RPsiInherit ei = PsiTreeUtil.findChildOfType(e, RPsiInherit.class);
+        assertTextEquals("inherit GObj.widget view#as_widget", ei.getText());
+        assertTextEquals("widget", ei.getClassTypeIdentifier().getText());
+        assertNull(PsiTreeUtil.findChildOfType(ei, RPsiParameterDeclaration.class));
+        assertSize(1, ei.getParameters());
+        assertTextEquals("view#as_widget", ei.getParameters().get(0).getText());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/269
     @Test
     public void test_GH_269() {
-        RPsiClass e = first(classExpressions(parseCode(
-                "class type ops = object\n method go_to_insert : unit task\n method go_to_mark : GText.mark -> unit task\n method process_next_phrase : unit task\n method get_n_errors : int\n method get_errors : (int * string) list\n method get_slaves_status : int * int * string CString.Map.t\n method handle_failure : handle_exn_rty -> unit task\n method destroy : unit -> unit end")));
+        RPsiClass e = firstOfType(parseCode("""
+                class type ops = object
+                  method go_to_insert : unit task
+                  method go_to_mark : GText.mark -> unit task
+                  method process_next_phrase : unit task
+                  method get_n_errors : int
+                  method get_errors : (int * string) list
+                  method get_slaves_status : int * int * string CString.Map.t
+                  method handle_failure : handle_exn_rty -> unit task
+                  method destroy : unit -> unit
+                end
+                  """), RPsiClass.class);
 
         assertSize(8, e.getMethods());
         ArrayList<RPsiClassMethod> methods = new ArrayList<>(e.getMethods());
@@ -103,12 +151,13 @@ public class ClassParsingTest extends OclParsingTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/310
     @Test
     public void test_GH_310() {
-        FileBase file = parseCode("class type control =\n" +
-                "  object\n" +
-                "    method detach : unit -> unit\n" +
-                "  end\n" +
-                "\n" +
-                "type errpage = (int * string) list page");
+        FileBase file = parseCode("""
+                class type control =
+                  object
+                    method detach : unit -> unit
+                  end
+
+                type errpage = (int * string) list page""");
         List<PsiNamedElement> es = expressions(file);
 
         assertSize(2, es);
@@ -117,5 +166,4 @@ public class ClassParsingTest extends OclParsingTestCase {
         assertInstanceOf(es.get(1), RPsiType.class);
         assertEquals("errpage", es.get(1).getName());
     }
-
 }
