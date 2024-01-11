@@ -146,7 +146,7 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder<ImportedDuneB
         return createdModules;
     }
 
-    interface OpamSettings {
+    public interface OpamSettings {
         String getOpamLocation();
 
         String getOpamSwitch();

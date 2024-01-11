@@ -23,15 +23,4 @@ public class LetComponentFqnIndex extends IntStubIndexExtension<RPsiLet> {
     public static @NotNull Collection<RPsiLet> getElements(String qName, @NotNull Project project, @Nullable GlobalSearchScope scope) {
         return StubIndex.getElements(IndexKeys.LETS_COMP_FQN, qName.hashCode(), project, scope, RPsiLet.class);
     }
-
-    public static void processItems(@NotNull Project project, @Nullable GlobalSearchScope scope, @NotNull IndexKeys.ProcessElement<RPsiLet> processor) {
-        StubIndex.getInstance().processAllKeys(IndexKeys.LETS_COMP_FQN, project,
-                hashCode -> {
-                    for (RPsiLet let : StubIndex.getElements(IndexKeys.LETS_COMP_FQN, hashCode, project, scope, RPsiLet.class)) {
-                        processor.process(let);
-                    }
-                    return true;
-                });
-    }
-
 }

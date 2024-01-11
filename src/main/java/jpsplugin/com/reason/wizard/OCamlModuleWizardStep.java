@@ -29,10 +29,6 @@ class OCamlModuleWizardStep extends ModuleWizardStep {
         c_sdk = new JdkComboBox(project, model, null, null, null, null);
     }
 
-    @Override
-    public void updateStep() {
-    }
-
     public void updateDataModel() {
     }
 

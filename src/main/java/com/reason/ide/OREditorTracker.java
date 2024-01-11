@@ -18,7 +18,7 @@ import org.jetbrains.annotations.*;
 
 import static com.intellij.openapi.fileEditor.FileEditorManagerListener.*;
 
-@Service
+@Service(Service.Level.PROJECT)
 public final class OREditorTracker implements Disposable {
     private final MessageBusConnection m_messageBusConnection;
 

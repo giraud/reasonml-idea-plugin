@@ -44,9 +44,28 @@ public class OpamConfigurationTab {
 
         };
 
+        FocusListener focusListener = getFocusListener(switchName);
+
+        myOpamLocation.getTextField().addFocusListener(focusListener);
+        myOpamLocation.addBrowseFolderListener(browseListener);
+
+        mySwitchSelect.addItemListener(itemEvent -> {
+            if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+                String version = (String) itemEvent.getItem();
+                clearEnv();
+                listLibraries(version);
+            }
+        });
+
+        myOpamLibraries.setBorder(BorderFactory.createLineBorder(JBUI.CurrentTheme.DefaultTabs.borderColor()));
+
+        listLibraries(switchName);
+    }
+
+    private @NotNull FocusListener getFocusListener(@NotNull String switchName) {
         final String[] previousOpamLocation = new String[1];
 
-        FocusListener focusListener = new FocusListener() {
+        return new FocusListener() {
             @Override public void focusGained(FocusEvent e) {
                 previousOpamLocation[0] = myOpamLocation.getText();
             }
@@ -68,21 +87,6 @@ public class OpamConfigurationTab {
                 }
             }
         };
-
-        myOpamLocation.getTextField().addFocusListener(focusListener);
-        myOpamLocation.addBrowseFolderListener(browseListener);
-
-        mySwitchSelect.addItemListener(itemEvent -> {
-            if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                String version = (String) itemEvent.getItem();
-                clearEnv();
-                listLibraries(version);
-            }
-        });
-
-        myOpamLibraries.setBorder(BorderFactory.createLineBorder(JBUI.CurrentTheme.DefaultTabs.borderColor()));
-
-        listLibraries(switchName);
     }
 
     private void detectSwitchSystem(@NotNull VirtualFile dir) {

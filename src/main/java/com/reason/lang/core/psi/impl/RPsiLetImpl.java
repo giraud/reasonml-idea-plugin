@@ -34,7 +34,7 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiLowerSymbol.class, RPsiScopedExpr.class, RPsiDeconstruction.class, RPsiLiteralExpression.class/*rescript custom operator*/, RPsiUnit.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiLowerSymbol.class, RPsiScopedExpr.class, RPsiDeconstruction.class, RPsiLiteralString.class/*rescript custom operator*/, RPsiUnit.class);
     }
 
     @Override
@@ -279,7 +279,7 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
 
         PsiElement underscore = ORUtil.findImmediateFirstChildOfType(this, myTypes.UNDERSCORE);
         if (underscore != null) {
-            return true;
+            return false;
         }
 
         RPsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, RPsiScopedExpr.class);

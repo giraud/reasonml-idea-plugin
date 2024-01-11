@@ -1,5 +1,7 @@
 package com.reason.ide.search.reference;
 
+import com.intellij.openapi.util.*;
+import com.intellij.psi.*;
 import com.intellij.usageView.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
@@ -71,7 +73,7 @@ public class FindLIdentUsagesRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_record() {
+    public void test_record_field() {
         configureCode("A.re", """
                 type t = { f1: bool, f2<caret>: int };
                 let x = { f1: true, f2: 421 };
@@ -81,5 +83,18 @@ public class FindLIdentUsagesRMLTest extends ORBasePlatformTestCase {
         assertSize(1, usages);
         UsageInfo usageInfo = usages.get(0);
         assertEquals("A.x.f2", ((RPsiQualifiedPathElement) usageInfo.getElement().getParent()).getQualifiedName());
+    }
+
+    @Test
+    public void test_object_field() {
+        configureCode("A.re", """
+                let obj = { "f1": true, "f2<caret>": 421 };
+                let _ = obj##f2;
+                """);
+
+        List<UsageInfo> usages = findUsages("A.re");
+        assertSize(1, usages);
+        UsageInfo usageInfo = usages.get(0);
+        assertEquals(TextRange.create(50, 52), usageInfo.getSegment());
     }
 }

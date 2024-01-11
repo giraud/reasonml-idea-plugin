@@ -49,19 +49,4 @@ public class Joiner {
         }
         return sb.toString();
     }
-
-    public static @NotNull String joinFrom(@NotNull String separator, Object @Nullable [] items, int from) {
-        if (items == null) {
-            return "<null>";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = from; i < items.length; i++) {
-            if (i != from) {
-                sb.append(separator);
-            }
-            sb.append(items[i]);
-        }
-        return sb.toString();
-    }
 }

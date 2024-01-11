@@ -25,4 +25,9 @@ public class ClearLogAction extends DumbAwareAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         myConsoleView.clear();
     }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 }

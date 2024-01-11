@@ -89,7 +89,7 @@ public class EsyCompiler implements Compiler {
     }
 
     @Override
-    public boolean isRunning() {
-        return myProcessStarted.get();
+    public boolean isAvailable() {
+        return !myProcessStarted.get();
     }
 }

@@ -486,7 +486,10 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     //region object
     @Test
     public void test_object_l1() {
-        configureCode("A.re", "let a = { \"b\": 1, \"c\": 2 }; a##b<caret>");
+        configureCode("A.re", """
+                let a = { "b": 1, "c": 2 };
+                 a##b<caret>
+                 """);
 
         RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
         assertEquals("A.a.b", e.getQualifiedName());

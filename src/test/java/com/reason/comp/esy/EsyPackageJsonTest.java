@@ -2,13 +2,14 @@ package com.reason.comp.esy;
 
 import com.intellij.mock.*;
 import com.reason.ide.*;
-import com.reason.ide.files.*;
 import org.jetbrains.annotations.*;
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
 import java.io.*;
+
+import static com.reason.comp.esy.EsyConstants.ESY_CONFIG_FILENAME;
 
 @RunWith(JUnit4.class)
 public class EsyPackageJsonTest extends ORBasePlatformTestCase {
@@ -19,7 +20,7 @@ public class EsyPackageJsonTest extends ORBasePlatformTestCase {
 
     @Test
     public void testIsEsyPackageJson() throws IOException {
-        String packageJsonFilename = EsyPackageJsonFileType.getDefaultFilename();
+        String packageJsonFilename = ESY_CONFIG_FILENAME;
         String mockJson = loadFile(packageJsonFilename);
         MockVirtualFile mockVirtualFile = MockVirtualFile.file(packageJsonFilename);
 

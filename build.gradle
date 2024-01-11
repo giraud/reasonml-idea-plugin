@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.15.0' // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version '1.16.1' // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
 repositories {
@@ -34,10 +34,11 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>437 - Incorrect language injection in macro</li>
-                    <li>Removing some TODOs in code</li>
-                    <li>Fix cast exception in ORModuleContributor</li>
-                    <li>Fix some parser errors</li>
+                    <li>444 - Fix OCaml parser for 'inherit'</li>
+                    <li>440 - Incorrect parsing of record (OCaml)</li>
+                    <li>439 - Do not display 'let _' in structure panel</li>
+                    <li>438 - Resolution of js object field references in Rescript</li>
+                    <li>415 - Remove one level deep in structure view</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

@@ -3,11 +3,10 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.psi.impl.source.tree.*;
 import com.intellij.psi.tree.*;
 import com.reason.ide.search.reference.*;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiLowerSymbol extends LeafPsiElement implements RPsiAtom {
+public class RPsiLowerSymbol extends LeafPsiElement {
     protected final ORLangTypes myTypes;
 
     // region Constructors
@@ -23,7 +22,7 @@ public class RPsiLowerSymbol extends LeafPsiElement implements RPsiAtom {
     }
 
     @Override
-    public String toString() {
-        return "RPsiLowerSymbol:" + getElementType();
+    public @NotNull String toString() {
+        return "RPsiLowerSymbol:" + getElementType() + " (" + getText() + ")";
     }
 }
