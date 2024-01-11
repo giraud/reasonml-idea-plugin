@@ -10,10 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
                         
-## Unreleased
+## 0.120 - 2024/01/11
 
+- :bug: ![o] [#444](https://github.com/giraud/reasonml-idea-plugin/issues/444) Fix OCaml parser for 'inherit'
 - :bug: ![o] [#440](https://github.com/giraud/reasonml-idea-plugin/issues/440) Incorrect parsing of record (OCaml)
+- :bug: [#439](https://github.com/giraud/reasonml-idea-plugin/issues/439) Do not display 'let _' in structure panel
 - :bug: ![n] [#438](https://github.com/giraud/reasonml-idea-plugin/issues/438) Resolution of js object field references in Rescript
+- :bug: [#415](https://github.com/giraud/reasonml-idea-plugin/issues/415) Remove one level deep in structure view
 
 **NOTE**: minimal version supported is **2023.1**
 
