@@ -35,5 +35,5 @@ public interface Compiler {
 
     void run(@Nullable VirtualFile file, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated);
 
-    boolean isRunning();
+    boolean isAvailable();
 }

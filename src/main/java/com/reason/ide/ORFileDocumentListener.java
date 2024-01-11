@@ -1,58 +1,37 @@
 package com.reason.ide;
 
-import static com.intellij.AppTopics.FILE_DOCUMENT_SYNC;
+import com.intellij.openapi.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.project.*;
+import com.intellij.util.messages.*;
+import com.reason.ide.format.*;
+import org.jetbrains.annotations.*;
 
-import com.intellij.openapi.Disposable;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.messages.MessageBusConnection;
-import com.reason.ide.format.ReformatOnSave;
-import org.jetbrains.annotations.NotNull;
+import static com.intellij.AppTopics.*;
 
 public class ORFileDocumentListener implements Disposable {
+    private final @NotNull MessageBusConnection m_messageBusConnection;
 
-  private final @NotNull MessageBusConnection m_messageBusConnection;
+    public static void ensureSubscribed(@NotNull Project project) {
+        project.getService(ORFileDocumentListener.class);
+    }
 
-  public static void ensureSubscribed(@NotNull Project project) {
-      project.getService(ORFileDocumentListener.class);
-  }
+    private ORFileDocumentListener(@NotNull Project project) {
+        m_messageBusConnection = project.getMessageBus().connect(this);
 
-  private ORFileDocumentListener(@NotNull Project project) {
-    m_messageBusConnection = project.getMessageBus().connect(this);
+        m_messageBusConnection.subscribe(
+                FILE_DOCUMENT_SYNC,
+                new FileDocumentManagerListener() {
+                    @Override
+                    public void beforeDocumentSaving(@NotNull Document document) {
+                        ReformatOnSave.apply(project, document);
+                    }
+                });
+    }
 
-    m_messageBusConnection.subscribe(
-        FILE_DOCUMENT_SYNC,
-        new FileDocumentManagerListener() {
-          @Override
-          public void beforeAllDocumentsSaving() {}
-
-          @Override
-          public void beforeDocumentSaving(@NotNull Document document) {
-            ReformatOnSave.apply(project, document);
-          }
-
-          @Override
-          public void beforeFileContentReload(@NotNull VirtualFile file, @NotNull Document document) {
-          }
-
-          @Override
-          public void fileWithNoDocumentChanged(@NotNull VirtualFile file) {}
-
-          @Override
-          public void fileContentReloaded(@NotNull VirtualFile file, @NotNull Document document) {}
-
-          @Override
-          public void fileContentLoaded(@NotNull VirtualFile file, @NotNull Document document) {}
-
-          @Override
-          public void unsavedDocumentsDropped() {}
-        });
-  }
-
-  @Override
-  public void dispose() {
-    m_messageBusConnection.disconnect();
-  }
+    @Override
+    public void dispose() {
+        m_messageBusConnection.disconnect();
+    }
 }

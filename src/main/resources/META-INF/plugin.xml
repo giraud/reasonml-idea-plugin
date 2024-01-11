@@ -51,7 +51,7 @@
     -->
     <extensions defaultExtensionNs="com.intellij">
 
-        <postStartupActivity implementation="com.reason.ide.ORPostStartupActivity"/>
+        <backgroundPostStartupActivity implementation="com.reason.ide.ORPostStartupActivity"/>
 
         <!--
          | Listeners
@@ -297,7 +297,7 @@
 
         <projectSdkSetupValidator implementation="com.reason.ide.library.OclSdkSetupValidator"/>
         <applicationService serviceImplementation="com.reason.comp.ocaml.OpamProcess"/>
-        <projectService serviceImplementation="com.reason.comp.ocaml.OpamEnv"/>
+        <applicationService serviceImplementation="com.reason.comp.ocaml.OpamEnv"/>
 
         <!--
          | Compiler
@@ -383,7 +383,7 @@
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
         <languageInjector implementation="com.reason.ide.js.JsInjector"/>
-        <lang.elementManipulator forClass="com.reason.lang.core.psi.impl.RPsiLiteralExpression"
+        <lang.elementManipulator forClass="com.reason.lang.core.psi.impl.RPsiLiteralString"
                                  implementationClass="com.reason.lang.core.LiteralStringManipulator"/>
 
         <!--
@@ -412,11 +412,9 @@
 
         <intentionAction>
             <className>com.reason.ide.intentions.FunctionBracesIntention</className>
-            <category>Reason</category>
         </intentionAction>
         <intentionAction>
             <className>com.reason.ide.intentions.ExpandLocalOpenIntention</className>
-            <category>Reason</category>
         </intentionAction>
 
         <!--

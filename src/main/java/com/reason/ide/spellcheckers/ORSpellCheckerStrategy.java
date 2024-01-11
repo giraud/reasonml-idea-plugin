@@ -31,7 +31,7 @@ public class ORSpellCheckerStrategy extends SpellcheckingStrategy {
             return myCommentTokenizer;
         }
         // literals
-        if (element instanceof RPsiLiteralExpression) {
+        if (element instanceof RPsiLiteralString) {
             return TEXT_TOKENIZER;
         }
         // Named elements

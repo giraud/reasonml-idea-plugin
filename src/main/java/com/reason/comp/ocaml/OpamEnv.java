@@ -8,12 +8,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class OpamEnv {
-    private final Project myProject;
     private final Map<String, Map<String, String>> myEnvs = new HashMap<>();
-
-    public OpamEnv(@NotNull Project project) {
-        myProject = project;
-    }
 
     public @Nullable Map<String, String> getEnv(@Nullable String switchName) {
         return switchName == null ? null : myEnvs.get(switchName);

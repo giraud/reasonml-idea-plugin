@@ -8,11 +8,11 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.patterns.*;
 import com.intellij.util.*;
 import com.intellij.util.indexing.*;
-import com.reason.ide.files.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
 
+import static com.reason.comp.esy.EsyConstants.ESY_CONFIG_FILENAME;
 import static java.nio.charset.StandardCharsets.*;
 
 public class EsyPackageJson {
@@ -24,7 +24,7 @@ public class EsyPackageJson {
         if (file != null && file.getFileType() instanceof JsonFileType) {
             try {
                 return FileContentPattern.fileContent()
-                        .withName(EsyPackageJsonFileType.getDefaultFilename())
+                        .withName(ESY_CONFIG_FILENAME)
                         .with(new FileContentPatternCondition())
                         .accepts(FileContentImpl.createByFile(file));
             } catch (IOException e) {

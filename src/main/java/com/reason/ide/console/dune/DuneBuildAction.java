@@ -19,7 +19,7 @@ public class DuneBuildAction extends CompilerAction {
         Project project = e.getProject();
         Compiler compiler = project == null ? null : project.getService(DuneCompiler.class);
         if (compiler != null) {
-            e.getPresentation().setEnabled(!compiler.isRunning());
+            e.getPresentation().setEnabled(compiler.isAvailable());
         }
     }
 
@@ -28,7 +28,12 @@ public class DuneBuildAction extends CompilerAction {
         Project project = e.getProject();
         Compiler compiler = project == null ? null : project.getService(DuneCompiler.class);
         if (compiler != null) {
-            doAction(project, CliType.Dune.BUILD, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
+            doAction(project, CliType.Dune.BUILD, (_void) -> e.getPresentation().setEnabled(compiler.isAvailable()));
         }
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

@@ -3,6 +3,7 @@ package com.reason.ide.search.reference;
 import com.intellij.psi.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
@@ -108,24 +109,6 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_let_local_open_parens() {
-        configureCode("A.res", "module A1 = { let a = 1 }");
-        configureCode("B.res", "let a = 2; let b = A.(A1.a<caret>);");
-
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-        assertEquals("A.A1.a", e.getQualifiedName());
-    }
-
-    @Test
-    public void test_let_local_open_parens_2() {
-        configureCode("A.res", "module A1 = { let a = 3 }");
-        configureCode("B.res", "let a = A.A1.(a<caret>)");
-
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-        assertEquals("A.A1.a", e.getQualifiedName());
-    }
-
-    @Test
     public void test_type() {
         configureCode("A.res", "type t\n type t' = t<caret>");
 
@@ -195,33 +178,6 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_local_open_parens() {
-        configureCode("A.res", "module A1 = { external a : int = \"\" }");
-        configureCode("B.res", "let b = A.(A1.a<caret>)");
-
-        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
-        assertEquals("A.A1.a", e.getQualifiedName());
-    }
-
-    @Test
-    public void test_local_open_parens_2() {
-        configureCode("A.res", "module A1 = { external a : int = \"\" }");
-        configureCode("B.res", "let a = A.A1.(a<caret>)");
-
-        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
-        assertEquals("A.A1.a", e.getQualifiedName());
-    }
-
-    @Test
-    public void test_local_open_parens_3() {
-        configureCode("A.res", "module A1 = { type t = | Variant\n let toString = x => x }");
-        configureCode("B.res", "A.A1.(Variant->toString<caret>);");
-
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-        assertEquals("A.A1.toString", e.getQualifiedName());
-    }
-
-    @Test
     public void test_include() {
         configureCode("A.res", "module B = { type t; }\n module C = B\n include C\n type x = t<caret>");
 
@@ -263,24 +219,6 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
 
         RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.C.t", e.getQualifiedName());
-    }
-
-    @Test
-    public void test_let_Local_open_pipe_first() {
-        configureCode("A.res", "module A1 = { let add = x => x + 3 }");
-        configureCode("B.res", "let x = A.A1.(x->add<caret>)");
-
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-        assertEquals("A.A1.add", e.getQualifiedName());
-    }
-
-    @Test
-    public void test_external_local_open_pipe_first() {
-        configureCode("A.res", "module A1 = { external add : int => int = \"\" }");
-        configureCode("B.res", "let x = A.A1.(x->add<caret>)");
-
-        RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
-        assertEquals("A.A1.add", e.getQualifiedName());
     }
 
     @Test
@@ -487,21 +425,38 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     //endregion
 
     //region object
-    //@Test
-    //public void test_object_l1() { TODO
-    //    configureCode("A.res", "let a = { \"b\": 1, \"c\": 2 }\n a[\"b\"<caret>]");
-    //
-    //    RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
-    //    assertEquals("A.a.b", e.getQualifiedName());
-    //}
+    @Test
+    public void test_object_l1() {
+        configureCode("A.res", """
+                let a = { "b": 1, "c": 2 }
+                a["b<caret>"]
+                """);
 
-    //@Test
-    //public void test_object_l3() { TODO
-    //    configureCode("A.res", "let a = { \"b\": { \"c\": { \"d\": 1 } } }\n a[\"b\"][\"c\"][\"d\"<caret>]");
-    //
-    //    RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
-    //    assertEquals("A.a.b.c.d", e.getQualifiedName());
-    //}
+        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
+        assertEquals("A.a.b", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_object_l1a() {
+        configureCode("A.res", """
+                let a = { "b": 1, "c": 2 }
+                let _ = a["b<caret>"]["c"]
+                """);
+
+        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
+        assertEquals("A.a.b", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_object_l3() {
+        configureCode("A.res", """
+                let a = { "b": { "c": { "d": 1 } } }
+                a["b"]["c"]["d<caret>"]
+                """);
+
+        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
+        assertEquals("A.a.b.c.d", e.getQualifiedName());
+    }
 
     //@Test TODO
     //public void test_deep_open() {

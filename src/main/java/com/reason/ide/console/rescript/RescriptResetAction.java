@@ -18,16 +18,21 @@ public class RescriptResetAction extends CompilerAction {
         Project project = e.getProject();
         ResCompiler compiler = project == null ? null : project.getService(ResCompiler.class);
         if (compiler != null) {
-            e.getPresentation().setEnabled(!compiler.isRunning());
+            e.getPresentation().setEnabled(compiler.isAvailable());
         }
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        ResCompiler compiler = project == null ? null : project.getService(ResCompiler.class);
+        ResCompiler compiler = project != null ? project.getService(ResCompiler.class) : null;
         if (compiler != null) {
-            doAction(project, CliType.Rescript.CLEAN, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
+            doAction(project, CliType.Rescript.CLEAN, (_void) -> e.getPresentation().setEnabled(compiler.isAvailable()));
         }
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

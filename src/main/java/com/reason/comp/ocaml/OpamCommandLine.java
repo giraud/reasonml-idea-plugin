@@ -1,6 +1,7 @@
 package com.reason.comp.ocaml;
 
 import com.intellij.execution.configurations.*;
+import com.intellij.openapi.application.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.roots.*;
@@ -11,6 +12,8 @@ import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
+
+import static com.intellij.openapi.application.ApplicationManager.getApplication;
 
 public abstract class OpamCommandLine {
     private static final Log LOG = Log.create("ocaml.opam");
@@ -47,7 +50,7 @@ public abstract class OpamCommandLine {
                 cli.setWorkDirectory(contentRoots[0].getPath());
                 cli.setRedirectErrorStream(myRedirectErrorStream);
 
-                Map<String, String> env = myProject.getService(OpamEnv.class).getEnv(settings.getSwitchName());
+                Map<String, String> env = getApplication().getService(OpamEnv.class).getEnv(settings.getSwitchName());
                 if (env != null) {
                     for (Map.Entry<String, String> entry : env.entrySet()) {
                         cli.withEnvironment(entry.getKey(), entry.getValue());

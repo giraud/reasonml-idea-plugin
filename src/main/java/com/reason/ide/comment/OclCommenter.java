@@ -216,7 +216,7 @@ public class OclCommenter implements SelfManagingCommenter<OclCommenter.Commente
         return result == -1 ? text.length() : result;
     }
 
-    static class CommenterData extends CommenterDataHolder {
+    public static class CommenterData extends CommenterDataHolder {
         private final int myStartLine;
         private final int myEndLine;
 

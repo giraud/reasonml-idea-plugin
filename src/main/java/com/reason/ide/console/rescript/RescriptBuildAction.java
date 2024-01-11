@@ -10,7 +10,6 @@ import com.reason.ide.console.*;
 import org.jetbrains.annotations.*;
 
 public class RescriptBuildAction extends CompilerAction {
-
     public RescriptBuildAction() {
         super("Build", "Build", AllIcons.Actions.Compile);
     }
@@ -20,7 +19,7 @@ public class RescriptBuildAction extends CompilerAction {
         Project project = e.getProject();
         Compiler compiler = project == null ? null : project.getService(ResCompiler.class);
         if (compiler != null) {
-            e.getPresentation().setEnabled(!compiler.isRunning());
+            e.getPresentation().setEnabled(compiler.isAvailable());
         }
     }
 
@@ -29,7 +28,12 @@ public class RescriptBuildAction extends CompilerAction {
         Project project = e.getProject();
         Compiler compiler = project == null ? null : project.getService(ResCompiler.class);
         if (compiler != null) {
-            doAction(project, CliType.Rescript.MAKE, (_void) -> e.getPresentation().setEnabled(!compiler.isRunning()));
+            doAction(project, CliType.Rescript.MAKE, (_void) -> e.getPresentation().setEnabled(compiler.isAvailable()));
         }
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

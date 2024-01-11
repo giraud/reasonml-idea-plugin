@@ -15,7 +15,7 @@ public class RPsiParameters extends ORCompositePsiElement<ORLangTypes> implement
 
     public @NotNull List<PsiElement> getParametersList() {
         PsiElement parent = getParent();
-        boolean isCall = parent instanceof RPsiFunctionCall || parent instanceof RPsiFunctorCall;
+        boolean isCall = parent instanceof RPsiFunctionCall || parent instanceof RPsiFunctorCall || parent instanceof RPsiInherit;
         return ORUtil.findImmediateChildrenOfType(this, isCall ? myTypes.C_PARAM : myTypes.C_PARAM_DECLARATION);
     }
 }

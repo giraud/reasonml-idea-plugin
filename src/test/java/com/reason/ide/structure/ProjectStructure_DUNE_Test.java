@@ -6,7 +6,7 @@ import com.reason.ide.*;
 import com.reason.ide.files.*;
 import org.junit.*;
 
-public class DuneProjectStructureTest extends ORBasePlatformTestCase {
+public class ProjectStructure_DUNE_Test extends ORBasePlatformTestCase {
     @Test
     public void test_stanza() {
         DuneFile a = (DuneFile) myFixture.configureByText("dune-project", "(lang dune 2.9) (licence MIT)");

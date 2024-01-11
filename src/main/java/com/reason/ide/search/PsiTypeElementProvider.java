@@ -39,6 +39,9 @@ public class PsiTypeElementProvider {
         if (element instanceof RPsiRecordField) {
             return "record field";
         }
+        if (element instanceof RPsiObjectField) {
+            return "object field";
+        }
 
         return null;
     }

@@ -277,7 +277,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         @Override
         public void visitElement(@NotNull PsiElement element) {
-            if (element instanceof RPsiStructuredElement) {
+            if (element instanceof RPsiStructuredElement && myElementLevel < 3) {
                 if (((RPsiStructuredElement) element).canBeDisplayed()) {
                     if (element instanceof RPsiLet let) {
                         if (let.isScopeIdentifier()) {
@@ -292,7 +292,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                     }
                     myTreeElements.add(new StructureViewElement(element, myElementLevel));
                 }
-            } else if (element instanceof RPsiRecord) {
+            } else if (element instanceof RPsiRecord && myElementLevel < 2) {
                 for (RPsiRecordField field : ((RPsiRecord) element).getFields()) {
                     myTreeElements.add(new StructureViewElement(field, myElementLevel));
                 }

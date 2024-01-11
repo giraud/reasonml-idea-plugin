@@ -46,7 +46,7 @@ public class DuneOutputAnalyzer extends ORCompilerOutputAnalyzer {
             boolean endMessage = true;
 
             String trimmedLine = line.trim();
-            if (trimmedLine.length() > 0 && !trimmedLine.startsWith("File")) {
+            if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("File")) {
                 myCurrentInfo.message += " " + trimmedLine;
                 endMessage = trimmedLine.endsWith(".");
             }

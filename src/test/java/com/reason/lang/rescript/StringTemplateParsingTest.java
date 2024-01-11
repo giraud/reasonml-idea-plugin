@@ -44,7 +44,7 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
         RPsiInterpolation e = firstOfType(parseCode("let _ = `url(\"${var}\")`"), RPsiInterpolation.class);
 
         assertNoParserError(e);
-        List<RPsiLiteralExpression> strings = ORUtil.findImmediateChildrenOfClass(e, RPsiLiteralExpression.class);
+        List<RPsiLiteralString> strings = ORUtil.findImmediateChildrenOfClass(e, RPsiLiteralString.class);
         assertEquals("url(\"", strings.get(0).getText());
         assertEquals("\")", strings.get(1).getText());
         RPsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class);
@@ -56,7 +56,7 @@ public class StringTemplateParsingTest extends ResParsingTestCase {
         RPsiInterpolation e = firstOfType(parseCode("let _ = j`url(\"${var}\")`"), RPsiInterpolation.class);
 
         assertNoParserError(e);
-        List<RPsiLiteralExpression> strings = ORUtil.findImmediateChildrenOfClass(e, RPsiLiteralExpression.class);
+        List<RPsiLiteralString> strings = ORUtil.findImmediateChildrenOfClass(e, RPsiLiteralString.class);
         assertEquals("url(\"", strings.get(0).getText());
         assertEquals("\")", strings.get(1).getText());
         RPsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(e, RPsiInterpolationReference.class);
