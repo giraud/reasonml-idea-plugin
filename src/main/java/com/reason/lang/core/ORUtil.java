@@ -397,4 +397,27 @@ public class ORUtil {
         IElementType prevType = prevSibling == null ? null : prevSibling.getNode().getElementType();
         return prevType != null && prevType == elementType;
     }
+
+    public static boolean isInterfaceFile(@Nullable PsiElement element) {
+        PsiFile file = element != null ? element.getContainingFile() : null;
+        return file instanceof FileBase fileBase && fileBase.isInterface();
+    }
+
+    public static boolean inInterface(@Nullable PsiElement element) {   // zzz add tests
+        RPsiModule module = element instanceof RPsiModule referencedModule ? referencedModule : PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
+
+        if (module != null) {
+            FileBase file = (FileBase) module.getContainingFile();
+            if (file != null && file.isInterface()) {
+                return true;
+            }
+
+            // zzz Test that anonymous module as a signature ?
+            if (module instanceof RPsiInnerModule innerModule) {
+                return innerModule.isModuleType();
+            }
+        }
+
+        return false;
+    }
 }

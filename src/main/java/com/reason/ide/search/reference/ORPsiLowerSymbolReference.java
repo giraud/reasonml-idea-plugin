@@ -3,8 +3,8 @@ package com.reason.ide.search.reference;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
+import com.intellij.psi.util.*;
 import com.intellij.util.*;
-import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
@@ -17,11 +17,11 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSymbol> {
+public class ORPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSymbol> {
     private static final Log LOG = Log.create("ref.lower");
     private static final Log LOG_PERF = Log.create("ref.perf.lower");
 
-    public RPsiLowerSymbolReference(@NotNull RPsiLowerSymbol element, @NotNull ORLangTypes types) {
+    public ORPsiLowerSymbolReference(@NotNull RPsiLowerSymbol element, @NotNull ORLangTypes types) {
         super(element, types);
     }
 
@@ -139,8 +139,8 @@ public class RPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSy
             return true;
         }
 
-        public boolean isInterface() {
-            return FileHelper.isInterface(myReferencedIdentifier.getContainingFile().getFileType());
+        public boolean inInterface() {
+            return ORUtil.inInterface(myReferencedIdentifier);
         }
     }
 }

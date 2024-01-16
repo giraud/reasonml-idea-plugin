@@ -276,6 +276,7 @@
         <!-- for ctrl + alt + click navigation -->
         <definitionsScopedSearch implementation="com.reason.ide.search.ORImplementationSearch"/>
 
+        <targetElementEvaluator language="OCaml" implementationClass="com.reason.ide.files.ORTargetElementEvaluator"/>
         <!-- Navigate to make function if top level module is a component -->
         <targetElementEvaluator language="Reason"
                                 implementationClass="com.reason.ide.files.ORTargetElementEvaluator"/>
