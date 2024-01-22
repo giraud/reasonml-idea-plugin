@@ -237,7 +237,7 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseStringConcat() {
-            if (strictlyIn(myTypes.C_FUNCTION_CALL)) {
+            if (inScopeOrAny(myTypes.C_FUNCTION_CALL) && !isFoundScope(myTypes.LPAREN)) {
                 popEndUntilFoundIndex().popEnd();
             }
         }
