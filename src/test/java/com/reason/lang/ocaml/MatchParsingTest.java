@@ -246,4 +246,31 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertEquals("spc ()", eb1cs.get(0).getText());
         assertEquals("spc ()", eb1cs.get(1).getText());
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/442
+    @Test
+    public void test_GH_442() {
+        RPsiFunction e = firstOfType(parseCode("""
+                let fn x = function
+                  | [] -> best
+                  | hd :: tl ->
+                    let y = 1 in
+                      if cond then
+                        expr1
+                      else
+                        expr2
+                in
+                stmt
+                """), RPsiFunction.class);
+
+        RPsiSwitch es = PsiTreeUtil.findChildOfType(e, RPsiSwitch.class);
+        assertSize(2, es.getPatterns());
+        assertEquals("best", es.getPatterns().get(0).getBody().getText());
+        assertEquals("""
+                              let y = 1 in
+                                    if cond then
+                                      expr1
+                                    else
+                                      expr2""", es.getPatterns().get(1).getBody().getText());
+    }
 }
