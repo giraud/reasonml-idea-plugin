@@ -458,14 +458,19 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals("A.a.b.c.d", e.getQualifiedName());
     }
 
-    //@Test TODO
-    //public void test_deep_open() {
-    //    configureCode("A.res", "let oo = {\"first\": {\"deep\": true}, \"deep\": {\"other\": {\"asd\": 1} } }");
-    //    configureCode("B.res", "open A\n oo[\"deep\"][\"other\"<caret>]");
-    //
-    //    RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
-    //    assertEquals("A.oo.deep.other", e.getQualifiedName());
-    //}
+    @Test
+    public void test_deep_open() {
+        configureCode("A.res", """
+                let oo = {"first": {"deep": true}, "deep": {"other": {"asd": 1} } }
+                """);
+        configureCode("B.res", """
+                open A
+                oo["deep"]["other"<caret>]
+                """);
+
+        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
+        assertEquals("A.oo.deep.other", e.getQualifiedName());
+    }
     //endregion
 
     @Test

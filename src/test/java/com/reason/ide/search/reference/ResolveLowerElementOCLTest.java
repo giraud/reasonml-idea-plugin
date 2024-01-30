@@ -303,22 +303,21 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("Css.px", e.getQualifiedName());
     }
 
-    //TODO
-    //@Test
-    //public void test_pipe_first_open_2() {
-    //    configureCode("Core.ml", """
-    //            module Async = struct
-    //              let get x = x
-    //            end
-    //            """);
-    //    configureCode("A.ml", """
-    //            open Core.Async
-    //            request |. get<caret> "windows/settings"
-    //            """);
-    //
-    //    RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-    //    assertEquals("Core.Async.get", e.getQualifiedName());
-    //}
+    @Test
+    public void test_pipe_first_open_2() {
+        configureCode("Core.ml", """
+                module Async = struct
+                  let get x = x
+                end
+                """);
+        configureCode("A.ml", """
+                open Core.Async
+                let _ = request |. get<caret> "windows/settings"
+                """);
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("Core.Async.get", e.getQualifiedName());
+    }
 
     @Test
     public void test_pipe_first_open_with_path() {
@@ -424,16 +423,15 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("A.Make.a", e.getQualifiedName());
     }
 
-    // TODO
-    //@Test
-    //public void test_functor_result_with_alias() {
-    //    configureCode("A.ml", "module type Result = sig let a: int end");
-    //    configureCode("B.ml", "module T = A\n module Make(M:Intf): T.Result = struct let b = 3 end");
-    //    configureCode("C.ml", "module Instance = Make(struct end)\n let c = Instance.a<caret>");
-    //
-    //    RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-    //    assertEquals("A.Result.a", e.getQualifiedName());
-    //}
+    @Test
+    public void test_functor_result_with_alias() {
+        configureCode("A.ml", "module type Result = sig let a: int end");
+        configureCode("B.ml", "module T = A\n module Make(M:Intf): T.Result = struct let b = 3 end");
+        configureCode("C.ml", "module Instance = B.Make(struct end)\n let c = Instance.a<caret>");
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.Result.a", e.getQualifiedName());
+    }
 
     @Test
     public void test_path_functor() {

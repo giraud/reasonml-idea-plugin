@@ -1269,7 +1269,11 @@ public class RmlParser extends CommonPsiParser {
                     popEndUntilFoundIndex().popEnd()
                             .advance().mark(myTypes.C_FUNCTOR_BINDING);
                 } else if (isFound(myTypes.C_PARAM_DECLARATION)) {
-                    if (isRawParent(myTypes.H_COLLECTION_ITEM)) {
+                    if ( isGrandParent(myTypes.C_SOME) && isParent(myTypes.C_PARAMETERS)) {
+                        // Some((...) |>=><|
+                        rollbackToIndex(getIndex()/*parent, ie parameters*/)
+                                .mark(myTypes.C_FUNCTION_EXPR);
+                    } else if (isRawParent(myTypes.H_COLLECTION_ITEM)) {
                         // inside a parenthesis, function not declared yet
                     } else {
                         // x |>=><| ...
