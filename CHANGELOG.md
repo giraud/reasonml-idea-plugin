@@ -9,7 +9,13 @@
 > - :nail_care:  [Polish]
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
-                        
+                                
+## 0.121 - 2024/02/02
+
+- :bug: ![o] [#445](https://github.com/giraud/reasonml-idea-plugin/issues/445) Fix jump to implementation
+- :bug: ![o] [#442](https://github.com/giraud/reasonml-idea-plugin/issues/442) Incorrect parsing of 'IN' in pattern matching
+- :bug: ![o] [#441](https://github.com/giraud/reasonml-idea-plugin/issues/441) Incorrect parsing of pattern matching
+
 ## 0.120 - 2024/01/11
 
 - :bug: ![o] [#444](https://github.com/giraud/reasonml-idea-plugin/issues/444) Fix OCaml parser for 'inherit'

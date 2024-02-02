@@ -6,6 +6,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.search.searches.*;
 import com.intellij.util.*;
+import com.reason.ide.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.psi.*;
 import jpsplugin.com.reason.*;
@@ -33,7 +34,7 @@ public class ORImplementationSearch extends QueryExecutorBase<PsiElement, Defini
                         LOG.debug("Process implementation search for VAL", qName, scope, project);
                         Collection<RPsiLet> elements = LetFqnIndex.getElements(qName, project, searchScope);
                         for (RPsiLet element : elements) {
-                            System.out.println("Processing " + element.getQualifiedName() + " " + element.getContainingFile().getVirtualFile());
+                            System.out.println("Processing " + element.getQualifiedName() + " " + ORFileUtils.getVirtualFile(element.getContainingFile()));
                             consumer.process(element);
                         }
                     }
