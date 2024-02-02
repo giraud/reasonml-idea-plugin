@@ -90,7 +90,7 @@ public class RPsiLiteralStringReference extends ORMultiSymbolReference<RPsiLiter
         ResolveResult[] resolveResults = new ResolveResult[((Collection<RPsiQualifiedPathElement>) resolvedInstructions).size()];
         int i = 0;
         for (PsiElement element : resolvedInstructions) {
-            resolveResults[i] = new RPsiLowerSymbolReference.LowerResolveResult(element, myReferenceName);
+            resolveResults[i] = new ORPsiLowerSymbolReference.LowerResolveResult(element, myReferenceName);
             i++;
         }
 

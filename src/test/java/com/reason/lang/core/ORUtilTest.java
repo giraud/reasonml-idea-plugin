@@ -51,4 +51,29 @@ public class ORUtilTest extends ORBasePlatformTestCase {
 
         assertEquals("A.M.make", qualifiedPath);
     }
+
+    @Test
+    public void test_in_interface_file() {
+        FileBase intf = configureCode("A.resi", "module M = { let x: int }");
+        FileBase impl = configureCode("A.res", "module M = { let x = 1 }");
+
+        assertTrue(ORUtil.inInterface(PsiTreeUtil.findChildOfType(intf, RPsiLet.class)));
+        assertFalse(ORUtil.inInterface(PsiTreeUtil.findChildOfType(impl, RPsiLet.class)));
+    }
+
+    @Test
+    public void test_in_interface_module_type() {
+        FileBase f = configureCode("A.res", "module type M = { let x: 1 }");
+
+        assertTrue(ORUtil.inInterface(PsiTreeUtil.findChildOfType(f, RPsiLet.class)));
+    }
+
+    @Test
+    public void test_in_interface_anonymous_module_type() {
+        FileBase f = configureCode("A.res", "module M: { let x: int } = { let x = 1 }");
+        ImmutableList<RPsiLet> es = ImmutableList.copyOf(PsiTreeUtil.findChildrenOfType(f, RPsiLet.class));
+
+        assertTrue(ORUtil.inInterface(es.get(0)));
+        assertFalse(ORUtil.inInterface(es.get(1)));
+    }
 }

@@ -79,11 +79,6 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
     //endregion
 
     @Override
-    public boolean isInterfaceFile() {
-        return ((FileBase) getContainingFile()).isInterface();
-    }
-
-    @Override
     public boolean isComponent() {
         return false;
     }

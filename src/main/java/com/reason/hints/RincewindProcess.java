@@ -50,7 +50,6 @@ public class RincewindProcess {
             BufferedReader reader = new BufferedReader(new InputStreamReader(rincewind.getInputStream()));
             BufferedReader errReader = new BufferedReader(new InputStreamReader(rincewind.getErrorStream()));
 
-            // System.out.println("---");
             Streams.waitUntilReady(reader, errReader);
             StringBuilder msgBuffer = new StringBuilder();
             if (errReader.ready()) {

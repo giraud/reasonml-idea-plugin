@@ -61,7 +61,7 @@ public class DotExpressionCompletionProvider {
 
             LOG.debug(" -> lower symbol", previousElement);
 
-            RPsiLowerSymbolReference reference = (RPsiLowerSymbolReference) previousElement.getReference();
+            ORPsiLowerSymbolReference reference = (ORPsiLowerSymbolReference) previousElement.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
             if (LOG.isDebugEnabled()) {
                 LOG.debug(" -> resolved to", resolvedElement == null ? null : resolvedElement.getParent());
