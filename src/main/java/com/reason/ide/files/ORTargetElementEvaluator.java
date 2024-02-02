@@ -11,6 +11,11 @@ import org.jetbrains.annotations.*;
  */
 public class ORTargetElementEvaluator extends TargetElementEvaluatorEx2 {
     @Override
+    public boolean includeSelfInGotoImplementation(@NotNull PsiElement element) {
+        return false;
+    }
+
+    @Override
     public @Nullable PsiElement getGotoDeclarationTarget(@NotNull PsiElement element, @Nullable PsiElement navElement) {
         if (navElement == element && element instanceof RPsiModule module) {
             if (module.isComponent()) {

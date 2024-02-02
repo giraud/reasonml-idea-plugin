@@ -10,6 +10,7 @@ import com.intellij.psi.util.*;
 import com.reason.ide.*;
 import com.reason.ide.search.index.*;
 import com.reason.ide.search.reference.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.ocaml.*;
@@ -57,11 +58,10 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         List<? extends RPsiVar> targets = null;
         boolean isOcaml = element.getLanguage() == OclLanguage.INSTANCE;
         RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
-        boolean inInterface = module != null && module.isInterfaceFile();
+        boolean inInterface = ORUtil.inInterface(element);
 
         if (module instanceof RPsiInnerModule innerModule) {
             LOG.trace("  from inner module", innerModule);
-            inInterface = innerModule.isModuleType() || inInterface;
             String letName = element.getName();
             if (letName != null) {
                 targets = inInterface
@@ -73,7 +73,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             // Top module navigation
             String qName = element.getQualifiedName();
             Collection<? extends RPsiVar> resolvedElements;
-            if (isOcaml && !module.isInterfaceFile()) {
+            if (isOcaml && !inInterface) {
                 resolvedElements = qName == null ? null : ValFqnIndex.getElements(qName, project, scope);
             } else {
                 resolvedElements = qName == null ? null : LetFqnIndex.getElements(qName, project, scope);
@@ -91,7 +91,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         List<? extends RPsiVar> targets = null;
 
         RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
-        boolean inInterface = module != null && module.isInterfaceFile();
+        boolean inInterface = ORUtil.inInterface(element);
 
         if (module instanceof RPsiInnerModule innerModule) {
             inInterface = innerModule.isModuleType() || inInterface;
@@ -118,7 +118,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         List<RPsiType> targets = null;
 
         RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
-        boolean inInterface = module != null && module.isInterfaceFile();
+        boolean inInterface = ORUtil.inInterface(element);
 
         if (module instanceof RPsiInnerModule innerModule) {
             inInterface = innerModule.isModuleType() || inInterface;
@@ -142,7 +142,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     private void collectExternalNavigationMarkers(@NotNull RPsiExternal element, @NotNull Project project, @NotNull GlobalSearchScope scope, @NotNull Collection<? super RelatedItemLineMarkerInfo<PsiElement>> result) {
         RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
-        boolean inInterface = module != null && module.isInterfaceFile();
+        boolean inInterface = ORUtil.inInterface(element);
         List<RPsiExternal> targets = null;
 
         if (module instanceof RPsiInnerModule innerModule) {
@@ -167,7 +167,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     private void collectClassNavigationMarkers(@NotNull RPsiClass element, @NotNull Project project, @NotNull GlobalSearchScope scope, @NotNull Collection<? super RelatedItemLineMarkerInfo<PsiElement>> result) {
         RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
-        boolean inInterface = module != null && module.isInterfaceFile();
+        boolean inInterface = ORUtil.inInterface(element);
         List<RPsiClass> targets = null;
 
         if (module instanceof RPsiInnerModule innerModule) {
@@ -192,7 +192,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     private void collectClassMethodNavigationMarkers(@NotNull RPsiClassMethod element, @NotNull Project project, @NotNull GlobalSearchScope scope, @NotNull Collection<? super RelatedItemLineMarkerInfo<PsiElement>> result) {
         RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
-        boolean inInterface = module != null && module.isInterfaceFile();
+        boolean inInterface = ORUtil.inInterface(element);
         List<RPsiClassMethod> targets = null;
 
         if (module instanceof RPsiInnerModule innerModule) {
@@ -216,7 +216,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     private void collectExceptionNavigationMarkers(@NotNull RPsiException element, @NotNull Project project, @NotNull GlobalSearchScope scope, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
         RPsiModule module = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
-        boolean inInterface = module != null && module.isInterfaceFile();
+        boolean inInterface = ORUtil.inInterface(element);
         List<RPsiException> targets = null;
 
         if (module instanceof RPsiInnerModule innerModule) {
@@ -280,9 +280,9 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         // Find module(s) in the related file
         Collection<RPsiModule> modules = qName != null ? ModuleFqnIndex.getElements(qName, project, scope) : null;
         if (modules != null) {
-            boolean fromInterfaceFile = element.isInterfaceFile();
+            boolean fromInterfaceFile = ORUtil.isInterfaceFile(element);
             List<RPsiInnerModule> relatedModules = modules.stream()
-                    .filter(m -> m.isInterfaceFile() != fromInterfaceFile)
+                    .filter(m -> ORUtil.isInterfaceFile(m) != fromInterfaceFile)
                     .map(m -> m instanceof RPsiInnerModule ? (RPsiInnerModule) m : null)
                     .filter(Objects::nonNull)
                     .toList();
@@ -306,7 +306,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         if (resolvedElements != null) {
             for (T resolvedElement : resolvedElements) {
                 RPsiModule targetModule = PsiTreeUtil.getStubOrPsiParentOfType(resolvedElement, RPsiModule.class);
-                boolean targetInterface = targetModule != null && targetModule.isInterfaceFile();
+                boolean targetInterface = ORUtil.isInterfaceFile(targetModule);
                 if (inInterfaceFile && !targetInterface) {
                     return singletonList(resolvedElement);
                 } else if (!inInterfaceFile && targetInterface) {

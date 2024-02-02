@@ -397,4 +397,29 @@ public class ORUtil {
         IElementType prevType = prevSibling == null ? null : prevSibling.getNode().getElementType();
         return prevType != null && prevType == elementType;
     }
+
+    public static boolean isInterfaceFile(@Nullable PsiElement element) {
+        PsiFile file = element != null ? element.getContainingFile() : null;
+        return file instanceof FileBase fileBase && fileBase.isInterface();
+    }
+
+    public static boolean inInterface(@Nullable PsiElement element) {
+        PsiElement parent = PsiTreeUtil.getStubOrPsiParent(element);
+
+        if (parent instanceof RPsiModuleSignature) {
+            return true;
+        } else if (parent instanceof RPsiModuleBinding moduleBinding) {
+            boolean interfaceFile = isInterfaceFile(moduleBinding);
+            if (interfaceFile) {
+                return true;
+            }
+
+            PsiElement bindingParent = PsiTreeUtil.getStubOrPsiParent(moduleBinding);
+            if (bindingParent instanceof RPsiInnerModule innerModule) {
+                return innerModule.isModuleType();
+            }
+        }
+
+        return isInterfaceFile(element);
+    }
 }

@@ -33,6 +33,13 @@ public class OpenParsingTest extends OclParsingTestCase {
     }
 
     @Test
+    public void test_eol() {
+        RPsiOpen e = firstOfType(parseCode("open Core.Async\nlet x = 1"), RPsiOpen.class);
+
+        assertEquals("Core.Async", e.getPath());
+    }
+
+    @Test
     public void test_functor() {
         RPsiOpen e = firstOfType(parseCode("open Make(struct type t end)"), RPsiOpen.class);
 

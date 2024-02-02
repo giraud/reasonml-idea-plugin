@@ -265,7 +265,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
 
         assertSize(2, e.getPatterns());
         RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
-        // TODO assertEquals("(. ()) => 1", f.getText());
+        assertEquals("(. ()) => 1", f.getText());
     }
 
     @Test

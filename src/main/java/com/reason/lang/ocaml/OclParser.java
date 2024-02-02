@@ -237,7 +237,7 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseStringConcat() {
-            if (strictlyIn(myTypes.C_FUNCTION_CALL)) {
+            if (inScopeOrAny(myTypes.C_FUNCTION_CALL) && !isFoundScope(myTypes.LPAREN)) {
                 popEndUntilFoundIndex().popEnd();
             }
         }
@@ -635,7 +635,7 @@ public class OclParser extends CommonPsiParser {
                 } else {
                     popEndUntil(myTypes.C_TRY_EXPR);
                 }
-            } else if (strictlyInAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_DECLARATION, myTypes.C_PATTERN_MATCH_BODY, myTypes.C_OPEN/*local open*/)) {
+            } else if (strictlyInAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_DECLARATION, myTypes.C_OPEN/*local open*/)) {
                 boolean isStart = isFound(myTypes.C_LET_DECLARATION) || isFound(myTypes.C_MODULE_DECLARATION) || isFound(myTypes.C_OPEN);
                 popEndUntilFoundIndex();
                 if (isStart) {

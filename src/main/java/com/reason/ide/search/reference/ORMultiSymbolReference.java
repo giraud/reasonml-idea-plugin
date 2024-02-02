@@ -2,7 +2,7 @@ package com.reason.ide.search.reference;
 
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
-import com.reason.ide.files.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
@@ -36,8 +36,7 @@ public abstract class ORMultiSymbolReference<T extends PsiElement> extends PsiPo
         // Look into other resolved elements to find an equivalent interface if one exist
         for (ResolveResult resolved : resolveResults) {
             PsiElement element = resolved.getElement();
-            FileBase file = element == null ? null : (FileBase) element.getContainingFile();
-            if (file != null && file.isInterface()) {
+            if (ORUtil.inInterface(element)) {
                 return element;
             }
         }

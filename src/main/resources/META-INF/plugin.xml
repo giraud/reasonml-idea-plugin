@@ -272,8 +272,11 @@
         <lang.findUsagesProvider language="Mly" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
 
         <gotoClassContributor implementation="com.reason.ide.go.ORModuleContributor"/>
-        <gotoDeclarationHandler implementation="com.reason.ide.go.ORGotoDeclarationHandler"/>
 
+        <!-- for ctrl + alt + click navigation -->
+        <definitionsScopedSearch implementation="com.reason.ide.search.ORImplementationSearch"/>
+
+        <targetElementEvaluator language="OCaml" implementationClass="com.reason.ide.files.ORTargetElementEvaluator"/>
         <!-- Navigate to make function if top level module is a component -->
         <targetElementEvaluator language="Reason"
                                 implementationClass="com.reason.ide.files.ORTargetElementEvaluator"/>
