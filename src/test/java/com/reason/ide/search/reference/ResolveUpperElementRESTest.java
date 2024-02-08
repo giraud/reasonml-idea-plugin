@@ -275,6 +275,23 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_module_signature() {
+        configureCode("A.res", """
+                module B = {
+                  module C = {
+                    module type S = {}
+                  };
+                  module D = C
+                };
+
+                module M: B.D.S<caret> = {}
+                """);
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("A.B.C.S", e.getQualifiedName());
+    }
+
+    @Test
     public void test_module_in_between() {
         configureCode("Styles.res", "let myDiv = 1");
         configureCode("A.res", """

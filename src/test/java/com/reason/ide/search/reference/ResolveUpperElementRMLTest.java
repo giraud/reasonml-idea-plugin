@@ -273,6 +273,23 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.Styles", e.getQualifiedName());
     }
 
+    @Test
+    public void test_module_signature() {
+        configureCode("A.re", """
+                module B = {
+                  module C = {
+                    module type S = {};
+                  };
+                  module D = C;
+                };
+
+                module M: B.D.S<caret> = {};
+                """);
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("A.B.C.S", e.getQualifiedName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/418
     @Test
     public void test_with_globally_opened_module() {

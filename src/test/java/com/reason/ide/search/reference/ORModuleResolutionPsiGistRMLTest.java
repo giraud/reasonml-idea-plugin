@@ -113,11 +113,13 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_aliases_01() {
-        FileBase e = configureCode("A.re", "module A1 = { module A2 = {}; };" +
-                "module B1 = A1;" +
-                "include B1;" +
-                "module B2 = A2;" +
-                "include B2;");
+        FileBase e = configureCode("A.re", """
+                module A1 = { module A2 = {}; };
+                module B1 = A1;
+                include B1;
+                module B2 = A2;
+                include B2;
+                """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -174,10 +176,10 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
     @Test
     public void test_aliases_05_same_file() {
         FileBase e = configureCode("A.re", """
-            module W = { module X = { module Y = { module Z = {}; }; }; };
-            module C = W.X;
-            module D = C.Y.Z;
-            """);
+                module W = { module X = { module Y = { module Z = {}; }; }; };
+                module C = W.X;
+                module D = C.Y.Z;
+                """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -288,25 +290,6 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         RPsiModuleSignature emt = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
         assertOrderedEquals(data.getValues(emt/*S*/), "A.S");
     }
-
-    //@Test TODO
-    //public void test_module_type_deep() {
-    //    FileBase e = configureCode("A.re", """
-    //            module B = {
-    //              module C = {
-    //                module type S = {};
-    //              };
-    //              module D = C;
-    //            };
-    //
-    //            module M: B.D.S = {};
-    //            """);
-    //
-    //    ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
-    //
-    //    RPsiModuleSignature emt = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
-    //    assertOrderedEquals(data.getValues(emt/*S*/), "A.B.C.S");
-    //}
 
     @Test
     public void test_module_type_open_alias() {
