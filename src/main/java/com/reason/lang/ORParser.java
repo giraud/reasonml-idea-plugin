@@ -168,49 +168,6 @@ public abstract class ORParser<T extends ORTypes> {
         return false;
     }
 
-    public boolean isGrandParent(ORCompositeType expectedType) {
-        boolean foundParent = false;
-        boolean foundGrandParent = false;
-        int markersCount = myMarkers.size();
-
-        // find start
-        int startIndex = 0;
-        while (startIndex < markersCount && !myMarkers.get(startIndex).isUnset()) {
-            startIndex++;
-        }
-
-        // find parent
-        int parentIndex = startIndex + 1;
-        while (parentIndex < markersCount && !foundParent) {
-            if (myMarkers.get(parentIndex).isUnset()) {
-                foundParent = true;
-            } else {
-                parentIndex++;
-            }
-        }
-
-        // if parent found, find grand parent
-        int grandParentIndex = parentIndex + 1;
-        if (foundParent) {
-            while (grandParentIndex < markersCount && !foundGrandParent) {
-                if (myMarkers.get(grandParentIndex).isUnset()) {
-                    foundGrandParent = true;
-                } else {
-                    parentIndex++;
-                }
-            }
-        }
-
-        // grand parent found, try type
-        if (foundGrandParent && myMarkers.get(grandParentIndex).isCompositeType(expectedType)) {
-            myIndex = grandParentIndex;
-            return true;
-        }
-
-        myIndex = -1;
-        return false;
-    }
-
     public boolean isPrevious(ORCompositeType expectedComposite, int index) {
         int size = myMarkers.size() - 1;
         if (index >= 0 && index < size) {

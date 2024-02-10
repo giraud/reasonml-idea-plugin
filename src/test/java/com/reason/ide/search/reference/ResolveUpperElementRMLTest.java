@@ -14,10 +14,18 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
     @Test
     public void test_basic_file() {
         configureCode("Dimensions.re", "let space = 5;");
-        configureCode("Comp.re", "Dimensions<caret>");
+        configureCode("Comp.re", "Dimensions<caret>\nmodule Dimensions = {};");
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Dimensions.re", ((PsiQualifiedNamedElement) e).getName());
+    }
+
+    @Test
+    public void test_inner_module() {
+        configureCode("A.re", "module Dimensions = {};\nDimensions<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.Dimensions", ((PsiQualifiedNamedElement) e).getQualifiedName());
     }
 
     @Test
@@ -35,18 +43,19 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Dimensions.re", "let space = 5;");
         configureCode("Comp.re", "let s = Dimensions<caret>.space");
 
-        PsiElement elementAtCaret = myFixture.getElementAtCaret();
-        assertEquals("Dimensions.re", ((PsiQualifiedNamedElement) elementAtCaret).getName());
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Dimensions.re", ((PsiQualifiedNamedElement) e).getName());
     }
 
     @Test
     public void test_alias() {
         configureCode("A1.re", "module A11 = {};");
-        configureCode("A.re", "module A1 = {};");
+        configureCode("A2.re", "module A21 = {};");
+        configureCode("A.re", "module A1 = A2;");
         configureCode("B.re", "module X = A; X.A1<caret>;");
 
-        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
-        assertEquals("A.A1", e.getQualifiedName());
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.A1", ((RPsiModule) e).getQualifiedName());
     }
 
     @Test
@@ -90,8 +99,8 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         configureCode("Belt.re", "module Option = {}");
         configureCode("Dummy.re", "open Belt.Option<caret>;");
 
-        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
-        assertEquals("Belt.Option", e.getQualifiedName());
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Belt.Option", ((RPsiModule) e).getQualifiedName());
         assertEquals("Belt.re", e.getContainingFile().getName());
     }
 
@@ -113,6 +122,14 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_local_variant() {
+        configureCode("A.re", "type a = | Variant; let _ = Variant<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.Variant", ((RPsiVariantDeclaration) e).getQualifiedName());
     }
 
     @Test
@@ -155,6 +172,15 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
     @Test
     public void test_exception() {
         myFixture.configureByText("A.re", "exception ExceptionName; raise(ExceptionName<caret>);");
+
+        RPsiException e = (RPsiException) myFixture.getElementAtCaret();
+        assertEquals("A.ExceptionName", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_exception_with_path() {
+        myFixture.configureByText("A.re", "exception ExceptionName;");
+        myFixture.configureByText("B.re", "exception ExceptionName; raise(A.ExceptionName<caret>);");
 
         RPsiException e = (RPsiException) myFixture.getElementAtCaret();
         assertEquals("A.ExceptionName", e.getQualifiedName());
@@ -288,6 +314,36 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("A.B.C.S", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_module_signature_with_open() {
+        configureCode("A.re", """
+                module B = {
+                  module C = { module type S = {}; };
+                  module D = C;
+                };
+                open B;
+                open D;
+                module M: S<caret> = {};
+                """);
+
+        RPsiQualifiedPathElement e = (RPsiQualifiedPathElement) myFixture.getElementAtCaret();
+        assertEquals("A.B.C.S", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_module_signature_incorrect() {
+        configureCode("A.re", """
+                module B = {
+                  module type Intf = {};
+                };
+
+                module IncorrectImpl : Intf<caret> = {};
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();  // not found -> return the psisignature instead
+        assertInstanceOf(e, RPsiModuleSignature.class);
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/418

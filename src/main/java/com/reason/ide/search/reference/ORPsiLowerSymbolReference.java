@@ -3,7 +3,6 @@ package com.reason.ide.search.reference;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
-import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
@@ -55,6 +54,8 @@ public class ORPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerS
         if (ORUtil.isPrevType(myElement, myTypes.SHARPSHARP)) { // ReasonML: JsObject field
             instructions.addLast(new ORReferenceAnalyzer.SymbolField(myElement, false));
         } else if (ORUtil.isPrevType(myElement, myTypes.DOT) && ORUtil.prevPrevSibling(myElement) instanceof RPsiLowerSymbol) { // Record field: a.b
+            instructions.addLast(new ORReferenceAnalyzer.SymbolField(myElement, true));
+        } else if (myElement.getParent() instanceof RPsiRecordField) {
             instructions.addLast(new ORReferenceAnalyzer.SymbolField(myElement, true));
         } else {
             instructions.addLast(myElement);

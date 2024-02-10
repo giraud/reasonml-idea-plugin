@@ -132,14 +132,14 @@ public class DotCompletionRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_with_return_type() {
-        configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) : Intf => { let y = 1; };");
+        configureCode("A.re", "module type Intf = { let x: bool; }; module type Sig = { let y: int}; module MakeIntf = (I:Intf) : Sig => { let y = 1; };");
         configureCode("B.re", "open A; module Instance = MakeIntf({let x = true});");
         configureCode("C.re", "open B; Instance.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertSameElements(elements, "x");
+        assertSameElements(elements, "y");
     }
 
     @Test

@@ -366,7 +366,7 @@ public class ORUtil {
     }
 
     public static @Nullable PsiElement resolveModuleSymbol(@Nullable RPsiUpperSymbol moduleSymbol) {
-        RPsiUpperSymbolReference reference = moduleSymbol == null ? null : moduleSymbol.getReference();
+        ORPsiUpperSymbolReference reference = moduleSymbol == null ? null : moduleSymbol.getReference();
         PsiElement resolvedSymbol = reference == null ? null : reference.resolveInterface();
         return resolvedSymbol instanceof RPsiUpperSymbol ? resolvedSymbol.getParent() : resolvedSymbol;
     }

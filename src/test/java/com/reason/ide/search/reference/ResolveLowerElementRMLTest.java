@@ -14,9 +14,11 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     public void test_let_basic() {
         configureCode("A.re", "let x = 1; let z = x<caret> + 1;");
 
-        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-        assertEquals("A.x", e.getQualifiedName());
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.x", ((RPsiLet) e).getQualifiedName());
     }
+
+    // TODO poly-variant element
 
     @Test
     public void test_call_function_with_module() {
@@ -262,7 +264,16 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_module_signature() {
-        configureCode("A.re", "module B: { type t; let toString: t => string; }; module C: { type t; let toString: t<caret> => string; };");
+        configureCode("A.re", """
+                module B: {
+                  type t;
+                  let toString: t => string;
+                };
+                module C: {
+                  type t;
+                  let toString: t<caret> => string;
+                };
+                """);
 
         RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.C.t", e.getQualifiedName());

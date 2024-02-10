@@ -17,6 +17,9 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         return "src/test/testData/ns";
     }
 
+    // TODO: functor completion, ex open CssJs
+    // TODO: polyvariant completion
+
     @Test
     public void test_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
