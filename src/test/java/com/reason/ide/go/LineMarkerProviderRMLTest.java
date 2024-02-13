@@ -214,12 +214,6 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
 
         assertSize(1, markers);
 
-        // TODO: test that entry1 is A1 and entry2 is A2
-        //List<? extends MergeableLineMarkerInfo<?>> mergedMarkers = MergeableLineMarkerInfo.getMergedMarkers(markers.get(0));
-        //assertSize(2, mergedMarkers);
-        //RelatedItemLineMarkerInfo<?> mergeableLineMarkerInfo0 = (RelatedItemLineMarkerInfo<?>) mergedMarkers.get(0);
-        //RelatedItemLineMarkerInfo<?> mergeableLineMarkerInfo1 = (RelatedItemLineMarkerInfo<?>) mergedMarkers.get(1);
-
         assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
         assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
 
@@ -229,7 +223,7 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
         assertEquals("Declare module", markers.get(0).getLineMarkerTooltip());
     }
 
-    @Test // TODO: test_module_deep
+    @Test
     public void test_module_deep() {
         configureCode("A.re", """
                 module B = {

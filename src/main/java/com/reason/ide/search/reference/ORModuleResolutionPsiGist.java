@@ -528,10 +528,13 @@ public class ORModuleResolutionPsiGist {
                     String moduleInContextName = moduleInContext.getModuleName() != null ? moduleInContext.getModuleName() : "";
 
                     if (moduleInContextName.equals(elementName)) {
-                        RPsiModule resolvedModule = moduleInContext;
+                        RPsiQualifiedPathElement fullModuleResolution = follow(moduleInContext);
+                        RPsiQualifiedPathElement resolvedModule = fullModuleResolution != null ? fullModuleResolution : moduleInContext;
+
                         // If it is a path, must resolve it
                         if (!elementName.equals(elementLongIdent)) {
-                            Collection<RPsiModule> modules = ModuleFqnIndex.getElements(elementLongIdent, myProject, myScope);
+                            String pathToResolve = resolvedModule.getQualifiedName() + elementLongIdent.replaceFirst(moduleInContextName, "");
+                            Collection<RPsiModule> modules = ModuleFqnIndex.getElements(pathToResolve, myProject, myScope);
                             if (modules.size() == 1) {
                                 resolvedModule = modules.iterator().next();
                             } else {

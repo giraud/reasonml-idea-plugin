@@ -31,23 +31,31 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         LOG.trace("collectNavigationMarkers", element, project, scope);
 
-        if (element instanceof RPsiVal valElement) {
-            collectValNavigationMarkers(valElement, project, scope, result);
-        } else if (element instanceof RPsiType typeElement) {
-            collectTypeNavigationMarkers(typeElement, project, scope, result);
-        } else if (element instanceof RPsiExternal externalElement) {
-            collectExternalNavigationMarkers(externalElement, project, scope, result);
-        } else if (element instanceof RPsiClass classElement) {
-            collectClassNavigationMarkers(classElement, project, scope, result);
-        } else if (element instanceof RPsiClassMethodImpl methodElement) {
-            collectClassMethodNavigationMarkers(methodElement, project, scope, result);
-        } else if (element instanceof RPsiException exceptionElement) {
-            collectExceptionNavigationMarkers(exceptionElement, project, scope, result);
-        } else if (element instanceof RPsiInnerModule innerModule) {
-            collectInnerModuleNavigationMarkers(innerModule, project, scope, result);
-        } else if (element instanceof RPsiLowerSymbol lSymbolElement) {
-            if (lSymbolElement.getParent() instanceof RPsiLet letElement) {
+        if (element instanceof RPsiUpperSymbol uSymbolElement) {
+            PsiElement parentElement = uSymbolElement.getParent();
+
+            if (parentElement instanceof RPsiInnerModule moduleElement) {
+                collectInnerModuleNavigationMarkers(moduleElement, project, scope, result);
+            } else if (parentElement instanceof RPsiException exceptionElement) {
+                collectExceptionNavigationMarkers(exceptionElement, project, scope, result);
+            }
+        }
+        //
+        else if (element instanceof RPsiLowerSymbol lSymbolElement) {
+            PsiElement parentElement = lSymbolElement.getParent();
+
+            if (parentElement instanceof RPsiVal valElement) {
+                collectValNavigationMarkers(valElement, project, scope, result);
+            } else if (parentElement instanceof RPsiLet letElement) {
                 collectLetNavigationMarkers(letElement, project, scope, result);
+            } else if (parentElement instanceof RPsiType typeElement) {
+                collectTypeNavigationMarkers(typeElement, project, scope, result);
+            } else if (parentElement instanceof RPsiExternal externalElement) {
+                collectExternalNavigationMarkers(externalElement, project, scope, result);
+            } else if (parentElement instanceof RPsiClass classElement) {
+                collectClassNavigationMarkers(classElement, project, scope, result);
+            } else if (parentElement instanceof RPsiClassMethodImpl methodElement) {
+                collectClassMethodNavigationMarkers(methodElement, project, scope, result);
             }
         }
     }
@@ -250,14 +258,18 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             String signatureName = element.getModuleName();
             if (signatureName != null) {
                 // Find module(s) that use the interface as a result
-                List<RPsiModule> signatureModules = ModuleSignatureIndex.getElements(signatureName, project, scope)
+                Collection<RPsiModule> elements = ModuleSignatureIndex.getElements(signatureName, project, scope);
+
+                List<RPsiModule> signatureModules = elements
                         .stream()
-                        .filter(m -> m instanceof RPsiInnerModule)
                         .map(m -> {
-                            RPsiModuleSignature moduleSignature = ((RPsiInnerModule) m).getModuleSignature();
-                            ORModuleResolutionPsiGist.Data data = moduleSignature != null ? ORModuleResolutionPsiGist.getData(m.getContainingFile()) : null;
-                            Collection<String> values = data != null ? data.getValues(moduleSignature) : emptyList();
-                            return values.contains(qName) ? m : null;
+                            if (m instanceof RPsiInnerModule innerModule) {
+                                RPsiModuleSignature moduleSignature = innerModule.getModuleSignature();
+                                ORModuleResolutionPsiGist.Data data = moduleSignature != null ? ORModuleResolutionPsiGist.getData(m.getContainingFile()) : null;
+                                Collection<String> values = data != null ? data.getValues(moduleSignature) : emptyList();
+                                return values.contains(qName) ? m : null;
+                            }
+                            return null;
                         })
                         .filter(Objects::nonNull)
                         .toList();

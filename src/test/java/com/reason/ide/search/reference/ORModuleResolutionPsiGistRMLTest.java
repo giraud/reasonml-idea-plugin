@@ -320,6 +320,21 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_module_type_deep() {
+        FileBase e = configureCode("A.re", """
+                module B = {
+                  module type Intf = {};
+                };
+                module Impl : B.Intf = {};
+                """);
+        RPsiModuleSignature es = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+        assertOrderedEquals(data.getValues(es/*B.Intf*/), "A.B.Intf");
+
+    }
+
+    @Test
     public void test_tag_inside() {
         FileBase e = configureCode("A.re", "module X = { [@react.component] let make = (~value) => <div/>; }; <X value=1></X>;");
 
