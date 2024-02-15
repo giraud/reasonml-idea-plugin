@@ -61,14 +61,6 @@ public class FreeExpressionCompletionProvider {
             }
         }
 
-        // Resolve alternate names of current file (includes)
-        //ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(containingFile);
-        //for (String alternateName : data.getValues(containingFile)) {
-        //    for (RPsiModule alternateModule : ModuleIndexService.getService().getModules(alternateName, project, searchScope)) {
-        //        addModuleExpressions(alternateModule, languageProperties, resultSet);
-        //    }
-        //}
-
         // Add expressions from opened dependencies in config
         VirtualFile virtualFile = getVirtualFile(containingFile);
         BsConfig config = project.getService(ORCompilerConfigManager.class).getNearestConfig(virtualFile);
@@ -123,14 +115,16 @@ public class FreeExpressionCompletionProvider {
                     }
                 }
             } else if (item instanceof RPsiOpen openItem) {
-                // TODO getReference for RPsiOpen ?
-                RPsiUpperSymbol moduleSymbol = ORUtil.findImmediateLastChildOfClass(openItem, RPsiUpperSymbol.class);
-                ORPsiUpperSymbolReference reference = moduleSymbol != null ? moduleSymbol.getReference() : null;
-                //
-                PsiElement resolved = reference != null ? reference.resolve() : null;
+                PsiReference reference = openItem.getReference();
+                PsiElement resolved = reference instanceof ORPsiUpperSymbolReference ? ((ORPsiUpperSymbolReference) reference).resolveInterface() : null;
                 if (resolved instanceof RPsiModule resolvedModule) {
                     addModuleExpressions(resolvedModule, languageProperties, searchScope, resultSet);
-                    System.out.println("open " + openItem.getPath());
+                }
+            } else if (item instanceof RPsiInclude includeItem) {
+                PsiReference reference = includeItem.getReference();
+                PsiElement resolved = reference instanceof ORPsiUpperSymbolReference ? ((ORPsiUpperSymbolReference) reference).resolveInterface() : null;
+                if (resolved instanceof RPsiModule resolvedModule) {
+                    addModuleExpressions(resolvedModule, languageProperties, searchScope, resultSet);
                 }
             }
 
@@ -173,7 +167,6 @@ public class FreeExpressionCompletionProvider {
         // alternate names
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(rootModule.getContainingFile());
         for (String alternateName : data.getValues(rootModule)) {
-            System.out.println(alternateName);
             Collection<RPsiModule> alternateModules = ModuleFqnIndex.getElements(alternateName, rootModule.getProject(), searchScope);
             for (RPsiModule alternateModule : alternateModules) {
                 addModuleExpressions(alternateModule, language, searchScope, resultSet);
@@ -181,19 +174,21 @@ public class FreeExpressionCompletionProvider {
         }
 
         for (PsiNamedElement item : ORUtil.findImmediateChildrenOfClass(rootModule.getBody(), PsiNamedElement.class)) {
-            if (item instanceof RPsiLet && ((RPsiLet) item).isDeconstruction()) {
-                for (PsiElement deconstructedElement : ((RPsiLet) item).getDeconstructedElements()) {
+            if (!(item instanceof RPsiLet) || !((RPsiLet) item).isPrivate()) {
+                if (item instanceof RPsiLet && ((RPsiLet) item).isDeconstruction()) {
+                    for (PsiElement deconstructedElement : ((RPsiLet) item).getDeconstructedElements()) {
+                        resultSet.addElement(
+                                LookupElementBuilder.create(deconstructedElement.getText())
+                                        .withTypeText(RPsiSignatureUtil.getSignature(item, language))
+                                        .withIcon(ORIcons.LET));
+                    }
+                } else if (!(item instanceof RPsiAnnotation)) {
                     resultSet.addElement(
-                            LookupElementBuilder.create(deconstructedElement.getText())
+                            LookupElementBuilder.create(item)
                                     .withTypeText(RPsiSignatureUtil.getSignature(item, language))
-                                    .withIcon(ORIcons.LET));
+                                    .withIcon(PsiIconUtil.getProvidersIcon(item, 0))
+                                    .withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
                 }
-            } else if (!(item instanceof RPsiAnnotation)) {
-                resultSet.addElement(
-                        LookupElementBuilder.create(item)
-                                .withTypeText(RPsiSignatureUtil.getSignature(item, language))
-                                .withIcon(PsiIconUtil.getProvidersIcon(item, 0))
-                                .withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
             }
         }
     }

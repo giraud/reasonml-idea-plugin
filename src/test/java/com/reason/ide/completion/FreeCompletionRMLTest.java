@@ -30,8 +30,8 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "Pervasives", "x");
-        assertSize(5, elements);
+        assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "Pervasives");
+        assertSize(4, elements);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_include_after() { // TODO add to other lang
+    public void test_include_after() {
         myFixture.configureByText("A.re", "let x = 1;");
         myFixture.configureByText("B.re", """
                 <caret>

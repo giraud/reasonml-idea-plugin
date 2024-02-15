@@ -57,9 +57,10 @@ public class RPsiIncludeImpl extends RPsiTokenStub<ORLangTypes, RPsiInclude, Psi
     }
 
     @Override
-    public @Nullable RPsiUpperSymbol getModuleReference() {
-        // Latest element in path
-        return ORUtil.findImmediateLastChildOfClass(this, RPsiUpperSymbol.class);
+    @Nullable
+    public PsiReference getReference() {
+        RPsiUpperSymbol moduleSymbol = ORUtil.findImmediateLastChildOfClass(this, RPsiUpperSymbol.class);
+        return moduleSymbol != null ? moduleSymbol.getReference() : null;
     }
 
     @Override

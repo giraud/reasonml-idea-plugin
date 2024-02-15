@@ -22,13 +22,16 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "Pervasives", "x");
-        assertSize(5, elements);
+        assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "Pervasives");
+        assertSize(4, elements);
     }
 
     @Test
     public void test_deconstruction() {
-        configureCode("Dummy.res", "let (first, second) = myVar <caret>");
+        configureCode("Dummy.res", """
+                let (first, second) = myVar
+                <caret>
+                """);
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
@@ -48,6 +51,20 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
         List<String> strings = myFixture.getLookupElementStrings();
 
         assertContainsElements(strings, "x", "Aa");
+    }
+
+    @Test
+    public void test_include_after() {
+        myFixture.configureByText("A.res", "let x = 1");
+        myFixture.configureByText("B.res", """
+                <caret>
+                include A
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "A");
     }
 
     @Test
