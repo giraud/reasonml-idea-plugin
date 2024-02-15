@@ -26,7 +26,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.stream.*;
 
-import static com.reason.ide.ORFileUtils.getVirtualFile;
+import static com.reason.ide.ORFileUtils.*;
 
 public class FreeExpressionCompletionProvider {
     private static final Log LOG = Log.create("insight.free");
@@ -62,12 +62,12 @@ public class FreeExpressionCompletionProvider {
         }
 
         // Resolve alternate names of current file (includes)
-        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(containingFile);
-        for (String alternateName : data.getValues(containingFile)) {
-            for (RPsiModule alternateModule : ModuleIndexService.getService().getModules(alternateName, project, searchScope)) {
-                addModuleExpressions(alternateModule, languageProperties, resultSet);
-            }
-        }
+        //ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(containingFile);
+        //for (String alternateName : data.getValues(containingFile)) {
+        //    for (RPsiModule alternateModule : ModuleIndexService.getService().getModules(alternateName, project, searchScope)) {
+        //        addModuleExpressions(alternateModule, languageProperties, resultSet);
+        //    }
+        //}
 
         // Add expressions from opened dependencies in config
         VirtualFile virtualFile = getVirtualFile(containingFile);
@@ -75,13 +75,14 @@ public class FreeExpressionCompletionProvider {
         if (config != null) {
             for (String dependency : config.getOpenedDeps()) {
                 for (RPsiModule module : getTopModules(dependency, project, searchScope)) {
-                    addModuleExpressions(module, languageProperties, resultSet);
+                    addModuleExpressions(module, languageProperties, searchScope, resultSet);
                 }
             }
         }
+
         // Pervasives is always included
         for (RPsiModule module : getTopModules("Pervasives", project, searchScope)) {
-            addModuleExpressions(module, languageProperties, resultSet);
+            addModuleExpressions(module, languageProperties, searchScope, resultSet);
         }
 
         // Add all local expressions
@@ -90,14 +91,21 @@ public class FreeExpressionCompletionProvider {
             item = element.getParent();
         }
 
+        boolean skipLet = false;
+
         while (item != null) {
-            if (item instanceof RPsiInnerModule
+            if (item instanceof RPsiLetBinding) {
+                skipLet = true;
+            } else if (item instanceof RPsiInnerModule
                     || item instanceof RPsiLet
                     || item instanceof RPsiType
                     || item instanceof RPsiExternal
                     || item instanceof RPsiException
                     || item instanceof RPsiVal) {
-                if (item instanceof RPsiLet && ((RPsiLet) item).isDeconstruction()) {
+                boolean isLet = item instanceof RPsiLet;
+                if (isLet && skipLet) {
+                    skipLet = false;
+                } else if (isLet && ((RPsiLet) item).isDeconstruction()) {
                     for (PsiElement deconstructedElement : ((RPsiLet) item).getDeconstructedElements()) {
                         resultSet.addElement(
                                 LookupElementBuilder.create(deconstructedElement.getText())
@@ -113,6 +121,16 @@ public class FreeExpressionCompletionProvider {
                     if (item instanceof RPsiType) {
                         expandType((RPsiType) item, resultSet);
                     }
+                }
+            } else if (item instanceof RPsiOpen openItem) {
+                // TODO getReference for RPsiOpen ?
+                RPsiUpperSymbol moduleSymbol = ORUtil.findImmediateLastChildOfClass(openItem, RPsiUpperSymbol.class);
+                ORPsiUpperSymbolReference reference = moduleSymbol != null ? moduleSymbol.getReference() : null;
+                //
+                PsiElement resolved = reference != null ? reference.resolve() : null;
+                if (resolved instanceof RPsiModule resolvedModule) {
+                    addModuleExpressions(resolvedModule, languageProperties, searchScope, resultSet);
+                    System.out.println("open " + openItem.getPath());
                 }
             }
 
@@ -151,7 +169,17 @@ public class FreeExpressionCompletionProvider {
         }
     }
 
-    private static void addModuleExpressions(RPsiModule rootModule, @Nullable ORLanguageProperties language, @NotNull CompletionResultSet resultSet) {
+    private static void addModuleExpressions(RPsiModule rootModule, @Nullable ORLanguageProperties language, @NotNull GlobalSearchScope searchScope, @NotNull CompletionResultSet resultSet) {
+        // alternate names
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(rootModule.getContainingFile());
+        for (String alternateName : data.getValues(rootModule)) {
+            System.out.println(alternateName);
+            Collection<RPsiModule> alternateModules = ModuleFqnIndex.getElements(alternateName, rootModule.getProject(), searchScope);
+            for (RPsiModule alternateModule : alternateModules) {
+                addModuleExpressions(alternateModule, language, searchScope, resultSet);
+            }
+        }
+
         for (PsiNamedElement item : ORUtil.findImmediateChildrenOfClass(rootModule.getBody(), PsiNamedElement.class)) {
             if (item instanceof RPsiLet && ((RPsiLet) item).isDeconstruction()) {
                 for (PsiElement deconstructedElement : ((RPsiLet) item).getDeconstructedElements()) {

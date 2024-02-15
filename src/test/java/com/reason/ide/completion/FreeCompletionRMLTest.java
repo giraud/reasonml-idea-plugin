@@ -17,7 +17,6 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         return "src/test/testData/ns";
     }
 
-    // TODO: functor completion, ex open CssJs
     // TODO: polyvariant completion
 
     @Test
@@ -81,6 +80,20 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_include_after() { // TODO add to other lang
+        myFixture.configureByText("A.re", "let x = 1;");
+        myFixture.configureByText("B.re", """
+                <caret>
+                include A;
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "A");
+    }
+
+    @Test
     public void test_include_eof() {
         myFixture.configureByText("A.re", "let x = 1;");
         myFixture.configureByText("B.re", """
@@ -107,5 +120,32 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
 
         assertSameElements(strings, "exception", "external", "include", "let", "module", "open", "type", "MyNamespace");
         assertSize(8, strings);
+    }
+
+    @Test
+    public void test_include_functor() {
+        configureCode("A.re", """
+                module type I = { type renderer; };
+                module type R = { type rule; let style: unit => array(rule); };
+                                    
+                module Core = {
+                  let color = "red";
+                  module Make = (I): R => { type rule; let style = () => [||]; };
+                }
+                                    
+                module Css = {
+                  include Core
+                  include Core.Make({type renderer;});
+                };
+                                    
+                open Css;
+                                    
+                let y = <caret>
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertSameElements(strings,  "color", "Core", "Css", "I", "Make", "R", "rule", "style", "y"); // <- y because caret is not inside the let binding
     }
 }

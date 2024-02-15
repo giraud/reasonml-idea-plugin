@@ -65,4 +65,37 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
         assertSameElements(strings, "exception", "external", "include", "let", "module", "open", "type", "A", "y", "x");
         assertSize(10, strings);
     }
+
+    @Test
+    public void test_include_functor() {
+        configureCode("A.res", """
+                module type I = { type renderer }
+                module type R = {
+                  type rule
+                  let style: unit => array<rule>
+                }
+                                    
+                module Core = {
+                  let color = "red"
+                  module Make = (I): R => {
+                    type rule
+                    let style = () => []
+                  }
+                }
+                                    
+                module Css = {
+                  include Core
+                  include Core.Make({ type renderer })
+                };
+                                    
+                open Css
+                                    
+                let y = <caret>
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertSameElements(strings, "color", "Core", "Css", "I", "Make", "R", "rule", "style", "y"); // <- y because caret is not inside the let binding
+    }
 }

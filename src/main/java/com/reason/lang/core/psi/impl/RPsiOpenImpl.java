@@ -8,6 +8,7 @@ import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.xml.model.gotosymbol.*;
 import com.reason.ide.*;
+import com.reason.ide.search.reference.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
@@ -60,6 +61,11 @@ public class RPsiOpenImpl extends RPsiTokenStub<ORLangTypes, RPsiOpen, PsiOpenSt
     public boolean useFunctor() {
         PsiElement firstChild = ORUtil.findImmediateFirstChildOfClass(this, RPsiFunctorCall.class);
         return firstChild != null;
+    }
+
+    @Override public PsiReference getReference() {
+        RPsiUpperSymbol moduleSymbol = ORUtil.findImmediateLastChildOfClass(this, RPsiUpperSymbol.class);
+        return moduleSymbol != null ? moduleSymbol.getReference() : null;
     }
 
     @Override
