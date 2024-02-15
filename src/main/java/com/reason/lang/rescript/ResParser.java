@@ -959,7 +959,7 @@ public class ResParser extends CommonPsiParser {
                 } else {
                     // This is a functor
                     // module M = |>(<| .. )
-                    int moduleIndex = indexOfComposite(myTypes.C_MODULE_DECLARATION);
+                    int moduleIndex = latestIndexOfCompositeAtMost(3, myTypes.C_MODULE_DECLARATION);
                     dropLatest()
                             .popEndUntilIndex(moduleIndex)
                             .updateComposite(myTypes.C_FUNCTOR_DECLARATION)

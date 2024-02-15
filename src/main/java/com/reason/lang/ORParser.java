@@ -294,16 +294,6 @@ public abstract class ORParser<T extends ORTypes> {
         return (0 <= index && index < myMarkers.size()) ? myMarkers.get(index) : null;
     }
 
-    public int indexOfComposite(@NotNull ORCompositeType composite) {
-        for (int i = myMarkers.size() - 1; i >= 0; i--) {
-            Marker markerScope = myMarkers.get(i);
-            if (markerScope.isCompositeType(composite)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     public int latestIndexOfCompositeAtMost(int maxIndex, @NotNull ORCompositeType... composites) {
         int max = Math.min(maxIndex, myMarkers.size());
         for (int i = 0; i < max; i++) {

@@ -86,4 +86,22 @@ public class FunctorParsingTest extends ResParsingTestCase {
         assertNotNull(f.getBody());
         assertNull(PsiTreeUtil.findChildOfType(f.getBody(), RPsiScopedExpr.class));
     }
+
+    // GH: https://github.com/giraud/reasonml-idea-plugin/issues/451
+    @Test
+    public void test_functor_inside_module() {
+        RPsiModule e = firstOfType(parseCode("""
+                module Core = {
+                  module Make = () => {
+                    type t
+                  }
+                }
+                """), RPsiModule.class);
+
+        assertEquals("Core", e.getModuleName());
+        assertFalse(e instanceof RPsiFunctor);
+        RPsiFunctor ef = firstOfType(e.getBody(), RPsiFunctor.class);
+        assertEquals("Make", ef.getModuleName());
+        assertTrue(ef instanceof RPsiFunctor);
+    }
 }

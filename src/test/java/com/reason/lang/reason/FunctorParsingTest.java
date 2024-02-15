@@ -86,4 +86,21 @@ public class FunctorParsingTest extends RmlParsingTestCase {
         assertNotNull(f.getBody());
         assertNull(PsiTreeUtil.findChildOfType(f.getBody(), RPsiScopedExpr.class));
     }
+
+    @Test
+    public void test_functor_inside_module() {
+        RPsiModule e = firstOfType(parseCode("""
+                module Core = {
+                  module Make = () => {
+                    type t;
+                  }
+                }
+                """), RPsiModule.class);
+
+        assertEquals("Core", e.getModuleName());
+        assertFalse(e instanceof RPsiFunctor);
+        RPsiFunctor ef = firstOfType(e.getBody(), RPsiFunctor.class);
+        assertEquals("Make", ef.getModuleName());
+        assertTrue(ef instanceof RPsiFunctor);
+    }
 }
