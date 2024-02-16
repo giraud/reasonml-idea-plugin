@@ -2,6 +2,7 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
+import com.reason.ide.insight.*;
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
@@ -9,7 +10,6 @@ import org.junit.runners.*;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-@RunWith(JUnit4.class)
 public class FreeCompletionRESTest extends ORBasePlatformTestCase {
     @Test
     public void test_pervasives() {
@@ -114,5 +114,27 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
         List<String> strings = myFixture.getLookupElementStrings();
 
         assertSameElements(strings, "color", "Core", "Css", "I", "Make", "R", "rule", "style", "y"); // <- y because caret is not inside the let binding
+    }
+
+    @Test
+    public void test_open_include() {
+        configureCode("A.res", "let x = 1");
+        configureCode("B.res", "include A");
+        configureCode("C.res", "include B");
+        configureCode("D.res", """
+                open C
+                <caret>
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = getLookupStrings();
+
+        assertSameElements(strings, "A", "B", "C", "x");
+    }
+
+    private List<String> getLookupStrings() {
+        List<String> elements = myFixture.getLookupElementStrings();
+        elements.removeAll(List.of(ResKeywordCompletionContributor.KEYWORDS));
+        return elements;
     }
 }

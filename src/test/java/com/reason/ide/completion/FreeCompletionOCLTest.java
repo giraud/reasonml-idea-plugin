@@ -2,6 +2,7 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
+import com.reason.ide.insight.*;
 import org.junit.*;
 
 import java.util.*;
@@ -23,7 +24,6 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
         assertSize(4, elements);
     }
 
-
     @Test
     public void test_deconstruction() {
         configureCode("Dummy.ml", """
@@ -36,7 +36,6 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
 
         assertContainsElements(elements, "first", "second");
     }
-
 
     @Test
     public void test_include() {
@@ -113,5 +112,27 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
         List<String> strings = myFixture.getLookupElementStrings();
 
         assertSameElements(strings, "color", "Core", "Css", "I", "Make", "R", "rule", "style", "y"); // <- y because caret is not inside the let binding
+    }
+
+    @Test
+    public void test_open_include() {
+        configureCode("A.ml", "let x = 1");
+        configureCode("B.ml", "include A");
+        configureCode("C.ml", "include B");
+        configureCode("D.ml", """
+                open C
+                <caret>
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = getLookupStrings();
+
+        assertSameElements(strings, "A", "B", "C", "x");
+    }
+
+    private List<String> getLookupStrings() {
+        List<String> elements = myFixture.getLookupElementStrings();
+        elements.removeAll(List.of(ResKeywordCompletionContributor.KEYWORDS));
+        return elements;
     }
 }

@@ -139,14 +139,16 @@ public class FreeExpressionCompletionProvider {
     }
 
     private static List<RPsiModule> getTopModules(@NotNull String name, @NotNull Project project, @NotNull GlobalSearchScope scope) {
-        PsiManager psiManager = PsiManager.getInstance(project);
         FileModuleIndex index = FileModuleIndex.getInstance();
-        ID<String, FileModuleData> indexId = index == null ? null : index.getName();
+        ID<String, FileModuleData> indexId = index != null ? index.getName() : null;
         if (indexId != null) {
-            return FileBasedIndex.getInstance().getContainingFiles(indexId, name, scope).stream().map(v -> {
-                PsiFile psiFile = psiManager.findFile(v);
-                return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+            PsiManager psiManager = PsiManager.getInstance(project);
+            return FileBasedIndex.getInstance().getContainingFiles(indexId, name, scope).stream() //
+                    .map(v -> {
+                        PsiFile psiFile = psiManager.findFile(v);
+                        return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
+                    }) //
+                    .filter(Objects::nonNull).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -167,7 +169,8 @@ public class FreeExpressionCompletionProvider {
         // alternate names
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(rootModule.getContainingFile());
         for (String alternateName : data.getValues(rootModule)) {
-            Collection<RPsiModule> alternateModules = ModuleFqnIndex.getElements(alternateName, rootModule.getProject(), searchScope);
+            List<RPsiModule> alternateModules = getTopModules(alternateName, rootModule.getProject(), searchScope);
+            alternateModules.addAll(ModuleFqnIndex.getElements(alternateName, rootModule.getProject(), searchScope));
             for (RPsiModule alternateModule : alternateModules) {
                 addModuleExpressions(alternateModule, language, searchScope, resultSet);
             }
