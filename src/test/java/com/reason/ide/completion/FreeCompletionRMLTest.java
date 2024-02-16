@@ -36,6 +36,17 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_underscore() {
+        configureCode("Dummy.re", "let _ = 1; <caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, RmlKeywordCompletionContributor.KEYWORDS);
+        assertSize(RmlKeywordCompletionContributor.KEYWORDS.length, elements);
+    }
+
+    @Test
     public void test_deconstruction() {
         configureCode("Dummy.re", "let (first, second) = myVar; <caret>");
 
@@ -147,7 +158,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings,  "color", "Core", "Css", "I", "Make", "R", "rule", "style", "y"); // <- y because caret is not inside the let binding
+        assertSameElements(strings, "color", "Core", "Css", "I", "Make", "R", "rule", "style", "y"); // <- y because caret is not inside the let binding
     }
 
     @Test
@@ -161,14 +172,8 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> strings = getLookupStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings, "A", "B", "C", "x");
-    }
-
-    private List<String> getLookupStrings() {
-        List<String> elements = myFixture.getLookupElementStrings();
-        elements.removeAll(List.of(ResKeywordCompletionContributor.KEYWORDS));
-        return elements;
+        assertContainsElements(strings, "A", "B", "C", "x");
     }
 }

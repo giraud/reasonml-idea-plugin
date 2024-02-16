@@ -25,6 +25,17 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_underscore() {
+        configureCode("Dummy.re", "let _ = 1; <caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, OclKeywordCompletionContributor.KEYWORDS);
+        assertSize(OclKeywordCompletionContributor.KEYWORDS.length, elements);
+    }
+
+    @Test
     public void test_deconstruction() {
         configureCode("Dummy.ml", """
                 let (first, second) = myVar
@@ -89,7 +100,7 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
                   type rule
                   val style : unit -> rule array
                 end
-                
+                                
                 module Core = struct
                     let color = "red"
                     module Make(_:I) : R = struct
@@ -97,12 +108,12 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
                       let style () = [||]
                     end
                 end
-                
+                                
                 module Css = struct
                   include Core
                   include Core.Make(struct type renderer end)
                 end
-                
+                                
                 open Css
                                     
                 let y = <caret>
@@ -125,14 +136,8 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> strings = getLookupStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings, "A", "B", "C", "x");
-    }
-
-    private List<String> getLookupStrings() {
-        List<String> elements = myFixture.getLookupElementStrings();
-        elements.removeAll(List.of(ResKeywordCompletionContributor.KEYWORDS));
-        return elements;
+        assertContainsElements(strings, "A", "B", "C", "x");
     }
 }

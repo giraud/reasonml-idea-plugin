@@ -14,6 +14,9 @@ import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
+/**
+ * Note: can’t implement getReference here
+ */
 public class RPsiOpenImpl extends RPsiTokenStub<ORLangTypes, RPsiOpen, PsiOpenStub> implements RPsiOpen {
     // region Constructors
     public RPsiOpenImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
@@ -60,13 +63,6 @@ public class RPsiOpenImpl extends RPsiTokenStub<ORLangTypes, RPsiOpen, PsiOpenSt
     public boolean useFunctor() {
         PsiElement firstChild = ORUtil.findImmediateFirstChildOfClass(this, RPsiFunctorCall.class);
         return firstChild != null;
-    }
-
-    @Override
-    @Nullable
-    public PsiReference getReference() {
-        RPsiUpperSymbol moduleSymbol = ORUtil.findImmediateLastChildOfClass(this, RPsiUpperSymbol.class);
-        return moduleSymbol != null ? moduleSymbol.getReference() : null;
     }
 
     @Override

@@ -256,6 +256,11 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
         return value != null && value.equals("private");
     }
 
+    @Override
+    public boolean isAnonymous() {
+        return getName() == null;
+    }
+
     @NotNull
     @Override
     public List<PsiElement> getDeconstructedElements() {

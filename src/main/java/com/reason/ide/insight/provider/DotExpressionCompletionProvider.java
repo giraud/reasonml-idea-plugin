@@ -198,8 +198,9 @@ public class DotExpressionCompletionProvider {
     private static void addChildren(@Nullable PsiElement body, @NotNull Collection<PsiNamedElement> expressions) {
         List<RPsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiInclude.class);
         for (RPsiInclude include : includes) {
-            PsiReference reference = include.getReference();
-            PsiElement resolvedResult = reference instanceof ORPsiUpperSymbolReference ? ((ORPsiUpperSymbolReference) reference).resolveInterface() : null;
+            RPsiUpperSymbol moduleSymbol = ORUtil.findImmediateLastChildOfClass(include, RPsiUpperSymbol.class);
+            ORPsiUpperSymbolReference reference = moduleSymbol != null ? moduleSymbol.getReference() : null;
+            PsiElement resolvedResult = reference != null ? reference.resolveInterface() : null;
             if (resolvedResult instanceof RPsiModule resolvedModule) {
                 PsiElement resolvedBody = resolvedModule instanceof RPsiInnerModule ? ((RPsiInnerModule) resolvedModule).getModuleSignature() : null;
                 if (resolvedBody == null) {

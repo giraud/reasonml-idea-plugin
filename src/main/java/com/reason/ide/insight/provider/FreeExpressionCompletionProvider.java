@@ -94,17 +94,17 @@ public class FreeExpressionCompletionProvider {
                     || item instanceof RPsiExternal
                     || item instanceof RPsiException
                     || item instanceof RPsiVal) {
-                boolean isLet = item instanceof RPsiLet;
-                if (isLet && skipLet) {
+                RPsiLet letItem = item instanceof RPsiLet ? (RPsiLet) item : null;
+                if (letItem != null && skipLet) {
                     skipLet = false;
-                } else if (isLet && ((RPsiLet) item).isDeconstruction()) {
-                    for (PsiElement deconstructedElement : ((RPsiLet) item).getDeconstructedElements()) {
+                } else if (letItem != null && letItem.isDeconstruction()) {
+                    for (PsiElement deconstructedElement : letItem.getDeconstructedElements()) {
                         resultSet.addElement(
                                 LookupElementBuilder.create(deconstructedElement.getText())
                                         .withTypeText(RPsiSignatureUtil.getSignature(item, ORLanguageProperties.cast(element.getLanguage())))
                                         .withIcon(ORIcons.LET));
                     }
-                } else {
+                } else if (letItem == null || !letItem.isAnonymous()) {
                     PsiNamedElement expression = (PsiNamedElement) item;
                     resultSet.addElement(
                             LookupElementBuilder.create(expression)
@@ -115,14 +115,16 @@ public class FreeExpressionCompletionProvider {
                     }
                 }
             } else if (item instanceof RPsiOpen openItem) {
-                PsiReference reference = openItem.getReference();
-                PsiElement resolved = reference instanceof ORPsiUpperSymbolReference ? ((ORPsiUpperSymbolReference) reference).resolveInterface() : null;
+                RPsiUpperSymbol moduleSymbol = ORUtil.findImmediateLastChildOfClass(openItem, RPsiUpperSymbol.class);
+                ORPsiUpperSymbolReference reference = moduleSymbol != null ? moduleSymbol.getReference() : null;
+                PsiElement resolved = reference != null ? reference.resolveInterface() : null;
                 if (resolved instanceof RPsiModule resolvedModule) {
                     addModuleExpressions(resolvedModule, languageProperties, searchScope, resultSet);
                 }
             } else if (item instanceof RPsiInclude includeItem) {
-                PsiReference reference = includeItem.getReference();
-                PsiElement resolved = reference instanceof ORPsiUpperSymbolReference ? ((ORPsiUpperSymbolReference) reference).resolveInterface() : null;
+                RPsiUpperSymbol moduleSymbol = ORUtil.findImmediateLastChildOfClass(includeItem, RPsiUpperSymbol.class);
+                ORPsiUpperSymbolReference reference = moduleSymbol != null ? moduleSymbol.getReference() : null;
+                PsiElement resolved = reference != null ? reference.resolveInterface() : null;
                 if (resolved instanceof RPsiModule resolvedModule) {
                     addModuleExpressions(resolvedModule, languageProperties, searchScope, resultSet);
                 }
@@ -177,7 +179,7 @@ public class FreeExpressionCompletionProvider {
         }
 
         for (PsiNamedElement item : ORUtil.findImmediateChildrenOfClass(rootModule.getBody(), PsiNamedElement.class)) {
-            if (!(item instanceof RPsiLet) || !((RPsiLet) item).isPrivate()) {
+            if (!(item instanceof RPsiLet) || !(((RPsiLet) item).isPrivate() || ((RPsiLet) item).isAnonymous())) {
                 if (item instanceof RPsiLet && ((RPsiLet) item).isDeconstruction()) {
                     for (PsiElement deconstructedElement : ((RPsiLet) item).getDeconstructedElements()) {
                         resultSet.addElement(

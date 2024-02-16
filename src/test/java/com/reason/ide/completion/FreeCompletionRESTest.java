@@ -4,8 +4,6 @@ import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
 import com.reason.ide.insight.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import java.util.*;
 
@@ -24,6 +22,20 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
 
         assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "Pervasives");
         assertSize(4, elements);
+    }
+
+    @Test
+    public void test_underscore() {
+        configureCode("Dummy.res", """
+                let _ = 1
+                <caret>
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, ResKeywordCompletionContributor.KEYWORDS);
+        assertSize(ResKeywordCompletionContributor.KEYWORDS.length, elements);
     }
 
     @Test
