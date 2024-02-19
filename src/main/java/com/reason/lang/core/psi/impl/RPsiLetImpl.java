@@ -5,6 +5,7 @@ import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.psi.tree.*;
+import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.*;
 import com.reason.lang.*;
@@ -12,6 +13,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
+import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
@@ -135,7 +137,13 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
 
     @Override
     public @Nullable RPsiSignature getSignature() {
-        return findChildByClass(RPsiSignature.class);
+        RPsiSignature signature = findChildByClass(RPsiSignature.class);
+        if (signature == null && myTypes == OclTypes.INSTANCE) {
+            // maybe an OCaml first class module
+            RPsiFirstClass firstClassModule = getFirstClassModule();
+            return PsiTreeUtil.getChildOfType(firstClassModule, RPsiModuleSignature.class);
+        }
+        return signature;
     }
 
     @Override
@@ -257,13 +265,17 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
     }
 
     @Override
+    public @Nullable RPsiFirstClass getFirstClassModule() {
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiFirstClass.class);
+    }
+
+    @Override
     public boolean isAnonymous() {
         return getName() == null;
     }
 
-    @NotNull
     @Override
-    public List<PsiElement> getDeconstructedElements() {
+    public @NotNull List<PsiElement> getDeconstructedElements() {
         PsiElement nameIdentifier = getNameIdentifier();
         if (nameIdentifier instanceof RPsiDeconstruction) {
             return ((RPsiDeconstruction) nameIdentifier).getDeconstructedElements();
@@ -327,7 +339,6 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
         };
     }
     // endregion
-
 
     @Override
     public String toString() {

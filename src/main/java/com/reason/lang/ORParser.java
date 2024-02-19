@@ -196,7 +196,7 @@ public abstract class ORParser<T extends ORTypes> {
                 if (myMarkers.get(grandParentIndex).isUnset()) {
                     foundGrandParent = true;
                 } else {
-                    parentIndex++;
+                    grandParentIndex++;
                 }
             }
         }
@@ -602,8 +602,8 @@ public abstract class ORParser<T extends ORTypes> {
         return null;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    public @NotNull ORParser<T> rollbackToPos(int pos) {
+    //@SuppressWarnings("UnusedReturnValue")
+    public @NotNull ORParser<T> rollbackToIndexAndDrop(int pos) {
         for (int i = 0; i < pos; i++) {
             myMarkers.pop();
         }
@@ -614,6 +614,18 @@ public abstract class ORParser<T extends ORTypes> {
         }
 
         dontMove = true;
+        return this;
+    }
+
+    public @NotNull ORParser<T> rollbackToLatestAndDrop() {
+        if (!myMarkers.isEmpty()) {
+            myMarkers.pop().rollbackTo();
+            if (myVerbose) {
+                System.out.println("rollbacked to: " + myBuilder.getCurrentOffset() + ", " + myBuilder.getTokenType() + "(" + myBuilder.getTokenText() + ")");
+            }
+            dontMove = true;
+        }
+
         return this;
     }
 

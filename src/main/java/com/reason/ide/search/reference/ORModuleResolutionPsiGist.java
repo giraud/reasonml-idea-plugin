@@ -3,6 +3,7 @@ package com.reason.ide.search.reference;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
@@ -94,73 +95,102 @@ public class ORModuleResolutionPsiGist {
 
                 String alias = visitedModule.getAlias();
                 if (alias == null) {
-                    RPsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(visitedModule.getBody(), RPsiFunctorCall.class);
-                    if (functorCall != null) {
+                    RPsiUnpack unpack = visitedModule.getUnpack();
+                    if (unpack != null) {
+                        // module M = unpack(firstclass : I)
+                        RPsiLowerSymbol firstClassSymbol = unpack.getFirstClassSymbol();
+                        String firstClassName = firstClassSymbol != null ? firstClassSymbol.getText() : null;
+
                         // Iterate backward to find a matching local resolution
                         for (int i = myModulesInContext.size() - 1; i >= 0; i--) {
                             PsiElement elementInContext = myModulesInContext.get(i);
-                            if (elementInContext instanceof RPsiFunctor functorInContext) { // ? common
-                                String functorInContextName = functorInContext.getModuleName() == null ? "" : functorInContext.getModuleName();
+                            if (elementInContext instanceof RPsiFirstClassModule moduleInContext) {
+                                String firstClassInContextName = moduleInContext.getElement().getName();
 
-                                // local functor declaration ?  module F=():S => {}; module M = F({});
-                                if (functorCall.getName().equals(functorInContextName)) {
-                                    found = true;
-
-                                    element.putUserData(RESOLUTION, functorInContext);
-                                    myModulesInContext.add(element);
-                                    myResult.addValue(getIndex(element), functorInContext.getQualifiedName());
-
-                                    break;
-                                }
-                            }
-                            // Try to combine a previous include/open
-                            else if (elementInContext instanceof RPsiInclude || elementInContext instanceof RPsiOpen) {
-                                RPsiQualifiedPathElement moduleInContext = follow(elementInContext);
-                                if (moduleInContext != null) {
-                                    String path = ORUtil.getLongIdent(functorCall.getFirstChild());
-                                    String pathToTest = moduleInContext.getQualifiedName() + "." + path;
-                                    // duplication
-                                    Collection<RPsiModule> psiModules = ModuleFqnIndex.getElements(pathToTest, myProject, myScope);
-                                    if (!psiModules.isEmpty()) {
-                                        RPsiModule resolvedModule = psiModules.iterator().next();
-                                        String moduleQName = resolvedModule == null ? null : resolvedModule.getQualifiedName();
-                                        if (moduleQName != null) {
-                                            found = true;
-                                            element.putUserData(RESOLUTION, resolvedModule);
-                                            myModulesInContext.add(element);
-                                            myResult.addValue(getIndex(element), moduleQName);
-
-                                            break;
-                                        }
+                                // alias to a local module (alias == module.name)
+                                //   module A = {}; module B = A;
+                                if (firstClassInContextName != null && firstClassInContextName.equals(firstClassName)) {
+                                    RPsiQualifiedPathElement userData = moduleInContext.getElement().getUserData(RESOLUTION);
+                                    if (userData != null) {
+                                        found = true;
+                                        element.putUserData(RESOLUTION, userData);
+                                        myModulesInContext.add(element);
+                                        myResult.addValue(getIndex(element), userData.getQualifiedName());
+                                        break;
                                     }
-                                }
-                            }
-
-                        }
-
-                        // If nothing found, try direct access
-                        if (!found) {
-                            // Get functor call path
-                            String longIdent = visitedModule.getBody() == null ? "" : ORUtil.getLongIdent(visitedModule.getBody().getFirstChild());
-                            String qName = longIdent + functorCall.getName();
-                            for (RPsiModule module : ModuleFqnIndex.getElements(qName, myProject, myScope)) {
-                                String moduleQName = module.getQualifiedName();
-                                if (moduleQName != null) {
-                                    element.putUserData(RESOLUTION, module);
-                                    myModulesInContext.add(element);
-                                    myResult.addValue(getIndex(element), moduleQName);
-
-                                    break;
                                 }
                             }
                         }
                     } else {
-                        RPsiModuleSignature moduleType = visitedModule.getModuleSignature();
-                        if (moduleType != null) {
-                            visitModuleResultType(moduleType);
+                        RPsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(visitedModule.getBody(), RPsiFunctorCall.class);
+                        if (functorCall != null) {
+                            // Iterate backward to find a matching local resolution
+                            for (int i = myModulesInContext.size() - 1; i >= 0; i--) {
+                                PsiElement elementInContext = myModulesInContext.get(i);
+                                if (elementInContext instanceof RPsiFunctor functorInContext) { // ? common
+                                    String functorInContextName = functorInContext.getModuleName() == null ? "" : functorInContext.getModuleName();
+
+                                    // local functor declaration ?  module F=():S => {}; module M = F({});
+                                    if (functorCall.getName().equals(functorInContextName)) {
+                                        found = true;
+
+                                        element.putUserData(RESOLUTION, functorInContext);
+                                        myModulesInContext.add(element);
+                                        myResult.addValue(getIndex(element), functorInContext.getQualifiedName());
+
+                                        break;
+                                    }
+                                }
+                                // Try to combine a previous include/open
+                                else if (elementInContext instanceof RPsiInclude || elementInContext instanceof RPsiOpen) {
+                                    RPsiQualifiedPathElement moduleInContext = follow(elementInContext);
+                                    if (moduleInContext != null) {
+                                        String path = ORUtil.getLongIdent(functorCall.getFirstChild());
+                                        String pathToTest = moduleInContext.getQualifiedName() + "." + path;
+                                        // duplication
+                                        Collection<RPsiModule> psiModules = ModuleFqnIndex.getElements(pathToTest, myProject, myScope);
+                                        if (!psiModules.isEmpty()) {
+                                            RPsiModule resolvedModule = psiModules.iterator().next();
+                                            String moduleQName = resolvedModule == null ? null : resolvedModule.getQualifiedName();
+                                            if (moduleQName != null) {
+                                                found = true;
+                                                element.putUserData(RESOLUTION, resolvedModule);
+                                                myModulesInContext.add(element);
+                                                myResult.addValue(getIndex(element), moduleQName);
+
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+
+                            // If nothing found, try direct access
+                            if (!found) {
+                                // Get functor call path
+                                String qName = visitedModule.getBody() == null ? functorCall.getName() : ORUtil.getLongIdent(visitedModule.getBody().getFirstChild());
+                                for (RPsiModule module : ModuleFqnIndex.getElements(qName, myProject, myScope)) {
+                                    String moduleQName = module.getQualifiedName();
+                                    if (moduleQName != null) {
+                                        element.putUserData(RESOLUTION, module);
+                                        myModulesInContext.add(element);
+                                        myResult.addValue(getIndex(element), moduleQName);
+
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                            RPsiModuleSignature moduleType = visitedModule.getModuleSignature();
+                            if (moduleType != null) {
+                                visitModuleResultType(moduleType);
+                            }
                         }
                     }
                 } else {
+                    String[] aliasPath = alias.split("\\.");
+
                     // Iterate backward to find a matching local resolution
                     for (int i = myModulesInContext.size() - 1; i >= 0; i--) {
                         PsiElement elementInContext = myModulesInContext.get(i);
@@ -177,10 +207,9 @@ public class ORModuleResolutionPsiGist {
 
                                 break;
                             } else {
-                                String[] path = alias.split("\\.");
                                 // alias(path) to a local aliased module (alias[0] == module.name)
                                 //   module A = X.Y; module B = A.Z;
-                                if (path[0].equals(moduleInContextName)) {
+                                if (aliasPath[0].equals(moduleInContextName)) {
                                     RPsiQualifiedPathElement resolvedModule = moduleInContext.getUserData(RESOLUTION);
                                     String resolvedModuleQName = resolvedModule == null ? moduleInContext.getQualifiedName() : resolvedModule.getQualifiedName();
                                     String newAlias = alias.replace(moduleInContextName, resolvedModuleQName == null ? "" : resolvedModuleQName);
@@ -243,6 +272,75 @@ public class ORModuleResolutionPsiGist {
             // --------------
             else if (type == myTypes.C_MODULE_BINDING) {
                 myModuleBinding.put(element, myModulesInContext.size());
+            }
+            // FIRST CLASS MODULE (LET/PARAM)
+            // ------------------------
+            else if (type == myTypes.C_LET_DECLARATION || type == myTypes.C_PARAM_DECLARATION) {
+                RPsiSignatureElement visitedElement = (RPsiSignatureElement) element;
+                if (visitedElement.getSignature() instanceof RPsiModuleSignature signature) {
+                    String visitedModuleQName = signature.getQName();
+                    String[] visitedModulePath = visitedModuleQName.split("\\.");
+                    boolean found = false;
+
+                    // Iterate backward to find a matching local resolution
+                    for (int i = myModulesInContext.size() - 1; i >= 0; i--) {
+                        PsiElement elementInContext = myModulesInContext.get(i);
+                        if (elementInContext instanceof RPsiInnerModule moduleInContext) {
+                            String moduleInContextName = moduleInContext.getModuleName() == null ? "" : moduleInContext.getModuleName();
+                            if (visitedModuleQName.equals(moduleInContextName)) {
+                                // first class of a local module
+                                found = true;
+                                visitedElement.putUserData(RESOLUTION, moduleInContext);
+                                break;
+                            } else if (visitedModulePath[0].equals(moduleInContextName)) {
+                                RPsiQualifiedPathElement resolvedModule = moduleInContext.getUserData(RESOLUTION);
+                                String resolvedModuleQName = resolvedModule != null ? resolvedModule.getQualifiedName() : moduleInContext.getQualifiedName();
+                                String newModuleName = visitedModuleQName.replace(moduleInContextName, resolvedModuleQName == null ? "" : resolvedModuleQName);
+                                Collection<RPsiModule> psiModules = ModuleFqnIndex.getElements(newModuleName, myProject, myScope);
+                                if (!psiModules.isEmpty()) {
+                                    RPsiModule finalModule = psiModules.iterator().next();
+                                    String moduleQName = finalModule == null ? null : finalModule.getQualifiedName();
+                                    if (moduleQName != null) {
+                                        found = true;
+                                        visitedElement.putUserData(RESOLUTION, finalModule);
+                                        break;
+                                    }
+                                }
+                            }
+                        } else if (elementInContext instanceof RPsiInclude || elementInContext instanceof RPsiOpen) {
+                            RPsiQualifiedPathElement moduleInContext = follow(elementInContext);
+                            if (moduleInContext != null) {
+                                String pathToTest = moduleInContext.getQualifiedName() + "." + visitedModuleQName;
+                                // duplication
+                                Collection<RPsiModule> psiModules = ModuleFqnIndex.getElements(pathToTest, myProject, myScope);
+                                if (!psiModules.isEmpty()) {
+                                    RPsiModule resolvedModule = psiModules.iterator().next();
+                                    String moduleQName = resolvedModule == null ? null : resolvedModule.getQualifiedName();
+                                    if (moduleQName != null) {
+                                        found = true;
+                                        visitedElement.putUserData(RESOLUTION, resolvedModule);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // If nothing found, try direct access
+                    if (!found) {
+                        for (RPsiModule resolvedModule : ModuleIndexService.getService().getModules(visitedModuleQName, myProject, myScope)) {
+                            String moduleQName = resolvedModule.getQualifiedName();
+                            if (moduleQName != null) {
+                                visitedElement.putUserData(RESOLUTION, resolvedModule);
+                                found = true;
+                            }
+                        }
+                    }
+
+                    if (found && visitedElement instanceof RPsiQualifiedPathElement visitedQualified) {
+                        myModulesInContext.add(new RPsiFirstClassModule(visitedQualified));
+                    }
+                }
             }
             // FUNCTOR
             // -------
@@ -709,6 +807,33 @@ public class ORModuleResolutionPsiGist {
             }
 
             return result;
+        }
+    }
+
+    static class RPsiFirstClassModule extends FakePsiElement {
+        private final RPsiQualifiedPathElement myElement;
+
+        public RPsiFirstClassModule(RPsiQualifiedPathElement element) {
+            myElement = element;
+        }
+
+        public RPsiQualifiedPathElement getElement() {
+            return myElement;
+        }
+
+        @Override
+        public @Nullable PsiElement getParent() {
+            return myElement.getParent();
+        }
+
+        @Override
+        public @Nullable String getText() {
+            return myElement.getText();
+        }
+
+        @Override
+        public @NotNull TextRange getTextRangeInParent() {
+            return TextRange.EMPTY_RANGE;
         }
     }
 }

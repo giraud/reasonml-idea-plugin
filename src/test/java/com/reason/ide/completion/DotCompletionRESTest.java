@@ -207,4 +207,25 @@ public class DotCompletionRESTest extends ORBasePlatformTestCase {
         assertSize(3, elements);
         assertContainsElements(elements, "color", "Black", "Red");
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_unpacked_module() {     // zzz other
+        configureCode("A.res", """
+                module type I = {
+                  let x: int
+                }
+
+                let x = (~p: module(I)) => {
+                    module S = unpack(p)
+                    S.<caret>
+                };
+                """);
+
+        myFixture.completeBasic();
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSize(1, elements);
+        assertContainsElements(elements, "x");
+    }
 }

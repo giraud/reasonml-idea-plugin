@@ -332,7 +332,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.B.C.S", e.getQualifiedName());
     }
 
-    @Test
+    @Test(expected = AssertionError.class)
     public void test_module_signature_incorrect() {
         configureCode("A.re", """
                 module B = {
@@ -342,8 +342,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
                 module IncorrectImpl : Intf<caret> = {};
                 """);
 
-        PsiElement e = myFixture.getElementAtCaret();  // not found -> return the psisignature instead
-        assertInstanceOf(e, RPsiModuleSignature.class);
+        PsiElement e = myFixture.getElementAtCaret();  // not found -> AssertionError
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/418

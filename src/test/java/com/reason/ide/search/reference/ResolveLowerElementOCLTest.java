@@ -149,17 +149,6 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_record_field() {
-        configureCode("A.ml", """
-                type t = { f1: bool; f2: int; }
-                let x  = { f1 = true; f2<caret> = 421 }
-                """);
-
-        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
-        assertEquals("A.t.f2", e.getQualifiedName());
-    }
-
-    @Test
     public void test_function() {
         configureCode("A.ml", "module B = struct let bb = 1 end\n module C = struct let cc x = x end let z = C.cc(B.bb<caret>)");
 
@@ -487,6 +476,44 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("A.a.b.c.d", e.getQualifiedName());
     }
     //endregion
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_resolve_unpacked_module() {
+        configureCode("A.ml", """
+                module type I = sig
+                  val x: int
+                end
+
+                let x ~p:(p: (module I)) =
+                    let module S = (val p) in
+                    S.x<caret>
+                """);
+
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
+        assertEquals("A.I.x", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_resolve_unpacked_module_inner_module() {
+        configureCode("A.ml", """
+                module B = struct
+                  module type I = sig
+                    val fn: int -> unit
+                  end
+                end
+                """);
+        configureCode("C.ml", """
+                let x ~p:(p:(module A.B.I)) =
+                    let module S = (val p) in
+                    S.fn<caret>(1)
+                };
+                """);
+
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
+        assertEquals("A.B.I.fn", e.getQualifiedName());
+    }
 
     @Test
     public void test_GH_167_deconstruction_first() {

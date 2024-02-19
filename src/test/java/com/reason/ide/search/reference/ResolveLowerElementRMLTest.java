@@ -463,7 +463,10 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
     //region record
     @Test
     public void test_record_type() {
-        configureCode("A.re", "type t = { f1: bool, f2: int }; let x = { f1: true, f2<caret>: 421 };");
+        configureCode("A.re", """
+                type t = { f1: bool, f2: int };
+                let x = { f1: true, f2<caret>: 421 };
+                """);
 
         RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
         assertEquals("A.t.f2", e.getQualifiedName());
@@ -523,6 +526,45 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("A.oo.deep.other", e.getQualifiedName());
     }
     //endregion
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_resolve_unpacked_module() {
+        configureCode("A.re", """
+                module type I = {
+                  let x: int;
+                };
+
+                let x = (~p: (module I)) => {
+                    module S = (val p);
+                    S.x<caret>
+                };
+                """);
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.I.x", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_resolve_unpacked_module_inner_module() {
+        configureCode("A.re", """
+                module B = {
+                  module type I = {
+                    let fn: int => unit;
+                  };
+                };
+                """);
+        configureCode("C.re", """
+                let x = (~p: (module A.B.I)) => {
+                    module S = (val p);
+                    S.fn<caret>(1)
+                };
+                """);
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.B.I.fn", e.getQualifiedName());
+    }
 
     @Test
     public void test_GH_167_deconstruction_first() {

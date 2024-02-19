@@ -473,6 +473,45 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     }
     //endregion
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_resolve_unpacked_module() {
+        configureCode("A.res", """
+                module type I = {
+                  let x: int
+                }
+
+                let x = (~p: module(I)) => {
+                    module S = unpack(p)
+                    S.x<caret>
+                };
+                """);
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.I.x", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_resolve_unpacked_module_inner_module() {
+        configureCode("A.res", """
+                module B = {
+                  module type I = {
+                    let fn: int => unit
+                  }
+                }
+                """);
+        configureCode("C.res", """
+                let x = (~p: module(A.B.I)) => {
+                    module S = unpack(p)
+                    S.fn<caret>(1)
+                };
+                """);
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.B.I.fn", e.getQualifiedName());
+    }
+
     @Test
     public void test_GH_167_deconstruction() {
         configureCode("A.res", "let (count, setCount) = React.useState(() => 0)\n setCount<caret>(1)");

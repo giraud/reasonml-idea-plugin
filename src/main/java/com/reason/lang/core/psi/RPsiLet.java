@@ -1,5 +1,6 @@
 package com.reason.lang.core.psi;
 
+import com.esotericsoftware.kryo.kryo5.util.*;
 import com.intellij.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.stub.*;
@@ -34,4 +35,7 @@ public interface RPsiLet extends RPsiVar, RPsiSignatureElement, RPsiInferredType
     List<PsiElement> getDeconstructedElements();
 
     boolean isPrivate();
+
+    @Nullable
+    RPsiFirstClass getFirstClassModule();
 }
