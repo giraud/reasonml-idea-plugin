@@ -9,6 +9,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
 import com.intellij.util.indexing.*;
+import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
@@ -24,7 +25,6 @@ import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 import static com.reason.ide.ORFileUtils.*;
 
@@ -66,15 +66,17 @@ public class FreeExpressionCompletionProvider {
         BsConfig config = project.getService(ORCompilerConfigManager.class).getNearestConfig(virtualFile);
         if (config != null) {
             for (String dependency : config.getOpenedDeps()) {
-                for (RPsiModule module : getTopModules(dependency, project, searchScope)) {
-                    addModuleExpressions(module, languageProperties, searchScope, resultSet);
+                RPsiModule topModule = getTopModule(dependency, project, searchScope);
+                if (topModule != null) {
+                    addModuleExpressions(topModule, languageProperties, searchScope, resultSet);
                 }
             }
         }
 
         // Pervasives is always included
-        for (RPsiModule module : getTopModules("Pervasives", project, searchScope)) {
-            addModuleExpressions(module, languageProperties, searchScope, resultSet);
+        RPsiModule pervasives = getTopModule("Pervasives", project, searchScope);
+        if (pervasives != null) {
+            addModuleExpressions(pervasives, languageProperties, searchScope, resultSet);
         }
 
         // Add all local expressions
@@ -140,19 +142,20 @@ public class FreeExpressionCompletionProvider {
         }
     }
 
-    private static List<RPsiModule> getTopModules(@NotNull String name, @NotNull Project project, @NotNull GlobalSearchScope scope) {
+    private static @Nullable RPsiModule getTopModule(@NotNull String name, @NotNull Project project, @NotNull GlobalSearchScope scope) {
         FileModuleIndex index = FileModuleIndex.getInstance();
         ID<String, FileModuleData> indexId = index != null ? index.getName() : null;
         if (indexId != null) {
             PsiManager psiManager = PsiManager.getInstance(project);
-            return FileBasedIndex.getInstance().getContainingFiles(indexId, name, scope).stream() //
-                    .map(v -> {
-                        PsiFile psiFile = psiManager.findFile(v);
-                        return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
-                    }) //
-                    .filter(Objects::nonNull).collect(Collectors.toList());
+            Collection<VirtualFile> containingFiles = FileBasedIndex.getInstance().getContainingFiles(indexId, name, scope);
+            VirtualFile virtualFile = containingFiles.stream().min((o1, o2) -> FileHelper.isInterface(o1.getFileType()) ? -1 : FileHelper.isInterface(o2.getFileType()) ? 1 : 0).orElse(null);
+            if (virtualFile != null) {
+                PsiFile psiFile = psiManager.findFile(virtualFile);
+                return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
+            }
         }
-        return Collections.emptyList();
+
+        return null;
     }
 
     private static void expandType(@NotNull RPsiType type, @NotNull CompletionResultSet resultSet) {
@@ -167,12 +170,17 @@ public class FreeExpressionCompletionProvider {
         }
     }
 
-    private static void addModuleExpressions(RPsiModule rootModule, @Nullable ORLanguageProperties language, @NotNull GlobalSearchScope searchScope, @NotNull CompletionResultSet resultSet) {
+    private static void addModuleExpressions(@NotNull RPsiModule rootModule, @Nullable ORLanguageProperties language, @NotNull GlobalSearchScope searchScope, @NotNull CompletionResultSet resultSet) {
         // alternate names
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(rootModule.getContainingFile());
         for (String alternateName : data.getValues(rootModule)) {
-            List<RPsiModule> alternateModules = getTopModules(alternateName, rootModule.getProject(), searchScope);
-            alternateModules.addAll(ModuleFqnIndex.getElements(alternateName, rootModule.getProject(), searchScope));
+            // Try to resolve as an inner module or a top module
+            Collection<RPsiModule> alternateModules = ModuleFqnIndex.getElements(alternateName, rootModule.getProject(), searchScope);
+            RPsiModule topModule = getTopModule(alternateName, rootModule.getProject(), searchScope);
+            if (topModule != null) {
+                alternateModules.add(topModule);
+            }
+
             for (RPsiModule alternateModule : alternateModules) {
                 addModuleExpressions(alternateModule, language, searchScope, resultSet);
             }
@@ -188,11 +196,14 @@ public class FreeExpressionCompletionProvider {
                                         .withIcon(ORIcons.LET));
                     }
                 } else if (!(item instanceof RPsiAnnotation)) {
-                    resultSet.addElement(
-                            LookupElementBuilder.create(item)
-                                    .withTypeText(RPsiSignatureUtil.getSignature(item, language))
-                                    .withIcon(PsiIconUtil.getProvidersIcon(item, 0))
-                                    .withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
+                    String itemName = item.getName();
+                    if (itemName != null && !itemName.isEmpty() && !itemName.equals("unknown")) {
+                        resultSet.addElement(
+                                LookupElementBuilder.create(item)
+                                        .withTypeText(RPsiSignatureUtil.getSignature(item, language))
+                                        .withIcon(PsiIconUtil.getProvidersIcon(item, 0))
+                                        .withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
+                    }
                 }
             }
         }

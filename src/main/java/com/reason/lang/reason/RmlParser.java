@@ -691,7 +691,7 @@ public class RmlParser extends CommonPsiParser {
                     advance();
                 }
                 mark(myTypes.C_MODULE_SIGNATURE).updateScopeToken(isParen ? myTypes.LPAREN : null);
-            } else if (isRawParent(myTypes.C_EXTERNAL_DECLARATION) || isRawParent(myTypes.C_LET_DECLARATION)) {
+            } else if (is(myTypes.C_EXTERNAL_DECLARATION/*operator overriding*/) || isRawParent(myTypes.C_EXTERNAL_DECLARATION) || isRawParent(myTypes.C_LET_DECLARATION)) {
                 // external/let e |> :<| ...
                 advance().mark(myTypes.C_SIG_EXPR);
                 if (getTokenType() == myTypes.LPAREN) {

@@ -12,6 +12,7 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
     @Test
     public void test_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
+        configureCode("pervasives.ml", "let int_of_string : x -> 42");
         configureCode("belt_Array.mli", "val length: t -> int");
         configureCode("belt.ml", "module Array = Belt_Array");
 
@@ -132,7 +133,7 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
         configureCode("C.ml", "include B");
         configureCode("D.ml", """
                 open C
-                <caret>
+                let _ = <caret>
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
