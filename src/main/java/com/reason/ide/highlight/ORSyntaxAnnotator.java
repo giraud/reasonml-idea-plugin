@@ -46,7 +46,7 @@ public abstract class ORSyntaxAnnotator implements Annotator {
             enforceColor(holder, element, ANNOTATION_);
         } else if (elementType == myTypes.C_INTERPOLATION_PART) {
             enforceColor(holder, element, STRING_);
-        } else if (element instanceof RPsiInterpolationReference) {
+        } else if (elementType == myTypes.C_INTERPOLATION_REF) {
             enforceColor(holder, element, INTERPOLATED_REF_);
         }
         // remapped tokens are not seen by syntaxAnnotator
