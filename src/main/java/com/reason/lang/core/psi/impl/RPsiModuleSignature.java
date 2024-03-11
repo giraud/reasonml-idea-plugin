@@ -28,6 +28,11 @@ public class RPsiModuleSignature extends ORCompositePsiElement<ORLangTypes> impl
     }
 
     public @Nullable RPsiUpperSymbol getNameIdentifier() {
+        if (myTypes == ResTypes.INSTANCE) {
+            RPsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, RPsiScopedExpr.class);
+            PsiElement rootElement = scope != null ? scope : this;
+            return ORUtil.findImmediateLastChildOfClass(rootElement, RPsiUpperSymbol.class);
+        }
         return ORUtil.findImmediateLastChildOfClass(this, RPsiUpperSymbol.class);
     }
 

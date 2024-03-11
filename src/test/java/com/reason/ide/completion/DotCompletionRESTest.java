@@ -210,7 +210,7 @@ public class DotCompletionRESTest extends ORBasePlatformTestCase {
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/452
     @Test
-    public void test_GH_452_unpacked_module() {     // zzz other
+    public void test_GH_452_unpacked_module() {
         configureCode("A.res", """
                 module type I = {
                   let x: int

@@ -43,6 +43,7 @@ public class FirstClassModuleParsingTest extends ResParsingTestCase {
         RPsiSignature eps = p0.getSignature();
         assertInstanceOf(eps, RPsiModuleSignature.class);
         assertEquals("module(Intf)", eps.getText());
+        assertEquals("Intf", ((RPsiModuleSignature) eps).getNameIdentifier().getText());
 
         RPsiDefaultValue epv = p0.getDefaultValue();
         assertEquals("module(Impl)", epv.getText());

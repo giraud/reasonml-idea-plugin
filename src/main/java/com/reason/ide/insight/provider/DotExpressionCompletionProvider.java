@@ -157,6 +157,21 @@ public class DotExpressionCompletionProvider {
             if (resolvedElement != null) {
                 addModuleExpressions(resolvedElement, expressions, scope);
             }
+        } else if (module.getUnpack() != null) {
+            RPsiLowerSymbol firstClassSymbol = module.getUnpack().getFirstClassSymbol();
+            ORPsiLowerSymbolReference symbolReferenceIdentifier = firstClassSymbol != null ? firstClassSymbol.getReference() : null;
+            PsiElement resolvedFirstClassSymbol = symbolReferenceIdentifier != null ? symbolReferenceIdentifier.resolve() : null;
+            if (resolvedFirstClassSymbol instanceof RPsiSignatureElement signatureElement) {
+                RPsiSignature signature = signatureElement.getSignature();
+                if (signature instanceof RPsiModuleSignature firstClassModuleSignature) {
+                    RPsiUpperSymbol moduleReferenceIdentifier = firstClassModuleSignature.getNameIdentifier();
+                    ORPsiUpperSymbolReference moduleReference = moduleReferenceIdentifier != null ? moduleReferenceIdentifier.getReference() : null;
+                    PsiElement resolvedFirstClassModule = moduleReference != null ? moduleReference.resolve() : null;
+                    if (resolvedFirstClassModule!=null) {
+                        addModuleExpressions(resolvedFirstClassModule, expressions, scope);
+                    }
+                }
+            }
         } else {
             PsiElement body = module.getModuleSignature();
             if (body == null) {

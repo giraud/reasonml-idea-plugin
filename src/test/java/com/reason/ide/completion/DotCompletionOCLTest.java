@@ -113,4 +113,25 @@ public class DotCompletionOCLTest extends ORBasePlatformTestCase {
 
         assertSameElements(elements, "y");
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_unpacked_module() {
+        configureCode("A.ml", """
+                module type I = sig
+                  val x: int
+                end
+
+                let x ~p:(p:(module I)) =
+                    let module S = (val p) in
+                    S.<caret>
+                };
+                """);
+
+        myFixture.completeBasic();
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSize(1, elements);
+        assertContainsElements(elements, "x");
+    }
 }
