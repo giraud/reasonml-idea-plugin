@@ -36,6 +36,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_DEFAULT_VALUE;
     public ORCompositeType C_DIRECTIVE;
     public ORCompositeType C_DO_LOOP;
+    public ORCompositeType C_FIRST_CLASS;
     public ORCompositeType C_FOR_LOOP;
     public ORCompositeType C_FUN_EXPR;
     public ORCompositeType C_FUNCTION_BODY;
@@ -58,7 +59,6 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_METHOD_CALL;
     public ORCompositeType C_MODULE_BINDING;
     public ORCompositeType C_MODULE_SIGNATURE;
-    public ORCompositeType C_MODULE_VALUE;
     public ORCompositeType C_JS_OBJECT;
     public ORCompositeType C_MATCH_EXPR;
     public ORCompositeType C_MIXIN_FIELD;
@@ -98,6 +98,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_TRY_HANDLER_BODY;
     public ORCompositeType C_TYPE_BINDING;
     public ORCompositeType C_UNIT;
+    public ORCompositeType C_UNPACK;
     public ORCompositeType C_VARIANT_CONSTRUCTOR;
     public ORCompositeType C_WHILE;
 

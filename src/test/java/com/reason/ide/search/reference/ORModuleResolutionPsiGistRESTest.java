@@ -333,4 +333,108 @@ public class ORModuleResolutionPsiGistRESTest extends ORBasePlatformTestCase {
         RPsiTagStart et = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
         assertOrderedEquals(data.getValues(et/*Y*/), "X.Y");
     }
+
+    @Test
+    public void test_unpack_local() {
+        FileBase e = configureCode("A.res", """
+                module type I = { let x: int }
+                module Three: I = { let x = 3 }
+                let three: module(I) = module(Three)
+                module New_three = unpack(three: I)
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModule em = ORUtil.findImmediateLastChildOfClass(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em), "A.I");
+    }
+
+    @Test
+    public void test_unpack_open() {
+        configureCode("A.res", """
+                module type I = { let x: int }
+                module Three: I = { let x = 3 }
+                """);
+        FileBase e = configureCode("B.res", """
+                open A
+                let three: module(I) = module(Three)
+                module New_three = unpack(three: I)
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModule em = ORUtil.findImmediateLastChildOfClass(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em), "A.I");
+    }
+
+    @Test
+    public void test_unpack_no_signature() {
+        configureCode("A.res", """
+                module type I = { let x: int }
+                module Three: I = { let x = 3 }
+                """);
+        FileBase e = configureCode("B.res", """
+                open A
+                let three: module(I) = module(Three)
+                module New_three = unpack(three)
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModule em = ORUtil.findImmediateFirstChildOfClass(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em), "A.I");
+    }
+
+    @Test
+    public void test_unpack_no_signature_qname() {
+        configureCode("A.res", """
+                module A1 = {
+                  module type I = { let x: int }
+                }
+                module Three : A1.I = { let x = 3 }
+                """);
+        FileBase e = configureCode("B.res", """
+                module B1 = A
+                let three: module(B1.A1.I) = module(B1.Three)
+                module New_three = unpack(three)
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModule em = ORUtil.findImmediateLastChildOfClass(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em), "A.A1.I");
+    }
+
+    @Test
+    public void test_unpack_parameter() {
+        FileBase e = configureCode("A.res", """
+                module type I = { let x: int }
+                let x = (~p: module(I)) => { module S = unpack(p) }
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModule em = PsiTreeUtil.findChildOfType(PsiTreeUtil.getChildOfType(e, RPsiLet.class).getBinding(), RPsiModule.class);
+        assertOrderedEquals(data.getValues(em), "A.I");
+    }
+
+    @Test
+    public void test_unpack_parameter_global_module() {
+        configureCode("A.res", """
+                module B = {
+                  module type I = {
+                    let fn: int => unit
+                  }
+                }
+                """);
+        FileBase e = configureCode("C.res", """
+                let x = (~p: module(A.B.I)) => { module S = unpack(p) }
+                """);
+
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModule em = PsiTreeUtil.findChildOfType(PsiTreeUtil.getChildOfType(e, RPsiLet.class).getBinding(), RPsiModule.class);
+        assertOrderedEquals(data.getValues(em), "A.B.I");
+    }
 }

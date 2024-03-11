@@ -101,4 +101,20 @@ public class FunctorParsingTest extends OclParsingTestCase {
         assertEquals("M", first(parameters).getName());
         assertNotNull(functor.getBody());
     }
-}
+
+    @Test
+    public void test_functor_inside_module() {
+        RPsiModule e = firstOfType(parseCode("""
+                module Core = struct
+                  module Make() = struct
+                    type t
+                  end
+                end
+                """), RPsiModule.class);
+
+        assertEquals("Core", e.getModuleName());
+        assertFalse(e instanceof RPsiFunctor);
+        RPsiFunctor ef = firstOfType(e.getBody(), RPsiFunctor.class);
+        assertEquals("Make", ef.getModuleName());
+        assertTrue(ef instanceof RPsiFunctor);
+    }}

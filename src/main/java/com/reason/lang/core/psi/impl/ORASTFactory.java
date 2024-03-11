@@ -6,7 +6,7 @@ import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
-import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
+import static com.intellij.codeInsight.completion.CompletionUtilCore.*;
 
 public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
     private final T myTypes;
@@ -71,6 +71,9 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         if (type == myTypes.C_CUSTOM_OPERATOR || type == myTypes.C_SCOPED_EXPR || type == myTypes.C_IF_THEN_ELSE || type == myTypes.C_DO_LOOP) {
             return new RPsiScopedExpr(myTypes, type);
         }
+        if (type == myTypes.C_FIRST_CLASS) {
+            return new RPsiFirstClass(myTypes, type);
+        }
         if (type == myTypes.C_FOR_LOOP) {
             return new RPsiForLoop(myTypes, type);
         }
@@ -109,9 +112,6 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         }
         if (type == myTypes.C_MODULE_SIGNATURE) {
             return new RPsiModuleSignature(myTypes, type);
-        }
-        if (type == myTypes.C_MODULE_VALUE) {
-            return new RPsiModuleValue(myTypes, type);
         }
         if (type == myTypes.C_ANNOTATION) {
             return new RPsiAnnotation(myTypes, type);
@@ -218,6 +218,9 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         }
         if (type == myTypes.C_UNIT) {
             return new RPsiUnit(myTypes, type);
+        }
+        if (type == myTypes.C_UNPACK) {
+            return new RPsiUnpack(myTypes, type);
         }
         if (type == myTypes.C_WHILE) {
             return new RPsiWhile(myTypes, type);

@@ -4,6 +4,7 @@ import com.intellij.lang.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
+import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.*;
@@ -12,6 +13,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
+import com.reason.lang.rescript.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
@@ -48,6 +50,17 @@ public class RPsiExternalImpl extends RPsiTokenStub<ORLangTypes, RPsiExternal, P
 
         PsiElement nameIdentifier = getNameIdentifier();
         if (nameIdentifier == null) {
+            if (myTypes == ResTypes.INSTANCE) {
+                // overridden operators start with backslash and string
+                PsiElement nexElement = ORUtil.nextSibling(getFirstChild());
+                IElementType nextElementType = nexElement != null ? nexElement.getNode().getElementType() : null;
+                if (nextElementType == myTypes.BACKSLASH) {
+                    PsiElement nextNextElement = ORUtil.nextSibling(nexElement);
+                    if (nextNextElement instanceof RPsiLiteralString) {
+                        return nextNextElement.getText();
+                    }
+                }
+            }
             return "unknown";
         }
 

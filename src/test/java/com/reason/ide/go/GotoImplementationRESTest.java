@@ -9,7 +9,6 @@ import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
-@RunWith(JUnit4.class)
 public class GotoImplementationRESTest extends ORBasePlatformTestCase {
     @Test
     public void should_goto_implementation() {

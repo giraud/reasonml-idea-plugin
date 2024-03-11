@@ -14,6 +14,9 @@ import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
+/**
+ * Note: can’t implement getReference here
+ */
 public class RPsiOpenImpl extends RPsiTokenStub<ORLangTypes, RPsiOpen, PsiOpenStub> implements RPsiOpen {
     // region Constructors
     public RPsiOpenImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {

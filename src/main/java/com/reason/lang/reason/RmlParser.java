@@ -264,13 +264,12 @@ public class RmlParser extends CommonPsiParser {
                     if (isCurrent(myTypes.C_PARAMETERS) && in(myTypes.C_FUNCTION_EXPR)) {
                         mark(myTypes.C_PARAM_DECLARATION).markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
                     } else if (isCurrent(myTypes.C_PARAM)) {
-                        updateComposite(myTypes.C_NAMED_PARAM);
+                        updateComposite(myTypes.C_NAMED_PARAM).popIfHold();
                     } else {
-                        mark(myTypes.C_NAMED_PARAM);
+                        mark(myTypes.C_NAMED_PARAM).popIfHold();
                     }
-                    popIfHold()
-                            .advance()
-                            .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+
+                    advance().wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 }
             }
         }
@@ -616,14 +615,14 @@ public class RmlParser extends CommonPsiParser {
         }
 
         private void parseModule() {
-            if (is(myTypes.C_SIG_ITEM)) {
-                // let fn = (~x : ( |>module<| ... ) ...
-                mark(myTypes.C_MODULE_VALUE);
-            } else if (in(myTypes.C_DEFAULT_VALUE)) {
-                // let fn = (~x:(module X)= ( |>module<| ... ) ...
-                popIfHold()
-                        .updateLatestComposite(myTypes.H_PLACE_HOLDER).dropLatest()
-                        .mark(myTypes.C_MODULE_VALUE);
+            if (in(myTypes.C_DEFAULT_VALUE)) {
+                // let fn = (~x:(module X)= ( »module« ... ) ...
+                Marker foundMarker = popEndUntilScopeToken(myTypes.LPAREN);
+                if (foundMarker != null) {
+                    foundMarker.updateCompositeType(myTypes.C_FIRST_CLASS);
+                }
+            } else if (in(myTypes.C_FIRST_CLASS)) {
+                //
             } else if (!in(myTypes.C_MACRO_NAME)) {
                 popEndUntilScope();
                 mark(myTypes.C_MODULE_DECLARATION);
@@ -691,30 +690,32 @@ public class RmlParser extends CommonPsiParser {
                     advance();
                 }
                 mark(myTypes.C_MODULE_SIGNATURE).updateScopeToken(isParen ? myTypes.LPAREN : null);
-            } else if (isRawParent(myTypes.C_EXTERNAL_DECLARATION) || isRawParent(myTypes.C_LET_DECLARATION)) {
-                // external/let e |> :<| ...
-                advance().mark(myTypes.C_SIG_EXPR);
-                if (getTokenType() == myTypes.LPAREN) {
-                    // external/let e : |>(<| ...
-                    markDummyScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
-                    if (getTokenType() == myTypes.DOT) {
-                        // external/let e : ( |>.<| ...
-                        advance();
-                    }
+            } else if (is(myTypes.C_EXTERNAL_DECLARATION/*operator overriding*/) || isRawParent(myTypes.C_EXTERNAL_DECLARATION)) {
+                advance();
+                parseLetSignature();
+            } else if (isRawParent(myTypes.C_LET_DECLARATION)) {
+                advance();
+                if (getTokenType() == myTypes.MODULE) {
+                    // First class module ::  let x : >module< I
+                    advance().mark(myTypes.C_MODULE_SIGNATURE);
+                } else {
+                    parseLetSignature();
                 }
-                mark(myTypes.C_SIG_ITEM);
-            }
-            //
-            else if (inScopeOrAny(
+            } else if (inScopeOrAny(
                     myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_PARAM_DECLARATION, myTypes.C_NAMED_PARAM,
-                    myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.C_TERNARY
+                    myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.C_TERNARY, myTypes.C_UNPACK
             )) {
 
                 if (isFound(myTypes.H_NAMED_PARAM_DECLARATION) || isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.C_NAMED_PARAM)) {
-                    // let x = (~y |> : <| ...
-                    advance().mark(myTypes.C_SIG_EXPR);
-                    markParenthesisScope(true).
-                            mark(myTypes.C_SIG_ITEM);
+                    advance();
+                    if (getTokenType() == myTypes.LPAREN && lookAhead(1) == myTypes.MODULE) {
+                        // let _ = (~x »:« (module ...
+                        markScope(myTypes.C_MODULE_SIGNATURE, myTypes.LPAREN).advance().advance();
+                    } else {
+                        // let _ = (~x »:« ...
+                        mark(myTypes.C_SIG_EXPR);
+                        markParenthesisScope(true).mark(myTypes.C_SIG_ITEM);
+                    }
                 } else if (isFound(myTypes.C_RECORD_FIELD) || isFound(myTypes.C_OBJECT_FIELD)) {
                     advance();
                     if (in(myTypes.C_TYPE_BINDING)) {
@@ -724,12 +725,31 @@ public class RmlParser extends CommonPsiParser {
                         mark(myTypes.C_FIELD_VALUE);
                     }
                 } else if (isFound(myTypes.C_TERNARY)) {
-                    // x ? y |> :<| ...
+                    // x ? y »:« ...
                     popEndUntilFoundIndex()
                             .advance().mark(myTypes.C_IF_THEN_ELSE);
                     markHolder(myTypes.H_PLACE_HOLDER);
+                } else if (isFound(myTypes.C_UNPACK)) {
+                    // module M = (val »:« ... )
+                    advance();
+                    markParenthesisScope(true)
+                            .mark(myTypes.C_MODULE_SIGNATURE);
                 }
             }
+        }
+
+        private void parseLetSignature() {
+            // external/let e |> :<| ...
+            mark(myTypes.C_SIG_EXPR);
+            if (getTokenType() == myTypes.LPAREN) {
+                // external/let e : |>(<| ...
+                markDummyScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
+                if (getTokenType() == myTypes.DOT) {
+                    // external/let e : ( |>.<| ...
+                    advance();
+                }
+            }
+            mark(myTypes.C_SIG_ITEM);
         }
 
         private void parseArrobase() {
@@ -1028,7 +1048,10 @@ public class RmlParser extends CommonPsiParser {
                 markScope(myTypes.C_LOCAL_OPEN, myTypes.LPAREN);
             } else if (is(myTypes.C_MODULE_BINDING) && !in(myTypes.C_FUNCTOR_DECLARATION)) {
                 if (myBuilder.lookAhead(1) == myTypes.VAL) {
-                    markParenthesisScope(true);
+                    // module M = »(« val ... )
+                    rollbackToLatestAndDrop()
+                            .markScope(myTypes.C_UNPACK, myTypes.LPAREN).advance()
+                            .advance(); // skip 'val' in a first class module decoding
                 } else if (in(myTypes.C_MODULE_DECLARATION)) {
                     // This is a functor ::  module M = |>(<| .. )
                     updateCompositeAt(getIndex(), myTypes.C_FUNCTOR_DECLARATION)
@@ -1131,8 +1154,8 @@ public class RmlParser extends CommonPsiParser {
             } else if (isCurrent(myTypes.C_MODULE_DECLARATION) || isRawParent(myTypes.C_MODULE_DECLARATION)) {
                 // module M |> =<| ...
                 advance().mark(myTypes.C_MODULE_BINDING);
-            } else if (isParent(myTypes.C_PARAM_DECLARATION) || isRawParent(myTypes.C_NAMED_PARAM)) {
-                // ( ~x |> =<| ...
+            } else if (isParent(myTypes.C_PARAM_DECLARATION) || isRawParent(myTypes.C_NAMED_PARAM) || isRawParent(myTypes.H_NAMED_PARAM_DECLARATION)) {
+                // ( ~x »=« ...
                 popEndUntilFoundIndex()
                         .advance().mark(myTypes.C_DEFAULT_VALUE)
                         .markHolder(myTypes.H_PLACE_HOLDER);
@@ -1147,7 +1170,6 @@ public class RmlParser extends CommonPsiParser {
                 // type t |> =<| ...
                 advance().mark(myTypes.C_TYPE_BINDING);
             } else if (inScopeOrAny(myTypes.C_LET_DECLARATION, myTypes.C_MODULE_SIGNATURE, myTypes.C_SIG_EXPR)) {
-
                 if (isFound(myTypes.C_SIG_EXPR)) {
                     popEndUntil(myTypes.C_SIG_EXPR).popEnd();
                     if (inAny(myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM)) {
@@ -1156,9 +1178,16 @@ public class RmlParser extends CommonPsiParser {
                         parseLetBinding();
                     }
                 } else if (isFound(myTypes.C_MODULE_SIGNATURE)) {
-                    // module M : T |> =<| ...
-                    popEndUntilIndex(getIndex()).popEnd()
-                            .advance().mark(myTypes.C_MODULE_BINDING);
+                    popEndUntilIndex(getIndex())
+                            .popEnd()
+                            .advance();
+                    if (strictlyIn(myTypes.C_LET_DECLARATION)) {
+                        // let x : I >=< ...
+                        mark(myTypes.C_FIRST_CLASS);
+                    } else {
+                        // module M : T |> =<| ...
+                        mark(myTypes.C_MODULE_BINDING);
+                    }
                 } else if (!isFound(myTypes.C_SCOPED_EXPR) && in(myTypes.C_LET_DECLARATION)) {
                     if (!isAtIndex(getIndex() - 1, myTypes.C_LET_BINDING)) { // already parsed
                         parseLetBinding();
@@ -1196,7 +1225,7 @@ public class RmlParser extends CommonPsiParser {
                 return;
             }
 
-            if (is(myTypes.C_MODULE_DECLARATION) || is(myTypes.C_MODULE_VALUE)) {
+            if (is(myTypes.C_MODULE_DECLARATION)) {
                 // module |>M<| ...
                 remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             } else if (isCurrent(myTypes.C_PARAM_DECLARATION) && in(myTypes.C_FUNCTOR_DECLARATION)) {
@@ -1239,7 +1268,7 @@ public class RmlParser extends CommonPsiParser {
                     remapCurrentToken(myTypes.A_VARIANT_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 } else {
                     remapCurrentToken(nextToken == myTypes.DOT || isCurrent(myTypes.C_MODULE_BINDING) || isCurrent(myTypes.C_MODULE_SIGNATURE)
-                            || isCurrent(myTypes.C_OPEN) || isCurrent(myTypes.C_INCLUDE)
+                            || isCurrent(myTypes.C_FIRST_CLASS) || isCurrent(myTypes.C_OPEN) || isCurrent(myTypes.C_INCLUDE)
                             ? myTypes.A_MODULE_NAME : myTypes.A_VARIANT_NAME);
                     wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
@@ -1269,7 +1298,7 @@ public class RmlParser extends CommonPsiParser {
                     popEndUntilFoundIndex().popEnd()
                             .advance().mark(myTypes.C_FUNCTOR_BINDING);
                 } else if (isFound(myTypes.C_PARAM_DECLARATION)) {
-                    if ( isGrandParent(myTypes.C_SOME) && isParent(myTypes.C_PARAMETERS)) {
+                    if (isGrandParent(myTypes.C_SOME) && isParent(myTypes.C_PARAMETERS)) {
                         // Some((...) |>=><|
                         rollbackToIndex(getIndex()/*parent, ie parameters*/)
                                 .mark(myTypes.C_FUNCTION_EXPR);

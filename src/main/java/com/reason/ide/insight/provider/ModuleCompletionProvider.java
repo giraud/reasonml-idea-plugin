@@ -31,7 +31,7 @@ public class ModuleCompletionProvider {
         if (previousElement instanceof RPsiUpperSymbol) {
             LOG.debug(" -> upper symbol", previousElement);
 
-            RPsiUpperSymbolReference reference = (RPsiUpperSymbolReference) previousElement.getReference();
+            ORPsiUpperSymbolReference reference = (ORPsiUpperSymbolReference) previousElement.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
             LOG.debug(" -> resolved to", resolvedElement);
 

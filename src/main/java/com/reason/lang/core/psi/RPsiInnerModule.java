@@ -12,6 +12,9 @@ public interface RPsiInnerModule extends RPsiModule, StubBasedPsiElement<PsiModu
     String getAlias();
 
     @Nullable
+    RPsiUnpack getUnpack();
+
+    @Nullable
     RPsiUpperSymbol getAliasSymbol();
 
     boolean isComponent();

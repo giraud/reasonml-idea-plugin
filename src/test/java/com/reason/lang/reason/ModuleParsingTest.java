@@ -107,12 +107,4 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         assertEquals("{ type t = int; }", e.getBody().getText());
     }
 
-    @Test
-    public void test_decode_first_class_module() {
-        RPsiInnerModule e = firstOfType(parseCode("module M = (val selectors);"), RPsiInnerModule.class);
-
-        assertFalse(e instanceof RPsiFunctor);
-        assertEquals("M", e.getName());
-        assertEquals("(val selectors)", e.getBody().getText());
-    }
 }

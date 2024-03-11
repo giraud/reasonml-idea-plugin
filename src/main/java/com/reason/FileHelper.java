@@ -86,7 +86,7 @@ public class FileHelper {
         return 0 < pos ? newPath.substring(0, pos) : newPath;
     }
 
-    public static @Nullable RPsiModule getPsiModule(@Nullable FileModuleData data, @NotNull Project project) {
+    public static @Nullable RPsiModule getPsiModule(@Nullable FileModuleData data, @NotNull Project project) { // not working with unit tests
         VirtualFile vFile = data == null ? null : VirtualFileManager.getInstance().findFileByNioPath(Path.of(data.getPath()));
         PsiFile file = vFile == null ? null : PsiManager.getInstance(project).findFile(vFile);
         return file instanceof RPsiModule ? (RPsiModule) file : null;

@@ -223,7 +223,29 @@ public class LineMarkerProviderOCLTest extends ORBasePlatformTestCase {
         assertEquals("Declare module", markers.get(0).getLineMarkerTooltip());
     }
 
-    // TODO: test_module_deep
+    @Test
+    public void test_module_deep() {
+        configureCode("A.ml", """
+                module B = struct
+                  module type Intf = sig end
+                end
+
+                module IncorrectImpl : Intf = struct end
+                module CorrectImpl : B.Intf = struct end
+                """);
+
+        myFixture.doHighlighting();
+
+        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), myFixture.getProject());
+
+        LineMarkerInfo<?> m0 = lineMarkers.get(0);
+        assertEquals(ORIcons.IMPLEMENTED, m0.getIcon());
+        assertEquals("Implements module", m0.getLineMarkerTooltip());
+        LineMarkerInfo<?> m1 = lineMarkers.get(1);
+        assertEquals(ORIcons.IMPLEMENTING, m1.getIcon());
+        assertEquals("Declare module", m1.getLineMarkerTooltip());
+        assertSize(2, lineMarkers);
+    }
 
     @Test
     public void test_modules() {
