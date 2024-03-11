@@ -17,8 +17,8 @@ public class RPsiUpperSymbol extends LeafPsiElement {
     // endregion
 
     @Override
-    public @NotNull RPsiUpperSymbolReference getReference() {
-        return new RPsiUpperSymbolReference(this, myTypes);
+    public @NotNull ORPsiUpperSymbolReference getReference() {
+        return new ORPsiUpperSymbolReference(this, myTypes);
     }
 
     @Override

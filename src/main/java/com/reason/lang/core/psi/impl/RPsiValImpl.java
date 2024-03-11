@@ -41,7 +41,7 @@ public class RPsiValImpl extends RPsiTokenStub<ORLangTypes, RPsiVal, PsiValStub>
         }
 
         PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? "" : nameIdentifier.getText();
+        return nameIdentifier != null ? nameIdentifier.getText() : null;
     }
 
     @Override
@@ -104,6 +104,11 @@ public class RPsiValImpl extends RPsiTokenStub<ORLangTypes, RPsiVal, PsiValStub>
     @Override
     public @Nullable RPsiSignature getSignature() {
         return findChildByClass(RPsiSignature.class);
+    }
+
+    @Override
+    public boolean isAnonymous() {
+        return getName() == null;
     }
 
     @Override

@@ -9,7 +9,20 @@
 > - :nail_care:  [Polish]
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
-                        
+
+## 0.122 - 2024/03/11
+
+- :bug: [#454](https://github.com/giraud/reasonml-idea-plugin/issues/454) Duplicate definitions for globally opened modules in completion
+- :bug: [#452](https://github.com/giraud/reasonml-idea-plugin/issues/452) Resolve unpacked module
+- :bug: ![n] [#451](https://github.com/giraud/reasonml-idea-plugin/issues/451) Module incorrectly parsed as functor in Rescript
+- :bug: [#449](https://github.com/giraud/reasonml-idea-plugin/issues/449) Navigation icon in the gutter referencing wrong module
+
+## 0.121 - 2024/02/02
+
+- :bug: ![o] [#445](https://github.com/giraud/reasonml-idea-plugin/issues/445) Fix jump to implementation
+- :bug: ![o] [#442](https://github.com/giraud/reasonml-idea-plugin/issues/442) Incorrect parsing of 'IN' in pattern matching
+- :bug: ![o] [#441](https://github.com/giraud/reasonml-idea-plugin/issues/441) Incorrect parsing of pattern matching
+
 ## 0.120 - 2024/01/11
 
 - :bug: ![o] [#444](https://github.com/giraud/reasonml-idea-plugin/issues/444) Fix OCaml parser for 'inherit'

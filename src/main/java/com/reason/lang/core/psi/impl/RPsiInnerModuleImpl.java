@@ -85,18 +85,13 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
     }
 
     @Override
-    public boolean isInterfaceFile() {
-        return ((FileBase) getContainingFile()).isInterface();
-    }
-
-    @Override
     public @Nullable RPsiFunctorCall getFunctorCall() {
         return ORUtil.findImmediateFirstChildOfClass(getBody(), RPsiFunctorCall.class);
     }
 
     @Override
     public @Nullable PsiElement getBody() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiModuleBinding.class, RPsiSignature.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiModuleBinding.class);
     }
 
     @Override
@@ -175,6 +170,11 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
         return null;
     }
 
+    @Override
+    public @Nullable RPsiUnpack getUnpack() {
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiUnpack.class);
+    }
+
     public ItemPresentation getPresentation() {
         //RPsiModuleSignature moduleSignature = getModuleSignature();
 
@@ -186,7 +186,6 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
 
             @Override
             public @NotNull String getLocationString() {
-                //return moduleSignature != null ? moduleSignature.getQualifiedName() : getQualifiedName();
                 return getQualifiedName();
             }
 
@@ -194,7 +193,7 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
             public @NotNull Icon getIcon(boolean unused) {
                 return isModuleType()
                         ? ORIcons.MODULE_TYPE
-                        : (isInterfaceFile() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE);
+                        : ((FileBase) getContainingFile()).isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE;
             }
         };
     }

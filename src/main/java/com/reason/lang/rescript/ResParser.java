@@ -170,6 +170,8 @@ public class ResParser extends CommonPsiParser {
                     parseUnderscore();
                 } else if (tokenType == myTypes.INT_VALUE || tokenType == myTypes.FLOAT_VALUE) {
                     parseNumeric();
+                } else if (tokenType == myTypes.UNPACK) {
+                    parseUnpack();
                 }
                 // if ... else
                 else if (tokenType == myTypes.IF) {
@@ -234,6 +236,19 @@ public class ResParser extends CommonPsiParser {
                 } else {
                     myBuilder.advanceLexer();
                 }
+            }
+        }
+
+        private void parseUnpack() {
+            if (is(myTypes.C_MODULE_BINDING)) {
+                rollbackToLatestAndDrop();
+            }
+            mark(myTypes.C_UNPACK);
+            advance();
+            if (getTokenType() != myTypes.LPAREN) {
+                error("Missing parenthesis");
+            } else {
+                updateScopeToken(myTypes.LPAREN).advance();
             }
         }
 
@@ -548,15 +563,10 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseModule() {
-            if (strictlyInAny(myTypes.C_SIG_ITEM, myTypes.C_DEFAULT_VALUE)) {
-                if (isFound(myTypes.C_SIG_ITEM)) {
-                    // let fn = (~x : |>module<| (...) ...
-                    mark(myTypes.C_MODULE_VALUE);
-                } else if (isFound(myTypes.C_DEFAULT_VALUE)) {
-                    // let fn = (~x: module(X)= |>module<| (...) ...
-                    mark(myTypes.C_MODULE_VALUE);
-                }
-            } else if (!is(myTypes.C_MACRO_NAME)) {
+            if (isCurrent(myTypes.C_DEFAULT_VALUE)) {
+                // let fn = (~x:module(X) = »module«
+                mark(myTypes.C_FIRST_CLASS);
+            } else if (!is(myTypes.C_MACRO_NAME) && !is(myTypes.C_FIRST_CLASS)) {
                 popEndUntilScope();
                 mark(myTypes.C_MODULE_DECLARATION);
             }
@@ -609,32 +619,44 @@ public class ResParser extends CommonPsiParser {
             if (strictlyInAny(
                     myTypes.C_MODULE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_EXTERNAL_DECLARATION,
                     myTypes.C_PARAM_DECLARATION, myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.H_NAMED_PARAM_DECLARATION,
-                    myTypes.C_IF_THEN_ELSE)) {
+                    myTypes.C_IF_THEN_ELSE, myTypes.C_UNPACK)) {
 
                 if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.H_NAMED_PARAM_DECLARATION)) {
-                    // let x = (y |> :<| ...
-                    // let x = (~y |> :<| ...
-                    //popEndUntilFoundIndex().
-                    advance()
-                            .mark(myTypes.C_SIG_EXPR)
-                            .mark(myTypes.C_SIG_ITEM);
+                    advance();
+                    if (getTokenType() == myTypes.MODULE) {
+                        // let _ = (~x »:« module(...
+                        mark(myTypes.C_MODULE_SIGNATURE).advance();
+                        if (getTokenType() == myTypes.LPAREN) {
+                            markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
+                        }
+                    } else {
+                        // let _ = (x »:« ...
+                        // let _ = (~x »:« ...
+                        mark(myTypes.C_SIG_EXPR).mark(myTypes.C_SIG_ITEM);
+                    }
                 } else if (isFound(myTypes.C_MODULE_DECLARATION)) {
                     // module M |> :<| ...
                     popEndUntilFoundIndex().advance()
                             .mark(myTypes.C_MODULE_SIGNATURE);
                 } else if (isFound(myTypes.C_EXTERNAL_DECLARATION) || isFound(myTypes.C_LET_DECLARATION)) {
-                    // external/let x |> :<| ...
-                    popEndUntilFoundIndex().advance().mark(myTypes.C_SIG_EXPR);
-                    if (getTokenType() == myTypes.LPAREN) {
-                        // external/let x : |>(<| ...
-                        markDummyScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
-                                .advance().markHolder(myTypes.H_COLLECTION_ITEM);
-                        if (getTokenType() == myTypes.DOT) {
-                            // external/let : ( |>.<| ...
-                            advance();
+                    popEndUntilFoundIndex().advance();
+                    if (getTokenType() == myTypes.MODULE) {
+                        // let x >:< module ...
+                        mark(myTypes.C_MODULE_SIGNATURE).advance();
+                    } else {
+                        // external/let x |> :<| ...
+                        mark(myTypes.C_SIG_EXPR);
+                        if (getTokenType() == myTypes.LPAREN) {
+                            // external/let x : |>(<| ...
+                            markDummyScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN)
+                                    .advance().markHolder(myTypes.H_COLLECTION_ITEM);
+                            if (getTokenType() == myTypes.DOT) {
+                                // external/let : ( |>.<| ...
+                                advance();
+                            }
                         }
+                        mark(myTypes.C_SIG_ITEM);
                     }
-                    mark(myTypes.C_SIG_ITEM);
                 } else if (isFound(myTypes.C_RECORD_FIELD) || isFound(myTypes.C_OBJECT_FIELD)) {
                     advance();
                     if (in(myTypes.C_TYPE_BINDING)) {
@@ -649,8 +671,10 @@ public class ResParser extends CommonPsiParser {
                     popEndUntilFoundIndex().popEnd()
                             .advance()
                             .mark(myTypes.C_IF_THEN_ELSE);
+                } else if (isFound(myTypes.C_UNPACK)) {
+                    advance();
+                    mark(myTypes.C_MODULE_SIGNATURE);
                 }
-
             }
         }
 
@@ -959,7 +983,7 @@ public class ResParser extends CommonPsiParser {
                 } else {
                     // This is a functor
                     // module M = |>(<| .. )
-                    int moduleIndex = indexOfComposite(myTypes.C_MODULE_DECLARATION);
+                    int moduleIndex = latestIndexOfCompositeAtMost(3, myTypes.C_MODULE_DECLARATION);
                     dropLatest()
                             .popEndUntilIndex(moduleIndex)
                             .updateComposite(myTypes.C_FUNCTOR_DECLARATION)
@@ -1064,6 +1088,8 @@ public class ResParser extends CommonPsiParser {
                         // module M = (P) |>=><| ...
                         advance().mark(myTypes.C_FUNCTOR_BINDING);
                     }
+                } else if (isRawParent(myTypes.C_MODULE_SIGNATURE)) {
+                    popEnd();
                 } else if (nextTokenType == myTypes.ARROW && !isParent(myTypes.C_FUNCTION_EXPR)) {
                     popEnd();
                     if (strictlyInAny(myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_TRY_HANDLER, myTypes.C_PARAM, myTypes.C_PARAMETERS,
@@ -1084,8 +1110,7 @@ public class ResParser extends CommonPsiParser {
                                 mark(myTypes.C_PARAMETERS);
                             }
                             markHolder(myTypes.H_COLLECTION_ITEM);
-                        } else if (isFound(myTypes.C_LET_BINDING) ||
-                                isFound(myTypes.C_SCOPED_EXPR)/* && (isAtIndex(foundIndex + 1, myTypes.C_LET_BINDING)) || isAtIndex(foundIndex + 1, myTypes.C_TAG_PROP_VALUE))*/) {
+                        } else if (isFound(myTypes.C_LET_BINDING) || isFound(myTypes.C_SCOPED_EXPR)) {
                             // a missed function expression
                             int foundHolderIndex = latestIndexOfCompositeAtMost(getIndex(), myTypes.H_PLACE_HOLDER, myTypes.H_COLLECTION_ITEM);
                             if (-1 < foundHolderIndex) {
@@ -1128,7 +1153,6 @@ public class ResParser extends CommonPsiParser {
                     myTypes.C_TAG_PROPERTY, myTypes.C_SIG_EXPR, myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_NAMED_PARAM,
                     myTypes.C_TYPE_CONSTRAINT, myTypes.C_TYPE_BINDING
             )) {
-
                 if (isFound(myTypes.C_TYPE_DECLARATION)) {
                     // type t |> = <| ...
                     popEndUntilFoundIndex().advance()
@@ -1139,10 +1163,17 @@ public class ResParser extends CommonPsiParser {
                             .mark(myTypes.C_LET_BINDING)
                             .markHolder(myTypes.H_PLACE_HOLDER);
                 } else if (isFound(myTypes.C_MODULE_SIGNATURE)) {
-                    // module M : T |> = <| ...
-                    popEndUntilFoundIndex().end()
-                            .advance()
-                            .mark(myTypes.C_MODULE_BINDING);
+                    popEndUntilFoundIndex().end().advance();
+                    if (isRawParent(myTypes.C_LET_DECLARATION)) {
+                        // let x : I >=< ...
+                        mark(myTypes.C_FIRST_CLASS);
+                    } else if (isRawGrandParent(myTypes.H_NAMED_PARAM_DECLARATION)) {
+                        // let _ = (~x: module(I) »=«
+                        popEndUntilIndex(2).mark(myTypes.C_DEFAULT_VALUE).mark(myTypes.C_FIRST_CLASS);
+                    } else {
+                        // module M : T |> = <| ...
+                        mark(myTypes.C_MODULE_BINDING);
+                    }
                 } else if (isFound(myTypes.C_MODULE_DECLARATION)) {
                     // module M |> = <| ...
                     advance().mark(myTypes.C_MODULE_BINDING);
@@ -1284,6 +1315,8 @@ public class ResParser extends CommonPsiParser {
                                 .mark(myTypes.C_PARAM_DECLARATION);
                     }
                 }
+            } else if (in(myTypes.C_FIRST_CLASS)) {
+                remapCurrentToken(myTypes.A_MODULE_NAME).wrapAtom(myTypes.CA_UPPER_SYMBOL);
             }
             //
             else {
@@ -1297,9 +1330,8 @@ public class ResParser extends CommonPsiParser {
                                 .markHolder(myTypes.H_COLLECTION_ITEM);
                     }
                 } else {
-                    remapCurrentToken(nextToken == myTypes.DOT || nextToken == myTypes.WITH
-                            /*|| isCurrent(myTypes.C_MODULE_BINDING) || isCurrent(myTypes.C_MODULE_SIGNATURE)
-                            || isCurrent(myTypes.C_OPEN) || isCurrent(myTypes.C_INCLUDE)*/ ? myTypes.A_MODULE_NAME : myTypes.A_VARIANT_NAME)
+                    boolean isModule = nextToken == myTypes.DOT || nextToken == myTypes.WITH || isParent(myTypes.C_MODULE_SIGNATURE);
+                    remapCurrentToken(isModule ? myTypes.A_MODULE_NAME : myTypes.A_VARIANT_NAME)
                             .wrapAtom(myTypes.CA_UPPER_SYMBOL);
                 }
             }

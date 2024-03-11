@@ -14,6 +14,9 @@ import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
 
+/**
+ * Note: can’t implement getReference here
+ */
 public class RPsiIncludeImpl extends RPsiTokenStub<ORLangTypes, RPsiInclude, PsiIncludeStub> implements RPsiInclude {
     // region Constructors
     public RPsiIncludeImpl(@NotNull ORLangTypes types, @NotNull ASTNode node) {
@@ -54,12 +57,6 @@ public class RPsiIncludeImpl extends RPsiTokenStub<ORLangTypes, RPsiInclude, Psi
 
         PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
         return firstChild == null ? "" : ORUtil.getTextUntilClass(firstChild, RPsiConstraints.class);
-    }
-
-    @Override
-    public @Nullable RPsiUpperSymbol getModuleReference() {
-        // Latest element in path
-        return ORUtil.findImmediateLastChildOfClass(this, RPsiUpperSymbol.class);
     }
 
     @Override

@@ -51,11 +51,12 @@ public class MatchParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_complex_match() {
-        FileBase file = parseCode("begin match Repr.repr o with\n"
-                + "    | BLOCK (0, [|id; o|]) ->\n"
-                + "      [|(Int, id, 0 :: pos); (tpe, o, 1 :: pos)|]\n"
-                + "    | _ -> raise Exit\n"
-                + "    end");
+        FileBase file = parseCode("""
+                begin match Repr.repr o with
+                    | BLOCK (0, [|id; o|]) ->
+                      [|(Int, id, 0 :: pos); (tpe, o, 1 :: pos)|]
+                    | _ -> raise Exit
+                end""");
         PsiElement[] children = file.getChildren();
 
         assertEquals(1, childrenCount((file)));
@@ -115,10 +116,12 @@ public class MatchParsingTest extends OclParsingTestCase {
     @Test
     public void test_function_shortcut_many() {
         RPsiLet e = firstOfType(
-                parseCode("let rec db_output_prodn = function "
-                        + " | Sterm s -> if cond then first else second\n"
-                        + " | Sedit2 (\"FILE\", file) -> let file_suffix_regex = a in printf \"i\"\n"
-                        + " | Snterm s -> sprintf \"(Snterm %s) \" s"), RPsiLet.class);
+                parseCode("""
+                        let rec db_output_prodn = function
+                          | Sterm s -> if cond then first else second
+                          | Sedit2 ("FILE", file) -> let file_suffix_regex = a in printf "i"
+                          | Snterm s -> sprintf "(Snterm %s) " s
+                        """), RPsiLet.class);
 
         RPsiSwitch shortcut = PsiTreeUtil.findChildOfType(e, RPsiSwitch.class);
         List<RPsiPatternMatch> patterns = shortcut.getPatterns();
@@ -150,17 +153,18 @@ public class MatchParsingTest extends OclParsingTestCase {
 
     @Test // coq/analyze.ml
     public void test_begin_end() {
-        RPsiPatternMatchBody e = firstOfType(parseCode("let _ = match (Obj.magic data) with\n" +
-                "| CODE_CUSTOM_FIXED ->\n" +
-                "    begin match input_cstring chan with\n" +
-                "    | \"_j\" -> Rint64 (input_intL chan)\n" +
-                "    | s -> Printf.eprintf \"Unhandled custom code: %s\" s; assert false\n" +
-                "    end"), RPsiPatternMatchBody.class);
+        RPsiPatternMatchBody e = firstOfType(parseCode("""
+                let _ = match (Obj.magic data) with
+                    | CODE_CUSTOM_FIXED -> begin match input_cstring chan with
+                    | "_j" -> Rint64 (input_intL chan)
+                    | s -> Printf.eprintf "Unhandled custom code: %s" s; assert false
+                end"""), RPsiPatternMatchBody.class);
 
-        assertEquals("begin match input_cstring chan with\n" +
-                "    | \"_j\" -> Rint64 (input_intL chan)\n" +
-                "    | s -> Printf.eprintf \"Unhandled custom code: %s\" s; assert false\n" +
-                "    end", e.getText());
+        assertEquals("""
+                begin match input_cstring chan with
+                    | "_j" -> Rint64 (input_intL chan)
+                    | s -> Printf.eprintf "Unhandled custom code: %s" s; assert false
+                end""", e.getText());
         RPsiSwitch m = PsiTreeUtil.findChildOfType(e, RPsiSwitch.class);
         assertEquals("input_cstring chan", m.getCondition().getText());
         assertSize(2, m.getPatterns());
@@ -214,5 +218,59 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertSize(2, es);
         assertEquals("let fn cond i j = match cond with | Some i, Some j -> i < j", es.get(0).getText());
         assertEquals("let fn2 s = ()", es.get(1).getText());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/441
+    @Test
+    public void test_GH_441() {
+        RPsiSwitch e = firstOfType(parseCode("""
+                let _ =
+                  match cond with
+                  | Anonymous -> hov 0 (spc () ++ pbody0 ++ spc ())
+                  | Name id -> hov 1 (spc () ++ pbody1 ++ spc ())
+                """), RPsiSwitch.class);
+
+        assertSize(2, e.getPatterns());
+        RPsiPatternMatchBody eb0 = e.getPatterns().get(0).getBody();
+        assertEquals("hov 0 (spc () ++ pbody0 ++ spc ())", eb0.getText());
+        assertSize(2, ((RPsiFunctionCall) eb0.getFirstChild()).getParameters());
+        assertEquals("0", ((RPsiFunctionCall) eb0.getFirstChild()).getParameters().get(0).getText());
+        List<RPsiFunctionCall> eb0cs = new ArrayList<>(PsiTreeUtil.findChildrenOfType(((RPsiFunctionCall) eb0.getFirstChild()).getParameters().get(1), RPsiFunctionCall.class));
+        assertEquals("spc ()", eb0cs.get(0).getText());
+        assertEquals("spc ()", eb0cs.get(1).getText());
+        RPsiPatternMatchBody eb1 = e.getPatterns().get(1).getBody();
+        assertEquals("hov 1 (spc () ++ pbody1 ++ spc ())", eb1.getText());
+        assertSize(2, ((RPsiFunctionCall) eb1.getFirstChild()).getParameters());
+        assertEquals("1", ((RPsiFunctionCall) eb1.getFirstChild()).getParameters().get(0).getText());
+        List<RPsiFunctionCall> eb1cs = new ArrayList<>(PsiTreeUtil.findChildrenOfType(((RPsiFunctionCall) eb0.getFirstChild()).getParameters().get(1), RPsiFunctionCall.class));
+        assertEquals("spc ()", eb1cs.get(0).getText());
+        assertEquals("spc ()", eb1cs.get(1).getText());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/442
+    @Test
+    public void test_GH_442() {
+        RPsiFunction e = firstOfType(parseCode("""
+                let fn x = function
+                  | [] -> best
+                  | hd :: tl ->
+                    let y = 1 in
+                      if cond then
+                        expr1
+                      else
+                        expr2
+                in
+                stmt
+                """), RPsiFunction.class);
+
+        RPsiSwitch es = PsiTreeUtil.findChildOfType(e, RPsiSwitch.class);
+        assertSize(2, es.getPatterns());
+        assertEquals("best", es.getPatterns().get(0).getBody().getText());
+        assertEquals("""
+                              let y = 1 in
+                                    if cond then
+                                      expr1
+                                    else
+                                      expr2""", es.getPatterns().get(1).getBody().getText());
     }
 }

@@ -18,7 +18,7 @@ public class RPsiLiteralString extends LeafPsiElement {
 
     @Override
     public @Nullable PsiReference getReference() {
-        return myTypes instanceof ResTypes ? new RPsiLiteralStringReference(this, myTypes) : null;
+        return myTypes instanceof ResTypes ? new ORPsiLiteralStringReference(this, myTypes) : null;
     }
 
     @Override

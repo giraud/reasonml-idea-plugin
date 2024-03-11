@@ -458,15 +458,59 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
         assertEquals("A.a.b.c.d", e.getQualifiedName());
     }
 
-    //@Test TODO
-    //public void test_deep_open() {
-    //    configureCode("A.res", "let oo = {\"first\": {\"deep\": true}, \"deep\": {\"other\": {\"asd\": 1} } }");
-    //    configureCode("B.res", "open A\n oo[\"deep\"][\"other\"<caret>]");
-    //
-    //    RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
-    //    assertEquals("A.oo.deep.other", e.getQualifiedName());
-    //}
+    @Test
+    public void test_deep_open() {
+        configureCode("A.res", """
+                let oo = {"first": {"deep": true}, "deep": {"other": {"asd": 1} } }
+                """);
+        configureCode("B.res", """
+                open A
+                oo["deep"]["other"<caret>]
+                """);
+
+        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
+        assertEquals("A.oo.deep.other", e.getQualifiedName());
+    }
     //endregion
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_resolve_unpacked_module() {
+        configureCode("A.res", """
+                module type I = {
+                  let x: int
+                }
+
+                let x = (~p: module(I)) => {
+                    module S = unpack(p)
+                    S.x<caret>
+                };
+                """);
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.I.x", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_resolve_unpacked_module_inner_module() {
+        configureCode("A.res", """
+                module B = {
+                  module type I = {
+                    let fn: int => unit
+                  }
+                }
+                """);
+        configureCode("C.res", """
+                let x = (~p: module(A.B.I)) => {
+                    module S = unpack(p)
+                    S.fn<caret>(1)
+                };
+                """);
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.B.I.fn", e.getQualifiedName());
+    }
 
     @Test
     public void test_GH_167_deconstruction() {

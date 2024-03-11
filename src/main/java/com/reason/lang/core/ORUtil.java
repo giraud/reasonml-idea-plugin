@@ -135,7 +135,8 @@ public class ORUtil {
         PsiElement sibling = root == null ? null : root.getNextSibling();
         while (sibling != null) {
             IElementType type = sibling.getNode().getElementType();
-            if (type == types.DOT || type == types.UIDENT || type == types.LIDENT || type == types.A_UPPER_TAG_NAME || type == types.A_LOWER_TAG_NAME) {
+            if (type == types.DOT || type == types.UIDENT || type == types.LIDENT ||
+                    type == types.A_MODULE_NAME || type == types.A_UPPER_TAG_NAME || type == types.A_LOWER_TAG_NAME) {
                 text.append(sibling.getText());
                 sibling = PsiTreeUtil.nextLeaf(sibling);
             } else {
@@ -366,7 +367,7 @@ public class ORUtil {
     }
 
     public static @Nullable PsiElement resolveModuleSymbol(@Nullable RPsiUpperSymbol moduleSymbol) {
-        RPsiUpperSymbolReference reference = moduleSymbol == null ? null : moduleSymbol.getReference();
+        ORPsiUpperSymbolReference reference = moduleSymbol == null ? null : moduleSymbol.getReference();
         PsiElement resolvedSymbol = reference == null ? null : reference.resolveInterface();
         return resolvedSymbol instanceof RPsiUpperSymbol ? resolvedSymbol.getParent() : resolvedSymbol;
     }
@@ -388,6 +389,21 @@ public class ORUtil {
         return result;
     }
 
+    public static <T> @Nullable T findPreviousSiblingOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
+        PsiElement previous = element.getPrevSibling();
+        PsiElement prevSibling = previous == null ? element.getParent() : previous;
+        while (prevSibling != null) {
+            if (clazz.isInstance(prevSibling)) {
+                //noinspection unchecked
+                return (T) prevSibling;
+            }
+            previous = prevSibling.getPrevSibling();
+            prevSibling = previous == null ? prevSibling.getParent() : previous;
+        }
+
+        return null;
+    }
+
     public static @Nullable <T extends PsiNamedElement> T findImmediateNamedChildOfClass(@Nullable PsiElement element, @NotNull Class<T> clazz, @NotNull String name) {
         return ORUtil.findImmediateChildrenOfClass(element, clazz).stream().filter(item -> name.equals(item.getName())).findFirst().orElse(null);
     }
@@ -396,5 +412,30 @@ public class ORUtil {
         PsiElement prevSibling = ORUtil.prevSibling(root);
         IElementType prevType = prevSibling == null ? null : prevSibling.getNode().getElementType();
         return prevType != null && prevType == elementType;
+    }
+
+    public static boolean isInterfaceFile(@Nullable PsiElement element) {
+        PsiFile file = element != null ? element.getContainingFile() : null;
+        return file instanceof FileBase fileBase && fileBase.isInterface();
+    }
+
+    public static boolean inInterface(@Nullable PsiElement element) {
+        PsiElement parent = PsiTreeUtil.getStubOrPsiParent(element);
+
+        if (parent instanceof RPsiModuleSignature) {
+            return true;
+        } else if (parent instanceof RPsiModuleBinding moduleBinding) {
+            boolean interfaceFile = isInterfaceFile(moduleBinding);
+            if (interfaceFile) {
+                return true;
+            }
+
+            PsiElement bindingParent = PsiTreeUtil.getStubOrPsiParent(moduleBinding);
+            if (bindingParent instanceof RPsiInnerModule innerModule) {
+                return innerModule.isModuleType();
+            }
+        }
+
+        return isInterfaceFile(element);
     }
 }

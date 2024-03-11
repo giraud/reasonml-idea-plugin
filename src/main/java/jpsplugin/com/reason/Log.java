@@ -225,6 +225,12 @@ public class Log {
         }
     }
 
+    public void debug(String msg, String value, SearchScope scope, Project project) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(msg + SEP + value + ", scope=[" + scope + "] in project " + project);
+        }
+    }
+
     public void info(String msg) {
         m_log.info(msg);
     }

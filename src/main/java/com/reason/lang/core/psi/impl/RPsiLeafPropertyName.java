@@ -14,7 +14,7 @@ public class RPsiLeafPropertyName extends LeafPsiElement {
 
     @Override
     public PsiReference getReference() {
-        return new PsiPropertyNameReference(this, ORUtil.getTypes(getLanguage()));
+        return new ORPsiPropertyNameReference(this, ORUtil.getTypes(getLanguage()));
     }
 
     @Override

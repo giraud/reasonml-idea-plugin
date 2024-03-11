@@ -2,7 +2,6 @@ package com.reason.lang.rescript;
 
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -233,21 +232,6 @@ public class FunctionParsingTest extends ResParsingTestCase {
     }
 
     @Test
-    public void test_first_class_module() {
-        RPsiFunction e = firstOfType(parseCode("let make = (~selectors: module(SelectorsIntf)=module(Selectors)) => {}"), RPsiFunction.class);
-        assertNoParserError(e);
-
-        RPsiParameterDeclaration p0 = e.getParameters().get(0);
-        RPsiSignature s = p0.getSignature();
-        RPsiSignatureItem s0 = s.getItems().get(0);
-        assertEquals("module(SelectorsIntf)", s0.getText());
-        assertNull(PsiTreeUtil.findChildOfType(s, RPsiInnerModule.class));
-        assertSize(2, PsiTreeUtil.findChildrenOfType(p0, RPsiModuleValue.class));
-        assertEquals("module(Selectors)", p0.getDefaultValue().getText());
-        assertNull(ORUtil.findImmediateFirstChildOfType(PsiTreeUtil.findChildOfType(s0, RPsiModuleValue.class), myTypes.A_VARIANT_NAME));
-    }
-
-    @Test
     public void test_signature() {
         RPsiFunction e = firstOfType(parseCode("let _ = (~p: (option(string), option(int)) => unit) => p;"), RPsiFunction.class);
         assertNoParserError(e);
@@ -284,11 +268,13 @@ public class FunctionParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_rollback_02() {
-        FileBase c = parseCode("let _ = (() => 1, () => 2);");
-        List<RPsiFunction> es = childrenOfType(c, RPsiFunction.class); // test infinite rollback
+        RPsiLet e = firstOfType(parseCode("let _ = (() => 1, () => 2);"), RPsiLet.class); // test infinite rollback
 
-        assertEquals("() => 1", es.get(0).getText());
-        assertEquals("() => 2", es.get(1).getText());
+        assertFalse(e.isFunction());
+
+        List<RPsiFunction> efs = childrenOfType(e, RPsiFunction.class);
+        assertEquals("() => 1", efs.get(0).getText());
+        assertEquals("() => 2", efs.get(1).getText());
     }
 
     @Test

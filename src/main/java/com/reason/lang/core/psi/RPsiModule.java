@@ -13,8 +13,6 @@ public interface RPsiModule extends RPsiQualifiedPathElement, RPsiStructuredElem
     @Nullable
     PsiElement getBody();
 
-    boolean isInterfaceFile();
-
     boolean isComponent();
 
     @Nullable

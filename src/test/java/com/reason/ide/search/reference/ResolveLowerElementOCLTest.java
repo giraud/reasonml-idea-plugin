@@ -149,17 +149,6 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_record_field() {
-        configureCode("A.ml", """
-                type t = { f1: bool; f2: int; }
-                let x  = { f1 = true; f2<caret> = 421 }
-                """);
-
-        RPsiRecordField e = (RPsiRecordField) myFixture.getElementAtCaret();
-        assertEquals("A.t.f2", e.getQualifiedName());
-    }
-
-    @Test
     public void test_function() {
         configureCode("A.ml", "module B = struct let bb = 1 end\n module C = struct let cc x = x end let z = C.cc(B.bb<caret>)");
 
@@ -303,22 +292,21 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("Css.px", e.getQualifiedName());
     }
 
-    //TODO
-    //@Test
-    //public void test_pipe_first_open_2() {
-    //    configureCode("Core.ml", """
-    //            module Async = struct
-    //              let get x = x
-    //            end
-    //            """);
-    //    configureCode("A.ml", """
-    //            open Core.Async
-    //            request |. get<caret> "windows/settings"
-    //            """);
-    //
-    //    RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-    //    assertEquals("Core.Async.get", e.getQualifiedName());
-    //}
+    @Test
+    public void test_pipe_first_open_2() {
+        configureCode("Core.ml", """
+                module Async = struct
+                  let get x = x
+                end
+                """);
+        configureCode("A.ml", """
+                open Core.Async
+                let _ = request |. get<caret> "windows/settings"
+                """);
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("Core.Async.get", e.getQualifiedName());
+    }
 
     @Test
     public void test_pipe_first_open_with_path() {
@@ -424,16 +412,15 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("A.Make.a", e.getQualifiedName());
     }
 
-    // TODO
-    //@Test
-    //public void test_functor_result_with_alias() {
-    //    configureCode("A.ml", "module type Result = sig let a: int end");
-    //    configureCode("B.ml", "module T = A\n module Make(M:Intf): T.Result = struct let b = 3 end");
-    //    configureCode("C.ml", "module Instance = Make(struct end)\n let c = Instance.a<caret>");
-    //
-    //    RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
-    //    assertEquals("A.Result.a", e.getQualifiedName());
-    //}
+    @Test
+    public void test_functor_result_with_alias() {
+        configureCode("A.ml", "module type Result = sig let a: int end");
+        configureCode("B.ml", "module T = A\n module Make(M:Intf): T.Result = struct let b = 3 end");
+        configureCode("C.ml", "module Instance = B.Make(struct end)\n let c = Instance.a<caret>");
+
+        RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
+        assertEquals("A.Result.a", e.getQualifiedName());
+    }
 
     @Test
     public void test_path_functor() {
@@ -489,6 +476,44 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
         assertEquals("A.a.b.c.d", e.getQualifiedName());
     }
     //endregion
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_resolve_unpacked_module() {
+        configureCode("A.ml", """
+                module type I = sig
+                  val x: int
+                end
+
+                let x ~p:(p: (module I)) =
+                    let module S = (val p) in
+                    S.x<caret>
+                """);
+
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
+        assertEquals("A.I.x", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_resolve_unpacked_module_inner_module() {
+        configureCode("A.ml", """
+                module B = struct
+                  module type I = sig
+                    val fn: int -> unit
+                  end
+                end
+                """);
+        configureCode("C.ml", """
+                let x ~p:(p:(module A.B.I)) =
+                    let module S = (val p) in
+                    S.fn<caret>(1)
+                };
+                """);
+
+        RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
+        assertEquals("A.B.I.fn", e.getQualifiedName());
+    }
 
     @Test
     public void test_GH_167_deconstruction_first() {

@@ -1,9 +1,9 @@
 package com.reason.ide.search.reference;
 
 import com.intellij.openapi.project.*;
-import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
+import com.intellij.psi.tree.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
@@ -15,48 +15,53 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLeafPropertyName> {
-    private static final Log LOG = Log.create("ref.params");
-    private static final Log LOG_PERF = Log.create("ref.perf.params");
+public class ORPsiLiteralStringReference extends ORMultiSymbolReference<RPsiLiteralString> {
+    private static final Log LOG = Log.create("ref.string");
+    private static final Log LOG_PERF = Log.create("ref.perf.string");
 
-    private final @Nullable String myReferenceName;
-    private final @NotNull ORLangTypes myTypes;
-
-    public PsiPropertyNameReference(@NotNull RPsiLeafPropertyName element, @NotNull ORLangTypes types) {
-        super(element, TextRange.from(0, element.getTextLength()));
-        myReferenceName = element.getText();
-        myTypes = types;
+    public ORPsiLiteralStringReference(@NotNull RPsiLiteralString element, @NotNull ORLangTypes types) {
+        super(element, types);
     }
 
     @Override
     public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
-        if (myReferenceName == null) {
+        // Ref of a js object in rescript : <lowerSymbol/> <array> "[" "string" "]" </array>
+        PsiElement prevSibling = myElement.getPrevSibling();
+        if (prevSibling == null || prevSibling.getNode().getElementType() != myTypes.LBRACKET) {
             return ResolveResult.EMPTY_ARRAY;
         }
 
-        // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
-        // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        PsiElement parent = myElement.getParent();
-        if (parent instanceof RPsiLet || parent instanceof RPsiVal || parent instanceof RPsiExternal) {
+        PsiElement parent = prevSibling.getParent();
+        if (parent == null || parent.getNode().getElementType() != myTypes.C_ARRAY) {
             return ResolveResult.EMPTY_ARRAY;
         }
+
+        PsiElement parentPrevSibling = parent.getPrevSibling();
+        IElementType parentPrevSiblingType = parentPrevSibling != null ? parentPrevSibling.getNode().getElementType() : null;
+        if (parentPrevSibling == null || (parentPrevSiblingType != myTypes.LIDENT && parentPrevSiblingType != myTypes.C_ARRAY)) {
+            return ResolveResult.EMPTY_ARRAY;
+        }
+
+        // This is a reference to a JS object, can be resolved
 
         long startAll = System.currentTimeMillis();
 
         Project project = myElement.getProject();
         GlobalSearchScope searchScope = GlobalSearchScope.allScope(project); // ?
 
-        LOG.debug("Find reference for propertyLeaf", myReferenceName);
+        LOG.debug("Find reference for string", myElement);
         if (LOG.isTraceEnabled()) {
             LOG.trace(" -> search scope: " + searchScope);
         }
 
         // Gather instructions from element up to the file root
         Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, true, myTypes);
-        instructions.addLast(parent);
+
+        // Source element is part of an object chain
+        instructions.addLast(new ORReferenceAnalyzer.SymbolField(myElement, false));
 
         if (LOG.isTraceEnabled()) {
-            LOG.trace("  Instructions: ", Joiner.join(" -> ", instructions));
+            LOG.trace("  Instructions: [" + Joiner.join(" -> ", instructions) + "]");
         }
 
         long endInstructions = System.currentTimeMillis();
@@ -71,7 +76,7 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLe
         List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, openedModules, project, searchScope);
 
         if (LOG.isTraceEnabled()) {
-            LOG.trace("  Resolved instructions: " + Joiner.join(" -> ", resolvedInstructions));
+            LOG.trace("  Resolved instructions: [" + Joiner.join(" -> ", resolvedInstructions) + "]");
         }
 
         long endResolvedInstructions = System.currentTimeMillis();
@@ -85,7 +90,7 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLe
         ResolveResult[] resolveResults = new ResolveResult[((Collection<RPsiQualifiedPathElement>) resolvedInstructions).size()];
         int i = 0;
         for (PsiElement element : resolvedInstructions) {
-            resolveResults[i] = new JsxTagResolveResult(element, myReferenceName);
+            resolveResults[i] = new ORPsiLowerSymbolReference.LowerResolveResult(element, myReferenceName);
             i++;
         }
 
@@ -98,42 +103,7 @@ public class PsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsiLe
         }
 
         return resolveResults;
-    }
 
-    @Override
-    public @Nullable PsiElement resolve() {
-        ResolveResult[] resolveResults = multiResolve(false);
-        return 0 < resolveResults.length ? resolveResults[0].getElement() : null;
-    }
-
-    public static class JsxTagResolveResult implements ResolveResult {
-        private @Nullable PsiElement myReferencedIdentifier = null;
-
-        public JsxTagResolveResult(@NotNull PsiElement referencedElement, @NotNull String propertyName) {
-            if (referencedElement instanceof RPsiLet) {
-                RPsiFunction function = ((RPsiLet) referencedElement).getFunction();
-                if (function != null) {
-                    List<RPsiParameterDeclaration> parameters = function.getParameters();
-                    for (RPsiParameterDeclaration parameter : parameters) {
-                        if (propertyName.equals(parameter.getName())) {
-                            myReferencedIdentifier = parameter;
-                            break;
-                        }
-                    }
-                }
-            } else if (referencedElement instanceof RPsiParameterDeclaration) {
-                myReferencedIdentifier = referencedElement;
-            }
-        }
-
-        @Override
-        public @Nullable PsiElement getElement() {
-            return myReferencedIdentifier;
-        }
-
-        @Override
-        public boolean isValidResult() {
-            return myReferencedIdentifier != null;
-        }
+        // ...
     }
 }

@@ -60,4 +60,13 @@ public class ExternalParsingTest extends RmlParsingTestCase {
         assertEquals("array(reactElement) => reactElement", e.getSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
+
+    @Test
+    public void test_operator2() {
+        RPsiExternal e = firstOfType(parseCode("external (!=): ('a, 'a) => bool = \"%notequal\";"), RPsiExternal.class);
+
+        assertEquals("(!=)", e.getName());
+        assertEquals("('a, 'a) => bool", e.getSignature().getText());
+        assertEquals("%notequal", e.getExternalName());
+    }
 }

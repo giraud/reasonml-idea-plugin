@@ -22,4 +22,8 @@ public class RPsiScopedExpr extends ORCompositePsiElement<ORLangTypes> {
 
         return false;
     }
+
+    public @NotNull String getInnerText() {
+        return getText().substring(1, getTextLength() - 1);
+    }
 }

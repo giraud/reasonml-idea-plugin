@@ -132,14 +132,14 @@ public class DotCompletionRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_with_return_type() {
-        configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) : Intf => { let y = 1; };");
+        configureCode("A.re", "module type Intf = { let x: bool; }; module type Sig = { let y: int}; module MakeIntf = (I:Intf) : Sig => { let y = 1; };");
         configureCode("B.re", "open A; module Instance = MakeIntf({let x = true});");
         configureCode("C.re", "open B; Instance.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertSameElements(elements, "x");
+        assertSameElements(elements, "y");
     }
 
     @Test
@@ -212,5 +212,26 @@ public class DotCompletionRMLTest extends ORBasePlatformTestCase {
 
         assertSize(3, elements);
         assertContainsElements(elements, "color", "Black", "Red");
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/452
+    @Test
+    public void test_GH_452_unpacked_module() {
+        configureCode("A.re", """
+                module type I = {
+                  let x: int;
+                };
+
+                let x = (~p: (module I)) => {
+                    module S = (val p);
+                    S.<caret>
+                };
+                """);
+
+        myFixture.completeBasic();
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSize(1, elements);
+        assertContainsElements(elements, "x");
     }
 }

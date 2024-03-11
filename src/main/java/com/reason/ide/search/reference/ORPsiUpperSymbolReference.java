@@ -1,14 +1,14 @@
 package com.reason.ide.search.reference;
 
 import com.intellij.openapi.project.*;
+import com.intellij.openapi.util.text.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
-import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
-import com.reason.lang.core.*;
+import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -17,11 +17,11 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSymbol> {
-    private static final Log LOG = Log.create("ref.lower");
-    private static final Log LOG_PERF = Log.create("ref.perf.lower");
+public class ORPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSymbol> {
+    private static final Log LOG = Log.create("ref.upper");
+    private static final Log LOG_PERF = Log.create("ref.perf.upper");
 
-    public RPsiLowerSymbolReference(@NotNull RPsiLowerSymbol element, @NotNull ORLangTypes types) {
+    public ORPsiUpperSymbolReference(@NotNull RPsiUpperSymbol element, @NotNull ORLangTypes types) {
         super(element, types);
     }
 
@@ -34,7 +34,13 @@ public class RPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSy
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
         PsiElement parent = myElement.getParent();
-        if (parent instanceof RPsiLet || parent instanceof RPsiVal || parent instanceof RPsiType || parent instanceof RPsiExternal) {
+        if (parent instanceof RPsiInnerModule) {
+            if (!(parent.getParent() instanceof RPsiModuleSignature)) {
+                LOG.debug("Declaration found (inner module), skip reference resolution", myElement);
+                return ResolveResult.EMPTY_ARRAY;
+            }
+        } else if (parent instanceof RPsiFunctor || parent instanceof RPsiException || parent instanceof RPsiVariantDeclaration) {
+            LOG.debug("Declaration found, skip reference resolution", myReferenceName);
             return ResolveResult.EMPTY_ARRAY;
         }
 
@@ -43,25 +49,17 @@ public class RPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSy
         Project project = myElement.getProject();
         GlobalSearchScope searchScope = GlobalSearchScope.allScope(project); // ?
 
-        LOG.debug("Find reference for lower symbol", myReferenceName);
+        LOG.debug("Find reference for upper symbol", myReferenceName);
         if (LOG.isTraceEnabled()) {
             LOG.trace(" -> search scope: " + searchScope);
         }
 
         // Gather instructions from element up to the file root
-        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, true, myTypes);
-
-        // Test if source element is part of a record/object chain
-        if (ORUtil.isPrevType(myElement, myTypes.SHARPSHARP)) { // ReasonML: JsObject field
-            instructions.addLast(new ORReferenceAnalyzer.SymbolField(myElement, false));
-        } else if (ORUtil.isPrevType(myElement, myTypes.DOT) && ORUtil.prevPrevSibling(myElement) instanceof RPsiLowerSymbol) { // Record field: a.b
-            instructions.addLast(new ORReferenceAnalyzer.SymbolField(myElement, true));
-        } else {
-            instructions.addLast(myElement);
-        }
+        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, false, myTypes);
+        instructions.addLast(myElement);
 
         if (LOG.isTraceEnabled()) {
-            LOG.trace("  Instructions: [" + Joiner.join(" -> ", instructions) + "]");
+            LOG.trace("  Instructions", Joiner.join(" -> ", instructions));
         }
 
         long endInstructions = System.currentTimeMillis();
@@ -76,10 +74,20 @@ public class RPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSy
         List<RPsiQualifiedPathElement> resolvedInstructions = ORReferenceAnalyzer.resolveInstructions(instructions, openedModules, project, searchScope);
 
         if (LOG.isTraceEnabled()) {
-            LOG.trace("  Resolved instructions: [" + Joiner.join(" -> ", resolvedInstructions) + "]");
+            LOG.trace("  Resolutions", Joiner.join(", ", resolvedInstructions));
         }
 
         long endResolvedInstructions = System.currentTimeMillis();
+
+        resolvedInstructions.sort((e1, e2) -> {
+            if (e1 instanceof FileBase && ((FileBase) e1).isInterface()) {
+                return 1;
+            }
+            if (e2 instanceof FileBase && ((FileBase) e2).isInterface()) {
+                return -1;
+            }
+            return NaturalComparator.INSTANCE.compare(e1.getQualifiedName(), e2.getQualifiedName());
+        });
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("  => found", Joiner.join(", ", resolvedInstructions,
@@ -88,17 +96,18 @@ public class RPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSy
         }
 
         ResolveResult[] resolveResults = new ResolveResult[((Collection<RPsiQualifiedPathElement>) resolvedInstructions).size()];
+
         int i = 0;
         for (PsiElement element : resolvedInstructions) {
-            resolveResults[i] = new LowerResolveResult(element, myReferenceName);
+            resolveResults[i] = new UpperResolveResult(element);
             i++;
         }
 
+        long endAll = System.currentTimeMillis();
         if (LOG_PERF.isDebugEnabled()) {
-            long endAll = System.currentTimeMillis();
             LOG_PERF.debug("Resolution of " + myReferenceName + " in " + (endAll - startAll) + "ms => " +
-                    " i:" + (endInstructions - startAll) + "," +
-                    " r:" + (endResolvedInstructions - endInstructions)
+                    " instructions: " + (endInstructions - startAll) + "ms," +
+                    " resolutions: " + (endResolvedInstructions - endInstructions) + "ms,"
             );
         }
 
@@ -107,40 +116,25 @@ public class RPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerSy
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newId = ORCodeFactory.createLetName(myElement.getProject(), newName);
-        return newId == null ? myElement : myElement.replace(newId);
+        //myElement.replace(new RPsiUpperTagName(myTypes, myElement.getElementType(), newName));
+        return myElement;
     }
 
-    public static class LowerResolveResult implements ResolveResult {
-        private final @NotNull PsiElement myReferencedIdentifier;
+    private static class UpperResolveResult implements ResolveResult {
+        private final PsiElement m_referencedIdentifier;
 
-        public LowerResolveResult(@NotNull PsiElement referencedElement, String sourceName) {
-            if (referencedElement instanceof RPsiLet && ((RPsiLet) referencedElement).isDeconstruction()) {
-                PsiElement identifierElement = referencedElement;
-                for (PsiElement deconstructedElement : ((RPsiLet) referencedElement).getDeconstructedElements()) {
-                    if (deconstructedElement.getText().equals(sourceName)) {
-                        identifierElement = deconstructedElement;
-                        break;
-                    }
-                }
-                myReferencedIdentifier = identifierElement;
-            } else {
-                myReferencedIdentifier = referencedElement;
-            }
+        public UpperResolveResult(@NotNull PsiElement referencedElement) {
+            m_referencedIdentifier = referencedElement;
         }
 
         @Override
         public @Nullable PsiElement getElement() {
-            return myReferencedIdentifier;
+            return m_referencedIdentifier;
         }
 
         @Override
         public boolean isValidResult() {
             return true;
-        }
-
-        public boolean isInterface() {
-            return FileHelper.isInterface(myReferencedIdentifier.getContainingFile().getFileType());
         }
     }
 }

@@ -77,9 +77,9 @@ public class ExternalParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_operator2() {
-        RPsiExternalImpl e = firstOfType(parseCode("external ( <> ) : 'a -> 'a -> bool = \"%notequal\""), RPsiExternalImpl.class);
+        RPsiExternalImpl e = firstOfType(parseCode("external (<>) : 'a -> 'a -> bool = \"%notequal\""), RPsiExternalImpl.class);
 
-        assertEquals("( <> )", e.getName());
+        assertEquals("(<>)", e.getName());
         assertInstanceOf(e.getNameIdentifier(), RPsiScopedExpr.class);
         assertEquals("'a -> 'a -> bool", e.getSignature().getText());
         assertEquals("%notequal", e.getExternalName());

@@ -38,12 +38,14 @@ public class DotExpressionCompletionProvider {
             LOG.debug(" -> upper symbol", previousElement);
 
             PsiReference reference = previousElement.getReference();
-            PsiElement resolvedElement = reference instanceof RPsiUpperSymbolReference ? ((RPsiUpperSymbolReference) reference).resolveInterface() : null;
+            PsiElement resolvedElement = reference instanceof ORPsiUpperSymbolReference ? ((ORPsiUpperSymbolReference) reference).resolveInterface() : null;
             LOG.debug(" -> resolved to", resolvedElement);
 
             Collection<PsiNamedElement> expressions = new ArrayList<>();
             if (resolvedElement instanceof RPsiInnerModule) {
                 addInnerModuleExpressions((RPsiInnerModule) resolvedElement, expressions, searchScope);
+            } else if (resolvedElement instanceof RPsiFunctor) {
+                addFunctorExpressions((RPsiFunctor) resolvedElement, expressions, searchScope);
             } else if (resolvedElement instanceof FileBase) {
                 addFileExpressions((FileBase) resolvedElement, expressions, searchScope);
             }
@@ -61,7 +63,7 @@ public class DotExpressionCompletionProvider {
 
             LOG.debug(" -> lower symbol", previousElement);
 
-            RPsiLowerSymbolReference reference = (RPsiLowerSymbolReference) previousElement.getReference();
+            ORPsiLowerSymbolReference reference = (ORPsiLowerSymbolReference) previousElement.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
             if (LOG.isDebugEnabled()) {
                 LOG.debug(" -> resolved to", resolvedElement == null ? null : resolvedElement.getParent());
@@ -88,9 +90,8 @@ public class DotExpressionCompletionProvider {
             if (returnType == null) {
                 addChildren(((RPsiFunctor) resolvedElement).getBody(), expressions);
             } else {
-                RPsiUpperSymbol referenceIdentifier = ORUtil.findImmediateLastChildOfClass(returnType, RPsiUpperSymbol.class);
-                RPsiUpperSymbolReference reference = referenceIdentifier == null ? null : referenceIdentifier.getReference();
-                PsiElement resolvedResult = reference == null ? null : reference.resolveInterface();
+                RPsiUpperSymbol referenceIdentifier = returnType.getModuleType();
+                PsiElement resolvedResult = referenceIdentifier == null ? null : referenceIdentifier.getReference().resolveInterface();
                 if (resolvedResult != null) {
                     addModuleExpressions(resolvedResult, expressions, scope);
                 }
@@ -127,18 +128,49 @@ public class DotExpressionCompletionProvider {
         expressions.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(file, RPsiException.class));
     }
 
+    private static void addFunctorExpressions(@NotNull RPsiFunctor functor, @NotNull Collection<PsiNamedElement> expressions, @NotNull GlobalSearchScope scope) {
+        RPsiFunctorResult returnType = functor.getReturnType();
+        if (returnType == null) {
+            PsiElement functorBody = functor.getBody();
+            if (functorBody != null) {
+                addChildren(functorBody, expressions);
+            }
+        } else {
+            RPsiUpperSymbol moduleType = returnType.getModuleType();
+            PsiElement resolvedReturnType = moduleType != null ? moduleType.getReference().resolveInterface() : null;
+            if (resolvedReturnType instanceof RPsiInnerModule resolvedReturnModuleType) {
+                addInnerModuleExpressions(resolvedReturnModuleType, expressions, scope);
+            }
+        }
+    }
+
     private static void addInnerModuleExpressions(@NotNull RPsiInnerModule module, @NotNull Collection<PsiNamedElement> expressions, @NotNull GlobalSearchScope scope) {
-        if (module.getAlias() != null) {
+        if (module.getAlias() != null) { // use gist alternate names ?
             PsiElement resolvedAlias = ORUtil.resolveModuleSymbol(module.getAliasSymbol());
             addModuleExpressions(resolvedAlias, expressions, scope);
         } else if (module.isFunctorCall()) {
             RPsiFunctorCall functorCall = module.getFunctorCall();
 
             RPsiUpperSymbol referenceIdentifier = functorCall == null ? null : functorCall.getReferenceIdentifier();
-            RPsiUpperSymbolReference reference = referenceIdentifier == null ? null : referenceIdentifier.getReference();
+            ORPsiUpperSymbolReference reference = referenceIdentifier == null ? null : referenceIdentifier.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
             if (resolvedElement != null) {
                 addModuleExpressions(resolvedElement, expressions, scope);
+            }
+        } else if (module.getUnpack() != null) {
+            RPsiLowerSymbol firstClassSymbol = module.getUnpack().getFirstClassSymbol();
+            ORPsiLowerSymbolReference symbolReferenceIdentifier = firstClassSymbol != null ? firstClassSymbol.getReference() : null;
+            PsiElement resolvedFirstClassSymbol = symbolReferenceIdentifier != null ? symbolReferenceIdentifier.resolve() : null;
+            if (resolvedFirstClassSymbol instanceof RPsiSignatureElement signatureElement) {
+                RPsiSignature signature = signatureElement.getSignature();
+                if (signature instanceof RPsiModuleSignature firstClassModuleSignature) {
+                    RPsiUpperSymbol moduleReferenceIdentifier = firstClassModuleSignature.getNameIdentifier();
+                    ORPsiUpperSymbolReference moduleReference = moduleReferenceIdentifier != null ? moduleReferenceIdentifier.getReference() : null;
+                    PsiElement resolvedFirstClassModule = moduleReference != null ? moduleReference.resolve() : null;
+                    if (resolvedFirstClassModule!=null) {
+                        addModuleExpressions(resolvedFirstClassModule, expressions, scope);
+                    }
+                }
             }
         } else {
             PsiElement body = module.getModuleSignature();
@@ -181,9 +213,9 @@ public class DotExpressionCompletionProvider {
     private static void addChildren(@Nullable PsiElement body, @NotNull Collection<PsiNamedElement> expressions) {
         List<RPsiInclude> includes = PsiTreeUtil.getStubChildrenOfTypeAsList(body, RPsiInclude.class);
         for (RPsiInclude include : includes) {
-            RPsiUpperSymbol referenceIdentifier = include.getModuleReference();
-            RPsiUpperSymbolReference reference = referenceIdentifier == null ? null : referenceIdentifier.getReference();
-            PsiElement resolvedResult = reference == null ? null : reference.resolveInterface();
+            RPsiUpperSymbol moduleSymbol = ORUtil.findImmediateLastChildOfClass(include, RPsiUpperSymbol.class);
+            ORPsiUpperSymbolReference reference = moduleSymbol != null ? moduleSymbol.getReference() : null;
+            PsiElement resolvedResult = reference != null ? reference.resolveInterface() : null;
             if (resolvedResult instanceof RPsiModule resolvedModule) {
                 PsiElement resolvedBody = resolvedModule instanceof RPsiInnerModule ? ((RPsiInnerModule) resolvedModule).getModuleSignature() : null;
                 if (resolvedBody == null) {

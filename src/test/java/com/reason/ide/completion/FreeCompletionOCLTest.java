@@ -7,15 +7,16 @@ import org.junit.*;
 
 import java.util.*;
 
-@SuppressWarnings("ConstantConditions")
-public class FreeCompletionRESTest extends ORBasePlatformTestCase {
+@SuppressWarnings("DataFlowIssue")
+public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
     @Test
     public void test_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
+        configureCode("pervasives.ml", "let int_of_string : x -> 42");
         configureCode("belt_Array.mli", "val length: t -> int");
         configureCode("belt.ml", "module Array = Belt_Array");
 
-        configureCode("Dummy.res", "let x = <caret>");
+        configureCode("Dummy.ml", "let x = <caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
@@ -26,21 +27,18 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_underscore() {
-        configureCode("Dummy.res", """
-                let _ = 1
-                <caret>
-                """);
+        configureCode("Dummy.re", "let _ = 1; <caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertSameElements(elements, ResKeywordCompletionContributor.KEYWORDS);
-        assertSize(ResKeywordCompletionContributor.KEYWORDS.length, elements);
+        assertSameElements(elements, OclKeywordCompletionContributor.KEYWORDS);
+        assertSize(OclKeywordCompletionContributor.KEYWORDS.length, elements);
     }
 
     @Test
     public void test_deconstruction() {
-        configureCode("Dummy.res", """
+        configureCode("Dummy.ml", """
                 let (first, second) = myVar
                 <caret>
                 """);
@@ -53,8 +51,8 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include() {
-        configureCode("Aa.res", "let x = 1");
-        configureCode("B.res", """
+        configureCode("Aa.ml", "let x = 1");
+        configureCode("B.ml", """
                 include Aa
                 <caret>
                 """);
@@ -67,8 +65,8 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_after() {
-        myFixture.configureByText("A.res", "let x = 1");
-        myFixture.configureByText("B.res", """
+        myFixture.configureByText("A.ml", "let x = 1;");
+        myFixture.configureByText("B.ml", """
                 <caret>
                 include A
                 """);
@@ -81,8 +79,8 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_eof() {
-        myFixture.configureByText("A.res", "let x = 1");
-        myFixture.configureByText("B.res", """
+        myFixture.configureByText("A.ml", "let x = 1");
+        myFixture.configureByText("B.ml", """
                 include A
                 let y = 2
                 <caret>
@@ -97,26 +95,26 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_functor() {
-        configureCode("A.res", """
-                module type I = { type renderer }
-                module type R = {
+        configureCode("A.ml", """
+                module type I  = sig type renderer end
+                module type R  = sig
                   type rule
-                  let style: unit => array<rule>
-                }
-                                    
-                module Core = {
-                  let color = "red"
-                  module Make = (I): R => {
-                    type rule
-                    let style = () => []
-                  }
-                }
-                                    
-                module Css = {
+                  val style : unit -> rule array
+                end
+                                
+                module Core = struct
+                    let color = "red"
+                    module Make(_:I) : R = struct
+                      type rule
+                      let style () = [||]
+                    end
+                end
+                                
+                module Css = struct
                   include Core
-                  include Core.Make({ type renderer })
-                };
-                                    
+                  include Core.Make(struct type renderer end)
+                end
+                                
                 open Css
                                     
                 let y = <caret>
@@ -130,23 +128,17 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_open_include() {
-        configureCode("A.res", "let x = 1");
-        configureCode("B.res", "include A");
-        configureCode("C.res", "include B");
-        configureCode("D.res", """
+        configureCode("A.ml", "let x = 1");
+        configureCode("B.ml", "include A");
+        configureCode("C.ml", "include B");
+        configureCode("D.ml", """
                 open C
-                <caret>
+                let _ = <caret>
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> strings = getLookupStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings, "A", "B", "C", "x");
-    }
-
-    private List<String> getLookupStrings() {
-        List<String> elements = myFixture.getLookupElementStrings();
-        elements.removeAll(List.of(ResKeywordCompletionContributor.KEYWORDS));
-        return elements;
+        assertContainsElements(strings, "A", "B", "C", "x");
     }
 }

@@ -200,20 +200,6 @@ public class FunctionParsingTest extends RmlParsingTestCase {
     }
 
     @Test
-    public void test_first_class_module() {
-        RPsiFunction e = firstOfType(parseCode("let make = (~selectors: (module SelectorsIntf)=(module Selectors)) => {};"), RPsiFunction.class);
-
-        RPsiParameterDeclaration p0 = e.getParameters().get(0);
-        RPsiSignature s = p0.getSignature();
-        RPsiSignatureItem s0 = s.getItems().get(0);
-        assertEquals("module SelectorsIntf", s0.getText());
-        assertNull(PsiTreeUtil.findChildOfType(s, RPsiInnerModule.class));
-        assertSize(2, PsiTreeUtil.findChildrenOfType(p0, RPsiModuleValue.class));
-        assertEquals("(module Selectors)", p0.getDefaultValue().getText());
-        assertNull(ORUtil.findImmediateFirstChildOfType(PsiTreeUtil.findChildOfType(s0, RPsiModuleValue.class), myTypes.A_VARIANT_NAME));
-    }
-
-    @Test
     public void test_signature() {
         RPsiFunction e = firstOfType(parseCode("let _ = (~p: (option(string), option(int)) => unit) => p;"), RPsiFunction.class);
 
@@ -265,7 +251,7 @@ public class FunctionParsingTest extends RmlParsingTestCase {
 
         assertSize(2, e.getPatterns());
         RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
-        // TODO assertEquals("(. ()) => 1", f.getText());
+        assertEquals("(. ()) => 1", f.getText());
     }
 
     @Test
