@@ -121,26 +121,6 @@ public class ModuleParsingTest extends OclParsingTestCase {
     }
 
     @Test
-    public void test_decode_first_class_module() {
-        RPsiInnerModule e = firstOfType(parseCode("module M = (val selectors)"), RPsiInnerModule.class);
-
-        assertFalse(e instanceof RPsiFunctor);
-        assertEquals("M", e.getName());
-        assertEquals("(val selectors)", e.getBody().getText());
-        assertNull(PsiTreeUtil.findChildOfType(e, RPsiVal.class));
-    }
-
-    @Test
-    public void test_decode_first_class_module_in_let() {
-        RPsiInnerModule e = firstOfType(parseCode("let _ = let module M = (val m : S)"), RPsiInnerModule.class);
-
-        assertFalse(e instanceof RPsiFunctor);
-        assertEquals("M", e.getName());
-        assertEquals("(val m : S)", e.getBody().getText());
-        assertNull(PsiTreeUtil.findChildOfType(e, RPsiVal.class));
-    }
-
-    @Test
     public void test_decode_first_class_module_with_in() {
         RPsiInnerModule e = firstOfType(parseCode("let module Visit = Visit(Repr) in printf x"), RPsiInnerModule.class);
 

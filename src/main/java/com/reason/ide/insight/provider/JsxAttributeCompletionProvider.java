@@ -49,7 +49,7 @@ public class JsxAttributeCompletionProvider {
         PsiElement tagName = tag == null ? null : tag.getNameIdentifier();
         if (tagName instanceof RPsiUpperSymbol) {
             // Custom component
-            RPsiUpperSymbolReference tagReference = (RPsiUpperSymbolReference) tagName.getReference();
+            ORPsiUpperSymbolReference tagReference = (ORPsiUpperSymbolReference) tagName.getReference();
             PsiElement resolvedModule = tagReference == null ? null : tagReference.resolve();
             PsiElement resolvedElement = resolvedModule instanceof RPsiModule ? ((RPsiModule) resolvedModule).getMakeFunction() : null;
 

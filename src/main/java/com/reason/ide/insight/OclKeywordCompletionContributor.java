@@ -9,7 +9,7 @@ import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class OclKeywordCompletionContributor extends KeywordCompletionContributor {
-  private static final String[] KEYWORDS =
+  public static final String[] KEYWORDS =
       new String[] {"open", "include", "module", "type", "let", "external", "exception"};
 
   OclKeywordCompletionContributor() {

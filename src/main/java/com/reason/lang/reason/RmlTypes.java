@@ -41,6 +41,7 @@ public class RmlTypes extends ORLangTypes {
         C_DEFAULT_VALUE = new ORCompositeElementType("C_DEFAULT_VALUE", RmlLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", RmlLanguage.INSTANCE);
         C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", RmlLanguage.INSTANCE);
+        C_FIRST_CLASS = new ORCompositeElementType("C_FIRST_CLASS", RmlLanguage.INSTANCE);
         C_FOR_LOOP = new ORCompositeElementType("C_FOR_LOOP", RmlLanguage.INSTANCE);
         C_FIELD_VALUE = new ORCompositeElementType("C_FIELD_VALUE", RmlLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", RmlLanguage.INSTANCE);
@@ -69,7 +70,6 @@ public class RmlTypes extends ORLangTypes {
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", RmlLanguage.INSTANCE);
         C_MODULE_BINDING = new ORCompositeElementType("C_MODULE_BINDING", RmlLanguage.INSTANCE);
         C_MODULE_SIGNATURE = new ORCompositeElementType("C_MODULE_SIGNATURE", RmlLanguage.INSTANCE);
-        C_MODULE_VALUE = new ORCompositeElementType("C_MODULE_VALUE", RmlLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", RmlLanguage.INSTANCE);
         C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", RmlLanguage.INSTANCE);
         C_NONE = new ORCompositeElementType("C_NONE", RmlLanguage.INSTANCE);
@@ -103,6 +103,7 @@ public class RmlTypes extends ORLangTypes {
         C_TUPLE = new ORCompositeElementType("C_TUPLE", RmlLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", RmlLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", RmlLanguage.INSTANCE);
+        C_UNPACK = new ORCompositeElementType("C_UNPACK", RmlLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", RmlLanguage.INSTANCE);
         C_WHILE = new ORCompositeElementType("C_WHILE", RmlLanguage.INSTANCE);
 

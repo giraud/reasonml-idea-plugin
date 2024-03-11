@@ -9,7 +9,7 @@ import com.reason.lang.rescript.ResTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class ResKeywordCompletionContributor extends KeywordCompletionContributor {
-    private static final String[] KEYWORDS = new String[]{"open", "include", "module", "type", "let", "external", "exception"};
+    public static final String[] KEYWORDS = new String[]{"open", "include", "module", "type", "let", "external", "exception"};
 
     ResKeywordCompletionContributor() {
         super(ResTypes.INSTANCE);

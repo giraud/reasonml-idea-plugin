@@ -40,7 +40,7 @@ public class JsxNameCompletionProvider {
             // Inner component completion
             PsiElement previousElement = prevLeaf.getPrevSibling();
             if (previousElement instanceof RPsiUpperSymbol) {
-                RPsiUpperSymbolReference reference = (RPsiUpperSymbolReference) previousElement.getReference();
+                ORPsiUpperSymbolReference reference = (ORPsiUpperSymbolReference) previousElement.getReference();
                 PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
                 LOG.debug(" -> resolved to", resolvedElement);
 

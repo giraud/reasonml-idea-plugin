@@ -18,4 +18,9 @@ public interface RPsiVar extends RPsiQualifiedPathElement, PsiNameIdentifierOwne
 
     @NotNull
     Collection<RPsiRecordField> getRecordFields();
+
+    /**
+     * @return true if the name is an underscore `_` or unit `()`
+     */
+    boolean isAnonymous();
 }

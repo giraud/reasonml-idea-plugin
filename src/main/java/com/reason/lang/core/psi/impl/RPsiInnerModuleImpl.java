@@ -91,7 +91,7 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
 
     @Override
     public @Nullable PsiElement getBody() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiModuleBinding.class, RPsiSignature.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiModuleBinding.class);
     }
 
     @Override
@@ -168,6 +168,11 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
         }
 
         return null;
+    }
+
+    @Override
+    public @Nullable RPsiUnpack getUnpack() {
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiUnpack.class);
     }
 
     public ItemPresentation getPresentation() {

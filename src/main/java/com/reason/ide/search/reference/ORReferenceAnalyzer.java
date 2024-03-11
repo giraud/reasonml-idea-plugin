@@ -120,30 +120,28 @@ public class ORReferenceAnalyzer {
                     instructions.push(item);
                 } else if (item instanceof RPsiOpen || item instanceof RPsiInclude) {
                     instructions.push(item);
+                } else if (item instanceof RPsiLetBinding) {
+                    skipLet = true;
                 } else if (item instanceof RPsiLet) {
                     if (!skipLet) {
                         instructions.push(item);
                     }
                     skipLet = false;
-                } else if (item instanceof RPsiLetBinding) {
-                    skipLet = true;
+                } else if (item instanceof RPsiTypeBinding) {
+                    skipType = true;
                 } else if (item instanceof RPsiType) {
                     if (!skipType) {
                         instructions.push(item);
                     }
                     skipType = false;
-                } else if (item instanceof RPsiTypeBinding) {
-                    skipType = true;
+                } else if (item instanceof RPsiException) {
+                    instructions.push(item);
                 } else if (item instanceof RPsiExternal) {
                     instructions.push(item);
                 } else if (item instanceof FileBase) {
                     instructions.push(item);
                     break;
                 } else if (item instanceof RPsiModuleBinding) {
-                    item = item.getParent();
-                } else if (item instanceof RPsiModuleSignature) {
-                    // equivalent to a RPsiModule also
-                    instructions.push(item);
                     item = item.getParent();
                 } else if (isLower && item instanceof RPsiParameters) {
                     if (item.getParent() instanceof RPsiFunction) {
@@ -205,13 +203,13 @@ public class ORReferenceAnalyzer {
         List<RPsiQualifiedPathElement> result = new ArrayList<>();
 
         List<ResolutionElement> resolutions = new ArrayList<>(); // temporary resolutions
+        boolean firstInPath = true;
 
         // First instruction is always current file, if not there is a problem during parsing
-        PsiElement firstElement = instructions.removeFirst();
-        if (!(firstElement instanceof FileBase)) {
+        PsiElement containingFile = instructions.removeFirst();
+        if (!(containingFile instanceof FileBase)) {
             return result;
         }
-        resolutions.add(new ResolutionElement(firstElement, true));
 
         PsiManager psiManager = PsiManager.getInstance(project);
 
@@ -242,7 +240,7 @@ public class ORReferenceAnalyzer {
                 }
 
                 boolean isRecord = foundSymbol.isRecord;
-                for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
+                for (int i = resolutions.size() - 1; i >= 0; i--) {
                     ResolutionElement resolution = resolutions.get(i);
                     PsiElement resolvedElement = resolution.getOriginalElement();
                     if (resolvedElement instanceof RPsiLet resolvedLet) {
@@ -290,124 +288,93 @@ public class ORReferenceAnalyzer {
                     }
                 }
             } else if (instruction instanceof RPsiLowerSymbol foundLower) {
+                String foundLowerText = foundLower.getText();
                 if (LOG.isTraceEnabled()) {
-                    LOG.trace("Processing lower symbol", foundLower.getText());
+                    LOG.trace("Processing lower symbol", foundLowerText);
                 }
 
                 // build potential paths by iterating backward the resolutions
-                for (int i = resolutions.size() - 1; i > 0; i--) { // !! Exclude local file
-                    if (resolutions.isEmpty()) { // maybe
+                boolean found = false;
+                for (int i = resolutions.size() - 1; i >= 0; i--) {
+                    if (found || resolutions.isEmpty()) { // maybe
                         break;
                     }
+
                     ResolutionElement resolution = resolutions.get(i);
-
                     PsiElement resolvedElement = resolution.getOriginalElement();
-                    if (resolvedElement instanceof RPsiLet resolvedLet) {
-                        if (resolvedLet.isDeconstruction()) {
-                            boolean found = false;
-                            List<PsiElement> deconstructedElements = resolvedLet.getDeconstructedElements();
-                            for (PsiElement deconstructedElement : deconstructedElements) {
-                                if (instruction.getText().equals(deconstructedElement.getText())) {
-                                    if (instructions.isEmpty()) {
-                                        resolutions.clear();
-                                        result.add(resolvedLet);
-                                        found = true;
-                                    }
-                                    break;
-                                }
-                            }
-                            if (found) {
-                                break;
-                            }
-                        } else if (instruction.getText().equals(resolvedLet.getName())) {
-                            if (instructions.isEmpty()) {
-                                resolutions.clear();
-                                result.add(resolvedLet);
-                            }
-                            break;
-                        }
-                    } else if (resolvedElement instanceof RPsiParameterDeclaration resolvedParameter) {
-                        if (instruction.getText().equals(resolvedParameter.getName())) {
-                            if (instructions.isEmpty()) {
-                                resolutions.clear();
-                                result.add(resolvedParameter);
-                            }
-                            break;
-                        }
-                    } else if (resolvedElement instanceof RPsiType resolvedType) {
-                        // Referencing the type itself
-                        String instructionText = instruction.getText();
-                        if (instructionText.equals(resolvedType.getName())) {
-                            if (instructions.isEmpty()) {
-                                resolutions.clear();
-                                result.add(resolvedType);
-                            }
-                            break;
-                        } else if (resolvedType.isRecord()) {
-                            // Maybe referencing a field inside the type (record)
-                            for (RPsiRecordField field : resolvedType.getRecordFields()) {
-                                if (instructionText.equals(field.getName())) {
-                                    if (instructions.isEmpty()) {
-                                        resolutions.clear();
-                                        result.add(field);
-                                    }
-                                    break;
+
+                    if (resolvedElement instanceof RPsiLet resolvedLet && resolvedLet.isDeconstruction() && !resolution.isInContext) {
+                        // Special case for let deconstruction
+                        List<PsiElement> deconstructedElements = resolvedLet.getDeconstructedElements();
+                        for (PsiElement deconstructedElement : deconstructedElements) {
+                            if (foundLowerText.equals(deconstructedElement.getText())) {
+                                if (instructions.isEmpty()) {
+                                    resolutions.clear();
+                                    result.add(resolvedLet);
+                                    found = true;
                                 }
                             }
                         }
-                    } else if (resolvedElement instanceof RPsiExternal resolvedExternal) {
-                        if (instruction.getText().equals(resolvedExternal.getName())) {
+                    } else if (resolvedElement instanceof RPsiQualifiedPathElement resolvedQPathElement && !resolution.isInContext) {
+                        if (foundLowerText.equals(resolvedQPathElement.getName())) {
+                            found = true;
                             if (instructions.isEmpty()) {
+                                // If latest instruction, it is final result
                                 resolutions.clear();
-                                result.add(resolvedExternal);
-                            }
-                            break;
-                        }
-                    } else if (resolution.isInContext && (resolvedElement instanceof RPsiModule)) {
-                        // We first try to resolve the instruction using qname index
-                        String moduleQName = resolvedElement instanceof FileBase ? ((FileBase) resolvedElement).getModuleName() : ((RPsiModule) resolvedElement).getQualifiedName();
-                        String pathToResolve = moduleQName + "." + instruction.getText();
-
-                        // Test val
-                        Collection<RPsiVal> vals = ValFqnIndex.getElements(pathToResolve, project, scope);
-                        if (!vals.isEmpty()) {
-                            if (instructions.isEmpty()) {
-                                resolutions.clear();
-                            }
-                            result.addAll(vals);
-                            break;
-                        }
-
-                        // Test let
-                        Collection<RPsiLet> lets = LetFqnIndex.getElements(pathToResolve, project, scope);
-                        if (!lets.isEmpty()) {
-                            if (instructions.isEmpty()) {
-                                resolutions.clear();
-                                result.addAll(lets);
+                                result.add(resolvedQPathElement);
                             } else {
-                                resolutions.add(new ResolutionElement(lets.iterator().next(), true));
+                                // can be a record or an object
+                                resolutions.add(new ResolutionElement(resolvedQPathElement, true));
                             }
-                            break;
                         }
+                    } else if (resolvedElement instanceof RPsiModule resolvedModule && resolution.isInContext) {
+                        // Try to resolve instruction from a module
+                        String qName = resolvedModule.getQualifiedName();
+                        String resolvedQName = qName != null ? qName : "";
+                        for (PsiElement alternateResolvedElement : resolvePath(resolvedQName, project, scope, 0)) {
+                            if (alternateResolvedElement instanceof RPsiModule alternateResolvedModule) {
+                                String pathToResolve = alternateResolvedModule.getQualifiedName() + "." + foundLowerText;
 
-                        // Test externals
-                        Collection<RPsiExternal> externals = ExternalFqnIndex.getElements(pathToResolve, project, scope);
-                        if (!externals.isEmpty()) {
-                            if (instructions.isEmpty()) {
-                                resolutions.clear();
+                                // Test val
+                                Collection<RPsiVal> vals = ValFqnIndex.getElements(pathToResolve, project, scope);
+                                if (!vals.isEmpty()) {
+                                    if (instructions.isEmpty()) {
+                                        resolutions.clear();
+                                    }
+                                    result.addAll(vals);
+                                    break;
+                                } else { // Test let
+                                    Collection<RPsiLet> lets = LetFqnIndex.getElements(pathToResolve, project, scope);
+                                    if (!lets.isEmpty()) {
+                                        if (instructions.isEmpty()) {
+                                            resolutions.clear();
+                                            result.addAll(lets);
+                                        } else {
+                                            // can be a record or an object
+                                            resolutions.addAll(lets.stream().map(l -> new ResolutionElement(l, true)).toList());
+                                        }
+                                        break;
+                                    } else { // Test externals
+                                        Collection<RPsiExternal> externals = ExternalFqnIndex.getElements(pathToResolve, project, scope);
+                                        if (!externals.isEmpty()) {
+                                            if (instructions.isEmpty()) {
+                                                resolutions.clear();
+                                            }
+                                            result.addAll(externals);
+                                            break;
+                                        } else { // Test types
+                                            Collection<RPsiType> types = TypeFqnIndex.getElements(pathToResolve, project, scope);
+                                            if (!types.isEmpty()) {
+                                                if (instructions.isEmpty()) {
+                                                    resolutions.clear();
+                                                }
+                                                result.addAll(types);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                            result.addAll(externals);
-                            break;
-                        }
-
-                        // Test types
-                        Collection<RPsiType> types = TypeFqnIndex.getElements(pathToResolve, project, scope);
-                        if (!types.isEmpty()) {
-                            if (instructions.isEmpty()) {
-                                resolutions.clear();
-                            }
-                            result.addAll(types);
-                            break;
                         }
                     }
                 }
@@ -415,153 +382,135 @@ public class ORReferenceAnalyzer {
             // X.Y  (module path)
             // ------------------
             else if (instruction instanceof RPsiUpperSymbol foundUpper) {
+                String foundUpperText = foundUpper.getText();
                 if (LOG.isTraceEnabled()) {
-                    LOG.trace("Processing Upper symbol", foundUpper.getText());
+                    LOG.trace("Processing Upper symbol", foundUpperText);
                 }
 
                 boolean found = false;
+                for (int i = resolutions.size() - 1; i >= 0; i--) {
+                    if (found || resolutions.isEmpty()) {
+                        break;
+                    }
 
-                // First pass, try to resolve using local resolutions only.
-                // Second pass, try to resolve using global resolutions only.
+                    ResolutionElement resolution = resolutions.get(i);
+                    PsiElement resolvedElement = resolution.getOriginalElement();
+                    if (resolvedElement instanceof RPsiModule resolvedModule && !resolution.isInContext) {
+                        // Local module can be used as the first element of the path, if the name matches
+                        // module M = ...  !inContext
+                        // M.xxx
+                        if (foundUpperText.equals(resolvedModule.getName())) {
+                            found = true;
 
-                for (int j = 0; j < 2; j++) {
-                    boolean useGlobal = j > 0;
-                    if (!found) {
-                        for (int i = resolutions.size() - 1; i >= 0; i--) {
-                            ResolutionElement resolution = resolutions.get(i);
-                            PsiElement resolvedElement = resolution.getOriginalElement();
-                            if (resolvedElement instanceof RPsiModule) {
-                                // We first try to resolve the instruction using qname index
-                                String moduleQName = resolvedElement instanceof FileBase ? ((FileBase) resolvedElement).getModuleName() : ((RPsiModule) resolvedElement).getQualifiedName();
-                                // If name is equal to inner module name, use module qname directly, ex: module X = ...; »X«.y
-                                String pathToResolve = moduleQName + "." + instruction.getText();
-                                if (resolvedElement instanceof RPsiInnerModule && instruction.getText().equals(((RPsiInnerModule) resolvedElement).getModuleName())) {
-                                    pathToResolve = ((RPsiInnerModule) resolvedElement).getQualifiedName();
-                                    if (pathToResolve == null) {
-                                        break;
-                                    }
-                                }
+                            if (instructions.isEmpty()) {
+                                // If latest instruction, it is final result
+                                result.add(resolvedModule);
+                            } else {
+                                // Starting point of resolutions, we clear the list
+                                resolutions.clear();
+                                resolutions.add(new ResolutionElement(resolvedModule, true));
 
-                                // If it’s the last element, we can be more specific
-                                if (instructions.isEmpty()) {
-                                    // Test if it’s an exception
-                                    Collection<RPsiException> exceptions = ExceptionFqnIndex.getElements(pathToResolve, project, scope);
-                                    if (!exceptions.isEmpty()) {
-                                        resolutions.clear();
-                                        result.addAll(exceptions);
-                                        break;
-                                    }
-
-                                    // Else test if it’s a variant
-                                    Collection<RPsiVariantDeclaration> variants = VariantFqnIndex.getElements(pathToResolve, project, scope);
-                                    if (!variants.isEmpty()) {
-                                        resolutions.clear();
-                                        result.addAll(variants);
-                                        break;
-                                    }
-                                }
-
-                                Collection<RPsiModule> modules = ModuleFqnIndex.getElements(pathToResolve, project, scope);
-                                if (modules.isEmpty()) {
+                                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) containingFile).getValues(resolvedElement);
+                                for (String alternateQName : alternateNames) {
+                                    List<ResolutionElement> resolutionElements = resolvePath(alternateQName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                                     if (LOG.isTraceEnabled()) {
-                                        LOG.trace(" > No modules found (fqn=" + pathToResolve + "), try top modules");
+                                        LOG.trace(" > local module found, add alternate names [" + Joiner.join(", ", resolutionElements) + "]");
                                     }
-                                    if (useGlobal) {
-                                        // Try to resolve top module directly
-                                        modules = getTopModules(instruction.getText(), psiManager, scope);
-                                    }
-                                }
 
-                                if (!modules.isEmpty()) {
+                                    resolutions.addAll(resolutionElements);
+
+                                    // If latest instruction, it is final result
                                     if (instructions.isEmpty()) {
-                                        resolutions.clear();
+                                        List<RPsiQualifiedPathElement> foundElements = resolutionElements.stream().map(r -> r.getOriginalElement() instanceof RPsiQualifiedPathElement ? ((RPsiQualifiedPathElement) r.getOriginalElement()) : null).filter(Objects::nonNull).toList();
+                                        result.addAll(foundElements);
                                     }
-                                    for (RPsiModule foundModule : modules) {
-                                        if (foundModule instanceof RPsiFunctor foundFunctor) {
-                                            resolutions.clear();
-                                            result.add(foundFunctor);
-                                            break;
-                                        } else if (foundModule instanceof RPsiInnerModule foundInnerModule) {
-                                            // If it’s the last instruction, we must not resolve the aliases
-                                            if (instructions.isEmpty()) {
-                                                resolutions.clear();
-                                                result.add(foundInnerModule);
-                                            } else {
-                                                String foundAlias = foundInnerModule.getAlias();
-                                                if (foundAlias == null && !(foundInnerModule.isFunctorCall())) {
-                                                    ResolutionElement resolutionElement = new ResolutionElement(foundInnerModule, true);
-                                                    if (LOG.isTraceEnabled()) {
-                                                        LOG.trace(" > no alias, inner module found, add [" + resolutionElement + "]");
-                                                    }
-                                                    resolutions.add(resolutionElement);
-                                                    found = true;
-                                                } else {
-                                                    ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(foundInnerModule.getContainingFile());
-                                                    Collection<String> alternateNames = data.getValues(foundInnerModule);
-                                                    if (LOG.isTraceEnabled()) {
-                                                        LOG.trace(" > alias found [" + foundAlias + "], alternateNames: [" + Joiner.join(", ", alternateNames) + "]");
-                                                    }
-
-                                                    if (alternateNames.isEmpty()) {
-                                                        if (foundInnerModule.isFunctorCall()) {
-                                                            // Resolve using qName
-                                                            RPsiFunctorCall functorCall = foundInnerModule.getFunctorCall();
-                                                            String functorQName = ORUtil.getLongIdent(functorCall == null ? null : functorCall.getFirstChild());
-                                                            List<ResolutionElement> elements = resolvePath(functorQName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
-                                                            resolutions.addAll(elements);
-                                                            found = !elements.isEmpty();
-                                                        } else if (foundAlias != null) {
-                                                            // Maybe an aliased top module (it shouldn't happen, but well...)
-                                                            List<ResolutionElement> resolutionElements = resolvePath(foundAlias, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
-                                                            if (LOG.isTraceEnabled()) {
-                                                                LOG.trace(" > top module alias found, add [" + Joiner.join(", ", resolutionElements) + "]");
-                                                            }
-                                                            resolutions.addAll(resolutionElements);
-                                                            found = !resolutionElements.isEmpty();
-                                                        }
-                                                    } else {
-                                                        // resolve alternate modules
-                                                        for (String alternateName : alternateNames) {
-                                                            // Sort interface first
-                                                            List<ResolutionElement> elements = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
-                                                            if (LOG.isTraceEnabled()) {
-                                                                LOG.trace("  alternate names, add [" + Joiner.join(", ", elements) + "]");
-                                                            }
-                                                            resolutions.addAll(elements);
-                                                            found = !elements.isEmpty();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } else { // top level module
-                                            FileBase foundTopLevelModule = (FileBase) foundModule;
-                                            if (instructions.isEmpty()) {
-                                                result.add(foundTopLevelModule);
-                                                continue;
-                                            }
-
-                                            ResolutionElement resolutionElement = new ResolutionElement(foundTopLevelModule, true);
-                                            if (LOG.isTraceEnabled()) {
-                                                LOG.trace(" > top module found, add [" + resolutionElement + "]");
-                                            }
-                                            resolutions.add(resolutionElement);
-                                            found = true;
-
-                                            // Search for alternate paths using gist
-                                            ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(foundTopLevelModule);
-                                            // resolve alternate top level modules
-                                            for (String alternateName : data.getValues(foundTopLevelModule)) {
-                                                Collection<RPsiModule> alternateElements = ModuleIndexService.getService().getModules(alternateName, project, scope);
-                                                resolutions.addAll(alternateElements.stream().map(module -> new ResolutionElement(module, true)).toList());
-                                            }
-                                        }
-                                        // else
-                                    }
-
-                                    break;
                                 }
                             }
                         }
+                    }
+                    //
+                    else if (resolvedElement instanceof RPsiModule resolvedModule) {
+                        // upper element is part of a path that has already been resolved,
+                        // we try to resolve the current upper value as a path
+
+                        String resolvedQName = resolvedModule.getQualifiedName();
+                        String pathToResolve = resolvedQName + "." + foundUpperText;
+
+                        List<ResolutionElement> resolutionElements = resolvePath(pathToResolve, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace(" > local module found, add alternate names [" + Joiner.join(", ", resolutionElements) + "]");
+                        }
+
+                        if (!resolutionElements.isEmpty()) {
+                            found = true;
+                            resolutions.clear();
+                            resolutions.addAll(resolutionElements);
+
+                            // If latest instruction, it is final result
+                            if (instructions.isEmpty()) {
+                                List<RPsiQualifiedPathElement> foundElements = resolutionElements.stream().map(r -> r.getOriginalElement() instanceof RPsiQualifiedPathElement ? ((RPsiQualifiedPathElement) r.getOriginalElement()) : null).filter(Objects::nonNull).toList();
+                                result.addAll(foundElements);
+                            }
+                        }
+                        // If it’s the last element, we can be more specific
+                        else if (instructions.isEmpty()) {
+                            // Test if it’s an exception
+                            Collection<RPsiException> exceptions = ExceptionFqnIndex.getElements(pathToResolve, project, scope);
+                            if (!exceptions.isEmpty()) {
+                                resolutions.clear();
+                                result.addAll(exceptions);
+                                break;
+                            }
+
+                            // Else test if it’s a variant
+                            Collection<RPsiVariantDeclaration> variants = VariantFqnIndex.getElements(pathToResolve, project, scope);
+                            if (!variants.isEmpty()) {
+                                resolutions.clear();
+                                result.addAll(variants);
+                                break;
+                            }
+                        }
+                    }
+                    //
+                    else if (resolvedElement instanceof RPsiException resolvedException && instructions.isEmpty()) {
+                        if (foundUpperText.equals(resolvedException.getName())) {
+                            resolutions.clear();
+                            result.add(resolvedException);
+                            break;
+
+                        }
+                    }
+                    // Maybe we are resolving a locally defined variant
+                    // type t = | Variant; ... Variant<caret>
+                    else if (resolvedElement instanceof RPsiType resolvedType && instructions.isEmpty()) {
+                        for (RPsiVariantDeclaration variant : resolvedType.getVariants()) {
+                            if (variant.getName().equals(foundUpperText)) {
+                                found = true;
+                                resolutions.clear();
+                                result.add(variant);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // For the first element of a path, we can try global modules
+                if (!found && firstInPath) {
+                    firstInPath = false;
+
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(" > No modules found, try top modules");
+                    }
+
+                    // Try to resolve top module directly
+                    List<RPsiModule> modules = getTopModules(instruction.getText(), psiManager, scope);
+                    List<ResolutionElement> list = modules.stream().map(m -> new ResolutionElement(m, true)).toList();
+                    resolutions.addAll(list);
+                    found = !list.isEmpty();
+
+                    if (found && instructions.isEmpty()) {
+                        resolutions.clear();
+                        result.addAll(modules);
                     }
                 }
 
@@ -581,7 +530,7 @@ public class ORReferenceAnalyzer {
 
                 // Search for alternate paths using gist
                 // This is a recursive function (if not end of instruction)
-                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData((FileBase) firstElement);
+                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData((FileBase) containingFile);
                 Collection<String> alternateNames = data.getValues(foundOpen); // add path to data ?
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element
@@ -608,7 +557,7 @@ public class ORReferenceAnalyzer {
                 LOG.trace("Processing include");
 
                 // Search for alternate paths using gist
-                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getValues(foundInclude);
+                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) containingFile).getValues(foundInclude);
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                     resolutions.addAll(resolvePath(foundInclude.getIncludePath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
@@ -628,7 +577,7 @@ public class ORReferenceAnalyzer {
                     RPsiTagStart foundTag = (RPsiTagStart) instruction;
 
                     // Search for alternate paths using gist
-                    Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) firstElement).getValues(foundTag);
+                    Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) containingFile).getValues(foundTag);
                     if (alternateNames.isEmpty()) {
                         // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                         String name = foundTag.getName();
@@ -691,10 +640,7 @@ public class ORReferenceAnalyzer {
                 ORModuleResolutionPsiGist.Data topLevelData = ORModuleResolutionPsiGist.getData((FileBase) topLevel);
                 for (String topLevelAlternateName : topLevelData.getValues(topLevel)) {
                     Collection<RPsiModule> topLevelAlternates = ModuleIndexService.getService().getModules(topLevelAlternateName, project, scope);
-                    if (!topLevelAlternates.isEmpty()) {
-                        PsiFile topLevelAlternate = topLevelAlternates.iterator().next().getContainingFile();
-                        pathResolutions.add(topLevelAlternate);
-                    }
+                    pathResolutions.addAll(topLevelAlternates);
                 }
 
                 // Append path token to every resolved element to try to resolve new ones

@@ -17,11 +17,11 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class RPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSymbol> {
+public class ORPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperSymbol> {
     private static final Log LOG = Log.create("ref.upper");
     private static final Log LOG_PERF = Log.create("ref.perf.upper");
 
-    public RPsiUpperSymbolReference(@NotNull RPsiUpperSymbol element, @NotNull ORLangTypes types) {
+    public ORPsiUpperSymbolReference(@NotNull RPsiUpperSymbol element, @NotNull ORLangTypes types) {
         super(element, types);
     }
 

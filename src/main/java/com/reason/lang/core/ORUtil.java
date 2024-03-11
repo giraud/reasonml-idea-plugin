@@ -135,7 +135,8 @@ public class ORUtil {
         PsiElement sibling = root == null ? null : root.getNextSibling();
         while (sibling != null) {
             IElementType type = sibling.getNode().getElementType();
-            if (type == types.DOT || type == types.UIDENT || type == types.LIDENT || type == types.A_UPPER_TAG_NAME || type == types.A_LOWER_TAG_NAME) {
+            if (type == types.DOT || type == types.UIDENT || type == types.LIDENT ||
+                    type == types.A_MODULE_NAME || type == types.A_UPPER_TAG_NAME || type == types.A_LOWER_TAG_NAME) {
                 text.append(sibling.getText());
                 sibling = PsiTreeUtil.nextLeaf(sibling);
             } else {
@@ -366,7 +367,7 @@ public class ORUtil {
     }
 
     public static @Nullable PsiElement resolveModuleSymbol(@Nullable RPsiUpperSymbol moduleSymbol) {
-        RPsiUpperSymbolReference reference = moduleSymbol == null ? null : moduleSymbol.getReference();
+        ORPsiUpperSymbolReference reference = moduleSymbol == null ? null : moduleSymbol.getReference();
         PsiElement resolvedSymbol = reference == null ? null : reference.resolveInterface();
         return resolvedSymbol instanceof RPsiUpperSymbol ? resolvedSymbol.getParent() : resolvedSymbol;
     }
@@ -386,6 +387,21 @@ public class ORUtil {
         }
 
         return result;
+    }
+
+    public static <T> @Nullable T findPreviousSiblingOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
+        PsiElement previous = element.getPrevSibling();
+        PsiElement prevSibling = previous == null ? element.getParent() : previous;
+        while (prevSibling != null) {
+            if (clazz.isInstance(prevSibling)) {
+                //noinspection unchecked
+                return (T) prevSibling;
+            }
+            previous = prevSibling.getPrevSibling();
+            prevSibling = previous == null ? prevSibling.getParent() : previous;
+        }
+
+        return null;
     }
 
     public static @Nullable <T extends PsiNamedElement> T findImmediateNamedChildOfClass(@Nullable PsiElement element, @NotNull Class<T> clazz, @NotNull String name) {
