@@ -15,6 +15,8 @@ import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
+import static com.intellij.openapi.application.ApplicationManager.*;
+
 public class ModuleCompletionProvider {
     private static final Log LOG = Log.create("insight.module");
 
@@ -54,12 +56,13 @@ public class ModuleCompletionProvider {
             }
         } else {
             // Empty path
+            FileModuleIndexService fileModuleIndexService = getApplication().getService(FileModuleIndexService.class);
 
             // First module to complete, use the list of files
             PsiFile containingFile = element.getContainingFile();
             if (containingFile instanceof RPsiModule) {
                 String topModuleName = ((RPsiModule) containingFile).getModuleName();
-                for (FileModuleData moduleData : FileModuleIndexService.getService().getTopModules(project, scope)) {
+                for (FileModuleData moduleData : fileModuleIndexService.getTopModules(project, scope)) {
                     if (!moduleData.getModuleName().equals(topModuleName) && !moduleData.hasNamespace()) {
                         resultSet.addElement(LookupElementBuilder.
                                 create(moduleData.getModuleName())
@@ -70,7 +73,7 @@ public class ModuleCompletionProvider {
             }
 
             // Add virtual namespaces
-            for (String namespace : FileModuleIndexService.getService().getNamespaces(project, scope)) {
+            for (String namespace : fileModuleIndexService.getNamespaces(project, scope)) {
                 resultSet.addElement(
                         LookupElementBuilder.create(namespace)
                                 .withTypeText("Generated namespace")

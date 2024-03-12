@@ -3,6 +3,7 @@ package com.reason.comp.ocaml;
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.text.StringUtil;
 import jpsplugin.com.reason.*;
@@ -11,7 +12,8 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.regex.*;
 
-public class OpamProcess {
+@Service(Service.Level.APP)
+public final class OpamProcess {
     private static final Pattern SEXP = Pattern.compile("\\(\"([^\"]+)\" \"([^\"]+)\"\\)");
 
     public void list(@NotNull String opamLocation, @NotNull String version, @Nullable String cygwinBash, @NotNull ORProcessTerminated<List<String[]>> onProcessTerminated) {
@@ -100,20 +102,6 @@ public class OpamProcess {
         }
     }
 
-    public static class OpamSwitch {
-        public final boolean isSelected;
-        public final String name;
-
-        public OpamSwitch(boolean isSelected, String name) {
-            this.isSelected = isSelected;
-            this.name = name;
-        }
-
-        @Override public String toString() {
-            return (isSelected ? ">" : "") + name;
-        }
-    }
-
     public void listSwitch(@NotNull String opamRootPath, @Nullable String cygwinBash, @NotNull ORProcessTerminated<List<OpamSwitch>> onProcessTerminated) {
         List<OpamSwitch> result = new ArrayList<>();
 
@@ -154,6 +142,12 @@ public class OpamProcess {
         } catch (ExecutionException e) {
             ORNotification.notifyError("Dune", "Can't run opam", e.getMessage());
             onProcessTerminated.run(result);
+        }
+    }
+
+    public record OpamSwitch(boolean isSelected, String name) {
+        @Override public String toString() {
+            return (isSelected ? ">" : "") + name;
         }
     }
 }

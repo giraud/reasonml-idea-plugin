@@ -16,6 +16,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 import static com.intellij.notification.NotificationType.*;
+import static com.intellij.openapi.application.ApplicationManager.*;
 
 public class GotoTestDataAction extends AnAction {
 
@@ -46,7 +47,7 @@ public class GotoTestDataAction extends AnAction {
     private @NotNull List<String> findRelatedFiles(@NotNull Project project, @NotNull DataContext context) {
         PsiFile file = context.getData(CommonDataKeys.PSI_FILE);
         if (file instanceof FileBase) {
-            FileModuleIndexService topModulesIndex = FileModuleIndexService.getService();
+            FileModuleIndexService topModulesIndex = getApplication().getService(FileModuleIndexService.class);
             GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
             FileModuleData relatedData;
 

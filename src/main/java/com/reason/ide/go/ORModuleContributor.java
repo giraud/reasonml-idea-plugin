@@ -18,6 +18,8 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
+import static com.intellij.openapi.application.ApplicationManager.*;
+
 // Implements the goto class
 public class ORModuleContributor implements GotoClassContributor, ChooseByNameContributorEx {
     @Override
@@ -44,7 +46,8 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
         // Top level modules
-        for (FileModuleData moduleDatum : FileModuleIndexService.getService().getTopModuleData(name, scope)) {
+        FileModuleIndexService fileModuleIndexService = getApplication().getService(FileModuleIndexService.class);
+        for (FileModuleData moduleDatum : fileModuleIndexService.getTopModuleData(name, scope)) {
             processor.process(new FileModuleDataNavigationItem(moduleDatum, project)
             );
         }

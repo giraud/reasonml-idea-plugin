@@ -5,6 +5,7 @@ import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
 import com.intellij.execution.ui.*;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.Compiler;
@@ -22,7 +23,8 @@ import java.util.concurrent.atomic.*;
 
 import static com.reason.comp.CliType.Rescript.*;
 
-public class ResCompiler implements Compiler {
+@Service(Service.Level.PROJECT)
+public final class ResCompiler implements Compiler {
     private static final Log LOG = Log.create("compiler.rescript");
 
     private final Project myProject;

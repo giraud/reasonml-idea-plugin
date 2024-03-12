@@ -57,7 +57,6 @@
          | Listeners
          -->
 
-        <projectService serviceImplementation="com.reason.ide.ORFileDocumentListener"/>
         <vfs.asyncListener implementation="com.reason.ide.ORVirtualFileListener"/>
 
         <!--
@@ -259,8 +258,6 @@
         <stubIndex implementation="com.reason.ide.search.index.OpenIndex"/>
 
         <fileBasedIndex implementation="com.reason.ide.search.index.FileModuleIndex"/>
-        <applicationService serviceImplementation="com.reason.ide.search.FileModuleIndexService"/>
-        <applicationService serviceImplementation="com.reason.ide.search.ModuleIndexService"/>
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.findUsagesProvider language="Rescript"
@@ -299,45 +296,19 @@
                              instance="com.reason.ide.settings.ORSettingsConfigurable"/>
 
         <projectSdkSetupValidator implementation="com.reason.ide.library.OclSdkSetupValidator"/>
-        <applicationService serviceImplementation="com.reason.comp.ocaml.OpamProcess"/>
-        <applicationService serviceImplementation="com.reason.comp.ocaml.OpamEnv"/>
-
-        <!--
-         | Compiler
-         -->
-
-        <projectService serviceImplementation="com.reason.comp.ORCompilerManager"/>
-        <projectService serviceImplementation="com.reason.comp.ORCompilerConfigManager"/>
-
-        <projectService serviceInterface="com.reason.comp.bs.BsCompiler"
-                        serviceImplementation="com.reason.comp.bs.BsCompilerImpl"/>
-        <projectService serviceImplementation="com.reason.comp.rescript.ResCompiler"/>
-        <projectService serviceImplementation="com.reason.comp.dune.DuneCompiler"/>
-        <projectService serviceImplementation="com.reason.comp.esy.EsyCompiler"/>
 
         <!--
          | Insight
          -->
 
-        <projectService serviceInterface="com.reason.ide.annotations.ErrorsManager"
-                        serviceImplementation="com.reason.ide.annotations.ErrorsManagerImpl"/>
-
         <!--<codeInsight.parameterNameHints language="Reason" implementationClass="SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.OREditorLinePainter"/>
-        <projectService serviceImplementation="com.reason.hints.RincewindProcess"/>
-        <projectService serviceInterface="com.reason.hints.InsightManager"
-                        serviceImplementation="com.reason.hints.InsightManagerImpl"/>
 
         <!--
          | Others
          -->
 
-        <projectService serviceImplementation="com.reason.comp.bs.BsFormatProcess"/>
-        <projectService serviceImplementation="com.reason.comp.rescript.ResFormatProcess"/>
-        <projectService serviceImplementation="com.reason.comp.ocaml.OcamlFormatProcess"/>
         <postFormatProcessor implementation="com.reason.ide.format.ORPostFormatProcessor"/>
-
-        <projectService serviceImplementation="com.reason.ide.console.ORToolWindowManager"/>
 
         <typedHandler implementation="com.reason.ide.handlers.ORTypedHandler" id="RmlTypedHandler"/>
         <quoteHandler fileType="RESCRIPT" className="com.reason.ide.handlers.ResQuoteHandler"/>

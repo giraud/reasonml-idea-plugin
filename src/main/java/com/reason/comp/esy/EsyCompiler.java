@@ -2,6 +2,7 @@ package com.reason.comp.esy;
 
 import com.intellij.execution.process.*;
 import com.intellij.execution.ui.*;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.Compiler;
@@ -15,7 +16,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.concurrent.atomic.*;
 
-public class EsyCompiler implements Compiler {
+@Service(Service.Level.PROJECT)
+public final class EsyCompiler implements Compiler {
     private static final Log LOG = Log.create("compiler.esy");
 
     private final @NotNull Project myProject;

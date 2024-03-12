@@ -26,6 +26,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
+import static com.intellij.openapi.application.ApplicationManager.*;
 import static com.reason.ide.ORFileUtils.*;
 
 public class FreeExpressionCompletionProvider {
@@ -41,7 +42,7 @@ public class FreeExpressionCompletionProvider {
         PsiFile containingFile = element.getContainingFile();
         String topModuleName = containingFile instanceof FileBase ? ((FileBase) containingFile).getModuleName() : null;
         ORLanguageProperties languageProperties = ORLanguageProperties.cast(element.getLanguage());
-        FileModuleIndexService fileModuleIndexService = FileModuleIndexService.getService();
+        FileModuleIndexService fileModuleIndexService = getApplication().getService(FileModuleIndexService.class);
 
         // Add virtual namespaces
         for (String namespace : fileModuleIndexService.getNamespaces(project, searchScope)) {

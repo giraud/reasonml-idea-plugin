@@ -1,13 +1,14 @@
 package com.reason.comp.ocaml;
 
 import com.intellij.openapi.application.*;
-import com.intellij.openapi.project.*;
+import com.intellij.openapi.components.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class OpamEnv {
+@Service(Service.Level.APP)
+public final class OpamEnv {
     private final Map<String, Map<String, String>> myEnvs = new HashMap<>();
 
     public @Nullable Map<String, String> getEnv(@Nullable String switchName) {

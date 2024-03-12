@@ -1,5 +1,6 @@
 package com.reason.comp;
 
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.*;
@@ -14,7 +15,8 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class ORCompilerManager {
+@Service(Service.Level.PROJECT)
+public final class ORCompilerManager {
     private static final Log LOG = Log.create("compiler.manager");
     private final @NotNull Project myProject;
 

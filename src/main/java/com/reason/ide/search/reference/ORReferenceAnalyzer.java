@@ -20,6 +20,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.stream.*;
 
+import static com.intellij.openapi.application.ApplicationManager.*;
 import static java.util.Collections.*;
 
 public class ORReferenceAnalyzer {
@@ -636,10 +637,12 @@ public class ORReferenceAnalyzer {
                 RPsiModule topLevel = topModules.get(0);
                 pathResolutions.add(topLevel);
 
+                ModuleIndexService moduleIndexService = getApplication().getService(ModuleIndexService.class);
+
                 // Get all alternate resolutions for top level file
                 ORModuleResolutionPsiGist.Data topLevelData = ORModuleResolutionPsiGist.getData((FileBase) topLevel);
                 for (String topLevelAlternateName : topLevelData.getValues(topLevel)) {
-                    Collection<RPsiModule> topLevelAlternates = ModuleIndexService.getService().getModules(topLevelAlternateName, project, scope);
+                    Collection<RPsiModule> topLevelAlternates = moduleIndexService.getModules(topLevelAlternateName, project, scope);
                     pathResolutions.addAll(topLevelAlternates);
                 }
 

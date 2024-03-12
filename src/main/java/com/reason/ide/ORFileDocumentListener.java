@@ -1,6 +1,7 @@
 package com.reason.ide;
 
 import com.intellij.openapi.*;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.*;
@@ -10,7 +11,8 @@ import org.jetbrains.annotations.*;
 
 import static com.intellij.AppTopics.*;
 
-public class ORFileDocumentListener implements Disposable {
+@Service(Service.Level.PROJECT)
+public final class ORFileDocumentListener implements Disposable {
     private final @NotNull MessageBusConnection m_messageBusConnection;
 
     public static void ensureSubscribed(@NotNull Project project) {

@@ -2,6 +2,7 @@ package com.reason.comp.ocaml;
 
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import jpsplugin.com.reason.*;
@@ -12,7 +13,8 @@ import java.util.*;
 
 import static jpsplugin.com.reason.Platform.*;
 
-public class OcamlFormatProcess {
+@Service(Service.Level.PROJECT)
+public final class OcamlFormatProcess {
     private static final Log LOG = Log.create("format.ocaml.process");
 
     private final Project myProject;

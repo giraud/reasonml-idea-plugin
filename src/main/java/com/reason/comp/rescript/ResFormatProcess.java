@@ -1,5 +1,6 @@
 package com.reason.comp.rescript;
 
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.ex.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
@@ -10,7 +11,8 @@ import java.io.*;
 
 import static jpsplugin.com.reason.Platform.*;
 
-public class ResFormatProcess {
+@Service(Service.Level.PROJECT)
+public final class ResFormatProcess {
     private static final Log LOG = Log.create("format.rescript");
 
     private final Project m_project;

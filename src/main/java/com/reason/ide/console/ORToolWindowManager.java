@@ -2,6 +2,7 @@ package com.reason.ide.console;
 
 import com.intellij.execution.ui.*;
 import com.intellij.openapi.application.*;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.ui.*;
 import com.intellij.openapi.wm.*;
@@ -18,7 +19,8 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class ORToolWindowManager {
+@Service(Service.Level.PROJECT)
+public final class ORToolWindowManager {
     private final @NotNull Project myProject;
 
     private ORToolWindowManager(@NotNull Project project) {

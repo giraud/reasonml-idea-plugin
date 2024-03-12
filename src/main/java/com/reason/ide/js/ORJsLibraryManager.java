@@ -13,6 +13,8 @@ import com.intellij.util.concurrency.*;
 import com.intellij.webcore.libraries.*;
 import com.reason.comp.bs.*;
 import jpsplugin.com.reason.*;
+import kotlin.*;
+import kotlin.coroutines.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -21,13 +23,14 @@ import static com.intellij.openapi.vfs.VirtualFile.*;
 import static com.intellij.util.ArrayUtilRt.*;
 import static com.intellij.webcore.libraries.ScriptingLibraryModel.LibraryLevel.*;
 
-public class ORJsLibraryManager implements StartupActivity, DumbAware {
+public class ORJsLibraryManager implements ProjectActivity, DumbAware {
     private static final Log LOG = Log.create("activity.js.lib");
     private static final String LIB_NAME = "Bucklescript";
 
     @Override
-    public void runActivity(@NotNull Project project) {
+    public @Nullable Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
         DumbService.getInstance(project).smartInvokeLater(() -> runActivityLater(project));
+        return null;
     }
 
     private void runActivityLater(@NotNull Project project) {

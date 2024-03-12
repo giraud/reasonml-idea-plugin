@@ -21,6 +21,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
+import static com.intellij.openapi.application.ApplicationManager.*;
 import static com.intellij.util.PsiIconUtil.*;
 
 public class JsxNameCompletionProvider {
@@ -70,7 +71,7 @@ public class JsxNameCompletionProvider {
             // List all top level components
             final RPsiModule currentModule = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiModule.class);
             String currentModuleName = currentModule == null ? "" : currentModule.getModuleName();
-            FileModuleIndexService.getService().getTopModules(project, scope)
+            getApplication().getService(FileModuleIndexService.class).getTopModules(project, scope)
                     .forEach(data -> {
                         if ((data.isComponent() || data.hasComponents()) && !data.getModuleName().equals(currentModuleName)) {
                             resultSet.addElement(LookupElementBuilder.create(data.getModuleName())
