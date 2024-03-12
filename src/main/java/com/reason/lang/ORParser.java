@@ -617,18 +617,6 @@ public abstract class ORParser<T extends ORTypes> {
         return this;
     }
 
-    public @NotNull ORParser<T> rollbackToLatestAndDrop() {
-        if (!myMarkers.isEmpty()) {
-            myMarkers.pop().rollbackTo();
-            if (myVerbose) {
-                System.out.println("rollbacked to: " + myBuilder.getCurrentOffset() + ", " + myBuilder.getTokenType() + "(" + myBuilder.getTokenText() + ")");
-            }
-            dontMove = true;
-        }
-
-        return this;
-    }
-
     public @NotNull ORParser<T> rollbackToIndex(int index) {
         if (myRollbackCount > 10) {
             //myBuilder.error("Plugin error! Too many rollbacks"); // RELEASE: comment that line
