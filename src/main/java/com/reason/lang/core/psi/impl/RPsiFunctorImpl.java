@@ -51,7 +51,13 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
     }
 
     @Override
-    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    public @NotNull PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
+        PsiElement id = getNameIdentifier();
+        PsiElement newId = ORCodeFactory.createModuleName(getProject(), newName);
+        if (id != null && newId != null) {
+            id.replace(newId);
+        }
+
         return this;
     }
     // endregion

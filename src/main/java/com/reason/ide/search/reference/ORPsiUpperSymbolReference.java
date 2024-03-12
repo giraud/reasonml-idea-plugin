@@ -9,6 +9,7 @@ import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -116,8 +117,8 @@ public class ORPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperS
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
-        //myElement.replace(new RPsiUpperTagName(myTypes, myElement.getElementType(), newName));
-        return myElement;
+        PsiElement newId = ORCodeFactory.createModuleName(myElement.getProject(), newName);
+        return newId != null ? myElement.replace(newId) : myElement;
     }
 
     private static class UpperResolveResult implements ResolveResult {
