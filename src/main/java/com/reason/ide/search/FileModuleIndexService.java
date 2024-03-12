@@ -1,6 +1,6 @@
 package com.reason.ide.search;
 
-import com.intellij.openapi.application.*;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.indexing.*;
@@ -10,17 +10,14 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class FileModuleIndexService {
+@Service(Service.Level.APP)
+public final class FileModuleIndexService {
     private static final Log LOG = Log.create("index.fileservice");
 
     private final @Nullable FileModuleIndex m_index;
 
     public FileModuleIndexService() {
         m_index = FileModuleIndex.getInstance();
-    }
-
-    public static FileModuleIndexService getService() {
-        return ApplicationManager.getApplication().getService(FileModuleIndexService.class);
     }
 
     @NotNull
