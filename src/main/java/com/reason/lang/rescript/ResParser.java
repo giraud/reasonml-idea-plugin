@@ -241,9 +241,11 @@ public class ResParser extends CommonPsiParser {
 
         private void parseUnpack() {
             if (is(myTypes.C_MODULE_BINDING)) {
-                rollbackToLatestAndDrop();
+                updateComposite(myTypes.C_UNPACK);
+            } else {
+                mark(myTypes.C_UNPACK);
             }
-            mark(myTypes.C_UNPACK);
+
             advance();
             if (getTokenType() != myTypes.LPAREN) {
                 error("Missing parenthesis");

@@ -870,8 +870,8 @@ public class OclParser extends CommonPsiParser {
             } else if (is(myTypes.C_MODULE_BINDING)) {
                 if (lookAhead(1) == myTypes.VAL) {
                     // module M = »(« val ... )
-                    rollbackToLatestAndDrop()
-                            .markScope(myTypes.C_UNPACK, myTypes.LPAREN).advance()
+                    updateComposite(myTypes.C_UNPACK)
+                            .updateScopeToken(myTypes.LPAREN).advance()
                             .advance(); // skip 'val' in a first class module decoding
                 } else {
                     markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
@@ -902,8 +902,7 @@ public class OclParser extends CommonPsiParser {
                 if (isFound(myTypes.C_LET_BINDING) && lookAhead(1) == myTypes.MODULE) {
                     // let x = »(« module ... )
                     popIfHold()
-                            .rollbackToLatestAndDrop()
-                            .markScope(myTypes.C_FIRST_CLASS, myTypes.LPAREN).advance()
+                            .updateComposite(myTypes.C_FIRST_CLASS).updateScopeToken(myTypes.LPAREN).advance()
                             .advance(); // skip 'module' in a first class module
                 } else if (isFound(myTypes.C_FIELD_VALUE)) {
                     // Tuple in field value (destructuring)
