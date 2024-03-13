@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.markup.*;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
 import org.jetbrains.annotations.*;
@@ -48,6 +49,18 @@ public abstract class ORSyntaxAnnotator implements Annotator {
             enforceColor(holder, element, STRING_);
         } else if (elementType == myTypes.C_INTERPOLATION_REF) {
             enforceColor(holder, element, INTERPOLATED_REF_);
+        } else if (elementType == myTypes.C_RECORD_FIELD) {
+            PsiElement name = element.getFirstChild();
+            IElementType nameType = name != null ? name.getNode().getElementType() : null;
+            if (nameType == myTypes.LIDENT) {
+                enforceColor(holder, name, FIELD_NAME_);
+            }
+        } else if (elementType == myTypes.C_LET_DECLARATION || elementType == myTypes.C_VAL_DECLARATION) {
+            PsiElement name = ORUtil.findImmediateFirstChildOfType(element, myTypes.LIDENT);
+            IElementType nameType = name != null ? name.getNode().getElementType() : null;
+            if (nameType == myTypes.LIDENT) {
+                enforceColor(holder, name, LET_NAME_);
+            }
         }
         // remapped tokens are not seen by syntaxAnnotator
         else if (elementType == myTypes.A_VARIANT_NAME) {

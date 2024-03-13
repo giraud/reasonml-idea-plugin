@@ -23,6 +23,8 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey BRACES_ = createTextAttributesKey("REASONML_BRACES", DefaultLanguageHighlighterColors.BRACES);
     public static final TextAttributesKey BRACKETS_ = createTextAttributesKey("REASONML_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
     public static final TextAttributesKey CODE_LENS_ = createTextAttributesKey("REASONML_CODE_LENS", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+    public static final TextAttributesKey FIELD_NAME_ = createTextAttributesKey("REASONML_FIELD_NAME", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+    public static final TextAttributesKey LET_NAME_ = createTextAttributesKey("REASONML_LET_NAME", DefaultLanguageHighlighterColors.IDENTIFIER);
     public static final TextAttributesKey KEYWORD_ = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
     public static final TextAttributesKey MACRO_ = createTextAttributesKey("REASONML_MACRO", DefaultLanguageHighlighterColors.KEYWORD);
     public static final TextAttributesKey INTERPOLATED_REF_ = createTextAttributesKey("REASONML_INTERPOLATED_REF", DefaultLanguageHighlighterColors.IDENTIFIER);
@@ -34,7 +36,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey OPTION_ = createTextAttributesKey("REASONML_OPTION", DefaultLanguageHighlighterColors.STATIC_FIELD);
     public static final TextAttributesKey PARENS_ = createTextAttributesKey("REASONML_PARENS", DefaultLanguageHighlighterColors.PARENTHESES);
     public static final TextAttributesKey POLY_VARIANT_ = createTextAttributesKey("REASONML_POLY_VARIANT", DefaultLanguageHighlighterColors.STATIC_FIELD);
-    public static final TextAttributesKey RML_COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+    public static final TextAttributesKey COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
     public static final TextAttributesKey SEMICOLON_ = createTextAttributesKey("REASONML_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
     public static final TextAttributesKey STRING_ = createTextAttributesKey("REASONML_STRING", DefaultLanguageHighlighterColors.STRING);
     public static final TextAttributesKey TYPE_ARGUMENT_ = createTextAttributesKey("REASONML_TYPE_ARGUMENT", TYPE_ARGUMENT_KEY);
@@ -42,7 +44,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey BAD_CHAR_ = createTextAttributesKey("REASONML_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
     private static final TextAttributesKey[] NUMBER_KEYS = new TextAttributesKey[]{NUMBER_};
-    static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{RML_COMMENT_};
+    static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT_};
     static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
     private static final TextAttributesKey[] TYPE_ARGUMENT_KEYS = new TextAttributesKey[]{TYPE_ARGUMENT_};
     private static final TextAttributesKey[] POLY_VARIANT_KEYS = new TextAttributesKey[]{POLY_VARIANT_};
