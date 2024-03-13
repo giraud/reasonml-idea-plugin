@@ -18,7 +18,9 @@ public class ORColorSettingsPage implements ColorSettingsPage {
                     new AttributesDescriptor("Braces", ORSyntaxHighlighter.BRACES_),
                     new AttributesDescriptor("Brackets", ORSyntaxHighlighter.BRACKETS_),
                     new AttributesDescriptor("Code lens", ORSyntaxHighlighter.CODE_LENS_),
-                    new AttributesDescriptor("Comment", ORSyntaxHighlighter.RML_COMMENT_),
+                    new AttributesDescriptor("Comment", ORSyntaxHighlighter.COMMENT_),
+                    new AttributesDescriptor("Field name", ORSyntaxHighlighter.FIELD_NAME_),
+                    new AttributesDescriptor("Let/val name", ORSyntaxHighlighter.LET_NAME_),
                     new AttributesDescriptor("Keyword", ORSyntaxHighlighter.KEYWORD_),
                     new AttributesDescriptor("Macro", ORSyntaxHighlighter.MACRO_),
                     new AttributesDescriptor("Markup attribute", ORSyntaxHighlighter.MARKUP_ATTRIBUTE_),
@@ -52,7 +54,7 @@ public class ORColorSettingsPage implements ColorSettingsPage {
                 /* This is a comment */
 
                 module <csModuleName>ModuleName</csModuleName> = {
-                  type t = { key: int };
+                  type t = { <csField>key</csField>: int };
                   type tree 'a =
                     | <csVariantName>Node</csVariantName> (tree 'a) (tree 'a)
                     | <csVariantName>Leaf</csVariantName>;
@@ -60,19 +62,19 @@ public class ORColorSettingsPage implements ColorSettingsPage {
                   [<csAnnotation>@bs.deriving</csAnnotation> {accessors: accessors}]
                   type t = [`Up | `Down | `Left | `Right];
 
-                  let add = (x y) => x + y;  <csCodeLens>int -> int</csCodeLens>
-                  let myList = [ 1.0, 2.0, 3. ];
-                  let array = [| 1, 2, 3 |];
-                  let choice x = switch (myOption)
+                  let <csLetName>add</csLetName> = (x y) => x + y;  <csCodeLens>int -> int</csCodeLens>
+                  let <csLetName>myList</csLetName> = [ 1.0, 2.0, 3. ];
+                  let <csLetName>array</csLetName> = [| 1, 2, 3 |];
+                  let <csLetName>choice</csLetName> x = switch (myOption)
                     | None => "nok"
                     | Some(value) => "ok";
-                  let constant = "My constant";  <csCodeLens>string</csCodeLens>
-                  let numericConstant = 123;  <csCodeLens>int</csCodeLens>
-                  let interpolation = {j|$<csInterpolatedRef>var</csInterpolatedRef>|j};
+                  let <csLetName>constant</csLetName> = "My constant";  <csCodeLens>string</csCodeLens>
+                  let <csLetName>numericConstant</csLetName> = 123;  <csCodeLens>int</csCodeLens>
+                  let <csLetName>interpolation</csLetName> = {j|$<csInterpolatedRef>var</csInterpolatedRef>|j};
                 };
 
                 [<csAnnotation>@react.component</csAnnotation>]
-                let make = () =>
+                let <csLetName>make</csLetName> = () =>
                   <csMarkupTag><div</csMarkupTag> <csMarkupAttribute>prop</csMarkupAttribute>=value<csMarkupTag>></csMarkupTag>
                     <csMarkupTag><Button/></csMarkupTag>
                     (React.string("ok") <csMarkupTag></Button></csMarkupTag>
@@ -84,6 +86,8 @@ public class ORColorSettingsPage implements ColorSettingsPage {
     static {
         additionalTags.put("csAnnotation", ORSyntaxHighlighter.ANNOTATION_);
         additionalTags.put("csCodeLens", ORSyntaxHighlighter.CODE_LENS_);
+        additionalTags.put("csField", ORSyntaxHighlighter.FIELD_NAME_);
+        additionalTags.put("csLetName", ORSyntaxHighlighter.LET_NAME_);
         additionalTags.put("csMarkupAttribute", ORSyntaxHighlighter.MARKUP_ATTRIBUTE_);
         additionalTags.put("csMarkupTag", ORSyntaxHighlighter.MARKUP_TAG_);
         additionalTags.put("csModuleName", ORSyntaxHighlighter.MODULE_NAME_);
