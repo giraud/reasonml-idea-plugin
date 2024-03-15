@@ -101,7 +101,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                         }
 
                         LOG.debug("Nothing found, free expression");
-                        FreeExpressionCompletionProvider.addCompletions(element, searchScope, result);
+                        FreeExpressionCompletionProvider.addCompletions(element, prevLeaf, parent, searchScope, result);
                     }
                 });
     }

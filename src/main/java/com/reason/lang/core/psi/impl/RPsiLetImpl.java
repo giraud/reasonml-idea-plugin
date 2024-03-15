@@ -218,9 +218,9 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
     @Override
     public @NotNull Collection<RPsiRecordField> getRecordFields() {
         RPsiLetBinding binding = getBinding();
-        PsiElement firstChild = binding == null ? null : binding.getFirstChild();
+        PsiElement firstChild = binding != null ? binding.getFirstChild() : null;
         RPsiRecord record = firstChild instanceof RPsiRecord ? ((RPsiRecord) firstChild) : null;
-        return record == null ? emptyList() : record.getFields();
+        return record != null ? record.getFields() : emptyList();
     }
 
     private boolean isRecursive() {
