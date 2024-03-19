@@ -8,7 +8,7 @@ import org.junit.runner.*;
 import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
-public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
+public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_let_basic() {
         configureCode("A.ml", "let x = 1\n let z = x<caret> + 1");
@@ -329,7 +329,7 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
     @Test
     public void test_variant_constructor() {
         configureCode("B.ml", "let convert x = x");
-        configureCode("A.re", "let _ = X.Variant(B.convert<caret> 1)");
+        configureCode("A.ml", "let _ = X.Variant(B.convert<caret> 1)");
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("B.convert", e.getQualifiedName());
@@ -569,5 +569,17 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.clearPath", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/461
+    @Test
+    public void test_GH_461_parameter_type() {
+        configureCode("A.ml", """
+                type store = {x: int}
+                let fn (store: store<caret>) = store.x
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.store", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 }

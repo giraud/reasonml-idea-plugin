@@ -9,7 +9,7 @@ import org.junit.runner.*;
 import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
-public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
+public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
     @Test
     public void test_let_basic() {
         configureCode("A.re", "let x = 1; let z = x<caret> + 1;");
@@ -611,5 +611,17 @@ public class ResolveLowerElementRMLTest extends ORBasePlatformTestCase {
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.clearPath", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/461
+    @Test
+    public void test_GH_461_parameter_type() {
+        configureCode("A.re", """
+                type store = {x: int};
+                let fn = (store: store<caret>) => store.x;
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.store", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 }

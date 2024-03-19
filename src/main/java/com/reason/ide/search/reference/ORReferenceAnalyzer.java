@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.tree.*;
+import com.intellij.psi.util.*;
 import com.intellij.util.indexing.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
@@ -317,6 +318,19 @@ public class ORReferenceAnalyzer {
                             }
                         }
                     } else if (resolvedElement instanceof RPsiQualifiedPathElement resolvedQPathElement && !resolution.isInContext) {
+                        // Special case for a signature item that has same name than its item
+                        // ex: let _ = (store: store) => ...
+                        if (resolvedElement instanceof RPsiParameterDeclaration resolvedDeclaration) {
+                            RPsiSignature resolvedSignature = resolvedDeclaration.getSignature();
+                            if (resolvedSignature != null) {
+                                RPsiSignature foundSignatureParent = PsiTreeUtil.getParentOfType(foundLower, RPsiSignature.class);
+                                if (resolvedSignature == foundSignatureParent) {
+                                    // Do not process
+                                    continue;
+                                }
+                            }
+                        }
+
                         if (foundLowerText.equals(resolvedQPathElement.getName())) {
                             found = true;
                             if (instructions.isEmpty()) {
