@@ -53,7 +53,9 @@ public class ORModuleResolutionPsiGist {
             LOG.debug("Walk file to create gist", file);
             PsiWalker visitor = new PsiWalker((FileBase) file);
             file.accept(visitor);
-            return visitor.getResult();
+            Data result = visitor.getResult();
+            LOG.trace("Gist created for file", file);
+            return result;
         }
 
         return new Data();

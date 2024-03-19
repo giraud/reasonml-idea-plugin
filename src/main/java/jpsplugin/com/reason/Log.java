@@ -119,7 +119,7 @@ public class Log {
     public void debug(@NotNull String comment, @Nullable PsiFile t) {
         if (m_log.isDebugEnabled()) {
             VirtualFile vFile = t == null ? null : t.getVirtualFile();
-            debug(comment, vFile == null ? "<NULL> (" + t + ")" : vFile.toString());
+            debug(comment, vFile == null ? "<MEM> (" + t + ")" : vFile.toString());
         }
     }
 

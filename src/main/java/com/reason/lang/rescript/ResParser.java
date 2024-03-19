@@ -52,6 +52,7 @@ public class ResParser extends CommonPsiParser {
                 if (tokenType == myTypes.EOL) {
                     IElementType previousType = previousElementType(1);
                     boolean previousOperator = previousType == myTypes.ARROW
+                            || previousType == myTypes.RIGHT_ARROW
                             || previousType == myTypes.COLON
                             || previousType == myTypes.COMMA
                             || previousType == myTypes.EQ
@@ -63,7 +64,9 @@ public class ResParser extends CommonPsiParser {
 
                     if (!previousOperator) {
                         IElementType nextType = getTokenType();
-                        boolean nextOperator = nextType == myTypes.QUESTION_MARK || nextType == myTypes.COLON // ternary
+                        boolean nextOperator = nextType == myTypes.QUESTION_MARK
+                                || nextType == myTypes.RIGHT_ARROW // first pipe
+                                || nextType == myTypes.COLON // ternary
                                 || nextType == myTypes.PIPE // variant
                                 || (nextType == myTypes.LPAREN && isRawParent(myTypes.C_FUNCTION_CALL)); // function call
                         if (!nextOperator && !myMarkers.isEmpty()) {
