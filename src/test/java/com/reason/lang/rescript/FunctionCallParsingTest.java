@@ -136,11 +136,25 @@ public class FunctionCallParsingTest extends ResParsingTestCase {
         assertEquals("x => myRef.current = x", e.getParameters().get(0).getText());
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/120
     @Test
     public void test_GH_120() {
         RPsiLet e = firstOfType(parseCode("let _ = f(x == U.I, 1)"), RPsiLet.class);
 
         RPsiFunctionCall call = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
         assertSize(2, call.getParameters());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/458
+    @Test
+    public void test_GH_458_chaining_pipes() {
+        RPsiLetBinding e = firstOfType(parseCode("let _ = x->f1(1)->f2(2)\n->f3(3)"), RPsiLetBinding.class);
+
+        assertEquals("x->f1(1)->f2(2)\n->f3(3)", e.getText());
+        List<RPsiFunctionCall> efs = PsiTreeUtil.findChildrenOfType(e, RPsiFunctionCall.class).stream().toList();
+        assertSize(3, efs);
+        assertEquals("f1(1)", efs.get(0).getText());
+        assertEquals("f2(2)", efs.get(1).getText());
+        assertEquals("f3(3)", efs.get(2).getText());
     }
 }

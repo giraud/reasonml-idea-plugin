@@ -32,14 +32,13 @@ public class DotExpressionCompletionProvider {
         PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
         ORLanguageProperties langProperties = ORLanguageProperties.cast(element.getLanguage());
 
-        if (previousElement instanceof RPsiUpperSymbol) {
+        if (previousElement instanceof RPsiUpperSymbol previousSymbol) {
             // File.<caret>
             // File.Module.<caret>
 
-            LOG.debug(" -> upper symbol", previousElement);
+            LOG.debug(" -> upper symbol", previousSymbol);
 
-            PsiReference reference = previousElement.getReference();
-            PsiElement resolvedElement = reference instanceof ORPsiUpperSymbolReference ? ((ORPsiUpperSymbolReference) reference).resolveInterface() : null;
+            PsiElement resolvedElement = previousSymbol.getReference().resolveInterface();
             LOG.debug(" -> resolved to", resolvedElement);
 
             Collection<PsiNamedElement> expressions = new ArrayList<>();

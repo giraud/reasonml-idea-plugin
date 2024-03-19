@@ -1132,13 +1132,15 @@ public class ResParser extends CommonPsiParser {
                         if (nextTokenType == myTypes.LPAREN) {
                             // Chaining function calls fn()( ...
                             markBefore(0, myTypes.C_FUNCTION_CALL);
-                            //popEnd();
                         } else {
                             popEnd();
                             if (isCurrent(myTypes.C_LET_BINDING) && !currentHasScope()) {
-                                if (nextTokenType != myTypes.QUESTION_MARK) {
+                                IElementType nextValidToken = nextTokenType == myTypes.EOL ? lookAheadSkipEOL() : nextTokenType;
+                                if (nextValidToken != myTypes.QUESTION_MARK && nextValidToken != myTypes.RIGHT_ARROW) {
                                     // let _ = fn(|>)<|
                                     popEndUntil(myTypes.C_LET_DECLARATION).popEnd();
+                                } else if (nextTokenType == myTypes.EOL) {
+                                    advanceSkipEOL();
                                 }
                             }
                         }
