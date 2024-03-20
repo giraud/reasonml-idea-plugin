@@ -1,7 +1,7 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.*;
-import com.reason.lang.core.psi.impl.RPsiAnnotation;
+import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 
 import java.util.*;
@@ -10,13 +10,13 @@ import java.util.*;
 public class AnnotationParsingTest extends RmlParsingTestCase {
     @Test
     public void test_annotation_name() {
-        assertEquals("@bs.module", ((RPsiAnnotation) firstElement(parseCode("[@bs.module]"))).getName());
-        assertEquals("@bs.val", ((RPsiAnnotation) firstElement(parseCode("[@bs.val]"))).getName());
+        assertEquals("@bs.module", firstOfType(parseCode("[@bs.module]"), RPsiAnnotation.class).getName());
+        assertEquals("@bs.val", firstOfType(parseCode("[@bs.val]"), RPsiAnnotation.class).getName());
     }
 
     @Test
     public void test_annotation_with_string() {
-        RPsiAnnotation annotation = (RPsiAnnotation) firstElement(parseCode("[@bs.module \"xyz\"]"));
+        RPsiAnnotation annotation = firstOfType(parseCode("[@bs.module \"xyz\"]"), RPsiAnnotation.class);
 
         assertEquals("@bs.module", annotation.getName());
     }

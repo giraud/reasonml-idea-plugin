@@ -1,14 +1,13 @@
 package com.reason.lang.dune;
 
-import com.intellij.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 
 public class DuneVarParsingTest extends DuneParsingTestCase {
     @Test
     public void test_basic() {
-        PsiElement e = firstElement(parseRawCode("%{x}"));
+        RPsiDuneVar e = firstOfType(parseRawCode("%{x}"), RPsiDuneVar.class);
 
-        assertEquals(DuneTypes.INSTANCE.C_VAR, e.getNode().getElementType());
         assertEquals("%{x}", e.getText());
     }
 }
