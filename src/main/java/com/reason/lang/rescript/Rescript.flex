@@ -1,6 +1,5 @@
 package com.reason.lang.rescript;
 
-import com.intellij.lexer.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 
@@ -14,7 +13,6 @@ import static com.intellij.psi.TokenType.*;
         this.types = types;
     }
 
-    private int yyline;
     private ORLangTypes types;
     private int tokenStartIndex;
     private CharSequence quotedStringId;
@@ -63,6 +61,8 @@ FLOAT_LITERAL={DECIMAL} {DECIMAL_SEP}* ("." {DECIMAL_SEP}* )? ([eE] [+-]? {DECIM
 HEXA_FLOAT_LITERAL="0" [xX] {HEXA} {HEXA_SEP}* ("." {HEXA_SEP}* )? ([pP] [+-]? {DECIMAL} {DECIMAL_SEP}* )?
 LITERAL_MODIFIER=[G-Zg-z]
 
+LIDENT={LOWERCASE}{IDENTCHAR}*
+
 ESCAPE_BACKSLASH="\\\\"
 ESCAPE_SINGLE_QUOTE="\\'"
 ESCAPE_LF="\\n"
@@ -76,6 +76,7 @@ ESCAPE_OCTAL="\\o" [0-3] {OCTAL} {OCTAL}
 ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_TAB} | {ESCAPE_BACKSPACE } | { ESCAPE_CR } | { ESCAPE_QUOTE } | {ESCAPE_DECIMAL} | {ESCAPE_HEXA} | {ESCAPE_OCTAL}
 
 %state INITIAL
+%state IN_LOWER_DECLARATION
 %state IN_TEMPLATE
 %state IN_STRING
 %state IN_ML_COMMENT
@@ -106,7 +107,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "else"        { return types.ELSE; }
     "end"         { return types.END; }
     "exception"   { return types.EXCEPTION; }
-    "external"    { return types.EXTERNAL; }
+    "external"    { yybegin(IN_LOWER_DECLARATION); return types.EXTERNAL; }
     "for"         { return types.FOR; }
     "function"    { return types.FUNCTION; }
     "functor"     { return types.FUNCTOR; }
@@ -116,7 +117,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "inherit"     { return types.INHERIT; }
     "initializer" { return types.INITIALIZER; }
     "lazy"        { return types.LAZY; }
-    "let"         { return types.LET; }
+    "let"         { yybegin(IN_LOWER_DECLARATION); return types.LET; }
     "list"        { return types.LIST; }
     "module"      { return types.MODULE;}
     "mutable"     { return types.MUTABLE; }
@@ -168,7 +169,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "_"         { return types.UNDERSCORE; }
 
     "'" ( {ESCAPE_CHAR} | . ) "'"    { return types.CHAR_VALUE; }
-    {LOWERCASE}{IDENTCHAR}*          { return types.LIDENT; }
+    {LIDENT}                         { return types.LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return types.UIDENT; }
     {INT_LITERAL}{LITERAL_MODIFIER}? { return types.INT_VALUE; }
     ({FLOAT_LITERAL} | {HEXA_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return types.FLOAT_VALUE; }
@@ -240,6 +241,17 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "\\"  { return types.BACKSLASH; }
 }
 
+<IN_LOWER_DECLARATION> {
+  "rec"         { return types.REC; }
+  "\\"          { return types.BACKSLASH; }
+  "_"           { return types.UNDERSCORE; }
+  {LIDENT}      { yybegin(INITIAL); return types.LIDENT; }
+  {WHITE_SPACE} { return WHITE_SPACE; }
+  {EOL}         { return types.EOL; }
+  <<EOF>>       { yybegin(INITIAL); }
+  .             { yybegin(INITIAL); yypushback(1); tokenEnd();}
+}
+
 <IN_TEMPLATE> {
     {WHITE_SPACE} { return WHITE_SPACE; }
     "$"           { return types.DOLLAR; }
@@ -265,7 +277,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 }
 
 <IN_ML_COMMENT> {
-    "/*" { if (!inCommentString) commentDepth += 1; }
+    "/*" { if (!inCommentString) { commentDepth += 1; } }
     "*/" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
     "\"" { inCommentString = !inCommentString; }
     . | {EOL} { }

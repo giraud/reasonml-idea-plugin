@@ -76,19 +76,6 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return new ArrayList<>(getStubChildrenOfTypeAsList(file, RPsiOpen.class));
     }
 
-    @NotNull
-    protected Collection<RPsiVal> valExpressions(@NotNull PsiElement root) {
-        return findChildrenOfType(root, RPsiVal.class);
-    }
-
-    protected RPsiExternal externalExpression(@NotNull PsiFile file, @NotNull String name) {
-        return getStubChildrenOfTypeAsList(file, RPsiExternal.class)
-                .stream()
-                .filter(psiExternal -> name.equals(psiExternal.getName()))
-                .findFirst()
-                .orElse(null);
-    }
-
     protected @Nullable PsiElement firstElement(@NotNull PsiFile fileModule) {
         return fileModule.getFirstChild();
     }

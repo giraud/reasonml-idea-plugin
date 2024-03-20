@@ -1,9 +1,9 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.RPsiLowerSymbol;
-import com.reason.lang.core.psi.impl.RPsiScopedExpr;
-import com.reason.lang.core.psi.impl.RPsiValImpl;
+import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
 import org.junit.*;
 
 import java.util.*;
@@ -12,7 +12,7 @@ import java.util.*;
 public class ValParsingTest extends OclParsingTestCase {
     @Test
     public void test_qualified_name() {
-        RPsiVal e = first(valExpressions(parseCode("val x : int")));
+        RPsiVal e = firstOfType(parseCode("val x : int"), RPsiVal.class);
 
         assertEquals("Dummy.x", e.getQualifiedName());
         assertFalse(e.isFunction());
@@ -22,7 +22,7 @@ public class ValParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_name() {
-        RPsiVal e = first(valExpressions(parseCode("val x : int")));
+        RPsiVal e = firstOfType(parseCode("val x : int"), RPsiVal.class);
 
         assertInstanceOf(e.getNameIdentifier(), RPsiLowerSymbol.class);
         assertEquals("x", e.getName());
@@ -30,7 +30,7 @@ public class ValParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_special_name() {
-        RPsiVal e = first(valExpressions(parseCode("val (>>=) : 'a -> 'a t")));
+        RPsiVal e = firstOfType(parseCode("val (>>=) : 'a -> 'a t"), RPsiVal.class);
 
         assertInstanceOf(e.getNameIdentifier(), RPsiScopedExpr.class);
         assertEquals("(>>=)", e.getName());
@@ -38,7 +38,7 @@ public class ValParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_function() {
-        RPsiVal e = first(valExpressions(parseCode("val init: int -> (int -> 'a) -> 'a array")));
+        RPsiVal e = firstOfType(parseCode("val init: int -> (int -> 'a) -> 'a array"), RPsiVal.class);
 
         assertTrue(e.isFunction());
         assertEquals("init", e.getName());
