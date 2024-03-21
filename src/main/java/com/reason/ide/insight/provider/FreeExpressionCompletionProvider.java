@@ -201,12 +201,14 @@ public class FreeExpressionCompletionProvider {
     }
 
     private static void addModuleExpressions(@NotNull RPsiModule rootModule, @Nullable ORLanguageProperties language, @NotNull GlobalSearchScope searchScope, @NotNull CompletionResultSet resultSet) {
-        // alternate names
+        Project project = rootModule.getProject();
+
+        // alternate names (include inside module)
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(rootModule.getContainingFile());
         for (String alternateName : data.getValues(rootModule)) {
             // Try to resolve as an inner module or a top module
-            Collection<RPsiModule> alternateModules = ModuleFqnIndex.getElements(alternateName, rootModule.getProject(), searchScope);
-            RPsiModule topModule = getTopModule(alternateName, rootModule.getProject(), searchScope);
+            Collection<RPsiModule> alternateModules = ModuleFqnIndex.getElements(alternateName, project, searchScope);
+            RPsiModule topModule = getTopModule(alternateName, project, searchScope);
             if (topModule != null) {
                 alternateModules.add(topModule);
             }

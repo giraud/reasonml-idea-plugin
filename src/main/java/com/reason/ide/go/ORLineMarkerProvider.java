@@ -265,9 +265,14 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                         .map(m -> {
                             if (m instanceof RPsiInnerModule innerModule) {
                                 RPsiModuleSignature moduleSignature = innerModule.getModuleSignature();
-                                ORModuleResolutionPsiGist.Data data = moduleSignature != null ? ORModuleResolutionPsiGist.getData(m.getContainingFile()) : null;
-                                Collection<String> values = data != null ? data.getValues(moduleSignature) : emptyList();
-                                return values.contains(qName) ? m : null;
+                                RPsiUpperSymbol moduleSignatureIdentifier = moduleSignature != null ? moduleSignature.getNameIdentifier() : null;
+                                ORPsiUpperSymbolReference reference = moduleSignatureIdentifier != null ? moduleSignatureIdentifier.getReference() : null;
+                                PsiElement resolvedSignature = reference != null ? reference.resolve() : null;
+                                if (resolvedSignature instanceof RPsiModule resolvedSignatureModule) {
+                                    String sigQName = resolvedSignatureModule.getQualifiedName();
+                                    return sigQName != null && sigQName.equals(qName) ? m : null;
+                                }
+                                return null;
                             }
                             return null;
                         })
@@ -354,10 +359,15 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         List<RPsiModule> targetModules = refModules.stream()
                 .filter(m -> m instanceof RPsiInnerModule)
                 .map(module -> {
-                    RPsiModuleSignature moduleType = ((RPsiInnerModule) module).getModuleSignature();
-                    ORModuleResolutionPsiGist.Data data = moduleType != null ? ORModuleResolutionPsiGist.getData(module.getContainingFile()) : null;
-                    Collection<String> values = data != null ? data.getValues(moduleType) : Collections.emptyList();
-                    return values.contains(interfaceQName) ? module : null;
+                    RPsiModuleSignature moduleSignature = ((RPsiInnerModule) module).getModuleSignature();
+                    RPsiUpperSymbol moduleSignatureIdentifier = moduleSignature != null ? moduleSignature.getNameIdentifier() : null;
+                    ORPsiUpperSymbolReference reference = moduleSignatureIdentifier != null ? moduleSignatureIdentifier.getReference() : null;
+                    PsiElement resolvedSignature = reference != null ? reference.resolve() : null;
+                    if (resolvedSignature instanceof RPsiModule resolvedSignatureModule) {
+                        String sigQName = resolvedSignatureModule.getQualifiedName();
+                        return sigQName != null && sigQName.equals(interfaceQName) ? module : null;
+                    }
+                    return null;
                 })
                 .filter(Objects::nonNull)
                 .toList();

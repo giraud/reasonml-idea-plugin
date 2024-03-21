@@ -30,24 +30,23 @@ public class ModuleCompletionProvider {
         PsiElement dotLeaf = PsiTreeUtil.prevVisibleLeaf(element);
         PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
 
-        if (previousElement instanceof RPsiUpperSymbol) {
-            LOG.debug(" -> upper symbol", previousElement);
+        if (previousElement instanceof RPsiUpperSymbol previousUpperSymbol) {
+            LOG.debug(" -> upper symbol", previousUpperSymbol);
 
-            ORPsiUpperSymbolReference reference = (ORPsiUpperSymbolReference) previousElement.getReference();
-            PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
+            PsiElement resolvedElement = previousUpperSymbol.getReference().resolve();
             LOG.debug(" -> resolved to", resolvedElement);
 
-            if (resolvedElement instanceof RPsiModule) {
-                for (RPsiInnerModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(((RPsiModule) resolvedElement).getBody(), RPsiInnerModule.class)) {
+            if (resolvedElement instanceof RPsiModule resolvedModule) {
+                for (RPsiInnerModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(resolvedModule.getBody(), RPsiInnerModule.class)) {
                     addModule(module, resultSet);
                 }
 
                 // Find alternatives
-                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(resolvedElement.getContainingFile());
-                for (String alternateName : data.getValues(resolvedElement)) {
-                    for (PsiElement alternateModule : ORReferenceAnalyzer.resolvePath(alternateName, project, scope, 0)) {
-                        if (alternateModule instanceof RPsiModule) {
-                            for (RPsiInnerModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(((RPsiModule) alternateModule).getBody(), RPsiInnerModule.class)) {
+                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(resolvedModule.getContainingFile());
+                for (String alternateName : data.getValues(resolvedModule)) {
+                    for (PsiElement alternateElement : ORReferenceAnalyzer.resolvePath(alternateName, project, scope, 0)) {
+                        if (alternateElement instanceof RPsiModule alternateModule) {
+                            for (RPsiInnerModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(alternateModule.getBody(), RPsiInnerModule.class)) {
                                 addModule(module, resultSet);
                             }
                         }
