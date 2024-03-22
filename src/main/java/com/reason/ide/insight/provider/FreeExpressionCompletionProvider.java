@@ -2,6 +2,7 @@ package com.reason.ide.insight.provider;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.*;
+import com.intellij.lang.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
@@ -21,6 +22,7 @@ import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.rescript.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -41,8 +43,24 @@ public class FreeExpressionCompletionProvider {
         Project project = element.getProject();
         PsiFile containingFile = element.getContainingFile();
         String topModuleName = containingFile instanceof FileBase ? ((FileBase) containingFile).getModuleName() : null;
-        ORLanguageProperties languageProperties = ORLanguageProperties.cast(element.getLanguage());
+        Language language = element.getLanguage();
+        ORLanguageProperties languageProperties = ORLanguageProperties.cast(language);
         FileModuleIndexService fileModuleIndexService = getApplication().getService(FileModuleIndexService.class);
+
+        // Special case for js object in rescript
+        if (language == ResLanguage.INSTANCE) {
+            if (parent instanceof RPsiArray && parent.getPrevSibling() instanceof RPsiLowerSymbol prevLowerSymbol) {
+                PsiElement resolvedSymbol = prevLowerSymbol.getReference().resolveInterface();
+                Collection<RPsiObjectField> resolvedFields = ObjectCompletionProvider.getFields(resolvedSymbol);
+                if (resolvedFields != null) {
+                    for (RPsiObjectField field : resolvedFields) {
+                        resultSet.addElement(LookupElementBuilder.create("\"" + field.getName() + "\"")
+                                .withIcon(PsiIconUtil.getProvidersIcon(field, 0)));
+                    }
+                    return;
+                }
+            }
+        }
 
         // Add virtual namespaces
         for (String namespace : fileModuleIndexService.getNamespaces(project, searchScope)) {
@@ -110,14 +128,14 @@ public class FreeExpressionCompletionProvider {
                         for (PsiElement deconstructedElement : letItem.getDeconstructedElements()) {
                             resultSet.addElement(
                                     LookupElementBuilder.create(deconstructedElement.getText())
-                                            .withTypeText(RPsiSignatureUtil.getSignature(item, ORLanguageProperties.cast(element.getLanguage())))
+                                            .withTypeText(RPsiSignatureUtil.getSignature(item, languageProperties))
                                             .withIcon(ORIcons.LET));
                         }
                     } else if (letItem == null || !letItem.isAnonymous()) {
                         PsiNamedElement expression = (PsiNamedElement) item;
                         resultSet.addElement(
                                 LookupElementBuilder.create(expression)
-                                        .withTypeText(RPsiSignatureUtil.getSignature(expression, ORLanguageProperties.cast(element.getLanguage())))
+                                        .withTypeText(RPsiSignatureUtil.getSignature(expression, languageProperties))
                                         .withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
                         if (item instanceof RPsiType) {
                             expandType((RPsiType) item, resultSet);

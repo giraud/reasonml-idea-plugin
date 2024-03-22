@@ -40,7 +40,7 @@ abstract class KeywordCompletionContributor extends com.intellij.codeInsight.com
                 if (originalPosition == null || originalPosition instanceof PsiWhiteSpace) {
                     if (prevNodeType != types.DOT && prevNodeType != types.COMMA && prevNodeType != types.SHARPSHARP
                             && prevNodeType != types.LIDENT && prevNodeType != types.EQ && prevNodeType != types.LT
-                            && prevNodeType != types.WITH) {
+                            && prevNodeType != types.WITH && prevNodeType != types.LBRACKET) {
                         if (!(parent instanceof RPsiTagStart || parent instanceof RPsiOpen || parent instanceof RPsiInclude)) {
                             addFileKeywords(result);
                         }
