@@ -32,13 +32,13 @@ public class DotExpressionCompletionProvider {
         PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
         ORLanguageProperties langProperties = ORLanguageProperties.cast(element.getLanguage());
 
-        if (previousElement instanceof RPsiUpperSymbol previousSymbol) {
+        if (previousElement instanceof RPsiUpperSymbol previousUpper) {
             // File.<caret>
             // File.Module.<caret>
 
-            LOG.debug(" -> upper symbol", previousSymbol);
+            LOG.debug(" -> upper symbol", previousUpper);
 
-            PsiElement resolvedElement = previousSymbol.getReference().resolveInterface();
+            PsiElement resolvedElement = previousUpper.getReference().resolveInterface();
             LOG.debug(" -> resolved to", resolvedElement);
 
             Collection<PsiNamedElement> expressions = new ArrayList<>();
@@ -76,16 +76,29 @@ public class DotExpressionCompletionProvider {
                 if (firstChild instanceof RPsiRecord recordChild) {
                     addRecordFields(recordChild.getFields(), langProperties, resultSet);
                 }
+            } else if (resolvedElement instanceof RPsiSignatureElement resolvedSignatureElement) {
+                RPsiSignature signature = resolvedSignatureElement.getSignature();
+                List<RPsiSignatureItem> items = signature != null ? signature.getItems() : null;
+                if (items != null && items.size() == 1) {
+                    RPsiLowerSymbol signatureSymbol = ORUtil.findImmediateLastChildOfClass(items.get(0), RPsiLowerSymbol.class);
+                    PsiReference reference = signatureSymbol != null ? signatureSymbol.getReference() : null;
+                    PsiElement resolve = reference != null ? reference.resolve() : null;
+                    if (resolve instanceof RPsiType signatureType) {
+                        addRecordFields(signatureType.getRecordFields(), langProperties, resultSet);
+                    }
+                }
             }
         }
     }
 
-    private static void addRecordFields(@NotNull Collection<RPsiRecordField> recordFields, @Nullable ORLanguageProperties langProperties, @NotNull CompletionResultSet resultSet) {
-        for (RPsiRecordField recordField : recordFields) {
-            resultSet.addElement(
-                    LookupElementBuilder.create(recordField)
-                            .withTypeText(RPsiSignatureUtil.getSignature(recordField, langProperties))
-                            .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
+    private static void addRecordFields(@Nullable Collection<RPsiRecordField> recordFields, @Nullable ORLanguageProperties langProperties, @NotNull CompletionResultSet resultSet) {
+        if (recordFields != null) {
+            for (RPsiRecordField recordField : recordFields) {
+                resultSet.addElement(
+                        LookupElementBuilder.create(recordField)
+                                .withTypeText(RPsiSignatureUtil.getSignature(recordField, langProperties))
+                                .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
+            }
         }
     }
 
