@@ -122,6 +122,8 @@ public class OclParser extends CommonPsiParser {
                     parseFunctor();
                 } else if (tokenType == myTypes.TYPE_ARGUMENT) {
                     parseTypeArgument();
+                } else if (tokenType == myTypes.POLY_VARIANT) {
+                    parsePolyVariant();
                 }
                 // while ... do ... done
                 else if (tokenType == myTypes.WHILE) {
@@ -215,6 +217,12 @@ public class OclParser extends CommonPsiParser {
                 } else {
                     myBuilder.advanceLexer();
                 }
+            }
+        }
+
+        private void parsePolyVariant() {
+            if (is(myTypes.C_SCOPED_EXPR) && isRawParent(myTypes.C_TYPE_BINDING)) {
+                wrapWith(myTypes.C_VARIANT_DECLARATION);
             }
         }
 

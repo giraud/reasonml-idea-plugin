@@ -235,9 +235,12 @@ public class RmlParser extends CommonPsiParser {
         private void parsePolyVariant() {
             if (isRawParent(myTypes.C_TYPE_BINDING)) {
                 // type t = [ |>`xxx<| ...
-                mark(myTypes.C_VARIANT_DECLARATION);
+                if (!is(myTypes.C_VARIANT_DECLARATION)) {
+                    wrapWith(myTypes.C_VARIANT_DECLARATION);
+                }
+            } else {
+                wrapAtom(myTypes.CA_UPPER_SYMBOL);
             }
-            advance();
             markParenthesisScope(false);
         }
 

@@ -18,8 +18,6 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
         assertEquals("A.x", ((RPsiLet) e).getQualifiedName());
     }
 
-    // TODO poly-variant element
-
     @Test
     public void test_call_function_with_module() {
         configureCode("A.re", "let fn=()=>1;");
@@ -355,6 +353,7 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
         assertEquals("Command.Settings.Action.convert", e.getQualifiedName());
     }
 
+    //region Variants
     @Test
     public void test_variant_constructor() {
         configureCode("B.re", "let convert = x => x;");
@@ -372,6 +371,54 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.x", e.getQualifiedName());
     }
+    //endregion
+
+    //region Poly-variants     TODO others
+    @Test
+    public void test_local_poly_variant() {
+        configureCode("A.re", "type a = [ | `variant ]; let _ = `variant<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.#variant", ((RPsiVariantDeclaration) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_with_path() {
+        configureCode("A.re", "type a = [ | `variant ];");
+        configureCode("B.re", "type b = [ | `variant ];");
+        configureCode("C.re", "A.`variant<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.#variant", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_module_alias() {
+        configureCode("Aaa.re", "type t = [ | `test ];");
+        configureCode("Bbb.re", "module A = Aaa; A.`test<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.#test", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_module_alias_inner() {
+        configureCode("Aaa.re", "module Option = { type t = [ | `test ]; };");
+        configureCode("Bbb.re", "module A = Aaa; A.Option.`test<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.Option.#test", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_constructor() {
+        configureCode("A.re", "type a = | `variant(int);");
+        configureCode("B.re", "let _ = A.`variant<caret>(1);");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.#variant", e.getQualifiedName());
+    }
+    //endregion
 
     @Test
     public void test_open_include() {

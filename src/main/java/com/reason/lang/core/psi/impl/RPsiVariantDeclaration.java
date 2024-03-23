@@ -8,6 +8,7 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;
 import com.reason.lang.core.type.*;
+import com.reason.lang.rescript.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -25,6 +26,11 @@ public class RPsiVariantDeclaration extends RPsiTokenStub<ORLangTypes, RPsiVaria
         super(types, stub, nodeType);
     }
     // endregion
+
+    public boolean isPolyVariant() {
+        PsiElement id = getNameIdentifier();
+        return id != null && id.getNode().getElementType() == myTypes.POLY_VARIANT;
+    }
 
     //region PsiNamedElement
     @Override
@@ -46,7 +52,13 @@ public class RPsiVariantDeclaration extends RPsiTokenStub<ORLangTypes, RPsiVaria
         }
 
         PsiElement id = getNameIdentifier();
-        return id == null ? "" : id.getText();
+        String name = id != null ? id.getText() : "";
+
+        if (id != null && isPolyVariant()) {
+            return myTypes == ResTypes.INSTANCE ? name : "#" + name.substring(1);
+        }
+
+        return name;
     }
 
     @Override

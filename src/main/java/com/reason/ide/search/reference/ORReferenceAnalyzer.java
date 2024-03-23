@@ -242,6 +242,7 @@ public class ORReferenceAnalyzer {
                 }
             } else if (instruction instanceof RPsiLowerSymbol foundLower) {
                 String foundLowerText = foundLower.getText();
+                String foundLowerName = foundLowerText != null && !foundLowerText.isEmpty() ? (foundLowerText.charAt(0) == '`' || foundLowerText.charAt(0) == '#' ? "#" + foundLowerText.substring(1) : foundLowerText) : foundLowerText;
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Processing lower symbol", foundLowerText);
                 }
@@ -280,6 +281,14 @@ public class ORReferenceAnalyzer {
                                     continue;
                                 }
                             }
+                        } else if (resolvedElement instanceof RPsiType resolvedType) {
+                            RPsiVariantDeclaration resolvedVariant = resolvedType.getVariants().stream().filter(variant -> variant.getName().equals(foundLowerName)).findFirst().orElse(null);
+                            if (resolvedVariant != null && instructions.isEmpty()) {
+                                resolutions.clear();
+                                result.add(resolvedVariant);
+                                found = true;
+                                continue;
+                            }
                         }
 
                         if (foundLowerText.equals(resolvedQPathElement.getName())) {
@@ -299,7 +308,7 @@ public class ORReferenceAnalyzer {
                         String resolvedQName = qName != null ? qName : "";
                         for (PsiElement alternateResolvedElement : resolvePath(resolvedQName, project, scope, 0)) {
                             if (alternateResolvedElement instanceof RPsiModule alternateResolvedModule) {
-                                String pathToResolve = alternateResolvedModule.getQualifiedName() + "." + foundLowerText;
+                                String pathToResolve = alternateResolvedModule.getQualifiedName() + "." + foundLowerName;
 
                                 // Test val
                                 Collection<RPsiVal> vals = ValFqnIndex.getElements(pathToResolve, project, scope);
@@ -336,6 +345,15 @@ public class ORReferenceAnalyzer {
                                                 }
                                                 result.addAll(types);
                                                 break;
+                                            } else {
+                                                Collection<RPsiVariantDeclaration> variants = VariantFqnIndex.getElements(pathToResolve, project, scope);
+                                                if (!variants.isEmpty()) {
+                                                    if (instructions.isEmpty()) {
+                                                        resolutions.clear();
+                                                    }
+                                                    result.addAll(variants);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -349,6 +367,8 @@ public class ORReferenceAnalyzer {
             // ------------------
             else if (instruction instanceof RPsiUpperSymbol foundUpper) {
                 String foundUpperText = foundUpper.getText();
+                String foundUpperName = foundUpperText != null && !foundUpperText.isEmpty() ? (foundUpperText.charAt(0) == '`' || foundUpperText.charAt(0) == '#' ? "#" + foundUpperText.substring(1) : foundUpperText) : foundUpperText;
+
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Processing Upper symbol", foundUpperText);
                 }
@@ -400,7 +420,7 @@ public class ORReferenceAnalyzer {
                         // we try to resolve the current upper value as a path
 
                         String resolvedQName = resolvedModule.getQualifiedName();
-                        String pathToResolve = resolvedQName + "." + foundUpperText;
+                        String pathToResolve = resolvedQName + "." + foundUpperName;
 
                         List<ResolutionElement> resolutionElements = resolvePath(pathToResolve, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                         if (LOG.isTraceEnabled()) {
@@ -450,7 +470,7 @@ public class ORReferenceAnalyzer {
                     // type t = | Variant; ... Variant<caret>
                     else if (resolvedElement instanceof RPsiType resolvedType && instructions.isEmpty()) {
                         for (RPsiVariantDeclaration variant : resolvedType.getVariants()) {
-                            if (variant.getName().equals(foundUpperText)) {
+                            if (variant.getName().equals(foundUpperName)) {
                                 found = true;
                                 resolutions.clear();
                                 result.add(variant);
