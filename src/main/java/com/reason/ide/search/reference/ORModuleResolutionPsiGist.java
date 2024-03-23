@@ -22,7 +22,7 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 import java.util.*;
 
-import static com.intellij.openapi.application.ApplicationManager.getApplication;
+import static com.intellij.openapi.application.ApplicationManager.*;
 
 /**
  * File A : module A1 = {}
@@ -266,8 +266,45 @@ public class ORModuleResolutionPsiGist {
                                 element.putUserData(RESOLUTION, module);
                                 myModulesInContext.add(element);
                                 myResult.addValue(getIndex(element), moduleQName);
-
+                                found = true;
                                 break;
+                            }
+                        }
+                        if (!found) {
+                            // Direct access failed, alias is composed of other aliases, need to follow each definition
+                            String finalQName = "";
+                            Collection<RPsiModule> modules = moduleIndexService.getModules(aliasPath[0], myProject, myScope);
+                            if (!modules.isEmpty() && modules.size() <= 2) {
+                                RPsiModule resolvedModule = modules.iterator().next();
+                                finalQName = resolvedModule.getModuleName();
+                                if (aliasPath.length == 1) {
+                                    element.putUserData(RESOLUTION, resolvedModule);
+                                    myModulesInContext.add(element);
+                                    myResult.addValue(getIndex(element), resolvedModule.getQualifiedName());
+                                }
+                            }
+                            if (aliasPath.length > 1 && !finalQName.isEmpty()) {
+                                for (int i = 1; i < aliasPath.length - 1; i++) {
+                                    modules = moduleIndexService.getModules(finalQName + "." + aliasPath[i], myProject, myScope);
+                                    if (!modules.isEmpty() && modules.size() <= 2) {
+                                        RPsiModule module = modules.iterator().next();
+                                        Data data = getData(module.getContainingFile());
+                                        Collection<String> alternateNames = data.getValues(module);
+                                        if (alternateNames.isEmpty()) {
+                                            finalQName = module.getQualifiedName();
+                                        } else {
+                                            finalQName = alternateNames.iterator().next();
+                                        }
+                                    }
+                                }
+
+                                modules = moduleIndexService.getModules(finalQName + "." + aliasPath[aliasPath.length - 1], myProject, myScope);
+                                if (!modules.isEmpty() && modules.size() <= 2) {
+                                    RPsiModule resolvedModule = modules.iterator().next();
+                                    element.putUserData(RESOLUTION, resolvedModule);
+                                    myModulesInContext.add(element);
+                                    myResult.addValue(getIndex(element), resolvedModule.getQualifiedName());
+                                }
                             }
                         }
                     }

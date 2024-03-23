@@ -91,6 +91,19 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias_02() {
+        configureCode("A.res", "module A1 = { module A11 = { type id = string } }");
+        configureCode("B.res", "module B1 = A.A1");
+        configureCode("C.res", """
+                module C1 = B.B1.A11
+                type t = C1.id<caret>
+                """);
+
+        RPsiQualifiedPathElement e = (RPsiQualifiedPathElement) myFixture.getElementAtCaret();
+        assertEquals("A.A1.A11.id", e.getQualifiedName());
+    }
+
+    @Test
     public void test_open() {
         configureCode("B.res", "let x = 1");
         configureCode("A.res", "let x = 2\n open B\n x<caret>");

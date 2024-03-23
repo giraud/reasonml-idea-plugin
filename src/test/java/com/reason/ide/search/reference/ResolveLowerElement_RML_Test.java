@@ -83,13 +83,26 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_alias_x() {
+    public void test_alias_01() {
         configureCode("A.re", "module Mode = { type t; };");
         configureCode("B.re", "module B1 = { module Mode = A.Mode; };");
         configureCode("C.re", "B.B1.Mode.t<caret>");
 
         RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.Mode.t", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_alias_02() {
+        configureCode("A.re", "module A1 = { module A11 = { type id = string; }; };");
+        configureCode("B.re", "module B1 = A.A1;");
+        configureCode("C.re", """
+                module C1 = B.B1.A11;
+                type t = C1.id<caret>
+                """);
+
+        RPsiQualifiedPathElement e = (RPsiQualifiedPathElement) myFixture.getElementAtCaret();
+        assertEquals("A.A1.A11.id", e.getQualifiedName());
     }
 
     @Test

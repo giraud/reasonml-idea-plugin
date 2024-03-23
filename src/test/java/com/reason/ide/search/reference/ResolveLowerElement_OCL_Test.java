@@ -80,6 +80,29 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias_01() {
+        configureCode("A.ml", "module Mode = struct type t end");
+        configureCode("B.ml", "module B1 = struct module Mode = A.Mode end");
+        configureCode("C.ml", "type t = B.B1.Mode.t<caret>");        // B.B1.Mode.t -> A.Mode.t
+
+        RPsiType e = (RPsiType) myFixture.getElementAtCaret();
+        assertEquals("A.Mode.t", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_alias_02() {
+        configureCode("A.ml", "module A1 = struct module A11 = struct type t = string end end");
+        configureCode("B.ml", "module B1 = A.A1");
+        configureCode("C.ml", """
+                module C1 = B.B1.A11
+                type t = C1.t<caret>
+                """);
+
+        RPsiQualifiedPathElement e = (RPsiQualifiedPathElement) myFixture.getElementAtCaret();
+        assertEquals("A.A1.A11.t", e.getQualifiedName());
+    }
+
+    @Test
     public void test_open() {
         configureCode("B.ml", "let x = 1");
         configureCode("A.ml", "let x = 2 open B let _ = x<caret>");

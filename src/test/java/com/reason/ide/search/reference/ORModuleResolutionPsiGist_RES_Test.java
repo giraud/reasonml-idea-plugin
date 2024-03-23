@@ -12,14 +12,14 @@ import org.junit.runners.*;
 
 import java.util.*;
 
-import static java.util.List.*;
+import static java.util.List.copyOf;
 
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
-public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
+public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_include_no_resolution() {
-        FileBase e = configureCode("A.re", "module A1 = {}; include B.B1;");
+        FileBase e = configureCode("A.res", "module A1 = {}\n include B.B1");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -30,7 +30,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_open_no_resolution() {
-        FileBase e = configureCode("A.re", "module A1 = {}; open B.B1;");
+        FileBase e = configureCode("A.res", "module A1 = {}\n open B.B1");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -41,7 +41,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_in_file() {
-        FileBase e = configureCode("A.re", "module A1 = { module A2 = {}; }; include A1.A2;");
+        FileBase e = configureCode("A.res", "module A1 = { module A2 = {} }\n include A1.A2");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -52,7 +52,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_open_in_file() {
-        FileBase e = configureCode("A.re", "module A1 = { module A2 = {}; }; open A1.A2;");
+        FileBase e = configureCode("A.res", "module A1 = { module A2 = {} }\n open A1.A2");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -63,7 +63,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_in_file_steps() {
-        FileBase e = configureCode("A.re", "module A1 = { module A2 = {}; }; include A1; include A2;");
+        FileBase e = configureCode("A.res", "module A1 = { module A2 = {} }\n include A1\n include A2");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -75,7 +75,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_open_in_file_steps() {
-        FileBase e = configureCode("A.re", "module A1 = { module A2 = {}; }; open A1; open A2;");
+        FileBase e = configureCode("A.res", "module A1 = { module A2 = {} }\n open A1\n open A2;");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -87,8 +87,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_in_steps() {
-        configureCode("A.re", "module A1 = { module A2 = {}; }");
-        FileBase e = configureCode("B.re", "include A.A1; include A2;");
+        configureCode("A.res", "module A1 = { module A2 = {} }");
+        FileBase e = configureCode("B.res", "include A.A1\n include A2");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -100,8 +100,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_open_in_steps() {
-        configureCode("A.re", "module A1 = { module A2 = {}; }");
-        FileBase e = configureCode("B.re", "open A.A1; open A2;");
+        configureCode("A.res", "module A1 = { module A2 = {} }");
+        FileBase e = configureCode("B.res", "open A.A1\n open A2");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -113,12 +113,16 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_aliases_01() {
-        FileBase e = configureCode("A.re", """
-                module A1 = { module A2 = {}; };
-                module B1 = A1;
-                include B1;
-                module B2 = A2;
-                include B2;
+        FileBase e = configureCode("A.res", """
+                module A1 = {
+                  module A2 = {}
+                }
+                
+                module B1 = A1
+                include B1
+                
+                module B2 = A2
+                include B2
                 """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
@@ -136,9 +140,14 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_aliases_02() {
-        FileBase e = configureCode("A.re", "module A1 = { module A2 = {}; module B2 = A2; };" +
-                "module B1 = A1;" +
-                "include B1.B2;");
+        FileBase e = configureCode("A.res", """
+                module A1 = {
+                  module A2 = {}
+                  module B2 = A2
+                }
+                module B1 = A1
+                include B1.B2
+                """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -149,8 +158,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_aliases_03() {
-        configureCode("A.re", "");
-        FileBase e = configureCode("B.re", "module B1 = A;");
+        configureCode("A.res", "");
+        FileBase e = configureCode("B.res", "module B1 = A;");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -161,8 +170,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_aliases_04() {
-        configureCode("A.re", "module W = { module X = { module Y = { module Z = { let z = 1; }; }; }; };");
-        FileBase e = configureCode("B.re", "module C = A.W.X; module D = C.Y.Z;");
+        configureCode("A.res", "module W = { module X = { module Y = { module Z = { let z = 1 } } } }");
+        FileBase e = configureCode("B.res", "module C = A.W.X\n module D = C.Y.Z");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -172,13 +181,25 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
         assertEmpty(data.getValues(e/*B*/));
     }
 
+    @Test
+    public void test_aliases_05() {
+        configureCode("A.res", "module A1 = { module A11 = { type id = string } }");
+        configureCode("B.res", "module B1 = A.A1");
+        FileBase e = configureCode("Dummy.res", "module X = B.B1.A11");
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModule em = PsiTreeUtil.findChildOfType(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em/*ELayout*/), "A.A1.A11");
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/426
     @Test
-    public void test_aliases_05_same_file() {
-        FileBase e = configureCode("A.re", """
-                module W = { module X = { module Y = { module Z = {}; }; }; };
-                module C = W.X;
-                module D = C.Y.Z;
+    public void test_GH_426_aliases_same_file() {
+        FileBase e = configureCode("A.res", """
+                module W = { module X = { module Y = { module Z = {} } } }
+                module C = W.X
+                module D = C.Y.Z
                 """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
@@ -191,8 +212,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_in_module() {
-        configureCode("A.re", "");
-        FileBase e = configureCode("B.re", "module B1 = { include A; };");
+        configureCode("A.res", "");
+        FileBase e = configureCode("B.res", "module B1 = { include A }");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -202,7 +223,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_same_includes() {
-        FileBase e = configureCode("A.re", "module A1 = { module A2 = {}; }; open A1; include A2; module A2 = {}; include A2;");
+        FileBase e = configureCode("A.res", "module A1 = { module A2 = {} }\n open A1\n include A2\n module A2 = {}\n include A2");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -213,9 +234,11 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_in_file() {
-        FileBase e = configureCode("A.re", "module type S = { module P: {}; };" +
-                "module F = () : S => { module P = {}; };" +
-                "module M = F({});");
+        FileBase e = configureCode("A.res", """
+                module type S = { module P: {} }
+                module F = () : S => { module P = {} }
+                module M = F({})
+                """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -226,8 +249,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_result_out_file() {
-        configureCode("A.re", "module type Result = { let a: int; };");
-        FileBase e = configureCode("B.re", "module T = A; module Make = (M:Intf): T.Result => { let b = 3; };");
+        configureCode("A.res", "module type Result = { let a: int }");
+        FileBase e = configureCode("B.res", "module T = A\n module Make = (M:Intf): T.Result => { let b = 3 }");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -237,7 +260,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_no_signature() {
-        FileBase e = configureCode("A.re", "module M = () => { let x = true; }; module X = M();");
+        FileBase e = configureCode("A.res", "module M = () => { let x = true }\n module X = M()");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -247,8 +270,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_outside() {
-        configureCode("A.re", "module type S = { module P: {}; }; module F = () : S => { module P = {}; };");
-        FileBase e = configureCode("B.re", "module M = A.F({});");
+        configureCode("A.res", "module type S = { module P: {} }\n module F = () : S => { module P = {} }");
+        FileBase e = configureCode("B.res", "module M = A.F({})");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -259,8 +282,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_open() {
-        configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) : Intf => { let y = 1; };");
-        FileBase e = configureCode("B.re", "open A; module Instance = MakeIntf({let x = true});");
+        configureCode("A.res", "module type Intf = { let x: bool }\n module MakeIntf = (I:Intf) : Intf => { let y = 1 }");
+        FileBase e = configureCode("B.res", "open A\n module Instance = MakeIntf({let x = true})");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -271,7 +294,7 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_file_include_functor() {
-        FileBase e = configureCode("A.re", "module Make = () => { let y = 1; }; include Make();");
+        FileBase e = configureCode("A.res", "module Make = () => { let y = 1 }\n include Make()");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -280,74 +303,31 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_module_type_inside() {
-        FileBase e = configureCode("A.re", """
-                module type S = {};
-                module M : S = {};
+        FileBase e = configureCode("A.res", """
+                module type S = {}
+                module M: S = {}
                 """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiModuleSignature emt = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
         assertOrderedEquals(data.getValues(emt/*S*/), "A.S");
-    }
-
-    @Test
-    public void test_module_type_open_alias() {
-        FileBase e = configureCode("A.re", """
-                module A1 = {
-                  module type S = {};
-                };
-                module X = A1;
-                open X;
-                module M: S = {};
-                """);
-
-        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
-
-        RPsiModuleSignature emt = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
-        assertOrderedEquals(data.getValues(emt/*S*/), "A.A1.S");
-    }
-
-    @Test
-    public void test_module_type_outside() {
-        configureCode("A.re", "module type S = {};");
-        FileBase e = configureCode("B.re", "module M: A.S = {};");
-
-        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
-
-        RPsiModuleSignature emt = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
-        assertOrderedEquals(data.getValues(emt/*S*/), "A.S");
-    }
-
-    @Test
-    public void test_module_type_deep() {
-        FileBase e = configureCode("A.re", """
-                module B = {
-                  module type Intf = {};
-                };
-                module Impl : B.Intf = {};
-                """);
-        RPsiModuleSignature es = PsiTreeUtil.findChildOfType(e, RPsiModuleSignature.class);
-
-        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
-        assertOrderedEquals(data.getValues(es/*B.Intf*/), "A.B.Intf");
-
     }
 
     @Test
     public void test_tag_inside() {
-        FileBase e = configureCode("A.re", "module X = { [@react.component] let make = (~value) => <div/>; }; <X value=1></X>;");
+        FileBase e = configureCode("A.res", "module X = { @react.component let make = (~value) => <div/> }\n let _ = <X value=1></X>");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
-        RPsiTag et = ORUtil.findImmediateFirstChildOfClass(e, RPsiTag.class);
+        RPsiTag et = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiTag.class)).get(1);
         assertOrderedEquals(data.getValues(et.getFirstChild()/*X*/), "A.X");
     }
 
     @Test
     public void test_tag_outside() {
-        configureCode("X.re", "[@react.component] let make = (~value) => <div/>;");
-        FileBase e = configureCode("A.re", "<X value=1></X>;");
+        configureCode("X.res", "@react.component let make = (~value) => <div/>");
+        FileBase e = configureCode("A.res", "<X value=1></X>");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -357,8 +337,8 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_tag_open_outside() {
-        configureCode("X.re", "module Y = { [@react.component] let make = (~value) => <div/>; }");
-        FileBase e = configureCode("A.re", "open X; <Y value=1></X>;");
+        configureCode("X.res", "module Y = { @react.component let make = (~value) => <div/> }");
+        FileBase e = configureCode("A.res", "open X\n <Y value=1></X>");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
@@ -368,11 +348,11 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_unpack_local() {
-        FileBase e = configureCode("A.re", """
-                module type I = { let x: int; };
-                module Three: I = { let x = 3; };
-                let three: module I = (module Three);
-                module New_three = (val three: I);
+        FileBase e = configureCode("A.res", """
+                module type I = { let x: int }
+                module Three: I = { let x = 3 }
+                let three: module(I) = module(Three)
+                module New_three = unpack(three: I)
                 """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
@@ -383,14 +363,14 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_unpack_open() {
-        configureCode("A.re", """
-                module type I = { let x: int; };
-                module Three: I = { let x = 3; };
+        configureCode("A.res", """
+                module type I = { let x: int }
+                module Three: I = { let x = 3 }
                 """);
-        FileBase e = configureCode("B.re", """
-                open A;
-                let three: module I = (module Three);
-                module New_three = (val three: I);
+        FileBase e = configureCode("B.res", """
+                open A
+                let three: module(I) = module(Three)
+                module New_three = unpack(three: I)
                 """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
@@ -401,14 +381,14 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_unpack_no_signature() {
-        configureCode("A.re", """
-                module type I = { let x: int; };
-                module Three: I = { let x = 3; };
+        configureCode("A.res", """
+                module type I = { let x: int }
+                module Three: I = { let x = 3 }
                 """);
-        FileBase e = configureCode("B.re", """
-                open A;
-                let three: module I = (module Three);
-                module New_three = (val three);
+        FileBase e = configureCode("B.res", """
+                open A
+                let three: module(I) = module(Three)
+                module New_three = unpack(three)
                 """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
@@ -419,16 +399,16 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_unpack_no_signature_qname() {
-        configureCode("A.re", """
+        configureCode("A.res", """
                 module A1 = {
-                  module type I = { let x: int; };
-                };
-                module Three : A1.I = { let x = 3 };
+                  module type I = { let x: int }
+                }
+                module Three : A1.I = { let x = 3 }
                 """);
-        FileBase e = configureCode("B.re", """
-                module B1 = A;
-                let three: module B1.A1.I = (module B1.Three);
-                module New_three = (val three);
+        FileBase e = configureCode("B.res", """
+                module B1 = A
+                let three: module(B1.A1.I) = module(B1.Three)
+                module New_three = unpack(three)
                 """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
@@ -439,9 +419,9 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_unpack_parameter() {
-        FileBase e = configureCode("A.re", """
-                module type I = { let x: int; };
-                let x = (~p: (module I)) => { module S = (val p); };
+        FileBase e = configureCode("A.res", """
+                module type I = { let x: int }
+                let x = (~p: module(I)) => { module S = unpack(p) }
                 """);
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
@@ -452,14 +432,16 @@ public class ORModuleResolutionPsiGistRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_unpack_parameter_global_module() {
-        configureCode("A.re", """
+        configureCode("A.res", """
                 module B = {
                   module type I = {
-                    let fn: int => unit;
-                  };
-                };
+                    let fn: int => unit
+                  }
+                }
                 """);
-        FileBase e = configureCode("C.re", "let x = (~p: (module A.B.I)) => { module S = (val p); };");
+        FileBase e = configureCode("C.res", """
+                let x = (~p: module(A.B.I)) => { module S = unpack(p) }
+                """);
 
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
