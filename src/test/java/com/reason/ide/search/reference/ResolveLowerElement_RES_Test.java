@@ -319,7 +319,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_resolution_1() {
+    public void test_function_call_1() {
         configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
         configureCode("Belt_Map.ml", "module String = Belt_MapString");
         configureCode("Belt_Option.mli", "val flatMap : 'a option -> ('a -> 'b option) -> 'b option");
@@ -331,7 +331,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_resolution_2() {
+    public void test_function_call_2() {
         configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
         configureCode("Belt_Map.ml", "module String = Belt_MapString");
         configureCode("Belt_Option.mli", "val flatMap : 'a option -> ('a -> 'b option) -> 'b option");
@@ -340,6 +340,15 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
         RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
         assertEquals("Belt_MapString.get", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_function_call_3() {
+        configureCode("Storybook.res", "external action: string => unit => unit");
+        configureCode("A.res", "let _ = Storybook.action<caret>(\"Cancel\")()");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Storybook.action", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
     @Test

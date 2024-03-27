@@ -42,80 +42,67 @@ public class ORReferenceAnalyzer {
 
     // Walk through the file - from element up to the root - and extract instructions
     static @NotNull Deque<PsiElement> createInstructions(@NotNull PsiElement sourceElement, boolean isLower, @NotNull ORLangTypes types) {
-        boolean startPath = true;
-        PsiElement prevItem = ORUtil.prevSibling(sourceElement);
-
-        // if caret is already at a UIdent or LIdent
-        if ((sourceElement instanceof RPsiUpperSymbol || sourceElement instanceof RPsiLowerSymbol) && prevItem != null) {
-            IElementType prevType = prevItem.getNode().getElementType();
-            if (prevType == types.RIGHT_ARROW || prevType == types.PIPE_FORWARD || prevType == types.COMMA) {
-                // ->A.B  or  |>A.B  or ,A.B
-                // we are no more in a path, skip path
-                prevItem = prevItem.getPrevSibling();
-                ASTNode prevItemNode = prevItem == null ? null : prevItem.getNode();
-                prevType = prevItemNode == null ? null : prevItemNode.getElementType();
-                while (prevType != null && (prevType == types.DOT || prevType == types.UIDENT || prevType == types.A_VARIANT_NAME || prevType == types.LIDENT)) {
-                    prevItem = prevItem.getPrevSibling();
-                    prevItemNode = prevItem == null ? null : prevItem.getNode();
-                    prevType = prevItemNode == null ? null : prevItemNode.getElementType();
-                }
-
-                // if LocalOpen found, it is still a path
-                if (prevType == types.LPAREN) {
-                    PsiElement parent = prevItem.getParent();
-                    startPath = parent instanceof RPsiLocalOpen;
-                } else {
-                    startPath = false;
-                }
-            }
+        PsiElement prevItem = PsiTreeUtil.prevCodeLeaf(sourceElement);
+        IElementType prevItemType = prevItem != null ? prevItem.getNode().getElementType() : null;
+        boolean startPath = prevItem != null && (prevItemType == types.DOT || prevItemType == types.LPAREN || prevItemType == types.SHARPSHARP);
+        if (prevItemType == types.LBRACKET && types instanceof ResTypes) {
+            prevItem = ORUtil.prevSibling(prevItem.getParent());
+            startPath = true;
         }
-        // if caret is in a js field index (rescript), we need to position the item to the previous element
-        // a["b<caret>"]["c"]
-        else if ((sourceElement instanceof RPsiLiteralString) && prevItem != null) {
-            IElementType prevType = prevItem.getNode().getElementType();
-            if (prevType == types.LBRACKET) {
-                prevItem = ORUtil.prevSibling(sourceElement.getParent());
-            }
+        if (!startPath) {
+            prevItem = ORUtil.prevSibling(sourceElement); // use composite instead of leaf
         }
 
         PsiElement item = prevItem == null ? sourceElement.getParent() : prevItem;
 
         Deque<PsiElement> instructions = new LinkedList<>();
-        boolean skipLet = false;
-        boolean skipType = false;
+        boolean skipDeclaration = false;
 
         while (item != null) {
             ASTNode itemNode = item.getNode();
             IElementType itemType = itemNode != null ? itemNode.getElementType() : null;
-            if (itemType != null && itemType != types.SEMI) {
-                if (startPath && (item instanceof RPsiUpperSymbol || item instanceof RPsiLowerSymbol)) {
-                    // only add if it's from a local path
-                    //   can be a real path from a record : a.b.c
-                    //   or a simulated path from a js object field : a##b##c (.re) / a["b"] (.res)
-                    PsiElement nextSibling = item.getNextSibling();
-                    IElementType nextSiblingNodeType = nextSibling != null ? nextSibling.getNode().getElementType() : null;
-                    if (types instanceof ResTypes && nextSiblingNodeType == types.C_ARRAY) {
-                        instructions.push(item);
-                    } else if ((nextSiblingNodeType == types.DOT || nextSiblingNodeType == types.SHARPSHARP)) {
-                        boolean isJsObjectField = item instanceof RPsiLowerSymbol && ORUtil.isPrevType(item, types.SHARPSHARP);
-                        if (isJsObjectField) {
+
+            // Try to detect end of the path of the start item
+            if (startPath) {
+                if (itemType == types.A_MODULE_NAME || itemType == types.A_UPPER_TAG_NAME) {
+                    instructions.push(item);
+                } else if (itemType == types.LIDENT) {
+                    PsiElement prevPrevItem = PsiTreeUtil.prevCodeLeaf(item);
+                    if (prevPrevItem != null) {
+                        IElementType prevPrevType = prevPrevItem.getNode().getElementType();
+                        if (prevPrevType == types.DOT) {
+                            instructions.push(new SymbolField(item, true));
+                        } else if (prevPrevType == types.SHARPSHARP) {
                             instructions.push(new SymbolField(item, false));
                         } else {
-                            boolean isRecordField = item instanceof RPsiLowerSymbol && ORUtil.isPrevType(item, types.DOT) && ORUtil.prevPrevSibling(item) instanceof RPsiLowerSymbol;
-                            instructions.push(isRecordField ? new SymbolField(item, true) : item);
+                            instructions.push(item);
                         }
                     }
-                } else if (startPath && types instanceof ResTypes && item instanceof RPsiArray) {
-                    PsiElement nextSibling = item.getNextSibling();
-                    IElementType nextSiblingNodeType = nextSibling != null ? nextSibling.getNode().getElementType() : null;
-                    if (nextSiblingNodeType == types.C_ARRAY) {
-                        // a|>["b"]<|["c"]
-                        PsiElement firstChild = item.getFirstChild();
-                        PsiElement arrayItem = ORUtil.nextSibling(firstChild);
-                        if (arrayItem != null) {
-                            instructions.push(new SymbolField(arrayItem, false));
-                        }
+                } else if (itemType == types.LPAREN) {
+                    // can be a local open    A.(b)   (.re)
+                    if (item.getParent() instanceof RPsiLocalOpen) {
+                        item = PsiTreeUtil.prevCodeLeaf(item);
+                        continue;
+                    } else {
+                        item = item.getParent();
+                        startPath = false;
                     }
+                } else if (itemType == types.C_ARRAY && types instanceof ResTypes) {
+                    // a|>["b"]<|["c"]
+                    PsiElement arrayItem = ORUtil.nextSibling(item.getFirstChild());
+                    if (arrayItem != null) {
+                        instructions.push(new SymbolField(arrayItem, false));
+                    }
+                } else if (itemType != types.DOT && itemType != types.SHARPSHARP) {
+                    startPath = false;
+                }
+            }
+
+            // Standard expressions (not a start path)
+            if (!startPath) {
+                if (item instanceof RPsiLocalOpen) {
+                    // Restart the path
+                    startPath = true;
                 } else if (item instanceof RPsiInnerModule) {
                     instructions.push(item);
                 } else if (item instanceof RPsiFunctor) {
@@ -123,28 +110,27 @@ public class ORReferenceAnalyzer {
                 } else if (item instanceof RPsiOpen || item instanceof RPsiInclude) {
                     instructions.push(item);
                 } else if (item instanceof RPsiLetBinding) {
-                    skipLet = true;
+                    // We are starting from inside a let, we don’t want to add the let in the instructions
+                    skipDeclaration = true;
                 } else if (item instanceof RPsiLet) {
-                    if (!skipLet) {
+                    if (!skipDeclaration) {
                         instructions.push(item);
                     }
-                    skipLet = false;
+                    skipDeclaration = false;
                 } else if (item instanceof RPsiTypeBinding) {
-                    skipType = true;
+                    skipDeclaration = true;
                 } else if (item instanceof RPsiType) {
-                    if (!skipType) {
+                    if (!skipDeclaration) {
                         instructions.push(item);
                     }
-                    skipType = false;
-                } else if (item instanceof RPsiException) {
-                    instructions.push(item);
+                    skipDeclaration = false;
                 } else if (item instanceof RPsiExternal) {
+                    instructions.push(item);
+                } else if (item instanceof RPsiException) {
                     instructions.push(item);
                 } else if (item instanceof FileBase) {
                     instructions.push(item);
                     break;
-                } else if (item instanceof RPsiModuleBinding) {
-                    item = item.getParent();
                 } else if (isLower && item instanceof RPsiParameters) {
                     if (item.getParent() instanceof RPsiFunction) {
                         // Inside a function declaration, need to add all parameters
@@ -154,48 +140,14 @@ public class ORReferenceAnalyzer {
                             }
                         }
                     }
+                } else if (isLower && item instanceof RPsiTagStart) {
+                    instructions.push(item);
                 }
             }
 
             // one step backward
             prevItem = ORUtil.prevSibling(item);
-            ASTNode prevItemNode = prevItem == null ? null : prevItem.getNode();
-            IElementType prevType = prevItemNode == null ? null : prevItemNode.getElementType();
-
-            // Try to detect end of the path of the start item
-            if (startPath) {
-                if (item instanceof RPsiPatternMatchBody) {
-                    startPath = false;
-                } else if (prevType == null) {
-                    // if LPAREN or LBRACKET, context can still be part of the path
-                    //   can be a localOpen     A.(b)   (.re)
-                    //   can be a field indexer a["b"]  (.res)
-                    PsiElement parent = item.getParent();
-                    if (types instanceof ResTypes) {
-                        startPath = itemType == types.LBRACKET /*&& parent instanceof RPsiArray*/;
-                    } else {
-                        startPath = itemType == types.LPAREN && parent instanceof RPsiLocalOpen;
-                    }
-                } else if (prevType != types.DOT && prevType != types.A_MODULE_NAME && prevType != types.A_UPPER_TAG_NAME && prevType != types.LIDENT && prevType != types.SHARPSHARP/*Rml*/) {
-                    // if LocalOpen found, it is still a path
-                    if (prevType == types.LPAREN) {
-                        PsiElement parent = prevItem.getParent();
-                        startPath = parent instanceof RPsiLocalOpen;
-                    } else {
-                        startPath = types instanceof ResTypes && prevType == types.C_ARRAY;
-                    }
-                }
-            }
-
-            if (prevItem == null) {
-                item = item.getParent();
-                // If we are resolving a property inside a
-                if (isLower && item instanceof RPsiTagStart) {
-                    instructions.push(item);
-                }
-            } else {
-                item = prevItem;
-            }
+            item = prevItem == null ? item.getParent() : prevItem;
         }
 
         return instructions;
