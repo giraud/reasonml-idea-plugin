@@ -39,7 +39,7 @@ public class RincewindDownloader extends Task.Backgroundable {
             return;
         }
 
-        InsightManagerImpl insightManager = (InsightManagerImpl) myProject.getService(InsightManager.class);
+        InsightManager insightManager = myProject.getService(InsightManager.class);
         if (!insightManager.isDownloading.compareAndSet(false, true)) {
             // We are already in the process of downloading
             LOG.debug("Already downloading, abort");

@@ -21,7 +21,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_OCamlBeforeDirective() {
-        RPsiVal e = first(valExpressions(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end")));
+        RPsiVal e = firstOfType(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end"), RPsiVal.class);
 
         RPsiSignature signature = e.getSignature();
         assertEquals("string -> bool option", signature.asText(getLangProps()));
@@ -29,7 +29,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_val() {
-        RPsiVal e = first(valExpressions(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option")));
+        RPsiVal e = firstOfType(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option"), RPsiVal.class);
 
         RPsiSignature signature = e.getSignature();
         List<RPsiSignatureItem> items = signature.getItems();

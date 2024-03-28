@@ -1,5 +1,6 @@
 package com.reason.comp;
 
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
@@ -16,7 +17,8 @@ import static com.reason.comp.ORConstants.*;
 /**
  * Caches BsConfig available for project.
  */
-public class ORCompilerConfigManager {
+@Service(Service.Level.PROJECT)
+public final class ORCompilerConfigManager {
     private final Project myProject;
     private final Map<String, BsConfig> myConfigs = new HashMap<>();
 

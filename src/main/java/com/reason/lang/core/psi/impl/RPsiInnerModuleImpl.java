@@ -52,6 +52,12 @@ public class RPsiInnerModuleImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, 
 
     @Override
     public @NotNull PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
+        PsiElement id = getNameIdentifier();
+        PsiElement newId = ORCodeFactory.createModuleName(getProject(), newName);
+        if (id != null && newId != null) {
+            id.replace(newId);
+        }
+
         return this;
     }
     // endregion

@@ -8,7 +8,7 @@ import org.junit.runner.*;
 import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
-public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
+public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_let_basic() {
         configureCode("A.ml", "let x = 1\n let z = x<caret> + 1");
@@ -77,6 +77,29 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.X.Y.z", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_alias_01() {
+        configureCode("A.ml", "module Mode = struct type t end");
+        configureCode("B.ml", "module B1 = struct module Mode = A.Mode end");
+        configureCode("C.ml", "type t = B.B1.Mode.t<caret>");        // B.B1.Mode.t -> A.Mode.t
+
+        RPsiType e = (RPsiType) myFixture.getElementAtCaret();
+        assertEquals("A.Mode.t", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_alias_02() {
+        configureCode("A.ml", "module A1 = struct module A11 = struct type t = string end end");
+        configureCode("B.ml", "module B1 = A.A1");
+        configureCode("C.ml", """
+                module C1 = B.B1.A11
+                type t = C1.t<caret>
+                """);
+
+        RPsiQualifiedPathElement e = (RPsiQualifiedPathElement) myFixture.getElementAtCaret();
+        assertEquals("A.A1.A11.t", e.getQualifiedName());
     }
 
     @Test
@@ -329,7 +352,7 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
     @Test
     public void test_variant_constructor() {
         configureCode("B.ml", "let convert x = x");
-        configureCode("A.re", "let _ = X.Variant(B.convert<caret> 1)");
+        configureCode("A.ml", "let _ = X.Variant(B.convert<caret> 1)");
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("B.convert", e.getQualifiedName());
@@ -569,5 +592,17 @@ public class ResolveLowerElementOCLTest extends ORBasePlatformTestCase {
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.clearPath", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/461
+    @Test
+    public void test_GH_461_parameter_type() {
+        configureCode("A.ml", """
+                type store = {x: int}
+                let fn (store: store<caret>) = store.x
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.store", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 }

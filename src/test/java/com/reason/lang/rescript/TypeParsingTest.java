@@ -10,7 +10,7 @@ import org.junit.*;
 import java.util.*;
 import java.util.stream.*;
 
-import static java.util.List.of;
+import static java.util.List.*;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends ResParsingTestCase {
@@ -144,7 +144,7 @@ public class TypeParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_scope() {
-        RPsiExternal e = first(externalExpressions(parseCode("external createElement : (reactClass, ~props: {..}=?, array<reactElement>,) => reactElement = \"createElement\"")));
+        RPsiExternal e = firstOfType(parseCode("external createElement : (reactClass, ~props: {..}=?, array<reactElement>,) => reactElement = \"createElement\""), RPsiExternal.class);
 
         List<RPsiSignatureItem> items = e.getSignature().getItems();
 

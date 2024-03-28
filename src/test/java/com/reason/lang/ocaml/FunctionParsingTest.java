@@ -94,6 +94,19 @@ public class FunctionParsingTest extends OclParsingTestCase {
     }
 
     @Test
+    public void test_parameters_named_symbols() {
+        RPsiLet e = firstOfType(parseCode("let make ~id:(id:string)  ~values:(values:'a Js.t option) children) = 1"), RPsiLet.class);
+
+        RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
+        List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
+        assertSize(3, parameters);
+
+        assertEquals("id", parameters.get(0).getName());
+        assertEquals("values", parameters.get(1).getName());
+        assertEquals("children", parameters.get(2).getName());
+    }
+
+    @Test
     public void test_rollback() {
         RPsiFunction f = firstOfType(parseCode("let _ = let x = 1 in let y = 2 in fun () -> 3"), RPsiFunction.class); // test infinite rollback
         assertEquals("fun () -> 3", f.getText());
@@ -108,5 +121,41 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertEquals("function | OpenedModule -> true | _ -> false", e.getBinding().getText());
         RPsiFunction f = e.getFunction();
         assertEquals("| OpenedModule -> true | _ -> false", f.getBody().getText());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/456
+    @Test
+    public void test_GH_456() {
+        RPsiLet e = firstOfType(parseCode("let append ~param1 param2 = param1 + param2"), RPsiLet.class);
+
+        RPsiFunction ef = (RPsiFunction) e.getBinding().getFirstChild();
+        List<RPsiParameterDeclaration> efps = new ArrayList<>(ef.getParameters());
+        assertSize(2, efps);
+
+        RPsiParameterDeclaration efp0 = efps.get(0);
+        assertEquals("param1", efp0.getName());
+        RPsiParameterDeclaration efp1 = efps.get(1);
+        assertEquals("param2", efp1.getName());
+
+        assertEquals("param1 + param2", ef.getBody().getText());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/456
+    @Test
+    public void test_GH_456_tuples() {
+        RPsiLet e = firstOfType(parseCode("let append ~combine (b1,ll1) (b2,ll2) = (combine b1 b2, ll1 @ ll2)"), RPsiLet.class);
+
+        RPsiFunction ef = (RPsiFunction) e.getBinding().getFirstChild();
+        List<RPsiParameterDeclaration> efps = new ArrayList<>(ef.getParameters());
+        assertSize(3, efps);
+
+        RPsiParameterDeclaration efp0 = efps.get(0);
+        assertEquals("combine", efp0.getName());
+        RPsiParameterDeclaration efp1 = efps.get(1);
+        assertEquals("(b1,ll1)", efp1.getText());
+        RPsiParameterDeclaration efp2 = efps.get(2);
+        assertEquals("(b2,ll2)", efp2.getText());
+
+        assertEquals("(combine b1 b2, ll1 @ ll2)", ef.getBody().getText());
     }
 }

@@ -134,7 +134,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_scope() {
-        RPsiExternal e = first(externalExpressions(parseCode("external createElement : (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =  \"createElement\"")));
+        RPsiExternal e = firstOfType(parseCode("external createElement : (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =  \"createElement\""), RPsiExternal.class);
 
         List<RPsiSignatureItem> items = e.getSignature().getItems();
 

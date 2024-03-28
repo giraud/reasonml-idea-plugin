@@ -124,8 +124,8 @@ public class OpamConfigurationTab {
                         boolean useOpamSelection = switchName.isEmpty();
                         //System.out.println("Add: [" + Joiner.join(", ", opamSwitches) + "]");
                         for (OpamProcess.OpamSwitch opamSwitch : opamSwitches) {
-                            mySwitchSelect.addItem(opamSwitch.name);
-                            if (opamSwitch.isSelected && useOpamSelection) {
+                            mySwitchSelect.addItem(opamSwitch.name());
+                            if (opamSwitch.isSelected() && useOpamSelection) {
                                 mySwitchSelect.setSelectedIndex(mySwitchSelect.getItemCount() - 1);
                             }
                         }

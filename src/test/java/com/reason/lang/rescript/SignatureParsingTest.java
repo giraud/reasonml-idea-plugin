@@ -120,7 +120,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_external_fun() {
-        RPsiExternal e = first(externalExpressions(parseCode("external refToJsObj: reactRef => {..} = \"%identity\";")));
+        RPsiExternal e = firstOfType(parseCode("external refToJsObj: reactRef => {..} = \"%identity\";"), RPsiExternal.class);
 
         RPsiSignature signature = e.getSignature();
         assertSize(2, ORUtil.findImmediateChildrenOfClass(e.getSignature(), RPsiSignatureItem.class));
@@ -129,7 +129,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_external_fun_2() {
-        RPsiExternal e = first(externalExpressions(parseCode("external requestAnimationFrame: (unit => string) => animationFrameID = \"\"")));
+        RPsiExternal e = firstOfType(parseCode("external requestAnimationFrame: (unit => string) => animationFrameID = \"\""), RPsiExternal.class);
 
         RPsiSignature signature = e.getSignature();
         List<RPsiSignatureItem> signatureItems = signature.getItems();
@@ -151,13 +151,13 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_option() {
-        RPsiExternal e = first(externalExpressions(parseCode("external e: option<show> = \"\"")));
+        RPsiExternal e = firstOfType(parseCode("external e: option<show> = \"\""), RPsiExternal.class);
 
         RPsiSignatureItem sigItem = ORUtil.findImmediateChildrenOfClass(e.getSignature(), RPsiSignatureItem.class).iterator().next();
         assertEquals("option<show>", sigItem.asText(getLangProps()));
     }
 
-    @Test
+    @Test // TODO
     public void test_default_optional() {
         RPsiLet let = firstOfType(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa"), RPsiLet.class);
         RPsiSignature signature = let.getSignature();
