@@ -9,7 +9,7 @@ import org.junit.runner.*;
 import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
-public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
+public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_let_basic() {
         configureCode("A.res", "let x = 1\n let z = x<caret> + 1");
@@ -88,6 +88,19 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
 
         RPsiType e = (RPsiType) myFixture.getElementAtCaret();
         assertEquals("A.Mode.t", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_alias_02() {
+        configureCode("A.res", "module A1 = { module A11 = { type id = string } }");
+        configureCode("B.res", "module B1 = A.A1");
+        configureCode("C.res", """
+                module C1 = B.B1.A11
+                type t = C1.id<caret>
+                """);
+
+        RPsiQualifiedPathElement e = (RPsiQualifiedPathElement) myFixture.getElementAtCaret();
+        assertEquals("A.A1.A11.id", e.getQualifiedName());
     }
 
     @Test
@@ -306,7 +319,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_resolution_1() {
+    public void test_function_call_1() {
         configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
         configureCode("Belt_Map.ml", "module String = Belt_MapString");
         configureCode("Belt_Option.mli", "val flatMap : 'a option -> ('a -> 'b option) -> 'b option");
@@ -318,7 +331,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_resolution_2() {
+    public void test_function_call_2() {
         configureCode("Belt_MapString.mli", "val get: 'v t -> key -> 'v option");
         configureCode("Belt_Map.ml", "module String = Belt_MapString");
         configureCode("Belt_Option.mli", "val flatMap : 'a option -> ('a -> 'b option) -> 'b option");
@@ -327,6 +340,15 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
 
         RPsiVal e = (RPsiVal) myFixture.getElementAtCaret();
         assertEquals("Belt_MapString.get", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_function_call_3() {
+        configureCode("Storybook.res", "external action: string => unit => unit");
+        configureCode("A.res", "let _ = Storybook.action<caret>(\"Cancel\")()");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Storybook.action", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
     @Test
@@ -541,7 +563,7 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
     // https://github.com/giraud/reasonml-idea-plugin/issues/358
     @Test
     public void test_GH_358() {
-        configureCode("A.re", """
+        configureCode("A.res", """
                 let clearPath = () => ()
                                 
                 module Xxx = {
@@ -556,5 +578,17 @@ public class ResolveLowerElementRESTest extends ORBasePlatformTestCase {
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.clearPath", e.getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/461
+    @Test
+    public void test_GH_461_parameter_type() {
+        configureCode("A.res", """
+                type store = {x: int}
+                let fn = (store: store<caret>) => store.x
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.store", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 }

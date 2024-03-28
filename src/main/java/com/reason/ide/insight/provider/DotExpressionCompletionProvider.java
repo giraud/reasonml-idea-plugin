@@ -30,15 +30,15 @@ public class DotExpressionCompletionProvider {
 
         PsiElement dotLeaf = PsiTreeUtil.prevVisibleLeaf(element);
         PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
+        ORLanguageProperties langProperties = ORLanguageProperties.cast(element.getLanguage());
 
-        if (previousElement instanceof RPsiUpperSymbol) {
+        if (previousElement instanceof RPsiUpperSymbol previousUpper) {
             // File.<caret>
             // File.Module.<caret>
 
-            LOG.debug(" -> upper symbol", previousElement);
+            LOG.debug(" -> upper symbol", previousUpper);
 
-            PsiReference reference = previousElement.getReference();
-            PsiElement resolvedElement = reference instanceof ORPsiUpperSymbolReference ? ((ORPsiUpperSymbolReference) reference).resolveInterface() : null;
+            PsiElement resolvedElement = previousUpper.getReference().resolveInterface();
             LOG.debug(" -> resolved to", resolvedElement);
 
             Collection<PsiNamedElement> expressions = new ArrayList<>();
@@ -54,28 +54,50 @@ public class DotExpressionCompletionProvider {
                 LOG.trace(" -> no expressions found");
             } else {
                 LOG.trace(" -> expressions", expressions);
-                addExpressions(resultSet, expressions, ORLanguageProperties.cast(element.getLanguage()));
+                addExpressions(resultSet, expressions, langProperties);
             }
-        } else if (previousElement instanceof RPsiLowerSymbol) {
+        } else if (previousElement instanceof RPsiLowerSymbol previousLower) {
             // Records: let x = {a:1, b:2};       x.<caret>
             //          let x: z = y;             x.<caret>
             //          let x = { y: { a: 1 } };  x.y.<caret>
 
-            LOG.debug(" -> lower symbol", previousElement);
+            LOG.debug(" -> lower symbol", previousLower);
 
-            ORPsiLowerSymbolReference reference = (ORPsiLowerSymbolReference) previousElement.getReference();
-            PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
+            PsiElement resolvedElement = previousLower.getReference().resolveInterface();
             if (LOG.isDebugEnabled()) {
                 LOG.debug(" -> resolved to", resolvedElement == null ? null : resolvedElement.getParent());
             }
 
-            if (resolvedElement instanceof RPsiVar) {
-                for (RPsiRecordField recordField : ((RPsiVar) resolvedElement).getRecordFields()) {
-                    resultSet.addElement(
-                            LookupElementBuilder.create(recordField)
-                                    .withTypeText(RPsiSignatureUtil.getSignature(recordField, ORLanguageProperties.cast(element.getLanguage())))
-                                    .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
+            if (resolvedElement instanceof RPsiVar resolvedVar) {
+                addRecordFields(resolvedVar.getRecordFields(), langProperties, resultSet);
+            } else if (resolvedElement instanceof RPsiRecordField resolvedField) {
+                RPsiFieldValue fieldValue = resolvedField.getValue();
+                PsiElement firstChild = fieldValue != null ? fieldValue.getFirstChild() : null;
+                if (firstChild instanceof RPsiRecord recordChild) {
+                    addRecordFields(recordChild.getFields(), langProperties, resultSet);
                 }
+            } else if (resolvedElement instanceof RPsiSignatureElement resolvedSignatureElement) {
+                RPsiSignature signature = resolvedSignatureElement.getSignature();
+                List<RPsiSignatureItem> items = signature != null ? signature.getItems() : null;
+                if (items != null && items.size() == 1) {
+                    RPsiLowerSymbol signatureSymbol = ORUtil.findImmediateLastChildOfClass(items.get(0), RPsiLowerSymbol.class);
+                    PsiReference reference = signatureSymbol != null ? signatureSymbol.getReference() : null;
+                    PsiElement resolve = reference != null ? reference.resolve() : null;
+                    if (resolve instanceof RPsiType signatureType) {
+                        addRecordFields(signatureType.getRecordFields(), langProperties, resultSet);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void addRecordFields(@Nullable Collection<RPsiRecordField> recordFields, @Nullable ORLanguageProperties langProperties, @NotNull CompletionResultSet resultSet) {
+        if (recordFields != null) {
+            for (RPsiRecordField recordField : recordFields) {
+                resultSet.addElement(
+                        LookupElementBuilder.create(recordField)
+                                .withTypeText(RPsiSignatureUtil.getSignature(recordField, langProperties))
+                                .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
             }
         }
     }
@@ -167,7 +189,7 @@ public class DotExpressionCompletionProvider {
                     RPsiUpperSymbol moduleReferenceIdentifier = firstClassModuleSignature.getNameIdentifier();
                     ORPsiUpperSymbolReference moduleReference = moduleReferenceIdentifier != null ? moduleReferenceIdentifier.getReference() : null;
                     PsiElement resolvedFirstClassModule = moduleReference != null ? moduleReference.resolve() : null;
-                    if (resolvedFirstClassModule!=null) {
+                    if (resolvedFirstClassModule != null) {
                         addModuleExpressions(resolvedFirstClassModule, expressions, scope);
                     }
                 }

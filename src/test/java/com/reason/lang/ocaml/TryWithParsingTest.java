@@ -10,7 +10,7 @@ import org.junit.*;
 public class TryWithParsingTest extends OclParsingTestCase {
     @Test
     public void basic() {
-        RPsiTry e = (RPsiTry) firstElement(parseCode("try x with Not_found -> ()"));
+        RPsiTry e = firstOfType(parseCode("try x with Not_found -> ()"), RPsiTry.class);
 
         assertEquals("try", e.getFirstChild().getText());
         assertNotNull(e.getBody());
@@ -48,8 +48,7 @@ public class TryWithParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_try() {
-        PsiFile file = parseCode("try f() with e -> let e = CErrors.push e");
-        RPsiTry try_ = (RPsiTry) firstElement(file);
+        RPsiTry try_ = firstOfType(parseCode("try f() with e -> let e = CErrors.push e"), RPsiTry.class);
 
         assertEquals("e -> let e = CErrors.push e", try_.getHandlers().get(0).getText());
     }
@@ -91,8 +90,7 @@ public class TryWithParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_GH_256() {
-        PsiFile file = parseCode("try find nt with Not_found -> (error \"Missing nt '%s' for splice\" nt; []) in let splice_prods = xxx");
-        RPsiTry e = (RPsiTry) firstElement(file);
+        RPsiTry e = firstOfType(parseCode("try find nt with Not_found -> (error \"Missing nt '%s' for splice\" nt; []) in let splice_prods = xxx"), RPsiTry.class);
         PsiElement handlers = ORUtil.findImmediateFirstChildOfType(e, myTypes.C_TRY_HANDLERS);
 
         assertEquals("Not_found -> (error \"Missing nt '%s' for splice\" nt; [])", handlers.getText());

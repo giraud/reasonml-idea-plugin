@@ -1,6 +1,7 @@
 package com.reason.hints;
 
 import com.intellij.notification.*;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
@@ -15,7 +16,8 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
-public class RincewindProcess {
+@Service(Service.Level.PROJECT)
+public final class RincewindProcess {
     private static final Log LOG = Log.create("hints.rincewind");
     private final Project myProject;
 

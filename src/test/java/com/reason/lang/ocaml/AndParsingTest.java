@@ -54,7 +54,7 @@ public class AndParsingTest extends OclParsingTestCase {
         PsiFile file = parseCode("match optsign with | Some sign -> let mtb1 = 1 and mtb2 = 2");
         Collection<PsiNamedElement> exps = expressions(file);
 
-        assertInstanceOf(firstElement(file), RPsiSwitch.class);
+        assertInstanceOf(file.getFirstChild(), RPsiSwitch.class);
         assertEquals(0, exps.size());
         RPsiPatternMatchBody body = PsiTreeUtil.findChildOfType(file, RPsiPatternMatchBody.class);
         assertEquals("let mtb1 = 1 and mtb2 = 2", body.getText());

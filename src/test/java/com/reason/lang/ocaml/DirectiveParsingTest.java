@@ -1,9 +1,11 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
 import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
@@ -43,7 +45,7 @@ public class DirectiveParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_oCamlBeforeDirective() {
-        RPsiVal e = first(valExpressions(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end")));
+        RPsiVal e = firstOfType(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end"), RPsiVal.class);
 
         RPsiSignature signature = e.getSignature();
         assertEquals("string -> bool option", signature.asText(OclLanguage.INSTANCE));

@@ -7,7 +7,7 @@ import org.junit.*;
 public class TryParsingTest extends RmlParsingTestCase {
     @Test
     public void basic() {
-        RPsiTry e = (RPsiTry) firstElement(parseCode("try (x) { | Not_found => () };"));
+        RPsiTry e = firstOfType(parseCode("try (x) { | Not_found => () };"), RPsiTry.class);
 
         assertEquals("try", e.getFirstChild().getText());
         assertNotNull(e.getBody());

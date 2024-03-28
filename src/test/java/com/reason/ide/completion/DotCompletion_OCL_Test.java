@@ -10,7 +10,7 @@ import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
-public class DotCompletionOCLTest extends ORBasePlatformTestCase {
+public class DotCompletion_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic() {
         configureCode("A.ml", "let x = 1");
@@ -112,6 +112,19 @@ public class DotCompletionOCLTest extends ORBasePlatformTestCase {
         List<String> elements = myFixture.getLookupElementStrings();
 
         assertSameElements(elements, "y");
+    }
+
+    @Test
+    public void test_parameter() {
+        configureCode("A.ml", """
+                type store = {x: int; y: int}
+                let fn (store: store) = store.<caret>
+                """);
+
+        myFixture.completeBasic();
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertContainsElements(elements, "x", "y");
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/452

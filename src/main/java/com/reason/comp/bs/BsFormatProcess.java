@@ -1,5 +1,6 @@
 package com.reason.comp.bs;
 
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.ex.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
@@ -12,7 +13,8 @@ import java.io.*;
 
 import static jpsplugin.com.reason.Platform.*;
 
-public class BsFormatProcess {
+@Service(Service.Level.PROJECT)
+public final class BsFormatProcess {
     private static final Log LOG = Log.create("format.refmt");
 
     private final Project m_project;
