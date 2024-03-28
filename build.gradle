@@ -34,10 +34,14 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>454 - Duplicate definitions for globally opened modules in completion</li>
-                    <li>452 - Resolve unpacked module</li>
-                    <li>451 - Module incorrectly parsed as functor in Rescript</li>
-                    <li>449 -  Navigation icon in the gutter referencing wrong module</li>
+                    <li>461 - Parameter signature element incorrectly referenced</li>
+                    <li>460 - Keywords used as identifier</li>
+                    <li>459 - Convert to light services</li>
+                    <li>458 - Pipe first operator chaining not correctly parsed in rescript</li>
+                    <li>456 - OCaml function parameters incorrectly parsed if using tuples</li>
+                    <li>455 - Color scheme improvements request for records and functions (OCaml)</li>
+                    <li>453 - Completion of records when using mixin</li>
+                    <li>450 - Can’t rename a module</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
