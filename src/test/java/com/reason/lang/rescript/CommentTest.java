@@ -1,20 +1,20 @@
 package com.reason.lang.rescript;
 
 import com.intellij.psi.*;
-import com.reason.ide.files.*;
 import org.junit.*;
 
 public class CommentTest extends ResParsingTestCase {
     @Test
     public void test_constant() {
-        FileBase psiFile = parseCode("/* */");
-        assertInstanceOf(firstElement(psiFile), PsiComment.class);
+        PsiComment e = firstOfType(parseCode("/* */"), PsiComment.class);
+
+        assertEquals("/* */", e.getText());
     }
 
     @Test
-    public void test_constant2() {
-        FileBase psiFile = parseCode("/* \"this is a string */\" */");
-        assertInstanceOf(firstElement(psiFile), PsiComment.class);
-        assertEquals(1, childrenCount(psiFile));
+    public void test_constant_2() {
+        PsiComment e = firstOfType(parseCode("/* \"this is a string */\" */"), PsiComment.class);
+
+        assertEquals("/* \"this is a string */\" */", e.getText());
     }
 }

@@ -22,6 +22,8 @@ import org.jetbrains.annotations.*;
 import java.io.*;
 import java.util.*;
 
+import static com.intellij.openapi.application.ApplicationManager.*;
+
 /**
  * File A : module A1 = {}
  * File B : include A; include A1
@@ -51,7 +53,9 @@ public class ORModuleResolutionPsiGist {
             LOG.debug("Walk file to create gist", file);
             PsiWalker visitor = new PsiWalker((FileBase) file);
             file.accept(visitor);
-            return visitor.getResult();
+            Data result = visitor.getResult();
+            LOG.trace("Gist created for file", file);
+            return result;
         }
 
         return new Data();
@@ -86,6 +90,7 @@ public class ORModuleResolutionPsiGist {
         public void visitElement(@NotNull PsiElement element) {
             super.visitElement(element);
             IElementType type = element.getNode().getElementType();
+            ModuleIndexService moduleIndexService = getApplication().getService(ModuleIndexService.class);
 
             // MODULE
             // ------
@@ -112,7 +117,7 @@ public class ORModuleResolutionPsiGist {
                                 if (firstClassInContextName != null && firstClassInContextName.equals(firstClassName)) {
                                     RPsiQualifiedPathElement userData = moduleInContext.getElement().getUserData(RESOLUTION);
                                     if (userData != null) {
-                                        found = true;
+                                        //found = true;
                                         element.putUserData(RESOLUTION, userData);
                                         myModulesInContext.add(element);
                                         myResult.addValue(getIndex(element), userData.getQualifiedName());
@@ -255,14 +260,51 @@ public class ORModuleResolutionPsiGist {
 
                     // If nothing found, try direct access
                     if (!found) {
-                        for (RPsiModule module : ModuleIndexService.getService().getModules(alias, myProject, myScope)) {
+                        for (RPsiModule module : moduleIndexService.getModules(alias, myProject, myScope)) {
                             String moduleQName = module.getQualifiedName();
                             if (moduleQName != null) {
                                 element.putUserData(RESOLUTION, module);
                                 myModulesInContext.add(element);
                                 myResult.addValue(getIndex(element), moduleQName);
-
+                                found = true;
                                 break;
+                            }
+                        }
+                        if (!found) {
+                            // Direct access failed, alias is composed of other aliases, need to follow each definition
+                            String finalQName = "";
+                            Collection<RPsiModule> modules = moduleIndexService.getModules(aliasPath[0], myProject, myScope);
+                            if (!modules.isEmpty() && modules.size() <= 2) {
+                                RPsiModule resolvedModule = modules.iterator().next();
+                                finalQName = resolvedModule.getModuleName();
+                                if (aliasPath.length == 1) {
+                                    element.putUserData(RESOLUTION, resolvedModule);
+                                    myModulesInContext.add(element);
+                                    myResult.addValue(getIndex(element), resolvedModule.getQualifiedName());
+                                }
+                            }
+                            if (aliasPath.length > 1 && !finalQName.isEmpty()) {
+                                for (int i = 1; i < aliasPath.length - 1; i++) {
+                                    modules = moduleIndexService.getModules(finalQName + "." + aliasPath[i], myProject, myScope);
+                                    if (!modules.isEmpty() && modules.size() <= 2) {
+                                        RPsiModule module = modules.iterator().next();
+                                        Data data = getData(module.getContainingFile());
+                                        Collection<String> alternateNames = data.getValues(module);
+                                        if (alternateNames.isEmpty()) {
+                                            finalQName = module.getQualifiedName();
+                                        } else {
+                                            finalQName = alternateNames.iterator().next();
+                                        }
+                                    }
+                                }
+
+                                modules = moduleIndexService.getModules(finalQName + "." + aliasPath[aliasPath.length - 1], myProject, myScope);
+                                if (!modules.isEmpty() && modules.size() <= 2) {
+                                    RPsiModule resolvedModule = modules.iterator().next();
+                                    element.putUserData(RESOLUTION, resolvedModule);
+                                    myModulesInContext.add(element);
+                                    myResult.addValue(getIndex(element), resolvedModule.getQualifiedName());
+                                }
                             }
                         }
                     }
@@ -328,7 +370,7 @@ public class ORModuleResolutionPsiGist {
 
                     // If nothing found, try direct access
                     if (!found) {
-                        for (RPsiModule resolvedModule : ModuleIndexService.getService().getModules(visitedModuleQName, myProject, myScope)) {
+                        for (RPsiModule resolvedModule : moduleIndexService.getModules(visitedModuleQName, myProject, myScope)) {
                             String moduleQName = resolvedModule.getQualifiedName();
                             if (moduleQName != null) {
                                 visitedElement.putUserData(RESOLUTION, resolvedModule);
@@ -533,7 +575,7 @@ public class ORModuleResolutionPsiGist {
 
                 // If nothing found, try direct access
                 if (!found) {
-                    for (RPsiModule module : ModuleIndexService.getService().getModules(visitedPath, myProject, myScope)) {
+                    for (RPsiModule module : moduleIndexService.getModules(visitedPath, myProject, myScope)) {
                         String moduleQName = module.getQualifiedName();
                         if (moduleQName != null) {
                             element.putUserData(RESOLUTION, module);

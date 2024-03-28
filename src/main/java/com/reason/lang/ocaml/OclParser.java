@@ -870,8 +870,8 @@ public class OclParser extends CommonPsiParser {
             } else if (is(myTypes.C_MODULE_BINDING)) {
                 if (lookAhead(1) == myTypes.VAL) {
                     // module M = »(« val ... )
-                    rollbackToLatestAndDrop()
-                            .markScope(myTypes.C_UNPACK, myTypes.LPAREN).advance()
+                    updateComposite(myTypes.C_UNPACK)
+                            .updateScopeToken(myTypes.LPAREN).advance()
                             .advance(); // skip 'val' in a first class module decoding
                 } else {
                     markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
@@ -902,8 +902,7 @@ public class OclParser extends CommonPsiParser {
                 if (isFound(myTypes.C_LET_BINDING) && lookAhead(1) == myTypes.MODULE) {
                     // let x = »(« module ... )
                     popIfHold()
-                            .rollbackToLatestAndDrop()
-                            .markScope(myTypes.C_FIRST_CLASS, myTypes.LPAREN).advance()
+                            .updateComposite(myTypes.C_FIRST_CLASS).updateScopeToken(myTypes.LPAREN).advance()
                             .advance(); // skip 'module' in a first class module
                 } else if (isFound(myTypes.C_FIELD_VALUE)) {
                     // Tuple in field value (destructuring)
@@ -1215,9 +1214,12 @@ public class OclParser extends CommonPsiParser {
                     // inherit [M.]classType |>x<|
                     wrapAtom(myTypes.CA_LOWER_SYMBOL).mark(myTypes.C_PARAMETERS);
                     return;
+                } else if (is(myTypes.H_NAMED_PARAM_DECLARATION) && (nextTokenType == myTypes.LIDENT || nextTokenType == myTypes.LPAREN)) {
+                    wrapAtom(myTypes.CA_LOWER_SYMBOL).popEndUntil(myTypes.C_PARAMETERS);
+                    return;
                 } else if (!in(myTypes.C_SIG_ITEM) && !is(myTypes.C_TYPE_VARIABLE) && !is(myTypes.C_TYPE_CONSTRAINT)
                         && !is(myTypes.C_BINARY_CONDITION) && !is(myTypes.C_CLASS_FIELD) && !in(myTypes.C_TYPE_BINDING)
-                        && !is(myTypes.C_PARAMETERS) && !strictlyIn(myTypes.C_DEFAULT_VALUE)) {
+                        && !is(myTypes.C_PARAMETERS) && !strictlyInAny(myTypes.C_PARAM_DECLARATION, myTypes.C_DEFAULT_VALUE)) {
                     if (nextTokenType == myTypes.LIDENT || nextTokenType == myTypes.INT_VALUE || nextTokenType == myTypes.FLOAT_VALUE
                             || nextTokenType == myTypes.STRING_VALUE || nextTokenType == myTypes.TILDE || nextTokenType == myTypes.LPAREN) {
                         if (isCurrent(myTypes.C_SCOPED_EXPR) || !in(myTypes.C_FUNCTION_CALL, /*not*/myTypes.C_PARAMETERS)) { // a function call

@@ -52,6 +52,7 @@ public class ResParser extends CommonPsiParser {
                 if (tokenType == myTypes.EOL) {
                     IElementType previousType = previousElementType(1);
                     boolean previousOperator = previousType == myTypes.ARROW
+                            || previousType == myTypes.RIGHT_ARROW
                             || previousType == myTypes.COLON
                             || previousType == myTypes.COMMA
                             || previousType == myTypes.EQ
@@ -63,7 +64,9 @@ public class ResParser extends CommonPsiParser {
 
                     if (!previousOperator) {
                         IElementType nextType = getTokenType();
-                        boolean nextOperator = nextType == myTypes.QUESTION_MARK || nextType == myTypes.COLON // ternary
+                        boolean nextOperator = nextType == myTypes.QUESTION_MARK
+                                || nextType == myTypes.RIGHT_ARROW // first pipe
+                                || nextType == myTypes.COLON // ternary
                                 || nextType == myTypes.PIPE // variant
                                 || (nextType == myTypes.LPAREN && isRawParent(myTypes.C_FUNCTION_CALL)); // function call
                         if (!nextOperator && !myMarkers.isEmpty()) {
@@ -241,9 +244,11 @@ public class ResParser extends CommonPsiParser {
 
         private void parseUnpack() {
             if (is(myTypes.C_MODULE_BINDING)) {
-                rollbackToLatestAndDrop();
+                updateComposite(myTypes.C_UNPACK);
+            } else {
+                mark(myTypes.C_UNPACK);
             }
-            mark(myTypes.C_UNPACK);
+
             advance();
             if (getTokenType() != myTypes.LPAREN) {
                 error("Missing parenthesis");
@@ -1130,13 +1135,15 @@ public class ResParser extends CommonPsiParser {
                         if (nextTokenType == myTypes.LPAREN) {
                             // Chaining function calls fn()( ...
                             markBefore(0, myTypes.C_FUNCTION_CALL);
-                            //popEnd();
                         } else {
                             popEnd();
                             if (isCurrent(myTypes.C_LET_BINDING) && !currentHasScope()) {
-                                if (nextTokenType != myTypes.QUESTION_MARK) {
+                                IElementType nextValidToken = nextTokenType == myTypes.EOL ? lookAheadSkipEOL() : nextTokenType;
+                                if (nextValidToken != myTypes.QUESTION_MARK && nextValidToken != myTypes.RIGHT_ARROW) {
                                     // let _ = fn(|>)<|
                                     popEndUntil(myTypes.C_LET_DECLARATION).popEnd();
+                                } else if (nextTokenType == myTypes.EOL) {
+                                    advanceSkipEOL();
                                 }
                             }
                         }

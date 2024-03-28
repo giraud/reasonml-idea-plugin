@@ -50,7 +50,7 @@ public class CompilerOutputListener implements ProcessListener {
                                 }
                             }
                         },
-                        ModalityState.NON_MODAL);
+                        ModalityState.nonModal());
     }
 
     @Override

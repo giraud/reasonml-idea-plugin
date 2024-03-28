@@ -6,18 +6,20 @@ import com.reason.comp.ocaml.*;
 import com.reason.ide.console.*;
 import com.reason.ide.settings.*;
 import jpsplugin.com.reason.*;
+import kotlin.*;
+import kotlin.coroutines.*;
 import org.jetbrains.annotations.*;
 
-import static com.intellij.openapi.application.ApplicationManager.getApplication;
+import static com.intellij.openapi.application.ApplicationManager.*;
 
 /**
  * Ensure all services have started after the startup.
  */
-public class ORPostStartupActivity implements StartupActivity, DumbAware {
+public class ORPostStartupActivity implements ProjectActivity, DumbAware {
     private static final Log LOG = Log.create("activity.startup");
 
     @Override
-    public void runActivity(@NotNull Project project) {
+    public @Nullable Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
         ORFileDocumentListener.ensureSubscribed(project);
         LOG.debug("Subscribed project and document listeners.");
 
@@ -30,5 +32,7 @@ public class ORPostStartupActivity implements StartupActivity, DumbAware {
 
             project.getService(ORToolWindowManager.class).shouldShowToolWindows();
         });
+
+        return null;
     }
 }

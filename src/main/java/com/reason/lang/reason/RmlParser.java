@@ -1049,8 +1049,8 @@ public class RmlParser extends CommonPsiParser {
             } else if (is(myTypes.C_MODULE_BINDING) && !in(myTypes.C_FUNCTOR_DECLARATION)) {
                 if (myBuilder.lookAhead(1) == myTypes.VAL) {
                     // module M = »(« val ... )
-                    rollbackToLatestAndDrop()
-                            .markScope(myTypes.C_UNPACK, myTypes.LPAREN).advance()
+                    updateComposite(myTypes.C_UNPACK)
+                            .updateScopeToken(myTypes.LPAREN).advance()
                             .advance(); // skip 'val' in a first class module decoding
                 } else if (in(myTypes.C_MODULE_DECLARATION)) {
                     // This is a functor ::  module M = |>(<| .. )

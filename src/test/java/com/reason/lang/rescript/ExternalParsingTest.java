@@ -17,7 +17,7 @@ public class ExternalParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_signature_function() {
-        RPsiExternal e = externalExpression(parseCode("external props : string => string = \"\""), "props");
+        RPsiExternal e = firstOfType(parseCode("external props : string => string = \"\""), RPsiExternal.class);
 
         RPsiSignature signature = e.getSignature();
         assertEquals("string => string", signature.getText());
@@ -77,5 +77,22 @@ public class ExternalParsingTest extends ResParsingTestCase {
         assertEquals("\"<>\"", e.getName());
         assertEquals("('a, 'a) => bool", e.getSignature().getText());
         assertEquals("%notequal", e.getExternalName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/460
+    @Test
+    public void test_GH_460_keyword_identifiers() {
+        RPsiExternal e1 = firstOfType(parseCode("external land: (int,int)=>int = \"%andint\""), RPsiExternal.class);
+        assertEquals("land", e1.getName());
+        RPsiExternal e2 = firstOfType(parseCode("external lor: (int,int)=>int = \"%orint\""), RPsiExternal.class);
+        assertEquals("lor", e2.getName());
+        RPsiExternal e3 = firstOfType(parseCode("external lxor: (int,int)=>int = \"%xorint\""), RPsiExternal.class);
+        assertEquals("lxor", e3.getName());
+        RPsiExternal e4 = firstOfType(parseCode("external lsl: (int,int)=>int = \"%lslint\""), RPsiExternal.class);
+        assertEquals("lsl", e4.getName());
+        RPsiExternal e5 = firstOfType(parseCode("external lsr: (int,int)=>int = \"%lsrint\""), RPsiExternal.class);
+        assertEquals("lsr", e5.getName());
+        RPsiExternal e6 = firstOfType(parseCode("external asr: (int,int)=>int = \"%asrint\""), RPsiExternal.class);
+        assertEquals("asr", e6.getName());
     }
 }

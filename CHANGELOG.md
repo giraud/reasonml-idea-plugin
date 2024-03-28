@@ -9,6 +9,17 @@
 > - :nail_care:  [Polish]
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
+              
+# 0.123 - 2024/03/28
+
+- :bug: [#461](https://github.com/giraud/reasonml-idea-plugin/issues/461) Parameter signature element incorrectly referenced
+- :bug: [#460](https://github.com/giraud/reasonml-idea-plugin/issues/460) Keywords used as identifier
+- :bug: [#459](https://github.com/giraud/reasonml-idea-plugin/issues/459) Convert to light services
+- :bug: ![n] [#458](https://github.com/giraud/reasonml-idea-plugin/issues/458) Pipe first operator chaining not correctly parsed in rescript
+- :bug: ![o] [#456](https://github.com/giraud/reasonml-idea-plugin/issues/456) OCaml function parameters incorrectly parsed if using tuples
+- :bug: [#455](https://github.com/giraud/reasonml-idea-plugin/issues/455) Color scheme improvements request for records and functions (OCaml)
+- :bug: [#453](https://github.com/giraud/reasonml-idea-plugin/issues/453) Completion of records when using mixin
+- :bug: [#450](https://github.com/giraud/reasonml-idea-plugin/issues/450) Can’t rename a module
 
 ## 0.122 - 2024/03/11
 

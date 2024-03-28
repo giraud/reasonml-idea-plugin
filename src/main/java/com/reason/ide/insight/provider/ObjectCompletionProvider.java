@@ -26,11 +26,10 @@ public class ObjectCompletionProvider {
         PsiElement separator = PsiTreeUtil.prevVisibleLeaf(element);
         PsiElement previousElement = separator == null ? null : separator.getPrevSibling();
 
-        if (previousElement instanceof RPsiLowerSymbol) {
-            LOG.debug(" -> lower symbol", previousElement);
+        if (previousElement instanceof RPsiLowerSymbol previousLowerSymbol) {
+            LOG.debug(" -> lower symbol", previousLowerSymbol);
 
-            ORPsiLowerSymbolReference reference = (ORPsiLowerSymbolReference) previousElement.getReference();
-            PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
+            PsiElement resolvedElement = previousLowerSymbol.getReference().resolveInterface();
             if (LOG.isDebugEnabled()) {
                 LOG.debug(" -> resolved to", resolvedElement == null ? null : resolvedElement.getParent());
             }
@@ -53,7 +52,7 @@ public class ObjectCompletionProvider {
         LOG.debug("  -> Nothing found");
     }
 
-    private static @Nullable Collection<RPsiObjectField> getFields(@NotNull PsiElement resolvedElement) {
+    static @Nullable Collection<RPsiObjectField> getFields(@Nullable PsiElement resolvedElement) {
         if (resolvedElement instanceof RPsiLet let) {
             if (let.isJsObject()) {
                 RPsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(let.getBinding(), RPsiJsObject.class);
@@ -72,16 +71,15 @@ public class ObjectCompletionProvider {
                     }
                 }
             }
-        } else if (resolvedElement instanceof RPsiObjectField) {
-            RPsiFieldValue value = ((RPsiObjectField) resolvedElement).getValue();
-            PsiElement valueElement = value == null ? null : value.getFirstChild();
-            if (valueElement instanceof RPsiJsObject) {
-                return ((RPsiJsObject) valueElement).getFields();
-            } else if (valueElement instanceof RPsiLowerSymbol) {
+        } else if (resolvedElement instanceof RPsiObjectField resolvedObjectField) {
+            RPsiFieldValue value = resolvedObjectField.getValue();
+            PsiElement valueElement = value != null ? value.getFirstChild() : null;
+            if (valueElement instanceof RPsiJsObject valueObject) {
+                return valueObject.getFields();
+            } else if (valueElement instanceof RPsiLowerSymbol valueLowerSymbol) {
                 // Must be an object defined outside
-                ORPsiLowerSymbolReference valueReference = (ORPsiLowerSymbolReference) valueElement.getReference();
-                PsiElement valueResolvedElement = valueReference == null ? null : valueReference.resolveInterface();
-                return valueResolvedElement == null ? null : getFields(valueResolvedElement);
+                PsiElement valueResolvedElement = valueLowerSymbol.getReference().resolveInterface();
+                return valueResolvedElement != null ? getFields(valueResolvedElement) : null;
             } else if (valueElement instanceof RPsiUpperSymbol) {
                 // Must be a path of an object defined outside
                 PsiElement lSymbol = ORUtil.nextSiblingWithTokenType(valueElement, ORUtil.getTypes(resolvedElement.getLanguage()).LIDENT);

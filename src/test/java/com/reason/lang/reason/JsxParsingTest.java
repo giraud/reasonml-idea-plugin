@@ -13,7 +13,7 @@ import java.util.*;
 public class JsxParsingTest extends RmlParsingTestCase {
     @Test
     public void test_empty_tag() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div>children</div>"));
+        RPsiTag e = firstOfType(parseCode("<div>children</div>"), RPsiTag.class);
 
         RPsiTagStart tag = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
         assertEquals("div", tag.getNameIdentifier().getText());
@@ -24,7 +24,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_tag_name() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<Comp render={() => <Another/>}/>"));
+        RPsiTag e = firstOfType(parseCode("<Comp render={() => <Another/>}/>"), RPsiTag.class);
 
         RPsiTagStart tag = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
         assertEquals("Comp", tag.getNameIdentifier().getText());
@@ -53,7 +53,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_inner_closing_tag() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div><div/></div>"));
+        RPsiTag e = firstOfType(parseCode("<div><div/></div>"), RPsiTag.class);
 
         assertEquals("<div>", PsiTreeUtil.findChildOfType(e, RPsiTagStart.class).getText());
         assertEquals("<div/>", PsiTreeUtil.findChildOfType(e, RPsiTagBody.class).getText());
@@ -62,7 +62,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_multiple_closing_tag() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div><div></div></div>"));
+        RPsiTag e = firstOfType(parseCode("<div><div></div></div>"), RPsiTag.class);
 
         assertEquals("<div>", PsiTreeUtil.findChildOfType(e, RPsiTagStart.class).getText());
         assertEquals("<div></div>", PsiTreeUtil.findChildOfType(e, RPsiTagBody.class).getText());
@@ -71,7 +71,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_option_tag() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<option>children</option>"));
+        RPsiTag e = firstOfType(parseCode("<option>children</option>"), RPsiTag.class);
 
         RPsiTagStart tag = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
         assertEquals("<option>", tag.getText());
@@ -106,7 +106,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_tag_prop_with_paren() {
-        RPsiTag tag = (RPsiTag) firstElement(parseCode("<div style=(x) onFocus=a11y.onFocus/>"));
+        RPsiTag tag = firstOfType(parseCode("<div style=(x) onFocus=a11y.onFocus/>"), RPsiTag.class);
 
         Collection<RPsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(tag, RPsiTagProperty.class);
         assertEquals(2, properties.size());
@@ -117,7 +117,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_tag_props_with_dot() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<a className=A.B.link onClick={C.call()} download=d></a>"));
+        RPsiTag e = firstOfType(parseCode("<a className=A.B.link onClick={C.call()} download=d></a>"), RPsiTag.class);
 
         List<RPsiTagProperty> props = e.getProperties();
         assertSize(3, props);
@@ -134,7 +134,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_optional_prop() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div ?layout ?style onClick=?cb ?other>x</div>"));
+        RPsiTag e = firstOfType(parseCode("<div ?layout ?style onClick=?cb ?other>x</div>"), RPsiTag.class);
 
         List<RPsiTagProperty> props = e.getProperties();
         assertSize(4, props);
@@ -148,7 +148,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_optional_prop_autoclose() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div ?layout ?style onClick=?cb ?other/>"));
+        RPsiTag e = firstOfType(parseCode("<div ?layout ?style onClick=?cb ?other/>"), RPsiTag.class);
 
         List<RPsiTagProperty> props = e.getProperties();
         assertSize(4, props);
@@ -166,7 +166,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_optional_prop_call() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div style={fn(~margin?, ())} />"));
+        RPsiTag e = firstOfType(parseCode("<div style={fn(~margin?, ())} />"), RPsiTag.class);
 
         assertSize(1, e.getProperties());
         assertEquals("{fn(~margin?, ())}", e.getProperties().get(0).getValue().getText());
@@ -174,7 +174,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_ternary_in_value() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<AppIcons.Trash colors={isSelected ? green : red} disabled=true/>"));
+        RPsiTag e = firstOfType(parseCode("<AppIcons.Trash colors={isSelected ? green : red} disabled=true/>"), RPsiTag.class);
 
         List<RPsiTagProperty> props = e.getProperties();
         assertSize(2, props);
@@ -188,7 +188,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_ternary_in_value_function() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div p1={fn(~x=a ? b : c)} disabled=true/>"));
+        RPsiTag e = firstOfType(parseCode("<div p1={fn(~x=a ? b : c)} disabled=true/>"), RPsiTag.class);
 
         List<RPsiTagProperty> props = e.getProperties();
         assertSize(2, props);
@@ -202,7 +202,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_tag_props_with_local_open() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<Icon width=Dimensions.(3->px) height=Dimensions.(2->rem)>x</Icon>"));
+        RPsiTag e = firstOfType(parseCode("<Icon width=Dimensions.(3->px) height=Dimensions.(2->rem)>x</Icon>"), RPsiTag.class);
 
         List<RPsiTagProperty> props = new ArrayList<>(e.getProperties());
         assertSize(2, props);
@@ -220,15 +220,15 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_incorrect_prop() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<MyComp prunningProp prop=1/>"));
+        RPsiTag e = firstOfType(parseCode("<MyComp prunningProp prop=1/>"), RPsiTag.class);
 
         assertEquals(2, e.getProperties().size());
     }
 
     @Test
     public void test_prop02() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode(
-                "<Splitter left={<NotificationsList notifications />} right={<div> {ReasonReact.string(\"switch inside\")} </div>}/>"));
+        RPsiTag e = firstOfType(parseCode(
+                "<Splitter left={<NotificationsList notifications />} right={<div> {ReasonReact.string(\"switch inside\")} </div>}/>"), RPsiTag.class);
 
         List<RPsiTagProperty> properties = ((RPsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(2, properties.size());
@@ -238,7 +238,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_prop03() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<PageContentGrid onClick={(. _e) => action(true, ())} title=\"X\"/>"));
+        RPsiTag e = firstOfType(parseCode("<PageContentGrid onClick={(. _e) => action(true, ())} title=\"X\"/>"), RPsiTag.class);
 
         List<RPsiTagProperty> properties = ((RPsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(2, properties.size());
@@ -252,7 +252,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_prop04() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<Icon colors=[|white, red|] />"));
+        RPsiTag e = firstOfType(parseCode("<Icon colors=[|white, red|] />"), RPsiTag.class);
 
         List<RPsiTagProperty> properties = ((RPsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(1, properties.size());
@@ -261,7 +261,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_prop05() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div className=Styles.wrappingContainer>{appliedFilters->React.array}</div>"));
+        RPsiTag e = firstOfType(parseCode("<div className=Styles.wrappingContainer>{appliedFilters->React.array}</div>"), RPsiTag.class);
 
         List<RPsiTagProperty> props = new ArrayList<>(e.getProperties());
         assertSize(1, props);
@@ -271,7 +271,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_prop_ref() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<div ref={ReactDOMRe.Ref.domRef(formRef)}/>"));
+        RPsiTag e = firstOfType(parseCode("<div ref={ReactDOMRe.Ref.domRef(formRef)}/>"), RPsiTag.class);
 
         Collection<RPsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(e, RPsiTagProperty.class);
         RPsiTagProperty prop = properties.iterator().next();
@@ -280,7 +280,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_fragment() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<></>"));
+        RPsiTag e = firstOfType(parseCode("<></>"), RPsiTag.class);
 
         assertEquals("<></>", e.getText());
         assertNotNull(PsiTreeUtil.findChildOfType(e, RPsiTagStart.class));
@@ -289,7 +289,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_prop_no_upper_tag() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<InputText onTextChange={(. id) => dispatch(. ParametersReducers.UpdateURLId(id))}/>"));
+        RPsiTag e = firstOfType(parseCode("<InputText onTextChange={(. id) => dispatch(. ParametersReducers.UpdateURLId(id))}/>"), RPsiTag.class);
 
         RPsiFunctionCall f = PsiTreeUtil.findChildOfType(e, RPsiFunctionCall.class);
         assertEmpty(PsiTreeUtil.findChildrenOfType(f, RPsiUpperTagName.class));
@@ -298,7 +298,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_prop_func() {
-        RPsiTag e = (RPsiTag) firstElement(parseCode("<QueryAttributeSelectionDialog onSelect={(indicator:GlobalStateTypes.AttributeEntity.t) => {()}} onCancel={(.) =>closeAttributeSelector()}/>"));
+        RPsiTag e = firstOfType(parseCode("<QueryAttributeSelectionDialog onSelect={(indicator:GlobalStateTypes.AttributeEntity.t) => {()}} onCancel={(.) =>closeAttributeSelector()}/>"), RPsiTag.class);
 
         RPsiFunction f = PsiTreeUtil.findChildOfType(e, RPsiFunction.class);
         assertEmpty(PsiTreeUtil.findChildrenOfType(f, RPsiUpperTagName.class));

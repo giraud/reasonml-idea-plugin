@@ -48,7 +48,7 @@ public class LocalOpenParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_not_local() {
-        PsiElement expression = firstElement(parseCode("Js.log(\"nok\");"));
+        PsiElement expression = parseCode("Js.log(\"nok\");").getFirstChild();
         assertFalse(expression instanceof RPsiLocalOpen);
     }
 }

@@ -15,6 +15,8 @@ import com.reason.lang.core.psi.impl.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
+import static com.intellij.openapi.application.ApplicationManager.*;
+
 public class ModuleCompletionProvider {
     private static final Log LOG = Log.create("insight.module");
 
@@ -28,24 +30,23 @@ public class ModuleCompletionProvider {
         PsiElement dotLeaf = PsiTreeUtil.prevVisibleLeaf(element);
         PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
 
-        if (previousElement instanceof RPsiUpperSymbol) {
-            LOG.debug(" -> upper symbol", previousElement);
+        if (previousElement instanceof RPsiUpperSymbol previousUpperSymbol) {
+            LOG.debug(" -> upper symbol", previousUpperSymbol);
 
-            ORPsiUpperSymbolReference reference = (ORPsiUpperSymbolReference) previousElement.getReference();
-            PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
+            PsiElement resolvedElement = previousUpperSymbol.getReference().resolve();
             LOG.debug(" -> resolved to", resolvedElement);
 
-            if (resolvedElement instanceof RPsiModule) {
-                for (RPsiInnerModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(((RPsiModule) resolvedElement).getBody(), RPsiInnerModule.class)) {
+            if (resolvedElement instanceof RPsiModule resolvedModule) {
+                for (RPsiInnerModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(resolvedModule.getBody(), RPsiInnerModule.class)) {
                     addModule(module, resultSet);
                 }
 
                 // Find alternatives
-                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(resolvedElement.getContainingFile());
-                for (String alternateName : data.getValues(resolvedElement)) {
-                    for (PsiElement alternateModule : ORReferenceAnalyzer.resolvePath(alternateName, project, scope, 0)) {
-                        if (alternateModule instanceof RPsiModule) {
-                            for (RPsiInnerModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(((RPsiModule) alternateModule).getBody(), RPsiInnerModule.class)) {
+                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(resolvedModule.getContainingFile());
+                for (String alternateName : data.getValues(resolvedModule)) {
+                    for (PsiElement alternateElement : ORReferenceAnalyzer.resolvePath(alternateName, project, scope, 0)) {
+                        if (alternateElement instanceof RPsiModule alternateModule) {
+                            for (RPsiInnerModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(alternateModule.getBody(), RPsiInnerModule.class)) {
                                 addModule(module, resultSet);
                             }
                         }
@@ -54,12 +55,13 @@ public class ModuleCompletionProvider {
             }
         } else {
             // Empty path
+            FileModuleIndexService fileModuleIndexService = getApplication().getService(FileModuleIndexService.class);
 
             // First module to complete, use the list of files
             PsiFile containingFile = element.getContainingFile();
             if (containingFile instanceof RPsiModule) {
                 String topModuleName = ((RPsiModule) containingFile).getModuleName();
-                for (FileModuleData moduleData : FileModuleIndexService.getService().getTopModules(project, scope)) {
+                for (FileModuleData moduleData : fileModuleIndexService.getTopModules(project, scope)) {
                     if (!moduleData.getModuleName().equals(topModuleName) && !moduleData.hasNamespace()) {
                         resultSet.addElement(LookupElementBuilder.
                                 create(moduleData.getModuleName())
@@ -70,7 +72,7 @@ public class ModuleCompletionProvider {
             }
 
             // Add virtual namespaces
-            for (String namespace : FileModuleIndexService.getService().getNamespaces(project, scope)) {
+            for (String namespace : fileModuleIndexService.getNamespaces(project, scope)) {
                 resultSet.addElement(
                         LookupElementBuilder.create(namespace)
                                 .withTypeText("Generated namespace")
