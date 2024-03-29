@@ -88,7 +88,7 @@ public class RPsiVariantDeclaration extends RPsiTokenStub<ORLangTypes, RPsiVaria
     }
 
     @NotNull
-    public List<RPsiParameterDeclaration> getParameterList() {
+    public List<RPsiParameterDeclaration> getParametersList() {
         RPsiParameters parameters = ORUtil.findImmediateFirstChildOfClass(this, RPsiParameters.class);
         return parameters == null
                 ? emptyList()

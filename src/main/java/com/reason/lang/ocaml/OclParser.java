@@ -120,6 +120,8 @@ public class OclParser extends CommonPsiParser {
                     parseOption();
                 } else if (tokenType == myTypes.FUNCTOR) {
                     parseFunctor();
+                } else if (tokenType == myTypes.TYPE_ARGUMENT) {
+                    parseTypeArgument();
                 }
                 // while ... do ... done
                 else if (tokenType == myTypes.WHILE) {
@@ -216,6 +218,12 @@ public class OclParser extends CommonPsiParser {
             }
         }
 
+        private void parseTypeArgument() {
+            if (!isCurrent(myTypes.C_PARAM_DECLARATION) && in(myTypes.C_PARAMETERS)) {
+                wrapWith(myTypes.C_PARAM_DECLARATION);
+            }
+        }
+
         private void parseTilde() {
             if (is(myTypes.C_PARAMETERS)) {
                 if (in(myTypes.C_FUNCTION_CALL)) {
@@ -291,7 +299,12 @@ public class OclParser extends CommonPsiParser {
                         // let (a, b) |>,<| ... = ...
                         markBefore(0, myTypes.C_DECONSTRUCTION);
                     }
-                } else if (isFound(myTypes.C_SCOPED_EXPR)) {
+                }
+                //else if (isFound(myTypes.C_PARAM_DECLARATION)) {
+                //    popEndUntilFoundIndex().popEnd().advance();
+                //    mark(myTypes.C_PARAM_DECLARATION);
+                //}
+                else if (isFound(myTypes.C_SCOPED_EXPR)) {
                     Marker blockScope = find(getIndex());
                     Marker parentScope = find(getIndex() + 1);
                     if (blockScope != null && parentScope != null) {
@@ -862,6 +875,8 @@ public class OclParser extends CommonPsiParser {
             if (is(myTypes.C_EXTERNAL_DECLARATION)) { // Overloading an operator
                 // external |>(<| ...
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
+            } else if (is(myTypes.C_TYPE_DECLARATION)) {
+                markScope(myTypes.C_PARAMETERS, myTypes.LPAREN);
             } else if (isRawParent(myTypes.C_MODULE_DECLARATION) && previousElementType(1) == myTypes.A_MODULE_NAME) {
                 //  module M |>(<| ... )
                 updateCompositeAt(1, myTypes.C_FUNCTOR_DECLARATION).popEnd()
@@ -1439,10 +1454,10 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void endLikeSemi() {
-            int previousStep = -1;
+            int previousStep = 1;
             IElementType previousElementType = previousElementType(previousStep);
             while (previousElementType == myTypes.MULTI_COMMENT) {
-                previousStep--;
+                previousStep++;
                 previousElementType = previousElementType(previousStep);
             }
 

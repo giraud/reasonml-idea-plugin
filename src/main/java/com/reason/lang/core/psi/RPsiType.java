@@ -18,11 +18,14 @@ public interface RPsiType extends PsiNameIdentifierOwner, RPsiQualifiedPathEleme
 
     boolean isRecord();
 
-    @NotNull
-    Collection<RPsiObjectField> getJsObjectFields();
+    @Nullable
+    RPsiParameters getParameters();
 
     @NotNull
-    Collection<RPsiRecordField> getRecordFields();
+    List<RPsiObjectField> getJsObjectFields();
+
+    @NotNull
+    List<RPsiRecordField> getRecordFields();
 
     boolean isAbstract();
 }

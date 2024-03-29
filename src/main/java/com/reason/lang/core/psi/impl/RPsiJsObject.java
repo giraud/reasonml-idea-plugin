@@ -17,7 +17,7 @@ public class RPsiJsObject extends ORCompositePsiElement<ORLangTypes> implements 
         super(types, elementType);
     }
 
-    public @NotNull Collection<RPsiObjectField> getFields() {
+    public @NotNull List<RPsiObjectField> getFields() {
         return ORUtil.findImmediateChildrenOfClass(this, RPsiObjectField.class);
     }
 

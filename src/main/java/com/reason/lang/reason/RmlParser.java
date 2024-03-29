@@ -126,6 +126,8 @@ public class RmlParser extends CommonPsiParser {
                         parseUnderscore();
                     } else if (tokenType == myTypes.SOME) {
                         parseSome();
+                    } else if (tokenType == myTypes.TYPE_ARGUMENT) {
+                        parseTypeArgument();
                     }
                     // ( ... )
                     else if (tokenType == myTypes.LPAREN) {
@@ -203,6 +205,12 @@ public class RmlParser extends CommonPsiParser {
                 } else {
                     myBuilder.advanceLexer();
                 }
+            }
+        }
+
+        private void parseTypeArgument() {
+            if (strictlyIn(myTypes.C_PARAMETERS) && isParent(myTypes.C_TYPE_DECLARATION) && !isCurrent(myTypes.C_PARAM_DECLARATION)) {
+                mark(myTypes.C_PARAM_DECLARATION);
             }
         }
 
@@ -1043,6 +1051,9 @@ public class RmlParser extends CommonPsiParser {
                 //  let |>(<| + ) =
                 //  let |>(<| a, b ) =
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
+            } else if (isCurrent(myTypes.C_TYPE_DECLARATION)) {
+                // type t »(« ...
+                markScope(myTypes.C_PARAMETERS, myTypes.LPAREN);
             } else if (previousElementType(2) == myTypes.A_MODULE_NAME && previousElementType(1) == myTypes.DOT) { // Local open
                 // M.|>(<| ...
                 markScope(myTypes.C_LOCAL_OPEN, myTypes.LPAREN);
