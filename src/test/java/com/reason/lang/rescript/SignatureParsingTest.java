@@ -157,12 +157,14 @@ public class SignatureParsingTest extends ResParsingTestCase {
         assertEquals("option<show>", sigItem.asText(getLangProps()));
     }
 
-    @Test // TODO
+    @Test
     public void test_default_optional() {
-        RPsiLet let = firstOfType(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa"), RPsiLet.class);
-        RPsiSignature signature = let.getSignature();
-        // assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
-        // signature.asString(getLangProps()));
+        RPsiLet e = firstOfType(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa"), RPsiLet.class);
+        RPsiSignature es = e.getSignature();
+        assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa", es.asText(getLangProps()));
+        RPsiSignatureItem esi = es.getItems().get(2);
+        assertEquals("meta", esi.getName());
+        assertEquals("?", esi.getDefaultValue().getText());
     }
 
     @Test
