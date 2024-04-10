@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
-import com.intellij.util.indexing.*;
 import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
@@ -191,16 +190,12 @@ public class FreeExpressionCompletionProvider {
     }
 
     private static @Nullable RPsiModule getTopModule(@NotNull String name, @NotNull Project project, @NotNull GlobalSearchScope scope) {
-        FileModuleIndex index = FileModuleIndex.getInstance();
-        ID<String, FileModuleData> indexId = index != null ? index.getName() : null;
-        if (indexId != null) {
-            PsiManager psiManager = PsiManager.getInstance(project);
-            Collection<VirtualFile> containingFiles = FileBasedIndex.getInstance().getContainingFiles(indexId, name, scope);
-            VirtualFile virtualFile = containingFiles.stream().min((o1, o2) -> FileHelper.isInterface(o1.getFileType()) ? -1 : FileHelper.isInterface(o2.getFileType()) ? 1 : 0).orElse(null);
-            if (virtualFile != null) {
-                PsiFile psiFile = psiManager.findFile(virtualFile);
-                return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
-            }
+        PsiManager psiManager = PsiManager.getInstance(project);
+        Collection<VirtualFile> containingFiles = FileModuleIndexService.getInstance().getContainingFiles(name, scope);
+        VirtualFile virtualFile = containingFiles.stream().min((o1, o2) -> FileHelper.isInterface(o1.getFileType()) ? -1 : FileHelper.isInterface(o2.getFileType()) ? 1 : 0).orElse(null);
+        if (virtualFile != null) {
+            PsiFile psiFile = psiManager.findFile(virtualFile);
+            return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
         }
 
         return null;

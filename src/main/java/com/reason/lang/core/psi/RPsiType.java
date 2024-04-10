@@ -22,10 +22,10 @@ public interface RPsiType extends PsiNameIdentifierOwner, RPsiQualifiedPathEleme
     RPsiParameters getParameters();
 
     @NotNull
-    List<RPsiObjectField> getJsObjectFields();
+    Collection<RPsiObjectField> getJsObjectFields();
 
     @NotNull
-    List<RPsiRecordField> getRecordFields();
+    Collection<RPsiRecordField> getRecordFields();
 
     boolean isAbstract();
 }

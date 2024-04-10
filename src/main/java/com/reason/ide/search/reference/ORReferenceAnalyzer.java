@@ -6,7 +6,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
-import com.intellij.util.indexing.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
@@ -642,16 +641,11 @@ public class ORReferenceAnalyzer {
         return pathResolutions;
     }
 
-    private static List<RPsiModule> getTopModules(@NotNull String name, @NotNull PsiManager psiManager, @NotNull GlobalSearchScope scope) {
-        FileModuleIndex index = FileModuleIndex.getInstance();
-        ID<String, FileModuleData> indexId = index == null ? null : index.getName();
-        if (indexId != null) {
-            return FileBasedIndex.getInstance().getContainingFiles(indexId, name, scope).stream().map(v -> {
-                PsiFile psiFile = psiManager.findFile(v);
-                return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
-            }).filter(Objects::nonNull).collect(Collectors.toList());
-        }
-        return Collections.emptyList();
+    private static @NotNull List<RPsiModule> getTopModules(@NotNull String name, @NotNull PsiManager psiManager, @NotNull GlobalSearchScope scope) {
+        return FileModuleIndexService.getInstance().getContainingFiles(name, scope).stream().map(v -> {
+            PsiFile psiFile = psiManager.findFile(v);
+            return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     static class SymbolField extends ORFakeResolvedElement {
