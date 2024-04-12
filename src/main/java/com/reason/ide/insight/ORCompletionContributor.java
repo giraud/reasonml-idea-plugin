@@ -10,6 +10,8 @@ import com.reason.ide.insight.provider.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
+import com.reason.lang.reason.*;
+import com.reason.lang.rescript.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -81,10 +83,19 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                             }
                         }
 
-                        if (prevNodeType == types.SHARPSHARP) {
+                        if (types == RmlTypes.INSTANCE && prevNodeType == types.SHARPSHARP) {
                             LOG.debug("the previous element is SHARPSHARP");
-                            ObjectCompletionProvider.addCompletions(element, result);
+                            ObjectCompletionProvider.addCompletions(element, parent, types, result);
                             return;
+                        }
+                        if (types == ResTypes.INSTANCE && prevNodeType == types.LBRACKET) {
+                            PsiElement prevSibling = parent != null ? parent.getPrevSibling() : null;
+                            if (prevSibling instanceof RPsiLowerSymbol || prevSibling instanceof RPsiArray) {
+                                LOG.debug("the previous element is [");
+                                if (ObjectCompletionProvider.addCompletions(element, parent, types, result)) {
+                                    return;
+                                }
+                            }
                         }
 
                         // Jsx
@@ -101,7 +112,7 @@ abstract class ORCompletionContributor extends com.intellij.codeInsight.completi
                         }
 
                         LOG.debug("Nothing found, free expression");
-                        FreeExpressionCompletionProvider.addCompletions(element, prevLeaf, parent, searchScope, result);
+                        FreeExpressionCompletionProvider.addCompletions(element, parent, searchScope, result);
                     }
                 });
     }

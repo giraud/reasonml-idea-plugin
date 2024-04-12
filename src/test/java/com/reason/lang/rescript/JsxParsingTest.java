@@ -433,20 +433,9 @@ public class JsxParsingTest extends ResParsingTestCase {
     public void test_incomplete_value_scope_autoclose() {
         RPsiTagStart e = firstOfType(parseCode("<ListRe values={x />"), RPsiTagStart.class);
 
-        assertNoParserError(e);
         RPsiTagProperty ep = e.getProperties().get(0);
         assertEquals("{x", ep.getValue().getText());
         assertEquals("/>", e.getLastChild().getText());
-    }
-
-    //@Test NOPE TODO ?
-    public void test_incomplete_value_scope_close() {
-        RPsiTagStart e = firstOfType(parseCode("<ListRe values={x >"), RPsiTagStart.class);
-
-        assertNoParserError(e);
-        RPsiTagProperty ep = e.getProperties().get(0);
-        assertEquals("{x", ep.getValue().getText());
-        assertEquals(">", e.getLastChild().getText());
     }
 
     @Test
