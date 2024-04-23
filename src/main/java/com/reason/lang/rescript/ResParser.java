@@ -245,8 +245,11 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseTypeArgument() {
-            if (!isCurrent(myTypes.C_PARAM_DECLARATION)) {
-                mark(myTypes.C_PARAM_DECLARATION);
+            if (is(myTypes.C_PARAMETERS) && isParent(myTypes.C_TYPE_DECLARATION)) {
+                // type t< >>'a<< > ...
+                if (!isCurrent(myTypes.C_PARAM_DECLARATION)) {
+                    mark(myTypes.C_PARAM_DECLARATION);
+                }
             }
         }
 
@@ -1431,10 +1434,14 @@ public class ResParser extends CommonPsiParser {
                     popEndUntilFoundIndex().advance()
                             .mark(myTypes.C_TRY_HANDLER_BODY);
                 } else if (isFound(myTypes.C_PARAM_DECLARATION)) { // anonymous function
-                    // x( y |>=><| ... )
-                    popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
-                            .mark(myTypes.C_FUNCTION_BODY)
-                            .markHolder(myTypes.H_PLACE_HOLDER);
+                    if (isParent(myTypes.C_SIG_ITEM)) {
+
+                    } else if (in(myTypes.C_FUNCTION_EXPR)) {
+                        // x( y |>=><| ... )
+                        popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
+                                .mark(myTypes.C_FUNCTION_BODY)
+                                .markHolder(myTypes.H_PLACE_HOLDER);
+                    }
                 } else if (isFound(myTypes.C_FUNCTOR_RESULT)) {
                     // module Make = (M) : R |>=><| ...
                     popEndUntilFoundIndex().popEnd()
