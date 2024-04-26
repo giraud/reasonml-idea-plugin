@@ -544,6 +544,42 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
     //endregion
 
+    @Test
+    public void test_alias_of_alias() {
+        configureCode("A.res", """
+                module A1 = {
+                    module A2 = {
+                      let id = "_new_"
+                    }
+                }
+                """);
+
+        configureCode("B.res", """
+                module B1 = {
+                  module B2 = {
+                    module B3 = {
+                      let id = A.A1.A2.id
+                    }
+                  }
+                }
+                                
+                module B4 = {
+                  include A
+                  module B5 = B1.B2
+                }
+                """);
+
+        configureCode("C.res", """
+                module C1 = B.B4
+                module C2 = C1.B5.B3
+                let _ = C2.id<caret>
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("B.B1.B2.B3.id", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/452
     @Test
     public void test_GH_452_resolve_unpacked_module() {

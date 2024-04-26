@@ -76,6 +76,42 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias_of_alias() {
+        configureCode("A.ml", """
+                module A1 = struct
+                    module A2 = struct
+                      let id = "_new_"
+                    end
+                end
+                """);
+
+        configureCode("B.ml", """
+                module B1 = struct
+                  module B2 = struct
+                    module B3 = struct
+                      let id = A.A1.A2.id
+                    end
+                  end
+                end
+                                
+                module B4 = struct
+                  include A
+                  module B5 = B1.B2
+                end
+                """);
+
+        configureCode("C.ml", """
+                module C1 = B.B4
+                module C2 = C1.B5.B3
+                let _ = C2.id<caret>
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("B.B1.B2.B3.id", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_alias_interface() {
         configureCode("C.mli", "module A1 = struct end");
         configureCode("D.ml", "module X = C\n let _ = X.A1<caret>");

@@ -122,6 +122,42 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias_of_alias() {
+        configureCode("A.re", """
+                module A1 = {
+                    module A2 = {
+                      let id = "_new_";
+                    };
+                };
+                """);
+
+        configureCode("B.re", """
+                module B1 = {
+                  module B2 = {
+                    module B3 = {
+                      let id = A.A1.A2.id;
+                    };
+                  };
+                };
+                                
+                module B4 = {
+                  include A;
+                  module B5 = B1.B2;
+                };
+                """);
+
+        configureCode("C.re", """
+                module C1 = B.B4;
+                module C2 = C1.B5.B3;
+                let _ = C2.id<caret>;
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("B.B1.B2.B3.id", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_let_local_open_parens() {
         configureCode("A.re", "module A1 = { let a = 1; };");
         configureCode("B.re", "let a = 2; let b = A.(A1.a<caret>);");
@@ -373,7 +409,7 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
     }
     //endregion
 
-    //region Poly-variants     TODO others
+    //region Poly-variants
     @Test
     public void test_local_poly_variant() {
         configureCode("A.re", "type a = [ | `variant ]; let _ = `variant<caret>");

@@ -1,5 +1,6 @@
 package com.reason.ide.search.reference;
 
+import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
@@ -190,7 +191,45 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         RPsiModule em = PsiTreeUtil.findChildOfType(e, RPsiModule.class);
-        assertOrderedEquals(data.getValues(em/*ELayout*/), "A.A1.A11");
+        assertOrderedEquals(data.getValues(em/*X*/), "A.A1.A11");
+    }
+
+
+    @Test
+    public void test_alias_of_alias() {
+        configureCode("A.res", """
+                module A1 = {
+                    module A2 = {
+                      let id = "_new_"
+                    }
+                }
+                """);
+
+        configureCode("B.res", """
+                module B1 = {
+                  module B2 = {
+                    module B3 = {
+                      let id = A.A1.A2.id
+                    }
+                  }
+                }
+                                
+                module B4 = {
+                  include A
+                  module B5 = B1.B2
+                }
+                """);
+
+        FileBase e = configureCode("C.res", """
+                module C1 = B.B4
+                module C2 = C1.B5.B3
+                let _ = C2.id
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModule em = ORUtil.findImmediateLastChildOfClass(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em/*C2*/), "B.B1.B2.B3");
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/426
