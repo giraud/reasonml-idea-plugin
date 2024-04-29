@@ -97,6 +97,43 @@ public class DotCompletion_RML_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias_and_alternates() {
+        configureCode("A.res", """
+                module A1 = {
+                    module A2 = {
+                      let id = "_new_"
+                    }
+                }
+                """);
+
+        configureCode("B.res", """
+                module B1 = {
+                  module B2 = {
+                    module B3 = {
+                      let id = A.A1.A2.id
+                    }
+                  }
+                }
+                                
+                module B4 = {
+                  include A
+                  module B5 = B1.B2
+                }
+                """);
+
+        configureCode("C.res", """
+                module C1 = B.B4
+                let _ = C1.<caret>
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertContainsElements(elements, "A1", "B5");
+        assertSize(2, elements);
+    }
+
+    @Test
     public void test_uncurried() {
         configureCode("A.re", "let x = 1;");
         configureCode("B.re", "send(. <caret>)"); // should use free completion
