@@ -38,7 +38,13 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_let_inner_scope() {
-        configureCode("A.res", "let x = 1\n let a = { let x = 2\n x<caret> + 10 }");
+        configureCode("A.res", """
+                let x = 1
+                let a = {
+                  let x = 2
+                  x<caret> + 10
+                }
+                """);
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.a.x", e.getQualifiedName());
@@ -469,7 +475,10 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_record() {
-        configureCode("B.res", "let b = { a: 1, b: 2 }\n b<caret>");
+        configureCode("B.res", """
+                let b = { a: 1, b: 2 }
+                b<caret>
+                """);
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("B.b", e.getQualifiedName());

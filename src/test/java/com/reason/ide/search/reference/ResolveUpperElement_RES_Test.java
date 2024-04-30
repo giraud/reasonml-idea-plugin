@@ -87,6 +87,35 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_include_alias() {
+        configureCode("Css_AtomicTypes.resi", "module Color = { type t }");
+        configureCode("Css_Core.resi", "module Types = Css_AtomicTypes");
+        configureCode("Css.res", "include Css_Core");
+        configureCode("A.res", "let t = Css.Types.Color<caret>.t");
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_function_call() {
+        configureCode("AsyncHooks.res", "module XhrAsync = { let make = () => () }");
+        configureCode("A.res", "let _ = AsyncHooks.useCancellableRequest(AsyncHooks<caret>.XhrAsync.make)");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("AsyncHooks", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_uncurried_function_call() {
+        configureCode("A.res", "type t = | Variant");
+        configureCode("B.res", "let _ = fn(. A.Variant<caret>)");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.Variant", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_open() {
         configureCode("Belt.res", "module Option = {}");
         configureCode("Dummy.res", "open Belt.Option<caret>");
@@ -99,21 +128,13 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_include_path() {
         configureCode("Css_Core.resi", "let display: string => rule");
-        configureCode("Css.res", "include Css_Core<caret>\n include Css_Core.Make({})");
+        configureCode("Css.res", """
+                include Css_Core<caret>
+                include Css_Core.Make({})
+                """);
 
-        ResInterfaceFile e = (ResInterfaceFile) myFixture.getElementAtCaret();
-        assertEquals("Css_Core", e.getQualifiedName());
-    }
-
-    @Test
-    public void test_include_alias() {
-        configureCode("Css_AtomicTypes.resi", "module Color = { type t }");
-        configureCode("Css_Core.resi", "module Types = Css_AtomicTypes");
-        configureCode("Css.res", "include Css_Core");
-        configureCode("A.res", "Css.Types.Color<caret>");
-
-        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
-        assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Css_Core", ((ResInterfaceFile) e).getQualifiedName());
     }
 
     //region Variants

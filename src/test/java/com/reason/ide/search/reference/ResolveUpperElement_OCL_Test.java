@@ -121,6 +121,15 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_function_call() {
+        configureCode("AsyncHooks.ml", "module XhrAsync = struct let make = () => () end");
+        configureCode("A.ml", "let _ = AsyncHooks.useCancellableRequest AsyncHooks<caret>.XhrAsync.make");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("AsyncHooks", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_open() {
         configureCode("Belt.ml", "module Option = struct end");
         configureCode("Dummy.ml", "open Belt.Option<caret>");

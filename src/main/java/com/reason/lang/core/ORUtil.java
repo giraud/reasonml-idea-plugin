@@ -438,4 +438,9 @@ public class ORUtil {
 
         return isInterfaceFile(element);
     }
+
+    public static @Nullable IElementType getNodeType(@Nullable PsiElement element) {
+        ASTNode node = element != null ? element.getNode() : null;
+        return node != null ? node.getElementType() : null;
+    }
 }

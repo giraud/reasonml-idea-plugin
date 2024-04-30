@@ -136,6 +136,7 @@ public class RmlTypes extends ORLangTypes {
         INT_VALUE = new ORTokenElementType("INT_VALUE", RmlLanguage.INSTANCE);
         PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", RmlLanguage.INSTANCE);
         SWITCH = new ORTokenElementType("SWITCH", RmlLanguage.INSTANCE);
+        PIPE_FIRST = new ORTokenElementType("PIPE_FIRST", RmlLanguage.INSTANCE);
         FUNCTION = new ORTokenElementType("FUNCTION", RmlLanguage.INSTANCE);
         FUN = new ORTokenElementType("FUN", RmlLanguage.INSTANCE);
         FUNCTOR = new ORTokenElementType("FUNCTOR", RmlLanguage.INSTANCE);

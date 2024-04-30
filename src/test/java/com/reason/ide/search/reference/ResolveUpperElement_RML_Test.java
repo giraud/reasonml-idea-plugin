@@ -14,7 +14,10 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic_file() {
         configureCode("Dimensions.re", "let space = 5;");
-        configureCode("Comp.re", "Dimensions<caret>\nmodule Dimensions = {};");
+        configureCode("Comp.re", """
+                Dimensions<caret>
+                module Dimensions = {};
+                """);
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Dimensions.re", ((PsiQualifiedNamedElement) e).getName());
@@ -22,7 +25,10 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_inner_module() {
-        configureCode("A.re", "module Dimensions = {};\nDimensions<caret>");
+        configureCode("A.re", """
+                module Dimensions = {};
+                Dimensions<caret>
+                """);
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.Dimensions", ((PsiQualifiedNamedElement) e).getQualifiedName());
@@ -95,6 +101,26 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_include_alias() {
+        configureCode("Css_AtomicTypes.rei", "module Color = { type t; };");
+        configureCode("Css_Core.rei", "module Types = Css_AtomicTypes;");
+        configureCode("Css.re", "include Css_Core;");
+        configureCode("A.re", "let t = Css.Types.Color<caret>.t");
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_function_call() {
+        configureCode("AsyncHooks.re", "module XhrAsync = { let make = () => (); };");
+        configureCode("A.re", "let _ = AsyncHooks.useCancellableRequest(AsyncHooks<caret>.XhrAsync.make);");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("AsyncHooks", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_open() {
         configureCode("Belt.re", "module Option = {}");
         configureCode("Dummy.re", "open Belt.Option<caret>;");
@@ -111,17 +137,6 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
 
         PsiQualifiedNamedElement e = (PsiQualifiedNamedElement) myFixture.getElementAtCaret();
         assertEquals("Css_Core", e.getQualifiedName());
-    }
-
-    @Test
-    public void test_include_alias() {
-        configureCode("Css_AtomicTypes.rei", "module Color = { type t; };");
-        configureCode("Css_Core.rei", "module Types = Css_AtomicTypes;");
-        configureCode("Css.re", "include Css_Core;");
-        configureCode("A.re", "Css.Types.Color<caret>");
-
-        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
-        assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
     }
 
     //region Variants
@@ -392,6 +407,16 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
                 """);
 
         PsiElement e = myFixture.getElementAtCaret();  // not found -> AssertionError
+    }
+
+    @Test
+    public void test_local_open() {
+        configureCode("AsyncHooks.re", "module XhrAsync = {};");
+        configureCode("DashboardReducers.re", "type t = | IncrementVersion;");
+        configureCode("A.re", "let _ = AsyncHooks.XhrAsync.(dispatch(. DashboardReducers<caret>.IncrementVersion));");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("DashboardReducers", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/418
