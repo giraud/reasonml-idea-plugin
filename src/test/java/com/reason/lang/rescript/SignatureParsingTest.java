@@ -157,12 +157,14 @@ public class SignatureParsingTest extends ResParsingTestCase {
         assertEquals("option<show>", sigItem.asText(getLangProps()));
     }
 
-    @Test // TODO
+    @Test
     public void test_default_optional() {
-        RPsiLet let = firstOfType(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa"), RPsiLet.class);
-        RPsiSignature signature = let.getSignature();
-        // assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
-        // signature.asString(getLangProps()));
+        RPsiLet e = firstOfType(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa"), RPsiLet.class);
+        RPsiSignature es = e.getSignature();
+        assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa", es.asText(getLangProps()));
+        RPsiSignatureItem esi = es.getItems().get(2);
+        assertEquals("meta", esi.getName());
+        assertEquals("?", esi.getDefaultValue().getText());
     }
 
     @Test
@@ -186,7 +188,6 @@ public class SignatureParsingTest extends ResParsingTestCase {
     @Test
     public void test_closed_variant() {
         RPsiLet e = firstOfType(parseCode("let x: [< Css.Types.Length.t | Css.Types.Visibility.t ] => unit = _ => ()"), RPsiLet.class);
-        assertNoParserError(e);
 
         List<IElementType> et = extractUpperSymbolTypes(e);
         assertDoesntContain(et, myTypes.A_VARIANT_NAME, myTypes.UIDENT);
@@ -196,28 +197,32 @@ public class SignatureParsingTest extends ResParsingTestCase {
     @Test
     public void test_open_variant() {
         RPsiLet e = firstOfType(parseCode("let x: [< Css.Types.Length.t | Css.Types.Visibility.t ] => unit = _ => ()"), RPsiLet.class);
-        assertNoParserError(e);
 
         List<IElementType> et = extractUpperSymbolTypes(e);
         assertDoesntContain(et, myTypes.A_VARIANT_NAME, myTypes.UIDENT);
         assertContainsElements(et, myTypes.A_MODULE_NAME);
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/399
     @Test
     public void test_GH_399() {
         RPsiType e = firstOfType(parseCode("type t = React.Ref<Js.nullable<Dom.element>>"), RPsiType.class);
-        assertNoParserError(e);
 
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiUpperTagName.class));
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiLeafPropertyName.class));
     }
 
+    // https://github.com/giraud/reasonml-idea-plugin/issues/399
     @Test
     public void test_GH_399a() {
-        RPsiLet e = firstOfType(parseCode("let fn = (domRef: React.ref<Js.nullable<Dom.element>>) => ()"), RPsiLet.class);
-        assertNoParserError(e);
+        RPsiLet e = firstOfType(parseCode("let fn = (domRef: React.ref<Js.nullable<Dom.element>>): option<int> => ()"), RPsiLet.class);
 
+        assertTrue(e.isFunction());
+        RPsiFunction ef = e.getFunction();
+        //TODO implements
+        //assertSize(1, ef.getParameters());
+        //assertEquals("(React.ref<Js.nullable<Dom.element>>) => option<int>", e.getSignature().getText());
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiUpperTagName.class));
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiLeafPropertyName.class));

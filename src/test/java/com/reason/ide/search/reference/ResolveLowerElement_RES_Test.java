@@ -38,7 +38,13 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_let_inner_scope() {
-        configureCode("A.res", "let x = 1\n let a = { let x = 2\n x<caret> + 10 }");
+        configureCode("A.res", """
+                let x = 1
+                let a = {
+                  let x = 2
+                  x<caret> + 10
+                }
+                """);
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.a.x", e.getQualifiedName());
@@ -279,6 +285,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
         assertEquals("Command.Settings.Action.convert", e.getQualifiedName());
     }
 
+    //region Variants
     @Test
     public void test_variant_constructor() {
         configureCode("B.res", "let convert = x => x");
@@ -296,6 +303,54 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.x", e.getQualifiedName());
     }
+    //endregion
+
+    //region Poly-variants
+    @Test
+    public void test_local_poly_variant() {
+        configureCode("A.res", "type a = [ | #variant ]\n let _ = #variant<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.#variant", ((RPsiVariantDeclaration) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_with_path() {
+        configureCode("A.res", "type a = [ | #variant ]");
+        configureCode("B.res", "type b = [ | #variant ]");
+        configureCode("C.res", "A.#variant<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.#variant", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_module_alias() {
+        configureCode("Aaa.res", "type t = [ | #test ]");
+        configureCode("Bbb.res", "module A = Aaa\n A.#test<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.#test", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_module_alias_inner() {
+        configureCode("Aaa.res", "module Option = { type t = [ | #test ] }");
+        configureCode("Bbb.res", "module A = Aaa\n A.Option.#test<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.Option.#test", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_constructor() {
+        configureCode("A.res", "type a = [ | #variant(int) ]");
+        configureCode("B.res", "let _ = A.#variant<caret>(1)");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.#variant", e.getQualifiedName());
+    }
+    //endregion
 
     @Test
     public void test_open_include() {
@@ -420,7 +475,10 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_record() {
-        configureCode("B.res", "let b = { a: 1, b: 2 }\n b<caret>");
+        configureCode("B.res", """
+                let b = { a: 1, b: 2 }
+                b<caret>
+                """);
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("B.b", e.getQualifiedName());
@@ -494,6 +552,42 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
         assertEquals("A.oo.deep.other", e.getQualifiedName());
     }
     //endregion
+
+    @Test
+    public void test_alias_of_alias() {
+        configureCode("A.res", """
+                module A1 = {
+                    module A2 = {
+                      let id = "_new_"
+                    }
+                }
+                """);
+
+        configureCode("B.res", """
+                module B1 = {
+                  module B2 = {
+                    module B3 = {
+                      let id = A.A1.A2.id
+                    }
+                  }
+                }
+                                
+                module B4 = {
+                  include A
+                  module B5 = B1.B2
+                }
+                """);
+
+        configureCode("C.res", """
+                module C1 = B.B4
+                module C2 = C1.B5.B3
+                let _ = C2.id<caret>
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("B.B1.B2.B3.id", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/452
     @Test

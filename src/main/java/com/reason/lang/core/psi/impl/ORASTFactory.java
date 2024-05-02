@@ -4,6 +4,7 @@ import com.intellij.lang.*;
 import com.intellij.psi.impl.source.tree.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
+import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.*;
@@ -246,6 +247,9 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
             if (!DUMMY_IDENTIFIER_TRIMMED.contentEquals(text)) {
                 return new RPsiUpperSymbol(myTypes, type, text);
             }
+        }
+        if (type == myTypes.POLY_VARIANT) {
+            return StringUtil.isUpper(text.charAt(1)) ? new RPsiUpperSymbol(myTypes, type, text) : new RPsiLowerSymbol(myTypes, type, text);
         }
         if (type == myTypes.A_UPPER_TAG_NAME) {
             return new RPsiUpperTagName(myTypes, type, text);

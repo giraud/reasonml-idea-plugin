@@ -36,14 +36,13 @@ public abstract class ORParser<T extends ORTypes> {
     public @Nullable IElementType previousElementType(int step) {
         int pos = -1;
         int found = 0;
-        int total = Math.abs(step);
 
         IElementType elementType = myBuilder.rawLookup(pos);
         if (elementType != null && elementType != myTypes.WHITE_SPACE && elementType != myTypes.SINGLE_COMMENT && elementType != myTypes.MULTI_COMMENT) {
             found++;
         }
 
-        while (elementType != null && found != total) {
+        while (elementType != null && found != step) {
             pos--;
             elementType = myBuilder.rawLookup(pos);
             if (elementType != null && elementType != myTypes.WHITE_SPACE && elementType != myTypes.SINGLE_COMMENT && elementType != myTypes.MULTI_COMMENT) {

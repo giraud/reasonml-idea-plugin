@@ -171,6 +171,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORTokenElementType OF;
     public ORTokenElementType OPEN;
     public ORTokenElementType OR;
+    public ORTokenElementType PIPE_FIRST;
     public ORTokenElementType PUB;
     public ORTokenElementType PRI;
     public ORTokenElementType REC;

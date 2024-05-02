@@ -9,7 +9,13 @@
 > - :nail_care:  [Polish]
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
-              
+             
+# 0.124 - 2024/05/02
+
+- parsers updates, resolution updates
+- Completion of js objects in Rescript
+- Remove violations fonud by plugin verifier
+
 # 0.123 - 2024/03/28
 
 - :bug: [#461](https://github.com/giraud/reasonml-idea-plugin/issues/461) Parameter signature element incorrectly referenced

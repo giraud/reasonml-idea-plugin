@@ -17,7 +17,7 @@ public class ORStubVersions {
     public static final int RECORD_FIELD = 6;
     public static final int TYPE = 12;
     public static final int VAL = 13;
-    public static final int VARIANT = 8;
+    public static final int VARIANT = 9;
 
     public static final int OCL_FILE = 10;
     public static final int RES_FILE = 10;

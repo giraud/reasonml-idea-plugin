@@ -13,8 +13,11 @@ public class JsObjectCompletion_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic_bracket() {
         configureCode("pervasives.mli", "let max_float: float->float->float");
-        configureCode("JsObj.res", "let oo = {\"abc\": 1, \"def\": 2}");
-        configureCode("Dummy.res", "let x =1\nJsObj.oo[<caret>");
+        configureCode("JsObj.res", """
+                let oo = {"abc": 1, "def": 2}""");
+        configureCode("Dummy.res", """
+                let x =1
+                JsObj.oo[<caret>""");
 
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
@@ -35,10 +38,13 @@ public class JsObjectCompletion_RES_Test extends ORBasePlatformTestCase {
         assertContainsElements(elements, "\"abc\"", "\"def\"");
     }
 
-    // TODO @Test
+    @Test
     public void test_deep() {
-        configureCode("JsObj.res", "let oo = {\"first\": {\"deep\": true}, \"deep\": {\"other\": {\"asd\": 1} } }");
-        configureCode("Dummy.res", "open JsObj\n oo[\"deep\"][\"other\"][<caret>");
+        configureCode("JsObj.res", """
+                let oo = {"first": {"deep": true}, "deep": {"other": {"asd": 1} } }""");
+        configureCode("Dummy.res", """
+                open JsObj
+                oo["deep"]["other"][<caret>""");
 
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
@@ -49,8 +55,12 @@ public class JsObjectCompletion_RES_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_deep_field() {
-        configureCode("JsObj.res", "let o = {\"asd\": 1}\nlet oo = {\"deep\": o}");
-        configureCode("Dummy.res", "open JsObj\n oo[<caret>");
+        configureCode("JsObj.res", """
+                let o = {"asd": 1}
+                let oo = {"deep": o}""");
+        configureCode("Dummy.res", """
+                open JsObj
+                oo[<caret>""");
 
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
@@ -60,10 +70,13 @@ public class JsObjectCompletion_RES_Test extends ORBasePlatformTestCase {
         assertContainsElements(elements, "\"deep\"");
     }
 
-    // TODO @Test
+    @Test
     public void test_deep_field_completion_order() {
-        configureCode("JsObj.res", "let oo = {\"first\": {\"deep\": true},\"deep\": {\"asd\": 1} }");
-        configureCode("Dummy.res", "open JsObj\n oo[\"first\"][<caret>");
+        configureCode("JsObj.res", """
+                let oo = {"first": {"deep": true}, "deep": {"asd": 1} }""");
+        configureCode("Dummy.res", """
+                open JsObj
+                oo["first"][<caret>""");
 
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
@@ -72,11 +85,17 @@ public class JsObjectCompletion_RES_Test extends ORBasePlatformTestCase {
         assertSize(1, elements);
     }
 
-    // TODO @Test
+    @Test
     public void test_composed() {
-        configureCode("A.res", "let o = {\"f22\": 222}\n let oo = {\"f1\": {\"f11\": 111}, \"f2\": o,\"f3\": {\"f33\": 333} }");
-        configureCode("B.res", "open A\n let oo = {\"f1\": {\"f11\": 111}, \"f2\": o, \"f3\": {\"f33\": 333} }");
-        configureCode("Dummy.res", "open B\n oo[\"f2\"][<caret>");
+        configureCode("A.res", """
+                let o = {"f22": 222}
+                let oo = {"f1": {"f11": 111}, "f2": o,"f3": {"f33": 333} }""");
+        configureCode("B.res", """
+                open A
+                let oo = {"f1": {"f11": 111}, "f2": o, "f3": {"f33": 333} }""");
+        configureCode("Dummy.res", """
+                open B
+                oo["f2"][<caret>""");
 
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
@@ -85,7 +104,7 @@ public class JsObjectCompletion_RES_Test extends ORBasePlatformTestCase {
         assertSize(1, elements);
     }
 
-    // TODO @Test
+    @Test
     public void test_composed_2() {
         configureCode("JsObj2.res", """
                 let o = {"f22": 222}
@@ -99,11 +118,11 @@ public class JsObjectCompletion_RES_Test extends ORBasePlatformTestCase {
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertContainsElements(elements, "f22");
+        assertContainsElements(elements, "\"f22\"");
         assertSize(1, elements);
     }
 
-    // TODO @Test
+    @Test
     public void test_composed_3() {
         configureCode("JsObj.res", """
                 let o = {"ooo": o, "f22": 222}
@@ -115,15 +134,19 @@ public class JsObjectCompletion_RES_Test extends ORBasePlatformTestCase {
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertContainsElements(elements, "ooo", "f22");
+        assertContainsElements(elements, "\"ooo\"", "\"f22\"");
         assertSize(2, elements);
     }
 
     @Test
     public void test_path() {
-        configureCode("A.res", "let o = {\"oo\": 1}");
-        configureCode("B.res", "let o = {\"oooo\": 1}");
-        configureCode("Dummy.res", "open A\n o[<caret>");
+        configureCode("A.res", """
+                let o = {"oo": 1}""");
+        configureCode("B.res", """
+                let o = {"oooo": 1}""");
+        configureCode("Dummy.res", """
+                open A
+                o[<caret>""");
 
         myFixture.completeBasic();
         List<String> elements = myFixture.getLookupElementStrings();
@@ -145,9 +168,9 @@ public class JsObjectCompletion_RES_Test extends ORBasePlatformTestCase {
         assertSize(1, elements);
     }
 
-    // TODO @Test
+    @Test
     public void test_with_type() {
-        configureCode("A.res", "type t = {. \"a\": int };");
+        configureCode("A.res", "type t = {\"a\": int }");
         configureCode("B.res", """
                 open A
                 let y: t = x

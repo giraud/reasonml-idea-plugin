@@ -1,5 +1,6 @@
 package com.reason.lang.rescript;
 
+import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.lang.core.*;
@@ -135,11 +136,17 @@ public class TypeParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_parameterized() {
-        RPsiType e = first(typeExpressions(parseCode("type declaration_arity<'a, 'b> = RegularArity<'a>")));
+        RPsiType e = first(typeExpressions(parseCode("type declaration_arity<'a, 'b> = RegularArity('a, 'b)")));
 
         assertEquals("declaration_arity", e.getName());
-        assertNotNull(PsiTreeUtil.findChildOfType(e, RPsiParameters.class));
-        assertEquals("RegularArity<'a>", e.getBinding().getText());
+        assertEquals("RegularArity('a, 'b)", e.getBinding().getText());
+        assertSize(2, e.getParameters().getParametersList());
+        assertEquals("'a", e.getParameters().getParametersList().get(0).getText());
+        assertEquals("'b", e.getParameters().getParametersList().get(1).getText());
+        RPsiVariantDeclaration ev = PsiTreeUtil.findChildOfType(e.getBinding(), RPsiVariantDeclaration.class);
+        assertSize(2, ev.getParametersList());
+        assertEquals("'a", ev.getParametersList().get(0).getText());
+        assertEquals("'b", ev.getParametersList().get(1).getText());
     }
 
     @Test
