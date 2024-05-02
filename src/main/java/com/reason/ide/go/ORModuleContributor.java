@@ -28,10 +28,7 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
         if (project != null) {
             List<String> keys = new ArrayList<>();
 
-            FileModuleIndex fileModuleIndex = FileModuleIndex.getInstance();
-            if (fileModuleIndex != null) {
-                keys.addAll(FileBasedIndex.getInstance().getAllKeys(fileModuleIndex.getName(), project));
-            }
+            keys.addAll(FileModuleIndexService.getInstance().getAllKeys(project));
             keys.addAll(StubIndex.getInstance().getAllKeys(IndexKeys.MODULES, project));
 
             for (String key : keys) {

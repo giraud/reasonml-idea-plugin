@@ -245,6 +245,43 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
         assertOrderedEquals(data.getValues(em/*ELayout*/), "A.A1.A11");
     }
 
+    @Test
+    public void test_alias_of_alias() {
+        configureCode("A.ml", """
+                module A1 = struct
+                    module A2 = struct
+                      let id = "_new_"
+                    end
+                end
+                """);
+
+        configureCode("B.ml", """
+                module B1 = struct
+                  module B2 = struct
+                    module B3 = struct
+                      let id = A.A1.A2.id
+                    end
+                  end
+                end
+                                
+                module B4 = struct
+                  include A
+                  module B5 = B1.B2
+                end
+                """);
+
+        FileBase e = configureCode("C.ml", """
+                module C1 = B.B4
+                module C2 = C1.B5.B3
+                let _ = C2.id
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        RPsiModule em = ORUtil.findImmediateLastChildOfClass(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em/*C2*/), "B.B1.B2.B3");
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/426
     @Test
     public void test_GH_426_aliases_same_file() {

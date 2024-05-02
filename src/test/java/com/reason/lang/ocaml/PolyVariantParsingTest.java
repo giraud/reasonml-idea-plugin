@@ -12,19 +12,38 @@ import java.util.*;
 @SuppressWarnings("ConstantConditions")
 public class PolyVariantParsingTest extends OclParsingTestCase {
     @Test
-    public void test_basic_LIdent() {
+    public void test_basic_let_LIdent() {
         RPsiLet e = firstOfType(parseCode("let x = `red"), RPsiLet.class);
-        PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
+        RPsiLowerSymbol ev = firstOfType(e.getBinding(), RPsiLowerSymbol.class);
 
-        assertEquals("`red", variant.getText());
+        assertEquals("`red", ev.getText());
+        assertEquals(myTypes.POLY_VARIANT, ev.getNode().getElementType());
     }
 
     @Test
-    public void test_basic_UIdent() {
-        RPsiLet e = firstOfType(parseCode("let x = `Red"), RPsiLet.class);
-        PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
+    public void test_basic_let_UIdent() {
+        RPsiUpperSymbol e = firstOfType(parseCode("let _ = `Red"), RPsiUpperSymbol.class);
 
-        assertEquals("`Red", variant.getText());
+        assertEquals("`Red", e.getText());
+        assertEquals(myTypes.POLY_VARIANT, e.getNode().getElementType());
+    }
+
+    @Test
+    public void test_basic_type_LIdent() {
+        RPsiType e = firstOfType(parseCode("type t = [ | `red ]"), RPsiType.class);
+
+        Collection<RPsiVariantDeclaration> evs = e.getVariants();
+        assertSize(1, evs);
+        assertEquals("#red", evs.iterator().next().getName());
+    }
+
+    @Test
+    public void test_basic_type_UIdent() {
+        RPsiType e = firstOfType(parseCode("type t = [ | `Red ]"), RPsiType.class);
+
+        Collection<RPsiVariantDeclaration> evs = e.getVariants();
+        assertSize(1, evs);
+        assertEquals("#Red", evs.iterator().next().getName());
     }
 
     @Test

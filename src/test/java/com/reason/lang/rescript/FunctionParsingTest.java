@@ -405,6 +405,19 @@ public class FunctionParsingTest extends ResParsingTestCase {
         assertEquals("(p: string) => ()", ep0b.getText());
     }
 
+    @Test
+    public void test_arrow_signature() {
+        RPsiLet e = firstOfType(parseCode("let fn = (p0: Js.nullable<'a>, p1: 'a => unit) => p0->Js.toOption->forEach(p1)"), RPsiLet.class);
+
+        assertTrue(e.isFunction());
+        RPsiFunction ef = e.getFunction();
+        List<RPsiParameterDeclaration> efps = ef.getParameters();
+        assertSize(2, efps);
+        assertEquals("p0", efps.get(0).getName());
+        assertEquals("p1", efps.get(1).getName());
+        assertEquals("p0->Js.toOption->forEach(p1)", ef.getBody().getText());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/113
     @Test
     public void test_GH_113() {

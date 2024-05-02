@@ -23,7 +23,7 @@ public class OREditorLinePainter extends EditorLinePainter {
             if (signature != null) {
                 EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
                 TextAttributes codeLens = globalScheme.getAttributes(ORSyntaxHighlighter.CODE_LENS_);
-                result = Collections.singletonList(new LineExtensionInfo("  " + signature, codeLens));
+                result = List.of(new LineExtensionInfo("  ", TextAttributes.ERASE_MARKER), new LineExtensionInfo(signature, codeLens));
             }
         }
 

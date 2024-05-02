@@ -141,6 +141,7 @@ public class ResTypes extends ORLangTypes {
         BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", ResLanguage.INSTANCE);
         CATCH = new ORTokenElementType("CATCH", ResLanguage.INSTANCE);
         CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", ResLanguage.INSTANCE);
+        PIPE_FIRST = new ORTokenElementType("FAST_PIPE", ResLanguage.INSTANCE);
         FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", ResLanguage.INSTANCE);
         FUNCTION = new ORTokenElementType("FUNCTION", ResLanguage.INSTANCE);
         FUN = new ORTokenElementType("FUN", ResLanguage.INSTANCE);

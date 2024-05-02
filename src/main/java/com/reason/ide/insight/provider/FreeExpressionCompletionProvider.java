@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
-import com.intellij.util.indexing.*;
 import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
@@ -37,7 +36,7 @@ public class FreeExpressionCompletionProvider {
     private FreeExpressionCompletionProvider() {
     }
 
-    public static void addCompletions(@NotNull PsiElement element, PsiElement prevLeaf, @Nullable PsiElement parent, @NotNull GlobalSearchScope searchScope, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull PsiElement element, @Nullable PsiElement parent, @NotNull GlobalSearchScope searchScope, @NotNull CompletionResultSet resultSet) {
         LOG.debug("FREE expression completion");
 
         Project project = element.getProject();
@@ -46,21 +45,6 @@ public class FreeExpressionCompletionProvider {
         Language language = element.getLanguage();
         ORLanguageProperties languageProperties = ORLanguageProperties.cast(language);
         FileModuleIndexService fileModuleIndexService = getApplication().getService(FileModuleIndexService.class);
-
-        // Special case for js object in rescript
-        if (language == ResLanguage.INSTANCE) {
-            if (parent instanceof RPsiArray && parent.getPrevSibling() instanceof RPsiLowerSymbol prevLowerSymbol) {
-                PsiElement resolvedSymbol = prevLowerSymbol.getReference().resolveInterface();
-                Collection<RPsiObjectField> resolvedFields = ObjectCompletionProvider.getFields(resolvedSymbol);
-                if (resolvedFields != null) {
-                    for (RPsiObjectField field : resolvedFields) {
-                        resultSet.addElement(LookupElementBuilder.create("\"" + field.getName() + "\"")
-                                .withIcon(PsiIconUtil.getProvidersIcon(field, 0)));
-                    }
-                    return;
-                }
-            }
-        }
 
         // Add virtual namespaces
         for (String namespace : fileModuleIndexService.getNamespaces(project, searchScope)) {
@@ -191,16 +175,12 @@ public class FreeExpressionCompletionProvider {
     }
 
     private static @Nullable RPsiModule getTopModule(@NotNull String name, @NotNull Project project, @NotNull GlobalSearchScope scope) {
-        FileModuleIndex index = FileModuleIndex.getInstance();
-        ID<String, FileModuleData> indexId = index != null ? index.getName() : null;
-        if (indexId != null) {
-            PsiManager psiManager = PsiManager.getInstance(project);
-            Collection<VirtualFile> containingFiles = FileBasedIndex.getInstance().getContainingFiles(indexId, name, scope);
-            VirtualFile virtualFile = containingFiles.stream().min((o1, o2) -> FileHelper.isInterface(o1.getFileType()) ? -1 : FileHelper.isInterface(o2.getFileType()) ? 1 : 0).orElse(null);
-            if (virtualFile != null) {
-                PsiFile psiFile = psiManager.findFile(virtualFile);
-                return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
-            }
+        PsiManager psiManager = PsiManager.getInstance(project);
+        Collection<VirtualFile> containingFiles = FileModuleIndexService.getInstance().getContainingFiles(name, scope);
+        VirtualFile virtualFile = containingFiles.stream().min((o1, o2) -> FileHelper.isInterface(o1.getFileType()) ? -1 : FileHelper.isInterface(o2.getFileType()) ? 1 : 0).orElse(null);
+        if (virtualFile != null) {
+            PsiFile psiFile = psiManager.findFile(virtualFile);
+            return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
         }
 
         return null;

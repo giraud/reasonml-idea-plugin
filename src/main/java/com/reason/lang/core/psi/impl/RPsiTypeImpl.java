@@ -119,9 +119,13 @@ public class RPsiTypeImpl extends RPsiTokenStub<ORLangTypes, RPsiType, PsiTypeSt
         return binding != null && binding.getFirstChild() instanceof RPsiRecord;
     }
 
+    @Override
+    public @Nullable RPsiParameters getParameters() {
+        return ORUtil.findImmediateFirstChildOfClass(this, RPsiParameters.class);
+    }
 
     @Override
-    public @NotNull Collection<RPsiObjectField> getJsObjectFields() {
+    public @NotNull List<RPsiObjectField> getJsObjectFields() {
         RPsiTypeBinding binding = getBinding();
         PsiElement firstChild = binding == null ? null : binding.getFirstChild();
         RPsiJsObject jsObject = firstChild instanceof RPsiJsObject ? ((RPsiJsObject) firstChild) : null;
@@ -129,7 +133,7 @@ public class RPsiTypeImpl extends RPsiTokenStub<ORLangTypes, RPsiType, PsiTypeSt
     }
 
     @Override
-    public @NotNull Collection<RPsiRecordField> getRecordFields() {
+    public @NotNull List<RPsiRecordField> getRecordFields() {
         RPsiTypeBinding binding = getBinding();
         PsiElement firstChild = binding == null ? null : binding.getFirstChild();
         RPsiRecord record = firstChild instanceof RPsiRecord ? ((RPsiRecord) firstChild) : null;

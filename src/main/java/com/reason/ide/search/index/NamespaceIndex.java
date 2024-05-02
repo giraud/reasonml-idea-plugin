@@ -14,21 +14,23 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class NamespaceIndex extends ScalarIndexExtension<String> {
-
     private static final int VERSION = 6;
-
+    private static final ID<String, Void> INDEX_ID = ID.create("reason.index.bsconfig");
     private static final Log LOG = Log.create("index.namespace");
-
-    private static final ID<String, Void> NAME = ID.create("reason.index.bsconfig");
-    private static final NamespaceIndex INSTANCE = new NamespaceIndex();
-
-    public static @NotNull NamespaceIndex getInstance() {
-        return INSTANCE;
-    }
 
     @Override
     public @NotNull ID<String, Void> getName() {
-        return NAME;
+        return INDEX_ID;
+    }
+
+    @Override
+    public boolean dependsOnFileContent() {
+        return true;
+    }
+
+    @Override
+    public int getVersion() {
+        return VERSION;
     }
 
     @Override
@@ -74,15 +76,5 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
     @Override
     public @NotNull FileBasedIndex.InputFilter getInputFilter() {
         return file -> file.getFileType() instanceof DuneFileType || FileHelper.isRescriptConfigJson(file);
-    }
-
-    @Override
-    public boolean dependsOnFileContent() {
-        return true;
-    }
-
-    @Override
-    public int getVersion() {
-        return VERSION;
     }
 }
