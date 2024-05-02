@@ -9,7 +9,7 @@ import org.junit.runner.*;
 import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
-public class ResolveUpperElementOCLTest extends ORBasePlatformTestCase {
+public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic_file() {
         configureCode("Dimensions.ml", "let space = 5");
@@ -76,12 +76,57 @@ public class ResolveUpperElementOCLTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias_of_alias() {
+        configureCode("A.ml", """
+                module A1 = struct
+                    module A2 = struct
+                      let id = "_new_"
+                    end
+                end
+                """);
+
+        configureCode("B.ml", """
+                module B1 = struct
+                  module B2 = struct
+                    module B3 = struct
+                      let id = A.A1.A2.id
+                    end
+                  end
+                end
+                                
+                module B4 = struct
+                  include A
+                  module B5 = B1.B2
+                end
+                """);
+
+        configureCode("C.ml", """
+                module C1 = B.B4
+                module C2 = C1.B5.B3
+                let _ = C2.id<caret>
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("B.B1.B2.B3.id", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_alias_interface() {
         configureCode("C.mli", "module A1 = struct end");
         configureCode("D.ml", "module X = C\n let _ = X.A1<caret>");
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("C.A1", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_function_call() {
+        configureCode("AsyncHooks.ml", "module XhrAsync = struct let make = () => () end");
+        configureCode("A.ml", "let _ = AsyncHooks.useCancellableRequest AsyncHooks<caret>.XhrAsync.make");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("AsyncHooks", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
     @Test
@@ -112,6 +157,15 @@ public class ResolveUpperElementOCLTest extends ORBasePlatformTestCase {
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
+    }
+
+    //region Variants
+    @Test
+    public void test_local_variant() {
+        configureCode("A.ml", "type a = | Variant\n let _ = Variant<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.Variant", ((RPsiVariantDeclaration) e).getQualifiedName());
     }
 
     @Test
@@ -150,6 +204,54 @@ public class ResolveUpperElementOCLTest extends ORBasePlatformTestCase {
         RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
         assertEquals("A.Variant", e.getQualifiedName());
     }
+    //endregion
+
+    //region Poly-variants
+    @Test
+    public void test_local_poly_variant() {
+        configureCode("A.ml", "type a = [ | `Variant ]\n let _ = `Variant<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.#Variant", ((RPsiVariantDeclaration) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_with_path() {
+        configureCode("A.ml", "type a = [ | `Variant ]");
+        configureCode("B.ml", "type b = [ | `Variant ]");
+        configureCode("C.ml", "A.`Variant<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.#Variant", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_module_alias() {
+        configureCode("Aaa.ml", "type t = [ | `Test ]");
+        configureCode("Bbb.ml", "module A = Aaa\nlet _ = A.`Test<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.#Test", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_module_alias_inner() {
+        configureCode("Aaa.ml", "module Option = struct type t = [ | `Test ] end");
+        configureCode("Bbb.ml", "module A = Aaa\nlet _ = A.Option.`Test<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.Option.#Test", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_constructor() {
+        configureCode("A.ml", "type a = | `Variant of int");
+        configureCode("B.ml", "let _ = A.`Variant<caret> 1");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.#Variant", e.getQualifiedName());
+    }
+    //endregion
 
     @Test
     public void test_exception() {

@@ -11,7 +11,7 @@ import org.junit.runner.*;
 import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
-public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
+public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic_file() {
         configureCode("Dimensions.res", "let space = 5;");
@@ -87,6 +87,35 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_include_alias() {
+        configureCode("Css_AtomicTypes.resi", "module Color = { type t }");
+        configureCode("Css_Core.resi", "module Types = Css_AtomicTypes");
+        configureCode("Css.res", "include Css_Core");
+        configureCode("A.res", "let t = Css.Types.Color<caret>.t");
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_function_call() {
+        configureCode("AsyncHooks.res", "module XhrAsync = { let make = () => () }");
+        configureCode("A.res", "let _ = AsyncHooks.useCancellableRequest(AsyncHooks<caret>.XhrAsync.make)");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("AsyncHooks", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_uncurried_function_call() {
+        configureCode("A.res", "type t = | Variant");
+        configureCode("B.res", "let _ = fn(. A.Variant<caret>)");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.Variant", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_open() {
         configureCode("Belt.res", "module Option = {}");
         configureCode("Dummy.res", "open Belt.Option<caret>");
@@ -99,21 +128,22 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
     @Test
     public void test_include_path() {
         configureCode("Css_Core.resi", "let display: string => rule");
-        configureCode("Css.res", "include Css_Core<caret>\n include Css_Core.Make({})");
+        configureCode("Css.res", """
+                include Css_Core<caret>
+                include Css_Core.Make({})
+                """);
 
-        ResInterfaceFile e = (ResInterfaceFile) myFixture.getElementAtCaret();
-        assertEquals("Css_Core", e.getQualifiedName());
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Css_Core", ((ResInterfaceFile) e).getQualifiedName());
     }
 
+    //region Variants
     @Test
-    public void test_include_alias() {
-        configureCode("Css_AtomicTypes.resi", "module Color = { type t }");
-        configureCode("Css_Core.resi", "module Types = Css_AtomicTypes");
-        configureCode("Css.res", "include Css_Core");
-        configureCode("A.res", "Css.Types.Color<caret>");
+    public void test_local_variant() {
+        configureCode("A.res", "type a = | Variant\n let _ = Variant<caret>");
 
-        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
-        assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.Variant", ((RPsiVariantDeclaration) e).getQualifiedName());
     }
 
     @Test
@@ -152,6 +182,54 @@ public class ResolveUpperElementRESTest extends ORBasePlatformTestCase {
         RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
         assertEquals("A.Variant", e.getQualifiedName());
     }
+    //endregion
+
+    //region Poly-variants
+    @Test
+    public void test_local_poly_variant() {
+        configureCode("A.res", "type a = [ | #Variant ]\n let _ = #Variant<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.#Variant", ((RPsiVariantDeclaration) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_with_path() {
+        configureCode("A.res", "type a = [ | #Variant ]");
+        configureCode("B.res", "type b = [ | #Variant ]");
+        configureCode("C.res", "A.#Variant<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.#Variant", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_module_alias() {
+        configureCode("Aaa.res", "type t = [ | #Test ]");
+        configureCode("Bbb.res", "module A = Aaa\n A.#Test<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.#Test", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_module_alias_inner() {
+        configureCode("Aaa.res", "module Option = { type t = [ | #Test ] }");
+        configureCode("Bbb.res", "module A = Aaa\n A.Option.#Test<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.Option.#Test", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_constructor() {
+        configureCode("A.res", "type a = [ | #Variant(int) ]");
+        configureCode("B.res", "let _ = A.#Variant<caret>(1)");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.#Variant", e.getQualifiedName());
+    }
+    //endregion
 
     @Test
     public void test_exception() {

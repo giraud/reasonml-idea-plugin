@@ -28,6 +28,24 @@ public class PolyVariantParsingTest extends RmlParsingTestCase {
     }
 
     @Test
+    public void test_basic_type_LIdent() {
+        RPsiType e = firstOfType(parseCode("type t = [ | `red ];"), RPsiType.class);
+
+        Collection<RPsiVariantDeclaration> evs = e.getVariants();
+        assertSize(1, evs);
+        assertEquals("#red", evs.iterator().next().getName());
+    }
+
+    @Test
+    public void test_basic_type_UIdent() {
+        RPsiType e = firstOfType(parseCode("type t = [ | `Red ];"), RPsiType.class);
+
+        Collection<RPsiVariantDeclaration> evs = e.getVariants();
+        assertSize(1, evs);
+        assertEquals("#Red", evs.iterator().next().getName());
+    }
+
+    @Test
     public void test_pattern_match_constant() {
         PsiFile file = parseCode("let unwrapValue = x => switch x {"
                 + "  | `String(s) => toJsUnsafe(s) "
@@ -68,4 +86,15 @@ public class PolyVariantParsingTest extends RmlParsingTestCase {
         assertEquals("Css.Types.Length.t", v.get(0).getText());
         assertEquals("Css.Types.Visibility.t", v.get(1).getText());
     }
+
+    @Test
+    public void test_constructor() {
+        RPsiType e = firstOfType(parseCode("type a = | `Variant(int);"), RPsiType.class);
+
+        List<RPsiVariantDeclaration> v = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, RPsiVariantDeclaration.class));
+        assertSize(1, v);
+        assertEquals("Dummy.#Variant", v.get(0).getQualifiedName());
+        assertSize(1, v.get(0).getParametersList());
+    }
+
 }

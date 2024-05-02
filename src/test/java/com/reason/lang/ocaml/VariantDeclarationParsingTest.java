@@ -52,10 +52,10 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         assertEquals(2, declarations.size());
         assertEquals("Hex", declarations.get(0).getVariant().getText());
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
-        assertEquals(1, declarations.get(0).getParameterList().size());
+        assertEquals(1, declarations.get(0).getParametersList().size());
         assertEquals("Rgb", declarations.get(1).getVariant().getText());
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
-        assertEquals(3, declarations.get(1).getParameterList().size());
+        assertEquals(3, declarations.get(1).getParametersList().size());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         List<RPsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), RPsiVariantDeclaration.class);
         assertEquals(3, declarations.size());
         assertEquals("Cannot", declarations.get(0).getVariant().getText());
-        assertEquals(1, declarations.get(0).getParameterList().size());
+        assertEquals(1, declarations.get(0).getParametersList().size());
         assertEquals("Loose", declarations.get(1).getVariant().getText());
         assertEquals("Strict", declarations.get(2).getVariant().getText());
     }
@@ -75,7 +75,7 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
         RPsiVariantDeclaration e = firstOfType(parseCode("type cases_pattern_expr_r = | CPatRecord of (qualid * cases_pattern_expr) list"), RPsiVariantDeclaration.class);
 
         assertEquals("CPatRecord of (qualid * cases_pattern_expr) list", e.getText());
-        assertEquals("(qualid * cases_pattern_expr) list", e.getParameterList().get(0).getText());
+        assertEquals("(qualid * cases_pattern_expr) list", e.getParametersList().get(0).getText());
     }
 
     @Test // coq:: coqpp/coqpp_ast.mli
@@ -84,6 +84,6 @@ public class VariantDeclarationParsingTest extends OclParsingTestCase {
 
         assertNoParserError(e);
         assertEquals("SymbRules of ((string option * symb) list * code) list", e.getText());
-        assertEquals("((string option * symb) list * code) list", e.getParameterList().get(0).getText());
+        assertEquals("((string option * symb) list * code) list", e.getParametersList().get(0).getText());
     }
 }

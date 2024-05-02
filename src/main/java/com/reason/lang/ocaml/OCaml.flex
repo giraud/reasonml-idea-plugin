@@ -2,7 +2,6 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORLangTypes;
-import com.intellij.lexer.FlexLexer;
 
 import static com.intellij.psi.TokenType.*;
 
@@ -187,6 +186,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "->"  { return types.RIGHT_ARROW; }
     "<-"  { return types.LEFT_ARROW; }
     "|>"  { return types.PIPE_FORWARD; }
+    "|."  { return types.PIPE_FIRST; }
     "</"  { return types.TAG_LT_SLASH; }
     "/>"  { return types.TAG_AUTO_CLOSE; }
     "[|"  { return types.LARRAY; }

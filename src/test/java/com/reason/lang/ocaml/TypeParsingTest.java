@@ -5,7 +5,6 @@ import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -168,11 +167,18 @@ public class TypeParsingTest extends OclParsingTestCase {
     }
 
     @Test
-    public void test_parameterizedType() {
-        RPsiType e = first(typeExpressions(parseCode("type ('a, 'b) declaration_arity = | RegularArity of 'a")));
+    public void test_parameterized() {
+        RPsiType e = first(typeExpressions(parseCode("type ('a, 'b) declaration_arity = RegularArity of 'a * 'b")));
 
         assertEquals("declaration_arity", e.getName());
-        assertEquals("| RegularArity of 'a", e.getBinding().getText());
+        assertEquals("RegularArity of 'a * 'b", e.getBinding().getText());
+        assertSize(2, e.getParameters().getParametersList());
+        assertEquals("'a", e.getParameters().getParametersList().get(0).getText());
+        assertEquals("'b", e.getParameters().getParametersList().get(1).getText());
+        RPsiVariantDeclaration ev = PsiTreeUtil.findChildOfType(e.getBinding(), RPsiVariantDeclaration.class);
+        assertSize(2, ev.getParametersList());
+        assertEquals("'a", ev.getParametersList().get(0).getText());
+        assertEquals("'b", ev.getParametersList().get(1).getText());
     }
 
     @Test

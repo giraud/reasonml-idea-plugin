@@ -6,7 +6,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
-import com.intellij.util.indexing.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
@@ -42,30 +41,44 @@ public class ORReferenceAnalyzer {
 
     // Walk through the file - from element up to the root - and extract instructions
     static @NotNull Deque<PsiElement> createInstructions(@NotNull PsiElement sourceElement, boolean isLower, @NotNull ORLangTypes types) {
-        PsiElement prevItem = PsiTreeUtil.prevCodeLeaf(sourceElement);
-        IElementType prevItemType = prevItem != null ? prevItem.getNode().getElementType() : null;
-        boolean startPath = prevItem != null && (prevItemType == types.DOT || prevItemType == types.LPAREN || prevItemType == types.SHARPSHARP);
-        if (prevItemType == types.LBRACKET && types instanceof ResTypes) {
-            prevItem = ORUtil.prevSibling(prevItem.getParent());
-            startPath = true;
-        }
-        if (!startPath) {
-            prevItem = ORUtil.prevSibling(sourceElement); // use composite instead of leaf
-        }
-
-        PsiElement item = prevItem == null ? sourceElement.getParent() : prevItem;
-
         Deque<PsiElement> instructions = new LinkedList<>();
         boolean skipDeclaration = false;
 
-        while (item != null) {
-            ASTNode itemNode = item.getNode();
-            IElementType itemType = itemNode != null ? itemNode.getElementType() : null;
+        boolean inPath = isInPath(sourceElement, types);
 
-            // Try to detect end of the path of the start item
-            if (startPath) {
+        // use composite instead of leaf if not in a path
+        PsiElement item = inPath ? PsiTreeUtil.prevCodeLeaf(sourceElement) : ORUtil.prevSibling(sourceElement);
+
+        item = item == null ? sourceElement.getParent() : item;
+        ASTNode itemNode = item != null ? item.getNode() : null;
+        IElementType itemType = itemNode != null ? itemNode.getElementType() : null;
+
+        if (itemType == types.LBRACKET && types instanceof ResTypes) {
+            // Js access for Rescript
+            item = ORUtil.prevSibling(sourceElement.getParent());
+        } else if (itemType == types.INCLUDE || itemType == types.OPEN) {
+            // if this is the first element of an include/open, we skip the expression
+            PsiElement sourceParent = sourceElement.getParent();
+            item = ORUtil.prevSibling(sourceParent);
+            item = item == null ? sourceParent.getParent() : item;
+        }
+
+        while (item != null) {
+            itemNode = item.getNode();
+            itemType = itemNode != null ? itemNode.getElementType() : null;
+
+            // Try to detect end of the path of the item
+            if (inPath) {
                 if (itemType == types.A_MODULE_NAME || itemType == types.A_UPPER_TAG_NAME) {
-                    instructions.push(item);
+                    PsiElement prevLeaf = PsiTreeUtil.prevLeaf(item);
+                    ASTNode prevLeafNode = prevLeaf != null ? prevLeaf.getNode() : null;
+                    IElementType prevLeafType = prevLeafNode != null ? prevLeafNode.getElementType() : null;
+                    if (prevLeafType != types.DOT && prevLeafType != types.SHARPSHARP) {
+                        inPath = false;
+                        instructions.push(new FirstInPath(item));
+                    } else {
+                        instructions.push(item);
+                    }
                 } else if (itemType == types.LIDENT) {
                     PsiElement prevPrevItem = PsiTreeUtil.prevCodeLeaf(item);
                     if (prevPrevItem != null) {
@@ -85,7 +98,7 @@ public class ORReferenceAnalyzer {
                         continue;
                     } else {
                         item = item.getParent();
-                        startPath = false;
+                        inPath = false;
                     }
                 } else if (itemType == types.C_ARRAY && types instanceof ResTypes) {
                     // a|>["b"]<|["c"]
@@ -94,16 +107,21 @@ public class ORReferenceAnalyzer {
                         instructions.push(new SymbolField(arrayItem, false));
                     }
                 } else if (itemType != types.DOT && itemType != types.SHARPSHARP) {
-                    startPath = false;
+                    inPath = false;
                 }
             }
 
             // Standard expressions (not a start path)
-            if (!startPath) {
+            if (!inPath) {
                 if (item instanceof RPsiLocalOpen) {
                     // Restart the path
-                    startPath = true;
-                } else if (item instanceof RPsiInnerModule) {
+                    inPath = true;
+                }
+                //else if (itemType == types.A_MODULE_NAME) {
+                // Directly a module like: include X<caret>
+                //instructions.push(new FirstInPath(item));
+                //}
+                else if (item instanceof RPsiInnerModule) {
                     instructions.push(item);
                 } else if (item instanceof RPsiFunctor) {
                     instructions.push(item);
@@ -146,18 +164,23 @@ public class ORReferenceAnalyzer {
             }
 
             // one step backward
-            prevItem = ORUtil.prevSibling(item);
+            PsiElement prevItem = ORUtil.prevSibling(item);
             item = prevItem == null ? item.getParent() : prevItem;
         }
 
         return instructions;
     }
 
+    public static boolean isInPath(@NotNull PsiElement sourceElement, @NotNull ORLangTypes types) {
+        PsiElement prevLeaf = PsiTreeUtil.prevLeaf(sourceElement);
+        IElementType prevLeafType = ORUtil.getNodeType(prevLeaf);
+        return prevLeafType == types.DOT || prevLeafType == types.SHARPSHARP || (prevLeafType == types.LBRACKET && types instanceof ResTypes);
+    }
+
     static @NotNull List<RPsiQualifiedPathElement> resolveInstructions(@NotNull Deque<PsiElement> instructions, @Nullable Set<String> openedModules, @NotNull Project project, @NotNull GlobalSearchScope scope) {
         List<RPsiQualifiedPathElement> result = new ArrayList<>();
 
         List<ResolutionElement> resolutions = new ArrayList<>(); // temporary resolutions
-        boolean firstInPath = true;
 
         // First instruction is always current file, if not there is a problem during parsing
         PsiElement containingFile = instructions.removeFirst();
@@ -187,6 +210,11 @@ public class ORReferenceAnalyzer {
 
         while (!instructions.isEmpty()) {
             PsiElement instruction = instructions.removeFirst();
+            boolean firstInPath = false;
+            if (instruction instanceof FirstInPath firstInstruction) {
+                instruction = firstInstruction.getOriginalElement();
+                firstInPath = true;
+            }
 
             if (instruction instanceof SymbolField foundSymbol) {
                 if (LOG.isTraceEnabled()) {
@@ -243,6 +271,7 @@ public class ORReferenceAnalyzer {
                 }
             } else if (instruction instanceof RPsiLowerSymbol foundLower) {
                 String foundLowerText = foundLower.getText();
+                String foundLowerName = foundLowerText != null && !foundLowerText.isEmpty() ? (foundLowerText.charAt(0) == '`' || foundLowerText.charAt(0) == '#' ? "#" + foundLowerText.substring(1) : foundLowerText) : foundLowerText;
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Processing lower symbol", foundLowerText);
                 }
@@ -281,6 +310,14 @@ public class ORReferenceAnalyzer {
                                     continue;
                                 }
                             }
+                        } else if (resolvedElement instanceof RPsiType resolvedType) {
+                            RPsiVariantDeclaration resolvedVariant = resolvedType.getVariants().stream().filter(variant -> variant.getName().equals(foundLowerName)).findFirst().orElse(null);
+                            if (resolvedVariant != null && instructions.isEmpty()) {
+                                resolutions.clear();
+                                result.add(resolvedVariant);
+                                found = true;
+                                continue;
+                            }
                         }
 
                         if (foundLowerText.equals(resolvedQPathElement.getName())) {
@@ -300,7 +337,7 @@ public class ORReferenceAnalyzer {
                         String resolvedQName = qName != null ? qName : "";
                         for (PsiElement alternateResolvedElement : resolvePath(resolvedQName, project, scope, 0)) {
                             if (alternateResolvedElement instanceof RPsiModule alternateResolvedModule) {
-                                String pathToResolve = alternateResolvedModule.getQualifiedName() + "." + foundLowerText;
+                                String pathToResolve = alternateResolvedModule.getQualifiedName() + "." + foundLowerName;
 
                                 // Test val
                                 Collection<RPsiVal> vals = ValFqnIndex.getElements(pathToResolve, project, scope);
@@ -337,6 +374,15 @@ public class ORReferenceAnalyzer {
                                                 }
                                                 result.addAll(types);
                                                 break;
+                                            } else {
+                                                Collection<RPsiVariantDeclaration> variants = VariantFqnIndex.getElements(pathToResolve, project, scope);
+                                                if (!variants.isEmpty()) {
+                                                    if (instructions.isEmpty()) {
+                                                        resolutions.clear();
+                                                    }
+                                                    result.addAll(variants);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -350,6 +396,8 @@ public class ORReferenceAnalyzer {
             // ------------------
             else if (instruction instanceof RPsiUpperSymbol foundUpper) {
                 String foundUpperText = foundUpper.getText();
+                String foundUpperName = foundUpperText != null && !foundUpperText.isEmpty() ? (foundUpperText.charAt(0) == '`' || foundUpperText.charAt(0) == '#' ? "#" + foundUpperText.substring(1) : foundUpperText) : foundUpperText;
+
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Processing Upper symbol", foundUpperText);
                 }
@@ -401,7 +449,7 @@ public class ORReferenceAnalyzer {
                         // we try to resolve the current upper value as a path
 
                         String resolvedQName = resolvedModule.getQualifiedName();
-                        String pathToResolve = resolvedQName + "." + foundUpperText;
+                        String pathToResolve = resolvedQName + "." + foundUpperName;
 
                         List<ResolutionElement> resolutionElements = resolvePath(pathToResolve, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                         if (LOG.isTraceEnabled()) {
@@ -451,7 +499,7 @@ public class ORReferenceAnalyzer {
                     // type t = | Variant; ... Variant<caret>
                     else if (resolvedElement instanceof RPsiType resolvedType && instructions.isEmpty()) {
                         for (RPsiVariantDeclaration variant : resolvedType.getVariants()) {
-                            if (variant.getName().equals(foundUpperText)) {
+                            if (variant.getName().equals(foundUpperName)) {
                                 found = true;
                                 resolutions.clear();
                                 result.add(variant);
@@ -463,8 +511,6 @@ public class ORReferenceAnalyzer {
 
                 // For the first element of a path, we can try global modules
                 if (!found && firstInPath) {
-                    firstInPath = false;
-
                     if (LOG.isTraceEnabled()) {
                         LOG.trace(" > No modules found, try top modules");
                     }
@@ -642,16 +688,17 @@ public class ORReferenceAnalyzer {
         return pathResolutions;
     }
 
-    private static List<RPsiModule> getTopModules(@NotNull String name, @NotNull PsiManager psiManager, @NotNull GlobalSearchScope scope) {
-        FileModuleIndex index = FileModuleIndex.getInstance();
-        ID<String, FileModuleData> indexId = index == null ? null : index.getName();
-        if (indexId != null) {
-            return FileBasedIndex.getInstance().getContainingFiles(indexId, name, scope).stream().map(v -> {
-                PsiFile psiFile = psiManager.findFile(v);
-                return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+    private static @NotNull List<RPsiModule> getTopModules(@NotNull String name, @NotNull PsiManager psiManager, @NotNull GlobalSearchScope scope) {
+        return FileModuleIndexService.getInstance().getContainingFiles(name, scope).stream().map(v -> {
+            PsiFile psiFile = psiManager.findFile(v);
+            return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    static class FirstInPath extends ORFakeResolvedElement {
+        public FirstInPath(@NotNull PsiElement element) {
+            super(element);
         }
-        return Collections.emptyList();
     }
 
     static class SymbolField extends ORFakeResolvedElement {

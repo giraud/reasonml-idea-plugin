@@ -258,6 +258,7 @@
         <stubIndex implementation="com.reason.ide.search.index.OpenIndex"/>
 
         <fileBasedIndex implementation="com.reason.ide.search.index.FileModuleIndex"/>
+        <fileBasedIndex implementation="com.reason.ide.search.index.NamespaceIndex"/>
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.findUsagesProvider language="Rescript"

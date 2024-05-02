@@ -175,6 +175,8 @@ public class ResParser extends CommonPsiParser {
                     parseNumeric();
                 } else if (tokenType == myTypes.UNPACK) {
                     parseUnpack();
+                } else if (tokenType == myTypes.TYPE_ARGUMENT) {
+                    parseTypeArgument();
                 }
                 // if ... else
                 else if (tokenType == myTypes.IF) {
@@ -238,6 +240,15 @@ public class ResParser extends CommonPsiParser {
                     dontMove = false;
                 } else {
                     myBuilder.advanceLexer();
+                }
+            }
+        }
+
+        private void parseTypeArgument() {
+            if (is(myTypes.C_PARAMETERS) && isParent(myTypes.C_TYPE_DECLARATION)) {
+                // type t< >>'a<< > ...
+                if (!isCurrent(myTypes.C_PARAM_DECLARATION)) {
+                    mark(myTypes.C_PARAM_DECLARATION);
                 }
             }
         }
@@ -313,7 +324,10 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseRef() {
-            if (isCurrent(myTypes.C_RECORD_EXPR)) {
+            if (rawLookup(-1) == myTypes.DOT) {
+                // .ref   not a keyword
+                remapCurrentToken(myTypes.LIDENT);
+            } else if (isCurrent(myTypes.C_RECORD_EXPR)) {
                 // { |>x<| ...
                 remapCurrentToken(myTypes.LIDENT).
                         mark(myTypes.C_RECORD_FIELD).wrapAtom(myTypes.CA_LOWER_SYMBOL);
@@ -692,16 +706,15 @@ public class ResParser extends CommonPsiParser {
             if (is(myTypes.C_OPTION) || in(myTypes.C_SIG_EXPR)) {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LT).advance()
                         .markHolder(myTypes.H_PLACE_HOLDER);
-            } else if (strictlyIn(myTypes.C_VARIANT_DECLARATION)) { // type parameters
-                // type t |> < <| 'a >
-                markScope(myTypes.C_PARAMETERS, myTypes.LT);
             } else if (in(myTypes.C_TYPE_DECLARATION)) { // type parameters
                 // type t |> < <| 'a >
                 markScope(myTypes.C_PARAMETERS, myTypes.LT);
             } else if (in(myTypes.C_VARIANT_DECLARATION)) {
                 // type t = #X(array |> < <| ...
                 markScope(myTypes.C_PARAMETERS, myTypes.LT);
-            } else {
+            }
+            // If there is a lower ident just before a tag, it can’t be a jsx
+            else if (rawLookup(-1) != myTypes.LIDENT) {
                 // Can be a symbol or a JSX tag
                 IElementType nextTokenType = rawLookup(1);
                 if (nextTokenType == myTypes.LIDENT || nextTokenType == myTypes.UIDENT || nextTokenType == myTypes.OPTION) {
@@ -1421,10 +1434,14 @@ public class ResParser extends CommonPsiParser {
                     popEndUntilFoundIndex().advance()
                             .mark(myTypes.C_TRY_HANDLER_BODY);
                 } else if (isFound(myTypes.C_PARAM_DECLARATION)) { // anonymous function
-                    // x( y |>=><| ... )
-                    popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
-                            .mark(myTypes.C_FUNCTION_BODY)
-                            .markHolder(myTypes.H_PLACE_HOLDER);
+                    if (isParent(myTypes.C_SIG_ITEM)) {
+
+                    } else if (in(myTypes.C_FUNCTION_EXPR)) {
+                        // x( y |>=><| ... )
+                        popEndUntil(myTypes.C_FUNCTION_EXPR).advance()
+                                .mark(myTypes.C_FUNCTION_BODY)
+                                .markHolder(myTypes.H_PLACE_HOLDER);
+                    }
                 } else if (isFound(myTypes.C_FUNCTOR_RESULT)) {
                     // module Make = (M) : R |>=><| ...
                     popEndUntilFoundIndex().popEnd()

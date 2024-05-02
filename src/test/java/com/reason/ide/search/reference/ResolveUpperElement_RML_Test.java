@@ -10,11 +10,14 @@ import org.junit.runner.*;
 import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
-public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
+public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic_file() {
         configureCode("Dimensions.re", "let space = 5;");
-        configureCode("Comp.re", "Dimensions<caret>\nmodule Dimensions = {};");
+        configureCode("Comp.re", """
+                Dimensions<caret>
+                module Dimensions = {};
+                """);
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Dimensions.re", ((PsiQualifiedNamedElement) e).getName());
@@ -22,7 +25,10 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_inner_module() {
-        configureCode("A.re", "module Dimensions = {};\nDimensions<caret>");
+        configureCode("A.re", """
+                module Dimensions = {};
+                Dimensions<caret>
+                """);
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.Dimensions", ((PsiQualifiedNamedElement) e).getQualifiedName());
@@ -95,6 +101,26 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_include_alias() {
+        configureCode("Css_AtomicTypes.rei", "module Color = { type t; };");
+        configureCode("Css_Core.rei", "module Types = Css_AtomicTypes;");
+        configureCode("Css.re", "include Css_Core;");
+        configureCode("A.re", "let t = Css.Types.Color<caret>.t");
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_function_call() {
+        configureCode("AsyncHooks.re", "module XhrAsync = { let make = () => (); };");
+        configureCode("A.re", "let _ = AsyncHooks.useCancellableRequest(AsyncHooks<caret>.XhrAsync.make);");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("AsyncHooks", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_open() {
         configureCode("Belt.re", "module Option = {}");
         configureCode("Dummy.re", "open Belt.Option<caret>;");
@@ -113,17 +139,7 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         assertEquals("Css_Core", e.getQualifiedName());
     }
 
-    @Test
-    public void test_include_alias() {
-        configureCode("Css_AtomicTypes.rei", "module Color = { type t; };");
-        configureCode("Css_Core.rei", "module Types = Css_AtomicTypes;");
-        configureCode("Css.re", "include Css_Core;");
-        configureCode("A.re", "Css.Types.Color<caret>");
-
-        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
-        assertEquals("Css_AtomicTypes.Color", e.getQualifiedName());
-    }
-
+    //region Variants
     @Test
     public void test_local_variant() {
         configureCode("A.re", "type a = | Variant; let _ = Variant<caret>");
@@ -168,6 +184,54 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
         RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
         assertEquals("A.Variant", e.getQualifiedName());
     }
+    //endregion
+
+    //region Poly-variants
+    @Test
+    public void test_local_poly_variant() {
+        configureCode("A.re", "type a = [ | `Variant ]; let _ = `Variant<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.#Variant", ((RPsiVariantDeclaration) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_with_path() {
+        configureCode("A.re", "type a = [ | `Variant ];");
+        configureCode("B.re", "type b = [ | `Variant ];");
+        configureCode("C.re", "A.`Variant<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.#Variant", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_module_alias() {
+        configureCode("Aaa.re", "type t = [ | `Test ];");
+        configureCode("Bbb.re", "module A = Aaa; A.`Test<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.#Test", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_module_alias_inner() {
+        configureCode("Aaa.re", "module Option = { type t = [ | `Test ]; };");
+        configureCode("Bbb.re", "module A = Aaa; A.Option.`Test<caret>");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("Aaa.Option.#Test", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_poly_variant_constructor() {
+        configureCode("A.re", "type a = | `Variant(int);");
+        configureCode("B.re", "let _ = A.`Variant<caret>(1);");
+
+        RPsiVariantDeclaration e = (RPsiVariantDeclaration) myFixture.getElementAtCaret();
+        assertEquals("A.#Variant", e.getQualifiedName());
+    }
+    //endregion
 
     @Test
     public void test_exception() {
@@ -343,6 +407,16 @@ public class ResolveUpperElementRMLTest extends ORBasePlatformTestCase {
                 """);
 
         PsiElement e = myFixture.getElementAtCaret();  // not found -> AssertionError
+    }
+
+    @Test
+    public void test_local_open() {
+        configureCode("AsyncHooks.re", "module XhrAsync = {};");
+        configureCode("DashboardReducers.re", "type t = | IncrementVersion;");
+        configureCode("A.re", "let _ = AsyncHooks.XhrAsync.(dispatch(. DashboardReducers<caret>.IncrementVersion));");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("DashboardReducers", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/418

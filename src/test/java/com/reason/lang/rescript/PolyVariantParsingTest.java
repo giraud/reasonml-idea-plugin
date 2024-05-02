@@ -14,17 +14,18 @@ public class PolyVariantParsingTest extends ResParsingTestCase {
     @Test
     public void test_basic_LIdent() {
         RPsiLet e = firstOfType(parseCode("let x = #red"), RPsiLet.class);
-        PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
+        RPsiLowerSymbol ev = firstOfType(e.getBinding(), RPsiLowerSymbol.class);
 
-        assertEquals("#red", variant.getText());
+        assertEquals("#red", ev.getText());
+        assertEquals(myTypes.POLY_VARIANT, ev.getNode().getElementType());
     }
 
     @Test
     public void test_basic_UIdent() {
-        RPsiLet e = firstOfType(parseCode("let x = #Red"), RPsiLet.class);
-        PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), myTypes.POLY_VARIANT));
+        RPsiUpperSymbol e = firstOfType(parseCode("let _ = #Red;"), RPsiUpperSymbol.class);
 
-        assertEquals("#Red", variant.getText());
+        assertEquals("#Red", e.getText());
+        assertEquals(myTypes.POLY_VARIANT, e.getNode().getElementType());
     }
 
     @Test

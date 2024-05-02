@@ -180,6 +180,7 @@ public class OclTypes extends ORLangTypes {
         EXCEPTION = new ORTokenElementType("EXCEPTION", OclLanguage.INSTANCE);
         EXCLAMATION_MARK = new ORTokenElementType("EXCLAMATION_MARK", OclLanguage.INSTANCE);
         EXTERNAL = new ORTokenElementType("EXTERNAL", OclLanguage.INSTANCE);
+        PIPE_FIRST = new ORTokenElementType("PIPE_FIRST", OclLanguage.INSTANCE);
         FOR = new ORTokenElementType("FOR", OclLanguage.INSTANCE);
         TYPE_ARGUMENT = new ORTokenElementType("TYPE_ARGUMENT", OclLanguage.INSTANCE);
         GT = new ORTokenElementType("GT", OclLanguage.INSTANCE);

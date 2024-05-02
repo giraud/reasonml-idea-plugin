@@ -9,6 +9,7 @@ import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.*;
 import com.reason.ide.search.*;
+import com.reason.ide.search.index.*;
 import com.reason.ide.search.reference.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;

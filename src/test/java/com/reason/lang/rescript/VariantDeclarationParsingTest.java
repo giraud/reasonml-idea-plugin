@@ -59,10 +59,10 @@ public class VariantDeclarationParsingTest extends ResParsingTestCase {
         assertEquals(2, declarations.size());
         assertEquals("Hex", declarations.get(0).getVariant().getText());
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(0).getVariant().getNode().getElementType());
-        assertEquals(1, declarations.get(0).getParameterList().size());
+        assertEquals(1, declarations.get(0).getParametersList().size());
         assertEquals("Rgb", declarations.get(1).getVariant().getText());
         assertEquals(myTypes.A_VARIANT_NAME, declarations.get(1).getVariant().getNode().getElementType());
-        assertEquals(3, declarations.get(1).getParameterList().size());
+        assertEquals(3, declarations.get(1).getParametersList().size());
     }
 
     @Test
@@ -73,9 +73,9 @@ public class VariantDeclarationParsingTest extends ResParsingTestCase {
         assertEquals(2, declarations.size());
         assertEquals("Hex", declarations.get(0).getVariant().getText());
         // assertTrue(declarations.get(0).getVariant().isVariant());
-        assertEquals(1, declarations.get(0).getParameterList().size());
+        assertEquals(1, declarations.get(0).getParametersList().size());
         assertEquals("Rgb", declarations.get(1).getVariant().getText());
-        assertEquals(3, declarations.get(1).getParameterList().size());
+        assertEquals(3, declarations.get(1).getParametersList().size());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class VariantDeclarationParsingTest extends ResParsingTestCase {
         assertEquals(3, declarations.size());
         assertEquals("Cannot", declarations.get(0).getVariant().getText());
         // assertTrue(declarations.get(0).getVariant().isVariant());
-        assertEquals(1, declarations.get(0).getParameterList().size());
+        assertEquals(1, declarations.get(0).getParametersList().size());
         assertEquals("Loose", declarations.get(1).getVariant().getText());
         assertEquals("Strict", declarations.get(2).getVariant().getText());
     }
