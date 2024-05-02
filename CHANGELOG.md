@@ -9,7 +9,9 @@
 > - :nail_care:  [Polish]
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
-             
+
+**NOTE**: minimal version supported is **2023.2**
+
 # 0.124 - 2024/05/02
 
 - parsers updates, resolution updates
