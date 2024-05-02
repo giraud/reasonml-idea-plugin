@@ -34,14 +34,9 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>461 - Parameter signature element incorrectly referenced</li>
-                    <li>460 - Keywords used as identifier</li>
-                    <li>459 - Convert to light services</li>
-                    <li>458 - Pipe first operator chaining not correctly parsed in rescript</li>
-                    <li>456 - OCaml function parameters incorrectly parsed if using tuples</li>
-                    <li>455 - Color scheme improvements request for records and functions (OCaml)</li>
-                    <li>453 - Completion of records when using mixin</li>
-                    <li>450 - Can’t rename a module</li>
+                    <li>Parsers updates, resolution updates</li>
+                    <li>Completion of js objects in Rescript</li>
+                    <li>Remove violations fonud by plugin verifier</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
