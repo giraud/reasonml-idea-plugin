@@ -225,8 +225,9 @@ public class ORReferenceAnalyzer {
                 for (int i = resolutions.size() - 1; i >= 0; i--) {
                     ResolutionElement resolution = resolutions.get(i);
                     PsiElement resolvedElement = resolution.getOriginalElement();
+                    String fieldName = foundSymbol.getValue();
+
                     if (resolvedElement instanceof RPsiLet resolvedLet) {
-                        String fieldName = foundSymbol.getValue();
                         Collection<? extends RPsiField> fields = isRecord ? resolvedLet.getRecordFields() : resolvedLet.getJsObjectFields();
                         RPsiField field = fields.stream().filter(f -> fieldName.equals(f.getName())).findFirst().orElse(null);
                         if (field != null) {
@@ -239,7 +240,6 @@ public class ORReferenceAnalyzer {
                         }
                         break;
                     } else if (resolvedElement instanceof RPsiType resolvedType) {
-                        String fieldName = foundSymbol.getValue();
                         Collection<? extends RPsiField> fields = isRecord ? resolvedType.getRecordFields() : resolvedType.getJsObjectFields();
                         RPsiField field = fields.stream().filter(f -> fieldName.equals(f.getName())).findFirst().orElse(null);
                         if (field != null) {
@@ -252,7 +252,6 @@ public class ORReferenceAnalyzer {
                         }
                         break;
                     } else if (resolvedElement instanceof RPsiField resolvedField) {
-                        String fieldName = foundSymbol.getValue();
                         RPsiFieldValue resolvedFieldValue = resolvedField.getValue();
                         PsiElement resolvedValue = resolvedFieldValue == null ? null : resolvedFieldValue.getFirstChild();
                         // field of field
@@ -299,6 +298,8 @@ public class ORReferenceAnalyzer {
                             }
                         }
                     } else if (resolvedElement instanceof RPsiQualifiedPathElement resolvedQPathElement && !resolution.isInContext) {
+                        List<RPsiQualifiedPathElement> resolvedSignatures = null;
+
                         // Special case for a signature item that has same name than its item
                         // ex: let _ = (store: store) => ...
                         if (resolvedElement instanceof RPsiParameterDeclaration resolvedDeclaration) {
@@ -308,6 +309,14 @@ public class ORReferenceAnalyzer {
                                 if (resolvedSignature == foundSignatureParent) {
                                     // Do not process
                                     continue;
+                                } else if (resolvedSignature.getItems().size() == 1) {
+                                    // stack overflow
+                                    // TODO: optimise, do not re-evaluate code outside signature
+                                    //PsiElement sourceSignatureItem = resolvedSignature.getItems().get(0).getLastChild();
+                                    // TODO: optimise, reuse existing resolutions
+                                    //Deque<PsiElement> instructions1 = createInstructions(sourceSignatureItem, true, ORUtil.getTypes(resolvedDeclaration.getLanguage()));
+                                    //instructions1.addLast(sourceSignatureItem);
+                                    //resolvedSignatures = resolveInstructions(instructions1, openedModules, project, scope);
                                 }
                             }
                         } else if (resolvedElement instanceof RPsiType resolvedType) {
@@ -327,6 +336,12 @@ public class ORReferenceAnalyzer {
                                 resolutions.clear();
                                 result.add(resolvedQPathElement);
                             } else {
+                                if (resolvedSignatures != null) {
+                                    // a declaration with a signature resolved to its type
+                                    for (RPsiQualifiedPathElement resolvedSignature : resolvedSignatures) {
+                                        resolutions.add(new ResolutionElement(resolvedSignature, true));
+                                    }
+                                }
                                 // can be a record or an object
                                 resolutions.add(new ResolutionElement(resolvedQPathElement, true));
                             }
