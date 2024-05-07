@@ -556,6 +556,20 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
         assertEquals("A.Styles.x", e.getQualifiedName());
     }
 
+    @Test
+    public void test_parameter_signature() {
+        configureCode("A.re", """
+                module A1 = {
+                  type t = { a: int, b: int };
+                };
+                let x = (p0: A1.t) => { p0.a<caret> };
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("A.A1.t.a", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
     //region record
     @Test
     public void test_record_type() {

@@ -370,7 +370,6 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
     }
     //endregion
 
-
     //region Poly-variants
     @Test
     public void test_local_poly_variant() {
@@ -503,6 +502,20 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
 
         RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
         assertEquals("Pervasives.compare", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_parameter_signature() {
+        configureCode("A.ml", """
+                module A1 = struct
+                  type t = { a: int; b: int }
+                end
+                let x (p0: A1.t) = p0.a<caret>
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("A.A1.t.a", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
     //region record

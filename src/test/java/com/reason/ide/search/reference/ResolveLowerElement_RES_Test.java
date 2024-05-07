@@ -589,6 +589,20 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
         assertEquals("B.B1.B2.B3.id", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
+    @Test
+    public void test_parameter_signature() {
+        configureCode("A.res", """
+                module A1 = {
+                  type t = { a: int, b: int }
+                }
+                let x = (p0: A1.t) => { p0.a<caret> }
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("A.A1.t.a", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/452
     @Test
     public void test_GH_452_resolve_unpacked_module() {
