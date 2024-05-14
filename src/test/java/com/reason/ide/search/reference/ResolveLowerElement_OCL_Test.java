@@ -256,7 +256,15 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_qualified() {
-        configureCode("A.ml", "module B = struct module C = struct type t end end\n module D = B\n include D.C");
+        configureCode("A.ml", """
+                module B = struct
+                  module C = struct
+                    type t
+                  end
+                end
+                module D = B
+                include D.C
+                """);
         configureCode("C.ml", "type t = A.t<caret>");
 
         RPsiType e = (RPsiType) myFixture.getElementAtCaret();

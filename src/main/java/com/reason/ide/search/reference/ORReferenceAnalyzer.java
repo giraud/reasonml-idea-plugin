@@ -216,6 +216,8 @@ public class ORReferenceAnalyzer {
                 firstInPath = true;
             }
 
+            boolean isLastInstruction = instructions.isEmpty();
+
             if (instruction instanceof SymbolField foundSymbol) {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Processing field", instruction);
@@ -350,7 +352,7 @@ public class ORReferenceAnalyzer {
                         // Try to resolve instruction from a module
                         String qName = resolvedModule.getQualifiedName();
                         String resolvedQName = qName != null ? qName : "";
-                        for (PsiElement alternateResolvedElement : resolvePath(resolvedQName, project, scope, 0)) {
+                        for (PsiElement alternateResolvedElement : resolvePath(resolvedQName, project, scope, true, 0)) {
                             if (alternateResolvedElement instanceof RPsiModule alternateResolvedModule) {
                                 String pathToResolve = alternateResolvedModule.getQualifiedName() + "." + foundLowerName;
 
@@ -442,7 +444,7 @@ public class ORReferenceAnalyzer {
 
                                 Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) containingFile).getValues(resolvedElement);
                                 for (String alternateQName : alternateNames) {
-                                    List<ResolutionElement> resolutionElements = resolvePath(alternateQName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                                    List<ResolutionElement> resolutionElements = resolvePath(alternateQName, project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                                     if (LOG.isTraceEnabled()) {
                                         LOG.trace(" > local module found, add alternate names [" + Joiner.join(", ", resolutionElements) + "]");
                                     }
@@ -466,7 +468,7 @@ public class ORReferenceAnalyzer {
                         String resolvedQName = resolvedModule.getQualifiedName();
                         String pathToResolve = resolvedQName + "." + foundUpperName;
 
-                        List<ResolutionElement> resolutionElements = resolvePath(pathToResolve, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                        List<ResolutionElement> resolutionElements = resolvePath(pathToResolve, project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                         if (LOG.isTraceEnabled()) {
                             LOG.trace(" > local module found, add alternate names [" + Joiner.join(", ", resolutionElements) + "]");
                         }
@@ -474,12 +476,13 @@ public class ORReferenceAnalyzer {
                         if (!resolutionElements.isEmpty()) {
                             found = true;
                             resolutions.clear();
-                            resolutions.addAll(resolutionElements);
 
                             // If latest instruction, it is final result
-                            if (instructions.isEmpty()) {
+                            if (isLastInstruction) {
                                 List<RPsiQualifiedPathElement> foundElements = resolutionElements.stream().map(r -> r.getOriginalElement() instanceof RPsiQualifiedPathElement ? ((RPsiQualifiedPathElement) r.getOriginalElement()) : null).filter(Objects::nonNull).toList();
                                 result.addAll(foundElements);
+                            } else {
+                                resolutions.addAll(resolutionElements);
                             }
                         }
                         // If it’s the last element, we can be more specific
@@ -563,7 +566,7 @@ public class ORReferenceAnalyzer {
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element
                     // We need to analyze the path and resolve each part
-                    List<ResolutionElement> resolvedPaths = resolvePath(foundOpen.getPath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                    List<ResolutionElement> resolvedPaths = resolvePath(foundOpen.getPath(), project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                     if (LOG.isTraceEnabled()) {
                         LOG.trace(" > no alternate names, add resolutions: [" + Joiner.join(", ", resolvedPaths) + "]");
                     }
@@ -571,7 +574,7 @@ public class ORReferenceAnalyzer {
                 } else {
                     // resolve alternate top level modules
                     for (String alternateName : alternateNames) {
-                        List<ResolutionElement> resolvedPaths = resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
+                        List<ResolutionElement> resolvedPaths = resolvePath(alternateName, project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                         if (LOG.isTraceEnabled()) {
                             LOG.trace(" > alternate name [" + alternateName + "], add resolutions: [" + Joiner.join(", ", resolvedPaths) + "]");
                         }
@@ -588,11 +591,11 @@ public class ORReferenceAnalyzer {
                 Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) containingFile).getValues(foundInclude);
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element, we need to analyze the path and resolve each part
-                    resolutions.addAll(resolvePath(foundInclude.getIncludePath(), project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
+                    resolutions.addAll(resolvePath(foundInclude.getIncludePath(), project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                 } else {
                     // Resolve alternate top level modules
                     for (String alternateName : alternateNames) {
-                        resolutions.addAll(resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
+                        resolutions.addAll(resolvePath(alternateName, project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                     }
                 }
             }
@@ -610,12 +613,12 @@ public class ORReferenceAnalyzer {
                         // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                         String name = foundTag.getName();
                         if (name != null) {
-                            resolutions.addAll(resolvePath(name, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
+                            resolutions.addAll(resolvePath(name, project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                         }
                     } else {
                         // Resolve alternate top level modules
                         for (String alternateName : alternateNames) {
-                            resolutions.addAll(resolvePath(alternateName, project, scope, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
+                            resolutions.addAll(resolvePath(alternateName, project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
                         }
                     }
                 }
@@ -653,7 +656,7 @@ public class ORReferenceAnalyzer {
         return element instanceof RPsiInnerModule && ((RPsiInnerModule) element).isModuleType();
     }
 
-    public static List<PsiElement> resolvePath(@NotNull String path, @NotNull Project project, @NotNull GlobalSearchScope scope, int level) {
+    public static List<PsiElement> resolvePath(@NotNull String path, @NotNull Project project, @NotNull GlobalSearchScope scope, boolean useAlternateNames, int level) {
         List<PsiElement> pathResolutions = new ArrayList<>();
 
         if (level < MAX_PATH_RESOLUTION_LEVEL) {
@@ -666,11 +669,13 @@ public class ORReferenceAnalyzer {
 
                 ModuleIndexService moduleIndexService = getApplication().getService(ModuleIndexService.class);
 
-                // Get all alternate resolutions for top level file
-                ORModuleResolutionPsiGist.Data topLevelData = ORModuleResolutionPsiGist.getData((FileBase) topLevel);
-                for (String topLevelAlternateName : topLevelData.getValues(topLevel)) {
-                    Collection<RPsiModule> topLevelAlternates = moduleIndexService.getModules(topLevelAlternateName, project, scope);
-                    pathResolutions.addAll(topLevelAlternates);
+                if (useAlternateNames) {
+                    // Get all alternate resolutions for top level file
+                    ORModuleResolutionPsiGist.Data topLevelData = ORModuleResolutionPsiGist.getData((FileBase) topLevel);
+                    for (String topLevelAlternateName : topLevelData.getValues(topLevel)) {
+                        Collection<RPsiModule> topLevelAlternates = moduleIndexService.getModules(topLevelAlternateName, project, scope);
+                        pathResolutions.addAll(topLevelAlternates);
+                    }
                 }
 
                 // Append path token to every resolved element to try to resolve new ones
@@ -683,11 +688,13 @@ public class ORReferenceAnalyzer {
                         String pathToResolve = name + "." + pathToken;
                         for (RPsiModule module : ModuleFqnIndex.getElements(pathToResolve, project, scope)) {
                             newPathResolutions.add(module);
-                            PsiFile containingFile = module.getContainingFile();
-                            ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(containingFile);
-                            for (String alternateModuleQName : data.getValues(module)) {
-                                if (!pathToResolve.equals(alternateModuleQName)) {
-                                    newPathResolutions.addAll(resolvePath(alternateModuleQName, project, scope, level + 1));
+                            if (useAlternateNames) {
+                                PsiFile containingFile = module.getContainingFile();
+                                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(containingFile);
+                                for (String alternateModuleQName : data.getValues(module)) {
+                                    if (!pathToResolve.equals(alternateModuleQName)) {
+                                        newPathResolutions.addAll(resolvePath(alternateModuleQName, project, scope, true, level + 1));
+                                    }
                                 }
                             }
                         }

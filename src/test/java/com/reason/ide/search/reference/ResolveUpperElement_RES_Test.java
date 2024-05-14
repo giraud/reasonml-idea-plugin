@@ -387,6 +387,38 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
         assertEquals("A.Styles", e.getQualifiedName());
     }
 
+    @Test
+    public void test_not_resolve_alternate_name() {
+        configureCode("A.res", "");
+        configureCode("B.res", """
+                module B1 = {
+                  include A
+                }
+                """);
+        configureCode("C.res", """
+                module C1 = B.B1<caret>
+                """);
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("B.B1", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_xxxx() {
+        configureCode("AlertingStoreEx.res", """
+                module Core = {
+                }
+                """);
+        configureCode("A.res", """
+                module ASTore = AlertingStoreEx.Core
+                module EAlert = AStore.Entity.Alert
+                module M = EAlert.AlertType<caret>
+                """);
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("A.Styles", e.getQualifiedName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/418
     @Test
     public void test_with_globally_opened_module() {
