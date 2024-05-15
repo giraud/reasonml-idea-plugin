@@ -315,6 +315,40 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
         assertEquals("A.B.C.S", e.getQualifiedName());
     }
 
+    @Test
+    public void test_not_resolve_alternate_name() {
+        configureCode("A.ml", "");
+        configureCode("B.ml", """
+                module B1 = struct
+                  include A
+                end
+                """);
+        configureCode("C.ml", """
+                module C1 = B.B1<caret>
+                """);
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("B.B1", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_with_include() {
+        configureCode("A.ml", "module A1 = struct module A2 = struct module A3 = struct end end end");
+        configureCode("B.ml", """
+                module B1 = struct
+                  include A
+                end
+                """);
+        configureCode("C.ml", """
+                module C1 = B.B1
+                module C2 = C1.A1.A2
+                module M = C2.A3<caret>
+                """);
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("A.A1.A2.A3", e.getQualifiedName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/426
     @Test
     public void test_alias_resolution_same_file() {
