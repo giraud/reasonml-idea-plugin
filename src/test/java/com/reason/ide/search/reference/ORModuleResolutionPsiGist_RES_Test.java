@@ -11,6 +11,7 @@ import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
+import java.io.*;
 import java.util.*;
 
 import static java.util.List.copyOf;
@@ -118,10 +119,10 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
                 module A1 = {
                   module A2 = {}
                 }
-                
+                                
                 module B1 = A1
                 include B1
-                
+                                
                 module B2 = A2
                 include B2
                 """);
@@ -194,23 +195,18 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
         assertOrderedEquals(data.getValues(em/*X*/), "A.A1.A11");
     }
 
-
     @Test
-    public void test_alias_of_alias() {
+    public void test_alias_of_alias_01() {
         configureCode("A.res", """
                 module A1 = {
-                    module A2 = {
-                      let id = "_new_"
-                    }
+                    module A2 = { let id = "_new_" }
                 }
                 """);
 
         configureCode("B.res", """
                 module B1 = {
                   module B2 = {
-                    module B3 = {
-                      let id = A.A1.A2.id
-                    }
+                    module B3 = { let id = A.A1.A2.id }
                   }
                 }
                                 
@@ -228,8 +224,58 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
-        RPsiModule em = ORUtil.findImmediateLastChildOfClass(e, RPsiModule.class);
-        assertOrderedEquals(data.getValues(em/*C2*/), "B.B1.B2.B3");
+        List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
+        assertOrderedEquals(data.getValues(ems.get(0)/*C1*/), "B.B4", "A");
+        assertOrderedEquals(data.getValues(ems.get(1)/*C2*/), "B.B1.B2.B3");
+    }
+
+    @Test
+    public void test_alias_of_alias_02() {
+        configureCode("A.res", """
+                module A1 = {
+                    module A2 = { }
+                }
+                """);
+        configureCode("B.res", """
+                module B1 = {
+                  include A
+                }
+                """);
+        FileBase e = configureCode("C.res", """
+                module C1 = B.B1
+                module C2 = C1.A1
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
+        assertOrderedEquals(data.getValues(ems.get(0)/*C1*/), "B.B1", "A");
+        assertOrderedEquals(data.getValues(ems.get(1)/*C2*/), "A.A1");
+    }
+
+    @Test
+    public void test_alias_of_alias_03() {
+        configureCode("A.res", "module A1 = {}");
+        configureCode("B.res", "include A");
+        FileBase e = configureCode("C.res", """
+                module C1 = B
+                module C2 = C1.A1
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
+        assertOrderedEquals(data.getValues(ems.get(0)/*C1*/), "B", "A");
+        assertOrderedEquals(data.getValues(ems.get(1)/*C2*/), "A.A1");
+    }
+
+    @Test
+    public void test_stack_overflow() {
+        configureCode("B.res", "module B1 = C");
+        FileBase e = configureCode("C.res", "module C1 = B");
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+        // Should not generate a StackOverflow error
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/426

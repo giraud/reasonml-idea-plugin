@@ -312,7 +312,7 @@ public class ORReferenceAnalyzer {
                                     // Do not process
                                     continue;
                                 } else if (resolvedSignature.getItems().size() == 1) {
-                                    // stack overflow
+                                    // !!! Stack overflow
                                     // TODO: optimise, do not re-evaluate code outside signature
                                     //PsiElement sourceSignatureItem = resolvedSignature.getItems().get(0).getLastChild();
                                     // TODO: optimise, reuse existing resolutions
@@ -638,6 +638,7 @@ public class ORReferenceAnalyzer {
                     }
                 }
             } else {
+                // find alternate names if upper element
                 ResolutionElement res = new ResolutionElement(instruction);
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Add instruction [" + res + "]");
