@@ -3,6 +3,7 @@ package com.reason.ide.intentions;
 import com.intellij.codeInsight.intention.*;
 import com.intellij.codeInspection.util.*;
 import com.intellij.lang.*;
+import com.intellij.openapi.command.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
@@ -28,19 +29,17 @@ public class FunctionBracesIntention implements IntentionAction {
     }
 
     @Override
-    public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+    public boolean isAvailable(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
         if (file instanceof RmlFile || file instanceof ResFile) {
             RPsiFunction function = getTarget(editor, file);
-            if (function != null) {
-                RPsiFunctionBody body = function.getBody();
-                PsiElement firstChild = body == null ? null : body.getFirstChild();
-                if (firstChild instanceof RPsiScopedExpr) {
-                    firstChild = firstChild.getFirstChild();
-                    ORLangTypes types = ORUtil.getTypes(function.getLanguage());
-                    return firstChild != null && firstChild.getNode().getElementType() != types.LBRACE;
-                } else {
-                    return true;
-                }
+            RPsiFunctionBody body = function != null ? function.getBody() : null;
+            PsiElement bodyChild = body != null ? body.getFirstChild() : null;
+            if (bodyChild instanceof RPsiScopedExpr scopedExpr) {
+                PsiElement scopeChild = scopedExpr.getFirstChild();
+                ORLangTypes types = ORUtil.getTypes(function.getLanguage());
+                return scopeChild != null && scopeChild.getNode().getElementType() != types.LBRACE;
+            } else {
+                return true;
             }
         }
 
@@ -48,26 +47,22 @@ public class FunctionBracesIntention implements IntentionAction {
     }
 
     @Override
-    public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) throws IncorrectOperationException {
         RPsiFunction function = getTarget(editor, file);
-        if (function != null) {
-            RPsiFunctionBody body = function.getBody();
-            if (body != null) {
-                String text = function.getText();
-                int bodyOffset = body.getStartOffsetInParent();
-                String def = text.substring(0, bodyOffset);
-                String bodyText = text.substring(bodyOffset);
-                Language language = function.getLanguage();
-                String newExpression = language == RmlLanguage.INSTANCE ? "let x = " + def + "{ " + bodyText + "; };" : "let x = " + def + "{ " + bodyText + " }";
-                RPsiLet newSyntax = (RPsiLet) ORCodeFactory.createExpression(project, language, newExpression);
-                if (newSyntax != null) {
-                    RPsiFunction newFunction = newSyntax.getFunction();
-                    if (newFunction != null) {
-                        RPsiFunctionBody newBody = newFunction.getBody();
-                        if (newBody != null) {
-                            function.getNode().replaceChild(body.getNode(), newBody.getNode());
-                        }
-                    }
+        RPsiFunctionBody body = function != null ? function.getBody() : null;
+        if (body != null) {
+            String text = function.getText();
+            int bodyOffset = body.getStartOffsetInParent();
+            String def = text.substring(0, bodyOffset);
+            String bodyText = text.substring(bodyOffset);
+            Language language = function.getLanguage();
+            String newExpression = language == RmlLanguage.INSTANCE ? "let x = " + def + "{ " + bodyText + "; };" : "let x = " + def + "{ " + bodyText + " }";
+            PsiElement newSyntax = ORCodeFactory.createExpression(project, language, newExpression);
+            if (newSyntax instanceof RPsiLet newLetSyntax) {
+                RPsiFunction newFunction = newLetSyntax.getFunction();
+                RPsiFunctionBody newBody = newFunction != null ? newFunction.getBody() : null;
+                if (newBody != null) {
+                    WriteCommandAction.runWriteCommandAction(project, null, null, () -> function.getNode().replaceChild(body.getNode(), newBody.getNode()), file);
                 }
             }
         }
@@ -81,6 +76,6 @@ public class FunctionBracesIntention implements IntentionAction {
     @Nullable
     private RPsiFunction getTarget(@NotNull Editor editor, @NotNull PsiFile file) {
         PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
-        return element == null ? null : PsiTreeUtil.getParentOfType(element, RPsiFunction.class);
+        return element != null ? PsiTreeUtil.getParentOfType(element, RPsiFunction.class) : null;
     }
 }
