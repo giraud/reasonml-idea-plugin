@@ -49,7 +49,7 @@ public class ORPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerS
 
         // Gather instructions from element up to the file root
         //Deque<PsiElement> instructionsOLD = ORReferenceAnalyzer.createInstructionsOLD(myElement, true, myTypes);
-        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, true, myTypes);
+        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructionsBackward(myElement, true, myTypes);
 
         // Test if source element is part of a record/object chain
         if (ORUtil.isPrevType(myElement, myTypes.SHARPSHARP)) { // ReasonML: JsObject field

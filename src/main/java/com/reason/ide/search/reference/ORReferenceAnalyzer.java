@@ -40,7 +40,7 @@ public class ORReferenceAnalyzer {
     }
 
     // Walk through the file - from element up to the root - and extract instructions
-    static @NotNull Deque<PsiElement> createInstructions(@NotNull PsiElement sourceElement, boolean isLower, @NotNull ORLangTypes types) {
+    static @NotNull Deque<PsiElement> createInstructionsBackward(@NotNull PsiElement sourceElement, boolean isLower, @NotNull ORLangTypes types) {
         Deque<PsiElement> instructions = new LinkedList<>();
         boolean skipDeclaration = false;
 
@@ -171,6 +171,31 @@ public class ORReferenceAnalyzer {
         return instructions;
     }
 
+    static @NotNull Deque<PsiElement> createInstructionsForward(@NotNull PsiElement sourceElement, @NotNull ORLangTypes types) {
+        Deque<PsiElement> instructions = new LinkedList<>();
+
+        PsiElement item = sourceElement;
+        ASTNode itemNode;
+        IElementType itemType;
+
+        while (item != null) {
+            itemNode = item.getNode();
+            itemType = itemNode != null ? itemNode.getElementType() : null;
+
+            if (itemType == types.A_MODULE_NAME) {
+                instructions.addLast(instructions.isEmpty() ? new FirstInPath(item) : item);
+            } else if (itemType == types.LIDENT) {
+                instructions.addLast(item);
+            }
+
+            // one step forward
+            PsiElement nextItem = ORUtil.nextSibling(item);
+            item = nextItem == null ? item.getFirstChild() : nextItem;
+        }
+
+        return instructions;
+    }
+
     public static boolean isInPath(@NotNull PsiElement sourceElement, @NotNull ORLangTypes types) {
         PsiElement prevLeaf = PsiTreeUtil.prevLeaf(sourceElement);
         IElementType prevLeafType = ORUtil.getNodeType(prevLeaf);
@@ -178,14 +203,12 @@ public class ORReferenceAnalyzer {
     }
 
     static @NotNull List<RPsiQualifiedPathElement> resolveInstructions(@NotNull Deque<PsiElement> instructions, @Nullable Set<String> openedModules, @NotNull Project project, @NotNull GlobalSearchScope scope) {
-        List<RPsiQualifiedPathElement> result = new ArrayList<>();
-
         List<ResolutionElement> resolutions = new ArrayList<>(); // temporary resolutions
 
         // First instruction is always current file, if not there is a problem during parsing
-        PsiElement containingFile = instructions.removeFirst();
-        if (!(containingFile instanceof FileBase)) {
-            return result;
+        PsiElement file = instructions.removeFirst();
+        if (!(file instanceof FileBase containingFile)) {
+            return new ArrayList<>();
         }
 
         PsiManager psiManager = PsiManager.getInstance(project);
@@ -205,6 +228,12 @@ public class ORReferenceAnalyzer {
                 }
             }
         }
+
+        return processInstructions(instructions, resolutions, containingFile, psiManager, project, scope);
+    }
+
+    static @NotNull List<RPsiQualifiedPathElement> processInstructions(@NotNull Deque<PsiElement> instructions, @NotNull List<ResolutionElement> resolutions, @NotNull FileBase sourceFile, @NotNull PsiManager psiManager, @NotNull Project project, @NotNull GlobalSearchScope scope) {
+        List<RPsiQualifiedPathElement> result = new ArrayList<>();
 
         LOG.trace("Instructions to process", instructions);
 
@@ -313,12 +342,13 @@ public class ORReferenceAnalyzer {
                                     continue;
                                 } else if (resolvedSignature.getItems().size() == 1) {
                                     // !!! Stack overflow
-                                    // TODO: optimise, do not re-evaluate code outside signature
-                                    //PsiElement sourceSignatureItem = resolvedSignature.getItems().get(0).getLastChild();
-                                    // TODO: optimise, reuse existing resolutions
-                                    //Deque<PsiElement> instructions1 = createInstructions(sourceSignatureItem, true, ORUtil.getTypes(resolvedDeclaration.getLanguage()));
-                                    //instructions1.addLast(sourceSignatureItem);
-                                    //resolvedSignatures = resolveInstructions(instructions1, openedModules, project, scope);
+                                    PsiElement sourceChild = resolvedSignature.getItems().get(0);
+                                    if (sourceChild instanceof RPsiSignatureItem sourceSignatureItem) {
+                                        Deque<PsiElement> instructionsForward = createInstructionsForward(sourceSignatureItem, ORTypesUtil.getInstance(sourceSignatureItem.getLanguage()));
+                                        ArrayList<ResolutionElement> resolutionElements = new ArrayList<>(resolutions);
+                                        resolutionElements.remove(resolutionElements.size() - 1); // Last element is parameterDeclaration, not wanted
+                                        resolvedSignatures = processInstructions(instructionsForward, resolutionElements, sourceFile, psiManager, project, scope);
+                                    }
                                 }
                             }
                         } else if (resolvedElement instanceof RPsiType resolvedType) {
@@ -442,7 +472,7 @@ public class ORReferenceAnalyzer {
                                 resolutions.clear();
                                 resolutions.add(new ResolutionElement(resolvedModule, true));
 
-                                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) containingFile).getValues(resolvedElement);
+                                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData(sourceFile).getValues(resolvedElement);
                                 for (String alternateQName : alternateNames) {
                                     List<ResolutionElement> resolutionElements = resolvePath(alternateQName, project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                                     if (LOG.isTraceEnabled()) {
@@ -561,7 +591,7 @@ public class ORReferenceAnalyzer {
 
                 // Search for alternate paths using gist
                 // This is a recursive function (if not end of instruction)
-                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData((FileBase) containingFile);
+                ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(sourceFile);
                 Collection<String> alternateNames = data.getValues(foundOpen); // add path to data ?
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element
@@ -588,7 +618,7 @@ public class ORReferenceAnalyzer {
                 LOG.trace("Processing include");
 
                 // Search for alternate paths using gist
-                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) containingFile).getValues(foundInclude);
+                Collection<String> alternateNames = ORModuleResolutionPsiGist.getData(sourceFile).getValues(foundInclude);
                 if (alternateNames.isEmpty()) {
                     // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                     resolutions.addAll(resolvePath(foundInclude.getIncludePath(), project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList());
@@ -608,7 +638,7 @@ public class ORReferenceAnalyzer {
                     RPsiTagStart foundTag = (RPsiTagStart) instruction;
 
                     // Search for alternate paths using gist
-                    Collection<String> alternateNames = ORModuleResolutionPsiGist.getData((FileBase) containingFile).getValues(foundTag);
+                    Collection<String> alternateNames = ORModuleResolutionPsiGist.getData(sourceFile).getValues(foundTag);
                     if (alternateNames.isEmpty()) {
                         // No alternate names, it is a direct element, we need to analyze the path and resolve each part
                         String name = foundTag.getName();

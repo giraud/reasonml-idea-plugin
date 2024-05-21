@@ -55,7 +55,7 @@ public class ORPsiLiteralStringReference extends ORMultiSymbolReference<RPsiLite
         }
 
         // Gather instructions from element up to the file root
-        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, true, myTypes);
+        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructionsBackward(myElement, true, myTypes);
 
         // Source element is part of an object chain
         instructions.addLast(new ORReferenceAnalyzer.SymbolField(myElement, false));
