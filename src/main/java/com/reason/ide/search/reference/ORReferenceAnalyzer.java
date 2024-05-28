@@ -247,6 +247,8 @@ public class ORReferenceAnalyzer {
 
             boolean isLastInstruction = instructions.isEmpty();
 
+            // Record or object field
+            // ----------------------
             if (instruction instanceof SymbolField foundSymbol) {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Processing field", instruction);
@@ -285,6 +287,13 @@ public class ORReferenceAnalyzer {
                     } else if (resolvedElement instanceof RPsiField resolvedField) {
                         RPsiFieldValue resolvedFieldValue = resolvedField.getValue();
                         PsiElement resolvedValue = resolvedFieldValue == null ? null : resolvedFieldValue.getFirstChild();
+                        if (resolvedValue == null && resolvedElement instanceof RPsiSignatureElement resolvedSignatureElement) {
+                            RPsiSignature signature = resolvedSignatureElement.getSignature();
+                            List<RPsiSignatureItem> signatureItems = signature == null ? null : signature.getItems();
+                            if (signatureItems != null && signatureItems.size() == 1 && signatureItems.get(0).getFirstChild() instanceof RPsiJsObject signatureObject) {
+                                resolvedValue = signatureObject;
+                            }
+                        }
                         // field of field
                         Collection<? extends RPsiField> fields = resolvedValue instanceof RPsiJsObject ? ((RPsiJsObject) resolvedValue).getFields() : resolvedValue instanceof RPsiRecord ? ((RPsiRecord) resolvedValue).getFields() : emptyList();
                         RPsiField field = fields.stream().filter(f -> fieldName.equals(f.getName())).findFirst().orElse(null);
@@ -299,7 +308,10 @@ public class ORReferenceAnalyzer {
                         break;
                     }
                 }
-            } else if (instruction instanceof RPsiLowerSymbol foundLower) {
+            }
+            // identifier
+            // ----------
+            else if (instruction instanceof RPsiLowerSymbol foundLower) {
                 String foundLowerText = foundLower.getText();
                 String foundLowerName = foundLowerText != null && !foundLowerText.isEmpty() ? (foundLowerText.charAt(0) == '`' || foundLowerText.charAt(0) == '#' ? "#" + foundLowerText.substring(1) : foundLowerText) : foundLowerText;
                 if (LOG.isTraceEnabled()) {
@@ -341,12 +353,30 @@ public class ORReferenceAnalyzer {
                                     // Do not process
                                     continue;
                                 } else if (resolvedSignature.getItems().size() == 1) {
-                                    // !!! Stack overflow
+                                    if (LOG.isTraceEnabled()) {
+                                        LOG.trace("resolvedElement: " + resolvedElement.getText() + ", file: " + resolvedElement.getContainingFile());
+                                    }
                                     PsiElement sourceChild = resolvedSignature.getItems().get(0);
                                     if (sourceChild instanceof RPsiSignatureItem sourceSignatureItem) {
+                                        if (LOG.isTraceEnabled()) {
+                                            LOG.trace("sourceSignature: " + sourceSignatureItem.getText());
+                                        }
                                         Deque<PsiElement> instructionsForward = createInstructionsForward(sourceSignatureItem, ORTypesUtil.getInstance(sourceSignatureItem.getLanguage()));
+                                        if (LOG.isTraceEnabled()) {
+                                            LOG.trace("instructionsForward: " + Joiner.join(", ", instructionsForward));
+                                        }
                                         ArrayList<ResolutionElement> resolutionElements = new ArrayList<>(resolutions);
-                                        resolutionElements.remove(resolutionElements.size() - 1); // Last element is parameterDeclaration, not wanted
+                                        // remove all latest parameter declarations
+                                        for (i = resolutionElements.size() - 1; i >= 0; i--) {
+                                            if (resolutionElements.get(i).getOriginalElement() instanceof RPsiParameterDeclaration) {
+                                                resolutionElements.remove(i);
+                                            } else {
+                                                break;
+                                            }
+                                        }
+                                        if (LOG.isTraceEnabled()) {
+                                            LOG.trace("resolutionElements: " + Joiner.join(", ", resolutionElements));
+                                        }
                                         resolvedSignatures = processInstructions(instructionsForward, resolutionElements, sourceFile, psiManager, project, scope);
                                     }
                                 }
@@ -476,7 +506,7 @@ public class ORReferenceAnalyzer {
                                 for (String alternateQName : alternateNames) {
                                     List<ResolutionElement> resolutionElements = resolvePath(alternateQName, project, scope, !isLastInstruction, 0).stream().map(element -> new ResolutionElement(element, true)).toList();
                                     if (LOG.isTraceEnabled()) {
-                                        LOG.trace(" > local module found, add alternate names [" + Joiner.join(", ", resolutionElements) + "]");
+                                        LOG.trace(" > local module found (!incontext), add alternate names [" + Joiner.join(", ", resolutionElements) + "]");
                                     }
 
                                     resolutions.addAll(resolutionElements);

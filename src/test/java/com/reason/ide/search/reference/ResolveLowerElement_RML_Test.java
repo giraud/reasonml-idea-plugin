@@ -539,6 +539,31 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_path_functor_1() {
+        configureCode("E.re", """
+                module type E1Intf = {
+                  type t;
+                };
+                """);
+        configureCode("D.re", """
+                module type D1Intf = {
+                  let make: unit => unit;
+                };
+                  
+                module Make = (M: E.E1Intf): D1Intf => {
+                  let make = () => ();
+                };
+                """);
+        configureCode("C.re", "module C1 = D;");
+        configureCode("B.re", "module Instance = C.C1.Make(X);");
+        configureCode("A.re", "let _ = B.Instance.make<caret>;");
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("D.D1Intf.make", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_global_local() {
         configureCode("Styles.re", "");
         configureCode("B.re", "");

@@ -2,11 +2,15 @@ package com.reason.ide.insight.provider;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.files.*;
+import com.reason.ide.search.*;
 import com.reason.ide.search.index.*;
 import com.reason.ide.search.reference.*;
 import com.reason.lang.*;
@@ -121,6 +125,29 @@ public class DotExpressionCompletionProvider {
         }
     }
 
+    private static void addInnerModuleExpressions(@NotNull RPsiInnerModule module, @NotNull Collection<PsiNamedElement> expressions, @NotNull GlobalSearchScope scope) {
+        PsiElement signature = module.getModuleSignature();
+        PsiElement body = signature != null ? signature : module.getBody();
+        addChildren(body, expressions);
+
+        // TODO: prevent stack overflow
+        PsiFile moduleFile = module.getContainingFile();
+        Project project = module.getProject();
+        Collection<String> alternateQNames = ORModuleResolutionPsiGist.getData(moduleFile).getValues(module);
+        for (String alternateQName : alternateQNames) {
+            if (alternateQName.contains(".")) {
+                for (RPsiModule alternateModule : ModuleFqnIndex.getElements(alternateQName, project, scope)) {
+                    addModuleExpressions(alternateModule, expressions, scope);
+                }
+            } else {
+                for (VirtualFile topModule : FileModuleIndex.getContainingFiles(alternateQName, scope)) {
+                    PsiFile file = PsiManagerEx.getInstanceEx(project).findFile(topModule);
+                    addModuleExpressions(file, expressions, scope);
+                }
+            }
+        }
+    }
+
     private static void addFileExpressions(@NotNull FileBase file, @NotNull Collection<PsiNamedElement> expressions, @NotNull GlobalSearchScope scope) {
         Collection<String> alternativeQNames = ORModuleResolutionPsiGist.getData(file).getValues(file);
         for (String alternativeQName : alternativeQNames) {
@@ -163,43 +190,6 @@ public class DotExpressionCompletionProvider {
             if (resolvedReturnType instanceof RPsiInnerModule resolvedReturnModuleType) {
                 addInnerModuleExpressions(resolvedReturnModuleType, expressions, scope);
             }
-        }
-    }
-
-    private static void addInnerModuleExpressions(@NotNull RPsiInnerModule module, @NotNull Collection<PsiNamedElement> expressions, @NotNull GlobalSearchScope scope) {
-        if (module.getAlias() != null) { // use gist alternate names ?
-            PsiElement resolvedAlias = ORUtil.resolveModuleSymbol(module.getAliasSymbol());
-            addModuleExpressions(resolvedAlias, expressions, scope);
-        } else if (module.isFunctorCall()) {
-            RPsiFunctorCall functorCall = module.getFunctorCall();
-
-            RPsiUpperSymbol referenceIdentifier = functorCall == null ? null : functorCall.getReferenceIdentifier();
-            ORPsiUpperSymbolReference reference = referenceIdentifier == null ? null : referenceIdentifier.getReference();
-            PsiElement resolvedElement = reference == null ? null : reference.resolveInterface();
-            if (resolvedElement != null) {
-                addModuleExpressions(resolvedElement, expressions, scope);
-            }
-        } else if (module.getUnpack() != null) {
-            RPsiLowerSymbol firstClassSymbol = module.getUnpack().getFirstClassSymbol();
-            ORPsiLowerSymbolReference symbolReferenceIdentifier = firstClassSymbol != null ? firstClassSymbol.getReference() : null;
-            PsiElement resolvedFirstClassSymbol = symbolReferenceIdentifier != null ? symbolReferenceIdentifier.resolve() : null;
-            if (resolvedFirstClassSymbol instanceof RPsiSignatureElement signatureElement) {
-                RPsiSignature signature = signatureElement.getSignature();
-                if (signature instanceof RPsiModuleSignature firstClassModuleSignature) {
-                    RPsiUpperSymbol moduleReferenceIdentifier = firstClassModuleSignature.getNameIdentifier();
-                    ORPsiUpperSymbolReference moduleReference = moduleReferenceIdentifier != null ? moduleReferenceIdentifier.getReference() : null;
-                    PsiElement resolvedFirstClassModule = moduleReference != null ? moduleReference.resolve() : null;
-                    if (resolvedFirstClassModule != null) {
-                        addModuleExpressions(resolvedFirstClassModule, expressions, scope);
-                    }
-                }
-            }
-        } else {
-            PsiElement body = module.getModuleSignature();
-            if (body == null) {
-                body = module.getBody();
-            }
-            addChildren(body, expressions);
         }
     }
 

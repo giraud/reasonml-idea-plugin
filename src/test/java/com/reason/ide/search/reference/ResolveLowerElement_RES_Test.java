@@ -444,6 +444,31 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_path_functor_1() {  // TODO other langs
+        configureCode("E.res", """
+                module type E1Intf = {
+                  type t
+                }
+                """);
+        configureCode("D.res", """
+                module type D1Intf = {
+                  let make: unit => unit
+                }
+                  
+                module Make = (M: E.E1Intf): D1Intf => {
+                  let make = () => ()
+                }
+                """);
+        configureCode("C.res", "module C1 = D");
+        configureCode("B.res", "module Instance = C.C1.Make(X)");
+        configureCode("A.res", "let _ = B.Instance.make<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("D.D1Intf.make", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_global_local() {
         configureCode("Styles.res", "");
         configureCode("B.res", "");
@@ -506,7 +531,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
     //region object
     @Test
-    public void test_object_l1() {
+    public void test_object_1() {
         configureCode("A.res", """
                 let a = { "b": 1, "c": 2 }
                 a["b<caret>"]
@@ -517,7 +542,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_object_l1a() {
+    public void test_object_2() {
         configureCode("A.res", """
                 let a = { "b": 1, "c": 2 }
                 let _ = a["b<caret>"]["c"]
@@ -528,7 +553,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_object_l3() {
+    public void test_object_3() {
         configureCode("A.res", """
                 let a = { "b": { "c": { "d": 1 } } }
                 a["b"]["c"]["d<caret>"]
@@ -536,6 +561,24 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
         RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
         assertEquals("A.a.b.c.d", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_object_4() { // TODO: other lang
+        configureCode("B.res", """
+                type t = {
+                  "x": {
+                    "y": string
+                  }
+                }
+                """);
+        configureCode("A.res", """
+                let _ = (p0: B.t) => p0["x"]["y"<caret>]
+                """);
+
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("B.t.x.y", ((RPsiObjectField) e).getQualifiedName());
     }
 
     @Test

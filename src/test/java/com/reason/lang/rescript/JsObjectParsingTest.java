@@ -38,10 +38,10 @@ public class JsObjectParsingTest extends ResParsingTestCase {
     }
 
     @Test
-    public void test_definition() {
+    public void test_definition() {   // TODO: update other lang
         RPsiType e = first(typeExpressions(parseCode("""
                 type t = {
-                  "a": UUID.t, "b": array<int>
+                  "a": UUID.t, "b": { "c": array<int> }
                 }
                 """)));
 
@@ -50,11 +50,16 @@ public class JsObjectParsingTest extends ResParsingTestCase {
         assertNotNull(object);
 
         List<RPsiObjectField> fields = new ArrayList<>(object.getFields());
-        assertEquals(2, fields.size());
+        assertSize(2, fields);
         assertEquals("a", fields.get(0).getName());
         assertEquals("UUID.t", fields.get(0).getSignature().getText());
         assertEquals("b", fields.get(1).getName());
-        assertEquals("array<int>", fields.get(1).getSignature().getText());
+        assertEquals("{ \"c\": array<int> }", fields.get(1).getSignature().getText());
+        RPsiSignatureItem si0 = fields.get(1).getSignature().getItems().get(0);
+        List<RPsiObjectField> si0fs = ((RPsiJsObject) si0.getFirstChild()).getFields();
+        assertEquals("c", si0fs.get(0).getName());
+        assertEquals("array<int>", si0fs.get(0).getSignature().getText());
+
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTagStart.class));
     }
 
