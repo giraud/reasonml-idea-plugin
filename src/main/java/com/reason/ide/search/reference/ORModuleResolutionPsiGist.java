@@ -184,14 +184,14 @@ public class ORModuleResolutionPsiGist {
                             if (!found) {
                                 // Get functor call path
                                 String qName = visitedModule.getBody() == null ? functorCall.getName() : ORUtil.getLongIdent(visitedModule.getBody().getFirstChild());
-                                for (RPsiModule module : ModuleFqnIndex.getElements(qName, myProject, myScope)) {
-                                    String moduleQName = module.getQualifiedName();
-                                    if (moduleQName != null) {
-                                        element.putUserData(RESOLUTION, module);
+                                ResolvedQName resolvedQName = resolveQName(qName, moduleIndexService);
+                                if (resolvedQName.found) {
+                                    RPsiQualifiedPathElement resolvedFunctor = resolvedQName.resolvedElement;
+                                    String functorQName = resolvedFunctor.getQualifiedName();
+                                    if (functorQName != null) {
+                                        element.putUserData(RESOLUTION, resolvedFunctor);
                                         myModulesInContext.add(element);
-                                        myResult.addValue(getIndex(element), moduleQName);
-
-                                        break;
+                                        myResult.addValue(getIndex(element), functorQName);
                                     }
                                 }
                             }
@@ -204,108 +204,10 @@ public class ORModuleResolutionPsiGist {
                     }
                 } else {
                     // module X = A.B.C
-                    String[] aliasPath = alias.split("\\.");
-                    int aliasLength = aliasPath.length;
-                    RPsiQualifiedPathElement resolvedPart = null;
+                    ResolvedQName resolvedQName = resolveQName(alias, moduleIndexService);
+                    RPsiQualifiedPathElement resolvedPart = resolvedQName.resolvedElement;
 
-                    // First element of path, iterate backward to find a matching local resolution
-                    for (int i1 = myModulesInContext.size() - 1; i1 >= 0; i1--) {
-                        PsiElement elementInContext = myModulesInContext.get(i1);
-                        if (elementInContext instanceof RPsiInnerModule moduleInContext) {
-                            String moduleInContextName = moduleInContext.getModuleName() == null ? "" : moduleInContext.getModuleName();
-
-                            if (aliasPath[0].equals(moduleInContextName)) {
-                                RPsiQualifiedPathElement resolvedModule = moduleInContext.getUserData(RESOLUTION);
-                                resolvedPart = resolvedModule == null ? moduleInContext : resolvedModule;
-                                break;
-                            }
-                        }
-                        // Try to combine a previous include/open
-                        //   module A = { module A1 = {} }; module B = A; include B; module C = A1
-                        else if (elementInContext instanceof RPsiInclude || elementInContext instanceof RPsiOpen) {
-                            RPsiQualifiedPathElement moduleInContext = follow(elementInContext);
-                            if (moduleInContext != null) {
-                                String pathToTest = moduleInContext.getQualifiedName() + "." + aliasPath[0];
-                                Collection<RPsiModule> psiModules = ModuleFqnIndex.getElements(pathToTest, myProject, myScope);
-                                if (!psiModules.isEmpty()) {
-                                    resolvedPart = fullResolution(psiModules.iterator().next());
-                                }
-                            }
-                        }
-                    }
-
-                    // First element of path not defined in local file, try global access
-                    if (resolvedPart == null) {
-                        Collection<RPsiModule> modules = moduleIndexService.getModules(aliasPath[0], myProject, myScope);
-                        if (!modules.isEmpty() && modules.size() <= 2) {
-                            resolvedPart = modules.iterator().next();
-                        }
-                    }
-
-                    if (resolvedPart != null) {
-                        found = aliasLength == 1;
-
-                        List<String> resolvedAlternateNames = new ArrayList<>();
-                        resolvedAlternateNames.add(resolvedPart.getQualifiedName());
-
-                        // Maybe resolved module include other modules and we need to add them as alternate names
-                        PsiFile resolvedContainingFile = resolvedPart.getContainingFile();
-                        if (resolvedContainingFile instanceof FileBase resolvedContainingFileBase) {
-                            String resolvedFileModuleName = resolvedContainingFileBase.getModuleName();
-                            if (resolvedFileModuleName.equals(mySourceModuleName)) {
-                                LOG.warn("Circular dependency detected: source=" + mySourceModuleName + ", current=" + myFileModuleName);
-                            } else if (!myFileModuleName.equals(resolvedFileModuleName)) {
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("Use another GIST [from " + myFileModuleName + "] : " + ORFileUtils.getVirtualFile(resolvedContainingFile));
-                                }
-                                // Maybe resolved module include other modules and we need to add them as alternate names.
-                                // We can’t reuse the gist here because of mutual calls and possibility of stack overflow.
-                                PsiWalker visitor = new PsiWalker(resolvedContainingFileBase, mySourceModuleName != null ? mySourceModuleName : myFileModuleName);
-                                resolvedContainingFileBase.accept(visitor);
-                                Data data = visitor.getResult();
-                                Collection<String> values = data.getValues(resolvedPart);
-                                resolvedAlternateNames.addAll(values);
-                            }
-                        }
-
-                        // Resolve each part of alias, for each alternate names
-                        for (String resolvedAlternateName : resolvedAlternateNames) {
-                            for (int i = 1; i < aliasLength; i++) {
-                                String qName = (i == 1 ? resolvedAlternateName : resolvedPart.getQualifiedName()) + "." + aliasPath[i];
-                                resolvedPart = findGlobalResolution(qName, moduleIndexService);
-                                if (resolvedPart == null) {
-                                    break;
-                                } else {
-                                    if (resolvedPart instanceof RPsiInnerModule resolvedPartModule) {
-                                        String resolvedAlias = resolvedPartModule.getAlias();
-                                        if (resolvedAlias != null) {
-                                            PsiFile resolvedPartModuleContainingFile = resolvedPartModule.getContainingFile();
-                                            if (myModulesInContext.get(0) instanceof FileBase currentFile) {
-                                                if (currentFile != resolvedPartModuleContainingFile) {
-                                                    // outside element, we can use the already created gist
-                                                    Data resolvedGistData = getData(resolvedPartModuleContainingFile);
-                                                    Collection<String> alternateNames = resolvedGistData.getValues(resolvedPartModule);
-                                                    if (!alternateNames.isEmpty()) {
-                                                        Collection<RPsiModule> alternateModules = moduleIndexService.getModules(alternateNames.iterator().next(), myProject, myScope);
-                                                        if (!alternateModules.isEmpty()) {
-                                                            resolvedPart = alternateModules.iterator().next();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    found = i == aliasLength - 1;
-                                }
-                            }
-
-                            if (found) {
-                                break;
-                            }
-                        }
-                    }
-
-                    if (found && resolvedPart != null) {
+                    if (resolvedQName.found && resolvedPart != null) {
                         String index = getIndex(element);
 
                         element.putUserData(RESOLUTION, resolvedPart);
@@ -679,6 +581,118 @@ public class ORModuleResolutionPsiGist {
             }
         }
 
+        record ResolvedQName(boolean found, RPsiQualifiedPathElement resolvedElement /*TODO: multiple elements?*/) {
+        }
+
+        // Follow a path one element by one element, using alternate names for each resolution
+        private ResolvedQName resolveQName(@NotNull String qName, ModuleIndexService moduleIndexService) {
+            String[] aliasPath = qName.split("\\.");
+            int aliasLength = aliasPath.length;
+            RPsiQualifiedPathElement resolvedPart = null;
+
+            boolean found = false;
+
+            // First element of path, iterate backward to find a matching local resolution
+            for (int i1 = myModulesInContext.size() - 1; i1 >= 0; i1--) {
+                PsiElement elementInContext = myModulesInContext.get(i1);
+                if (elementInContext instanceof RPsiInnerModule moduleInContext) {
+                    String moduleInContextName = moduleInContext.getModuleName() == null ? "" : moduleInContext.getModuleName();
+
+                    if (aliasPath[0].equals(moduleInContextName)) {
+                        RPsiQualifiedPathElement resolvedModule = moduleInContext.getUserData(RESOLUTION);
+                        resolvedPart = resolvedModule == null ? moduleInContext : resolvedModule;
+                        break;
+                    }
+                }
+                // Try to combine a previous include/open
+                //   module A = { module A1 = {} }; module B = A; include B; module C = A1
+                else if (elementInContext instanceof RPsiInclude || elementInContext instanceof RPsiOpen) {
+                    RPsiQualifiedPathElement moduleInContext = follow(elementInContext);
+                    if (moduleInContext != null) {
+                        String pathToTest = moduleInContext.getQualifiedName() + "." + aliasPath[0];
+                        Collection<RPsiModule> psiModules = ModuleFqnIndex.getElements(pathToTest, myProject, myScope);
+                        if (!psiModules.isEmpty()) {
+                            resolvedPart = fullResolution(psiModules.iterator().next());
+                        }
+                    }
+                }
+            }
+
+            // First element of path not defined in local file, try global access
+            if (resolvedPart == null) {
+                Collection<RPsiModule> modules = moduleIndexService.getModules(aliasPath[0], myProject, myScope);
+                if (!modules.isEmpty() && modules.size() <= 2) {
+                    resolvedPart = modules.iterator().next();
+                }
+            }
+
+
+            if (resolvedPart != null) {
+                found = aliasLength == 1;
+
+                List<String> resolvedAlternateNames = new ArrayList<>();
+                resolvedAlternateNames.add(resolvedPart.getQualifiedName());
+
+                // Maybe resolved module include other modules and we need to add them as alternate names
+                PsiFile resolvedContainingFile = resolvedPart.getContainingFile();
+                if (resolvedContainingFile instanceof FileBase resolvedContainingFileBase) {
+                    String resolvedFileModuleName = resolvedContainingFileBase.getModuleName();
+                    if (resolvedFileModuleName.equals(mySourceModuleName)) {
+                        LOG.warn("Circular dependency detected: source=" + mySourceModuleName + ", current=" + myFileModuleName);
+                    } else if (!myFileModuleName.equals(resolvedFileModuleName)) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Use another GIST [from " + myFileModuleName + "] : " + ORFileUtils.getVirtualFile(resolvedContainingFile));
+                        }
+                        // Maybe resolved module include other modules and we need to add them as alternate names.
+                        // We can’t reuse the gist here because of mutual calls and possibility of stack overflow.
+                        PsiWalker visitor = new PsiWalker(resolvedContainingFileBase, mySourceModuleName != null ? mySourceModuleName : myFileModuleName);
+                        resolvedContainingFileBase.accept(visitor);
+                        Data data = visitor.getResult();
+                        Collection<String> values = data.getValues(resolvedPart);
+                        resolvedAlternateNames.addAll(values);
+                    }
+                }
+
+                // Resolve each part of alias, for each alternate names
+                for (String resolvedAlternateName : resolvedAlternateNames) {
+                    for (int i = 1; i < aliasLength; i++) {
+                        String alternateQName = (i == 1 ? resolvedAlternateName : resolvedPart.getQualifiedName()) + "." + aliasPath[i];
+                        resolvedPart = findGlobalResolution(alternateQName, moduleIndexService);
+                        if (resolvedPart == null) {
+                            break;
+                        } else {
+                            if (resolvedPart instanceof RPsiInnerModule resolvedPartModule) {
+                                String resolvedAlias = resolvedPartModule.getAlias();
+                                if (resolvedAlias != null) {
+                                    PsiFile resolvedPartModuleContainingFile = resolvedPartModule.getContainingFile();
+                                    if (myModulesInContext.get(0) instanceof FileBase currentFile) {
+                                        if (currentFile != resolvedPartModuleContainingFile) {
+                                            // outside element, we can use the already created gist
+                                            Data resolvedGistData = getData(resolvedPartModuleContainingFile);
+                                            Collection<String> alternateNames = resolvedGistData.getValues(resolvedPartModule);
+                                            if (!alternateNames.isEmpty()) {
+                                                Collection<RPsiModule> alternateModules = moduleIndexService.getModules(alternateNames.iterator().next(), myProject, myScope);
+                                                if (!alternateModules.isEmpty()) {
+                                                    resolvedPart = alternateModules.iterator().next();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            found = i == aliasLength - 1;
+                        }
+                    }
+
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+
+            return new ResolvedQName(found, resolvedPart);
+        }
+
         private RPsiQualifiedPathElement findGlobalResolution(String name, ModuleIndexService moduleIndexService) {
             Collection<RPsiModule> modules = moduleIndexService.getModules(name, myProject, myScope);
             if (!modules.isEmpty() && modules.size() <= 2) {
@@ -756,7 +770,10 @@ public class ORModuleResolutionPsiGist {
         @Override
         protected void elementFinished(PsiElement element) {
             IElementType type = element.getNode().getElementType();
-            if (type == myTypes.C_MODULE_DECLARATION) {
+            if (type == myTypes.C_FUNCTOR_DECLARATION) {
+                RPsiFunctor functor = (RPsiFunctor) element;
+                myModulesInContext.add(functor);
+            } else if (type == myTypes.C_MODULE_DECLARATION) {
                 RPsiInnerModule module = (RPsiInnerModule) element;
                 myModulesInContext.add(module);
                 // If there are any (top-binding) includes in the module, they are equivalent

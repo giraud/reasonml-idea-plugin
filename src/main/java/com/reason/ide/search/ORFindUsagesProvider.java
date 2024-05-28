@@ -14,7 +14,8 @@ public abstract class ORFindUsagesProvider implements FindUsagesProvider {
                 element instanceof RPsiLet || element instanceof RPsiVal ||
                 element instanceof RPsiType || element instanceof RPsiExternal ||
                 element instanceof RPsiRecordField || element instanceof RPsiObjectField ||
-                element instanceof RPsiVariantDeclaration || element instanceof RPsiParameterDeclaration;
+                element instanceof RPsiVariantDeclaration || element instanceof RPsiParameterDeclaration ||
+                (element instanceof RPsiLowerSymbol && element.getParent() instanceof RPsiDeconstruction);
     }
 
     @Override

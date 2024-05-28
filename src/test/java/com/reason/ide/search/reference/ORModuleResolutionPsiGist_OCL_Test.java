@@ -489,6 +489,30 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_functor_path() {
+        configureCode("D.ml", """
+                module type D1Intf = sig
+                  type t
+                end
+                """);
+        configureCode("C.ml", """
+                module type C1Intf = sig
+                  val make: unit => string
+                end
+                  
+                module Make (MX: D.D1Intf): C1Intf = struct
+                  let make () = ""
+                end
+                """);
+        configureCode("B.ml", "module B1 = C");
+        FileBase e = configureCode("A.ml", "module Instance = B.B1.Make(X)");
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+        RPsiModule em = PsiTreeUtil.findChildOfType(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em/*Instance*/), "C.Make");
+    }
+
+    @Test
     public void test_unpack_local() {
         FileBase e = configureCode("A.ml", """
                 module type I = sig val x : int end

@@ -41,7 +41,7 @@ public class ORPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperS
                 return ResolveResult.EMPTY_ARRAY;
             }
         } else if (parent instanceof RPsiFunctor || parent instanceof RPsiException || parent instanceof RPsiVariantDeclaration) {
-            LOG.debug("Declaration found, skip reference resolution", myReferenceName);
+            //LOG.debug("Declaration found, skip reference resolution", myReferenceName);
             return ResolveResult.EMPTY_ARRAY;
         }
 

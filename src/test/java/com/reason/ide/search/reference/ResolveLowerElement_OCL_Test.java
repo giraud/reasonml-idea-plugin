@@ -512,6 +512,31 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
         assertEquals("Pervasives.compare", e.getQualifiedName());
     }
 
+    //@Test TODO: fix
+    public void test_path_functor_1() {
+        configureCode("E.ml", """
+                module type E1Intf = sig
+                  type t
+                end
+                """);
+        configureCode("D.ml", """
+                module type D1Intf = sig
+                  val make: unit -> unit
+                end
+                  
+                module Make = (M: E.E1Intf): D1Intf = struct
+                  let make () = ()
+                end
+                """);
+        configureCode("C.ml", "module C1 = D");
+        configureCode("B.ml", "module Instance = C.C1.Make(X)");
+        configureCode("A.ml", "let _ = B.Instance.make<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("D.D1Intf.make", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
     @Test
     public void test_parameter_signature() {
         configureCode("A.ml", """

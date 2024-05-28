@@ -1,6 +1,5 @@
 package com.reason.ide.search.reference;
 
-import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
@@ -11,10 +10,9 @@ import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
-import java.io.*;
 import java.util.*;
 
-import static java.util.List.copyOf;
+import static java.util.List.*;
 
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
@@ -378,12 +376,50 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_functor_instance_same_file() {   // TODO other langs
+        configureCode("B.res", "module type Result = { let a: int }");
+        FileBase e = configureCode("A.res", """
+                module Make = (M:Intf): (B.Result with type t := M.t) => {}
+                module Instance = Make({})
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+        List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
+
+        assertOrderedEquals(data.getValues(ems.get(1)/*Make*/), "A.Make");
+    }
+
+    @Test
     public void test_file_include_functor() {
         FileBase e = configureCode("A.res", "module Make = () => { let y = 1 }\n include Make()");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         assertOrderedEquals(data.getValues(e), "A.Make");
+    }
+
+    @Test
+    public void test_functor_path() {
+        configureCode("D.res", """
+                module type D1Intf = {
+                  type t
+                }
+                """);
+        configureCode("C.res", """
+                module type C1Intf = {
+                  let make: unit => string
+                }
+                  
+                module Make = (MX: D.D1Intf): C1Intf => {
+                  let make = () => ""
+                }
+                """);
+        configureCode("B.res", "module B1 = C");
+        FileBase e = configureCode("A.res", "module Instance = B.B1.Make(X)");
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+        RPsiModule em = PsiTreeUtil.findChildOfType(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em/*Instance*/), "C.Make");
     }
 
     @Test
