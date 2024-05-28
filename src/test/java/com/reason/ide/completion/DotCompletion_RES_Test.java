@@ -64,18 +64,16 @@ public class DotCompletion_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_single_alias() {
-        // like ReasonReact.Router
-        configureCode("ReasonReactRouter.resi", "type watcherID");
-        configureCode("ReasonReact.resi", "module Router = ReasonReactRouter");
-
-        configureCode("Dummy.res", "ReasonReact.Router.<caret>");
+    public void test_single_alias() {  // TODO: other?
+        configureCode("C.resi", "type t");
+        configureCode("B.resi", "module B1 = C");
+        configureCode("A.res", "B.B1.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
 
         assertSize(1, elements);
-        assertEquals("watcherID", elements.get(0));
+        assertEquals("t", elements.get(0));
     }
 
     @Test

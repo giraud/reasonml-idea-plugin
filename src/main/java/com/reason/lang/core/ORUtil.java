@@ -366,12 +366,6 @@ public class ORUtil {
         return isALias ? aliasName.toString() : null;
     }
 
-    public static @Nullable PsiElement resolveModuleSymbol(@Nullable RPsiUpperSymbol moduleSymbol) {
-        ORPsiUpperSymbolReference reference = moduleSymbol == null ? null : moduleSymbol.getReference();
-        PsiElement resolvedSymbol = reference == null ? null : reference.resolveInterface();
-        return resolvedSymbol instanceof RPsiUpperSymbol ? resolvedSymbol.getParent() : resolvedSymbol;
-    }
-
     public static <T> @NotNull List<T> findPreviousSiblingsOrParentOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
         List<T> result = new ArrayList<>();
 
@@ -387,21 +381,6 @@ public class ORUtil {
         }
 
         return result;
-    }
-
-    public static <T> @Nullable T findPreviousSiblingOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
-        PsiElement previous = element.getPrevSibling();
-        PsiElement prevSibling = previous == null ? element.getParent() : previous;
-        while (prevSibling != null) {
-            if (clazz.isInstance(prevSibling)) {
-                //noinspection unchecked
-                return (T) prevSibling;
-            }
-            previous = prevSibling.getPrevSibling();
-            prevSibling = previous == null ? prevSibling.getParent() : previous;
-        }
-
-        return null;
     }
 
     public static @Nullable <T extends PsiNamedElement> T findImmediateNamedChildOfClass(@Nullable PsiElement element, @NotNull Class<T> clazz, @NotNull String name) {

@@ -365,6 +365,30 @@ public class ORModuleResolutionPsiGist_RML_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_functor_path() {
+        configureCode("D.re", """
+                module type D1Intf = {
+                  type t;
+                };
+                """);
+        configureCode("C.re", """
+                module type C1Intf = {
+                  let make: unit => string;
+                };
+                  
+                module Make = (MX: D.D1Intf): C1Intf => {
+                  let make = () => "";
+                };
+                """);
+        configureCode("B.re", "module B1 = C;");
+        FileBase e = configureCode("A.re", "module Instance = B.B1.Make(X);");
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+        RPsiModule em = PsiTreeUtil.findChildOfType(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em/*Instance*/), "C.Make");
+    }
+
+    @Test
     public void test_module_type_inside() {
         FileBase e = configureCode("A.re", """
                 module type S = {};

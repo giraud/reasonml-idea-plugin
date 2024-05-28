@@ -247,6 +247,8 @@ public class ORReferenceAnalyzer {
 
             boolean isLastInstruction = instructions.isEmpty();
 
+            // Record or object field
+            // ----------------------
             if (instruction instanceof SymbolField foundSymbol) {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("Processing field", instruction);
@@ -299,7 +301,10 @@ public class ORReferenceAnalyzer {
                         break;
                     }
                 }
-            } else if (instruction instanceof RPsiLowerSymbol foundLower) {
+            }
+            // identifier
+            // ----------
+            else if (instruction instanceof RPsiLowerSymbol foundLower) {
                 String foundLowerText = foundLower.getText();
                 String foundLowerName = foundLowerText != null && !foundLowerText.isEmpty() ? (foundLowerText.charAt(0) == '`' || foundLowerText.charAt(0) == '#' ? "#" + foundLowerText.substring(1) : foundLowerText) : foundLowerText;
                 if (LOG.isTraceEnabled()) {
