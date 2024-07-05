@@ -17,7 +17,7 @@ public class ORStructureViewModel extends StructureViewModelBase implements com.
 
     @Override
     public Filter @NotNull [] getFilters() {
-        return new Filter[]{new NestedFunctionsFilter()};
+        return new Filter[]{new NestedFunctionsFilter(), new ShowVariableFilter()};
     }
 
     @Override
