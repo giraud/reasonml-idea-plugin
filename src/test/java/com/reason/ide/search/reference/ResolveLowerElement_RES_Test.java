@@ -2,6 +2,7 @@ package com.reason.ide.search.reference;
 
 import com.intellij.psi.*;
 import com.reason.ide.*;
+import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -743,5 +744,22 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.store", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/475
+    @Test
+    public void test_GH_475_stack_overflow() {
+        configureCode("A.res", """
+                type t = { id: string, name: string }
+                
+                let isSame = (item:t, item':t) => {
+                  let sameId = item.id == item'.id
+                  let sameName = item.name<caret> == item'.name
+                  sameId && sameName
+                }
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();  // must not throw StackOverflowError
+        assertEquals("A.t.name", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 }
