@@ -365,10 +365,18 @@ public class ORReferenceAnalyzer {
                                         if (LOG.isTraceEnabled()) {
                                             LOG.trace("instructionsForward: " + Joiner.join(", ", instructionsForward));
                                         }
+
                                         ArrayList<ResolutionElement> resolutionElements = new ArrayList<>(resolutions);
-                                        // remove all latest parameter declarations
+
+                                        // The resolved element is a parameter, hence we need to remove all elements that are found
+                                        // after the latest parameters, and all the latest parameters
+                                        // ex: let (x,y) => { let z = ...; <caret> }   -- x,y and z must be removed
+                                        boolean parameterFound = false;
                                         for (i = resolutionElements.size() - 1; i >= 0; i--) {
                                             if (resolutionElements.get(i).getOriginalElement() instanceof RPsiParameterDeclaration) {
+                                                parameterFound = true;
+                                                resolutionElements.remove(i);
+                                            } else if (!parameterFound) {
                                                 resolutionElements.remove(i);
                                             } else {
                                                 break;
@@ -377,6 +385,7 @@ public class ORReferenceAnalyzer {
                                         if (LOG.isTraceEnabled()) {
                                             LOG.trace("resolutionElements: " + Joiner.join(", ", resolutionElements));
                                         }
+
                                         resolvedSignatures = processInstructions(instructionsForward, resolutionElements, sourceFile, psiManager, project, scope);
                                     }
                                 }
