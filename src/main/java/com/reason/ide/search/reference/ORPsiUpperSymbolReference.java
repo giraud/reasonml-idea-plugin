@@ -41,7 +41,7 @@ public class ORPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperS
                 return ResolveResult.EMPTY_ARRAY;
             }
         } else if (parent instanceof RPsiFunctor || parent instanceof RPsiException || parent instanceof RPsiVariantDeclaration) {
-            LOG.debug("Declaration found, skip reference resolution", myReferenceName);
+            //LOG.debug("Declaration found, skip reference resolution", myReferenceName);
             return ResolveResult.EMPTY_ARRAY;
         }
 
@@ -56,7 +56,7 @@ public class ORPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperS
         }
 
         // Gather instructions from element up to the file root
-        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, false, myTypes);
+        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructionsBackward(myElement, false, myTypes);
         boolean inPath = ORReferenceAnalyzer.isInPath(myElement, myTypes);
         instructions.addLast(inPath ? myElement : new ORReferenceAnalyzer.FirstInPath(myElement));
 

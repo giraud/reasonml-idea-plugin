@@ -256,7 +256,15 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_qualified() {
-        configureCode("A.ml", "module B = struct module C = struct type t end end\n module D = B\n include D.C");
+        configureCode("A.ml", """
+                module B = struct
+                  module C = struct
+                    type t
+                  end
+                end
+                module D = B
+                include D.C
+                """);
         configureCode("C.ml", "type t = A.t<caret>");
 
         RPsiType e = (RPsiType) myFixture.getElementAtCaret();
@@ -369,7 +377,6 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
         assertEquals("A.x", e.getQualifiedName());
     }
     //endregion
-
 
     //region Poly-variants
     @Test
@@ -503,6 +510,45 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
 
         RPsiExternal e = (RPsiExternal) myFixture.getElementAtCaret();
         assertEquals("Pervasives.compare", e.getQualifiedName());
+    }
+
+    //@Test TODO: fix
+    public void test_path_functor_1() {
+        configureCode("E.ml", """
+                module type E1Intf = sig
+                  type t
+                end
+                """);
+        configureCode("D.ml", """
+                module type D1Intf = sig
+                  val make: unit -> unit
+                end
+                  
+                module Make = (M: E.E1Intf): D1Intf = struct
+                  let make () = ()
+                end
+                """);
+        configureCode("C.ml", "module C1 = D");
+        configureCode("B.ml", "module Instance = C.C1.Make(X)");
+        configureCode("A.ml", "let _ = B.Instance.make<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("D.D1Intf.make", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_parameter_signature() {
+        configureCode("A.ml", """
+                module A1 = struct
+                  type t = { a: int; b: int }
+                end
+                let x (p0: A1.t) = p0.a<caret>
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("A.A1.t.a", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
     //region record

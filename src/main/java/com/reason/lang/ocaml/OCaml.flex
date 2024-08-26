@@ -259,11 +259,12 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 }
 
 <IN_OCAML_ML_COMMENT> {
-    "(*" { if (!inCommentString) commentDepth += 1; }
-    "*)" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
-    "\"" { inCommentString = !inCommentString; }
+    "'" . "'"      { /* a char */ }
+    "(*"           { if (!inCommentString) commentDepth += 1; }
+    "*)"           { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
+    "\""           { inCommentString = !inCommentString; }
      . | {NEWLINE} { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
+    <<EOF>>        { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

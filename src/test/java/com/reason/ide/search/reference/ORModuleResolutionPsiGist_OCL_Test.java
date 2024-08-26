@@ -278,8 +278,49 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
-        RPsiModule em = ORUtil.findImmediateLastChildOfClass(e, RPsiModule.class);
-        assertOrderedEquals(data.getValues(em/*C2*/), "B.B1.B2.B3");
+        List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
+        assertOrderedEquals(data.getValues(ems.get(0)/*C1*/), "B.B4", "A");
+        assertOrderedEquals(data.getValues(ems.get(1)/*C2*/), "B.B1.B2.B3");
+    }
+
+    @Test
+    public void test_alias_of_alias_02() {
+        configureCode("A.ml", """
+                module A1 = struct
+                    module A2 = struct end
+                end
+                """);
+        configureCode("B.ml", """
+                module B1 = struct
+                  include A
+                end
+                """);
+        FileBase e = configureCode("C.ml", """
+                module C1 = B.B1
+                module C2 = C1.A1
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
+        assertOrderedEquals(data.getValues(ems.get(0)/*C1*/), "B.B1", "A");
+        assertOrderedEquals(data.getValues(ems.get(1)/*C2*/), "A.A1");
+    }
+
+    @Test
+    public void test_alias_of_alias_03() {
+        configureCode("A.ml", "module A1 = struct end");
+        configureCode("B.ml", "include A");
+        FileBase e = configureCode("C.ml", """
+                module C1 = B
+                module C2 = C1.A1
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+
+        List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
+        assertOrderedEquals(data.getValues(ems.get(0)/*C1*/), "B", "A");
+        assertOrderedEquals(data.getValues(ems.get(1)/*C2*/), "A.A1");
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/426
@@ -445,6 +486,30 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
         assertOrderedEquals(data.getValues(e), "A.Make");
+    }
+
+    @Test
+    public void test_functor_path() {
+        configureCode("D.ml", """
+                module type D1Intf = sig
+                  type t
+                end
+                """);
+        configureCode("C.ml", """
+                module type C1Intf = sig
+                  val make: unit => string
+                end
+                  
+                module Make (MX: D.D1Intf): C1Intf = struct
+                  let make () = ""
+                end
+                """);
+        configureCode("B.ml", "module B1 = C");
+        FileBase e = configureCode("A.ml", "module Instance = B.B1.Make(X)");
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+        RPsiModule em = PsiTreeUtil.findChildOfType(e, RPsiModule.class);
+        assertOrderedEquals(data.getValues(em/*Instance*/), "C.Make");
     }
 
     @Test

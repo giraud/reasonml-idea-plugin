@@ -16,24 +16,28 @@ import java.util.*;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private final PsiElement myElement;
-    private final PsiElement m_viewElement;
+    private final PsiElement myViewElement;
     private final int myLevel;
-    private final boolean m_navigateToViewElement;
+    private final boolean myNavigateToViewElement;
 
     StructureViewElement(@NotNull PsiElement element, int level) {
         this(null, element, false, level);
     }
 
     private StructureViewElement(@Nullable PsiElement viewElement, @NotNull PsiElement element, boolean navigateToViewElement, int level) {
-        m_viewElement = viewElement;
+        myViewElement = viewElement;
         myElement = element;
-        m_navigateToViewElement = navigateToViewElement;
+        myNavigateToViewElement = navigateToViewElement;
         myLevel = level;
     }
 
     @Override
     public @NotNull Object getValue() {
-        return m_viewElement == null ? myElement : m_viewElement;
+        return myViewElement == null ? myElement : myViewElement;
+    }
+
+    public PsiElement getElement() {
+        return myElement;
     }
 
     int getLevel() {
@@ -43,7 +47,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @Override
     public void navigate(boolean requestFocus) {
         if (myElement instanceof NavigationItem) {
-            NavigationItem targetElement = (NavigationItem) (m_navigateToViewElement ? m_viewElement : myElement);
+            NavigationItem targetElement = (NavigationItem) (myNavigateToViewElement ? myViewElement : myElement);
             assert targetElement != null;
             targetElement.navigate(requestFocus);
         }
@@ -63,7 +67,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @Override
     public @NotNull String getAlphaSortKey() {
         String name = null;
-        PsiElement element = m_viewElement == null ? myElement : m_viewElement;
+        PsiElement element = myViewElement == null ? myElement : myViewElement;
 
         if (element instanceof PsiNamedElement) {
             name = ((PsiNamedElement) element).getName();
@@ -78,11 +82,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
     @Override
     public @NotNull ItemPresentation getPresentation() {
-        if (m_viewElement != null) {
+        if (myViewElement != null) {
             return new ItemPresentation() {
                 @Override
                 public String getPresentableText() {
-                    return m_viewElement.getText();
+                    return myViewElement.getText();
                 }
 
                 @Override

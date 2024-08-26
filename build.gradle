@@ -34,9 +34,11 @@ intellij {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>Parsers updates, resolution updates</li>
-                    <li>Completion of js objects in Rescript</li>
-                    <li>Remove violations fonud by plugin verifier</li>
+                    <li>Fix Stack overflow</li> 
+                    <li>Enhancement: Structure panel: provide a filter setting to select whether to show variables</li>
+                    <li>'"' in comments confuses comment recognition</li>
+                    <li>Exception for action 'add braces to blockless function'</li>
+                    <li>Fix incorrect file icons</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

@@ -539,6 +539,31 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_path_functor_1() {
+        configureCode("E.re", """
+                module type E1Intf = {
+                  type t;
+                };
+                """);
+        configureCode("D.re", """
+                module type D1Intf = {
+                  let make: unit => unit;
+                };
+                  
+                module Make = (M: E.E1Intf): D1Intf => {
+                  let make = () => ();
+                };
+                """);
+        configureCode("C.re", "module C1 = D;");
+        configureCode("B.re", "module Instance = C.C1.Make(X);");
+        configureCode("A.re", "let _ = B.Instance.make<caret>;");
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("D.D1Intf.make", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_global_local() {
         configureCode("Styles.re", "");
         configureCode("B.re", "");
@@ -554,6 +579,20 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
 
         RPsiLet e = (RPsiLet) myFixture.getElementAtCaret();
         assertEquals("A.Styles.x", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_parameter_signature() {
+        configureCode("A.re", """
+                module A1 = {
+                  type t = { a: int, b: int };
+                };
+                let x = (p0: A1.t) => { p0.a<caret> };
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("A.A1.t.a", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
     //region record

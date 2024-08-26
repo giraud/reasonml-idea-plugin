@@ -2,6 +2,7 @@ package com.reason.ide.search.reference;
 
 import com.intellij.psi.*;
 import com.reason.ide.*;
+import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -444,6 +445,31 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_path_functor_1() {  // TODO other langs
+        configureCode("E.res", """
+                module type E1Intf = {
+                  type t
+                }
+                """);
+        configureCode("D.res", """
+                module type D1Intf = {
+                  let make: unit => unit
+                }
+                  
+                module Make = (M: E.E1Intf): D1Intf => {
+                  let make = () => ()
+                }
+                """);
+        configureCode("C.res", "module C1 = D");
+        configureCode("B.res", "module Instance = C.C1.Make(X)");
+        configureCode("A.res", "let _ = B.Instance.make<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("D.D1Intf.make", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
     public void test_global_local() {
         configureCode("Styles.res", "");
         configureCode("B.res", "");
@@ -506,7 +532,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
     //region object
     @Test
-    public void test_object_l1() {
+    public void test_object_1() {
         configureCode("A.res", """
                 let a = { "b": 1, "c": 2 }
                 a["b<caret>"]
@@ -517,7 +543,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_object_l1a() {
+    public void test_object_2() {
         configureCode("A.res", """
                 let a = { "b": 1, "c": 2 }
                 let _ = a["b<caret>"]["c"]
@@ -528,7 +554,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_object_l3() {
+    public void test_object_3() {
         configureCode("A.res", """
                 let a = { "b": { "c": { "d": 1 } } }
                 a["b"]["c"]["d<caret>"]
@@ -536,6 +562,24 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
         RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
         assertEquals("A.a.b.c.d", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_object_4() { // TODO: other lang
+        configureCode("B.res", """
+                type t = {
+                  "x": {
+                    "y": string
+                  }
+                }
+                """);
+        configureCode("A.res", """
+                let _ = (p0: B.t) => p0["x"]["y"<caret>]
+                """);
+
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("B.t.x.y", ((RPsiObjectField) e).getQualifiedName());
     }
 
     @Test
@@ -587,6 +631,22 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
         PsiElement e = myFixture.getElementAtCaret();
 
         assertEquals("B.B1.B2.B3.id", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_parameter_signature() {
+        configureCode("A.res", """
+                module A1 = {
+                  module A2 = {
+                    type t = { a: int, b: int }
+                  }
+                }
+                let x = (p0: A1.A2.t) => { p0.a<caret> }
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+
+        assertEquals("A.A1.A2.t.a", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/452
@@ -684,5 +744,22 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.store", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/475
+    @Test
+    public void test_GH_475_stack_overflow() {
+        configureCode("A.res", """
+                type t = { id: string, name: string }
+                
+                let isSame = (item:t, item':t) => {
+                  let sameId = item.id == item'.id
+                  let sameName = item.name<caret> == item'.name
+                  sameId && sameName
+                }
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();  // must not throw StackOverflowError
+        assertEquals("A.t.name", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 }
