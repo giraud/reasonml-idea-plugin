@@ -11,6 +11,14 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
 **NOTE**: minimal version supported is **2023.2**
+     
+# 0.125 - 2024/08/26
+
+- :bug: [#475](https://github.com/giraud/reasonml-idea-plugin/issues/475) Stack overflow 
+- :rocket: [#473](https://github.com/giraud/reasonml-idea-plugin/issues/473) Enhancement: Structure panel: provide a filter setting to select whether to show variables
+- :bug: ![o] [#469](https://github.com/giraud/reasonml-idea-plugin/issues/469) '"' in comments confuses comment recognition
+- :bug: [#465](https://github.com/giraud/reasonml-idea-plugin/issues/465) Exception for action 'add braces to blockless function'
+- :nail_care: Fix incorrect file icons
 
 # 0.124 - 2024/05/02
 
