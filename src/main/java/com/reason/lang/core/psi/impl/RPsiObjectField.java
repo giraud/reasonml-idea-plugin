@@ -12,7 +12,7 @@ import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import org.jetbrains.annotations.*;
 
-public class RPsiObjectField extends RPsiTokenStub<ORLangTypes, RPsiObjectField, PsiObjectFieldStub> implements RPsiField, RPsiLanguageConverter, RPsiQualifiedPathElement, StubBasedPsiElement<PsiObjectFieldStub> {
+public class RPsiObjectField extends RPsiTokenStub<ORLangTypes, RPsiObjectField, PsiObjectFieldStub> implements RPsiField, RPsiLanguageConverter, RPsiQualifiedPathElement, RPsiSignatureElement, StubBasedPsiElement<PsiObjectFieldStub> {
     // region Constructors
     public RPsiObjectField(@NotNull ORLangTypes types, @NotNull ASTNode node) {
         super(types, node);
@@ -66,8 +66,8 @@ public class RPsiObjectField extends RPsiTokenStub<ORLangTypes, RPsiObjectField,
     }
     //endregion
 
-    @Nullable
-    public RPsiSignature getSignature() {
+    @Override
+    public @Nullable RPsiSignature getSignature() {
         return ORUtil.findImmediateFirstChildOfClass(this, RPsiSignature.class);
     }
 

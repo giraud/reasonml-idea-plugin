@@ -52,7 +52,7 @@ public class ORPsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsi
         }
 
         // Gather instructions from element up to the file root
-        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, true, myTypes);
+        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructionsBackward(myElement, true, myTypes);
         instructions.addLast(parent);
 
         if (LOG.isTraceEnabled()) {

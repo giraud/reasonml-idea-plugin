@@ -33,8 +33,15 @@ public class ORPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerS
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
         PsiElement parent = myElement.getParent();
-        if (parent instanceof RPsiLet || parent instanceof RPsiVal || parent instanceof RPsiType || parent instanceof RPsiExternal) {
+        if (parent instanceof RPsiVar || parent instanceof RPsiType || parent instanceof RPsiExternal) {
             return ResolveResult.EMPTY_ARRAY;
+        }
+        if (parent instanceof RPsiDeconstruction) {
+            PsiElement grandParent = parent.getParent();
+            if (grandParent instanceof RPsiVar) {
+                return ResolveResult.EMPTY_ARRAY;
+            }
+
         }
 
         long startAll = System.currentTimeMillis();
@@ -49,7 +56,7 @@ public class ORPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerS
 
         // Gather instructions from element up to the file root
         //Deque<PsiElement> instructionsOLD = ORReferenceAnalyzer.createInstructionsOLD(myElement, true, myTypes);
-        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructions(myElement, true, myTypes);
+        Deque<PsiElement> instructions = ORReferenceAnalyzer.createInstructionsBackward(myElement, true, myTypes);
 
         // Test if source element is part of a record/object chain
         if (ORUtil.isPrevType(myElement, myTypes.SHARPSHARP)) { // ReasonML: JsObject field

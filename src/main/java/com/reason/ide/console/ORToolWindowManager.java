@@ -60,7 +60,8 @@ public final class ORToolWindowManager {
     }
 
     private @Nullable Compiler getAvailableCompiler(@NotNull CompilerType compilerType) {
-        Compiler compiler = myProject.getService(ORCompilerManager.class).getCompiler(compilerType);
+        ORCompilerManager compilerService = myProject.isDisposed() ? null : myProject.getService(ORCompilerManager.class);
+        Compiler compiler = compilerService != null ? compilerService.getCompiler(compilerType) : null;
         return compiler != null && compiler.isAvailable(myProject) ? compiler : null;
     }
 }

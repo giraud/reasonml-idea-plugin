@@ -45,7 +45,7 @@ public class ModuleCompletionProvider {
                 // Find alternatives
                 ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(resolvedModule.getContainingFile());
                 for (String alternateName : data.getValues(resolvedModule)) {
-                    for (PsiElement alternateElement : ORReferenceAnalyzer.resolvePath(alternateName, project, scope, 0)) {
+                    for (PsiElement alternateElement : ORReferenceAnalyzer.resolvePath(alternateName, project, scope, true, 0)) {
                         if (alternateElement instanceof RPsiModule alternateModule) {
                             for (RPsiInnerModule module : PsiTreeUtil.getStubChildrenOfTypeAsList(alternateModule.getBody(), RPsiInnerModule.class)) {
                                 addModule(module, resultSet);
