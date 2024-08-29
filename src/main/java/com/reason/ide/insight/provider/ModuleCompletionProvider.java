@@ -86,6 +86,6 @@ public class ModuleCompletionProvider {
         String name = module.getModuleName();
         resultSet.addElement(LookupElementBuilder.
                 create(name == null ? "unknown" : name)
-                .withIcon(PsiIconUtil.getProvidersIcon(module, 0)));
+                .withIcon(PsiIconUtil.getIconFromProviders(module, 0)));
     }
 }

@@ -101,7 +101,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
                 @Override
                 public @Nullable Icon getIcon(boolean unused) {
-                    return PsiIconUtil.getProvidersIcon(myElement, 0);
+                    return PsiIconUtil.getIconFromProviders(myElement, 0);
                 }
             };
         }
@@ -132,7 +132,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
             @Override
             public @Nullable Icon getIcon(boolean unused) {
-                return PsiIconUtil.getProvidersIcon(myElement, 0);
+                return PsiIconUtil.getIconFromProviders(myElement, 0);
             }
         };
     }
@@ -354,16 +354,6 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         @Override
         public void navigate(boolean requestFocus) {
-        }
-
-        @Override
-        public boolean canNavigate() {
-            return false;
-        }
-
-        @Override
-        public boolean canNavigateToSource() {
-            return false;
         }
 
         @NotNull

@@ -101,7 +101,7 @@ public class DotExpressionCompletionProvider {
                 resultSet.addElement(
                         LookupElementBuilder.create(recordField)
                                 .withTypeText(RPsiSignatureUtil.getSignature(recordField, langProperties))
-                                .withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
+                                .withIcon(PsiIconUtil.getIconFromProviders(recordField, 0)));
             }
         }
     }
@@ -202,7 +202,7 @@ public class DotExpressionCompletionProvider {
                     resultSet.addElement(
                             LookupElementBuilder.create(name)
                                     .withTypeText(signature)
-                                    .withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+                                    .withIcon(PsiIconUtil.getIconFromProviders(expression, 0)));
                 }
                 if (expression instanceof RPsiType eType) {
                     Collection<RPsiVariantDeclaration> variants = eType.getVariants();
@@ -213,7 +213,7 @@ public class DotExpressionCompletionProvider {
                                 resultSet.addElement(
                                         LookupElementBuilder.create(variantName)
                                                 .withTypeText(eType.getName())
-                                                .withIcon(PsiIconUtil.getProvidersIcon(variant, 0)));
+                                                .withIcon(PsiIconUtil.getIconFromProviders(variant, 0)));
                             }
                         }
                     }

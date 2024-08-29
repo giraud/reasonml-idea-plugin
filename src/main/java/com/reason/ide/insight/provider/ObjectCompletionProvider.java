@@ -58,7 +58,7 @@ public class ObjectCompletionProvider {
                 for (RPsiObjectField field : fields) {
                     String fieldName = types == ResTypes.INSTANCE ? "\"" + field.getName() + "\"" : field.getName();
                     resultSet.addElement(LookupElementBuilder.create(fieldName)
-                            .withIcon(PsiIconUtil.getProvidersIcon(field, 0)));
+                            .withIcon(PsiIconUtil.getIconFromProviders(field, 0)));
                 }
                 return true;
             }
