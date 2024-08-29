@@ -13,7 +13,7 @@ public class MllFileType extends LanguageFileType {
 
     private MllFileType() {
         super(OclLexLanguage.INSTANCE);
-        FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(this, (project, fileType, virtualFile, colors) -> new OclLexEditorHighlighter(project, virtualFile, colors));
+        FileTypeEditorHighlighterProviders.getInstance().addExplicitExtension(this, (project, fileType, virtualFile, colors) -> new OclLexEditorHighlighter(project, virtualFile, colors));
     }
 
     @Override

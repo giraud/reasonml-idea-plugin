@@ -129,7 +129,7 @@ public class FreeExpressionCompletionProvider {
                         resultSet.addElement(
                                 LookupElementBuilder.create(expression)
                                         .withTypeText(RPsiSignatureUtil.getSignature(expression, languageProperties))
-                                        .withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+                                        .withIcon(PsiIconUtil.getIconFromProviders(expression, 0)));
                         if (item instanceof RPsiType) {
                             expandType((RPsiType) item, resultSet);
                         }
@@ -202,7 +202,7 @@ public class FreeExpressionCompletionProvider {
                 resultSet.addElement(
                         LookupElementBuilder.create(variant)
                                 .withTypeText(type.getName())
-                                .withIcon(PsiIconUtil.getProvidersIcon(variant, 0)));
+                                .withIcon(PsiIconUtil.getIconFromProviders(variant, 0)));
             }
         }
     }
@@ -240,7 +240,7 @@ public class FreeExpressionCompletionProvider {
                         resultSet.addElement(
                                 LookupElementBuilder.create(item)
                                         .withTypeText(RPsiSignatureUtil.getSignature(item, language))
-                                        .withIcon(PsiIconUtil.getProvidersIcon(item, 0))
+                                        .withIcon(PsiIconUtil.getIconFromProviders(item, 0))
                                         .withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
                     }
                 }

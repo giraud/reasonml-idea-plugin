@@ -15,7 +15,7 @@ public class MlgFileType extends LanguageFileType {
 
     private MlgFileType() {
         super(OclGrammarLanguage.INSTANCE);
-        FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(this, (project, fileType, virtualFile, colors) -> new OclGrammarEditorHighlighter(project, virtualFile, colors));
+        FileTypeEditorHighlighterProviders.getInstance().addExplicitExtension(this, (project, fileType, virtualFile, colors) -> new OclGrammarEditorHighlighter(project, virtualFile, colors));
     }
 
     @Override

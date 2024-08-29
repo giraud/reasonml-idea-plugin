@@ -85,7 +85,7 @@ public class JsxNameCompletionProvider {
             String componentName = expression instanceof FileBase ? ((FileBase) expression).getModuleName() : expression.getName();
             if (componentName != null) {
                 resultSet.addElement(LookupElementBuilder.create(componentName)
-                        .withIcon(getProvidersIcon(expression, 0))
+                        .withIcon(getIconFromProviders(expression, 0))
                         .withInsertHandler((context, item) -> insertTagNameHandler(project, context, componentName)));
             }
         }

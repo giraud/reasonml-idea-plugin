@@ -13,7 +13,7 @@ public class MlyFileType extends LanguageFileType {
 
     private MlyFileType() {
         super(OclYaccLanguage.INSTANCE);
-        FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(this, (project, fileType, virtualFile, colors) -> new OclYaccEditorHighlighter(project, virtualFile, colors));
+        FileTypeEditorHighlighterProviders.getInstance().addExplicitExtension(this, (project, fileType, virtualFile, colors) -> new OclYaccEditorHighlighter(project, virtualFile, colors));
     }
 
     @Override
