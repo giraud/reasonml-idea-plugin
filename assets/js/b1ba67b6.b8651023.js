@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_reasonml_idea_plugin_website=self.webpackChunk_reasonml_idea_plugin_website||[]).push([[522],{1966:e=>{e.exports=JSON.parse('{"name":"docusaurus-plugin-content-docs","id":"default"}')}}]);
