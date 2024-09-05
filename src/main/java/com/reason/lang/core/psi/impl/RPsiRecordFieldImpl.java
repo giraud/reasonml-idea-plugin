@@ -52,7 +52,7 @@ public class RPsiRecordFieldImpl extends RPsiTokenStub<ORLangTypes, RPsiRecordFi
 
     //region PsiQualifiedName
     @Override
-    public String @NotNull [] getPath() {
+    public @NotNull String[] getPath() {
         RsiRecordFieldStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

@@ -33,7 +33,7 @@ public class Joiner {
         return sb.toString();
     }
 
-    public static @NotNull String join(@NotNull String separator, Object @Nullable [] items) {
+    public static @NotNull String join(@NotNull String separator, @Nullable Object[] items) {
         if (items == null) {
             return "<null>";
         }

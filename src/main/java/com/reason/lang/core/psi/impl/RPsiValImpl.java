@@ -52,7 +52,7 @@ public class RPsiValImpl extends RPsiTokenStub<ORLangTypes, RPsiVal, PsiValStub>
 
     //region PsiQualifiedName
     @Override
-    public String @NotNull [] getPath() {
+    public @NotNull String[] getPath() {
         PsiValStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

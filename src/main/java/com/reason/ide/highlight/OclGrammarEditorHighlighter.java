@@ -24,7 +24,7 @@ public final class OclGrammarEditorHighlighter extends LayeredLexerEditorHighlig
                 }
 
                 @Override
-                public TextAttributesKey @NotNull [] getTokenHighlights(IElementType tokenType) {
+                public @NotNull TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
                     return oclSyntaxHighlighter.getTokenHighlights(tokenType);
                 }
             }, ""));
