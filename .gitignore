@@ -1,6 +1,7 @@
 .gradle/
 !.idea/
 .idea/*
+.intellijPlatform/*
 !.idea/codeStyles/
 !.idea/google-java-format.xml
 out/
