@@ -260,7 +260,7 @@ public class ORUtil {
         return found;
     }
 
-    public static @Nullable PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, Class<?> @NotNull ... clazz) {
+    public static @Nullable PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class<?>... clazz) {
         PsiElement child = element.getFirstChild();
 
         while (child != null) {
@@ -277,7 +277,7 @@ public class ORUtil {
         return null;
     }
 
-    public static String @NotNull [] getQualifiedPath(@NotNull PsiElement element) {
+    public static @NotNull String[] getQualifiedPath(@NotNull PsiElement element) {
         String path = "";
 
         PsiElement parent = element.getParent();

@@ -77,7 +77,7 @@ public abstract class ORParameterInfoHandler implements ParameterInfoHandler<RPs
                 context.getDefaultParameterColor());
     }
 
-    ArgumentsDescription @Nullable [] calculateParameterInfo(@NotNull RPsiParameters paramsOwner) {
+    @NotNull ArgumentsDescription[] calculateParameterInfo(@NotNull RPsiParameters paramsOwner) {
         PsiElement resolvedElement = null;
 
         PsiElement parent = paramsOwner.getParent();

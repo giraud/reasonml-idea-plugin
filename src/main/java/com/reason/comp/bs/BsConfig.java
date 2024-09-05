@@ -97,7 +97,7 @@ public class BsConfig {
         return myUncurried;
     }
 
-    public String @NotNull [] getPpx() {
+    public @NotNull String[] getPpx() {
         return myPpx;
     }
 

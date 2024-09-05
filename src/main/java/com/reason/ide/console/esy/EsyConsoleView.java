@@ -18,7 +18,7 @@ public class EsyConsoleView extends ConsoleViewImpl {
         super(project, true);
     }
 
-    public Filter @NotNull [] getFilters() {
+    public @NotNull Filter[] getFilters() {
         return new Filter[]{new DuneConsoleFilter()};
     }
 

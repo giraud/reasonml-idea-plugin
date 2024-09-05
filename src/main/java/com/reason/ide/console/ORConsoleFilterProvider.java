@@ -15,7 +15,7 @@ import org.jetbrains.annotations.*;
  */
 public class ORConsoleFilterProvider extends ConsoleDependentFilterProvider {
     @Override
-    public Filter @NotNull [] getDefaultFilters(@NotNull ConsoleView consoleView, @NotNull Project project, @NotNull GlobalSearchScope scope) {
+    public @NotNull Filter[] getDefaultFilters(@NotNull ConsoleView consoleView, @NotNull Project project, @NotNull GlobalSearchScope scope) {
         if (consoleView instanceof RescriptConsoleView) {
             return ((RescriptConsoleView) consoleView).getFilters();
         }

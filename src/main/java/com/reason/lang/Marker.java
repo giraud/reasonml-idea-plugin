@@ -109,7 +109,7 @@ public class Marker {
         myCompositeElementType = compositeType;
     }
 
-    boolean isCompositeIn(ORCompositeType @NotNull ... compositeType) {
+    boolean isCompositeIn(@NotNull ORCompositeType... compositeType) {
         for (ORCompositeType composite : compositeType) {
             if (myCompositeElementType == composite) {
                 return true;
