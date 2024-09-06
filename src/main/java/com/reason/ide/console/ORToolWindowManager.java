@@ -43,7 +43,7 @@ public final class ORToolWindowManager {
 
         ReadAction.nonBlocking(() -> {
                     Compiler[] compilers = new Compiler[4];
-                    compilers[0]= getAvailableCompiler(CompilerType.RESCRIPT);
+                    compilers[0] = getAvailableCompiler(CompilerType.RESCRIPT);
                     compilers[1] = getAvailableCompiler(CompilerType.BS);
                     compilers[2] = getAvailableCompiler(CompilerType.DUNE);
                     compilers[3] = getAvailableCompiler(CompilerType.ESY);
@@ -55,6 +55,7 @@ public final class ORToolWindowManager {
                     setToolWindowAvailable(DuneToolWindowFactory.ID, compilers[2]);
                     setToolWindowAvailable(EsyToolWindowFactory.ID, compilers[3]);
                 })
+                .coalesceBy(this)
                 .submit(executorService);
     }
 
