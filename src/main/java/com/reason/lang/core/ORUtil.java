@@ -7,7 +7,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
-import com.reason.ide.search.reference.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
