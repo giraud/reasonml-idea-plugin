@@ -356,16 +356,6 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         public void navigate(boolean requestFocus) {
         }
 
-        @Override
-        public boolean canNavigate() {
-            return false;
-        }
-
-        @Override
-        public boolean canNavigateToSource() {
-            return false;
-        }
-
         @NotNull
         @Override
         public String getAlphaSortKey() {

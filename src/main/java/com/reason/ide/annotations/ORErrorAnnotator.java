@@ -53,14 +53,14 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
     }
 
     @Override
-    public @Nullable AnnotationResult doAnnotate(@NotNull InitialInfo<? extends ORResolvedCompiler<?>> initialInfo) {
+    public @Nullable AnnotationResult doAnnotate(@Nullable InitialInfo<? extends ORResolvedCompiler<?>> initialInfo) {
         long compilationStartTime = System.currentTimeMillis();
 
-        AnnotationResult result = switch (initialInfo.compiler.getType()) {
+        AnnotationResult result = initialInfo != null ? switch (initialInfo.compiler.getType()) {
             case BS -> BsErrorAnnotator.doAnnotate(initialInfo);
             case RESCRIPT -> ResErrorAnnotator.doAnnotate(initialInfo);
             default -> null;
-        };
+        } : null;
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("Annotation done in " + (System.currentTimeMillis() - compilationStartTime) + "ms");
@@ -70,9 +70,12 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
     }
 
     @Override
-    public void apply(@NotNull PsiFile sourcePsiFile, @NotNull AnnotationResult annotationResult, @NotNull AnnotationHolder holder) {
+    public void apply(@NotNull PsiFile sourcePsiFile, @Nullable AnnotationResult annotationResult, @NotNull AnnotationHolder holder) {
         VirtualFile sourceFile = ORFileUtils.getVirtualFile(sourcePsiFile);
         if (sourceFile == null) {
+            return;
+        }
+        if (annotationResult == null) {
             return;
         }
 
@@ -234,7 +237,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         }
     }
 
-    static class InitialInfo<R extends ORResolvedCompiler<? extends Compiler>> {
+    static public class InitialInfo<R extends ORResolvedCompiler<? extends Compiler>> {
         final R compiler;
         final PsiFile sourcePsiFile;
         final VirtualFile libRoot;
@@ -260,8 +263,8 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         }
     }
 
-    record AnnotationResult(List<OutputInfo> outputInfo, Editor editor, File cmtFile) {
-        AnnotationResult(@NotNull List<OutputInfo> outputInfo, @NotNull Editor editor, @NotNull File cmtFile) {
+    public record AnnotationResult(List<OutputInfo> outputInfo, Editor editor, File cmtFile) {
+        public AnnotationResult(@NotNull List<OutputInfo> outputInfo, @NotNull Editor editor, @NotNull File cmtFile) {
             this.outputInfo = outputInfo;
             this.editor = editor;
             this.cmtFile = cmtFile;
