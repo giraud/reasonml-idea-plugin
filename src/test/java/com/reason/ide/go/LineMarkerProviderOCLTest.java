@@ -2,14 +2,17 @@ package com.reason.ide.go;
 
 import com.intellij.codeInsight.daemon.*;
 import com.intellij.codeInsight.daemon.impl.*;
+import com.intellij.navigation.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
+import com.reason.lang.core.psi.*;
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
 import java.util.*;
 
+@SuppressWarnings("DataFlowIssue")
 @RunWith(JUnit4.class)
 public class LineMarkerProviderOCLTest extends ORBasePlatformTestCase {
     @Test
@@ -31,7 +34,7 @@ public class LineMarkerProviderOCLTest extends ORBasePlatformTestCase {
     @Test
     public void test_let_val() {
         FileBase f = configureCode("A.ml", """
-                module type I = struct
+                module type I = sig
                   val x: int
                 end
                                 
@@ -45,19 +48,31 @@ public class LineMarkerProviderOCLTest extends ORBasePlatformTestCase {
                 """);
 
         List<LineMarkerInfo<?>> markers = doHighlight(f);
+        assertSize(6, markers);
 
-        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
-        assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
-        assertEquals(ORIcons.IMPLEMENTED, markers.get(1).getIcon());
-        assertEquals("Implements let/val", markers.get(1).getLineMarkerTooltip());
+        RelatedItemLineMarkerInfo<?> m0 = (RelatedItemLineMarkerInfo<?>) markers.get(0);
+        assertEquals(ORIcons.IMPLEMENTED, m0.getIcon());
+        assertEquals("Implements module", m0.getLineMarkerTooltip());
+        List<? extends GotoRelatedItem> m0Targets = new ArrayList<>(m0.createGotoRelatedItems());
+        assertSize(2, m0Targets);
+        assertInstanceOf(m0Targets.get(0).getElement(), RPsiInnerModule.class);
+        assertInstanceOf(m0Targets.get(1).getElement(), RPsiInnerModule.class);
+
+        RelatedItemLineMarkerInfo<?> m1 = (RelatedItemLineMarkerInfo<?>) markers.get(1);
+        assertEquals(ORIcons.IMPLEMENTED, m1.getIcon());
+        assertEquals("Implements let/val", m1.getLineMarkerTooltip());
+        List<? extends GotoRelatedItem> m1Targets = new ArrayList<>(m1.createGotoRelatedItems());
+        assertSize(2, m1Targets);
+        assertInstanceOf(m1Targets.get(0).getElement(), RPsiLet.class);
+        assertInstanceOf(m1Targets.get(1).getElement(), RPsiLet.class);
 
         assertEquals(ORIcons.IMPLEMENTING, markers.get(2).getIcon());
         assertEquals("Declare module", markers.get(2).getLineMarkerTooltip());
         assertEquals(ORIcons.IMPLEMENTING, markers.get(3).getIcon());
         assertEquals("Declare let/val", markers.get(3).getLineMarkerTooltip());
 
-        assertEquals(ORIcons.IMPLEMENTING, markers.get(2).getIcon());
-        assertEquals("Declare module", markers.get(2).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(4).getIcon());
+        assertEquals("Declare module", markers.get(4).getLineMarkerTooltip());
         assertEquals(ORIcons.IMPLEMENTING, markers.get(5).getIcon());
         assertEquals("Declare let/val", markers.get(5).getLineMarkerTooltip());
     }
@@ -357,5 +372,156 @@ public class LineMarkerProviderOCLTest extends ORBasePlatformTestCase {
         assertEquals("Declare method", m1.getLineMarkerTooltip());
         assertEquals(ORIcons.IMPLEMENTING, m1.getIcon());
         assertSize(2, lineMarkers);
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/485
+    // Module signature with inline signature
+    @Test
+    public void test_GH_485_signature_in_different_files() {
+        FileBase mli = configureCode("A.mli", """
+                module M: sig
+                  val x: int
+                end
+                """);
+        FileBase ml = configureCode("A.ml", """
+                module M: sig
+                   val x: int
+                 end = struct
+                   let x = 1
+                 end
+                 """);
+
+        myFixture.openFileInEditor(mli.getVirtualFile());
+        myFixture.doHighlighting();
+        List<LineMarkerInfo<?>> mliMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), getProject());
+
+        myFixture.openFileInEditor(ml.getVirtualFile());
+        myFixture.doHighlighting();
+        List<LineMarkerInfo<?>> mlMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), getProject());
+
+        assertSize(2, mliMarkers);
+        assertSize(4, mlMarkers);
+
+        // val x in A.mli
+        RelatedItemLineMarkerInfo<?> mi1 = (RelatedItemLineMarkerInfo<?>) mliMarkers.get(1);
+        assertEquals("Implements let/val", mi1.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, mi1.getIcon());
+        // targets definition in signature and implementation in body
+        List<? extends GotoRelatedItem> mi1RelatedItems = new ArrayList<>(mi1.createGotoRelatedItems());
+        assertSize(2, mi1RelatedItems);
+        assertInstanceOf(mi1RelatedItems.get(0).getElement(), RPsiVal.class);
+        assertInstanceOf(mi1RelatedItems.get(1).getElement(), RPsiLet.class);
+
+        // val x in A.ml (to mli)
+        LineMarkerInfo<?> m1 = mlMarkers.get(1);
+        assertEquals("Declare let/val", m1.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, m1.getIcon());
+        // val x in A.ml
+        LineMarkerInfo<?> m2 = mlMarkers.get(2);
+        assertEquals("Implements let/val", m2.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, m2.getIcon());
+        // let in A.ml
+        RelatedItemLineMarkerInfo<?> m3 = (RelatedItemLineMarkerInfo<?>) mlMarkers.get(3);
+        assertTrue(m3.getLineMarkerTooltip().contains("Declare let/val"));
+        assertEquals(ORIcons.IMPLEMENTING, m3.getIcon());
+        // targets both definitions (signatures in ml and mli)
+        List<? extends GotoRelatedItem> m3RelatedItems = new ArrayList<>(m3.createGotoRelatedItems());
+        assertSize(2, m3RelatedItems);
+        assertInstanceOf(m3RelatedItems.get(0).getElement(), RPsiVal.class);
+        assertInstanceOf(m3RelatedItems.get(1).getElement(), RPsiVal.class);
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/485
+    // Module signature with named signature type
+    @Test
+    public void test_GH_485_named_signature_module_type() {
+        FileBase mli = configureCode("A.mli", """
+                module type MT = sig
+                  val x: int
+                end
+                """);
+        FileBase ml = configureCode("A.ml", """
+                module type MT = sig
+                  val x : int
+                end
+                                
+                module Mm: MT = struct
+                  let x = 1
+                end
+                """);
+
+
+        myFixture.openFileInEditor(mli.getVirtualFile());
+        myFixture.doHighlighting();
+        List<LineMarkerInfo<?>> mliMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), getProject());
+
+        myFixture.openFileInEditor(ml.getVirtualFile());
+        myFixture.doHighlighting();
+        List<LineMarkerInfo<?>> mlMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), getProject());
+
+        assertSize(2, mliMarkers);
+        assertSize(6, mlMarkers);
+
+        // module type in A.mli
+        RelatedItemLineMarkerInfo<?> mi1 = (RelatedItemLineMarkerInfo<?>) mliMarkers.get(0);
+        assertTextEquals("Implements module", mi1.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, mi1.getIcon());
+        List<? extends GotoRelatedItem> mi1RelatedItems = new ArrayList<>(mi1.createGotoRelatedItems());
+        assertSize(2, mi1RelatedItems);
+        assertContainsElements(mi1RelatedItems.stream().map(m -> ((RPsiInnerModule) m.getElement()).getQualifiedName()).toList(), "A.MT", "A.Mm");
+        // module type in A.ml
+        LineMarkerInfo<?> m0 = mlMarkers.get(0);
+        assertEquals("Declare module", m0.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, m0.getIcon());
+        LineMarkerInfo<?> m1 = mlMarkers.get(1);
+        assertEquals("Implements module", m1.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, m1.getIcon());
+        // val x in module type in A.ml
+        LineMarkerInfo<?> m2 = mlMarkers.get(2);
+        assertEquals("Declare let/val", m2.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, m2.getIcon());
+        // val x in module type in A.ml
+        LineMarkerInfo<?> m3 = mlMarkers.get(3);
+        assertEquals("Implements let/val", m3.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, m3.getIcon());
+        // val x in A.ml (to mli)
+        LineMarkerInfo<?> m4 = mlMarkers.get(4);
+        assertEquals("Declare module", m4.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, m4.getIcon());
+        // let in A.ml
+        LineMarkerInfo<?> m5 = mlMarkers.get(5);
+        assertEquals("Declare let/val", m5.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, m5.getIcon());
+
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/485
+    @Test
+    public void test_GH_485_anonymous_signature() {
+        configureCode("A.ml", """
+                module type M = sig
+                  val x: int
+                end
+                                
+                module M : sig
+                  val x: int
+                end = struct
+                  let x = 1
+                end
+                """);
+
+        myFixture.doHighlighting();
+
+        List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), myFixture.getProject());
+        assertSize(2, lineMarkers);
+
+        // val x
+        LineMarkerInfo<?> m0 = lineMarkers.get(0);
+        assertEquals("Implements let/val", m0.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, m0.getIcon());
+        // let x
+        LineMarkerInfo<?> m1 = lineMarkers.get(1);
+        assertEquals("Declare let/val", m1.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, m1.getIcon());
     }
 }
