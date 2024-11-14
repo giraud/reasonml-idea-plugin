@@ -14,7 +14,7 @@ repositories {
     }
 }
 
-java.sourceCompatibility = 17.0
+java.sourceCompatibility = 21.0
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
