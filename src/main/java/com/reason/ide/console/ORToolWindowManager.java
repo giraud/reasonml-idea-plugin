@@ -18,6 +18,7 @@ import com.reason.ide.console.rescript.*;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
+import java.util.concurrent.*;
 
 @Service(Service.Level.PROJECT)
 public final class ORToolWindowManager {
@@ -37,10 +38,25 @@ public final class ORToolWindowManager {
     }
 
     public void shouldShowToolWindows() {
-        setToolWindowAvailable(RescriptToolWindowFactory.ID, getAvailableCompiler(CompilerType.RESCRIPT));
-        setToolWindowAvailable(BsToolWindowFactory.ID, getAvailableCompiler(CompilerType.BS));
-        setToolWindowAvailable(DuneToolWindowFactory.ID, getAvailableCompiler(CompilerType.DUNE));
-        setToolWindowAvailable(EsyToolWindowFactory.ID, getAvailableCompiler(CompilerType.ESY));
+        ExecutorService executorService = AppExecutorUtil.getAppExecutorService();
+        ModalityState modalityState = ModalityState.defaultModalityState();
+
+        ReadAction.nonBlocking(() -> {
+                    Compiler[] compilers = new Compiler[4];
+                    compilers[0] = getAvailableCompiler(CompilerType.RESCRIPT);
+                    compilers[1] = getAvailableCompiler(CompilerType.BS);
+                    compilers[2] = getAvailableCompiler(CompilerType.DUNE);
+                    compilers[3] = getAvailableCompiler(CompilerType.ESY);
+                    return compilers;
+                })
+                .finishOnUiThread(modalityState, compilers -> {
+                    setToolWindowAvailable(RescriptToolWindowFactory.ID, compilers[0]);
+                    setToolWindowAvailable(BsToolWindowFactory.ID, compilers[1]);
+                    setToolWindowAvailable(DuneToolWindowFactory.ID, compilers[2]);
+                    setToolWindowAvailable(EsyToolWindowFactory.ID, compilers[3]);
+                })
+                .coalesceBy(this)
+                .submit(executorService);
     }
 
     private void setToolWindowAvailable(@NotNull String id, @Nullable Compiler compiler) {

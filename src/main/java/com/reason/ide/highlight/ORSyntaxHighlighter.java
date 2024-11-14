@@ -84,7 +84,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     }
 
     @Override
-    public TextAttributesKey @NotNull [] getTokenHighlights(@NotNull IElementType tokenType) {
+    public @NotNull TextAttributesKey[] getTokenHighlights(@NotNull IElementType tokenType) {
         if (tokenType.equals(myTypes.MULTI_COMMENT) || tokenType.equals(myTypes.SINGLE_COMMENT)) {
             return COMMENT_KEYS;
         } else if (tokenType.equals(myTypes.LBRACE) || tokenType.equals(myTypes.RBRACE)) {

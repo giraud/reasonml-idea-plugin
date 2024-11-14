@@ -15,7 +15,7 @@ import java.util.*;
 
 public class DuneFoldingBuilder extends FoldingBuilderEx {
     @Override
-    public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
+    public @NotNull FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
 
         PsiTreeUtil.processElements(root, element -> {

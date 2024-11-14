@@ -24,7 +24,7 @@ public class OclPairedBraceMatcher implements PairedBraceMatcher {
             };
 
     @Override
-    public BracePair @NotNull [] getPairs() {
+    public @NotNull BracePair[] getPairs() {
         return PAIRS;
     }
 

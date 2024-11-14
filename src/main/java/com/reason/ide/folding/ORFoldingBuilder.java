@@ -23,7 +23,7 @@ import java.util.*;
 
 public class ORFoldingBuilder extends FoldingBuilderEx {
     @Override
-    public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
+    public @NotNull FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
         ORLangTypes types = ORUtil.getTypes(root.getLanguage());
 

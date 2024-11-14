@@ -98,7 +98,7 @@ public class Log {
         }
     }
 
-    public void debug(String comment, PsiFile @Nullable [] t) {
+    public void debug(String comment, @Nullable PsiFile[] t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.length + " "));
         }
@@ -110,7 +110,7 @@ public class Log {
         }
     }
 
-    public void debug(String comment, ResolveResult @Nullable [] t) {
+    public void debug(String comment, @Nullable ResolveResult[] t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.length + " [" + Joiner.join(", ", t) + "]"));
         }

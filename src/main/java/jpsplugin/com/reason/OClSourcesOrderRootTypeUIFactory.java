@@ -43,7 +43,7 @@ public class OClSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactory 
         }
 
         @Override
-        protected VirtualFile @NotNull [] adjustAddedFileSet(final Component component, final VirtualFile[] files) {
+        protected @NotNull VirtualFile[] adjustAddedFileSet(final Component component, final VirtualFile[] files) {
             java.util.List<OrderRoot> orderRoots = RootDetectionUtil.detectRoots(Arrays.asList(files), component, null, new OCamlRootsDetector(),
                     new OrderRootType[]{OclSourcesOrderRootType.getInstance()});
 
