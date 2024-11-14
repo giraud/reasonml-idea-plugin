@@ -75,7 +75,7 @@ public class RPsiExternalImpl extends RPsiTokenStub<ORLangTypes, RPsiExternal, P
 
     //region PsiQualifiedName
     @Override
-    public String @NotNull [] getPath() {
+    public @NotNull String[] getPath() {
         PsiExternalStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

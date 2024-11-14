@@ -74,7 +74,7 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
 
     //region PsiQualifiedName
     @Override
-    public String @NotNull [] getPath() {
+    public @NotNull String[] getPath() {
         PsiLetStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

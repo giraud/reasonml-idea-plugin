@@ -73,7 +73,7 @@ public class GotoTestDataAction extends AnAction {
         return Collections.emptyList();
     }
 
-    private String @NotNull [] splitModuleName(@NotNull String moduleName) {
+    private @NotNull String[] splitModuleName(@NotNull String moduleName) {
         int underscoreIndex = moduleName.lastIndexOf("_");
         return 0 < underscoreIndex
                 ? new String[]{moduleName.substring(0, underscoreIndex), moduleName.substring(underscoreIndex + 1)}

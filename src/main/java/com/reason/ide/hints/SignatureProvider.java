@@ -15,7 +15,7 @@ public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
         private final InferredTypes myTypes;
         private final EditorPosition myEditorPosition;
 
-        InferredTypesWithLines(@NotNull InferredTypes types, String @NotNull [] lines) {
+        InferredTypesWithLines(@NotNull InferredTypes types, @NotNull String[] lines) {
             myTypes = types;
             myEditorPosition = new EditorPosition(lines);
         }

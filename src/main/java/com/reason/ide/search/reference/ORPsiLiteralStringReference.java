@@ -24,7 +24,7 @@ public class ORPsiLiteralStringReference extends ORMultiSymbolReference<RPsiLite
     }
 
     @Override
-    public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
+    public @NotNull ResolveResult[] multiResolve(boolean incompleteCode) {
         // Ref of a js object in rescript : <lowerSymbol/> <array> "[" "string" "]" </array>
         PsiElement prevSibling = myElement.getPrevSibling();
         if (prevSibling == null || prevSibling.getNode().getElementType() != myTypes.LBRACKET) {

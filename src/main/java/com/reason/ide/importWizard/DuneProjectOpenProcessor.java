@@ -7,7 +7,7 @@ import org.jetbrains.annotations.*;
 
 public class DuneProjectOpenProcessor extends ProjectOpenProcessorBase<DuneProjectImportBuilder> {
     @Override
-    public String @NotNull [] getSupportedExtensions() {
+    public @NotNull String[] getSupportedExtensions() {
         return new String[]{DuneExternalConstants.PROJECT_BUILD_FILE};
     }
 

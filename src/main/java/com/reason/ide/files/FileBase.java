@@ -27,7 +27,7 @@ public abstract class FileBase extends PsiFileBase implements RPsiModule, Naviga
 
     //region PsiQualifiedName
     @Override
-    public String @Nullable [] getPath() {
+    public @Nullable String[] getPath() {
         return null;
     }
 
