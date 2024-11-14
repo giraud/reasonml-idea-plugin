@@ -10,7 +10,6 @@ import com.intellij.openapi.vfs.impl.wsl.*;
 import com.intellij.util.containers.*;
 import org.jetbrains.annotations.*;
 
-import java.nio.file.*;
 import java.util.*;
 
 public abstract class OCamlExecutable {
@@ -71,24 +70,6 @@ public abstract class OCamlExecutable {
         public Wsl(@NotNull WSLDistribution distribution) {
             m_distribution = distribution;
             myId = "wsl-" + distribution.getId();
-        }
-
-        public @Nullable String convertPath(@NotNull Path path) {
-            // 'C:\Users\file.txt' -> '/mnt/c/Users/file.txt'
-            String wslPath = m_distribution.getWslPath(path.toString());
-            if (wslPath != null) {
-                return wslPath;
-            }
-
-            // '\\wsl$\_ubuntu\home\_user\file.txt' -> '/home/user/file.txt'
-            Path uncRootPath = m_distribution.getUNCRootPath();
-            if (FileUtil.isAncestor(uncRootPath.toFile(), path.toFile(), false)) {
-                return StringUtil.trimStart(
-                        FileUtil.toSystemIndependentName(path.toString()),
-                        FileUtil.toSystemIndependentName(uncRootPath.toString()));
-            }
-
-            return path.toString();
         }
 
         @Override

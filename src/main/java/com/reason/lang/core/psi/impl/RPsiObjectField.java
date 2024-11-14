@@ -46,7 +46,7 @@ public class RPsiObjectField extends RPsiTokenStub<ORLangTypes, RPsiObjectField,
 
     //region PsiQualifiedName
     @Override
-    public String @NotNull [] getPath() {
+    public @NotNull String[] getPath() {
         PsiObjectFieldStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

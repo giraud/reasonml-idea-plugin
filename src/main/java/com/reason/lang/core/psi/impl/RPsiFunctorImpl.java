@@ -6,7 +6,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.*;
 import com.reason.ide.*;
-import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.*;

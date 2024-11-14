@@ -44,7 +44,7 @@ public class CmtFileType implements FileType {
     }
 
     @Override
-    public @Nullable String getCharset(@NotNull VirtualFile file, byte @NotNull [] content) {
+    public @Nullable String getCharset(@NotNull VirtualFile file, @NotNull byte[] content) {
         return null;
     }
 }

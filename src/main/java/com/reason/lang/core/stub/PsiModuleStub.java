@@ -17,7 +17,7 @@ public class PsiModuleStub extends NamedStubBase<RPsiModule> {
     private final String myReturnTypeName;
 
     public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable String name,
-                         String @Nullable [] path, @Nullable String namespace, String alias, boolean isComponent,
+                         @Nullable String[] path, @Nullable String namespace, String alias, boolean isComponent,
                          boolean isModuleType, boolean isTopLevel, boolean isFunctorCall, @Nullable String returnTypeName) {
         super(parent, elementType, name);
         myPath = path;
@@ -31,7 +31,7 @@ public class PsiModuleStub extends NamedStubBase<RPsiModule> {
     }
 
     public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name,
-                         String @Nullable [] path, @Nullable String namespace, String alias, boolean isComponent,
+                         @Nullable String[] path, @Nullable String namespace, String alias, boolean isComponent,
                          boolean isModuleType, boolean isTopLevel, boolean isFunctorCall, @Nullable StringRef returnTypeNameRef) {
         super(parent, elementType, name);
         myPath = path;
@@ -44,7 +44,7 @@ public class PsiModuleStub extends NamedStubBase<RPsiModule> {
         myReturnTypeName = returnTypeNameRef != null ? returnTypeNameRef.getString() : null;
     }
 
-    public String @Nullable [] getPath() {
+    public @Nullable String[] getPath() {
         return myPath;
     }
 

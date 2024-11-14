@@ -33,7 +33,7 @@ public class OclLexSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
             }
 
             @Override
-            public TextAttributesKey @NotNull [] getTokenHighlights(IElementType tokenType) {
+            public @NotNull TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
                 if (myTypes.SINGLE_COMMENT.equals(tokenType)) {
                     return ORSyntaxHighlighter.COMMENT_KEYS;
                 }

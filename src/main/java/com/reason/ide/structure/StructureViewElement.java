@@ -138,7 +138,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     }
 
     @Override
-    public TreeElement @NotNull [] getChildren() {
+    public @NotNull TreeElement[] getChildren() {
         List<TreeElement> treeElements = null;
 
         // File
@@ -341,7 +341,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         }
 
         @Override
-        public TreeElement @NotNull [] getChildren() {
+        public @NotNull TreeElement[] getChildren() {
             List<TreeElement> treeElements = new ArrayList<>();
             myRootElement.acceptChildren(new ElementVisitor(treeElements, 1));
             return treeElements.toArray(new TreeElement[0]);

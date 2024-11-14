@@ -19,7 +19,6 @@ import org.junit.runners.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.*;
 
 @RunWith(JUnit4.class)
 public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {

@@ -1,7 +1,6 @@
 package com.reason.comp.ocaml;
 
 import com.intellij.execution.configurations.*;
-import com.intellij.openapi.application.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.roots.*;
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-import static com.intellij.openapi.application.ApplicationManager.getApplication;
+import static com.intellij.openapi.application.ApplicationManager.*;
 
 public abstract class OpamCommandLine {
     private static final Log LOG = Log.create("ocaml.opam");

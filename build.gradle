@@ -1,54 +1,72 @@
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 plugins {
-    id 'java'
-    id 'org.jetbrains.intellij' version '1.17.3' // https://github.com/JetBrains/gradle-intellij-plugin
+    id('java')
+    id('org.jetbrains.intellij.platform') version('2.1.0') // IntelliJ Platform Gradle Plugin
 }
 
+// Configure project's dependencies
 repositories {
-    maven {
-        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    mavenCentral()
+    // IntelliJ Platform Gradle Plugin Repositories Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-repositories-extension.html
+    intellijPlatform {
+        defaultRepositories()
     }
-    gradlePluginPortal()
 }
 
+java.sourceCompatibility = 21.0
+
+// Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
-    testImplementation 'junit:junit:4.13.2'
-}
+    testImplementation('junit:junit:4.13.2')
 
-apply plugin: 'java'
-apply plugin: 'org.jetbrains.intellij'
+    // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
+    intellijPlatform {
+        create(platformType, platformVersion)
+
+        // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
+        bundledPlugins(platformBundledPlugins.split(',').collect { it.trim() })
+
+        // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file for plugin from JetBrains Marketplace.
+        plugins(platformPlugins.split(',').collect { it.trim() })
+
+        instrumentationTools()
+        pluginVerifier()
+        testFramework(TestFrameworkType.Platform.INSTANCE)
+        testFramework(TestFrameworkType.Plugin.Java.INSTANCE)
+    }
+}
 
 group = pluginGroup
 version = pluginVersion + '-' + platformVersion
 
-java.sourceCompatibility = '17.0'
-compileJava.options.encoding = 'UTF-8'
-
-intellij {
-    version = platformVersion
-    type = platformType
-    plugins = platformPlugins.split(',').collect { it.trim() }
-    downloadSources = true
+intellijPlatform {
+    pluginConfiguration {
+        version = pluginVersion + '-' + platformVersion
+        ideaVersion {
+            sinceBuild = pluginSinceBuild
+            untilBuild = pluginUntilBuild
+        }
+    }
 
     patchPluginXml {
         sinceBuild = pluginSinceBuild
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>Fix Stack overflow</li> 
-                    <li>Enhancement: Structure panel: provide a filter setting to select whether to show variables</li>
-                    <li>'"' in comments confuses comment recognition</li>
-                    <li>Exception for action 'add braces to blockless function'</li>
-                    <li>Fix incorrect file icons</li>
+                    <li>Test</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
                 <p>To see how to integrate tools, go to the website.</p>
             """.stripIndent()
     }
-}
 
-runPluginVerifier {
-    ideVersions = [platformVersion]
+    pluginVerification {
+        ides {
+            recommended()
+        }
+    }
 }
 
 runIde {

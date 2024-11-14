@@ -37,7 +37,7 @@ public class OclYaccSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
             }
 
             @Override
-            public TextAttributesKey @NotNull [] getTokenHighlights(IElementType tokenType) {
+            public @NotNull TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
                 if (tokenType == myTypes.SINGLE_COMMENT || tokenType == myTypes.MULTI_COMMENT) {
                     return COMMENT_KEYS;
                 }
