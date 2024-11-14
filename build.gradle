@@ -2,7 +2,7 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
     id('java')
-    id('org.jetbrains.intellij.platform') version('2.0.1') // IntelliJ Platform Gradle Plugin
+    id('org.jetbrains.intellij.platform') version('2.1.0') // IntelliJ Platform Gradle Plugin
 }
 
 // Configure project's dependencies
@@ -14,7 +14,7 @@ repositories {
     }
 }
 
-java.sourceCompatibility = 17.0
+java.sourceCompatibility = 21.0
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
