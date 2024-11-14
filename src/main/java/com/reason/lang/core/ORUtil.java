@@ -7,7 +7,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
-import com.reason.ide.search.reference.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.*;
@@ -260,7 +259,7 @@ public class ORUtil {
         return found;
     }
 
-    public static @Nullable PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, Class<?> @NotNull ... clazz) {
+    public static @Nullable PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class<?>... clazz) {
         PsiElement child = element.getFirstChild();
 
         while (child != null) {
@@ -277,7 +276,7 @@ public class ORUtil {
         return null;
     }
 
-    public static String @NotNull [] getQualifiedPath(@NotNull PsiElement element) {
+    public static @NotNull String[] getQualifiedPath(@NotNull PsiElement element) {
         String path = "";
 
         PsiElement parent = element.getParent();

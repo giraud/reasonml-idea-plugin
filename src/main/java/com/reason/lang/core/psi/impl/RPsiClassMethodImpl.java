@@ -42,7 +42,7 @@ public class RPsiClassMethodImpl extends RPsiTokenStub<ORLangTypes, RPsiClassMet
     }
 
     @Override
-    public String @NotNull [] getPath() {
+    public @NotNull String[] getPath() {
         RsiClassMethodStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

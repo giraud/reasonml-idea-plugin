@@ -29,7 +29,7 @@ public class ORPsiPropertyNameReference extends PsiPolyVariantReferenceBase<RPsi
     }
 
     @Override
-    public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
+    public @NotNull ResolveResult[] multiResolve(boolean incompleteCode) {
         if (myReferenceName == null) {
             return ResolveResult.EMPTY_ARRAY;
         }

@@ -83,7 +83,7 @@ public class RPsiParameterDeclarationImpl extends RPsiTokenStub<ORLangTypes, RPs
 
     //region PsiQualifiedName
     @Override
-    public String @Nullable [] getPath() {
+    public @Nullable String[] getPath() {
         PsiParameterDeclarationStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

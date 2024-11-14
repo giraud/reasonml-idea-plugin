@@ -69,7 +69,7 @@ public class RPsiVariantDeclaration extends RPsiTokenStub<ORLangTypes, RPsiVaria
 
     //region PsiQualifiedName
     @Override
-    public String @NotNull [] getPath() {
+    public @NotNull String[] getPath() {
         PsiVariantDeclarationStub stub = getGreenStub();
         if (stub != null) {
             return stub.getPath();

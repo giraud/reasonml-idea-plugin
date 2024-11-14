@@ -27,7 +27,7 @@ public class ORPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperS
     }
 
     @Override
-    public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
+    public @NotNull ResolveResult[] multiResolve(boolean incompleteCode) {
         if (myReferenceName == null) {
             return ResolveResult.EMPTY_ARRAY;
         }
