@@ -152,4 +152,8 @@ public class ORFileUtils {
         }
         return virtualFile;
     }
+
+    public static @Nullable VirtualFile getVirtualFile(@Nullable PsiElement psiElement) {
+        return psiElement != null ? getVirtualFile(psiElement.getContainingFile()) : null;
+    }
 }
