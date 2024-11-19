@@ -90,4 +90,43 @@ public class ClassParsingTest extends RmlParsingTestCase {
         assertInstanceOf(es.get(1), RPsiType.class);
         assertEquals("errpage", es.get(1).getName());
     }
+
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/269
+    @Test
+    public void test_GH_269() {
+        RPsiClass e = firstOfType(parseCode("""
+                class type ops = {
+                  pub go_to_insert: task(unit);
+                  pub go_to_mark: GText.mark => task(unit);
+                  pub process_next_phrase: task(unit);
+                  pub get_n_errors: int;
+                  pub get_errors: list((int, string));
+                  pub get_slaves_status: (int, int, CString.Map.t(string));
+                  pub handle_failure: handle_exn_rty => task(unit);
+                  pub destroy: unit => unit;
+                };
+                """), RPsiClass.class);
+
+        assertSize(8, e.getMethods());
+        ArrayList<RPsiClassMethod> methods = new ArrayList<>(e.getMethods());
+
+        assertEquals("go_to_insert", methods.get(0).getName());
+        assertEquals("task(unit)", methods.get(0).getSignature().getText());
+        assertEquals("go_to_mark", methods.get(1).getName());
+        assertEquals("GText.mark => task(unit)", methods.get(1).getSignature().getText());
+        assertEquals("process_next_phrase", methods.get(2).getName());
+        assertEquals("task(unit)", methods.get(2).getSignature().getText());
+        assertEquals("get_n_errors", methods.get(3).getName());
+        assertEquals("int", methods.get(3).getSignature().getText());
+        assertEquals("get_errors", methods.get(4).getName());
+        assertEquals("list((int, string))", methods.get(4).getSignature().getText());
+        assertEquals("get_slaves_status", methods.get(5).getName());
+        assertEquals("(int, int, CString.Map.t(string))", methods.get(5).getSignature().getText());
+        assertEquals("handle_failure", methods.get(6).getName());
+        assertEquals("handle_exn_rty => task(unit)", methods.get(6).getSignature().getText());
+        assertEquals("destroy", methods.get(7).getName());
+        assertEquals("unit => unit", methods.get(7).getSignature().getText());
+    }
+
 }

@@ -128,7 +128,7 @@ public class RPsiValImpl extends RPsiTokenStub<ORLangTypes, RPsiVal, PsiValStub>
 
             @Override
             public @NotNull Icon getIcon(boolean unused) {
-                return ORIcons.VAL;
+                return isFunction() ? ORIcons.FUNCTION : ORIcons.VAL;
             }
         };
     }

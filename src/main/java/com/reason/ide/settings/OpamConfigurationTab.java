@@ -25,8 +25,6 @@ public class OpamConfigurationTab {
     private JLabel myDetectionLabel;
     private JComboBox<String> mySwitchSelect;
     private JTable myOpamLibraries;
-
-
     private boolean myIsWsl = false;
     private String myCygwinBash;
     private final List<String[]> myEnv = new ArrayList<>();

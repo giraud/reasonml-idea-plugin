@@ -714,7 +714,7 @@ public class RmlParser extends CommonPsiParser {
                 }
             } else if (inScopeOrAny(
                     myTypes.H_NAMED_PARAM_DECLARATION, myTypes.C_PARAM_DECLARATION, myTypes.C_NAMED_PARAM,
-                    myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.C_TERNARY, myTypes.C_UNPACK
+                    myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.C_TERNARY, myTypes.C_UNPACK, myTypes.C_CLASS_METHOD
             )) {
 
                 if (isFound(myTypes.H_NAMED_PARAM_DECLARATION) || isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.C_NAMED_PARAM)) {
@@ -745,8 +745,17 @@ public class RmlParser extends CommonPsiParser {
                     advance();
                     markParenthesisScope(true)
                             .mark(myTypes.C_MODULE_SIGNATURE);
+                } else {
+                    advance();
+                    parseSignatureExpression();
                 }
             }
+        }
+
+        private void parseSignatureExpression() {
+            mark(myTypes.C_SIG_EXPR);
+            markParenthesisScope(true).
+                    mark(myTypes.C_SIG_ITEM);//.markHolder(myTypes.H_PLACE_HOLDER);
         }
 
         private void parseLetSignature() {
@@ -1104,10 +1113,13 @@ public class RmlParser extends CommonPsiParser {
                 markScope(myTypes.C_VARIANT_CONSTRUCTOR, myTypes.LPAREN).advance();
                 markHolder(myTypes.H_COLLECTION_ITEM);
                 mark(myTypes.C_PARAM_DECLARATION);
-            } else if (inAny(myTypes.C_CLASS_DECLARATION, myTypes.C_OBJECT)) {
+            } else if (inAny(myTypes.C_CLASS_DECLARATION, myTypes.C_OBJECT, myTypes.C_SIG_ITEM)) {
                 if (isFound(myTypes.C_CLASS_DECLARATION)) {
                     popEndUntil(myTypes.C_CLASS_DECLARATION).
                             markScope(myTypes.C_CLASS_CONSTR, myTypes.LPAREN);
+                } else if (isFound(myTypes.C_SIG_ITEM)) {
+                    markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
+                    markHolder(myTypes.H_COLLECTION_ITEM);
                 }
             } else {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN).advance();
