@@ -33,12 +33,6 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
-        boolean elementInSourceContent = Platform.isElementInSourceContent(element);
-        if (!elementInSourceContent) {
-            LOG.trace("element not in source content", element);
-            return;
-        }
-
         Project project = element.getProject();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         ORLangTypes types = ORTypesUtil.getInstance(element.getLanguage());
