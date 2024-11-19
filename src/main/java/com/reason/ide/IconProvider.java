@@ -53,8 +53,8 @@ public class IconProvider extends com.intellij.ide.IconProvider {
             return let.isRecord() ? ORIcons.OBJECT : (let.isFunction() ? ORIcons.FUNCTION : ORIcons.LET);
         } else if (element instanceof RPsiExternal) {
             return ORIcons.EXTERNAL;
-        } else if (element instanceof RPsiVal) {
-            return ORIcons.VAL;
+        } else if (element instanceof RPsiVal val) {
+            return val.isFunction() ? ORIcons.FUNCTION : ORIcons.VAL;
         }
         return null;
     }
