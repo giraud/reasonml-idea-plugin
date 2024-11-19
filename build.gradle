@@ -52,7 +52,9 @@ intellijPlatform {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>Test</li>
+                    <li>485 - Gutter icons on module signatures</li>
+                    <li>487 - Ocaml setup on Mac OS (same than 480)</li>
+                    <li>480 - No Opam switch detection</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
