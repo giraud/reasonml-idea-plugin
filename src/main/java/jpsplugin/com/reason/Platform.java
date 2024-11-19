@@ -1,5 +1,6 @@
 package jpsplugin.com.reason;
 
+import B.H.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.ide.plugins.*;
 import com.intellij.openapi.extensions.*;
@@ -123,5 +124,16 @@ public class Platform {
     public static @Nullable Module getModule(@NotNull Project project, @Nullable VirtualFile file) {
         PsiFile psiFile = file == null ? null : PsiManager.getInstance(project).findFile(file);
         return psiFile == null ? null : ModuleUtil.findModuleForFile(psiFile);
+    }
+
+    public static boolean isElementInSourceContent(@Nullable PsiElement element) {
+        if (element == null) {
+            return false;
+        }
+
+        VirtualFile targetFile = ORFileUtils.getVirtualFile(element);
+        Module moduleForTarget = ModuleUtil.findModuleForPsiElement(element);
+        ModuleRootManagerEx moduleRootManager = moduleForTarget != null ? ModuleRootManagerEx.getInstanceEx(moduleForTarget) : null;
+        return moduleRootManager != null && targetFile != null && moduleRootManager.getFileIndex().isInSourceContent(targetFile);
     }
 }

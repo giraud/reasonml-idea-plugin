@@ -3,13 +3,11 @@ package com.reason.ide.go;
 import com.intellij.codeInsight.daemon.*;
 import com.intellij.codeInsight.navigation.*;
 import com.intellij.codeInsight.navigation.impl.*;
-import com.intellij.lang.*;
 import com.intellij.openapi.editor.markup.*;
 import com.intellij.openapi.project.*;
 import com.intellij.platform.backend.presentation.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
-import com.intellij.psi.tree.*;
 import com.intellij.psi.util.*;
 import com.intellij.util.*;
 import com.reason.ide.*;
@@ -35,6 +33,12 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
+        boolean elementInSourceContent = Platform.isElementInSourceContent(element);
+        if (!elementInSourceContent) {
+            LOG.trace("element not in source content", element);
+            return;
+        }
+
         Project project = element.getProject();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         ORLangTypes types = ORTypesUtil.getInstance(element.getLanguage());
@@ -557,22 +561,31 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     private <T extends PsiElement> void createMarkerInfo(@NotNull Collection<? super RelatedItemLineMarkerInfo<PsiElement>> result, @NotNull PsiNameIdentifierOwner psiSource, @NotNull String method, @NotNull Collection<T> implementedTargets, @NotNull Collection<T> implementingTargets) {
         PsiElement nameIdentifier = psiSource.getNameIdentifier();
+
         if (nameIdentifier != null && !(implementedTargets.isEmpty() && implementingTargets.isEmpty())) {
             PresentationRenderer renderer = new PresentationRenderer(psiSource);
+
             if (!implementedTargets.isEmpty()) {
+                // Prefer source items unless there are none
+                List<T> sourceImplementedTargets = implementedTargets.stream().filter(Platform::isElementInSourceContent).toList();
+                Collection<T> targets = sourceImplementedTargets.isEmpty() ? implementedTargets : sourceImplementedTargets;
                 result.add(NavigationGutterIconBuilder.create(ORIcons.IMPLEMENTED)
                         .setAlignment(GutterIconRenderer.Alignment.RIGHT)
                         .setTargetRenderer(() -> renderer)
                         .setTooltipText("Implements " + method)
-                        .setTargets(implementedTargets)
+                        .setTargets(targets)
                         .createLineMarkerInfo(nameIdentifier));
             }
+
             if (!implementingTargets.isEmpty()) {
+                // Prefer source items unless there are none
+                List<T> sourceImplementingTargets = implementingTargets.stream().filter(Platform::isElementInSourceContent).toList();
+                Collection<T> targets = sourceImplementingTargets.isEmpty() ? implementingTargets : sourceImplementingTargets;
                 result.add(NavigationGutterIconBuilder.create(ORIcons.IMPLEMENTING)
                         .setAlignment(GutterIconRenderer.Alignment.RIGHT)
                         .setTargetRenderer(() -> renderer)
                         .setTooltipText("Declare " + method)
-                        .setTargets(implementingTargets)
+                        .setTargets(targets)
                         .createLineMarkerInfo(nameIdentifier));
             }
         }
@@ -595,7 +608,8 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                     boolean sameFile = mySource.getContainingFile() == elementFile;
                     Icon locationIcon = elementBaseFile.isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE;
                     Icon icon = PsiIconUtil.getProvidersIcon(element, 0);
-                    return new TargetPresentationBuilderImpl(null, icon, name, null, null, null, sameFile ? null : elementBaseFile.getName(), sameFile ? null : locationIcon).presentation();
+                    boolean inSignature = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiSignature.class) != null;
+                    return new TargetPresentationBuilderImpl(null, icon, name, null, inSignature ? "sig" : null, null, sameFile ? null : elementBaseFile.getName(), sameFile ? null : locationIcon).presentation();
                 }
             }
 
