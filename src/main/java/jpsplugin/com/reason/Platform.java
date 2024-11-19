@@ -124,4 +124,15 @@ public class Platform {
         PsiFile psiFile = file == null ? null : PsiManager.getInstance(project).findFile(file);
         return psiFile == null ? null : ModuleUtil.findModuleForFile(psiFile);
     }
+
+    public static boolean isElementInSourceContent(@Nullable PsiElement element) {
+        if (element == null) {
+            return false;
+        }
+
+        VirtualFile targetFile = ORFileUtils.getVirtualFile(element);
+        Module moduleForTarget = ModuleUtil.findModuleForPsiElement(element);
+        ModuleRootManagerEx moduleRootManager = moduleForTarget != null ? ModuleRootManagerEx.getInstanceEx(moduleForTarget) : null;
+        return moduleRootManager != null && targetFile != null && moduleRootManager.getFileIndex().isInSourceContent(targetFile);
+    }
 }

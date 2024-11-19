@@ -4,14 +4,11 @@ import com.intellij.mock.*;
 import com.reason.ide.*;
 import org.jetbrains.annotations.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import java.io.*;
 
-import static com.reason.comp.esy.EsyConstants.ESY_CONFIG_FILENAME;
+import static com.reason.comp.esy.EsyConstants.*;
 
-@RunWith(JUnit4.class)
 public class EsyPackageJsonTest extends ORBasePlatformTestCase {
     @Override
     protected @NotNull String getTestDataPath() {

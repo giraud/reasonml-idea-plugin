@@ -12,6 +12,13 @@
 
 **NOTE**: minimal version supported is **2023.2**
      
+# 0.126 - 2024/11/19
+
+- :rocket: [#485](https://github.com/giraud/reasonml-idea-plugin/issues/485) Gutter icons on module signatures
+- :bug: [#487](https://github.com/giraud/reasonml-idea-plugin/issues/487) Ocaml setup on Mac OS (same than 480)
+- :bug: [#480](https://github.com/giraud/reasonml-idea-plugin/issues/480) No Opam switch detection
+- :house: update platform-gradle-plugin to v2
+
 # 0.125 - 2024/08/26
 
 - :bug: [#475](https://github.com/giraud/reasonml-idea-plugin/issues/475) Stack overflow 
