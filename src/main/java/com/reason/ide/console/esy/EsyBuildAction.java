@@ -3,7 +3,6 @@ package com.reason.ide.console.esy;
 import com.intellij.icons.*;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.esy.*;
 import com.reason.ide.console.*;

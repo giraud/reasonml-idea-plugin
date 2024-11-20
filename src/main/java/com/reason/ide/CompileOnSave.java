@@ -4,12 +4,10 @@ import com.intellij.openapi.application.ex.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
-import com.reason.comp.Compiler;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.beans.*;
-import java.lang.*;
 
 public class CompileOnSave implements PropertyChangeListener {
     private static final Log LOG = Log.create("compileOnSaveListener");

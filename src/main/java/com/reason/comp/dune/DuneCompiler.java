@@ -4,7 +4,6 @@ import com.intellij.execution.process.*;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.esy.*;
 import com.reason.hints.*;

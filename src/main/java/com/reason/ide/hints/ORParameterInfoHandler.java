@@ -103,7 +103,7 @@ public abstract class ORParameterInfoHandler implements ParameterInfoHandler<RPs
         return null;
     }
 
-    static class ArgumentsDescription {
+    public static class ArgumentsDescription {
         final PsiQualifiedNamedElement resolvedElement;
         final RPsiSignature signature;
         final String[] arguments; // ?
