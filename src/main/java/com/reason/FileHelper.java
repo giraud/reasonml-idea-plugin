@@ -1,6 +1,5 @@
 package com.reason;
 
-import com.intellij.json.*;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
@@ -38,7 +37,7 @@ public class FileHelper {
     }
 
     public static boolean isCompilerConfigJson(@Nullable VirtualFile file) {
-        if (file != null && file.getFileType() instanceof JsonFileType) {
+        if (file != null && "json".equals(file.getFileType().getDefaultExtension())) {
             String fileName = file.getName();
             return RESCRIPT_CONFIG_FILENAME.equals(fileName) || BS_CONFIG_FILENAME.equals(fileName);
         }
