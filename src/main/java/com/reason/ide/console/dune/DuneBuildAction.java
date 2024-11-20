@@ -3,7 +3,6 @@ package com.reason.ide.console.dune;
 import com.intellij.icons.*;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.dune.*;
 import com.reason.ide.console.*;

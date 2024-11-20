@@ -8,7 +8,6 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.hints.*;
 import com.reason.ide.console.*;

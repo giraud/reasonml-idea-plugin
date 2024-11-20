@@ -65,12 +65,7 @@ public class InferredTypesImplementation implements InferredTypes {
         switch (entry) {
             case OPEN:
                 // Pattern :: Name
-                Stack<OpenModule> openStack = myOpens.get(line);
-                if (openStack == null) {
-                    openStack = new Stack<>();
-                    myOpens.put(line, openStack);
-                }
-
+                Stack<OpenModule> openStack = myOpens.computeIfAbsent(line, k -> new Stack<>());
                 openStack.push(new OpenModule(start));
                 break;
             case VALUE: {

@@ -43,7 +43,7 @@ public class SdkDownloader {
     public void run(@Nullable Project project, @NotNull ProgressIndicator indicator) {
         String sdkFilename = "ocaml-" + m_sdk + ".tar.gz";
         File targetSdkLocation = new File(m_sdkHome, sdkFilename);
-        String sdkUrl = "http://caml.inria.fr/pub/distrib/ocaml-" + m_major + "/" + sdkFilename;
+        String sdkUrl = "https://caml.inria.fr/pub/distrib/ocaml-" + m_major + "/" + sdkFilename;
 
         indicator.setIndeterminate(true);
         indicator.setText("Download sdk from " + sdkUrl);

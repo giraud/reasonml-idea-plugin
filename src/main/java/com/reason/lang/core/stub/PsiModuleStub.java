@@ -21,7 +21,7 @@ public class PsiModuleStub extends NamedStubBase<RPsiModule> {
                          boolean isModuleType, boolean isTopLevel, boolean isFunctorCall, @Nullable String returnTypeName) {
         super(parent, elementType, name);
         myPath = path;
-        myQname = namespace == null ? path != null && path.length > 0 ? Joiner.join(".", path) + "." + name : "" + name : namespace;
+        myQname = namespace == null ? (path != null && path.length > 0 ? Joiner.join(".", path) + "." + name : name) : namespace;
         myAlias = alias;
         myIsComponent = isComponent;
         myIsModuleType = isModuleType;

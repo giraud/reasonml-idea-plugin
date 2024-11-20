@@ -135,7 +135,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
 
                 } else {
-                    // let is inside an inner module body
+                    // `let` is inside an inner module body
                     RPsiModuleSignature moduleSignature = ((RPsiInnerModule) parentModule).getModuleSignature();
                     if (moduleSignature != null && moduleSignature.getNameIdentifier() == null) {
                         // Inline signature
@@ -366,9 +366,10 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         } else {
             // Top module navigation
             String qName = element.getQualifiedName();
-            Collection<RPsiClassMethod> resolvedElements = qName == null ? null : ClassMethodFqnIndex.getElements(qName, project, scope).stream().filter(m -> ORUtil.inInterface(m) != inInterface).toList();
-            //List<RPsiClassMethod> c = resolveTargetFromIndex(inInterface, resolvedElements);
-            targets.addAll(resolvedElements);
+            Collection<RPsiClassMethod> resolvedElements = qName != null ? ClassMethodFqnIndex.getElements(qName, project, scope).stream().filter(m -> ORUtil.inInterface(m) != inInterface).toList() : null;
+            if (resolvedElements != null) {
+                targets.addAll(resolvedElements);
+            }
         }
 
         createMarkerInfo(result, element, "method", implementedTargets, implementingTargets);
