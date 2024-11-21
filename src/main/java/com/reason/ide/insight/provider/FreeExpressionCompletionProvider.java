@@ -98,6 +98,16 @@ public class FreeExpressionCompletionProvider {
             while (item != null) {
                 if (item instanceof RPsiLetBinding) {
                     skipLet = true;
+                } else if (item instanceof RPsiParameters parameters) {
+                    for (PsiElement parameter : parameters.getParametersList()) {
+                        if (parameter instanceof RPsiParameterDeclaration parameterDeclaration) {
+                            String name = parameterDeclaration.getName();
+                            resultSet.addElement(
+                                    LookupElementBuilder.create(name != null ? name : parameterDeclaration.getText())
+                                            .withTypeText(RPsiSignatureUtil.getSignature(parameterDeclaration, languageProperties))
+                            );
+                        }
+                    }
                 } else if (item instanceof RPsiInnerModule
                         || item instanceof RPsiLet
                         || item instanceof RPsiType

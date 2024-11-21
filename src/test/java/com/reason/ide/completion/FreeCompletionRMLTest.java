@@ -11,7 +11,6 @@ import org.junit.runners.*;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-@RunWith(JUnit4.class)
 public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
     @Override
     protected String getTestDataPath() {
@@ -139,19 +138,19 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         configureCode("A.re", """
                 module type I = { type renderer; };
                 module type R = { type rule; let style: unit => array(rule); };
-                                    
+                
                 module Core = {
                   let color = "red";
                   module Make = (I): R => { type rule; let style = () => [||]; };
                 }
-                                    
+                
                 module Css = {
                   include Core
                   include Core.Make({type renderer;});
                 };
-                                    
+                
                 open Css;
-                                    
+                
                 let y = <caret>
                 """);
 
@@ -175,5 +174,39 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         List<String> strings = myFixture.getLookupElementStrings();
 
         assertContainsElements(strings, "A", "B", "C", "x");
+    }
+
+    @Test
+    public void test_parameters() {
+        configureCode("A.res", "let fn = (newValue, newUnit) => { n<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "newValue", "newUnit");
+    }
+
+    @Test
+    public void test_named_parameters() {
+        configureCode("A.re", "let fn = (~newValue, ~newUnit:option(string), ~newOther=?) => { n<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "newValue", "newUnit", "newOther");
+    }
+
+    @Test
+    public void test_GH_246() {
+        configureCode("A.res", """
+                let fn = (newValue, newUnit) => {
+                    setSomething(_ => {value: n<caret>
+                }
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "newValue", "newUnit");
     }
 }
