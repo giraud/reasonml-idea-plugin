@@ -101,7 +101,7 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
                   type rule
                   val style : unit -> rule array
                 end
-                                
+                
                 module Core = struct
                     let color = "red"
                     module Make(_:I) : R = struct
@@ -109,14 +109,14 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
                       let style () = [||]
                     end
                 end
-                                
+                
                 module Css = struct
                   include Core
                   include Core.Make(struct type renderer end)
                 end
-                                
+                
                 open Css
-                                    
+                
                 let y = <caret>
                 """);
 
@@ -140,5 +140,38 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
         List<String> strings = myFixture.getLookupElementStrings();
 
         assertContainsElements(strings, "A", "B", "C", "x");
+    }
+
+    @Test
+    public void test_parameters() {
+        configureCode("A.ml", "let fn newValue newUnit = n<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "newValue", "newUnit");
+    }
+
+    @Test
+    public void test_named_parameters() {
+        configureCode("A.ml", "let fn ?newOther ~newValue ~newUnit:(newUnit : string option) = let x = n<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "newValue", "newUnit", "newOther");
+    }
+
+    @Test
+    public void test_GH_246() {
+        configureCode("A.ml", """
+                let fn newValue newUnit =
+                    setSomething(fun _ -> { value = n<caret>
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "newValue", "newUnit");
     }
 }

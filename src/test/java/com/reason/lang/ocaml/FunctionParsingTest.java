@@ -95,15 +95,19 @@ public class FunctionParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_parameters_named_symbols() {
-        RPsiLet e = firstOfType(parseCode("let make ~id:(id:string)  ~values:(values:'a Js.t option) children) = 1"), RPsiLet.class);
+        RPsiLet e = firstOfType(parseCode("let make ?newOther ~newValue ~id:(id:string) ~foo ?pouet ~values:(values:'a Js.t option) children) = 1"), RPsiLet.class);
 
         RPsiFunction function = (RPsiFunction) e.getBinding().getFirstChild();
         List<RPsiParameterDeclaration> parameters = new ArrayList<>(function.getParameters());
-        assertSize(3, parameters);
+        assertSize(7, parameters);
 
-        assertEquals("id", parameters.get(0).getName());
-        assertEquals("values", parameters.get(1).getName());
-        assertEquals("children", parameters.get(2).getName());
+        assertEquals("newOther", parameters.get(0).getName());
+        assertEquals("newValue", parameters.get(1).getName());
+        assertEquals("id", parameters.get(2).getName());
+        assertEquals("foo", parameters.get(3).getName());
+        assertEquals("pouet", parameters.get(4).getName());
+        assertEquals("values", parameters.get(5).getName());
+        assertEquals("children", parameters.get(6).getName());
     }
 
     @Test
