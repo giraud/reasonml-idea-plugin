@@ -4,9 +4,9 @@ public abstract class ORLangTypes extends ORTypes {
     // Stubbed elements
 
     public ORCompositeType C_CLASS_DECLARATION;
+    public ORCompositeType C_CLASS_METHOD;
     public ORCompositeType C_EXCEPTION_DECLARATION;
     public ORCompositeType C_EXTERNAL_DECLARATION;
-    public ORCompositeType C_FIELD_VALUE;
     public ORCompositeType C_FUNCTOR_DECLARATION;
     public ORCompositeType C_INCLUDE;
     public ORCompositeType C_LET_DECLARATION;
@@ -27,7 +27,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_BINARY_CONDITION;
     public ORCompositeType C_CLASS_CONSTR;
     public ORCompositeType C_CLASS_FIELD;
-    public ORCompositeType C_CLASS_METHOD;
+    public ORCompositeType C_CLASS_INITIALIZER;
     public ORCompositeType C_CLOSED_VARIANT;
     public ORCompositeType C_CONSTRAINTS;
     public ORCompositeType C_TYPE_CONSTRAINT;
@@ -36,6 +36,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_DEFAULT_VALUE;
     public ORCompositeType C_DIRECTIVE;
     public ORCompositeType C_DO_LOOP;
+    public ORCompositeType C_FIELD_VALUE;
     public ORCompositeType C_FIRST_CLASS;
     public ORCompositeType C_FOR_LOOP;
     public ORCompositeType C_FUN_EXPR;

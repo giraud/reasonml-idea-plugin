@@ -3,7 +3,6 @@ package com.reason.lang.reason;
 import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
-import com.reason.lang.core.psi.RPsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
@@ -14,68 +13,59 @@ import java.util.*;
 public class ClassParsingTest extends RmlParsingTestCase {
     @Test
     public void test_basic() {
-        Collection<RPsiClass> classes = classExpressions(parseCode("class foo = { as _; }"));
+        RPsiClass e = firstOfType(parseCode("class foo = { as _; }"), RPsiClass.class);
 
-        assertEquals(1, classes.size());
-        assertEquals("foo", first(classes).getName());
-        assertEquals("{ as _; }", first(classes).getClassBody().getText());
+        assertEquals("foo", e.getName());
+        assertEquals("{ as _; }", e.getClassBody().getText());
     }
 
     @Test
     public void test_classType() {
-        Collection<RPsiClass> classes = classExpressions(parseCode("class type restricted_point_type = { pub get_x: int; pub bump: unit; }"));
+        RPsiClass e = firstOfType(parseCode("class type restricted_point_type = { pub get_x: int; pub bump: unit; }"), RPsiClass.class);
 
-        assertEquals(1, classes.size());
-        assertEquals("restricted_point_type", first(classes).getName());
+        assertEquals("restricted_point_type", e.getName());
     }
 
     @Test
     public void test_fields() {
-        Collection<RPsiClass> classes = classExpressions(parseCode("class foo = { as _; val mutable a = []; val b = 2; }"));
+        RPsiClass e = firstOfType(parseCode("class foo = { as _; val mutable a = []; val b = 2; }"), RPsiClass.class);
 
-        RPsiClass clazz = first(classes);
-        Collection<RPsiClassField> fields = clazz.getFields();
-        assertEquals(fields.size(), 2);
+        assertSize(2, e.getFields());
     }
 
     @Test
     public void test_methods() {
-        Collection<RPsiClass> classes = classExpressions(parseCode("class foo = { as _; pub get_x = x; pub get_y = y; }"));
+        RPsiClass e = firstOfType(parseCode("class foo = { as _; pub get_x = x; pub get_y = y; }"), RPsiClass.class);
 
-        RPsiClass clazz = first(classes);
-        Collection<RPsiClassMethod> methods = clazz.getMethods();
-        assertEquals(methods.size(), 2);
+        assertSize(2, e.getMethods());
     }
 
     @Test
     public void test_both() {
-        Collection<RPsiClass> classes = classExpressions(parseCode("class foo = { as _; val mutable x = []; pub get_x = x; }"));
+        RPsiClass e = firstOfType(parseCode("class foo = { as _; val mutable x = []; pub get_x = x; }"), RPsiClass.class);
 
-        RPsiClass clazz = first(classes);
-        assertEquals(clazz.getFields().size(), 1);
-        assertEquals(clazz.getMethods().size(), 1);
+        assertSize(1, e.getFields());
+        assertSize(1, e.getMethods());
     }
 
     @Test
     public void test_classConstruct() {
-        Collection<RPsiClass> classes = classExpressions(parseCode("class c (m: int) = { as self; pub m = m; initializer (all_c := [(self :> c), ...all_c^]); }"));
+        RPsiClass e = firstOfType(parseCode("class c (m: int) = { as self; pub m = m; initializer (all_c := [(self :> c), ...all_c^]); }"), RPsiClass.class);
 
-        RPsiClass clazz = first(classes);
-        assertEquals(clazz.getParameters().size(), 0);
-        assertNotNull(clazz.getConstructor());
-        assertSize(1, PsiTreeUtil.findChildrenOfType(clazz, RPsiClassConstructor.class));
+        assertSize(0, e.getParameters());
+        assertNotNull(e.getConstructor());
+        assertSize(1, PsiTreeUtil.findChildrenOfType(e, RPsiClassConstructor.class));
     }
 
     @Test
     public void test_classConstraint() {
-        Collection<RPsiClass> classes = classExpressions(parseCode("class circle ('a) (c: 'a) = { as _; constraint 'a = #point; val mutable center = c; pub set_center = c => center = c; pub move = center#move; }"));
+        RPsiClass e = firstOfType(parseCode("class circle ('a) (c: 'a) = { as _; constraint 'a = #point; val mutable center = c; pub set_center = c => center = c; pub move = center#move; }"), RPsiClass.class);
 
-        RPsiClass clazz = first(classes);
-        assertEquals("circle", first(classes).getName());
-        assertNotNull(clazz.getParameters());
-        assertNotNull(clazz.getConstructor());
-        assertEquals(clazz.getFields().size(), 1);
-        assertEquals(clazz.getMethods().size(), 2);
+        assertEquals("circle", e.getName());
+        assertNotNull(e.getParameters());
+        assertNotNull(e.getConstructor());
+        assertSize(1, e.getFields());
+        assertSize(2, e.getMethods());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/310
@@ -129,4 +119,29 @@ public class ClassParsingTest extends RmlParsingTestCase {
         assertEquals("unit => unit", methods.get(7).getSignature().getText());
     }
 
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/491
+    @Test
+    public void test_GH_491_object_initializer() {
+        RPsiClass e = firstOfType(parseCode("""
+                class c = {
+                  as self;
+                  pub tag = { tag_bold: true; };
+                  initializer {
+                    let x = 1;
+                    let fn = y => x + y;
+                    ignore(fn(2));
+                  };
+                };
+                """), RPsiClass.class);
+
+        assertSize(0, e.getFields());
+        assertSize(1, e.getMethods());
+        assertTextEquals("""
+                initializer {
+                    let x = 1;
+                    let fn = y => x + y;
+                    ignore(fn(2));
+                  }""", e.getInitializer().getText());
+    }
 }
