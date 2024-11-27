@@ -5,10 +5,7 @@ import com.intellij.testFramework.utils.parameterInfo.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
-@RunWith(JUnit4.class)
 public class ResParameterInfoHandlerTest extends ORBasePlatformTestCase {
     @Test
     public void test_basic() {

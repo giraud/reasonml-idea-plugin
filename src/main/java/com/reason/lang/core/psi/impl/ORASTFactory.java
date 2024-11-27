@@ -150,6 +150,9 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         if (type == myTypes.C_CLASS_FIELD) {
             return new RPsiClassField(myTypes, type);
         }
+        if (type == myTypes.C_CLASS_INITIALIZER) {
+            return new RPsiClassInitializer(myTypes, type);
+        }
         if (type == myTypes.C_SWITCH_BODY) {
             return new RPsiSwitchBody(myTypes, type);
         }

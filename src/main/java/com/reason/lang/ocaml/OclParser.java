@@ -80,6 +80,8 @@ public class OclParser extends CommonPsiParser {
                     parseSig();
                 } else if (tokenType == myTypes.OBJECT) {
                     parseObject();
+                } else if (tokenType == myTypes.INITIALIZER) {
+                    parseInitializer();
                 } else if (tokenType == myTypes.IF) {
                     parseIf();
                 } else if (tokenType == myTypes.THEN) {
@@ -675,6 +677,11 @@ public class OclParser extends CommonPsiParser {
 
         private void parseObject() {
             markScope(myTypes.C_OBJECT, myTypes.OBJECT);
+        }
+
+        private void parseInitializer() {
+            popEndUntil(myTypes.C_OBJECT)
+                    .markScope(myTypes.C_CLASS_INITIALIZER, myTypes.INITIALIZER);
         }
 
         private void parseBegin() {
