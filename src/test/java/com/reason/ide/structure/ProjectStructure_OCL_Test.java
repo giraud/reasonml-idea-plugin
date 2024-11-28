@@ -7,12 +7,9 @@ import com.reason.ide.*;
 import com.reason.ide.files.*;
 import org.jetbrains.annotations.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import javax.swing.*;
 
-@RunWith(JUnit4.class)
 public class ProjectStructure_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_let() {
@@ -168,6 +165,22 @@ public class ProjectStructure_OCL_Test extends ORBasePlatformTestCase {
         TreeElement xt = x.getChildren()[0];
         assertPresentation("t", null, ORIcons.TYPE, xt.getPresentation());
 
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/490
+    @Test
+    public void test_GH_490() {
+        FileBase e = configureCode("A.ml", """
+                let o = object(self)
+                  val mutable v1 = 1
+                  method m1 = () => ()
+                end
+                """);
+
+        StructureViewModel model = new ORStructureViewModel(e);
+
+        StructureViewElement.StructureObjectView o = (StructureViewElement.StructureObjectView) model.getRoot().getChildren()[0];
+        assertPresentation("o", null, ORIcons.CLASS, o.getPresentation());
     }
 
     private void assertPresentation(String name, String location, @Nullable Icon icon, @NotNull ItemPresentation pres) {
