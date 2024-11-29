@@ -295,7 +295,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                             return;
                         }
 
-                        RPsiLetBinding letBinding = let.getBinding();
+                        PsiElement letElement = let.isFunction() ? let.getFunction() : let.getBinding();
+                        PsiElement letBinding = letElement instanceof RPsiFunction f ? f.getBody() : letElement;
                         PsiElement firstChild = letBinding != null ? letBinding.getFirstChild() : null;
                         if (firstChild instanceof RPsiObject psiObject) {
                             myTreeElements.add(new StructureObjectView(psiObject, let.getName()));
