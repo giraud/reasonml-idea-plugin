@@ -183,6 +183,23 @@ public class ProjectStructure_OCL_Test extends ORBasePlatformTestCase {
         assertPresentation("o", null, ORIcons.CLASS, o.getPresentation());
     }
 
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/490
+    @Test
+    public void test_GH_490_factory() {
+        FileBase e = configureCode("A.ml", """
+                let segment_model (doc : sentence Doc.document) : Wg_Segment.model =
+                object (self)
+                    val mutable cbs = []
+                end
+                """);
+
+        StructureViewModel model = new ORStructureViewModel(e);
+
+        StructureViewElement.StructureObjectView o = (StructureViewElement.StructureObjectView) model.getRoot().getChildren()[0];
+        assertPresentation("segment_model", null, ORIcons.CLASS, o.getPresentation());
+    }
+
     private void assertPresentation(String name, String location, @Nullable Icon icon, @NotNull ItemPresentation pres) {
         assertEquals("Incorrect name", name, pres.getPresentableText());
         assertEquals("Incorrect location", location, pres.getLocationString());
