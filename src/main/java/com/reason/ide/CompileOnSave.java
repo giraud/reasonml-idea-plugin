@@ -26,7 +26,7 @@ public class CompileOnSave implements PropertyChangeListener {
     public void propertyChange(@NotNull PropertyChangeEvent evt) {
         if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE) {
             ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
-            ORResolvedCompiler<? extends Compiler> compiler = compilerManager == null ? null : compilerManager.getCompiler(myFile);
+            ORResolvedCompiler<? extends ORCompiler> compiler = compilerManager == null ? null : compilerManager.getCompiler(myFile);
             if (compiler == null) {
                 LOG.debug("No compiler found", myFile);
             } else {

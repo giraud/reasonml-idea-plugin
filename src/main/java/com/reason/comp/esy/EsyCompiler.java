@@ -16,7 +16,7 @@ import org.jetbrains.annotations.*;
 import java.util.concurrent.atomic.*;
 
 @Service(Service.Level.PROJECT)
-public final class EsyCompiler implements Compiler {
+public final class EsyCompiler implements ORCompiler {
     private static final Log LOG = Log.create("compiler.esy");
 
     private final @NotNull Project myProject;

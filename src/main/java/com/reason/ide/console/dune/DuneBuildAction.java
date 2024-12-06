@@ -16,7 +16,7 @@ public class DuneBuildAction extends CompilerAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        Compiler compiler = project == null ? null : project.getService(DuneCompiler.class);
+        ORCompiler compiler = project == null ? null : project.getService(DuneCompiler.class);
         if (compiler != null) {
             e.getPresentation().setEnabled(compiler.isAvailable());
         }
@@ -25,7 +25,7 @@ public class DuneBuildAction extends CompilerAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        Compiler compiler = project == null ? null : project.getService(DuneCompiler.class);
+        ORCompiler compiler = project == null ? null : project.getService(DuneCompiler.class);
         if (compiler != null) {
             doAction(project, CliType.Dune.BUILD, (_void) -> e.getPresentation().setEnabled(compiler.isAvailable()));
         }

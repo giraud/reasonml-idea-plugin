@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
  * When a content root file has been found, we can associate it to its corresponding compiler.
  * Use ORCompilerManager to instantiate this class.
  */
-public class ORResolvedCompiler<C extends Compiler> {
+public class ORResolvedCompiler<C extends ORCompiler> {
     protected final C myCompiler;
     protected final VirtualFile myConfigFile; // Compiler configuration file, like bsconfig.json or dune-project
     protected final VirtualFile myBinFile;
@@ -19,7 +19,7 @@ public class ORResolvedCompiler<C extends Compiler> {
         myBinFile = binFile;
     }
 
-    public @NotNull Compiler.CompilerType getType() {
+    public @NotNull ORCompiler.CompilerType getType() {
         return myCompiler.getType();
     }
 

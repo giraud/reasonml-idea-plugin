@@ -16,7 +16,7 @@ public class EsyBuildAction extends CompilerAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        Compiler compiler = project == null ? null : project.getService(EsyCompiler.class);
+        ORCompiler compiler = project == null ? null : project.getService(EsyCompiler.class);
         if (compiler != null) {
             e.getPresentation().setEnabled(compiler.isAvailable());
         }
@@ -25,7 +25,7 @@ public class EsyBuildAction extends CompilerAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        Compiler compiler = project == null ? null : project.getService(EsyCompiler.class);
+        ORCompiler compiler = project == null ? null : project.getService(EsyCompiler.class);
         if (compiler != null) {
             doAction(project, CliType.Esy.BUILD, (_void) -> e.getPresentation().setEnabled(compiler.isAvailable()));
         }

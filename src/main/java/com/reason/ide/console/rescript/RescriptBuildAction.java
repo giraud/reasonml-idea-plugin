@@ -16,7 +16,7 @@ public class RescriptBuildAction extends CompilerAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        Compiler compiler = project == null ? null : project.getService(ResCompiler.class);
+        ORCompiler compiler = project == null ? null : project.getService(ResCompiler.class);
         if (compiler != null) {
             e.getPresentation().setEnabled(compiler.isAvailable());
         }
@@ -25,7 +25,7 @@ public class RescriptBuildAction extends CompilerAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        Compiler compiler = project == null ? null : project.getService(ResCompiler.class);
+        ORCompiler compiler = project == null ? null : project.getService(ResCompiler.class);
         if (compiler != null) {
             doAction(project, CliType.Rescript.MAKE, (_void) -> e.getPresentation().setEnabled(compiler.isAvailable()));
         }

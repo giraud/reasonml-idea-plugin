@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.*;
 import static com.reason.comp.CliType.Rescript.*;
 
 @Service(Service.Level.PROJECT)
-public final class ResCompiler implements Compiler {
+public final class ResCompiler implements ORCompiler {
     private static final Log LOG = Log.create("compiler.rescript");
 
     private final Project myProject;
