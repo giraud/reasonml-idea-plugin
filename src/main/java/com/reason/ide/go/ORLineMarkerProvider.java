@@ -602,7 +602,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 if (elementFile instanceof FileBase elementBaseFile) {
                     boolean sameFile = mySource.getContainingFile() == elementFile;
                     Icon locationIcon = elementBaseFile.isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE;
-                    Icon icon = PsiIconUtil.getProvidersIcon(element, 0);
+                    Icon icon = PsiIconUtil.getIconFromProviders(element, 0);
                     boolean inSignature = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiSignature.class) != null;
                     return new TargetPresentationBuilderImpl(null, icon, name, null, inSignature ? "sig" : null, null, sameFile ? null : elementBaseFile.getName(), sameFile ? null : locationIcon).presentation();
                 }
