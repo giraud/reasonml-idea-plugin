@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.util.concurrency.*;
 import com.reason.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.hints.*;
 import com.reason.ide.*;

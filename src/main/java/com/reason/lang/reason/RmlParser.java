@@ -72,6 +72,8 @@ public class RmlParser extends CommonPsiParser {
                         parseRef();
                     } else if (tokenType == myTypes.METHOD) {
                         parseMethod();
+                    } else if (tokenType == myTypes.INITIALIZER) {
+                        parseInitializer();
                     } else if (tokenType == myTypes.OPTION) {
                         parseOption();
                     } else if (tokenType == myTypes.MATCH) {
@@ -229,6 +231,14 @@ public class RmlParser extends CommonPsiParser {
             if (isCurrent(myTypes.C_RECORD_EXPR)) {
                 // { |>method<| : ...
                 remapCurrentToken(myTypes.LIDENT).mark(myTypes.C_RECORD_FIELD);
+            }
+        }
+
+        private void parseInitializer() {
+            mark(myTypes.C_CLASS_INITIALIZER);
+            advance();
+            if (getTokenType() == myTypes.LBRACE) {
+                updateScopeToken(myTypes.LBRACE).advance();
             }
         }
 

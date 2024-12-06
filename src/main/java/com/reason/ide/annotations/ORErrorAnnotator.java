@@ -12,7 +12,6 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.problems.*;
 import com.intellij.psi.*;
 import com.reason.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.rescript.*;

@@ -5,7 +5,6 @@ import com.intellij.execution.ui.*;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.dune.*;
 import com.reason.hints.*;

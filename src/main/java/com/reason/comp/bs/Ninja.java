@@ -1,12 +1,11 @@
 package com.reason.comp.bs;
 
+import org.jetbrains.annotations.*;
+
 import java.util.*;
 import java.util.stream.*;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 
 /**
  * REASON format (8.2.0):
@@ -58,7 +57,7 @@ import static java.util.Collections.emptyList;
  * restat = 1
  * o src\Foo.cmj src\Foo.cmi ..\js\src\Foo.js : mij src\Foo.ast
  */
-public class Ninja {
+public final class Ninja {
     private final @NotNull List<String> m_includes;
     private final @NotNull List<String> m_ppxIncludes;
     private final @NotNull List<String> m_pkgFlags;

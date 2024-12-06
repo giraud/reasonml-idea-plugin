@@ -1,22 +1,20 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.*;
 import com.intellij.psi.util.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import org.jetbrains.annotations.*;
 import org.junit.*;
 
 @SuppressWarnings("ConstantConditions")
 public class DirectiveParsingTest extends OclParsingTestCase {
     @Test
     public void test_if() {
-        FileBase f = parseCode("#if BS then\nx\n#else\ny\n#end");
+        FileBase f = parseCode("#if BS then\nx\n#else\ny\n #end");
         RPsiDirective e = PsiTreeUtil.findChildOfType(f, RPsiDirective.class);
 
         assertNotNull(e);
-        assertEquals("#if BS then\nx\n#else\ny\n#end", e.getText());
+        assertEquals("#if BS then\nx\n#else\ny\n #end", e.getText());
     }
 
     @Test
@@ -49,5 +47,17 @@ public class DirectiveParsingTest extends OclParsingTestCase {
 
         RPsiSignature signature = e.getSignature();
         assertEquals("string -> bool option", signature.asText(OclLanguage.INSTANCE));
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/492
+    @Test
+    public void test_GH_492_not_directive() {
+        RPsiClassMethod e = firstOfType(parseCode("""
+                let pf = object
+                  method m = self#end_iter
+                end
+                """), RPsiClassMethod.class);
+
+        assertTextEquals("method m = self#end_iter", e.getText());
     }
 }

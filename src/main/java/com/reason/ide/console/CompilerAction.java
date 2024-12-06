@@ -4,7 +4,6 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.ide.*;
 import jpsplugin.com.reason.*;

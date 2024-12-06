@@ -1,7 +1,7 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.type.ORLangTypes;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.type.*;
 
 import static com.intellij.psi.TokenType.*;
 
@@ -32,7 +32,7 @@ import static com.intellij.psi.TokenType.*;
 
 %public
 %class OCamlLexer
-%implements FlexLexer
+%implements com.intellij.lexer.FlexLexer
 %unicode
 %function advance
 %type IElementType
@@ -77,6 +77,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 %state INITIAL
 %state IN_STRING
 %state IN_OCAML_ML_COMMENT
+%state IN_DIRECTIVE
 
 %%
 
@@ -171,12 +172,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "(*" { yybegin(IN_OCAML_ML_COMMENT); inCommentString = false; commentDepth = 1; tokenStart(); }
 
-    "#if"     { return types.DIRECTIVE_IF; }
-    "#else"   { return types.DIRECTIVE_ELSE; }
-    "#elif"   { return types.DIRECTIVE_ELIF; }
-    "#endif"  { return types.DIRECTIVE_ENDIF; }
-    "#end"    { return types.DIRECTIVE_END; }
-
     "##"  { return types.SHARPSHARP; }
     "@@"  { return types.ARROBASE_2; }
     "@@@" { return types.ARROBASE_3; }
@@ -221,13 +216,26 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "["   { return types.LBRACKET; }
     "]"   { return types.RBRACKET; }
     "@"   { return types.ARROBASE; }
-    "#"   { return types.SHARP; }
     "?"   { return types.QUESTION_MARK; }
     "!"   { return types.EXCLAMATION_MARK; }
     "$"   { return types.DOLLAR; }
     "`"   { return types.BACKTICK; }
     "~"   { return types.TILDE; }
     "&"   { return types.AMPERSAND; }
+
+    "#"   {
+              if (zzCurrentPos > 0) {
+                  char prevChar = yycharat(-1);
+                  if (prevChar == '\n' || prevChar == '\r' || prevChar == ' ' || prevChar == '\t') {
+                      yybegin(IN_DIRECTIVE); yypushback(1);
+                  } else {
+                      return types.SHARP;
+                  }
+              }
+              else {
+                  yybegin(IN_DIRECTIVE); yypushback(1);
+              }
+          }
 
     "<"  { return types.LT; }
     ">"  { return types.GT; }
@@ -260,11 +268,22 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 
 <IN_OCAML_ML_COMMENT> {
     "'" . "'"      { /* a char */ }
-    "(*"           { if (!inCommentString) commentDepth += 1; }
+    "(*"           { if (!inCommentString) { commentDepth += 1; } }
     "*)"           { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } } }
     "\""           { inCommentString = !inCommentString; }
      . | {NEWLINE} { }
     <<EOF>>        { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; }
+}
+
+// Not really OCaml... but anyway
+<IN_DIRECTIVE> {
+    "#if"         { yybegin(INITIAL); tokenEnd(); return types.DIRECTIVE_IF; }
+    "#else"       { yybegin(INITIAL); tokenEnd(); return types.DIRECTIVE_ELSE; }
+    "#elif"       { yybegin(INITIAL); tokenEnd(); return types.DIRECTIVE_ELIF; }
+    "#end"        { yybegin(INITIAL); tokenEnd(); return types.DIRECTIVE_END; }
+    "#endif"      { yybegin(INITIAL); tokenEnd(); return types.DIRECTIVE_ENDIF; }
+    . | {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.SHARP; }
+    <<EOF>>       { yybegin(INITIAL); tokenEnd(); return types.SHARP; }
 }
 
 [^] { return BAD_CHARACTER; }

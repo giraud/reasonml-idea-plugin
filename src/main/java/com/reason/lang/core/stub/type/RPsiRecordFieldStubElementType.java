@@ -26,7 +26,8 @@ public class RPsiRecordFieldStubElementType extends ORStubElementType<RsiRecordF
     }
 
     public @NotNull RsiRecordFieldStub createStub(@NotNull RPsiRecordField psi, @Nullable StubElement parentStub) {
-        return new RsiRecordFieldStub(parentStub, this, psi.getName(), psi.getPath());
+        String[] path = psi.getPath();
+        return new RsiRecordFieldStub(parentStub, this, psi.getName(), path != null ? path : new String[0]);
     }
 
     public void serialize(@NotNull final RsiRecordFieldStub stub, @NotNull StubOutputStream dataStream) throws IOException {

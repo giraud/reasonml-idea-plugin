@@ -5,6 +5,7 @@ import com.intellij.ide.util.treeView.smartTree.*;
 import com.intellij.navigation.*;
 import com.intellij.psi.*;
 import com.intellij.util.*;
+import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
@@ -293,6 +294,15 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                             }
                             return;
                         }
+
+                        PsiElement letElement = let.isFunction() ? let.getFunction() : let.getBinding();
+                        PsiElement letBinding = letElement instanceof RPsiFunction f ? f.getBody() : letElement;
+                        PsiElement firstChild = letBinding != null ? letBinding.getFirstChild() : null;
+                        if (firstChild instanceof RPsiObject psiObject) {
+                            myTreeElements.add(new StructureObjectView(psiObject, let.getName()));
+                            return;
+                        }
+
                     }
                     myTreeElements.add(new StructureViewElement(element, myElementLevel));
                 }
@@ -311,11 +321,63 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         }
     }
 
-    static class StructureModuleImplView implements StructureViewTreeElement, SortableTreeElement {
+
+    static abstract class CustomStructureView implements StructureViewTreeElement, SortableTreeElement {
         final PsiElement myRootElement;
 
-        StructureModuleImplView(PsiElement rootElement) {
+        CustomStructureView(PsiElement rootElement) {
             myRootElement = rootElement;
+        }
+
+        @Override
+        public @NotNull TreeElement[] getChildren() {
+            List<TreeElement> treeElements = new ArrayList<>();
+            myRootElement.acceptChildren(new ElementVisitor(treeElements, 1));
+            return treeElements.toArray(new TreeElement[0]);
+        }
+
+        @Override
+        public Object getValue() {
+            return myRootElement;
+        }
+
+        @Override
+        public void navigate(boolean requestFocus) {
+        }
+    }
+
+    static class StructureObjectView extends CustomStructureView {
+        private final String myName;
+
+        StructureObjectView(PsiElement rootElement, String name) {
+            super(rootElement);
+            myName = name;
+        }
+
+        @Override
+        public @NotNull ItemPresentation getPresentation() {
+            return new ItemPresentation() {
+                @Override
+                public @NotNull String getPresentableText() {
+                    return myName;
+                }
+
+                @Override
+                public @NotNull Icon getIcon(boolean b) {
+                    return ORIcons.CLASS;
+                }
+            };
+        }
+
+        @Override
+        public @NotNull String getAlphaSortKey() {
+            return myName;
+        }
+    }
+
+    static class StructureModuleImplView extends CustomStructureView {
+        StructureModuleImplView(PsiElement rootElement) {
+            super(rootElement);
         }
 
         @Override
@@ -340,26 +402,10 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             };
         }
 
-        @Override
-        public @NotNull TreeElement[] getChildren() {
-            List<TreeElement> treeElements = new ArrayList<>();
-            myRootElement.acceptChildren(new ElementVisitor(treeElements, 1));
-            return treeElements.toArray(new TreeElement[0]);
-        }
-
-        @Override
-        public Object getValue() {
-            return myRootElement;
-        }
-
-        @Override
-        public void navigate(boolean requestFocus) {
-        }
-
         @NotNull
         @Override
         public String getAlphaSortKey() {
-            return "zzzzImplementation";
+            return "zzzImplementation";
         }
     }
 }
