@@ -26,14 +26,14 @@ public abstract class CompilerAction extends DumbAwareAction {
     }
 
     private static void compileDirectory(@NotNull Project project, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
-        Compiler compiler = project.getService(ORCompilerManager.class).getCompiler(cliType);
+        ORCompiler compiler = project.getService(ORCompilerManager.class).getCompiler(cliType);
         if (compiler != null) {
             compiler.run(null, cliType, onProcessTerminated);
         }
     }
 
     private static void compileFile(@NotNull Project project, @NotNull Editor editor, @NotNull CliType cliType, @Nullable ORProcessTerminated<Void> onProcessTerminated) {
-        Compiler compiler = project.getService(ORCompilerManager.class).getCompiler(cliType);
+        ORCompiler compiler = project.getService(ORCompilerManager.class).getCompiler(cliType);
         PsiFile activeFile = getActiveFile(project, editor);
 
         // We always use the opened file to detect the config file

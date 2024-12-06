@@ -236,7 +236,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         }
     }
 
-    static public class InitialInfo<R extends ORResolvedCompiler<? extends Compiler>> {
+    static public class InitialInfo<R extends ORResolvedCompiler<? extends ORCompiler>> {
         final R compiler;
         final PsiFile sourcePsiFile;
         final VirtualFile libRoot;
