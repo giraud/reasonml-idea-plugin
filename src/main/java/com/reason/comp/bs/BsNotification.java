@@ -31,11 +31,8 @@ public class BsNotification {
         notification.addAction(new DumbAwareAction("Open documentation") {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                try {
-                    BrowserLauncher.getInstance().browse(new URL("https://giraud.github.io/reasonml-idea-plugin/docs/build-tools/bucklescript").toURI());
-                } catch (MalformedURLException | URISyntaxException ex) {
-                    System.out.println("oops");
-                }
+                URI docURL = URI.create("https://giraud.github.io/reasonml-idea-plugin/docs/build-tools/bucklescript");
+                BrowserLauncher.getInstance().browse(docURL);
             }
         });
         Notifications.Bus.notify(notification);
