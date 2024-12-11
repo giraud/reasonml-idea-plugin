@@ -1,15 +1,12 @@
 package com.reason.ide.go;
 
-import com.intellij.psi.*;
-import com.intellij.testFramework.fixtures.*;
-import com.reason.ide.*;
-import com.reason.ide.files.*;
-import com.reason.lang.core.psi.*;
-import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
+import org.junit.Test;
+import com.intellij.psi.PsiElement;
+import com.intellij.testFramework.fixtures.CodeInsightTestUtil;
+import com.reason.ide.ORBasePlatformTestCase;
+import com.reason.ide.files.FileBase;
+import com.reason.lang.core.psi.RPsiQualifiedPathElement;
 
-@RunWith(JUnit4.class)
 public class GotoImplementationRMLTest extends ORBasePlatformTestCase {
     @Test
     public void should_goto_implementation() {

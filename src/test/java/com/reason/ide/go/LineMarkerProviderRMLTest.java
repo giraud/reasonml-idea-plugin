@@ -19,13 +19,13 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
 
         List<LineMarkerInfo<?>> markers = doHighlight(intf);
 
-        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
-        assertEquals("Implements let/val", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, markers.getFirst().getIcon());
+        assertEquals("Implements let/val", markers.getFirst().getLineMarkerTooltip());
 
         markers = doHighlight(impl);
 
-        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
-        assertEquals("Declare let/val", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.getFirst().getIcon());
+        assertEquals("Declare let/val", markers.getFirst().getLineMarkerTooltip());
     }
 
     @Test
@@ -47,12 +47,12 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
         List<LineMarkerInfo<?>> markers = doHighlight(f);
         assertSize(6, markers);
 
-        RelatedItemLineMarkerInfo<?> m0 = (RelatedItemLineMarkerInfo<?>) markers.get(0);
+        RelatedItemLineMarkerInfo<?> m0 = (RelatedItemLineMarkerInfo<?>) markers.getFirst();
         assertEquals(ORIcons.IMPLEMENTED, m0.getIcon());
         assertEquals("Implements module", m0.getLineMarkerTooltip());
         List<? extends GotoRelatedItem> m0Targets = new ArrayList<>(m0.createGotoRelatedItems());
         assertSize(2, m0Targets);
-        assertInstanceOf(m0Targets.get(0).getElement(), RPsiInnerModule.class);
+        assertInstanceOf(m0Targets.getFirst().getElement(), RPsiInnerModule.class);
         assertInstanceOf(m0Targets.get(1).getElement(), RPsiInnerModule.class);
 
         RelatedItemLineMarkerInfo<?> m1 = (RelatedItemLineMarkerInfo<?>) markers.get(1);
@@ -60,7 +60,7 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
         assertEquals("Implements let/val", m1.getLineMarkerTooltip());
         List<? extends GotoRelatedItem> m1Targets = new ArrayList<>(m1.createGotoRelatedItems());
         assertSize(2, m1Targets);
-        assertInstanceOf(m1Targets.get(0).getElement(), RPsiLet.class);
+        assertInstanceOf(m1Targets.getFirst().getElement(), RPsiLet.class);
         assertInstanceOf(m1Targets.get(1).getElement(), RPsiLet.class);
 
         assertEquals(ORIcons.IMPLEMENTING, markers.get(2).getIcon());
@@ -87,13 +87,13 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
 
         List<LineMarkerInfo<?>> markers = doHighlight(intf);
 
-        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
-        assertEquals("Implements type", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, markers.getFirst().getIcon());
+        assertEquals("Implements type", markers.getFirst().getLineMarkerTooltip());
 
         markers = doHighlight(impl);
 
-        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
-        assertEquals("Declare type", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.getFirst().getIcon());
+        assertEquals("Declare type", markers.getFirst().getLineMarkerTooltip());
         assertSize(1, markers);
     }
 
@@ -115,8 +115,8 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
 
         List<LineMarkerInfo<?>> markers = doHighlight(f);
 
-        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
-        assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, markers.getFirst().getIcon());
+        assertEquals("Implements module", markers.getFirst().getLineMarkerTooltip());
         assertEquals(ORIcons.IMPLEMENTED, markers.get(1).getIcon());
         assertEquals("Implements type", markers.get(1).getLineMarkerTooltip());
 
@@ -140,13 +140,13 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
 
         List<LineMarkerInfo<?>> markers = doHighlight(intf);
 
-        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
-        assertEquals("Implements external", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, markers.getFirst().getIcon());
+        assertEquals("Implements external", markers.getFirst().getLineMarkerTooltip());
 
         markers = doHighlight(impl);
 
-        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
-        assertEquals("Declare external", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.getFirst().getIcon());
+        assertEquals("Declare external", markers.getFirst().getLineMarkerTooltip());
     }
 
     @Test
@@ -185,8 +185,8 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
 
         List<LineMarkerInfo<?>> lineMarkers = doHighlight(f);
 
-        assertEquals(ORIcons.IMPLEMENTED, lineMarkers.get(0).getIcon());
-        assertEquals("Implements module", lineMarkers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, lineMarkers.getFirst().getIcon());
+        assertEquals("Implements module", lineMarkers.getFirst().getLineMarkerTooltip());
 
         assertEquals(ORIcons.IMPLEMENTING, lineMarkers.get(1).getIcon());
         assertEquals("Declare module", lineMarkers.get(1).getLineMarkerTooltip());
@@ -201,13 +201,13 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
 
         List<LineMarkerInfo<?>> markers = doHighlight(intf);
 
-        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
-        assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, markers.getFirst().getIcon());
+        assertEquals("Implements module", markers.getFirst().getLineMarkerTooltip());
 
         markers = doHighlight(impl);
 
-        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
-        assertEquals("Declare module", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.getFirst().getIcon());
+        assertEquals("Declare module", markers.getFirst().getLineMarkerTooltip());
     }
 
     @Test
@@ -223,14 +223,18 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
         List<LineMarkerInfo<?>> markers = doHighlight(intf);
 
         assertSize(1, markers);
-
-        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
-        assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, markers.getFirst().getIcon());
+        assertEquals("Implements module", markers.getFirst().getLineMarkerTooltip());
 
         markers = doHighlight(impl);
 
-        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
-        assertEquals("Declare module", markers.get(0).getLineMarkerTooltip());
+        assertSize(3, markers);
+        assertEquals(ORIcons.IMPLEMENTED, markers.getFirst().getIcon());
+        assertEquals("Implements module", markers.getFirst().getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(1).getIcon());
+        assertEquals("Declare module", markers.get(1).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.get(2).getIcon());
+        assertEquals("Declare module", markers.get(2).getLineMarkerTooltip());
     }
 
     @Test
@@ -248,7 +252,7 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
 
         List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), myFixture.getProject());
 
-        LineMarkerInfo<?> m0 = lineMarkers.get(0);
+        LineMarkerInfo<?> m0 = lineMarkers.getFirst();
         assertEquals(ORIcons.IMPLEMENTED, m0.getIcon());
         assertEquals("Implements module", m0.getLineMarkerTooltip());
         LineMarkerInfo<?> m1 = lineMarkers.get(1);
@@ -267,8 +271,8 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
 
         List<LineMarkerInfo<?>> markers = doHighlight(f);
 
-        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
-        assertEquals("Implements module", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, markers.getFirst().getIcon());
+        assertEquals("Implements module", markers.getFirst().getLineMarkerTooltip());
 
         assertEquals(ORIcons.IMPLEMENTING, markers.get(1).getIcon());
         assertEquals("Declare module", markers.get(1).getLineMarkerTooltip());
@@ -286,13 +290,13 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
 
         List<LineMarkerInfo<?>> markers = doHighlight(intf);
 
-        assertEquals(ORIcons.IMPLEMENTED, markers.get(0).getIcon());
-        assertEquals("Implements exception", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, markers.getFirst().getIcon());
+        assertEquals("Implements exception", markers.getFirst().getLineMarkerTooltip());
 
         markers = doHighlight(impl);
 
-        assertEquals(ORIcons.IMPLEMENTING, markers.get(0).getIcon());
-        assertEquals("Declare exception", markers.get(0).getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, markers.getFirst().getIcon());
+        assertEquals("Declare exception", markers.getFirst().getLineMarkerTooltip());
     }
 
     @Test
@@ -332,7 +336,7 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
         myFixture.doHighlighting();
 
         List<LineMarkerInfo<?>> lineMarkers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor().getDocument(), myFixture.getProject());
-        LineMarkerInfo<?> m0 = lineMarkers.get(0);
+        LineMarkerInfo<?> m0 = lineMarkers.getFirst();
         assertEquals(ORIcons.IMPLEMENTING, m0.getIcon());
         assertEquals("Declare class", m0.getLineMarkerTooltip());
         assertSize(1, lineMarkers);
@@ -400,25 +404,25 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
         // targets definition in signature and implementation in body
         List<? extends GotoRelatedItem> ri1RelatedItems = new ArrayList<>(ri1.createGotoRelatedItems());
         assertSize(2, ri1RelatedItems);
-        assertInstanceOf(ri1RelatedItems.get(0).getElement(), RPsiLet.class);
+        assertInstanceOf(ri1RelatedItems.getFirst().getElement(), RPsiLet.class);
         assertInstanceOf(ri1RelatedItems.get(1).getElement(), RPsiLet.class);
 
-        // val x in A.re (to mli)
-        LineMarkerInfo<?> r1 = reMarkers.get(1);
-        assertEquals("Declare let/val", r1.getLineMarkerTooltip());
-        assertEquals(ORIcons.IMPLEMENTING, r1.getIcon());
-        // val x in A.re
-        LineMarkerInfo<?> r2 = reMarkers.get(2);
-        assertEquals("Implements let/val", r2.getLineMarkerTooltip());
-        assertEquals(ORIcons.IMPLEMENTED, r2.getIcon());
-        // let in A.re
+        assertEquals(ORIcons.IMPLEMENTING, reMarkers.getFirst().getIcon());
+        assertEquals(7, reMarkers.getFirst().startOffset); // M->M.mli
+        assertEquals("Declare module", reMarkers.getFirst().getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, reMarkers.get(1).getIcon());
+        assertEquals("Implements let/val", reMarkers.get(1).getLineMarkerTooltip());
+        assertEquals(19, reMarkers.get(1).startOffset); // x[sig] -> x[impl]
+        assertEquals(ORIcons.IMPLEMENTING, reMarkers.get(2).getIcon());
+        assertEquals("Declare let/val", reMarkers.get(2).getLineMarkerTooltip());
+        assertEquals(19, reMarkers.get(2).startOffset); // x[sig] -> x.rei
         RelatedItemLineMarkerInfo<?> r3 = (RelatedItemLineMarkerInfo<?>) reMarkers.get(3);
         assertTrue(r3.getLineMarkerTooltip().contains("Declare let/val"));
         assertEquals(ORIcons.IMPLEMENTING, r3.getIcon());
         // targets both definitions (signatures in ml and mli)
         List<? extends GotoRelatedItem> r3RelatedItems = new ArrayList<>(r3.createGotoRelatedItems());
         assertSize(2, r3RelatedItems);
-        assertInstanceOf(r3RelatedItems.get(0).getElement(), RPsiLet.class);
+        assertInstanceOf(r3RelatedItems.getFirst().getElement(), RPsiLet.class);
         assertInstanceOf(r3RelatedItems.get(1).getElement(), RPsiLet.class);
     }
 
@@ -454,27 +458,27 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
         assertSize(6, mlMarkers);
 
         // module type in A.rei
-        RelatedItemLineMarkerInfo<?> mi1 = (RelatedItemLineMarkerInfo<?>) mliMarkers.get(0);
+        RelatedItemLineMarkerInfo<?> mi1 = (RelatedItemLineMarkerInfo<?>) mliMarkers.getFirst();
         assertTextEquals("Implements module", mi1.getLineMarkerTooltip());
         assertEquals(ORIcons.IMPLEMENTED, mi1.getIcon());
         List<? extends GotoRelatedItem> mi1RelatedItems = new ArrayList<>(mi1.createGotoRelatedItems());
         assertSize(2, mi1RelatedItems);
         assertContainsElements(mi1RelatedItems.stream().map(m -> ((RPsiInnerModule) m.getElement()).getQualifiedName()).toList(), "A.MT", "A.Mm");
         // module type in A.re
-        LineMarkerInfo<?> m0 = mlMarkers.get(0);
-        assertEquals("Declare module", m0.getLineMarkerTooltip());
-        assertEquals(ORIcons.IMPLEMENTING, m0.getIcon());
+        LineMarkerInfo<?> m0 = mlMarkers.getFirst();
+        assertEquals("Implements module", m0.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, m0.getIcon());
         LineMarkerInfo<?> m1 = mlMarkers.get(1);
-        assertEquals("Implements module", m1.getLineMarkerTooltip());
-        assertEquals(ORIcons.IMPLEMENTED, m1.getIcon());
+        assertEquals("Declare module", m1.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, m1.getIcon());
         // val x in module type in A.re
         LineMarkerInfo<?> m2 = mlMarkers.get(2);
-        assertEquals("Declare let/val", m2.getLineMarkerTooltip());
-        assertEquals(ORIcons.IMPLEMENTING, m2.getIcon());
+        assertEquals("Implements let/val", m2.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTED, m2.getIcon());
         // val x in module type in A.re
         LineMarkerInfo<?> m3 = mlMarkers.get(3);
-        assertEquals("Implements let/val", m3.getLineMarkerTooltip());
-        assertEquals(ORIcons.IMPLEMENTED, m3.getIcon());
+        assertEquals("Declare let/val", m3.getLineMarkerTooltip());
+        assertEquals(ORIcons.IMPLEMENTING, m3.getIcon());
         // val x in A.re (to mli)
         LineMarkerInfo<?> m4 = mlMarkers.get(4);
         assertEquals("Declare module", m4.getLineMarkerTooltip());
@@ -507,7 +511,7 @@ public class LineMarkerProviderRMLTest extends ORBasePlatformTestCase {
         assertSize(2, lineMarkers);
 
         // let x
-        LineMarkerInfo<?> m0 = lineMarkers.get(0);
+        LineMarkerInfo<?> m0 = lineMarkers.getFirst();
         assertEquals("Implements let/val", m0.getLineMarkerTooltip());
         assertEquals(ORIcons.IMPLEMENTED, m0.getIcon());
         // let x
