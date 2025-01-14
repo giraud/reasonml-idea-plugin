@@ -188,7 +188,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
     public @Nullable PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement, int targetOffset) {
         PsiElement parent = contextElement == null ? null : contextElement.getParent();
 
-        // When quick doc inside empty parenthesis, we want to display the function doc (github #155)
+        // When quick doc inside empty parenthesis, we want to display the function doc (GitHub #155)
         // functionName(<caret>) ==> functionName<caret>()
         if (contextElement != null && parent instanceof RPsiParameters) {
             Language contextLanguage = contextElement.getLanguage();
@@ -203,17 +203,15 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
             }
         }
 
-        if (contextElement != null && parent instanceof RPsiLowerSymbol) {
-            PsiReference reference = parent.getReference();
-            if (reference instanceof PsiPolyVariantReference lowerReference) {
-                ResolveResult[] resolveResults = lowerReference.multiResolve(false);
-                if (0 < resolveResults.length) {
-                    Arrays.sort(resolveResults, (rr1, rr2) ->
-                            ((ORPsiLowerSymbolReference.LowerResolveResult) rr1).inInterface()
-                                    ? -1
-                                    : (((ORPsiLowerSymbolReference.LowerResolveResult) rr2).inInterface() ? 1 : 0));
-                    return resolveResults[0].getElement();
-                }
+        if (contextElement != null && parent instanceof RPsiLowerSymbol lowerParent) {
+            ORPsiLowerSymbolReference reference = lowerParent.getReference();
+            ResolveResult[] resolveResults = reference.multiResolve(false);
+            if (0 < resolveResults.length) {
+                Arrays.sort(resolveResults, (rr1, rr2) ->
+                        ((ORPsiLowerSymbolReference.LowerResolveResult) rr1).inInterface()
+                                ? -1
+                                : (((ORPsiLowerSymbolReference.LowerResolveResult) rr2).inInterface() ? 1 : 0));
+                return resolveResults[0].getElement();
             }
         }
 

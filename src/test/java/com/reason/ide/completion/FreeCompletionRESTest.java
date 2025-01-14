@@ -103,7 +103,7 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
                   type rule
                   let style: unit => array<rule>
                 }
-                                    
+                
                 module Core = {
                   let color = "red"
                   module Make = (I): R => {
@@ -111,14 +111,14 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
                     let style = () => []
                   }
                 }
-                                    
+                
                 module Css = {
                   include Core
                   include Core.Make({ type renderer })
                 };
-                                    
+                
                 open Css
-                                    
+                
                 let y = <caret>
                 """);
 
@@ -142,6 +142,40 @@ public class FreeCompletionRESTest extends ORBasePlatformTestCase {
         List<String> strings = getLookupStrings();
 
         assertSameElements(strings, "A", "B", "C", "x");
+    }
+
+    @Test
+    public void test_parameters() {
+        configureCode("A.res", "let fn = (newValue, newUnit) => { n<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = getLookupStrings();
+
+        assertSameElements(strings, "newValue", "newUnit");
+    }
+
+    @Test
+    public void test_named_parameters() {
+        configureCode("A.res", "let fn = (~newValue, ~newUnit:option<string>, ~newOther=?) => { n<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = getLookupStrings();
+
+        assertSameElements(strings, "newValue", "newUnit", "newOther");
+    }
+
+    @Test
+    public void test_GH_246() {
+        configureCode("A.res", """
+                let fn = (newValue, newUnit) => {
+                    setSomething(_ => {value: n<caret>
+                }
+                """);
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = getLookupStrings();
+
+        assertSameElements(strings, "newValue", "newUnit");
     }
 
     private List<String> getLookupStrings() {

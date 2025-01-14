@@ -6,8 +6,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.util.SystemInfo;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.nio.file.StandardCopyOption;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +34,7 @@ public class WGet {
 
             FileOutputStream partFileOut = new FileOutputStream(partFile);
 
-            java.net.URL url = new URL(urlString);
+            java.net.URL url = URI.create(urlString).toURL();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoOutput(true);

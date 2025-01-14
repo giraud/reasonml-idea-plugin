@@ -223,7 +223,7 @@ public class ORModuleResolutionPsiGist {
                                 if (LOG.isDebugEnabled()) {
                                     LOG.debug("Use another GIST [from " + myFileModuleName + "] : " + ORFileUtils.getVirtualFile(resolvedContainingFile));
                                 }
-                                // Maybe resolved module include other modules and we need to add them as alternate names
+                                // Maybe resolved module include other modules, and we need to add them as alternate names
                                 // We can’t reuse the gist here because of mutual calls and possibility of stack overflow.
                                 PsiWalker visitor = new PsiWalker(resolvedContainingFileBase, mySourceModuleName != null ? mySourceModuleName : myFileModuleName);
                                 resolvedContainingFileBase.accept(visitor);
@@ -532,7 +532,7 @@ public class ORModuleResolutionPsiGist {
                     // Iterate backward to find a matching local resolution
                     for (int i = myModulesInContext.size() - 1; i >= 0; i--) {
                         PsiElement elementInContext = myModulesInContext.get(i);
-                        if (elementInContext instanceof RPsiInnerModule componentInContext && ((RPsiInnerModule) elementInContext).isComponent()) {
+                        if (elementInContext instanceof RPsiInnerModule componentInContext && componentInContext.isComponent()) {
                             String componentInContextName = componentInContext.getModuleName();
 
                             // local component declaration
@@ -643,7 +643,7 @@ public class ORModuleResolutionPsiGist {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Use another GIST [from " + myFileModuleName + "] : " + ORFileUtils.getVirtualFile(resolvedContainingFile));
                         }
-                        // Maybe resolved module include other modules and we need to add them as alternate names.
+                        // Maybe resolved module include other modules, and we need to add them as alternate names.
                         // We can’t reuse the gist here because of mutual calls and possibility of stack overflow.
                         PsiWalker visitor = new PsiWalker(resolvedContainingFileBase, mySourceModuleName != null ? mySourceModuleName : myFileModuleName);
                         resolvedContainingFileBase.accept(visitor);

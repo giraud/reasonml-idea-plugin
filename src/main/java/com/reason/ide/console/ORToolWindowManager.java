@@ -8,9 +8,8 @@ import com.intellij.openapi.ui.*;
 import com.intellij.openapi.wm.*;
 import com.intellij.ui.content.*;
 import com.intellij.util.concurrency.*;
-import com.reason.comp.Compiler;
-import com.reason.comp.Compiler.*;
 import com.reason.comp.*;
+import com.reason.comp.ORCompiler.*;
 import com.reason.ide.console.bs.*;
 import com.reason.ide.console.dune.*;
 import com.reason.ide.console.esy.*;
@@ -42,7 +41,7 @@ public final class ORToolWindowManager {
         ModalityState modalityState = ModalityState.defaultModalityState();
 
         ReadAction.nonBlocking(() -> {
-                    Compiler[] compilers = new Compiler[4];
+                    ORCompiler[] compilers = new ORCompiler[4];
                     compilers[0] = getAvailableCompiler(CompilerType.RESCRIPT);
                     compilers[1] = getAvailableCompiler(CompilerType.BS);
                     compilers[2] = getAvailableCompiler(CompilerType.DUNE);
@@ -59,7 +58,7 @@ public final class ORToolWindowManager {
                 .submit(executorService);
     }
 
-    private void setToolWindowAvailable(@NotNull String id, @Nullable Compiler compiler) {
+    private void setToolWindowAvailable(@NotNull String id, @Nullable ORCompiler compiler) {
         ToolWindow toolWindow = ToolWindowManager.getInstance(myProject).getToolWindow(id);
         if (toolWindow != null) {
             toolWindow.setAvailable(compiler != null, () -> {
@@ -75,9 +74,9 @@ public final class ORToolWindowManager {
         }
     }
 
-    private @Nullable Compiler getAvailableCompiler(@NotNull CompilerType compilerType) {
+    private @Nullable ORCompiler getAvailableCompiler(@NotNull CompilerType compilerType) {
         ORCompilerManager compilerService = myProject.isDisposed() ? null : myProject.getService(ORCompilerManager.class);
-        Compiler compiler = compilerService != null ? compilerService.getCompiler(compilerType) : null;
+        ORCompiler compiler = compilerService != null ? compilerService.getCompiler(compilerType) : null;
         return compiler != null && compiler.isAvailable(myProject) ? compiler : null;
     }
 }

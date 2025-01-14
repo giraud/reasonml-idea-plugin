@@ -12,7 +12,6 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.problems.*;
 import com.intellij.psi.*;
 import com.reason.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.rescript.*;
@@ -237,7 +236,7 @@ public class ORErrorAnnotator extends ExternalAnnotator<InitialInfo<? extends OR
         }
     }
 
-    static public class InitialInfo<R extends ORResolvedCompiler<? extends Compiler>> {
+    static public class InitialInfo<R extends ORResolvedCompiler<? extends ORCompiler>> {
         final R compiler;
         final PsiFile sourcePsiFile;
         final VirtualFile libRoot;

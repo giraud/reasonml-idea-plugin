@@ -33,6 +33,7 @@ public class RmlTypes extends ORLangTypes {
         C_BINARY_CONDITION = new ORCompositeElementType("C_BINARY_CONDITION", RmlLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", RmlLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", RmlLanguage.INSTANCE);
+        C_CLASS_INITIALIZER = new ORCompositeElementType("C_CLASS_INITIALIZER", RmlLanguage.INSTANCE);
         C_CLOSED_VARIANT = new ORCompositeElementType("C_CLOSED_VARIANT", RmlLanguage.INSTANCE);
         C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", RmlLanguage.INSTANCE);
         C_TYPE_CONSTRAINT = new ORCompositeElementType("C_TYPE_CONSTRAINT", RmlLanguage.INSTANCE);

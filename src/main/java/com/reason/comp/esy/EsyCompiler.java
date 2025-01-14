@@ -5,7 +5,6 @@ import com.intellij.execution.ui.*;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.dune.*;
 import com.reason.hints.*;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.*;
 import java.util.concurrent.atomic.*;
 
 @Service(Service.Level.PROJECT)
-public final class EsyCompiler implements Compiler {
+public final class EsyCompiler implements ORCompiler {
     private static final Log LOG = Log.create("compiler.esy");
 
     private final @NotNull Project myProject;

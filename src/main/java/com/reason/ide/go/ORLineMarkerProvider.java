@@ -135,7 +135,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
 
                 } else {
-                    // let is inside an inner module body
+                    // `let` is inside an inner module body
                     RPsiModuleSignature moduleSignature = ((RPsiInnerModule) parentModule).getModuleSignature();
                     if (moduleSignature != null && moduleSignature.getNameIdentifier() == null) {
                         // Inline signature
@@ -366,9 +366,10 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         } else {
             // Top module navigation
             String qName = element.getQualifiedName();
-            Collection<RPsiClassMethod> resolvedElements = qName == null ? null : ClassMethodFqnIndex.getElements(qName, project, scope).stream().filter(m -> ORUtil.inInterface(m) != inInterface).toList();
-            //List<RPsiClassMethod> c = resolveTargetFromIndex(inInterface, resolvedElements);
-            targets.addAll(resolvedElements);
+            Collection<RPsiClassMethod> resolvedElements = qName != null ? ClassMethodFqnIndex.getElements(qName, project, scope).stream().filter(m -> ORUtil.inInterface(m) != inInterface).toList() : null;
+            if (resolvedElements != null) {
+                targets.addAll(resolvedElements);
+            }
         }
 
         createMarkerInfo(result, element, "method", implementedTargets, implementingTargets);
@@ -601,7 +602,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 if (elementFile instanceof FileBase elementBaseFile) {
                     boolean sameFile = mySource.getContainingFile() == elementFile;
                     Icon locationIcon = elementBaseFile.isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE;
-                    Icon icon = PsiIconUtil.getProvidersIcon(element, 0);
+                    Icon icon = PsiIconUtil.getIconFromProviders(element, 0);
                     boolean inSignature = PsiTreeUtil.getStubOrPsiParentOfType(element, RPsiSignature.class) != null;
                     return new TargetPresentationBuilderImpl(null, icon, name, null, inSignature ? "sig" : null, null, sameFile ? null : elementBaseFile.getName(), sameFile ? null : locationIcon).presentation();
                 }

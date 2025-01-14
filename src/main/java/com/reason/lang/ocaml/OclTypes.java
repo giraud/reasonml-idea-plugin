@@ -33,6 +33,7 @@ public class OclTypes extends ORLangTypes {
         C_BINARY_CONDITION = new ORCompositeElementType("C_BINARY_CONDITION", OclLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", OclLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", OclLanguage.INSTANCE);
+        C_CLASS_INITIALIZER = new ORCompositeElementType("C_CLASS_INITIALIZER", OclLanguage.INSTANCE);
         C_CLOSED_VARIANT = new ORCompositeElementType("C_CLOSED_VARIANT", OclLanguage.INSTANCE);
         C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", OclLanguage.INSTANCE);
         C_TYPE_CONSTRAINT = new ORCompositeElementType("C_TYPE_CONSTRAINT", OclLanguage.INSTANCE);

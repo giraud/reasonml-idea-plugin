@@ -4,7 +4,6 @@ import com.intellij.execution.process.*;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.esy.*;
 import com.reason.hints.*;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.*;
 import java.util.concurrent.atomic.*;
 
 @Service(Service.Level.PROJECT)
-public final class DuneCompiler implements Compiler {
+public final class DuneCompiler implements ORCompiler {
     private static final Log LOG = Log.create("dune.compiler");
 
     private final @NotNull Project myProject;

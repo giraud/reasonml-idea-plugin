@@ -22,4 +22,7 @@ public interface RPsiClass extends RPsiQualifiedPathElement, NavigatablePsiEleme
 
     @Nullable
     RPsiClassConstructor getConstructor();
+
+    @Nullable
+    RPsiClassInitializer getInitializer();
 }

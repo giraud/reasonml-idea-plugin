@@ -8,7 +8,6 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.hints.*;
 import com.reason.ide.console.*;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.*;
 import java.util.concurrent.atomic.*;
 
 @Service(Service.Level.PROJECT)
-public final class BsCompiler implements Compiler {
+public final class BsCompiler implements ORCompiler {
     private static final Log LOG = Log.create("bs.compiler");
 
     private final Project myProject;

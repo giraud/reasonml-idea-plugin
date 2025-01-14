@@ -80,6 +80,8 @@ public class OclParser extends CommonPsiParser {
                     parseSig();
                 } else if (tokenType == myTypes.OBJECT) {
                     parseObject();
+                } else if (tokenType == myTypes.INITIALIZER) {
+                    parseInitializer();
                 } else if (tokenType == myTypes.IF) {
                     parseIf();
                 } else if (tokenType == myTypes.THEN) {
@@ -233,9 +235,15 @@ public class OclParser extends CommonPsiParser {
         }
 
         private void parseTilde() {
-            if (is(myTypes.C_PARAMETERS)) {
-                if (in(myTypes.C_FUNCTION_CALL)) {
-                    mark(myTypes.C_NAMED_PARAM);
+            if (inAny(myTypes.C_PARAMETERS, myTypes.C_PARAM_DECLARATION)) {
+                if (isFound(myTypes.C_PARAM_DECLARATION)) {
+                    popEndUntilFoundIndex()
+                            .popEnd()
+                            .mark(myTypes.C_PARAM_DECLARATION)
+                            .markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
+                } else if (isPrevious(myTypes.C_FUNCTION_CALL, getIndex())) {
+                    popEndUntilFoundIndex()
+                            .mark(myTypes.C_NAMED_PARAM);
                 } else {
                     mark(myTypes.C_PARAM_DECLARATION)
                             .markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
@@ -671,6 +679,11 @@ public class OclParser extends CommonPsiParser {
             markScope(myTypes.C_OBJECT, myTypes.OBJECT);
         }
 
+        private void parseInitializer() {
+            popEndUntil(myTypes.C_OBJECT)
+                    .markScope(myTypes.C_CLASS_INITIALIZER, myTypes.INITIALIZER);
+        }
+
         private void parseBegin() {
             markScope(myTypes.C_SCOPED_EXPR, myTypes.BEGIN);
         }
@@ -760,6 +773,12 @@ public class OclParser extends CommonPsiParser {
             if (is(myTypes.C_PARAMETERS) && isRawParent(myTypes.C_FUNCTION_EXPR)) { // First param
                 // let f |>?<| ( x ...
                 mark(myTypes.C_PARAM_DECLARATION)
+                        .markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
+            } else if (strictlyIn(myTypes.C_PARAM_DECLARATION)) {
+                // let f ~x |>~<| y
+                popEndUntilFoundIndex()
+                        .popEnd()
+                        .mark(myTypes.C_PARAM_DECLARATION)
                         .markHolder(myTypes.H_NAMED_PARAM_DECLARATION);
             } else if (!strictlyInAny(myTypes.C_TERNARY)) {
                 if (inScopeOrAny(myTypes.C_LET_BINDING)) {

@@ -88,7 +88,8 @@ public final class BsProcess {
     public @NotNull String getFullVersion(@Nullable VirtualFile sourceFile) {
         VirtualFile bsc = BsPlatform.findBscExecutable(myProject, sourceFile);
         if (bsc != null) {
-            try (InputStream inputStream = Runtime.getRuntime().exec(bsc.getPath() + " -version").getInputStream()) {
+            String[] command = new String[]{bsc.getPath(), "-version"};
+            try (InputStream inputStream = Runtime.getRuntime().exec(command).getInputStream()) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 return reader.readLine();
             } catch (IOException e) {

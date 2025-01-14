@@ -125,7 +125,7 @@ public final class RincewindProcess {
     }
 
 
-    interface DumpVisitor {
+    public interface DumpVisitor {
         void visitLine(String line);
     }
 

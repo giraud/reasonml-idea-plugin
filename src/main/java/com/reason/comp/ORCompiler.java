@@ -5,7 +5,7 @@ import com.intellij.openapi.vfs.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
-public interface Compiler {
+public interface ORCompiler {
     enum CompilerType {
         BS("BuckleScript"),
         RESCRIPT("Rescript"),

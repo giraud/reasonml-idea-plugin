@@ -10,8 +10,17 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-**NOTE**: minimal version supported is **2023.2**
-     
+# Unreleased
+
+# 0.127 - 2025/01/14
+
+- :bug: [#494](https://github.com/giraud/reasonml-idea-plugin/issues/494) JsonFileType exception in 2024.3 
+- :bug: ![o] [#492](https://github.com/giraud/reasonml-idea-plugin/issues/492) Ocaml parser error when using #end 
+- :bug: [#490](https://github.com/giraud/reasonml-idea-plugin/issues/490) Object representation in structure panel 
+- :bug: [#246](https://github.com/giraud/reasonml-idea-plugin/issues/246) Input in priority in autocomplete list
+ 
+**NOTE**: minimal supported version is **2024.1**
+
 # 0.126 - 2024/11/19
 
 - :rocket: [#485](https://github.com/giraud/reasonml-idea-plugin/issues/485) Gutter icons on module signatures
@@ -20,6 +29,8 @@
 - :house: update platform-gradle-plugin to v2
 
 # 0.125 - 2024/08/26
+
+**NOTE**: Added support for version **2024.3**
 
 - :bug: [#475](https://github.com/giraud/reasonml-idea-plugin/issues/475) Stack overflow 
 - :rocket: [#473](https://github.com/giraud/reasonml-idea-plugin/issues/473) Enhancement: Structure panel: provide a filter setting to select whether to show variables
@@ -59,22 +70,22 @@
 
 ## 0.120 - 2024/01/11
 
+**NOTE**: minimal supported version is **2023.1**
+
 - :bug: ![o] [#444](https://github.com/giraud/reasonml-idea-plugin/issues/444) Fix OCaml parser for 'inherit'
 - :bug: ![o] [#440](https://github.com/giraud/reasonml-idea-plugin/issues/440) Incorrect parsing of record (OCaml)
 - :bug: [#439](https://github.com/giraud/reasonml-idea-plugin/issues/439) Do not display 'let _' in structure panel
 - :bug: ![n] [#438](https://github.com/giraud/reasonml-idea-plugin/issues/438) Resolution of js object field references in Rescript
 - :bug: [#415](https://github.com/giraud/reasonml-idea-plugin/issues/415) Remove one level deep in structure view
 
-**NOTE**: minimal version supported is **2023.1**
-
 ## 0.119 - 2023/12/06
+
+**NOTE**: minimal supported version is **2022.3**
 
 - :bug: [#437](https://github.com/giraud/reasonml-idea-plugin/issues/437) Incorrect language injection in macro
 - :house: Removing some TODOs in code
 - :house: Fix cast exception in ORModuleContributor
 - :house: Fix some parser errors 
-
-**NOTE**: minimal version supported is **2022.3**
 
 ## 0.118.2 - 2023/11/21
 
@@ -103,10 +114,10 @@
 
 ## 0.115 - 2023/08/22
 
+**NOTE**: Added support for version **2023.2**
+
 - :house: [#416](https://github.com/giraud/reasonml-idea-plugin/issues/416) Excessive CPU use
 - :bug: ![o] [#409](https://github.com/giraud/reasonml-idea-plugin/issues/409) Wrong structure on let b = 1 = 1 in (OCaml)
-
-**NOTE**: Added support for version **2023.2**
 
 ## 0.114 - 2023/07/04
 
@@ -126,12 +137,12 @@ if you want to continue using it (type annotations)
 
 ## 0.112 - 2023/05/05
 
+**NOTE**: minimal supported version is **2022.2**
+
 - :bug: ![o] [#409](https://github.com/giraud/reasonml-idea-plugin/issues/409) Wrong structure on let b = 1 = 1 in
 - :bug: ![o] [#408](https://github.com/giraud/reasonml-idea-plugin/issues/408) let ... in not shown in let a = ... structure
 - :bug: ![o] [#407](https://github.com/giraud/reasonml-idea-plugin/issues/407) Support operator (non-alphanum) declarations
 - :bug: ![o] [#406](https://github.com/giraud/reasonml-idea-plugin/issues/406) Faulty let open ... in parsing
-
-**NOTE**: minimal version supported is **2022.2**
 
 ## 0.111.1 - 2023/05/03
       

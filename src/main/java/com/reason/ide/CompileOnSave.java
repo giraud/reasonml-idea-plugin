@@ -4,12 +4,10 @@ import com.intellij.openapi.application.ex.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.comp.*;
-import com.reason.comp.Compiler;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.beans.*;
-import java.lang.*;
 
 public class CompileOnSave implements PropertyChangeListener {
     private static final Log LOG = Log.create("compileOnSaveListener");
@@ -28,7 +26,7 @@ public class CompileOnSave implements PropertyChangeListener {
     public void propertyChange(@NotNull PropertyChangeEvent evt) {
         if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE) {
             ORCompilerManager compilerManager = myProject.getService(ORCompilerManager.class);
-            ORResolvedCompiler<? extends Compiler> compiler = compilerManager == null ? null : compilerManager.getCompiler(myFile);
+            ORResolvedCompiler<? extends ORCompiler> compiler = compilerManager == null ? null : compilerManager.getCompiler(myFile);
             if (compiler == null) {
                 LOG.debug("No compiler found", myFile);
             } else {

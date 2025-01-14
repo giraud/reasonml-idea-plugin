@@ -91,6 +91,12 @@ public class RPsiClassImpl extends RPsiTokenStub<ORLangTypes, RPsiClass, RsiClas
         return findChildByClass(RPsiClassConstructor.class);
     }
 
+    @Override
+    public @Nullable RPsiClassInitializer getInitializer() {
+        PsiElement body = getClassBody();
+        return body != null ? ORUtil.findImmediateFirstChildOfClass(body, RPsiClassInitializer.class) : null;
+    }
+
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Override

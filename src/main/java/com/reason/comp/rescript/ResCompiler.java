@@ -8,7 +8,6 @@ import com.intellij.execution.ui.*;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
-import com.reason.comp.Compiler;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.hints.*;
@@ -24,7 +23,7 @@ import java.util.concurrent.atomic.*;
 import static com.reason.comp.CliType.Rescript.*;
 
 @Service(Service.Level.PROJECT)
-public final class ResCompiler implements Compiler {
+public final class ResCompiler implements ORCompiler {
     private static final Log LOG = Log.create("compiler.rescript");
 
     private final Project myProject;
@@ -43,7 +42,8 @@ public final class ResCompiler implements Compiler {
     public @NotNull String getFullVersion(@Nullable VirtualFile file) {
         VirtualFile bscExecutable = ResPlatform.findBscExecutable(myProject, file);
         if (bscExecutable != null) {
-            try (InputStream inputStream = Runtime.getRuntime().exec(bscExecutable.getPath() + " -version").getInputStream()) {
+            String[] command = new String[]{bscExecutable.getPath(), "-version"};
+            try (InputStream inputStream = Runtime.getRuntime().exec(command).getInputStream()) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 return reader.readLine();
             } catch (IOException e) {
