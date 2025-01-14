@@ -1,6 +1,6 @@
 package com.reason.comp;
 
-import com.reason.comp.Compiler.*;
+import com.reason.comp.ORCompiler.*;
 import org.jetbrains.annotations.*;
 
 public interface CliType {

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.*;
 import java.nio.file.*;
 import java.util.concurrent.*;
 
-import static com.reason.comp.Compiler.CompilerType.*;
+import static com.reason.comp.ORCompiler.CompilerType.*;
 import static com.reason.ide.hints.CodeLens.*;
 
 public class InferredTypesService {
@@ -58,7 +58,7 @@ public class InferredTypesService {
 
                 // Find namespace if ocaml is compiled through dune
                 final String[] namespace = {""};
-                ORResolvedCompiler<? extends Compiler> compiler = project.getService(ORCompilerManager.class).getCompiler(sourceFile);
+                ORResolvedCompiler<? extends ORCompiler> compiler = project.getService(ORCompilerManager.class).getCompiler(sourceFile);
                 if (compiler != null && compiler.getType() == DUNE) {
                     VirtualFile duneSource = ORFileUtils.findAncestor(project, sourceFile, "dune");
                     PsiFile dune = duneSource == null ? null : PsiManager.getInstance(project).findFile(duneSource);

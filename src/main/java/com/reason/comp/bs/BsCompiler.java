@@ -19,7 +19,7 @@ import org.jetbrains.annotations.*;
 import java.util.concurrent.atomic.*;
 
 @Service(Service.Level.PROJECT)
-public final class BsCompiler implements Compiler {
+public final class BsCompiler implements ORCompiler {
     private static final Log LOG = Log.create("bs.compiler");
 
     private final Project myProject;

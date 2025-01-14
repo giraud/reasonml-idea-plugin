@@ -4,7 +4,7 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.*;
-import com.reason.comp.Compiler.*;
+import com.reason.comp.ORCompiler.*;
 import com.reason.comp.bs.*;
 import com.reason.comp.dune.*;
 import com.reason.comp.esy.*;
@@ -24,26 +24,26 @@ public final class ORCompilerManager {
         myProject = project;
     }
 
-    public @Nullable Compiler getCompiler(@NotNull CliType cliType) {
+    public @Nullable ORCompiler getCompiler(@NotNull CliType cliType) {
         return getCompiler(cliType.getCompilerType());
     }
 
-    public @Nullable Compiler getCompiler(@NotNull CompilerType compilerType) {
-        Compiler compiler = myProject.getService(getCompilerClass(compilerType));
+    public @Nullable ORCompiler getCompiler(@NotNull CompilerType compilerType) {
+        ORCompiler compiler = myProject.getService(getCompilerClass(compilerType));
         return compiler != null && compiler.isConfigured(myProject) ? compiler : null;
     }
 
-    public @Nullable <T extends Compiler> T getCompiler(@NotNull Class<T> clazz) {
+    public @Nullable <T extends ORCompiler> T getCompiler(@NotNull Class<T> clazz) {
         T compiler = myProject.getService(clazz);
         return compiler != null && compiler.isConfigured(myProject) ? compiler : null;
     }
 
-    public @Nullable ORResolvedCompiler<? extends Compiler> getCompiler(@Nullable VirtualFile editorFile) {
+    public @Nullable ORResolvedCompiler<? extends ORCompiler> getCompiler(@Nullable VirtualFile editorFile) {
         boolean shouldTraverse = editorFile != null && (editorFile.isDirectory() || FileHelper.isCompilable(editorFile.getFileType()));
         return shouldTraverse ? traverseAncestorsForCompiler(editorFile.getParent(), new HashMap<>()) : null;
     }
 
-    private @Nullable ORResolvedCompiler<? extends Compiler> traverseAncestorsForCompiler(@Nullable VirtualFile currentDir, @NotNull Map<String, VirtualFile> visited) {
+    private @Nullable ORResolvedCompiler<? extends ORCompiler> traverseAncestorsForCompiler(@Nullable VirtualFile currentDir, @NotNull Map<String, VirtualFile> visited) {
         // hit filesystem root, give up
         if (currentDir == null) {
             return null;
@@ -71,7 +71,7 @@ public final class ORCompilerManager {
         return traverseAncestorsForCompiler(currentDir.getParent(), visited);
     }
 
-    private static @NotNull Class<? extends Compiler> getCompilerClass(@NotNull CompilerType compilerType) {
+    private static @NotNull Class<? extends ORCompiler> getCompilerClass(@NotNull CompilerType compilerType) {
         return switch (compilerType) {
             case BS -> BsCompiler.class;
             case RESCRIPT -> ResCompiler.class;
@@ -81,7 +81,7 @@ public final class ORCompilerManager {
     }
 
     private class CompilerVisitor extends VirtualFileVisitor<VirtualFile> {
-        ORResolvedCompiler<? extends Compiler> myCompiler = null;
+        ORResolvedCompiler<? extends ORCompiler> myCompiler = null;
 
         CompilerVisitor() {
             super(SKIP_ROOT, NO_FOLLOW_SYMLINKS, ONE_LEVEL_DEEP);
