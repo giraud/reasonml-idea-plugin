@@ -215,15 +215,15 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     }
 
     private void createBsTab() {
-        Project project = mySettings.getProject();
-        f_bsPlatformLocation.addBrowseFolderListener(BS_PLATFORM_LOCATION_LABEL, null, project,
-                FileChooserDescriptorFactory.createSingleFolderDescriptor());
+        FileChooserDescriptor fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+        fileChooserDescriptor.setTitle(BS_PLATFORM_LOCATION_LABEL);
+        f_bsPlatformLocation.addBrowseFolderListener(mySettings.getProject(), fileChooserDescriptor);
     }
 
     private void createEsyTab() {
-        Project project = mySettings.getProject();
-        f_esyExecutable.addBrowseFolderListener(ESY_EXECUTABLE_LABEL, null, project,
-                FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
+        FileChooserDescriptor fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor();
+        fileChooserDescriptor.setTitle(ESY_EXECUTABLE_LABEL);
+        f_esyExecutable.addBrowseFolderListener(mySettings.getProject(), fileChooserDescriptor);
     }
 
     private static @NotNull String sanitizeInput(@NotNull TextFieldWithBrowseButton textFieldWithBrowseButton) {

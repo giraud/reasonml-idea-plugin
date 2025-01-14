@@ -23,9 +23,11 @@ public class DuneProjectRootStep extends ProjectImportWizardStep {
 
         context.setProjectBuilder(ProjectImportBuilder.EXTENSIONS_POINT_NAME.findExtensionOrFail(DuneProjectImportBuilder.class));
 
+        FileChooserDescriptor fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
         //noinspection DialogTitleCapitalization
-        myProjectRootComponent.addBrowseFolderListener("Select `dune-project` of a Dune project to import", "", null,
-                FileChooserDescriptorFactory.createSingleFolderDescriptor());
+        fileChooserDescriptor.setTitle("Select `dune-project` of a Dune project to import");
+        myProjectRootComponent.addBrowseFolderListener(null, fileChooserDescriptor);
+
         myProjectRootComponent.setText(context.getProjectFileDirectory()); // provide project path
 
         myOpamConfigurationTab.createComponent(project, "");
