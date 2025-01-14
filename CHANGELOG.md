@@ -12,6 +12,13 @@
 
 # Unreleased
 
+# 0.127 - 2025/01/14
+
+- :bug: [#494](https://github.com/giraud/reasonml-idea-plugin/issues/494) JsonFileType exception in 2024.3 
+- :bug: ![o] [#492](https://github.com/giraud/reasonml-idea-plugin/issues/492) Ocaml parser error when using #end 
+- :bug: [#490](https://github.com/giraud/reasonml-idea-plugin/issues/490) Object representation in structure panel 
+- :bug: [#246](https://github.com/giraud/reasonml-idea-plugin/issues/246) Input in priority in autocomplete list
+ 
 **NOTE**: minimal supported version is **2024.1**
 
 # 0.126 - 2024/11/19
