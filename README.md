@@ -14,6 +14,8 @@ ReasonML language plugin for IDEA. Supports Reason, ReScript and OCaml.
 
 ![screenshot](screenshot.png)
 
+[<img src="https://api.gitsponsors.com/api/badge/img?id=79930515" height="20">](https://api.gitsponsors.com/api/badge/link?p=xzIXA9oww9RtIPswz31L/0JG7TPJXi/Z9h0gYbdOsRuMt/AK/K7f0fZAFGH7QF8LAMS72xVze4DIYP4boDCZvA==)
+
 ## 🏁 Quick Start 
 
 Download and install the [plugin from the JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/9440-reasonml).
