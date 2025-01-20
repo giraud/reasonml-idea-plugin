@@ -9,8 +9,6 @@ ReasonML language plugin for IDEA. Supports Reason, ReScript and OCaml.
 [![Discord](https://img.shields.io/discord/713777184996589580)](https://discord.gg/65fz5jb)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[<img src="https://api.gitsponsors.com/api/badge/img?id=79930515" height="20">](https://api.gitsponsors.com/api/badge/link?p=xzIXA9oww9RtIPswz31L/0JG7TPJXi/Z9h0gYbdOsRuMt/AK/K7f0fZAFGH7QF8LAMS72xVze4DIYP4boDCZvA==)
-
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END --> 
