@@ -2,6 +2,7 @@ package com.reason.lang.doc;
 
 import com.intellij.codeInsight.documentation.*;
 import com.intellij.lang.documentation.*;
+import com.intellij.lang.java.*;
 import com.intellij.lexer.*;
 import com.intellij.openapi.util.text.*;
 import com.intellij.psi.*;
@@ -13,9 +14,11 @@ import java.util.*;
 
 /**
  * see:
- * {@link  DocumentationManagerUtil}
- * {@link DocumentationMarkup}
- * {@link DocumentationManagerProtocol}
+ * {@link com.intellij.codeInsight.documentation.DocumentationManagerUtil}
+ * {@link com.intellij.lang.documentation.DocumentationMarkup}
+ * {@link com.intellij.codeInsight.documentation.DocumentationManagerProtocol}
+ *
+ * {@link com.intellij.lang.java.JavaDocumentationProvider}
  */
 public abstract class ORDocConverter {
     protected static final HtmlChunk SPACE_CHUNK = HtmlChunk.text(" ");

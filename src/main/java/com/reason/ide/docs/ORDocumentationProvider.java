@@ -55,9 +55,7 @@ public class ORDocumentationProvider extends AbstractDocumentationProvider {
                 }
             }
 
-            if (!text.isEmpty()) {
-                return DocFormatter.format((PsiFile) resolvedElement, resolvedElement, languageProperties, text);
-            }
+            return DocFormatter.format((PsiFile) resolvedElement, resolvedElement, languageProperties, text);
         }
 
         // If it's an alias, resolve to the alias
