@@ -11,11 +11,7 @@ import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.reason.*;
 import com.reason.lang.rescript.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
-/** @noinspection ConstantConditions*/
-@RunWith(JUnit4.class)
 public class ORDocumentationProviderTest extends ORBasePlatformTestCase {
     @Test
     public void test_customDocumentationElement_empty_parens_RML() {
