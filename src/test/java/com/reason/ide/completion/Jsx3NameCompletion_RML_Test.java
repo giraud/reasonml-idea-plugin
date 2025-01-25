@@ -10,7 +10,7 @@ import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
-public class Jsx3NameCompletionRMLTest extends ORBasePlatformTestCase {
+public class Jsx3NameCompletion_RML_Test extends ORBasePlatformTestCase {
     // need multiple components because completeBasic returns null if there is only one lookup element
     @Test
     public void test_local_component() {

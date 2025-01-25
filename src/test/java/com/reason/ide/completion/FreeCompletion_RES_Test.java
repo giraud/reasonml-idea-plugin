@@ -7,16 +7,15 @@ import org.junit.*;
 
 import java.util.*;
 
-@SuppressWarnings("DataFlowIssue")
-public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
+@SuppressWarnings("ConstantConditions")
+public class FreeCompletion_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
-        configureCode("pervasives.ml", "let int_of_string : x -> 42");
         configureCode("belt_Array.mli", "val length: t -> int");
         configureCode("belt.ml", "module Array = Belt_Array");
 
-        configureCode("Dummy.ml", "let x = <caret>");
+        configureCode("Dummy.res", "let x = <caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
@@ -27,18 +26,21 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_underscore() {
-        configureCode("Dummy.re", "let _ = 1; <caret>");
+        configureCode("Dummy.res", """
+                let _ = 1
+                <caret>
+                """);
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertSameElements(elements, OclKeywordCompletionContributor.KEYWORDS);
-        assertSize(OclKeywordCompletionContributor.KEYWORDS.length, elements);
+        assertSameElements(elements, ResKeywordCompletionContributor.KEYWORDS);
+        assertSize(ResKeywordCompletionContributor.KEYWORDS.length, elements);
     }
 
     @Test
     public void test_deconstruction() {
-        configureCode("Dummy.ml", """
+        configureCode("Dummy.res", """
                 let (first, second) = myVar
                 <caret>
                 """);
@@ -51,8 +53,8 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include() {
-        configureCode("Aa.ml", "let x = 1");
-        configureCode("B.ml", """
+        configureCode("Aa.res", "let x = 1");
+        configureCode("B.res", """
                 include Aa
                 <caret>
                 """);
@@ -65,8 +67,8 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_after() {
-        myFixture.configureByText("A.ml", "let x = 1;");
-        myFixture.configureByText("B.ml", """
+        myFixture.configureByText("A.res", "let x = 1");
+        myFixture.configureByText("B.res", """
                 <caret>
                 include A
                 """);
@@ -79,8 +81,8 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_eof() {
-        myFixture.configureByText("A.ml", "let x = 1");
-        myFixture.configureByText("B.ml", """
+        myFixture.configureByText("A.res", "let x = 1");
+        myFixture.configureByText("B.res", """
                 include A
                 let y = 2
                 <caret>
@@ -95,25 +97,25 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_functor() {
-        configureCode("A.ml", """
-                module type I  = sig type renderer end
-                module type R  = sig
+        configureCode("A.res", """
+                module type I = { type renderer }
+                module type R = {
                   type rule
-                  val style : unit -> rule array
-                end
+                  let style: unit => array<rule>
+                }
                 
-                module Core = struct
-                    let color = "red"
-                    module Make(_:I) : R = struct
-                      type rule
-                      let style () = [||]
-                    end
-                end
+                module Core = {
+                  let color = "red"
+                  module Make = (I): R => {
+                    type rule
+                    let style = () => []
+                  }
+                }
                 
-                module Css = struct
+                module Css = {
                   include Core
-                  include Core.Make(struct type renderer end)
-                end
+                  include Core.Make({ type renderer })
+                };
                 
                 open Css
                 
@@ -128,50 +130,57 @@ public class FreeCompletionOCLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_open_include() {
-        configureCode("A.ml", "let x = 1");
-        configureCode("B.ml", "include A");
-        configureCode("C.ml", "include B");
-        configureCode("D.ml", """
+        configureCode("A.res", "let x = 1");
+        configureCode("B.res", "include A");
+        configureCode("C.res", "include B");
+        configureCode("D.res", """
                 open C
-                let _ = <caret>
+                <caret>
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> strings = myFixture.getLookupElementStrings();
+        List<String> strings = getLookupStrings();
 
-        assertContainsElements(strings, "A", "B", "C", "x");
+        assertSameElements(strings, "A", "B", "C", "x");
     }
 
     @Test
     public void test_parameters() {
-        configureCode("A.ml", "let fn newValue newUnit = n<caret>");
+        configureCode("A.res", "let fn = (newValue, newUnit) => { n<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> strings = myFixture.getLookupElementStrings();
+        List<String> strings = getLookupStrings();
 
-        assertContainsElements(strings, "newValue", "newUnit");
+        assertSameElements(strings, "newValue", "newUnit");
     }
 
     @Test
     public void test_named_parameters() {
-        configureCode("A.ml", "let fn ?newOther ~newValue ~newUnit:(newUnit : string option) = let x = n<caret>");
+        configureCode("A.res", "let fn = (~newValue, ~newUnit:option<string>, ~newOther=?) => { n<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> strings = myFixture.getLookupElementStrings();
+        List<String> strings = getLookupStrings();
 
-        assertContainsElements(strings, "newValue", "newUnit", "newOther");
+        assertSameElements(strings, "newValue", "newUnit", "newOther");
     }
 
     @Test
     public void test_GH_246() {
-        configureCode("A.ml", """
-                let fn newValue newUnit =
-                    setSomething(fun _ -> { value = n<caret>
+        configureCode("A.res", """
+                let fn = (newValue, newUnit) => {
+                    setSomething(_ => {value: n<caret>
+                }
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> strings = myFixture.getLookupElementStrings();
+        List<String> strings = getLookupStrings();
 
-        assertContainsElements(strings, "newValue", "newUnit");
+        assertSameElements(strings, "newValue", "newUnit");
+    }
+
+    private List<String> getLookupStrings() {
+        List<String> elements = myFixture.getLookupElementStrings();
+        elements.removeAll(List.of(ResKeywordCompletionContributor.KEYWORDS));
+        return elements;
     }
 }

@@ -10,7 +10,7 @@ import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
-public class Jsx3NameCompletionRESTest extends ORBasePlatformTestCase {
+public class Jsx3NameCompletion_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_outside_components() {
         configureCode("DialogHeader.res", "@react.component let make = () => { <div/> }");

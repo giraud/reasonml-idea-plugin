@@ -10,10 +10,10 @@ import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
-public class KeywordCompletionRESTest extends ORBasePlatformTestCase {
+public class KeywordCompletion_RML_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic() {
-        configureCode("B.res", "<caret>");
+        configureCode("B.re", "<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();

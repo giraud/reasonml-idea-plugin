@@ -2,14 +2,11 @@ package com.reason.ide.completion;
 
 import com.reason.ide.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-@RunWith(JUnit4.class)
-public class JsObjectCompletionRMLTest extends ORBasePlatformTestCase {
+public class JsObjectCompletion_RML_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic() {
         configureCode("JsObj.re", "let oo = {\"asd\": 1, \"qwe\": 2}");

@@ -11,7 +11,7 @@ import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
-public class Jsx4PropertyCompletionRESTest extends ORBasePlatformTestCase {
+public class Jsx4PropertyCompletion_RES_Test extends ORBasePlatformTestCase {
     @Override
     protected @NotNull String getTestDataPath() {
         return "src/test/testData/com/reason/lang";

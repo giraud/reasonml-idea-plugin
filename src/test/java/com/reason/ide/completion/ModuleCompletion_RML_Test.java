@@ -9,8 +9,7 @@ import org.junit.runners.*;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-@RunWith(JUnit4.class)
-public class ModuleCompletionRMLTest extends ORBasePlatformTestCase {
+public class ModuleCompletion_RML_Test extends ORBasePlatformTestCase {
     @Test
     public void test_empty() {
         configureCode("A.re", "let x = 1; module A1 = {};");
