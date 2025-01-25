@@ -10,7 +10,7 @@ import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 @RunWith(JUnit4.class)
-public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
+public class Jsx3PropertyCompletion_RML_Test extends ORBasePlatformTestCase {
     @Override
     protected @NotNull String getTestDataPath() {
         return "src/test/testData/com/reason/lang";

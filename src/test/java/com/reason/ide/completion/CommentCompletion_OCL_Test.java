@@ -9,7 +9,7 @@ import org.junit.runner.*;
 import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
-public class CommentCompletionTest extends BasePlatformTestCase {
+public class CommentCompletion_OCL_Test extends BasePlatformTestCase {
   @Override
   protected @NotNull String getTestDataPath() {
     return "src/test/testData/com/reason/lang";

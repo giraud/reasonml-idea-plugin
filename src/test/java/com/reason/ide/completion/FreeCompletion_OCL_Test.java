@@ -1,31 +1,22 @@
 package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.*;
-import com.reason.comp.*;
 import com.reason.ide.*;
 import com.reason.ide.insight.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import java.util.*;
 
-@SuppressWarnings("ConstantConditions")
-public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
-    @Override
-    protected String getTestDataPath() {
-        return "src/test/testData/ns";
-    }
-
-    // TODO: polyvariant completion
-
+@SuppressWarnings("DataFlowIssue")
+public class FreeCompletion_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
+        configureCode("pervasives.ml", "let int_of_string : x -> 42");
         configureCode("belt_Array.mli", "val length: t -> int");
         configureCode("belt.ml", "module Array = Belt_Array");
 
-        configureCode("Dummy.re", "let x = <caret>");
+        configureCode("Dummy.ml", "let x = <caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
@@ -41,13 +32,16 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertSameElements(elements, RmlKeywordCompletionContributor.KEYWORDS);
-        assertSize(RmlKeywordCompletionContributor.KEYWORDS.length, elements);
+        assertSameElements(elements, OclKeywordCompletionContributor.KEYWORDS);
+        assertSize(OclKeywordCompletionContributor.KEYWORDS.length, elements);
     }
 
     @Test
     public void test_deconstruction() {
-        configureCode("Dummy.re", "let (first, second) = myVar; <caret>");
+        configureCode("Dummy.ml", """
+                let (first, second) = myVar
+                <caret>
+                """);
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
@@ -56,46 +50,25 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_let_private_from_outside() {
-        configureCode("A.re", "let x%private = 1;");
-        configureCode("B.re", "open A; <caret>");
-
-        myFixture.complete(CompletionType.BASIC, 1);
-        List<String> elements = myFixture.getLookupElementStrings();
-
-        assertDoesntContain(elements, "x");
-    }
-
-    @Test
-    public void test_let_private_from_inside() {
-        configureCode("A.re", "let x%private = 1; <caret>");
-
-        myFixture.complete(CompletionType.BASIC, 1);
-        List<String> elements = myFixture.getLookupElementStrings();
-
-        assertContainsElements(elements, "x");
-    }
-
-    @Test
     public void test_include() {
-        myFixture.configureByText("A.re", "let x = 1;");
-        myFixture.configureByText("B.re", """
-                include A;
+        configureCode("Aa.ml", "let x = 1");
+        configureCode("B.ml", """
+                include Aa
                 <caret>
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertContainsElements(strings, "x", "A");
+        assertContainsElements(strings, "x", "Aa");
     }
 
     @Test
     public void test_include_after() {
-        myFixture.configureByText("A.re", "let x = 1;");
-        myFixture.configureByText("B.re", """
+        myFixture.configureByText("A.ml", "let x = 1;");
+        myFixture.configureByText("B.ml", """
                 <caret>
-                include A;
+                include A
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
@@ -106,10 +79,10 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_include_eof() {
-        myFixture.configureByText("A.re", "let x = 1;");
-        myFixture.configureByText("B.re", """
-                include A;
-                let y = 2;
+        myFixture.configureByText("A.ml", "let x = 1");
+        myFixture.configureByText("B.ml", """
+                include A
+                let y = 2
                 <caret>
                 """);
 
@@ -121,35 +94,28 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_namespace() {
-        myFixture.configureByFile(ORConstants.BS_CONFIG_FILENAME);
-        configureCode("A.re", "module A1 = {};");
-        configureCode("B.re", "<caret>");
-
-        myFixture.complete(CompletionType.BASIC, 1);
-        List<String> strings = myFixture.getLookupElementStrings();
-
-        assertSameElements(strings, "exception", "external", "include", "let", "module", "open", "type", "MyNamespace");
-        assertSize(8, strings);
-    }
-
-    @Test
     public void test_include_functor() {
-        configureCode("A.re", """
-                module type I = { type renderer; };
-                module type R = { type rule; let style: unit => array(rule); };
+        configureCode("A.ml", """
+                module type I  = sig type renderer end
+                module type R  = sig
+                  type rule
+                  val style : unit -> rule array
+                end
                 
-                module Core = {
-                  let color = "red";
-                  module Make = (I): R => { type rule; let style = () => [||]; };
-                }
+                module Core = struct
+                    let color = "red"
+                    module Make(_:I) : R = struct
+                      type rule
+                      let style () = [||]
+                    end
+                end
                 
-                module Css = {
+                module Css = struct
                   include Core
-                  include Core.Make({type renderer;});
-                };
+                  include Core.Make(struct type renderer end)
+                end
                 
-                open Css;
+                open Css
                 
                 let y = <caret>
                 """);
@@ -162,12 +128,12 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_open_include() {
-        configureCode("A.re", "let x = 1;");
-        configureCode("B.re", "include A;");
-        configureCode("C.re", "include B;");
-        configureCode("D.re", """
-                open C;
-                <caret>
+        configureCode("A.ml", "let x = 1");
+        configureCode("B.ml", "include A");
+        configureCode("C.ml", "include B");
+        configureCode("D.ml", """
+                open C
+                let _ = <caret>
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
@@ -178,7 +144,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_parameters() {
-        configureCode("A.res", "let fn = (newValue, newUnit) => { n<caret>");
+        configureCode("A.ml", "let fn newValue newUnit = n<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
@@ -188,7 +154,7 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_named_parameters() {
-        configureCode("A.re", "let fn = (~newValue, ~newUnit:option(string), ~newOther=?) => { n<caret>");
+        configureCode("A.ml", "let fn ?newOther ~newValue ~newUnit:(newUnit : string option) = let x = n<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
@@ -198,10 +164,9 @@ public class FreeCompletionRMLTest extends ORBasePlatformTestCase {
 
     @Test
     public void test_GH_246() {
-        configureCode("A.res", """
-                let fn = (newValue, newUnit) => {
-                    setSomething(_ => {value: n<caret>
-                }
+        configureCode("A.ml", """
+                let fn newValue newUnit =
+                    setSomething(fun _ -> { value = n<caret>
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
