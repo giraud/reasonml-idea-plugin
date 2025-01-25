@@ -3,13 +3,10 @@ package com.reason.ide.completion;
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-@RunWith(JUnit4.class)
 public class DotCompletion_RML_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic() {
@@ -57,17 +54,15 @@ public class DotCompletion_RML_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_single_alias() {
-        // like ReasonReact.Router
-        configureCode("ReasonReactRouter.rei", "type watcherID;");
-        configureCode("ReasonReact.rei", "module Router = ReasonReactRouter;");
-
-        configureCode("Dummy.re", "ReasonReact.Router.<caret>");
+        configureCode("C.rei", "type t;");
+        configureCode("B.rei", "module B1 = C;");
+        configureCode("A.re", "B.B1.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> elements = myFixture.getLookupElementStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(1, elements);
-        assertEquals("watcherID", elements.get(0));
+        assertSize(1, strings);
+        assertEquals("t", strings.getFirst());
     }
 
     @Test
@@ -77,10 +72,10 @@ public class DotCompletion_RML_Test extends ORBasePlatformTestCase {
         configureCode("Dummy.re", "module V = View.Detail; V.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> elements = myFixture.getLookupElementStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(1, elements);
-        assertEquals("alias", elements.get(0));
+        assertSize(1, strings);
+        assertEquals("alias", strings.getFirst());
     }
 
     @Test
@@ -93,7 +88,7 @@ public class DotCompletion_RML_Test extends ORBasePlatformTestCase {
         List<String> elements = myFixture.getLookupElementStrings();
 
         assertSize(1, elements);
-        assertEquals("A1", elements.get(0));
+        assertEquals("A1", elements.getFirst());
     }
 
     @Test
@@ -114,7 +109,7 @@ public class DotCompletion_RML_Test extends ORBasePlatformTestCase {
                     }
                   }
                 }
-                                
+                
                 module B4 = {
                   include A
                   module B5 = B1.B2

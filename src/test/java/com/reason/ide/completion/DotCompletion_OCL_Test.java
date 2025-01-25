@@ -3,13 +3,10 @@ package com.reason.ide.completion;
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-@RunWith(JUnit4.class)
 public class DotCompletion_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic() {
@@ -34,6 +31,41 @@ public class DotCompletion_OCL_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_before_caret() {
+        configureCode("A.ml", "type x");
+        configureCode("B.ml", "let _ = A.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertSameElements(strings, "x");
+    }
+
+    @Test
+    public void test_end_of_file() {
+        configureCode("A.ml", "type t");
+        configureCode("B.ml", "let _ = A.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertSameElements(strings, "t");
+    }
+
+    @Test
+    public void test_single_alias() {
+        configureCode("C.mli", "type t");
+        configureCode("B.mli", "module B1 = C");
+        configureCode("A.ml", "let _ = B.B1.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertSize(1, strings);
+        assertEquals("t", strings.getFirst());
+    }
+
+    @Test
     public void test_multiple_alias() {
         // like Belt
         configureCode("string.mli", "external length : string -> int = \"%string_length\"");
@@ -44,10 +76,10 @@ public class DotCompletion_OCL_Test extends ORBasePlatformTestCase {
         configureCode("Dummy.re", "Belt.Map.String.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> elements = myFixture.getLookupElementStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(1, elements);
-        assertEquals("key", elements.get(0));
+        assertSize(1, strings);
+        assertEquals("key", strings.getFirst());
     }
 
     @Test
@@ -57,10 +89,10 @@ public class DotCompletion_OCL_Test extends ORBasePlatformTestCase {
         configureCode("C.ml", "module C1 = B.B1.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> elements = myFixture.getLookupElementStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(1, elements);
-        assertEquals("A1", elements.get(0));
+        assertSize(1, strings);
+        assertEquals("A1", strings.getFirst());
     }
 
     @Test
@@ -81,7 +113,7 @@ public class DotCompletion_OCL_Test extends ORBasePlatformTestCase {
                     end
                   end
                 end
-                                
+                
                 module B4 = struct
                   include A
                   module B5 = B1.B2
@@ -109,10 +141,10 @@ public class DotCompletion_OCL_Test extends ORBasePlatformTestCase {
         configureCode("Dummy.re", "Belt.Array.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> elements = myFixture.getLookupElementStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(1, elements);
-        assertEquals("length", elements.get(0));
+        assertSize(1, strings);
+        assertEquals("length", strings.getFirst());
     }
 
     @Test
@@ -171,7 +203,7 @@ public class DotCompletion_OCL_Test extends ORBasePlatformTestCase {
                 module type I = sig
                   val x: int
                 end
-
+                
                 let x ~p:(p:(module I)) =
                     let module S = (val p) in
                     S.<caret>

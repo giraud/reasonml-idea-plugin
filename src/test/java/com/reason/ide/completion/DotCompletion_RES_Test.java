@@ -3,13 +3,10 @@ package com.reason.ide.completion;
 import com.intellij.codeInsight.completion.*;
 import com.reason.ide.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-@RunWith(JUnit4.class)
 public class DotCompletion_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic() {
@@ -64,16 +61,16 @@ public class DotCompletion_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_single_alias() {  // TODO: other?
+    public void test_single_alias() {
         configureCode("C.resi", "type t");
         configureCode("B.resi", "module B1 = C");
         configureCode("A.res", "B.B1.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> elements = myFixture.getLookupElementStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(1, elements);
-        assertEquals("t", elements.get(0));
+        assertSize(1, strings);
+        assertEquals("t", strings.getFirst());
     }
 
     @Test
@@ -86,10 +83,10 @@ public class DotCompletion_RES_Test extends ORBasePlatformTestCase {
                 """);
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> elements = myFixture.getLookupElementStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(1, elements);
-        assertEquals("alias", elements.get(0));
+        assertSize(1, strings);
+        assertEquals("alias", strings.getFirst());
     }
 
     @Test
@@ -99,10 +96,10 @@ public class DotCompletion_RES_Test extends ORBasePlatformTestCase {
         configureCode("C.res", "module C1 = B.B1.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> elements = myFixture.getLookupElementStrings();
+        List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(1, elements);
-        assertEquals("A1", elements.get(0));
+        assertSize(1, strings);
+        assertEquals("A1", strings.getFirst());
     }
 
     @Test
@@ -123,7 +120,7 @@ public class DotCompletion_RES_Test extends ORBasePlatformTestCase {
                     }
                   }
                 }
-                                
+                
                 module B4 = {
                   include A
                   module B5 = B1.B2
