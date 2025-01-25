@@ -1,5 +1,6 @@
 package com.reason.lang.rescript;
 
+import com.intellij.lexer.*;
 import com.intellij.psi.tree.*;
 import com.reason.lang.core.type.*;
 
@@ -109,7 +110,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "exception"   { return types.EXCEPTION; }
     "external"    { yybegin(IN_LOWER_DECLARATION); return types.EXTERNAL; }
     "for"         { return types.FOR; }
-    "function"    { return types.FUNCTION; }
     "functor"     { return types.FUNCTOR; }
     "if"          { return types.IF; }
     "in"          { return types.IN; }
