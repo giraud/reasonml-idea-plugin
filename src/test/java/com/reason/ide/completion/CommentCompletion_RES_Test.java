@@ -10,7 +10,7 @@ import org.junit.runners.*;
 import java.util.*;
 
 @RunWith(JUnit4.class)
-public class CommentCompletion_OCL_Test extends BasePlatformTestCase {
+public class CommentCompletion_RES_Test extends BasePlatformTestCase {
   @Override
   protected @NotNull String getTestDataPath() {
     return "src/test/testData/com/reason/lang";
@@ -19,7 +19,7 @@ public class CommentCompletion_OCL_Test extends BasePlatformTestCase {
   @Test
   public void testCommentCompletion() {
     myFixture.configureByFiles("pervasives.ml");
-    myFixture.configureByText("Comment.ml", "(*<caret>*)");
+    myFixture.configureByText("Comment.res", "/*<caret>*/");
 
     myFixture.complete(CompletionType.BASIC, 1);
     List<String> strings = myFixture.getLookupElementStrings();
@@ -30,7 +30,7 @@ public class CommentCompletion_OCL_Test extends BasePlatformTestCase {
   @Test
   public void testCommentStartCompletion() {
     myFixture.configureByFiles("pervasives.ml");
-    myFixture.configureByText("Comment.ml", "(*<caret>");
+    myFixture.configureByText("Comment.res", "/*<caret>");
 
     myFixture.complete(CompletionType.BASIC, 1);
     List<String> strings = myFixture.getLookupElementStrings();

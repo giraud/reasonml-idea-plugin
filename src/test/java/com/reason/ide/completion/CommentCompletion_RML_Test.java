@@ -1,16 +1,15 @@
 package com.reason.ide.completion;
 
-import com.intellij.codeInsight.completion.*;
-import com.intellij.testFramework.fixtures.*;
-import org.jetbrains.annotations.*;
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
-import java.util.*;
-
 @RunWith(JUnit4.class)
-public class CommentCompletion_OCL_Test extends BasePlatformTestCase {
+public class CommentCompletion_RML_Test extends BasePlatformTestCase {
   @Override
   protected @NotNull String getTestDataPath() {
     return "src/test/testData/com/reason/lang";
@@ -19,7 +18,7 @@ public class CommentCompletion_OCL_Test extends BasePlatformTestCase {
   @Test
   public void testCommentCompletion() {
     myFixture.configureByFiles("pervasives.ml");
-    myFixture.configureByText("Comment.ml", "(*<caret>*)");
+    myFixture.configureByText("Comment.re", "/*<caret>*/");
 
     myFixture.complete(CompletionType.BASIC, 1);
     List<String> strings = myFixture.getLookupElementStrings();
@@ -30,7 +29,7 @@ public class CommentCompletion_OCL_Test extends BasePlatformTestCase {
   @Test
   public void testCommentStartCompletion() {
     myFixture.configureByFiles("pervasives.ml");
-    myFixture.configureByText("Comment.ml", "(*<caret>");
+    myFixture.configureByText("Comment.re", "/*<caret>");
 
     myFixture.complete(CompletionType.BASIC, 1);
     List<String> strings = myFixture.getLookupElementStrings();
