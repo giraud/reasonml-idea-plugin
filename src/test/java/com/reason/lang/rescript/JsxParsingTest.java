@@ -23,6 +23,14 @@ public class JsxParsingTest extends ResParsingTestCase {
     }
 
     @Test
+    public void test_tag_name() {
+        RPsiTag e = firstOfType(parseCode("<Comp disabled=false/>"), RPsiTag.class);
+
+        RPsiTagStart tag = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
+        assertEquals("Comp", tag.getNameIdentifier().getText());
+    }
+
+    @Test
     public void test_empty_tag_with_lf() {
         RPsiTag e = firstOfType(parseCode("""
                 let _ = <div>
@@ -34,14 +42,6 @@ public class JsxParsingTest extends ResParsingTestCase {
         assertEquals("div", tag.getNameIdentifier().getText());
         assertEquals("children", PsiTreeUtil.findChildOfType(e, RPsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, RPsiTagClose.class).getText());
-    }
-
-    @Test
-    public void test_tag_name() {
-        RPsiTag e = firstOfType(parseCode("<Comp disabled=false/>"), RPsiTag.class);
-
-        RPsiTagStart tag = PsiTreeUtil.findChildOfType(e, RPsiTagStart.class);
-        assertEquals("Comp", tag.getNameIdentifier().getText());
     }
 
     @Test
@@ -168,7 +168,6 @@ public class JsxParsingTest extends ResParsingTestCase {
         assertEquals("layout", props.get(0).getName());
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTernary.class));
     }
-
 
     @Test
     public void test_optional_props() {
@@ -445,5 +444,16 @@ public class JsxParsingTest extends ResParsingTestCase {
         assertNoParserError(e);
         RPsiTagProperty ep = e.getProperties().get(0);
         assertEquals("{i => i > 1}", ep.getValue().getText());
+    }
+
+    @Test
+    public void test_function_as_parameter() {
+        RPsiTag e = firstOfType(parseCode("let _ = <Comp p1={fn(function => 1)} p2=1 />"), RPsiTag.class);
+
+        assertSize(2, e.getProperties());
+        assertTextEquals("p1", e.getProperties().get(0).getName());
+        assertTextEquals("{fn(function => 1)}", e.getProperties().get(0).getValue().getText());
+        assertTextEquals("p2", e.getProperties().get(1).getName());
+        assertTextEquals("1", e.getProperties().get(1).getValue().getText());
     }
 }
