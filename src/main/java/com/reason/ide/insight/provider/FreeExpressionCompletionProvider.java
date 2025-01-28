@@ -21,6 +21,7 @@ import com.reason.lang.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.rescript.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -125,13 +126,14 @@ public class FreeExpressionCompletionProvider {
                                             .withIcon(ORIcons.LET));
                         }
                     } else if (letItem == null || !letItem.isAnonymous()) {
-                        PsiNamedElement expression = (PsiNamedElement) item;
-                        resultSet.addElement(
-                                LookupElementBuilder.create(expression)
-                                        .withTypeText(RPsiSignatureUtil.getSignature(expression, languageProperties))
-                                        .withIcon(PsiIconUtil.getIconFromProviders(expression, 0)));
                         if (item instanceof RPsiType) {
-                            expandType((RPsiType) item, resultSet);
+                            expandType((RPsiType) item, resultSet, languageProperties);
+                        } else {
+                            PsiNamedElement expression = (PsiNamedElement) item;
+                            resultSet.addElement(
+                                    LookupElementBuilder.create(expression)
+                                            .withTypeText(RPsiSignatureUtil.getSignature(expression, languageProperties))
+                                            .withIcon(PsiIconUtil.getIconFromProviders(expression, 0)));
                         }
                     }
                 } else if (item instanceof RPsiOpen openItem) {
@@ -195,14 +197,18 @@ public class FreeExpressionCompletionProvider {
         return null;
     }
 
-    private static void expandType(@NotNull RPsiType type, @NotNull CompletionResultSet resultSet) {
+    private static void expandType(@NotNull RPsiType type, @NotNull CompletionResultSet resultSet, @Nullable ORLanguageProperties lang) {
         Collection<RPsiVariantDeclaration> variants = type.getVariants();
         if (!variants.isEmpty()) {
             for (RPsiVariantDeclaration variant : variants) {
-                resultSet.addElement(
-                        LookupElementBuilder.create(variant)
-                                .withTypeText(type.getName())
-                                .withIcon(PsiIconUtil.getIconFromProviders(variant, 0)));
+                String name = variant.getName();
+                if (name != null) {
+                    String lookupName = lang == ResLanguage.INSTANCE ? name : "`" + name.substring(1);
+                    resultSet.addElement(
+                            LookupElementBuilder.create(lookupName)
+                                    .withTypeText(type.getName())
+                                    .withIcon(PsiIconUtil.getIconFromProviders(variant, 0)));
+                }
             }
         }
     }
@@ -234,6 +240,8 @@ public class FreeExpressionCompletionProvider {
                                         .withTypeText(RPsiSignatureUtil.getSignature(item, language))
                                         .withIcon(ORIcons.LET));
                     }
+                } else if (item instanceof RPsiType) {
+                    expandType((RPsiType) item, resultSet, language);
                 } else if (!(item instanceof RPsiAnnotation)) {
                     String itemName = item.getName();
                     if (itemName != null && !itemName.isEmpty() && !itemName.equals("unknown")) {

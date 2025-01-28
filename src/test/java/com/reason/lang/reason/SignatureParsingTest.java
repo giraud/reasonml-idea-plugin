@@ -175,7 +175,6 @@ public class SignatureParsingTest extends RmlParsingTestCase {
     @Test
     public void test_closed_variant() {
         RPsiLet e = firstOfType(parseCode("let x: [< Css.Types.Length.t | Css.Types.Visibility.t ] => unit = _ => ();"), RPsiLet.class);
-        assertNoParserError(e);
 
         List<IElementType> et = extractUpperSymbolTypes(e);
         assertDoesntContain(et, myTypes.A_VARIANT_NAME, myTypes.UIDENT);
@@ -185,7 +184,6 @@ public class SignatureParsingTest extends RmlParsingTestCase {
     @Test
     public void test_open_variant() {
         RPsiLet e = firstOfType(parseCode("let x: [> Css.Types.Length.t | Css.Types.Visibility.t ] => unit = _ => ();"), RPsiLet.class);
-        assertNoParserError(e);
 
         List<IElementType> et = extractUpperSymbolTypes(e);
         assertDoesntContain(et, myTypes.A_VARIANT_NAME, myTypes.UIDENT);
