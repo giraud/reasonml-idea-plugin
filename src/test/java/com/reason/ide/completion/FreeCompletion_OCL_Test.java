@@ -174,4 +174,34 @@ public class FreeCompletion_OCL_Test extends ORBasePlatformTestCase {
 
         assertContainsElements(strings, "newValue", "newUnit");
     }
+
+    @Test
+    public void test_GH_496_local_polyvariant() {
+        configureCode("A.ml", """
+                type color = [ | `blue | `red ]
+                type font = [ | `normal | `bold ]
+                let x = <caret>""");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "`blue", "`red", "`normal", "`bold");
+        assertSize(4, strings);
+    }
+
+    @Test
+    public void test_GH_496_external_polyvariant() {
+        configureCode("A.ml", """
+                type color = [ `blue  | `red ]
+                type font = [ `normal  | `bold ]""");
+        configureCode("B.ml", """
+                open A
+                let x = <caret>""");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "A", "`blue", "`red", "`normal", "`bold");
+        assertSize(5, strings);
+    }
 }
