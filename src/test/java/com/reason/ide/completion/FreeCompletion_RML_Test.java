@@ -15,8 +15,6 @@ public class FreeCompletion_RML_Test extends ORBasePlatformTestCase {
         return "src/test/testData/ns";
     }
 
-    // TODO: polyvariant completion
-
     @Test
     public void test_pervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
@@ -208,9 +206,8 @@ public class FreeCompletion_RML_Test extends ORBasePlatformTestCase {
         assertContainsElements(strings, "newValue", "newUnit");
     }
 
-    // TODO: polyvariant completion (+ others)
     @Test
-    public void test_GH_xxx_local_polyvariant() {
+    public void test_GH_496_local_polyvariant() {
         configureCode("A.re", """
                 type color = [ | `blue | `red ];
                 type font = [ | `normal | `bold ];
@@ -224,7 +221,7 @@ public class FreeCompletion_RML_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_GH_xxx_external_polyvariant() {
+    public void test_GH_496_external_polyvariant() {
         configureCode("A.ml", """
                 type color = [ `blue  | `red ]
                 type font = [ `normal  | `bold ]""");
