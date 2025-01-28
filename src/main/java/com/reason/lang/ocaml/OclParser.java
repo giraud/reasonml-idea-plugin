@@ -493,9 +493,9 @@ public class OclParser extends CommonPsiParser {
                 return;
             }
 
-            if (strictlyInAny(myTypes.C_TYPE_BINDING, myTypes.C_VARIANT_DECLARATION, myTypes.C_FUNCTION_EXPR,
+            if (inAny(myTypes.C_TYPE_BINDING, myTypes.C_VARIANT_DECLARATION, myTypes.C_FUNCTION_EXPR,
                     myTypes.C_MATCH_EXPR, myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_PATTERN_MATCH_BODY,
-                    myTypes.C_TRY_HANDLERS, myTypes.C_TRY_HANDLER)) {
+                    myTypes.C_TRY_HANDLERS, myTypes.C_TRY_HANDLER, myTypes.C_SCOPED_EXPR)) {
 
                 if (isFound(myTypes.C_TYPE_BINDING)) { // remap an upper symbol to a variant if first element is missing pipe
                     // type t = (|) V1 |>|<| ...
@@ -504,7 +504,7 @@ public class OclParser extends CommonPsiParser {
                 } else if (isFound(myTypes.C_VARIANT_DECLARATION)) {
                     // type t = | X |>|<| Y ...
                     popEndUntilFoundIndex().popEnd().advance()
-                            .mark(myTypes.C_VARIANT_DECLARATION);
+                            .mark(myTypes.C_VARIANT_DECLARATION).inAny();
                 } else if (isFound(myTypes.C_FUNCTION_EXPR)) {
                     if (previousElementType(getIndex() + 1) == myTypes.FUN) {
                         // fun |>|<| ...
@@ -1128,14 +1128,19 @@ public class OclParser extends CommonPsiParser {
             } else if (nextType == myTypes.GT) {
                 // |> [ <| > ... ]
                 markScope(myTypes.C_OPEN_VARIANT, myTypes.LBRACKET).advance().advance();
-                if (getTokenType() != myTypes.RBRACKET) {
+                IElementType tokenType = getTokenType();
+                if (tokenType == myTypes.POLY_VARIANT || tokenType == myTypes.A_VARIANT_NAME) {
                     mark(myTypes.C_VARIANT_DECLARATION);
                 }
             } else if (nextType == myTypes.LT) {
                 // |> [ <| < ... ]
                 markScope(myTypes.C_CLOSED_VARIANT, myTypes.LBRACKET).advance().advance();
-                if (getTokenType() != myTypes.RBRACKET) {
+                IElementType tokenType = getTokenType();
+                if (tokenType == myTypes.POLY_VARIANT || tokenType == myTypes.A_VARIANT_NAME || tokenType == myTypes.UIDENT) {
                     mark(myTypes.C_VARIANT_DECLARATION);
+                    if (tokenType != myTypes.UIDENT) {
+                        advance();
+                    }
                 }
             } else {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACKET);

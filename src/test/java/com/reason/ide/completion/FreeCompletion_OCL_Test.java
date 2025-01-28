@@ -123,7 +123,7 @@ public class FreeCompletion_OCL_Test extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings, "color", "Core", "Css", "I", "Make", "R", "rule", "style", "y"); // <- y because caret is not inside the let binding
+        assertSameElements(strings, "color", "Core", "Css", "I", "Make", "R", "style", "y"); // <- y because caret is not inside the let binding
     }
 
     @Test

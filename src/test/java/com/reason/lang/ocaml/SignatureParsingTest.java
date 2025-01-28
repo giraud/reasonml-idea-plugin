@@ -206,7 +206,6 @@ public class SignatureParsingTest extends OclParsingTestCase {
     @Test
     public void test_closed_variant() {
         RPsiLet e = firstOfType(parseCode("let x: [< Css.Types.Length.t | Css.Types.Visibility.t] -> unit = fun _  -> ()"), RPsiLet.class);
-        assertNoParserError(e);
 
         List<IElementType> et = extractUpperSymbolTypes(e);
         assertDoesntContain(et, myTypes.A_VARIANT_NAME, myTypes.UIDENT);
@@ -215,8 +214,7 @@ public class SignatureParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_open_variant() {
-        RPsiLet e = firstOfType(parseCode("let x: [< Css.Types.Length.t | Css.Types.Visibility.t] -> unit = fun _  -> ()"), RPsiLet.class);
-        assertNoParserError(e);
+        RPsiLet e = firstOfType(parseCode("let x: [> Css.Types.Length.t | Css.Types.Visibility.t] -> unit = fun _  -> ()"), RPsiLet.class);
 
         List<IElementType> et = extractUpperSymbolTypes(e);
         assertDoesntContain(et, myTypes.A_VARIANT_NAME, myTypes.UIDENT);

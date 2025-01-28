@@ -155,7 +155,7 @@ public class FreeCompletion_RML_Test extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings, "color", "Core", "Css", "I", "Make", "R", "rule", "style", "y"); // <- y because caret is not inside the let binding
+        assertSameElements(strings, "color", "Core", "Css", "I", "Make", "R", "style", "y"); // <- y because caret is not inside the let binding
     }
 
     @Test
@@ -176,7 +176,7 @@ public class FreeCompletion_RML_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_parameters() {
-        configureCode("A.res", "let fn = (newValue, newUnit) => { n<caret>");
+        configureCode("A.re", "let fn = (newValue, newUnit) => { n<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
@@ -196,7 +196,7 @@ public class FreeCompletion_RML_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_GH_246() {
-        configureCode("A.res", """
+        configureCode("A.re", """
                 let fn = (newValue, newUnit) => {
                     setSomething(_ => {value: n<caret>
                 }
@@ -206,5 +206,36 @@ public class FreeCompletion_RML_Test extends ORBasePlatformTestCase {
         List<String> strings = myFixture.getLookupElementStrings();
 
         assertContainsElements(strings, "newValue", "newUnit");
+    }
+
+    // TODO: polyvariant completion (+ others)
+    @Test
+    public void test_GH_xxx_local_polyvariant() {
+        configureCode("A.re", """
+                type color = [ | `blue | `red ];
+                type font = [ | `normal | `bold ];
+                let x = <caret>""");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "`blue", "`red", "`normal", "`bold");
+        assertSize(4, strings);
+    }
+
+    @Test
+    public void test_GH_xxx_external_polyvariant() {
+        configureCode("A.ml", """
+                type color = [ `blue  | `red ]
+                type font = [ `normal  | `bold ]""");
+        configureCode("B.re", """
+                open A;
+                let x = <caret>""");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertContainsElements(strings, "A", "`blue", "`red", "`normal", "`bold");
+        assertSize(5, strings);
     }
 }

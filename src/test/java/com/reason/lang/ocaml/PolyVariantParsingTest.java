@@ -30,20 +30,24 @@ public class PolyVariantParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_basic_type_LIdent() {
-        RPsiType e = firstOfType(parseCode("type t = [ | `red ]"), RPsiType.class);
+        RPsiType e = firstOfType(parseCode("type t = [ | `red | `blue | `yellow ]"), RPsiType.class);
 
-        Collection<RPsiVariantDeclaration> evs = e.getVariants();
-        assertSize(1, evs);
-        assertEquals("#red", evs.iterator().next().getName());
+        List<RPsiVariantDeclaration> evs = new ArrayList<>(e.getVariants());
+        assertSize(3, evs);
+        assertEquals("#red", evs.getFirst().getName());
+        assertEquals("#blue", evs.get(1).getName());
+        assertEquals("#yellow", evs.get(2).getName());
     }
 
     @Test
     public void test_basic_type_UIdent() {
-        RPsiType e = firstOfType(parseCode("type t = [ | `Red ]"), RPsiType.class);
+        RPsiType e = firstOfType(parseCode("type t = [ | `Red | `Blue | `Yellow ]"), RPsiType.class);
 
-        Collection<RPsiVariantDeclaration> evs = e.getVariants();
-        assertSize(1, evs);
-        assertEquals("#Red", evs.iterator().next().getName());
+        List<RPsiVariantDeclaration> evs = new ArrayList<>(e.getVariants());
+        assertSize(3, evs);
+        assertEquals("#Red", evs.getFirst().getName());
+        assertEquals("#Blue", evs.get(1).getName());
+        assertEquals("#Yellow", evs.get(2).getName());
     }
 
     @Test
