@@ -95,7 +95,7 @@ public class ModuleParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_interface_with_constraints() {
-        RPsiInnerModule e = firstOfType(parseCode("module M: I with type t = X.t = {}"), RPsiInnerModule.class);
+        RPsiInnerModule e = firstOfType(parseCode("module M: I\n with type t = X.t = {}"), RPsiInnerModule.class);
 
         assertEquals("M", e.getName());
         assertEquals("I", e.getModuleSignature().getText());
