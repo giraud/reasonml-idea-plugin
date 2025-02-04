@@ -10,7 +10,7 @@ import org.junit.*;
 public class IncludeParsingTest extends OclParsingTestCase {
     @Test
     public void test_one() {
-        RPsiInclude e = first(includeExpressions(parseCode("include Belt")));
+        RPsiInclude e = firstOfType(parseCode("include Belt"), RPsiInclude.class);
 
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class));
         assertEquals("Belt", e.getIncludePath());
@@ -19,7 +19,7 @@ public class IncludeParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_path() {
-        RPsiInclude e = first(includeExpressions(parseCode("include Belt.Array")));
+        RPsiInclude e = firstOfType(parseCode("include Belt.Array"), RPsiInclude.class);
 
         assertEquals("Belt.Array", e.getIncludePath());
         assertEquals("Array", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
@@ -46,7 +46,7 @@ public class IncludeParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_with_type() {
-        RPsiInclude e = first(includeExpressions(parseCode("include S with type t = Tok.t")));
+        RPsiInclude e = firstOfType(parseCode("include S with type t = Tok.t"), RPsiInclude.class);
 
         assertEquals("S", e.getIncludePath());
         assertEquals("include S with type t = Tok.t", e.getText());
@@ -54,9 +54,17 @@ public class IncludeParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_with_path_type() {
-        RPsiInclude e = first(includeExpressions(parseCode("include Grammar.S with type te = Tok.t and type 'c pattern = 'c Tok.p\ntype t"))); // Coq: pcoq.ml
+        RPsiInclude e = firstOfType(parseCode("include Grammar.S with type te = Tok.t and type 'c pattern = 'c Tok.p\ntype t"), RPsiInclude.class); // Coq: pcoq.ml
 
         assertEquals("Grammar.S", e.getIncludePath());
         assertEquals("include Grammar.S with type te = Tok.t and type 'c pattern = 'c Tok.p", e.getText());
+    }
+
+    @Test
+    public void test_GH_497_include_inlined_module() {
+        RPsiInclude e = firstOfType(parseCode("include module type of struct include Env.Path end"), RPsiInclude.class); // Coq: boot/path.mli
+
+        assertEmpty(e.getIncludePath());
+        assertNotNull(PsiTreeUtil.findChildOfType(e, RPsiModule.class));
     }
 }

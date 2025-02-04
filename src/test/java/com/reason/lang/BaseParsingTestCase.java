@@ -37,11 +37,6 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected Collection<RPsiInclude> includeExpressions(@NotNull PsiFile file) {
-        return getStubChildrenOfTypeAsList(file, RPsiInclude.class);
-    }
-
-    @NotNull
     protected List<RPsiType> typeExpressions(@NotNull PsiFile file) {
         return new ArrayList<>(PsiTreeUtil.findChildrenOfType(file, RPsiType.class));
     }
