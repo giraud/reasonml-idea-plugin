@@ -639,9 +639,13 @@ public class ResParser extends CommonPsiParser {
             if (strictlyInAny(
                     myTypes.C_MODULE_DECLARATION, myTypes.C_LET_DECLARATION, myTypes.C_EXTERNAL_DECLARATION,
                     myTypes.C_PARAM_DECLARATION, myTypes.C_RECORD_FIELD, myTypes.C_OBJECT_FIELD, myTypes.H_NAMED_PARAM_DECLARATION,
-                    myTypes.C_IF_THEN_ELSE, myTypes.C_UNPACK)) {
+                    myTypes.C_IF_THEN_ELSE, myTypes.C_UNPACK, myTypes.C_FUNCTION_EXPR)) {
 
-                if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.H_NAMED_PARAM_DECLARATION)) {
+                if (isFound(myTypes.C_FUNCTION_EXPR)) {
+                    // a result signature ? let x = (..) |> :<| .. => ..
+                    advance();
+                    mark(myTypes.C_SIG_EXPR).mark(myTypes.C_SIG_ITEM);
+                } else if (isFound(myTypes.C_PARAM_DECLARATION) || isFound(myTypes.H_NAMED_PARAM_DECLARATION)) {
                     advance();
                     if (getTokenType() == myTypes.MODULE) {
                         // let _ = (~x »:« module(...
@@ -861,13 +865,22 @@ public class ResParser extends CommonPsiParser {
                     mark(myTypes.C_SIG_ITEM)
                             .wrapAtom(myTypes.CA_LOWER_SYMBOL).popEnd();
                 } else if (nextElementType == myTypes.ARROW && strictlyInAny(
-                        myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE, myTypes.C_SCOPED_EXPR
+                        myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE,
+                        myTypes.C_SCOPED_EXPR, myTypes.C_FUNCTION_EXPR
                 )) {
-                    // A paren-less function definition ::  |>x<| =>
-                    mark(myTypes.C_FUNCTION_EXPR)
-                            .mark(myTypes.C_PARAMETERS)
-                            .mark(myTypes.C_PARAM_DECLARATION)
-                            .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                    // Already a function
+                    if (isFound(myTypes.C_FUNCTION_EXPR)) {
+                        wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                        popEndUntil(myTypes.C_FUNCTION_EXPR);
+                        advance().mark(myTypes.C_FUNCTION_BODY)
+                                .markHolder(myTypes.H_PLACE_HOLDER);
+                    } else {
+                        // A paren-less function definition ::  |>x<| =>
+                        mark(myTypes.C_FUNCTION_EXPR)
+                                .mark(myTypes.C_PARAMETERS)
+                                .mark(myTypes.C_PARAM_DECLARATION)
+                                .wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                    }
                 } else {
                     wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 }
@@ -1109,7 +1122,7 @@ public class ResParser extends CommonPsiParser {
                     }
                 } else if (isRawParent(myTypes.C_MODULE_SIGNATURE)) {
                     popEnd();
-                } else if (nextTokenType == myTypes.ARROW && !isParent(myTypes.C_FUNCTION_EXPR)) {
+                } else if ((nextTokenType == myTypes.ARROW || nextTokenType == myTypes.COLON) && !isParent(myTypes.C_FUNCTION_EXPR)) {
                     popEnd();
                     if (strictlyInAny(myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_TRY_HANDLER, myTypes.C_PARAM, myTypes.C_PARAMETERS,
                             myTypes.C_SIG_ITEM, myTypes.C_SIG_EXPR, myTypes.C_DEFAULT_VALUE, myTypes.C_SCOPED_EXPR,
