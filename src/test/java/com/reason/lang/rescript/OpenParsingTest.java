@@ -29,7 +29,7 @@ public class OpenParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_functor() {
-        RPsiOpen e = first(openExpressions(parseCode("open Make({ type t })")));
+        RPsiOpen e = firstOfType(parseCode("open Make({ type t })"), RPsiOpen.class);
 
         assertTrue(e.useFunctor());
         RPsiFunctorCall c = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);
@@ -40,7 +40,7 @@ public class OpenParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_functor_with_path() {
-        RPsiOpen e = first(openExpressions(parseCode("open A.Make({ type t })")));
+        RPsiOpen e = firstOfType(parseCode("open A.Make({ type t })"), RPsiOpen.class);
 
         assertTrue(e.useFunctor());
         assertEquals("Make", PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class).getName());
@@ -49,7 +49,7 @@ public class OpenParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_many() {
-        List<RPsiOpen> es = openExpressions(parseCode("open Belt\n open Css"));
+        List<RPsiOpen> es = childrenOfType(parseCode("open Belt\n open Css"), RPsiOpen.class);
 
         assertSize(2, es);
         assertEquals("Belt", es.get(0).getPath());
@@ -58,7 +58,7 @@ public class OpenParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_many_paths() {
-        List<RPsiOpen> es = openExpressions(parseCode("open Belt.Array\n open Css.Types"));
+        List<RPsiOpen> es = childrenOfType(parseCode("open Belt.Array\n open Css.Types"), RPsiOpen.class);
 
         assertEquals("Belt.Array", es.get(0).getPath());
         assertEquals("Css.Types", es.get(1).getPath());

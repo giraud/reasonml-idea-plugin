@@ -56,11 +56,6 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return new ArrayList<>(PsiTreeUtil.findChildrenOfType(file, RPsiLet.class));
     }
 
-    @NotNull
-    protected List<RPsiOpen> openExpressions(@NotNull PsiFile file) {
-        return new ArrayList<>(getStubChildrenOfTypeAsList(file, RPsiOpen.class));
-    }
-
     public static int childrenCount(@NotNull FileBase file) {
         return file.getChildren().length;
     }

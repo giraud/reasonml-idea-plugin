@@ -103,7 +103,7 @@ public class LetParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_like_local_open() {
-        RPsiOpen open = first(openExpressions(parseCode("let open Univ")));
+        RPsiOpen open = firstOfType(parseCode("let open Univ"), RPsiOpen.class);
 
         assertEquals("let open Univ", open.getText());
     }
