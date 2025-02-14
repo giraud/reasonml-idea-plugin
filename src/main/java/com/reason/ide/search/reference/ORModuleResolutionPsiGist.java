@@ -581,7 +581,7 @@ public class ORModuleResolutionPsiGist {
             }
         }
 
-        record ResolvedQName(boolean found, RPsiQualifiedPathElement resolvedElement /*TODO: multiple elements?*/) {
+        record ResolvedQName(boolean found, RPsiQualifiedPathElement resolvedElement) {
         }
 
         // Follow a path one element by one element, using alternate names for each resolution

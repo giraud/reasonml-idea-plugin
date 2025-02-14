@@ -6,15 +6,12 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import java.util.*;
 
 import static java.util.List.*;
 
 @SuppressWarnings("ConstantConditions")
-@RunWith(JUnit4.class)
 public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_include_no_resolution() {
@@ -263,7 +260,7 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
                     end
                   end
                 end
-                                
+                
                 module B4 = struct
                   include A
                   module B5 = B1.B2
@@ -336,7 +333,7 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
                     end
                   end
                 end
-                                
+                
                 module C = W.X
                 module D = C.Y.Z
                 """);
@@ -475,6 +472,20 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_functor_instance_same_file() {
+        configureCode("B.ml", "module type Result = sig val a: int end");
+        FileBase e = configureCode("A.ml", """
+                module Make(M:Intf) = (struct end : (B.Result with type t :=  M.t))
+                module Instance = Make(struct end)
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+        List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
+
+        assertOrderedEquals(data.getValues(ems.get(1)/*Instance*/), "A.Make");
+    }
+
+    @Test
     public void test_file_include_functor() {
         FileBase e = configureCode("A.ml", """
                 module Make() = struct
@@ -499,7 +510,7 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
                 module type C1Intf = sig
                   val make: unit => string
                 end
-                  
+                
                 module Make (MX: D.D1Intf): C1Intf = struct
                   let make () = ""
                 end

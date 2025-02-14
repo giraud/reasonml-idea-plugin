@@ -5,10 +5,7 @@ import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
-@RunWith(JUnit4.class)
 public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
     @Test
     public void test_let_basic() {
@@ -139,7 +136,7 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
                     };
                   };
                 };
-                                
+                
                 module B4 = {
                   include A;
                   module B5 = B1.B2;
@@ -549,7 +546,7 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
                 module type D1Intf = {
                   let make: unit => unit;
                 };
-                  
+                
                 module Make = (M: E.E1Intf): D1Intf => {
                   let make = () => ();
                 };
@@ -569,11 +566,11 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
         configureCode("B.re", "");
         configureCode("A.re", """
                 open B;
-                                
+                
                 module Styles = {
                   let x = 1;
                 };
-                                
+                
                 let x = Styles.x<caret>;
                 """);
 
@@ -634,22 +631,54 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
 
     //region object
     @Test
-    public void test_object_l1() {
+    public void test_object_1() {
         configureCode("A.re", """
                 let a = { "b": 1, "c": 2 };
-                 a##b<caret>
-                 """);
+                a##b<caret>
+                """);
 
         RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
         assertEquals("A.a.b", e.getQualifiedName());
     }
 
     @Test
-    public void test_object_l3() {
-        configureCode("A.re", "let a = { \"b\": { \"c\": { \"d\": 1 } } }; a##b##c##d<caret>");
+    public void test_object_2() {
+        configureCode("A.re", """
+                let a = { "b": 1, "c": 2 };
+                let _ = a##b<caret>##c
+                """);
+
+        RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
+        assertEquals("A.a.b", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_object_3() {
+        configureCode("A.re", """
+                let a = { "b": { "c": { "d": 1 } } };
+                a##b##c##d<caret>
+                """);
 
         RPsiObjectField e = (RPsiObjectField) myFixture.getElementAtCaret();
         assertEquals("A.a.b.c.d", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_object_4() {
+        configureCode("B.re", """
+                type t = {.
+                  "x": {.
+                    "y": string
+                  }
+                };
+                """);
+        configureCode("A.re", """
+                let _ = (p0: B.t) => p0##x##y<caret>
+                """);
+
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("B.t.x.y", ((RPsiObjectField) e).getQualifiedName());
     }
 
     @Test
@@ -669,7 +698,7 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
                 module type I = {
                   let x: int;
                 };
-
+                
                 let x = (~p: (module I)) => {
                     module S = (val p);
                     S.x<caret>

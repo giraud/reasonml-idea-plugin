@@ -356,6 +356,20 @@ public class ORModuleResolutionPsiGist_RML_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_functor_instance_same_file() {
+        configureCode("B.re", "module type Result = { let a: int; };");
+        FileBase e = configureCode("A.re", """
+                module Make = (M:Intf): (B.Result with type t := M.t) => {};
+                module Instance = Make({});
+                """);
+
+        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+        List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
+
+        assertOrderedEquals(data.getValues(ems.get(1)/*Instance*/), "A.Make");
+    }
+
+    @Test
     public void test_file_include_functor() {
         FileBase e = configureCode("A.re", "module Make = () => { let y = 1; }; include Make();");
 
@@ -375,7 +389,7 @@ public class ORModuleResolutionPsiGist_RML_Test extends ORBasePlatformTestCase {
                 module type C1Intf = {
                   let make: unit => string;
                 };
-                  
+                
                 module Make = (MX: D.D1Intf): C1Intf => {
                   let make = () => "";
                 };

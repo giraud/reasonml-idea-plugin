@@ -430,27 +430,4 @@ public class FunctionParsingTest extends ResParsingTestCase {
         RPsiSwitch s = (RPsiSwitch) b.getFirstChild();
         assertEquals("isBuggy()", s.getCondition().getText());
     }
-
-    // TODO
-    /*
-
-  let getSpacesList = (. store: store) =>
-    store.global.spaces
-    ->IList.keepMap(uuid =>
-      store.global->GStore.Dict.flatMapSpace(uuid, (space): option<
-        SpaceSelectorTypes.View.Space.t,
-      > =>
-        space.hidden
-          ? None
-          : Some({
-              uuid: space.uuid,
-              name: GStore.Entity.Space.name(space),
-              key: space.key->MandatoryString.toString,
-              spaceType: SpaceSelectorTypes.View.SpaceType.fromString(space.spaceType),
-              editable: space.editable,
-            })
-      )
-    )
-    ->IList.toArray
-     */
 }

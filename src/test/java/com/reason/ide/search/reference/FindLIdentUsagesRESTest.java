@@ -52,7 +52,7 @@ public class FindLIdentUsagesRESTest extends ORBasePlatformTestCase {
         assertEquals("A.x.f2", ((RPsiQualifiedPathElement) usageInfo.getElement().getParent()).getQualifiedName());
     }
 
-    //@Test TODO: make it work
+    //@Test TODO make it work
     public void test_object_field() {
         configureCode("A.res", """
                 let obj = { "f1": true, "f2<caret>": 421 }

@@ -240,9 +240,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
         assertTrue(e.isFunction());
         RPsiFunction ef = e.getFunction();
-        //TODO implements
-        //assertSize(1, ef.getParameters());
-        //assertEquals("(React.ref<Js.nullable<Dom.element>>) => option<int>", e.getSignature().getText());
+        assertSize(1, ef.getParameters());
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiUpperTagName.class));
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiLeafPropertyName.class));

@@ -376,7 +376,7 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_functor_instance_same_file() {   // TODO other langs
+    public void test_functor_instance_same_file() {
         configureCode("B.res", "module type Result = { let a: int }");
         FileBase e = configureCode("A.res", """
                 module Make = (M:Intf): (B.Result with type t := M.t) => {}
@@ -386,7 +386,7 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
         List<RPsiModule> ems = copyOf(PsiTreeUtil.findChildrenOfType(e, RPsiModule.class));
 
-        assertOrderedEquals(data.getValues(ems.get(1)/*Make*/), "A.Make");
+        assertOrderedEquals(data.getValues(ems.get(1)/*Instance*/), "A.Make");
     }
 
     @Test
@@ -409,7 +409,7 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
                 module type C1Intf = {
                   let make: unit => string
                 }
-                  
+                
                 module Make = (MX: D.D1Intf): C1Intf => {
                   let make = () => ""
                 }
