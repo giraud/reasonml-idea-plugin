@@ -159,9 +159,9 @@ public class LetParsingTest extends OclParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
-        assertInstanceOf(names.get(0), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(0), RPsiLowerName.class);
         assertEquals("b", names.get(1).getText());
-        assertInstanceOf(names.get(1), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(1), RPsiLowerName.class);
     }
 
     @Test
@@ -172,9 +172,9 @@ public class LetParsingTest extends OclParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
-        assertInstanceOf(names.get(0), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(0), RPsiLowerName.class);
         assertEquals("b", names.get(1).getText());
-        assertInstanceOf(names.get(1), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(1), RPsiLowerName.class);
     }
 
     @Test
@@ -185,11 +185,11 @@ public class LetParsingTest extends OclParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(3, names);
         assertEquals("l", names.get(0).getText());
-        assertInstanceOf(names.get(0), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(0), RPsiLowerName.class);
         assertEquals("r", names.get(1).getText());
-        assertInstanceOf(names.get(1), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(1), RPsiLowerName.class);
         assertEquals("b", names.get(2).getText());
-        assertInstanceOf(names.get(2), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(2), RPsiLowerName.class);
     }
 
     @Test
@@ -200,9 +200,9 @@ public class LetParsingTest extends OclParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
-        assertInstanceOf(names.get(0), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(0), RPsiLowerName.class);
         assertEquals("b", names.get(1).getText());
-        assertInstanceOf(names.get(1), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(1), RPsiLowerName.class);
     }
 
     @Test

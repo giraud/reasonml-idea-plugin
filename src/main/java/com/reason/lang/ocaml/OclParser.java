@@ -1211,8 +1211,10 @@ public class OclParser extends CommonPsiParser {
                 IElementType nextToken = lookAhead(1);
                 if (nextToken == myTypes.COMMA) { // A deconstruction without parenthesis
                     mark(myTypes.C_DECONSTRUCTION);
+                    wrapWith(myTypes.C_LOWER_NAME);
+                } else {
+                    wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 }
-                wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 if (nextToken != myTypes.COMMA && nextToken != myTypes.EQ && nextToken != myTypes.COLON) { // This is a function, we need to create the let binding now, to be in sync with reason
                     //  let |>x<| y z = ...  vs    let x = y z => ...
                     mark(myTypes.C_LET_BINDING).
@@ -1248,7 +1250,7 @@ public class OclParser extends CommonPsiParser {
                 }
                 popEnd();
             } else if (is(myTypes.C_DECONSTRUCTION)) {
-                wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                wrapWith(myTypes.C_LOWER_NAME);
             } else if (is(myTypes.C_PARAMETERS) && !rawHasScope()) {
                 // ... ( xxx |>yyy<| ) ..
                 IElementType nextElementType = lookAhead(1);
@@ -1285,8 +1287,11 @@ public class OclParser extends CommonPsiParser {
                         }
                     }
                 }
-
-                wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                if (strictlyIn(myTypes.C_DECONSTRUCTION)) {
+                    wrapWith(myTypes.C_LOWER_NAME);
+                } else {
+                    wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                }
             }
         }
 

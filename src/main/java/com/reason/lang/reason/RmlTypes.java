@@ -77,6 +77,7 @@ public class RmlTypes extends ORLangTypes {
         C_OBJECT = new ORCompositeElementType("C_OBJECT", RmlLanguage.INSTANCE);
         C_OPEN_VARIANT = new ORCompositeElementType("C_OPEN_VARIANT", RmlLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", RmlLanguage.INSTANCE);
+        C_LOWER_NAME = new ORCompositeElementType("C_LOWER_NAME", RmlLanguage.INSTANCE);
         C_PARAM = new ORCompositeElementType("C_PARAM", RmlLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", RmlLanguage.INSTANCE);

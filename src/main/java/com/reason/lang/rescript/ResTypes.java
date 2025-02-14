@@ -77,6 +77,7 @@ public class ResTypes extends ORLangTypes {
         C_OBJECT = new ORCompositeElementType("C_OBJECT", ResLanguage.INSTANCE);
         C_OPEN_VARIANT = new ORCompositeElementType("C_OPEN_VARIANT", ResLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", ResLanguage.INSTANCE);
+        C_LOWER_NAME = new ORCompositeElementType("C_LOWER_NAME", ResLanguage.INSTANCE);
         C_PARAM = new ORCompositeElementType("C_PARAM", ResLanguage.INSTANCE);
         C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", ResLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", ResLanguage.INSTANCE);

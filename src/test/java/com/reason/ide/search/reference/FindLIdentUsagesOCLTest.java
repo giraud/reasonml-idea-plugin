@@ -1,16 +1,14 @@
 package com.reason.ide.search.reference;
 
+import com.intellij.openapi.util.*;
 import com.intellij.usageView.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
-@RunWith(JUnit4.class)
 public class FindLIdentUsagesOCLTest extends ORBasePlatformTestCase {
     @Test
     public void test_from_module() {
@@ -27,7 +25,7 @@ public class FindLIdentUsagesOCLTest extends ORBasePlatformTestCase {
 
         List<UsageInfo> usages = (List<UsageInfo>) myFixture.testFindUsages("FLIC.ml");
         assertSize(1, usages);
-        UsageInfo usageInfo = usages.get(0);
+        UsageInfo usageInfo = usages.getFirst();
         assertEquals("x + 1", usageInfo.getElement().getParent().getText());
     }
 
@@ -38,6 +36,19 @@ public class FindLIdentUsagesOCLTest extends ORBasePlatformTestCase {
 
         List<UsageInfo> usages = findUsages("A.mli");
         assertSize(1, usages);
-        assertInstanceOf(usages.get(0).getElement().getParent(), RPsiLetBinding.class);
+        assertInstanceOf(usages.getFirst().getElement().getParent(), RPsiLetBinding.class);
+    }
+
+    @Test
+    public void test_destructuration() {
+        configureCode("A.ml", """
+                let (dialogStatus,setDialog<caret>Status) = x
+                let _ = fun ()  -> setDialogStatus ()
+                """);
+
+        List<UsageInfo> usages = findUsages("A.ml");
+        assertSize(1, usages);
+        UsageInfo usageInfo = usages.getFirst();
+        assertEquals(TextRange.create(58, 73), usageInfo.getSegment());
     }
 }

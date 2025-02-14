@@ -831,7 +831,7 @@ public class ResParser extends CommonPsiParser {
             }
             //
             else if (is(myTypes.C_DECONSTRUCTION)) {
-                wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                wrapWith(myTypes.C_LOWER_NAME);
             }
             // This is a property
             else if (strictlyIn(myTypes.C_TAG_START) && !isCurrent(myTypes.C_TAG_PROP_VALUE)) { // no scope

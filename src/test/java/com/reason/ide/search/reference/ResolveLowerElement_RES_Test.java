@@ -686,10 +686,14 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_GH_167_deconstruction() {
-        configureCode("A.res", "let (count, setCount) = React.useState(() => 0)\n setCount<caret>(1)");
+        configureCode("A.res", """
+        let (count, setCount) = React.useState(() => 0)
+        setCount<caret>(1)
+        """);
 
         PsiElement elementAtCaret = myFixture.getElementAtCaret();
         assertEquals(12, elementAtCaret.getTextOffset());
+        assertInstanceOf(elementAtCaret, RPsiLowerName.class);
     }
 
     @Test

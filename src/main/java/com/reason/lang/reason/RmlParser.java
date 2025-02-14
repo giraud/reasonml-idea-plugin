@@ -904,7 +904,7 @@ public class RmlParser extends CommonPsiParser {
                     mark(myTypes.C_FUNCTION_CALL)
                             .wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 } else if (is(myTypes.C_DECONSTRUCTION)) {
-                    wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                    wrapWith(myTypes.C_LOWER_NAME);
                 } else if (nextElementType == myTypes.ARROW && strictlyInAny(
                         myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE, myTypes.C_SCOPED_EXPR
                 )) {

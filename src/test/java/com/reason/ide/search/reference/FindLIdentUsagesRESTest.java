@@ -65,10 +65,10 @@ public class FindLIdentUsagesRESTest extends ORBasePlatformTestCase {
         assertEquals(TextRange.create(48, 52), usageInfo.getSegment());
     }
 
-    //@Test TODO: make it work
-    public void test_destructuration() {  // TODO: other lang
+    @Test
+    public void test_destructuration() {
         configureCode("A.res", """
-                let (dialogStatus, setDialogStatus<caret>) = x
+                let (dialogStatus, setDialog<caret>Status) = x
                 let _ = () => setDialogStatus()
                 """);
 

@@ -33,15 +33,8 @@ public class ORPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerS
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
         PsiElement parent = myElement.getParent();
-        if (parent instanceof RPsiVar || parent instanceof RPsiType || parent instanceof RPsiExternal) {
+        if (parent instanceof RPsiVar || parent instanceof RPsiType || parent instanceof RPsiExternal || parent instanceof RPsiLowerName) {
             return ResolveResult.EMPTY_ARRAY;
-        }
-        if (parent instanceof RPsiDeconstruction) {
-            PsiElement grandParent = parent.getParent();
-            if (grandParent instanceof RPsiVar) {
-                return ResolveResult.EMPTY_ARRAY;
-            }
-
         }
 
         long startAll = System.currentTimeMillis();

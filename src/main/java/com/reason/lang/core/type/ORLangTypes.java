@@ -69,6 +69,7 @@ public abstract class ORLangTypes extends ORTypes {
     public ORCompositeType C_OBJECT;
     public ORCompositeType C_OPEN_VARIANT;
     public ORCompositeType C_OPTION;
+    public ORCompositeType C_LOWER_NAME;
     public ORCompositeType C_PARAM;
     public ORCompositeType C_PARAMETERS;
     public ORCompositeType C_PATTERN_MATCH_BODY;
