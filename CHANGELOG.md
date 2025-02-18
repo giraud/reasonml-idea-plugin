@@ -12,6 +12,14 @@
 
 # Unreleased
 
+# 0.128 - 2025/02/18
+
+- :bug: [#499](https://github.com/giraud/reasonml-idea-plugin/issues/499) Find usages of destructured elements
+- :bug: [#498](https://github.com/giraud/reasonml-idea-plugin/issues/498) Parser error with patterns and parenthesis
+- :bug: [#497](https://github.com/giraud/reasonml-idea-plugin/issues/497) Fix include inlined module
+- :bug: [#496](https://github.com/giraud/reasonml-idea-plugin/issues/496) Improve free completion of poly variants
+- :house: Remove 'function' keyword in Rescript lexer
+
 # 0.127 - 2025/01/14
 
 - :bug: [#494](https://github.com/giraud/reasonml-idea-plugin/issues/494) JsonFileType exception in 2024.3 

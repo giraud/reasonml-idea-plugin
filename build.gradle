@@ -55,10 +55,11 @@ intellijPlatform {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>494 - JsonFileType exception in 2024.3</li> 
-                    <li>492 - Ocaml parser error when using #end</li> 
-                    <li>490 - Object representation in structure panel</li> 
-                    <li>246 - Input in priority in autocomplete list</li>
+                    <li>499 - Find usages of destructured elements</li>
+                    <li>498 - Parser error with patterns and parenthesis</li>
+                    <li>497 - Fix include inlined module</li>
+                    <li>496 - Improve free completion of poly variants</li>
+                    <li>Remove 'function' keyword in Rescript lexer</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
