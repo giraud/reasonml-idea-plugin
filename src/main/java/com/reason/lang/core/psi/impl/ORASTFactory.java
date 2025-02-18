@@ -240,6 +240,9 @@ public class ORASTFactory<T extends ORLangTypes> extends ASTFactory {
         if (type == myTypes.C_MACRO_NAME) {
             return new RPsiMacroName(myTypes, type);
         }
+        if (type == myTypes.C_LOWER_NAME) {
+            return new RPsiLowerName(myTypes, type);
+        }
 
         return null;
     }

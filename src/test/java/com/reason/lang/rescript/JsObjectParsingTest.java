@@ -38,12 +38,12 @@ public class JsObjectParsingTest extends ResParsingTestCase {
     }
 
     @Test
-    public void test_definition() {   // TODO: update other lang
-        RPsiType e = first(typeExpressions(parseCode("""
+    public void test_definition() {
+        RPsiType e = firstOfType(parseCode("""
                 type t = {
                   "a": UUID.t, "b": { "c": array<int> }
                 }
-                """)));
+                """), RPsiType.class);
 
         PsiElement binding = e.getBinding();
         RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);
@@ -51,14 +51,14 @@ public class JsObjectParsingTest extends ResParsingTestCase {
 
         List<RPsiObjectField> fields = new ArrayList<>(object.getFields());
         assertSize(2, fields);
-        assertEquals("a", fields.get(0).getName());
-        assertEquals("UUID.t", fields.get(0).getSignature().getText());
+        assertEquals("a", fields.getFirst().getName());
+        assertEquals("UUID.t", fields.getFirst().getSignature().getText());
         assertEquals("b", fields.get(1).getName());
         assertEquals("{ \"c\": array<int> }", fields.get(1).getSignature().getText());
-        RPsiSignatureItem si0 = fields.get(1).getSignature().getItems().get(0);
+        RPsiSignatureItem si0 = fields.get(1).getSignature().getItems().getFirst();
         List<RPsiObjectField> si0fs = ((RPsiJsObject) si0.getFirstChild()).getFields();
-        assertEquals("c", si0fs.get(0).getName());
-        assertEquals("array<int>", si0fs.get(0).getSignature().getText());
+        assertEquals("c", si0fs.getFirst().getName());
+        assertEquals("array<int>", si0fs.getFirst().getSignature().getText());
 
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTagStart.class));
     }
@@ -73,7 +73,7 @@ public class JsObjectParsingTest extends ResParsingTestCase {
 
         List<RPsiObjectField> fields = new ArrayList<>(object.getFields());
         assertEquals(2, fields.size());
-        assertEquals("a", fields.get(0).getName());
+        assertEquals("a", fields.getFirst().getName());
         assertEquals("b", fields.get(1).getName());
     }
 
@@ -97,12 +97,11 @@ public class JsObjectParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_module_open() {
-        RPsiLet e = firstOfType(parseCode(
-                "let computingProperties = createStructuredSelector({ "
-                        + "open ComputingReducers\n"
-                        + "{\"lastUpdate\": selectors.getLastUpdate}\n"
-                        + "})"), RPsiLet.class);
-        assertNoParserError(e);
+        RPsiLet e = firstOfType(parseCode("""
+                let computingProperties = createStructuredSelector({
+                  open ComputingReducers
+                  {"lastUpdate": selectors.getLastUpdate}
+                })"""), RPsiLet.class);
 
         RPsiLetBinding binding = e.getBinding();
         RPsiParameters call = PsiTreeUtil.findChildOfType(binding, RPsiParameters.class);
@@ -120,6 +119,6 @@ public class JsObjectParsingTest extends ResParsingTestCase {
         RPsiJsObject o = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), RPsiJsObject.class);
         List<RPsiObjectField> fields = new ArrayList<>(o.getFields());
         assertSize(3, fields);
-        assertInstanceOf(fields.get(0).getValue().getFirstChild(), RPsiJsObject.class);
+        assertInstanceOf(fields.getFirst().getValue().getFirstChild(), RPsiJsObject.class);
     }
 }

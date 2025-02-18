@@ -18,6 +18,6 @@ public class GotoImplementationRMLTest extends ORBasePlatformTestCase {
 
         assertSize(1, targets);
         assertEquals("A.x", ((RPsiQualifiedPathElement) targets[0]).getQualifiedName());
-        // TODO assertEquals("A.re", targets[0].getContainingFile().getName());
+        //assertEquals("A.re", targets[0].getContainingFile().getName());
     }
 }

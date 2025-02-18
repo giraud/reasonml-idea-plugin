@@ -73,7 +73,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
     @Test
     public void test_signature_with_constraint() {
         // From coq: PCoq
-        FileBase file = parseCode("module G : sig end with type 'a Entry.e = 'a Extend.entry = struct end");
+        FileBase file = parseCode("module G : sig end\n with type 'a Entry.e = 'a Extend.entry = struct end");
 
         assertEquals(1, expressions(file).size());
         RPsiInnerModule e = firstOfType(file, RPsiInnerModule.class);

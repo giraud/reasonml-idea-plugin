@@ -267,10 +267,32 @@ public class MatchParsingTest extends OclParsingTestCase {
         assertSize(2, es.getPatterns());
         assertEquals("best", es.getPatterns().get(0).getBody().getText());
         assertEquals("""
-                              let y = 1 in
-                                    if cond then
-                                      expr1
-                                    else
-                                      expr2""", es.getPatterns().get(1).getBody().getText());
+                let y = 1 in
+                      if cond then
+                        expr1
+                      else
+                        expr2""", es.getPatterns().get(1).getBody().getText());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/498
+    @Test
+    public void test_GH_498() {
+        RPsiLet e = firstOfType(parseCode("""
+                let fn = function
+                  | T ->
+                      hov 0 (str "Type error: " ++
+                      (match te with
+                      | T1 ((n,a,b), {uj_val = hd; uj_type = hdty}, args) -> "t1"
+                      | T2 _ -> "t2"
+                      ))"""), RPsiLet.class);
+
+        assertTrue(e.isFunction());
+        assertTextEquals("""
+                | T ->
+                      hov 0 (str "Type error: " ++
+                      (match te with
+                      | T1 ((n,a,b), {uj_val = hd; uj_type = hdty}, args) -> "t1"
+                      | T2 _ -> "t2"
+                      ))""", e.getFunction().getBody().getText());
     }
 }

@@ -22,10 +22,20 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_trimming() {
-        RPsiLet let = firstOfType(parseCode("let statelessComponent:\n  string =>\n  componentSpec<\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  >\n"), RPsiLet.class);
+        RPsiLet let = firstOfType(parseCode("""
+                let statelessComponent:
+                  string =>
+                  componentSpec<
+                    stateless,
+                    stateless,
+                    noRetainedProps,
+                    noRetainedProps,
+                    actionLess,
+                  >
+                """), RPsiLet.class);
 
         RPsiSignature signature = let.getSignature();
-        assertEquals("string => componentSpec<stateless, stateless, noRetainedProps, noRetainedProps, actionless>", signature.asText(getLangProps()));
+        assertEquals("string => componentSpec<stateless, stateless, noRetainedProps, noRetainedProps, actionLess>", signature.asText(getLangProps()));
     }
 
     @Test
@@ -203,6 +213,16 @@ public class SignatureParsingTest extends ResParsingTestCase {
         assertContainsElements(et, myTypes.A_MODULE_NAME);
     }
 
+    @Test
+    public void test_function_result() {
+        RPsiLet e = firstOfType(parseCode("let fn = (a): string => b"), RPsiLet.class);
+
+        assertTrue(e.isFunction());
+        //assertTextEquals("string", e.getSignature().getText());
+        assertTextEquals("a", e.getFunction().getParameters().getFirst().getText());
+        assertTextEquals("b", e.getFunction().getBody().getText());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/399
     @Test
     public void test_GH_399() {
@@ -220,9 +240,7 @@ public class SignatureParsingTest extends ResParsingTestCase {
 
         assertTrue(e.isFunction());
         RPsiFunction ef = e.getFunction();
-        //TODO implements
-        //assertSize(1, ef.getParameters());
-        //assertEquals("(React.ref<Js.nullable<Dom.element>>) => option<int>", e.getSignature().getText());
+        assertSize(1, ef.getParameters());
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiTag.class));
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiUpperTagName.class));
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiLeafPropertyName.class));

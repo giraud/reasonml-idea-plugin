@@ -5,10 +5,7 @@ import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
-@RunWith(JUnit4.class)
 public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_let_basic() {
@@ -512,7 +509,7 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
         assertEquals("Pervasives.compare", e.getQualifiedName());
     }
 
-    //@Test TODO: fix
+    @Test
     public void test_path_functor_1() {
         configureCode("E.ml", """
                 module type E1Intf = sig
@@ -523,8 +520,8 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
                 module type D1Intf = sig
                   val make: unit -> unit
                 end
-                  
-                module Make = (M: E.E1Intf): D1Intf = struct
+                
+                module Make(M: E.E1Intf): D1Intf = struct
                   let make () = ()
                 end
                 """);

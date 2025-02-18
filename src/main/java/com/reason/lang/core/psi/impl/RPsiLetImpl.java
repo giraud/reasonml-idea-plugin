@@ -36,7 +36,7 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
 
     // region PsiNamedElement
     public @Nullable PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiLowerSymbol.class, RPsiScopedExpr.class, RPsiDeconstruction.class, RPsiLiteralString.class/*rescript custom operator*/, RPsiUnit.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiLowerSymbol.class, RPsiScopedExpr.class, RPsiLiteralString.class/*rescript custom operator*/, RPsiUnit.class);
     }
 
     @Override
@@ -252,12 +252,6 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
     // endregion
 
     @Override
-    public boolean isDeconstruction() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier instanceof RPsiDeconstruction;
-    }
-
-    @Override
     public boolean isPrivate() {
         RPsiLetAttribute attribute = ORUtil.findImmediateFirstChildOfClass(this, RPsiLetAttribute.class);
         String value = attribute == null ? null : attribute.getValue();
@@ -274,13 +268,16 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
         return getName() == null;
     }
 
+
+    @Override
+    public boolean isDeconstruction() {
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiDeconstruction.class) != null;
+    }
+
     @Override
     public @NotNull List<PsiElement> getDeconstructedElements() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        if (nameIdentifier instanceof RPsiDeconstruction) {
-            return ((RPsiDeconstruction) nameIdentifier).getDeconstructedElements();
-        }
-        return emptyList();
+        PsiElement child = ORUtil.findImmediateFirstChildOfAnyClass(this, RPsiDeconstruction.class);
+        return child instanceof RPsiDeconstruction deconstruction ? deconstruction.getDeconstructedElements() : emptyList();
     }
 
     // region RPsiStructuredElement
@@ -291,6 +288,11 @@ public class RPsiLetImpl extends RPsiTokenStub<ORLangTypes, RPsiLet, PsiLetStub>
             return false;
         }
         if (nameIdentifier != null) {
+            return true;
+        }
+
+        PsiElement deconstruction = ORUtil.findImmediateFirstChildOfType(this, myTypes.C_DECONSTRUCTION);
+        if (deconstruction != null) {
             return true;
         }
 

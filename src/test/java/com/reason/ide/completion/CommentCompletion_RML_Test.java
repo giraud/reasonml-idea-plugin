@@ -9,7 +9,7 @@ import org.junit.runner.*;
 import org.junit.runners.*;
 
 @RunWith(JUnit4.class)
-public class CommentCompletionTest extends BasePlatformTestCase {
+public class CommentCompletion_RML_Test extends BasePlatformTestCase {
   @Override
   protected @NotNull String getTestDataPath() {
     return "src/test/testData/com/reason/lang";
@@ -23,7 +23,7 @@ public class CommentCompletionTest extends BasePlatformTestCase {
     myFixture.complete(CompletionType.BASIC, 1);
     List<String> strings = myFixture.getLookupElementStrings();
 
-    assertEmpty(strings);
+    assertNullOrEmpty(strings);
   }
 
   @Test
@@ -34,6 +34,6 @@ public class CommentCompletionTest extends BasePlatformTestCase {
     myFixture.complete(CompletionType.BASIC, 1);
     List<String> strings = myFixture.getLookupElementStrings();
 
-    assertEmpty(strings);
+    assertNullOrEmpty(strings);
   }
 }

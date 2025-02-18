@@ -2,14 +2,10 @@ package com.reason.ide.search.reference;
 
 import com.intellij.psi.*;
 import com.reason.ide.*;
-import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
-@RunWith(JUnit4.class)
 public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_let_basic() {
@@ -445,7 +441,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_path_functor_1() {  // TODO other langs
+    public void test_path_functor_1() {
         configureCode("E.res", """
                 module type E1Intf = {
                   type t
@@ -455,7 +451,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
                 module type D1Intf = {
                   let make: unit => unit
                 }
-                  
+                
                 module Make = (M: E.E1Intf): D1Intf => {
                   let make = () => ()
                 }
@@ -475,11 +471,11 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
         configureCode("B.res", "");
         configureCode("A.res", """
                 open B
-                                
+                
                 module Styles = {
                   let x = 1
                 }
-                                
+                
                 let x = Styles.x<caret>
                 """);
 
@@ -565,7 +561,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
-    public void test_object_4() { // TODO: other lang
+    public void test_object_4() {
         configureCode("B.res", """
                 type t = {
                   "x": {
@@ -615,7 +611,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
                     }
                   }
                 }
-                                
+                
                 module B4 = {
                   include A
                   module B5 = B1.B2
@@ -656,7 +652,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
                 module type I = {
                   let x: int
                 }
-
+                
                 let x = (~p: module(I)) => {
                     module S = unpack(p)
                     S.x<caret>
@@ -690,10 +686,14 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_GH_167_deconstruction() {
-        configureCode("A.res", "let (count, setCount) = React.useState(() => 0)\n setCount<caret>(1)");
+        configureCode("A.res", """
+        let (count, setCount) = React.useState(() => 0)
+        setCount<caret>(1)
+        """);
 
         PsiElement elementAtCaret = myFixture.getElementAtCaret();
         assertEquals(12, elementAtCaret.getTextOffset());
+        assertInstanceOf(elementAtCaret, RPsiLowerName.class);
     }
 
     @Test
@@ -719,12 +719,12 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     public void test_GH_358() {
         configureCode("A.res", """
                 let clearPath = () => ()
-                                
+                
                 module Xxx = {
                   type t = | ClearPath
                   let clearPath = () => ()
                 }
-                                
+                
                 let reducer = x => switch x {
                   | Xxx.ClearPath => clearPath<caret>()
                 }

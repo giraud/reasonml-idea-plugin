@@ -18,6 +18,6 @@ public class GotoImplementationRESTest extends ORBasePlatformTestCase {
 
         assertSize(1, targets);
         assertEquals("A.x", ((RPsiQualifiedPathElement) targets[0]).getQualifiedName());
-        // TODO assertEquals("A.res", targets[0].getContainingFile().getName());
+        //assertEquals("A.res", targets[0].getContainingFile().getName());
     }
 }

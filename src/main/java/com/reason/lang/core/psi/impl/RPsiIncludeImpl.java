@@ -56,7 +56,7 @@ public class RPsiIncludeImpl extends RPsiTokenStub<ORLangTypes, RPsiInclude, Psi
         }
 
         PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        return firstChild == null ? "" : ORUtil.getTextUntilClass(firstChild, RPsiConstraints.class);
+        return firstChild == null || firstChild instanceof RPsiModule ? "" : ORUtil.getTextUntilClass(firstChild, RPsiConstraints.class);
     }
 
     @Override

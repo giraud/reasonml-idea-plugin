@@ -12,7 +12,7 @@ import java.util.*;
 public class IncludeParsingTest extends ResParsingTestCase {
     @Test
     public void test_one() {
-        RPsiInclude e = first(includeExpressions(parseCode("include Belt")));
+        RPsiInclude e = firstOfType(parseCode("include Belt"), RPsiInclude.class);
 
         assertNull(PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class));
         assertEquals("Belt", e.getIncludePath());
@@ -21,7 +21,7 @@ public class IncludeParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_path() {
-        RPsiInclude e = first(includeExpressions(parseCode("include Belt.Array")));
+        RPsiInclude e = firstOfType(parseCode("include Belt.Array"), RPsiInclude.class);
 
         assertEquals("Belt.Array", e.getIncludePath());
         assertEquals("Array", ORUtil.findImmediateLastChildOfType(e, myTypes.A_MODULE_NAME).getText());
@@ -30,9 +30,9 @@ public class IncludeParsingTest extends ResParsingTestCase {
     @Test
     public void test_functor() {
         RPsiInclude e = firstOfType(parseCode("include Make({ type t })"), RPsiInclude.class);
+        RPsiFunctorCall c = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);
 
         assertTrue(e.useFunctor());
-        RPsiFunctorCall c = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);
         assertEquals(myTypes.A_MODULE_NAME, c.getReferenceIdentifier().getNode().getElementType());
         assertEquals("Make", c.getName());
         assertEquals("Make", e.getIncludePath());
@@ -49,7 +49,7 @@ public class IncludeParsingTest extends ResParsingTestCase {
 
     @Test
     public void test_chaining() {
-        Collection<RPsiInclude> includes = includeExpressions(parseCode("include Belt include Js"));
+        Collection<RPsiInclude> includes = childrenOfType(parseCode("include Belt include Js"), RPsiInclude.class);
 
         assertSize(2, includes);
     }

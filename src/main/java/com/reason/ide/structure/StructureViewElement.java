@@ -282,40 +282,46 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         @Override
         public void visitElement(@NotNull PsiElement element) {
-            if (element instanceof RPsiStructuredElement && myElementLevel < 3) {
-                if (((RPsiStructuredElement) element).canBeDisplayed()) {
-                    if (element instanceof RPsiLet let) {
-                        if (let.isScopeIdentifier()) {
-                            // it's a tuple! add each element of the tuple separately.
-                            for (PsiElement child : let.getScopeChildren()) {
-                                if (child instanceof RPsiLowerSymbol) {
-                                    myTreeElements.add(new StructureViewElement(child, element, true, myElementLevel));
+            switch (element) {
+                case RPsiStructuredElement structuredElement when myElementLevel < 3 -> {
+                    if (structuredElement.canBeDisplayed()) {
+                        if (element instanceof RPsiLet let) {
+                            if (let.isScopeIdentifier()) {
+                                // it's a tuple! add each element of the tuple separately.
+                                for (PsiElement child : let.getScopeChildren()) {
+                                    if (child instanceof RPsiLowerSymbol || child instanceof RPsiLowerName) {
+                                        myTreeElements.add(new StructureViewElement(child, element, true, myElementLevel));
+                                    }
                                 }
+                                return;
                             }
-                            return;
-                        }
 
-                        PsiElement letElement = let.isFunction() ? let.getFunction() : let.getBinding();
-                        PsiElement letBinding = letElement instanceof RPsiFunction f ? f.getBody() : letElement;
-                        PsiElement firstChild = letBinding != null ? letBinding.getFirstChild() : null;
-                        if (firstChild instanceof RPsiObject psiObject) {
-                            myTreeElements.add(new StructureObjectView(psiObject, let.getName()));
-                            return;
-                        }
+                            PsiElement letElement = let.isFunction() ? let.getFunction() : let.getBinding();
+                            PsiElement letBinding = letElement instanceof RPsiFunction f ? f.getBody() : letElement;
+                            PsiElement firstChild = letBinding != null ? letBinding.getFirstChild() : null;
+                            if (firstChild instanceof RPsiObject psiObject) {
+                                myTreeElements.add(new StructureObjectView(psiObject, let.getName()));
+                                return;
+                            }
 
+                        }
+                        myTreeElements.add(new StructureViewElement(element, myElementLevel));
                     }
-                    myTreeElements.add(new StructureViewElement(element, myElementLevel));
                 }
-            } else if (element instanceof RPsiRecord && myElementLevel < 2) {
-                for (RPsiRecordField field : ((RPsiRecord) element).getFields()) {
-                    myTreeElements.add(new StructureViewElement(field, myElementLevel));
-                }
-            } else if (element instanceof RPsiScopedExpr && myElementLevel < 2) {
-                List<RPsiStructuredElement> children = ORUtil.findImmediateChildrenOfClass(element, RPsiStructuredElement.class);
-                for (RPsiStructuredElement child : children) {
-                    if (child.canBeDisplayed()) {
-                        myTreeElements.add(new StructureViewElement(child, myElementLevel));
+                case RPsiRecord record when myElementLevel < 2 -> {
+                    for (RPsiRecordField field : record.getFields()) {
+                        myTreeElements.add(new StructureViewElement(field, myElementLevel));
                     }
+                }
+                case RPsiScopedExpr ignored when myElementLevel < 2 -> {
+                    List<RPsiStructuredElement> children = ORUtil.findImmediateChildrenOfClass(element, RPsiStructuredElement.class);
+                    for (RPsiStructuredElement child : children) {
+                        if (child.canBeDisplayed()) {
+                            myTreeElements.add(new StructureViewElement(child, myElementLevel));
+                        }
+                    }
+                }
+                default -> {
                 }
             }
         }

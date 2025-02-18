@@ -25,18 +25,26 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_definition() {
-        RPsiType e = first(typeExpressions(parseCode("type t = {. \"a\": UUID.t, \"b\": int};")));
+        RPsiType e = firstOfType(parseCode("""
+                type t = {.
+                  "a": UUID.t, "b": { "c": array(int) }
+                };
+                """), RPsiType.class);
 
         PsiElement binding = e.getBinding();
         RPsiJsObject object = PsiTreeUtil.findChildOfType(binding, RPsiJsObject.class);
         assertNotNull(object);
 
         List<RPsiObjectField> fields = new ArrayList<>(object.getFields());
-        assertEquals(2, fields.size());
-        assertEquals("a", fields.get(0).getName());
-        assertEquals("UUID.t", fields.get(0).getSignature().getText());
+        assertSize(2, fields);
+        assertEquals("a", fields.getFirst().getName());
+        assertEquals("UUID.t", fields.getFirst().getSignature().getText());
         assertEquals("b", fields.get(1).getName());
-        assertEquals("int", fields.get(1).getSignature().getText());
+        assertEquals("{ \"c\": array(int) }", fields.get(1).getSignature().getText());
+        RPsiSignatureItem si0 = fields.get(1).getSignature().getItems().getFirst();
+        List<RPsiObjectField> si0fs = ((RPsiJsObject) si0.getFirstChild()).getFields();
+        assertEquals("c", si0fs.getFirst().getName());
+        assertEquals("array(int)", si0fs.getFirst().getSignature().getText());
     }
 
     @Test

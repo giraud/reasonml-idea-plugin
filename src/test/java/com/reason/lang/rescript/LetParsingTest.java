@@ -105,7 +105,7 @@ public class LetParsingTest extends ResParsingTestCase {
         assertNull(PsiTreeUtil.findChildOfType(let, RPsiFunction.class));
         assertEquals("M1.y => M2.z", let.getSignature().getText());
         List<RPsiSignatureItem> items = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let.getSignature(), RPsiSignatureItem.class));
-        assertEquals("M1.y", items.get(0).getText());
+        assertEquals("M1.y", items.getFirst().getText());
     }
 
     @Test
@@ -114,7 +114,7 @@ public class LetParsingTest extends ResParsingTestCase {
 
         assertEquals("{\"a\":string, \"b\":int} => unit", let.getSignature().getText());
         List<RPsiObjectField> fields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, RPsiObjectField.class));
-        assertEquals("\"a\":string", fields.get(0).getText());
+        assertEquals("\"a\":string", fields.getFirst().getText());
         assertEquals("\"b\":int", fields.get(1).getText());
     }
 
@@ -160,10 +160,10 @@ public class LetParsingTest extends ResParsingTestCase {
         assertTrue(e.isDeconstruction());
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
-        assertEquals("a", names.get(0).getText());
-        assertInstanceOf(names.get(0), RPsiLowerSymbol.class);
+        assertEquals("a", names.getFirst().getText());
+        assertInstanceOf(names.getFirst(), RPsiLowerName.class);
         assertEquals("b", names.get(1).getText());
-        assertInstanceOf(names.get(1), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(1), RPsiLowerName.class);
     }
 
     @Test
@@ -174,12 +174,12 @@ public class LetParsingTest extends ResParsingTestCase {
         assertTrue(e.isDeconstruction());
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(3, names);
-        assertEquals("l", names.get(0).getText());
-        assertInstanceOf(names.get(0), RPsiLowerSymbol.class);
+        assertEquals("l", names.getFirst().getText());
+        assertInstanceOf(names.getFirst(), RPsiLowerName.class);
         assertEquals("r", names.get(1).getText());
-        assertInstanceOf(names.get(1), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(1), RPsiLowerName.class);
         assertEquals("b", names.get(2).getText());
-        assertInstanceOf(names.get(2), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(2), RPsiLowerName.class);
     }
 
     @Test
@@ -190,10 +190,10 @@ public class LetParsingTest extends ResParsingTestCase {
         assertTrue(e.isDeconstruction());
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
-        assertEquals("a", names.get(0).getText());
-        assertInstanceOf(names.get(0), RPsiLowerSymbol.class);
+        assertEquals("a", names.getFirst().getText());
+        assertInstanceOf(names.getFirst(), RPsiLowerName.class);
         assertEquals("b", names.get(1).getText());
-        assertInstanceOf(names.get(1), RPsiLowerSymbol.class);
+        assertInstanceOf(names.get(1), RPsiLowerName.class);
     }
 
     @Test
@@ -211,9 +211,9 @@ public class LetParsingTest extends ResParsingTestCase {
         List<RPsiLet> es = ORUtil.findImmediateChildrenOfClass(parseCode("let x = y(M.{i: 1}); let z=2"), RPsiLet.class);
 
         assertSize(2, es);
-        assertNull(PsiTreeUtil.findChildOfType(es.get(0), RPsiScopedExpr.class));
-        assertEquals("i", PsiTreeUtil.findChildOfType(es.get(0), RPsiRecordField.class).getName());
-        assertEquals("{i: 1}", PsiTreeUtil.findChildOfType(es.get(0), RPsiRecord.class).getText());
+        assertNull(PsiTreeUtil.findChildOfType(es.getFirst(), RPsiScopedExpr.class));
+        assertEquals("i", PsiTreeUtil.findChildOfType(es.getFirst(), RPsiRecordField.class).getName());
+        assertEquals("{i: 1}", PsiTreeUtil.findChildOfType(es.getFirst(), RPsiRecord.class).getText());
     }
 
     @Test

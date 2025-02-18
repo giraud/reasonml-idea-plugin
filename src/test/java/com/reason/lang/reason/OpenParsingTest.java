@@ -27,7 +27,7 @@ public class OpenParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_functor() {
-        RPsiOpen e = first(openExpressions(parseCode("open Make({ type t; })")));
+        RPsiOpen e = firstOfType(parseCode("open Make({ type t; })"), RPsiOpen.class);
 
         assertTrue(e.useFunctor());
         assertEquals("Make", PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class).getName());
@@ -36,7 +36,7 @@ public class OpenParsingTest extends RmlParsingTestCase {
 
     @Test
     public void test_functor_with_path() {
-        RPsiOpen e = first(openExpressions(parseCode("open A.Make({ type t; })")));
+        RPsiOpen e = firstOfType(parseCode("open A.Make({ type t; })"), RPsiOpen.class);
 
         assertTrue(e.useFunctor());
         RPsiFunctorCall c = PsiTreeUtil.findChildOfType(e, RPsiFunctorCall.class);

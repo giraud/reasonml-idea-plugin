@@ -493,9 +493,9 @@ public class OclParser extends CommonPsiParser {
                 return;
             }
 
-            if (strictlyInAny(myTypes.C_TYPE_BINDING, myTypes.C_VARIANT_DECLARATION, myTypes.C_FUNCTION_EXPR,
+            if (inAny(myTypes.C_TYPE_BINDING, myTypes.C_VARIANT_DECLARATION, myTypes.C_FUNCTION_EXPR,
                     myTypes.C_MATCH_EXPR, myTypes.C_PATTERN_MATCH_EXPR, myTypes.C_PATTERN_MATCH_BODY,
-                    myTypes.C_TRY_HANDLERS, myTypes.C_TRY_HANDLER)) {
+                    myTypes.C_TRY_HANDLERS, myTypes.C_TRY_HANDLER, myTypes.C_SCOPED_EXPR)) {
 
                 if (isFound(myTypes.C_TYPE_BINDING)) { // remap an upper symbol to a variant if first element is missing pipe
                     // type t = (|) V1 |>|<| ...
@@ -504,7 +504,7 @@ public class OclParser extends CommonPsiParser {
                 } else if (isFound(myTypes.C_VARIANT_DECLARATION)) {
                     // type t = | X |>|<| Y ...
                     popEndUntilFoundIndex().popEnd().advance()
-                            .mark(myTypes.C_VARIANT_DECLARATION);
+                            .mark(myTypes.C_VARIANT_DECLARATION).inAny();
                 } else if (isFound(myTypes.C_FUNCTION_EXPR)) {
                     if (previousElementType(getIndex() + 1) == myTypes.FUN) {
                         // fun |>|<| ...
@@ -931,6 +931,9 @@ public class OclParser extends CommonPsiParser {
             } else if (is(myTypes.H_NAMED_PARAM_DECLARATION)) { // A named param with default value
                 // let fn ?|>(<| x ... )
                 updateScopeToken(myTypes.LPAREN);
+            } else if (is(myTypes.CA_UPPER_SYMBOL) && isRawParent(myTypes.C_PATTERN_MATCH_EXPR)) {
+                // match x with | V |>(<| :  a variant constructor
+                markScope(myTypes.C_PARAM, myTypes.LPAREN);
             } else if (inAny(//
                     myTypes.C_PARAM_DECLARATION, myTypes.C_PARAMETERS, myTypes.C_PARAM, myTypes.C_SIG_ITEM, myTypes.C_FUNCTION_BODY,
                     myTypes.C_LET_BINDING, myTypes.C_CLASS_DECLARATION, myTypes.C_DEFAULT_VALUE, myTypes.C_TUPLE, myTypes.C_FIELD_VALUE,
@@ -940,12 +943,16 @@ public class OclParser extends CommonPsiParser {
                 boolean isParam = isFound(myTypes.C_PARAM);
                 boolean isFoundScopeLParen = isFoundScope(myTypes.LPAREN);
                 int foundIndex = getIndex();
+                IElementType aheadType = lookAhead(1);
 
-                if (isFound(myTypes.C_LET_BINDING) && lookAhead(1) == myTypes.MODULE) {
+                if (isFound(myTypes.C_LET_BINDING) && aheadType == myTypes.MODULE) {
                     // let x = »(« module ... )
                     popIfHold()
                             .updateComposite(myTypes.C_FIRST_CLASS).updateScopeToken(myTypes.LPAREN).advance()
                             .advance(); // skip 'module' in a first class module
+                } else if (aheadType == myTypes.MATCH) {
+                    // fn (|>(<|match
+                    markScope(myTypes.C_SCOPED_EXPR, myTypes.LPAREN);
                 } else if (isFound(myTypes.C_FIELD_VALUE)) {
                     // Tuple in field value (destructuring)
                     markScope(myTypes.C_TUPLE, myTypes.LPAREN);
@@ -964,7 +971,7 @@ public class OclParser extends CommonPsiParser {
                     if (!isFoundScopeLParen && (isDeclaration || isParam)) { // Start of a new parameter
                         popEndUntilIndex(foundIndex).popEnd()
                                 .mark(isDeclaration ? myTypes.C_PARAM_DECLARATION : myTypes.C_PARAM);
-                        if (lookAhead(1) == myTypes.LIDENT) {
+                        if (aheadType == myTypes.LIDENT) {
                             // let f x |>(<| fn ...
                             markParenthesisScope(true)
                                     .mark(myTypes.C_FUNCTION_CALL)
@@ -1128,14 +1135,19 @@ public class OclParser extends CommonPsiParser {
             } else if (nextType == myTypes.GT) {
                 // |> [ <| > ... ]
                 markScope(myTypes.C_OPEN_VARIANT, myTypes.LBRACKET).advance().advance();
-                if (getTokenType() != myTypes.RBRACKET) {
+                IElementType tokenType = getTokenType();
+                if (tokenType == myTypes.POLY_VARIANT || tokenType == myTypes.A_VARIANT_NAME) {
                     mark(myTypes.C_VARIANT_DECLARATION);
                 }
             } else if (nextType == myTypes.LT) {
                 // |> [ <| < ... ]
                 markScope(myTypes.C_CLOSED_VARIANT, myTypes.LBRACKET).advance().advance();
-                if (getTokenType() != myTypes.RBRACKET) {
+                IElementType tokenType = getTokenType();
+                if (tokenType == myTypes.POLY_VARIANT || tokenType == myTypes.A_VARIANT_NAME || tokenType == myTypes.UIDENT) {
                     mark(myTypes.C_VARIANT_DECLARATION);
+                    if (tokenType != myTypes.UIDENT) {
+                        advance();
+                    }
                 }
             } else {
                 markScope(myTypes.C_SCOPED_EXPR, myTypes.LBRACKET);
@@ -1164,7 +1176,7 @@ public class OclParser extends CommonPsiParser {
 
             if (scope != null) {
                 popEnd();
-                if (isCurrent(myTypes.C_PARAM)) {
+                if (isCurrent(myTypes.C_PARAM) && !isCurrentScope(myTypes.LPAREN)) {
                     popEnd();
                 }
             }
@@ -1199,8 +1211,10 @@ public class OclParser extends CommonPsiParser {
                 IElementType nextToken = lookAhead(1);
                 if (nextToken == myTypes.COMMA) { // A deconstruction without parenthesis
                     mark(myTypes.C_DECONSTRUCTION);
+                    wrapWith(myTypes.C_LOWER_NAME);
+                } else {
+                    wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 }
-                wrapAtom(myTypes.CA_LOWER_SYMBOL);
                 if (nextToken != myTypes.COMMA && nextToken != myTypes.EQ && nextToken != myTypes.COLON) { // This is a function, we need to create the let binding now, to be in sync with reason
                     //  let |>x<| y z = ...  vs    let x = y z => ...
                     mark(myTypes.C_LET_BINDING).
@@ -1236,7 +1250,7 @@ public class OclParser extends CommonPsiParser {
                 }
                 popEnd();
             } else if (is(myTypes.C_DECONSTRUCTION)) {
-                wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                wrapWith(myTypes.C_LOWER_NAME);
             } else if (is(myTypes.C_PARAMETERS) && !rawHasScope()) {
                 // ... ( xxx |>yyy<| ) ..
                 IElementType nextElementType = lookAhead(1);
@@ -1273,8 +1287,11 @@ public class OclParser extends CommonPsiParser {
                         }
                     }
                 }
-
-                wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                if (strictlyIn(myTypes.C_DECONSTRUCTION)) {
+                    wrapWith(myTypes.C_LOWER_NAME);
+                } else {
+                    wrapAtom(myTypes.CA_LOWER_SYMBOL);
+                }
             }
         }
 
@@ -1464,6 +1481,8 @@ public class OclParser extends CommonPsiParser {
                 updateComposite(myTypes.C_FIRST_CLASS);
             } else if (is(myTypes.C_LET_DECLARATION)) {
                 updateComposite(myTypes.C_MODULE_DECLARATION);
+            } else if (is(myTypes.C_INCLUDE)) {
+                mark(myTypes.C_MODULE_DECLARATION);
             } else if (!is(myTypes.C_MACRO_NAME) && !is(myTypes.C_MODULE_SIGNATURE)) {
                 popEndUntilScope();
                 mark(myTypes.C_MODULE_DECLARATION);
