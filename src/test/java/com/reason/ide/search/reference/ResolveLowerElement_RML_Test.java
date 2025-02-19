@@ -788,4 +788,18 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.store", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_let() {
+        configureCode("A.re", """
+                let rec x = () => y<caret>()
+                (* comment *)
+                and z = () => x()
+                and y = () => x();
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.y", ((RPsiLet) e).getQualifiedName());
+    }
 }

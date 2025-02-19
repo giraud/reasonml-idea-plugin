@@ -1,10 +1,14 @@
 package com.reason.ide.search.reference;
 
+import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
+import com.intellij.usageView.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
+
+import java.util.*;
 
 public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
     @Test
@@ -601,7 +605,7 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
                 module type I = sig
                   val x: int
                 end
-
+                
                 let x ~p:(p: (module I)) =
                     let module S = (val p) in
                     S.x<caret>
@@ -698,5 +702,19 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.store", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_let() {
+        configureCode("A.ml", """
+                let rec x () = y<caret> ()
+                (* comment *)
+                and z () = x ()
+                and y () = x ()
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.y", ((RPsiLet) e).getQualifiedName());
     }
 }
