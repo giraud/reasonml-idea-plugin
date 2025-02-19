@@ -123,6 +123,20 @@ public class ORReferenceAnalyzer {
                 //}
                 else if (item instanceof RPsiInnerModule) {
                     instructions.push(item);
+
+                    // Process forward declarations (recursive declarations with 'and')
+                    PsiElement nextItem = PsiTreeUtil.nextCodeLeaf(item);
+                    IElementType nextItemType = nextItem != null ? nextItem.getNode().getElementType() : null;
+                    while (nextItemType == types.AND) {
+                        PsiElement nextElement = ORUtil.nextSibling(nextItem);
+                        if (nextElement instanceof RPsiInnerModule) {
+                            instructions.push(nextElement);
+                            nextItem = PsiTreeUtil.nextCodeLeaf(nextElement);
+                            nextItemType = nextItem != null ? nextItem.getNode().getElementType() : null;
+                        } else {
+                            break;
+                        }
+                    }
                 } else if (item instanceof RPsiFunctor) {
                     instructions.push(item);
                 } else if (item instanceof RPsiOpen || item instanceof RPsiInclude) {
@@ -135,6 +149,20 @@ public class ORReferenceAnalyzer {
                         instructions.push(item);
                     }
                     skipDeclaration = false;
+
+                    // Process forward declarations (recursive declarations with 'and')
+                    PsiElement nextItem = PsiTreeUtil.nextCodeLeaf(item);
+                    IElementType nextItemType = nextItem != null ? nextItem.getNode().getElementType() : null;
+                    while (nextItemType == types.AND) {
+                        PsiElement nextElement = ORUtil.nextSibling(nextItem);
+                        if (nextElement instanceof RPsiLet) {
+                            instructions.push(nextElement);
+                            nextItem = PsiTreeUtil.nextCodeLeaf(nextElement);
+                            nextItemType = nextItem != null ? nextItem.getNode().getElementType() : null;
+                        } else {
+                            break;
+                        }
+                    }
                 } else if (item instanceof RPsiTypeBinding) {
                     skipDeclaration = true;
                 } else if (item instanceof RPsiType) {
@@ -142,6 +170,20 @@ public class ORReferenceAnalyzer {
                         instructions.push(item);
                     }
                     skipDeclaration = false;
+
+                    // Process forward declarations (recursive declarations with 'and')
+                    PsiElement nextItem = PsiTreeUtil.nextCodeLeaf(item);
+                    IElementType nextItemType = nextItem != null ? nextItem.getNode().getElementType() : null;
+                    while (nextItemType == types.AND) {
+                        PsiElement nextElement = ORUtil.nextSibling(nextItem);
+                        if (nextElement instanceof RPsiType) {
+                            instructions.push(nextElement);
+                            nextItem = PsiTreeUtil.nextCodeLeaf(nextElement);
+                            nextItemType = nextItem != null ? nextItem.getNode().getElementType() : null;
+                        } else {
+                            break;
+                        }
+                    }
                 } else if (item instanceof RPsiExternal) {
                     instructions.push(item);
                 } else if (item instanceof RPsiException) {

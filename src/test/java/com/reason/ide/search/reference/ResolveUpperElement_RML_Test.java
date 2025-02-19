@@ -6,10 +6,7 @@ import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
-@RunWith(JUnit4.class)
 public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic_file() {
@@ -372,7 +369,7 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
                   };
                   module D = C;
                 };
-
+                
                 module M: B.D.S<caret> = {};
                 """);
 
@@ -402,11 +399,11 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
                 module B = {
                   module type Intf = {};
                 };
-
+                
                 module IncorrectImpl : Intf<caret> = {};
                 """);
 
-        PsiElement e = myFixture.getElementAtCaret();  // not found -> AssertionError
+        PsiElement _e = myFixture.getElementAtCaret();  // not found -> AssertionError
     }
 
     @Test
@@ -475,12 +472,24 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
                     };
                   };
                 };
-                                
+                
                 module Bbb = A.B;
                 module Ddd = Bbb.C<caret>.D;
                 """);
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Dummy.A.B.C", ((RPsiModule) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_module() {
+        configureCode("Dummy.re", """
+                module rec A: {} = { type t = B<caret>.b; }
+                and B: {type b;} = { type b; };
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Dummy.B", ((RPsiModule) e).getQualifiedName());
     }
 }
