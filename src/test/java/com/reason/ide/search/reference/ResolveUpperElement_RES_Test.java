@@ -450,4 +450,16 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Dummy.A.B.C", ((RPsiModule) e).getQualifiedName());
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_module() {
+        configureCode("Dummy.res", """
+                module rec A: {} = { type t = B<caret>.b }
+                and B: {type b} = { type b }
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Dummy.B", ((RPsiModule) e).getQualifiedName());
+    }
 }

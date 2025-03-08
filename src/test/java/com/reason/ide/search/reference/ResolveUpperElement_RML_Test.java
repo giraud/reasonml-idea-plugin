@@ -369,7 +369,7 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
                   };
                   module D = C;
                 };
-
+                
                 module M: B.D.S<caret> = {};
                 """);
 
@@ -399,7 +399,7 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
                 module B = {
                   module type Intf = {};
                 };
-
+                
                 module IncorrectImpl : Intf<caret> = {};
                 """);
 
@@ -479,5 +479,17 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Dummy.A.B.C", ((RPsiModule) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_module() {
+        configureCode("Dummy.re", """
+                module rec A: {} = { type t = B<caret>.b; }
+                and B: {type b;} = { type b; };
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Dummy.B", ((RPsiModule) e).getQualifiedName());
     }
 }
