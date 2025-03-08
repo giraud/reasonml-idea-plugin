@@ -768,7 +768,7 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     public void test_GH_476_and_let() {
         configureCode("A.res", """
                 let rec x = () => y<caret>()
-                (* comment *)
+                /* comment */
                 and z = () => x()
                 and y = () => x()
                 """);

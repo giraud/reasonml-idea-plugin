@@ -6,10 +6,7 @@ import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
-@RunWith(JUnit4.class)
 public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic_file() {
@@ -406,7 +403,7 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
                 module IncorrectImpl : Intf<caret> = {};
                 """);
 
-        PsiElement e = myFixture.getElementAtCaret();  // not found -> AssertionError
+        PsiElement _e = myFixture.getElementAtCaret();  // not found -> AssertionError
     }
 
     @Test
@@ -475,7 +472,7 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
                     };
                   };
                 };
-                                
+                
                 module Bbb = A.B;
                 module Ddd = Bbb.C<caret>.D;
                 """);

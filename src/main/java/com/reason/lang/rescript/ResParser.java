@@ -69,6 +69,7 @@ public class ResParser extends CommonPsiParser {
                                 || nextType == myTypes.COLON // ternary
                                 || nextType == myTypes.PIPE // variant
                                 || nextType == myTypes.WITH // type constraint
+                                || nextType == myTypes.AND // recursive declaration
                                 || (nextType == myTypes.LPAREN && isRawParent(myTypes.C_FUNCTION_CALL)); // function call
                         if (!nextOperator && !myMarkers.isEmpty()) {
                             Marker marker = myMarkers.peek();

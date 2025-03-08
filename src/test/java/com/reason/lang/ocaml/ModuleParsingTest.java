@@ -143,7 +143,10 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     @Test
     public void test_signature_many() {
-        List<RPsiModuleSignature> es = childrenOfType(parseCode("module A: sig val a: int end\n module B: sig val b: int end"), RPsiModuleSignature.class);
+        List<RPsiModuleSignature> es = childrenOfType(parseCode("""
+                module A: sig val a: int end
+                module B: sig val b: int end
+                """), RPsiModuleSignature.class);
 
         RPsiModuleSignature e0 = es.get(0);
         assertNoParserError(e0);

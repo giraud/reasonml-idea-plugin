@@ -1,14 +1,10 @@
 package com.reason.ide.search.reference;
 
-import com.intellij.openapi.util.*;
 import com.intellij.psi.*;
-import com.intellij.usageView.*;
 import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-
-import java.util.*;
 
 public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
     @Test
