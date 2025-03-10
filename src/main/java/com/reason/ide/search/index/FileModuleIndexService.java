@@ -4,8 +4,11 @@ import com.intellij.openapi.application.*;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
 import com.intellij.psi.search.*;
+import com.reason.*;
 import com.reason.ide.search.*;
+import com.reason.lang.core.psi.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
 
@@ -14,6 +17,7 @@ import java.util.*;
 @Service(Service.Level.APP)
 public final class FileModuleIndexService {
     private static final Log LOG = Log.create("index.fileservice");
+    private static final Comparator<VirtualFile> SORT_INTERFACE_FIRST = (o1, o2) -> FileHelper.isInterface(o1.getFileType()) ? -1 : FileHelper.isInterface(o2.getFileType()) ? 1 : 0;
 
     private static FileModuleIndexService myInstance = null;
 
@@ -33,6 +37,15 @@ public final class FileModuleIndexService {
         }
 
         return result;
+    }
+
+    public @Nullable RPsiModule getTopModule(@NotNull String name, @NotNull Project project, @NotNull GlobalSearchScope scope) {
+        Collection<VirtualFile> containingFiles = FileModuleIndex.getContainingFiles(name, scope);
+        return containingFiles.stream().min(SORT_INTERFACE_FIRST).
+                map(virtualFile -> {
+                    PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
+                    return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
+                }).orElse(null);
     }
 
     public @NotNull List<FileModuleData> getTopModuleData(@NotNull String name, @NotNull GlobalSearchScope scope) {
@@ -56,9 +69,5 @@ public final class FileModuleIndexService {
 
     public @NotNull Collection<String> getAllKeys(@NotNull Project project) {
         return FileModuleIndex.getAllKeys(project);
-    }
-
-    public Collection<VirtualFile> getContainingFiles(@NotNull String name, @NotNull GlobalSearchScope scope) {
-        return FileModuleIndex.getContainingFiles(name, scope);
     }
 }

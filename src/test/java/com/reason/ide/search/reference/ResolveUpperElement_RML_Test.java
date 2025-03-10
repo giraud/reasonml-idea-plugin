@@ -481,6 +481,16 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
         assertEquals("Dummy.A.B.C", ((RPsiModule) e).getQualifiedName());
     }
 
+    @Test
+    public void test_pervasives_modules() {
+        configureCode("JsxDOMC.re", "type style;");
+        configureCode("pervasives.re", "module JsxDOM = JsxDOMC;");
+        configureCode("A.re", "module A1 = JsxDOM<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Pervasives.JsxDOM", ((RPsiModule) e).getQualifiedName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/476
     @Test
     public void test_GH_476_and_module() {

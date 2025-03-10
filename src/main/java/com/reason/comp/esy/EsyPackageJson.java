@@ -1,9 +1,7 @@
 package com.reason.comp.esy;
 
-import com.google.gson.JsonParser;
 import com.google.gson.*;
 import com.intellij.framework.detection.*;
-import com.intellij.json.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.patterns.*;
 import com.intellij.util.*;
@@ -12,7 +10,7 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 
-import static com.reason.comp.esy.EsyConstants.ESY_CONFIG_FILENAME;
+import static com.reason.comp.esy.EsyConstants.*;
 import static java.nio.charset.StandardCharsets.*;
 
 public class EsyPackageJson {
@@ -21,7 +19,7 @@ public class EsyPackageJson {
 
     /* detects any "package.json" with a top-level "esy" property */
     public static boolean isEsyPackageJson(@Nullable VirtualFile file) {
-        if (file != null && file.getFileType() instanceof JsonFileType) {
+        if (file != null && "json".equals(file.getExtension())) {
             try {
                 return FileContentPattern.fileContent()
                         .withName(ESY_CONFIG_FILENAME)
@@ -49,8 +47,7 @@ public class EsyPackageJson {
                     JsonObject top = jsonContent.getAsJsonObject();
                     return top.has("esy");
                 }
-            }
-            catch (JsonSyntaxException e) {
+            } catch (JsonSyntaxException e) {
                 return false;
             }
 
