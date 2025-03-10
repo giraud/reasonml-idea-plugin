@@ -645,6 +645,17 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
         assertEquals("A.A1.A2.t.a", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
+    @Test
+    public void test_pervasives() {
+        configureCode("JsxDOMC.res", "type style");
+        configureCode("pervasives.res", "module JsxDOM = JsxDOMC");
+        configureCode("A.res", "module A1 = JsxDOM.style<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("JsxDOMC.style", ((RPsiType) e).getQualifiedName());
+
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/452
     @Test
     public void test_GH_452_resolve_unpacked_module() {

@@ -347,6 +347,16 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
         assertEquals("A.A1.A2.A3", e.getQualifiedName());
     }
 
+    @Test
+    public void test_pervasives_modules() {
+        configureCode("JsxDOMC.ml", "type style");
+        configureCode("pervasives.ml", "module JsxDOM = JsxDOMC");
+        configureCode("A.ml", "module A1 = JsxDOM<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Pervasives.JsxDOM", ((RPsiModule) e).getQualifiedName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/426
     @Test
     public void test_alias_resolution_same_file() {

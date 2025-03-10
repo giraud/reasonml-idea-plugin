@@ -23,7 +23,7 @@ public final class ModuleIndexService {
                 return ModuleFqnIndex.getElements(name, project, scope);
             } else {
                 // top level (file) component
-                for (VirtualFile file : FileModuleIndexService.getInstance().getContainingFiles(name, scope)) {
+                for (VirtualFile file : FileModuleIndex.getContainingFiles(name, scope)) {
                     PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
                     if (psiFile instanceof FileBase) {
                         result.add((FileBase) psiFile);

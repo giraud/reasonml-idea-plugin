@@ -358,7 +358,7 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
                   };
                   module D = C
                 };
-
+                
                 module M: B.D.S<caret> = {}
                 """);
 
@@ -449,6 +449,16 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Dummy.A.B.C", ((RPsiModule) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_pervasives_modules() {
+        configureCode("JsxDOMC.res", "type style");
+        configureCode("pervasives.res", "module JsxDOM = JsxDOMC");
+        configureCode("A.res", "module A1 = JsxDOM<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Pervasives.JsxDOM", ((RPsiModule) e).getQualifiedName());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/476

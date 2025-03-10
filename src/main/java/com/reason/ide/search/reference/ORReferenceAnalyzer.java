@@ -255,12 +255,22 @@ public class ORReferenceAnalyzer {
 
         PsiManager psiManager = PsiManager.getInstance(project);
 
+        // Add pervasives (always included)
+        RPsiModule pervasives = FileModuleIndexService.getInstance().getTopModule("Pervasives", project, scope);
+        if (pervasives != null) {
+            ResolutionElement resolutionElement = new ResolutionElement(pervasives, true);
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(" > global module, add [" + resolutionElement + "]");
+            }
+            resolutions.add(resolutionElement);
+        }
+
         // Add all globally opened elements (implicit open)
         if (openedModules != null) {
             LOG.trace("Processing globally opened modules");
             for (String openedModuleName : openedModules) {
                 List<RPsiModule> modules = getTopModules(openedModuleName, psiManager, scope);
-                RPsiModule module = modules.isEmpty() ? null : modules.get(0);
+                RPsiModule module = modules.isEmpty() ? null : modules.getFirst();
                 if (module != null) {
                     ResolutionElement resolutionElement = new ResolutionElement(module, true);
                     if (LOG.isTraceEnabled()) {
@@ -332,7 +342,7 @@ public class ORReferenceAnalyzer {
                         if (resolvedValue == null && resolvedElement instanceof RPsiSignatureElement resolvedSignatureElement) {
                             RPsiSignature signature = resolvedSignatureElement.getSignature();
                             List<RPsiSignatureItem> signatureItems = signature == null ? null : signature.getItems();
-                            if (signatureItems != null && signatureItems.size() == 1 && signatureItems.get(0).getFirstChild() instanceof RPsiJsObject signatureObject) {
+                            if (signatureItems != null && signatureItems.size() == 1 && signatureItems.getFirst().getFirstChild() instanceof RPsiJsObject signatureObject) {
                                 resolvedValue = signatureObject;
                             }
                         }
@@ -398,7 +408,7 @@ public class ORReferenceAnalyzer {
                                     if (LOG.isTraceEnabled()) {
                                         LOG.trace("resolvedElement: " + resolvedElement.getText() + ", file: " + resolvedElement.getContainingFile());
                                     }
-                                    PsiElement sourceChild = resolvedSignature.getItems().get(0);
+                                    PsiElement sourceChild = resolvedSignature.getItems().getFirst();
                                     if (sourceChild instanceof RPsiSignatureItem sourceSignatureItem) {
                                         if (LOG.isTraceEnabled()) {
                                             LOG.trace("sourceSignature: " + sourceSignatureItem.getText());
@@ -739,7 +749,7 @@ public class ORReferenceAnalyzer {
                 }
 
                 // Previous element should be the start tag
-                ResolutionElement tag = resolutions.get(resolutions.size() - 1);
+                ResolutionElement tag = resolutions.getLast();
                 if (tag.isInContext && tag.isComponent()) {
                     String propertyQName = tag.getQualifiedName() + ".make[" + foundProperty.getName() + "]";
                     Collection<RPsiParameterDeclaration> parameters = ParameterFqnIndex.getElements(propertyQName, project, scope);
@@ -776,7 +786,7 @@ public class ORReferenceAnalyzer {
 
             List<RPsiModule> topModules = getTopModules(pathTokens[0], PsiManager.getInstance(project), scope);
             if (!topModules.isEmpty()) {
-                RPsiModule topLevel = topModules.get(0);
+                RPsiModule topLevel = topModules.getFirst();
                 pathResolutions.add(topLevel);
 
                 ModuleIndexService moduleIndexService = getApplication().getService(ModuleIndexService.class);
@@ -823,7 +833,8 @@ public class ORReferenceAnalyzer {
     }
 
     private static @NotNull List<RPsiModule> getTopModules(@NotNull String name, @NotNull PsiManager psiManager, @NotNull GlobalSearchScope scope) {
-        return FileModuleIndexService.getInstance().getContainingFiles(name, scope).stream().map(v -> {
+        FileModuleIndexService.getInstance();
+        return FileModuleIndex.getContainingFiles(name, scope).stream().map(v -> {
             PsiFile psiFile = psiManager.findFile(v);
             return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
         }).filter(Objects::nonNull).collect(Collectors.toList());
