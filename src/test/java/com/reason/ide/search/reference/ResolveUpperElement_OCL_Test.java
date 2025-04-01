@@ -22,8 +22,8 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
         configureCode("A.ml", "type t");
         configureCode("B.ml", "A<caret>");
 
-        PsiQualifiedNamedElement e = (PsiQualifiedNamedElement) myFixture.getElementAtCaret();
-        assertEquals("A.ml", ((PsiNamedElement) e).getName());
+        PsiNamedElement e = (PsiNamedElement) myFixture.getElementAtCaret();
+        assertEquals("A.mli", e.getName());
     }
 
     @Test

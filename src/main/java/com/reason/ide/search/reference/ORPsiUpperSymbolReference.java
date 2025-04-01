@@ -83,10 +83,10 @@ public class ORPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperS
 
         resolvedInstructions.sort((e1, e2) -> {
             if (e1 instanceof FileBase && ((FileBase) e1).isInterface()) {
-                return 1;
+                return -1;
             }
             if (e2 instanceof FileBase && ((FileBase) e2).isInterface()) {
-                return -1;
+                return 1;
             }
             return NaturalComparator.INSTANCE.compare(e1.getQualifiedName(), e2.getQualifiedName());
         });
@@ -97,7 +97,7 @@ public class ORPsiUpperSymbolReference extends ORMultiSymbolReference<RPsiUpperS
                             + " [" + Platform.getRelativePathToModule(element.getContainingFile()) + "]"));
         }
 
-        ResolveResult[] resolveResults = new ResolveResult[((Collection<RPsiQualifiedPathElement>) resolvedInstructions).size()];
+        ResolveResult[] resolveResults = new ResolveResult[resolvedInstructions.size()];
 
         int i = 0;
         for (PsiElement element : resolvedInstructions) {

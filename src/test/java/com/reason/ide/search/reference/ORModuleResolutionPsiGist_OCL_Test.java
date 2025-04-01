@@ -5,6 +5,7 @@ import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
 
 import java.util.*;
@@ -594,7 +595,6 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
         assertOrderedEquals(data.getValues(em), "A.A1.I");
     }
 
-
     @Test
     public void test_unpack_parameter() {
         FileBase e = configureCode("A.ml", """
@@ -604,7 +604,8 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
-        RPsiModule em = PsiTreeUtil.findChildOfType(PsiTreeUtil.getChildOfType(e, RPsiLet.class).getBinding(), RPsiModule.class);
+        RPsiLetBinding el = PsiTreeUtil.getChildOfType(e, RPsiLet.class).getBinding();
+        RPsiModule em = PsiTreeUtil.findChildOfType(el, RPsiModule.class);
         assertOrderedEquals(data.getValues(em), "A.I");
     }
 
@@ -618,7 +619,6 @@ public class ORModuleResolutionPsiGist_OCL_Test extends ORBasePlatformTestCase {
                 end
                 """);
         FileBase e = configureCode("C.ml", "let x ~p:(p:(module A.B.I)) = let module S = (val p) in S.fn");
-
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 

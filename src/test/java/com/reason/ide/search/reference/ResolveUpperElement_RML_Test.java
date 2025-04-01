@@ -27,8 +27,8 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
                 Dimensions<caret>
                 """);
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.Dimensions", ((PsiQualifiedNamedElement) e).getQualifiedName());
+        PsiQualifiedNamedElement e = (PsiQualifiedNamedElement) myFixture.getElementAtCaret();
+        assertEquals("A.Dimensions", e.getQualifiedName());
     }
 
     @Test
@@ -37,8 +37,8 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
         configureCode("A.re", "type t;");
         configureCode("B.re", "A<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.re", ((PsiNamedElement) e).getName());
+        PsiNamedElement e = (PsiNamedElement) myFixture.getElementAtCaret();
+        assertEquals("A.rei", e.getName());
     }
 
     @Test
@@ -46,8 +46,8 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
         configureCode("Dimensions.re", "let space = 5;");
         configureCode("Comp.re", "let s = Dimensions<caret>.space");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Dimensions.re", ((PsiQualifiedNamedElement) e).getName());
+        PsiNamedElement e = (PsiNamedElement) myFixture.getElementAtCaret();
+        assertEquals("Dimensions.re", e.getName());
     }
 
     @Test
@@ -403,7 +403,7 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
                 module IncorrectImpl : Intf<caret> = {};
                 """);
 
-        PsiElement _e = myFixture.getElementAtCaret();  // not found -> AssertionError
+        myFixture.getElementAtCaret();  // not found -> AssertionError
     }
 
     @Test

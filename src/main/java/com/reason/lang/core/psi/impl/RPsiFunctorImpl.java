@@ -151,4 +151,9 @@ public class RPsiFunctorImpl extends RPsiTokenStub<ORLangTypes, RPsiModule, PsiM
             }
         };
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + ":" + getModuleName();
+    }
 }

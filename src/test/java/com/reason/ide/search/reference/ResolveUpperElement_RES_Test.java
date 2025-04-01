@@ -24,8 +24,8 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
         configureCode("A.res", "type t");
         configureCode("B.res", "A<caret>");
 
-        ResFile e = (ResFile) myFixture.getElementAtCaret();
-        assertEquals("A.res", e.getName());
+        PsiNamedElement e = (PsiNamedElement) myFixture.getElementAtCaret();
+        assertEquals("A.resi", e.getName());
     }
 
     @Test

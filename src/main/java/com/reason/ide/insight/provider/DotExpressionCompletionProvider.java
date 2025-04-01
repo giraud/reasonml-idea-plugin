@@ -83,7 +83,7 @@ public class DotExpressionCompletionProvider {
                 RPsiSignature signature = resolvedSignatureElement.getSignature();
                 List<RPsiSignatureItem> items = signature != null ? signature.getItems() : null;
                 if (items != null && items.size() == 1) {
-                    RPsiLowerSymbol signatureSymbol = ORUtil.findImmediateLastChildOfClass(items.get(0), RPsiLowerSymbol.class);
+                    RPsiLowerSymbol signatureSymbol = ORUtil.findImmediateLastChildOfClass(items.getFirst(), RPsiLowerSymbol.class);
                     PsiReference reference = signatureSymbol != null ? signatureSymbol.getReference() : null;
                     PsiElement resolve = reference != null ? reference.resolve() : null;
                     if (resolve instanceof RPsiType signatureType) {
@@ -129,14 +129,14 @@ public class DotExpressionCompletionProvider {
         PsiElement body = signature != null ? signature : module.getBody();
         addChildren(body, expressions);
 
-        // TODO: prevent stack overflow
-        PsiFile moduleFile = module.getContainingFile();
         Project project = module.getProject();
-        Collection<String> alternateQNames = ORModuleResolutionPsiGist.getData(moduleFile).getValues(module);
+        Collection<String> alternateQNames = ORModuleResolutionPsiGist.getData(module.getContainingFile()).getValues(module);
         for (String alternateQName : alternateQNames) {
             if (alternateQName.contains(".")) {
                 for (RPsiModule alternateModule : ModuleFqnIndex.getElements(alternateQName, project, scope)) {
-                    addModuleExpressions(alternateModule, expressions, scope);
+                    if (alternateModule != module) {
+                        addModuleExpressions(alternateModule, expressions, scope);
+                    }
                 }
             } else {
                 for (VirtualFile topModule : FileModuleIndex.getContainingFiles(alternateQName, scope)) {
