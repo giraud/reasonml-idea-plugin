@@ -322,8 +322,8 @@ public class Log {
     }
 
     public void trace(String msg, PsiElement element, Project project, GlobalSearchScope scope) {
-        if (m_log.isDebugEnabled()) {
-            m_log.debug(msg + SEP + element + " <" + element.getClass().getSimpleName() + ">, project=[" + project.getName() + "], scope=[" + scope + "]");
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(msg + SEP + element + " <" + element.getClass().getSimpleName() + ">, project=[" + project.getName() + "], scope=[" + scope + "]");
         }
     }
 
