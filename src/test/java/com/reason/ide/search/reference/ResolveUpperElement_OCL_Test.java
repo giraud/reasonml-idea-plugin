@@ -118,6 +118,16 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias_same() {
+        configureCode("A.ml", "");
+        configureCode("B.ml", "module A = A<caret>");
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("A", e.getQualifiedName());
+        assertEquals("A.ml", e.getContainingFile().getName());
+    }
+
+    @Test
     public void test_function_call() {
         configureCode("AsyncHooks.ml", "module XhrAsync = struct let make = () => () end");
         configureCode("A.ml", "let _ = AsyncHooks.useCancellableRequest AsyncHooks<caret>.XhrAsync.make");

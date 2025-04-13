@@ -84,6 +84,16 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias_same() {
+        configureCode("A.res", "");
+        configureCode("B.res", "module A = A<caret>");
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("A", e.getQualifiedName());
+        assertEquals("A.res", e.getContainingFile().getName());
+    }
+
+    @Test
     public void test_include_alias() {
         configureCode("Css_AtomicTypes.resi", "module Color = { type t }");
         configureCode("Css_Core.resi", "module Types = Css_AtomicTypes");

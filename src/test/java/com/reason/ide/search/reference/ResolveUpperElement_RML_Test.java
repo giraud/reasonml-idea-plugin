@@ -98,6 +98,16 @@ public class ResolveUpperElement_RML_Test extends ORBasePlatformTestCase {
     }
 
     @Test
+    public void test_alias_same() {
+        configureCode("A.re", "");
+        configureCode("B.re", "module A = A<caret>");
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("A", e.getQualifiedName());
+        assertEquals("A.re", e.getContainingFile().getName());
+    }
+
+    @Test
     public void test_include_alias() {
         configureCode("Css_AtomicTypes.rei", "module Color = { type t; };");
         configureCode("Css_Core.rei", "module Types = Css_AtomicTypes;");
