@@ -12,6 +12,11 @@
 
 # Unreleased
 
+# 0.129 - 2025/04/14
+
+- :bug: [#504](https://github.com/giraud/reasonml-idea-plugin/issues/504) Fix StackOverflow exception</li>
+- :bug: [#476](https://github.com/giraud/reasonml-idea-plugin/issues/476) Better indexing of recursive declarations
+
 # 0.128 - 2025/02/18
 
 - :bug: [#499](https://github.com/giraud/reasonml-idea-plugin/issues/499) Find usages of destructured elements
