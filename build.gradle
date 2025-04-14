@@ -2,7 +2,7 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
     id('java')
-    id('org.jetbrains.intellij.platform') version('2.2.1') // IntelliJ Platform Gradle Plugin
+    id('org.jetbrains.intellij.platform') version('2.5.0') // IntelliJ Platform Gradle Plugin
 }
 
 // Configure project's dependencies
@@ -55,11 +55,8 @@ intellijPlatform {
         untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>499 - Find usages of destructured elements</li>
-                    <li>498 - Parser error with patterns and parenthesis</li>
-                    <li>497 - Fix include inlined module</li>
-                    <li>496 - Improve free completion of poly variants</li>
-                    <li>Remove 'function' keyword in Rescript lexer</li>
+                    <li>504 - Fix StackOverflow exception</li>
+                    <li>476 - Better indexing of recursive declarations</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>

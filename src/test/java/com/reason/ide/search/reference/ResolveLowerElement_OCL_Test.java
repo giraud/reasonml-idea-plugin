@@ -594,6 +594,16 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
     }
     //endregion
 
+    @Test
+    public void test_pervasives() {
+        configureCode("JsxDOMC.ml", "type style");
+        configureCode("pervasives.ml", "module JsxDOM = JsxDOMC");
+        configureCode("A.ml", "module A1 = JsxDOM.style<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("JsxDOMC.style", ((RPsiType) e).getQualifiedName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/452
     @Test
     public void test_GH_452_resolve_unpacked_module() {
@@ -601,7 +611,7 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
                 module type I = sig
                   val x: int
                 end
-
+                
                 let x ~p:(p: (module I)) =
                     let module S = (val p) in
                     S.x<caret>
@@ -698,5 +708,32 @@ public class ResolveLowerElement_OCL_Test extends ORBasePlatformTestCase {
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.store", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_let() {
+        configureCode("A.ml", """
+                let rec x () = y<caret> ()
+                (* comment *)
+                and z () = x ()
+                and y () = x ()
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.y", ((RPsiLet) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_type() {
+        configureCode("A.ml", """
+                type x = y<caret>
+                (* comment *)
+                and y = string
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.y", ((RPsiType) e).getQualifiedName());
     }
 }

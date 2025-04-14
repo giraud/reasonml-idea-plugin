@@ -65,8 +65,6 @@ Post any questions or feedback in [Discord](https://discord.gg/65fz5jb).
 - Report any issues [here](https://github.com/giraud/reasonml-idea-plugin/issues/new).
 
 ### Donate
-<a href="https://liberapay.com/hgiraud/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a>
-Support my work with liberapay.
 
 <a href="https://www.paypal.me/rvgiraud"><img alt="Donate using PayPal" src="https://img.shields.io/badge/paypal-me-blue.svg"></a>
 Support my work with paypal-me.

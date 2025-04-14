@@ -240,14 +240,6 @@ public class Log {
         m_log.info(e);
     }
 
-    public void warn(String msg) {
-        m_log.warn(msg);
-    }
-
-    public void warn(@NotNull Exception e) {
-        m_log.warn(e);
-    }
-
     public void info(String msg, @NotNull Map<Module, VirtualFile> rootContents) {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<Module, VirtualFile> entry : rootContents.entrySet()) {
@@ -260,17 +252,32 @@ public class Log {
         m_log.info(msg + SEP + sb);
     }
 
+    public void warn(String msg) {
+        m_log.warn(msg);
+    }
+
+    public void warn(@NotNull Exception e) {
+        m_log.warn(e);
+    }
+
     public void trace(String msg) {
         if (m_log.isTraceEnabled()) {
             m_log.trace(msg);
         }
     }
 
-    public void trace(String msg, VirtualFile sourceFile) {
+    public void trace(@NotNull String msg, @Nullable VirtualFile t) {
         if (m_log.isTraceEnabled()) {
-            m_log.trace(msg + SEP + sourceFile);
+            m_log.trace(msg + SEP + (t == null ? "<NULL>" : t));
         }
     }
+
+    public void trace(@NotNull String comment, @Nullable PsiFile t) {
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(comment + SEP + (t == null ? "<NULL>" : t.getVirtualFile()));
+        }
+    }
+
 
     public void trace(String msg, String t) {
         if (m_log.isTraceEnabled()) {
@@ -302,12 +309,6 @@ public class Log {
         }
     }
 
-    public void trace(@NotNull String comment, @Nullable PsiFile t) {
-        if (m_log.isTraceEnabled()) {
-            m_log.trace(comment + SEP + (t == null ? "<NULL>" : t.getVirtualFile()));
-        }
-    }
-
     public void trace(@NotNull String comment, @NotNull PsiQualifiedNamedElement element) {
         if (m_log.isTraceEnabled()) {
             m_log.trace(comment + SEP + element.getQualifiedName() + " (" + element.getContainingFile().getVirtualFile().getPath() + ")");
@@ -321,8 +322,8 @@ public class Log {
     }
 
     public void trace(String msg, PsiElement element, Project project, GlobalSearchScope scope) {
-        if (m_log.isDebugEnabled()) {
-            m_log.debug(msg + SEP + element + " <" + element.getClass().getSimpleName() + ">, project=[" + project.getName() + "], scope=[" + scope + "]");
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(msg + SEP + element + " <" + element.getClass().getSimpleName() + ">, project=[" + project.getName() + "], scope=[" + scope + "]");
         }
     }
 

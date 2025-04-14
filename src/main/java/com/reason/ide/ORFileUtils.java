@@ -156,4 +156,13 @@ public class ORFileUtils {
     public static @Nullable VirtualFile getVirtualFile(@Nullable PsiElement psiElement) {
         return psiElement != null ? getVirtualFile(psiElement.getContainingFile()) : null;
     }
+
+    public static @NotNull String getParentPath(@Nullable VirtualFile virtualFile) {
+        VirtualFile parent = virtualFile != null ? virtualFile.getParent() : null;
+        return parent != null ? parent.getPath() : "";
+    }
+
+    public static String getParentPath(@Nullable PsiFile file) {
+        return getParentPath(getVirtualFile(file));
+    }
 }

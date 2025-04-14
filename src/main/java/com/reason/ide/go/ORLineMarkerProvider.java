@@ -17,7 +17,6 @@ import com.reason.ide.search.reference.*;
 import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.type.*;
 import com.reason.lang.ocaml.*;
 import jpsplugin.com.reason.*;
 import org.jetbrains.annotations.*;
@@ -35,7 +34,6 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
         Project project = element.getProject();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        ORLangTypes types = ORTypesUtil.getInstance(element.getLanguage());
         LOG.trace("collectNavigationMarkers", element, project, scope);
 
         if (element instanceof RPsiUpperSymbol uSymbolElement) {

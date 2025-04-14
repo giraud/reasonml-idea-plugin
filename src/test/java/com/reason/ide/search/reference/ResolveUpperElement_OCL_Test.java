@@ -5,10 +5,7 @@ import com.reason.ide.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
-@RunWith(JUnit4.class)
 public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic_file() {
@@ -25,8 +22,8 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
         configureCode("A.ml", "type t");
         configureCode("B.ml", "A<caret>");
 
-        PsiQualifiedNamedElement e = (PsiQualifiedNamedElement) myFixture.getElementAtCaret();
-        assertEquals("A.ml", ((PsiNamedElement) e).getName());
+        PsiNamedElement e = (PsiNamedElement) myFixture.getElementAtCaret();
+        assertEquals("A.mli", e.getName());
     }
 
     @Test
@@ -93,7 +90,7 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
                     end
                   end
                 end
-                                
+                
                 module B4 = struct
                   include A
                   module B5 = B1.B2
@@ -118,6 +115,16 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("C.A1", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_alias_same() {
+        configureCode("A.ml", "");
+        configureCode("B.ml", "module A = A<caret>");
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("A", e.getQualifiedName());
+        assertEquals("A.ml", e.getContainingFile().getName());
     }
 
     @Test
@@ -275,11 +282,12 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
 
     @Test
     public void test_functor_inside() {
-        configureCode("F.ml", "module type S  = sig module X : sig  end end\n" +
-                "module M() : S = struct module X = struct  end end \n" +
-                "module A = M(struct  end)\n" +
-                "module X2 = struct module X1 = struct module X = struct end end end\n" +
-                "module V = A.X<caret>");
+        configureCode("F.ml", """
+                module type S  = sig module X : sig  end end
+                module M() : S = struct module X = struct  end end\s
+                module A = M(struct  end)
+                module X2 = struct module X1 = struct module X = struct end end end
+                module V = A.X<caret>""");
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("F.M.X", e.getQualifiedName());
@@ -292,7 +300,7 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
                 module M() : S = struct module X = struct  end end
                 module A = M(struct  end)""");
         configureCode("B.ml", "module X2 = struct module X1 = struct module X = struct end end end\n" +
-                "module V = F.A.X<caret>");
+                              "module V = F.A.X<caret>");
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("F.M.X", e.getQualifiedName());
@@ -307,7 +315,7 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
                   end
                   module D = C
                 end
-                             
+                
                 module M : B.D.S<caret> = struct end
                 """);
 
@@ -349,6 +357,16 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
         assertEquals("A.A1.A2.A3", e.getQualifiedName());
     }
 
+    @Test
+    public void test_pervasives_modules() {
+        configureCode("JsxDOMC.ml", "type style");
+        configureCode("pervasives.ml", "module JsxDOM = JsxDOMC");
+        configureCode("A.ml", "module A1 = JsxDOM<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Pervasives.JsxDOM", ((RPsiModule) e).getQualifiedName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/426
     @Test
     public void test_alias_resolution_same_file() {
@@ -361,11 +379,24 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
                     end
                   end
                 end
-                                
+                
                 module Bbb = A.B
                 module Ddd = Bbb.C<caret>.D
                 """);
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Dummy.A.B.C", ((RPsiModule) e).getQualifiedName());
-    }}
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_module() {
+        configureCode("Dummy.ml", """
+                module rec A:sig end = struct type t = B<caret>.b end
+                and B : sig  type b end= struct type b end
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Dummy.B", ((RPsiModule) e).getQualifiedName());
+    }
+}

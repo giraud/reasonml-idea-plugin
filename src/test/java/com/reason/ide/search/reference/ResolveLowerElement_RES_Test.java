@@ -645,6 +645,17 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
         assertEquals("A.A1.A2.t.a", ((RPsiQualifiedPathElement) e).getQualifiedName());
     }
 
+    @Test
+    public void test_pervasives() {
+        configureCode("JsxDOMC.res", "type style");
+        configureCode("pervasives.res", "module JsxDOM = JsxDOMC");
+        configureCode("A.res", "module A1 = JsxDOM.style<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("JsxDOMC.style", ((RPsiType) e).getQualifiedName());
+
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/452
     @Test
     public void test_GH_452_resolve_unpacked_module() {
@@ -761,5 +772,32 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
         PsiElement e = myFixture.getElementAtCaret();  // must not throw StackOverflowError
         assertEquals("A.t.name", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_let() {
+        configureCode("A.res", """
+                let rec x = () => y<caret>()
+                /* comment */
+                and z = () => x()
+                and y = () => x()
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.y", ((RPsiLet) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_type() {
+        configureCode("A.res", """
+                type rec x = y<caret>
+                /* comment */
+                and y = string
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.y", ((RPsiType) e).getQualifiedName());
     }
 }

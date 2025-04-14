@@ -7,10 +7,7 @@ import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
-@RunWith(JUnit4.class)
 public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_basic_file() {
@@ -27,8 +24,8 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
         configureCode("A.res", "type t");
         configureCode("B.res", "A<caret>");
 
-        ResFile e = (ResFile) myFixture.getElementAtCaret();
-        assertEquals("A.res", e.getName());
+        PsiNamedElement e = (PsiNamedElement) myFixture.getElementAtCaret();
+        assertEquals("A.resi", e.getName());
     }
 
     @Test
@@ -84,6 +81,16 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("C.A1", e.getQualifiedName());
+    }
+
+    @Test
+    public void test_alias_same() {
+        configureCode("A.res", "");
+        configureCode("B.res", "module A = A<caret>");
+
+        RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
+        assertEquals("A", e.getQualifiedName());
+        assertEquals("A.res", e.getContainingFile().getName());
     }
 
     @Test
@@ -361,7 +368,7 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
                   };
                   module D = C
                 };
-
+                
                 module M: B.D.S<caret> = {}
                 """);
 
@@ -374,9 +381,9 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
         configureCode("Styles.res", "let myDiv = 1");
         configureCode("A.res", """
                 module Styles = { let myDiv = CssJs.style(. []) }
-                                
+                
                 module Layouts = {}
-                                
+                
                 @react.component
                 let make = () => {
                   <div className=Styl<caret>es.myDiv />
@@ -440,17 +447,39 @@ public class ResolveUpperElement_RES_Test extends ORBasePlatformTestCase {
                   module B = {
                     module C = {
                       module D = {
-                                
+                
                       }
                     }
                   }
                 }
-                                
+                
                 module Bbb = A.B
                 module Ddd = Bbb.C<caret>.D
                 """);
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Dummy.A.B.C", ((RPsiModule) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_pervasives_modules() {
+        configureCode("JsxDOMC.res", "type style");
+        configureCode("pervasives.res", "module JsxDOM = JsxDOMC");
+        configureCode("A.res", "module A1 = JsxDOM<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Pervasives.JsxDOM", ((RPsiModule) e).getQualifiedName());
+    }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/476
+    @Test
+    public void test_GH_476_and_module() {
+        configureCode("Dummy.res", """
+                module rec A: {} = { type t = B<caret>.b }
+                and B: {type b} = { type b }
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("Dummy.B", ((RPsiModule) e).getQualifiedName());
     }
 }

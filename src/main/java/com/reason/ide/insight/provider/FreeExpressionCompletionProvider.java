@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.util.*;
-import com.reason.*;
 import com.reason.comp.*;
 import com.reason.comp.bs.*;
 import com.reason.ide.*;
@@ -69,7 +68,7 @@ public class FreeExpressionCompletionProvider {
         BsConfig config = project.getService(ORCompilerConfigManager.class).getNearestConfig(virtualFile);
         if (config != null) {
             for (String dependency : config.getOpenedDeps()) {
-                RPsiModule topModule = getTopModule(dependency, project, searchScope);
+                RPsiModule topModule = FileModuleIndexService.getInstance().getTopModule(dependency, project, searchScope);
                 if (topModule != null) {
                     addModuleExpressions(topModule, languageProperties, searchScope, resultSet);
                 }
@@ -77,7 +76,7 @@ public class FreeExpressionCompletionProvider {
         }
 
         // Pervasives is always included
-        RPsiModule pervasives = getTopModule("Pervasives", project, searchScope);
+        RPsiModule pervasives = FileModuleIndexService.getInstance().getTopModule("Pervasives", project, searchScope);
         if (pervasives != null) {
             addModuleExpressions(pervasives, languageProperties, searchScope, resultSet);
         }
@@ -110,11 +109,11 @@ public class FreeExpressionCompletionProvider {
                         }
                     }
                 } else if (item instanceof RPsiInnerModule
-                        || item instanceof RPsiLet
-                        || item instanceof RPsiType
-                        || item instanceof RPsiExternal
-                        || item instanceof RPsiException
-                        || item instanceof RPsiVal) {
+                           || item instanceof RPsiLet
+                           || item instanceof RPsiType
+                           || item instanceof RPsiExternal
+                           || item instanceof RPsiException
+                           || item instanceof RPsiVal) {
                     RPsiLet letItem = item instanceof RPsiLet ? (RPsiLet) item : null;
                     if (letItem != null && skipLet) {
                         skipLet = false;
@@ -185,18 +184,6 @@ public class FreeExpressionCompletionProvider {
         }
     }
 
-    private static @Nullable RPsiModule getTopModule(@NotNull String name, @NotNull Project project, @NotNull GlobalSearchScope scope) {
-        PsiManager psiManager = PsiManager.getInstance(project);
-        Collection<VirtualFile> containingFiles = FileModuleIndexService.getInstance().getContainingFiles(name, scope);
-        VirtualFile virtualFile = containingFiles.stream().min((o1, o2) -> FileHelper.isInterface(o1.getFileType()) ? -1 : FileHelper.isInterface(o2.getFileType()) ? 1 : 0).orElse(null);
-        if (virtualFile != null) {
-            PsiFile psiFile = psiManager.findFile(virtualFile);
-            return psiFile instanceof RPsiModule ? (RPsiModule) psiFile : null;
-        }
-
-        return null;
-    }
-
     private static void expandType(@NotNull RPsiType type, @NotNull CompletionResultSet resultSet, @Nullable ORLanguageProperties lang) {
         Collection<RPsiVariantDeclaration> variants = type.getVariants();
         if (!variants.isEmpty()) {
@@ -221,7 +208,7 @@ public class FreeExpressionCompletionProvider {
         for (String alternateName : data.getValues(rootModule)) {
             // Try to resolve as an inner module or a top module
             Collection<RPsiModule> alternateModules = ModuleFqnIndex.getElements(alternateName, project, searchScope);
-            RPsiModule topModule = getTopModule(alternateName, project, searchScope);
+            RPsiModule topModule = FileModuleIndexService.getInstance().getTopModule(alternateName, project, searchScope);
             if (topModule != null) {
                 alternateModules.add(topModule);
             }

@@ -7,15 +7,12 @@ import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import java.util.*;
 
 import static java.util.List.*;
 
 @SuppressWarnings("ConstantConditions")
-@RunWith(JUnit4.class)
 public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_include_no_resolution() {
@@ -117,10 +114,10 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
                 module A1 = {
                   module A2 = {}
                 }
-                                
+                
                 module B1 = A1
                 include B1
-                                
+                
                 module B2 = A2
                 include B2
                 """);
@@ -207,7 +204,7 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
                     module B3 = { let id = A.A1.A2.id }
                   }
                 }
-                                
+                
                 module B4 = {
                   include A
                   module B5 = B1.B2
@@ -272,7 +269,7 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
         configureCode("B.res", "module B1 = C");
         FileBase e = configureCode("C.res", "module C1 = B");
 
-        ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
+        ORModuleResolutionPsiGist.getData(e);
         // Should not generate a StackOverflow error
     }
 
@@ -459,7 +456,7 @@ public class ORModuleResolutionPsiGist_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_tag_open_outside() {
         configureCode("X.res", "module Y = { @react.component let make = (~value) => <div/> }");
-        FileBase e = configureCode("A.res", "open X\n <Y value=1></X>");
+        FileBase e = configureCode("A.res", "open X\n <Y value=1></Y>");
 
         ORModuleResolutionPsiGist.Data data = ORModuleResolutionPsiGist.getData(e);
 
