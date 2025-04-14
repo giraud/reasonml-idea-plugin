@@ -65,7 +65,7 @@ public class ORModuleResolutionPsiGist {
             WalkInfo walkInfo = new WalkInfo(psiFileBase);
 
             long start = System.currentTimeMillis();
-            VirtualFile vFile = psiFileBase.getVirtualFile();
+            VirtualFile vFile = ORFileUtils.getVirtualFile(psiFileBase);
             LOG.info("Walk file to create gist: " + psiFileBase.getModuleName() + ", " + (vFile == null ? "<NULL>" : vFile.getPath()));
 
             data = walkFile(context, walkInfo, visitedFiles);
