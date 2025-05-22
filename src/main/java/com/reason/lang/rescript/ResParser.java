@@ -115,6 +115,8 @@ public class ResParser extends CommonPsiParser {
                     }
                 } else if (tokenType == myTypes.EQ) {
                     parseEq();
+                } else if (tokenType == myTypes.COLON_EQ) {
+                    parseColonEq();
                 } else if (tokenType == myTypes.SOME) {
                     parseSome();
                 } else if (tokenType == myTypes.NONE) {
@@ -1248,6 +1250,15 @@ public class ResParser extends CommonPsiParser {
             } else {
                 // nothing found, just add a placeholder
                 advance().markHolder(myTypes.H_PLACE_HOLDER);
+            }
+        }
+
+        private void parseColonEq() {
+            if (strictlyInAny(myTypes.C_TYPE_CONSTRAINT)) {
+                if (isFound(myTypes.C_TYPE_CONSTRAINT)) {
+                    // ... with type t |> :=<| ...
+                    advance().mark(myTypes.C_TYPE_BINDING);
+                }
             }
         }
 

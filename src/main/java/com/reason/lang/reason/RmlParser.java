@@ -66,6 +66,8 @@ public class RmlParser extends CommonPsiParser {
                         parseSemi();
                     } else if (tokenType == myTypes.EQ) {
                         parseEq();
+                    } else if (tokenType == myTypes.COLON_EQ) {
+                        parseColonEq();
                     } else if (tokenType == myTypes.ARROW) {
                         parseArrow();
                     } else if (tokenType == myTypes.REF) {
@@ -1230,6 +1232,15 @@ public class RmlParser extends CommonPsiParser {
                     }
                 }
 
+            }
+        }
+
+        private void parseColonEq() {
+            if (strictlyInAny(myTypes.C_TYPE_CONSTRAINT)) {
+                if (isFound(myTypes.C_TYPE_CONSTRAINT)) {
+                    // ... with type t |> :=<| ...
+                    advance().mark(myTypes.C_TYPE_BINDING);
+                }
             }
         }
 
