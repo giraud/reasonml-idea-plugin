@@ -52,11 +52,11 @@ public class SdkDownloader {
         if (isDownloaded) {
             try {
                 indicator.setText("Uncompress SDK");
-                File tarPath = uncompress(targetSdkLocation);
+                File tarFile = uncompress(targetSdkLocation);
                 FileUtil.delete(targetSdkLocation);
                 indicator.setText("Untar SDK");
-                new Decompressor.Tar(tarPath).filter(KEEP_OCAML_SOURCES).extract(m_sdkHome);
-                FileUtil.delete(tarPath);
+                new Decompressor.Tar(tarFile.toPath()).filter(KEEP_OCAML_SOURCES).extract(m_sdkHome.toPath());
+                FileUtil.delete(tarFile);
             } catch (IOException e) {
                 Notifications.Bus.notify(
                         new ORNotification("Sdk", "Cannot download sdk, error: " + e.getMessage(), ERROR),
