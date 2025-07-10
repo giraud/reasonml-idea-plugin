@@ -3,10 +3,7 @@ package com.reason.comp.rescript;
 import com.reason.ide.*;
 import com.reason.ide.annotations.*;
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
-@RunWith(JUnit4.class)
 public class RescriptOutputAnalyzerTest extends ORBasePlatformTestCase {
     /*
     FAILED: src/InputTest.ast
@@ -214,17 +211,17 @@ FAILED: cannot make progress due to previous errors.                          * 
     public void test_error_06() {
         String error = """
                 FAILED: src/NotGood.cmj
-                    
+                
                   We've found a bug for you!
                   C:\\project\\src\\NotGood.res:3:9
-                    
+                
                   1 │ let x = (a, b) => a + b
                   2 │ 
                   3 │ let y = x(10)
-                    
+                
                   This uncurried function has type (int, int) => int
                   It is applied with 1 arguments but it requires 2.
-                    
+                
                 FAILED: cannot make progress due to previous errors.
                 """;
         String[] lines = error.split("\n");
@@ -249,40 +246,40 @@ FAILED: cannot make progress due to previous errors.                          * 
     public void test_multi() {
         String error = """
                 FAILED: src/Colors.ast
-                                
+                
                   Syntax error!
                   C:\\myProject\\src\\Colors.res:31:23-28
-                                
+                
                   29 │   let mainColor = #hex("9D4B70")
                   30 │   let dark = #hex("6C1D45)
                   31 │   let lighter = #hex("EFE7EB")
                   32 │   let light = #hex("C3A4B4")
                   33 │ }
-                                
+                
                   Did you forget a `,` here?
-                                
-                                
+                
+                
                   Syntax error!
                   C:\\myProject\\src\\Colors.res:163:13-165:1
-                                
+                
                   161 │     "#FFFFFF"
                   162 │   } else {
                   163 │     "#000000"
                   164 │   }
                   165 │ }
-                                
+                
                   This string is missing a double quote at the end
-                                
-                                
+                
+                
                   Syntax error!
                   C:\\myProject\\src\\Colors.res:165:2
-                                
+                
                   163 │     "#000000"
                   164 │   }
                   165 │ }
-                                
+                
                   Did you forget a `}` here?
-                                
+                
                 FAILED: cannot make progress due to previous errors.
                 Process finished in 97ms
                 """;
@@ -304,7 +301,7 @@ FAILED: cannot make progress due to previous errors.                          * 
         assertEquals(23, outputInfo.colStart);
         assertEquals(28, outputInfo.colEnd);
 
-         outputInfo = analyzer.getOutputInfo().get(1);
+        outputInfo = analyzer.getOutputInfo().get(1);
         assertTrue(outputInfo.isError);
         assertEquals("This string is missing a double quote at the end", outputInfo.message);
         assertEquals(163, outputInfo.lineStart);
@@ -312,12 +309,52 @@ FAILED: cannot make progress due to previous errors.                          * 
         assertEquals(13, outputInfo.colStart);
         assertEquals(1, outputInfo.colEnd);
 
-         outputInfo = analyzer.getOutputInfo().get(2);
+        outputInfo = analyzer.getOutputInfo().get(2);
         assertTrue(outputInfo.isError);
         assertEquals("Did you forget a `}` here?", outputInfo.message);
         assertEquals(165, outputInfo.lineStart);
         assertEquals(165, outputInfo.lineEnd);
         assertEquals(2, outputInfo.colStart);
         assertEquals(3, outputInfo.colEnd);
+    }
+
+    @Test
+    public void test_warning_as_error() {
+        String error = """
+                rescript: [3/27] src/a/File.cmj
+                FAILED: src/a/File.cmj
+                
+                  Warning number 27 (configured as error)\s
+                  C:\\dev\\src\\a\\File.res:632:3-12
+                
+                  630 ┆ ~currentOperationIndex,
+                  631 ┆ ~keys,
+                  632 ┆ ~allInputs: UUID.Map.t<MStore.Entity.Input.t>,
+                  633 ┆ ~getValue: MappingValueSelector.valueGetter,
+                  634 ┆ ~getInputs: MappingValueSelector.inputsGetter,
+                
+                  unused variable allInputs.
+                
+                FAILED: cannot make progress due to previous errors.
+                Process finished in 1s
+                """;
+
+        String[] lines = error.split("\n");
+
+        RescriptOutputAnalyzer analyzer = new RescriptOutputAnalyzer();
+        for (String line : lines) {
+            analyzer.onTextAvailable(line);
+        }
+
+        assertSize(1, analyzer.getOutputInfo());
+
+        OutputInfo outputInfo = analyzer.getOutputInfo().getFirst();
+        assertTrue(outputInfo.isError);
+        assertEquals("unused variable allInputs.", outputInfo.message);
+        assertEquals(632, outputInfo.lineStart);
+        assertEquals(632, outputInfo.lineEnd);
+        assertEquals(3, outputInfo.colStart);
+        assertEquals(12, outputInfo.colEnd);
+
     }
 }
