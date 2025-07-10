@@ -262,7 +262,7 @@ public class RmlParser extends CommonPsiParser {
                 mark(myTypes.C_PARAM_DECLARATION);
             } else {
                 IElementType nextElementType = lookAhead(1);
-                if (nextElementType == myTypes.ARROW && strictlyInAny(myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE)) {
+                if (nextElementType == myTypes.ARROW && strictlyInAny(myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE, myTypes.C_PARAMETERS)) {
                     // A paren-less function definition ::  |>_<| =>
                     mark(myTypes.C_FUNCTION_EXPR)
                             .mark(myTypes.C_PARAMETERS)

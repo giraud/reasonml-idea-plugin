@@ -317,7 +317,8 @@ public class ResParser extends CommonPsiParser {
             } else {
                 IElementType nextElementType = lookAhead(1);
                 if (nextElementType == myTypes.ARROW && strictlyInAny(
-                        myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE
+                        myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE,
+                        myTypes.C_PARAMETERS
                 )) {
                     // A paren-less function definition ::  |>_<| =>
                     popIfHold().mark(myTypes.C_FUNCTION_EXPR)
@@ -706,7 +707,9 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseArrobase() {
-            popEndUntilScope();
+            if (!is(myTypes.C_VARIANT_DECLARATION)) {
+                popEndUntilScope();
+            }
             mark(myTypes.C_ANNOTATION).mark(myTypes.C_MACRO_NAME);
         }
 

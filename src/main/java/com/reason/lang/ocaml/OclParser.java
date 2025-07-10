@@ -106,6 +106,8 @@ public class OclParser extends CommonPsiParser {
                     parseFunction();
                 } else if (tokenType == myTypes.FUN) {
                     parseFun();
+                } else if (tokenType == myTypes.UNDERSCORE) {
+                    parseUnderscore();
                 } else if (tokenType == myTypes.ASSERT) {
                     parseAssert();
                 } else if (tokenType == myTypes.RAISE) {
@@ -812,8 +814,15 @@ public class OclParser extends CommonPsiParser {
 
         private void parseFun() {
             mark(myTypes.C_FUNCTION_EXPR).advance();
-            if (getTokenType() != myTypes.PIPE) {
+            IElementType tokenType = getTokenType();
+            if (tokenType != myTypes.PIPE) {
                 mark(myTypes.C_PARAMETERS);
+            }
+        }
+
+        private void parseUnderscore() {
+            if (is(myTypes.C_PARAMETERS) && isRawParent(myTypes.C_FUNCTION_EXPR)) {
+                mark(myTypes.C_PARAM_DECLARATION);
             }
         }
 

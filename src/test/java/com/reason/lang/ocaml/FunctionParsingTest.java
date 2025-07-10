@@ -116,6 +116,15 @@ public class FunctionParsingTest extends OclParsingTestCase {
         assertEquals("fun () -> 3", f.getText());
     }
 
+    @Test
+    public void test_option_anon_function() {
+        RPsiFunction e = firstOfType(parseCode("let _ = { onCancelCreation = Some (fun _  -> navigate \"..\") }"), RPsiFunction.class);
+
+        assertSize(1, e.getParameters());
+        assertEquals("_", e.getParameters().getFirst().getText());
+        assertEquals("navigate \"..\"", e.getBody().getText());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/291
     @Test
     public void test_GH_291() {
