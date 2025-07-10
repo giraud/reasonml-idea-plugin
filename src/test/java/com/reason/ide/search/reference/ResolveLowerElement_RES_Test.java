@@ -653,7 +653,17 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("JsxDOMC.style", ((RPsiType) e).getQualifiedName());
+    }
 
+    @Test
+    public void test_typed_parameter() {
+        configureCode("A.res", """
+                let update = (x) => x
+                let reducers = (x: store) => update<caret>(x)
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.update", ((RPsiLet) e).getQualifiedName());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/452
@@ -698,9 +708,9 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
     @Test
     public void test_GH_167_deconstruction() {
         configureCode("A.res", """
-        let (count, setCount) = React.useState(() => 0)
-        setCount<caret>(1)
-        """);
+                let (count, setCount) = React.useState(() => 0)
+                setCount<caret>(1)
+                """);
 
         PsiElement elementAtCaret = myFixture.getElementAtCaret();
         assertEquals(12, elementAtCaret.getTextOffset());

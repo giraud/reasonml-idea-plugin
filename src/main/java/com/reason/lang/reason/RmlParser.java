@@ -66,6 +66,8 @@ public class RmlParser extends CommonPsiParser {
                         parseSemi();
                     } else if (tokenType == myTypes.EQ) {
                         parseEq();
+                    } else if (tokenType == myTypes.COLON_EQ) {
+                        parseColonEq();
                     } else if (tokenType == myTypes.ARROW) {
                         parseArrow();
                     } else if (tokenType == myTypes.REF) {
@@ -260,7 +262,7 @@ public class RmlParser extends CommonPsiParser {
                 mark(myTypes.C_PARAM_DECLARATION);
             } else {
                 IElementType nextElementType = lookAhead(1);
-                if (nextElementType == myTypes.ARROW && strictlyInAny(myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE)) {
+                if (nextElementType == myTypes.ARROW && strictlyInAny(myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE, myTypes.C_PARAMETERS)) {
                     // A paren-less function definition ::  |>_<| =>
                     mark(myTypes.C_FUNCTION_EXPR)
                             .mark(myTypes.C_PARAMETERS)
@@ -1230,6 +1232,15 @@ public class RmlParser extends CommonPsiParser {
                     }
                 }
 
+            }
+        }
+
+        private void parseColonEq() {
+            if (strictlyInAny(myTypes.C_TYPE_CONSTRAINT)) {
+                if (isFound(myTypes.C_TYPE_CONSTRAINT)) {
+                    // ... with type t |> :=<| ...
+                    advance().mark(myTypes.C_TYPE_BINDING);
+                }
             }
         }
 

@@ -300,7 +300,7 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
                 module M() : S = struct module X = struct  end end
                 module A = M(struct  end)""");
         configureCode("B.ml", "module X2 = struct module X1 = struct module X = struct end end end\n" +
-                              "module V = F.A.X<caret>");
+                "module V = F.A.X<caret>");
 
         RPsiModule e = (RPsiModule) myFixture.getElementAtCaret();
         assertEquals("F.M.X", e.getQualifiedName());
@@ -386,6 +386,17 @@ public class ResolveUpperElement_OCL_Test extends ORBasePlatformTestCase {
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Dummy.A.B.C", ((RPsiModule) e).getQualifiedName());
+    }
+
+    @Test
+    public void test_typed_parameter() {
+        configureCode("A.ml", """
+                let update x = x
+                let reducers (x : store) = update<caret> x
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.update", ((RPsiLet) e).getQualifiedName());
     }
 
     // https://github.com/giraud/reasonml-idea-plugin/issues/476

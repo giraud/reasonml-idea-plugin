@@ -115,6 +115,8 @@ public class ResParser extends CommonPsiParser {
                     }
                 } else if (tokenType == myTypes.EQ) {
                     parseEq();
+                } else if (tokenType == myTypes.COLON_EQ) {
+                    parseColonEq();
                 } else if (tokenType == myTypes.SOME) {
                     parseSome();
                 } else if (tokenType == myTypes.NONE) {
@@ -315,7 +317,8 @@ public class ResParser extends CommonPsiParser {
             } else {
                 IElementType nextElementType = lookAhead(1);
                 if (nextElementType == myTypes.ARROW && strictlyInAny(
-                        myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE
+                        myTypes.C_LET_BINDING, myTypes.C_DEFAULT_VALUE, myTypes.C_PARAM, myTypes.C_FIELD_VALUE,
+                        myTypes.C_PARAMETERS
                 )) {
                     // A paren-less function definition ::  |>_<| =>
                     popIfHold().mark(myTypes.C_FUNCTION_EXPR)
@@ -704,7 +707,9 @@ public class ResParser extends CommonPsiParser {
         }
 
         private void parseArrobase() {
-            popEndUntilScope();
+            if (!is(myTypes.C_VARIANT_DECLARATION)) {
+                popEndUntilScope();
+            }
             mark(myTypes.C_ANNOTATION).mark(myTypes.C_MACRO_NAME);
         }
 
@@ -1248,6 +1253,15 @@ public class ResParser extends CommonPsiParser {
             } else {
                 // nothing found, just add a placeholder
                 advance().markHolder(myTypes.H_PLACE_HOLDER);
+            }
+        }
+
+        private void parseColonEq() {
+            if (strictlyInAny(myTypes.C_TYPE_CONSTRAINT)) {
+                if (isFound(myTypes.C_TYPE_CONSTRAINT)) {
+                    // ... with type t |> :=<| ...
+                    advance().mark(myTypes.C_TYPE_BINDING);
+                }
             }
         }
 

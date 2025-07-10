@@ -702,6 +702,17 @@ public class ResolveLowerElement_RML_Test extends ORBasePlatformTestCase {
 
     }
 
+    @Test
+    public void test_typed_parameter() {
+        configureCode("A.re", """
+                let update = (x) => x;
+                let reducers = (x: store) => update<caret>(x);
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.update", ((RPsiLet) e).getQualifiedName());
+    }
+
     // https://github.com/giraud/reasonml-idea-plugin/issues/452
     @Test
     public void test_GH_452_resolve_unpacked_module() {
