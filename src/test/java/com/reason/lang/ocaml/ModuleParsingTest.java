@@ -94,6 +94,19 @@ public class ModuleParsingTest extends OclParsingTestCase {
     }
 
     @Test
+    public void test_interface_with_many_constraints() {
+        RPsiInnerModule e = firstOfType(parseCode("module M : (I with type s := t and type u := v) = struct type w end"), RPsiInnerModule.class);
+
+        assertEquals("M", e.getName());
+        assertEquals("I", e.getModuleSignature().getText());
+        assertEquals(myTypes.A_MODULE_NAME, e.getModuleSignature().getFirstChild().getNode().getElementType());
+        assertSize(2, e.getConstraints());
+        assertEquals("type s := t", e.getConstraints().get(0).getText());
+        assertEquals("type u := v", e.getConstraints().get(1).getText());
+        assertEquals("struct type w end", e.getBody().getText());
+    }
+
+    @Test
     public void test_module_alias_body() {
         PsiFile file = parseCode("module M = struct module O = B.Option let _ = O.m end");
 

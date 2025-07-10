@@ -154,13 +154,6 @@ public class Log {
         }
     }
 
-    public void trace(String comment, @Nullable Collection<?> t) {
-        if (m_log.isDebugEnabled()) {
-            m_log.debug(
-                    comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
-        }
-    }
-
     public void debug(String comment, @NotNull PsiQualifiedNamedElement element) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(
@@ -266,6 +259,12 @@ public class Log {
         }
     }
 
+    public void trace(String comment, @Nullable Collection<?> t) {
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
+        }
+    }
+
     public void trace(@NotNull String msg, @Nullable VirtualFile t) {
         if (m_log.isTraceEnabled()) {
             m_log.trace(msg + SEP + (t == null ? "<NULL>" : t));
@@ -277,7 +276,6 @@ public class Log {
             m_log.trace(comment + SEP + (t == null ? "<NULL>" : t.getVirtualFile()));
         }
     }
-
 
     public void trace(String msg, String t) {
         if (m_log.isTraceEnabled()) {

@@ -33,7 +33,7 @@ public class RescriptOutputAnalyzer extends ORCompilerOutputAnalyzer {
         }
         // Syntax error  ||  We've found a bug for you
         //   -> Error level, next line is the location
-        else if (myCurrentState == OutputState.unknown && (line.startsWith("  Syntax error") || line.startsWith("  We've found a bug"))) {
+        else if (myCurrentState == OutputState.unknown && (line.startsWith("  Syntax error") || line.startsWith("  We've found a bug") || line.startsWith("  Warning number"))) {
             myCurrentState = OutputState.syntaxError;
         }
         //   -> Multiple syntax errors can be displayed, reset message

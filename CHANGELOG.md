@@ -10,11 +10,18 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-# Unreleased
+# 0.130 - 2025/07/10
+
+- :bug: Fix lower element resolution with typed parameter
+- :bug: ![n] Fix variant declaration with @as
+- :bug: Parse warning message in output analyzer
+- :bug: Fix anonymous function declaration in option
+- :bug: Fix constraints of module signature
+- :bug: Fix log level
 
 # 0.129 - 2025/04/14
 
-- :bug: [#504](https://github.com/giraud/reasonml-idea-plugin/issues/504) Fix StackOverflow exception</li>
+- :bug: [#504](https://github.com/giraud/reasonml-idea-plugin/issues/504) Fix StackOverflow exception
 - :bug: [#476](https://github.com/giraud/reasonml-idea-plugin/issues/476) Better indexing of recursive declarations
 
 # 0.128 - 2025/02/18

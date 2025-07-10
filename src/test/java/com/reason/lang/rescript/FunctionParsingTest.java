@@ -127,6 +127,15 @@ public class FunctionParsingTest extends ResParsingTestCase {
     }
 
     @Test
+    public void test_option_anon_function() {
+        RPsiFunction e = firstOfType(parseCode("let _ = { onCancelCreation: Some(_ => navigate(\".\")) }"), RPsiFunction.class);
+
+        assertSize(1, e.getParameters());
+        assertEquals("_", e.getParameters().getFirst().getText());
+        assertEquals("navigate(\".\")", e.getBody().getText());
+    }
+
+    @Test
     public void test_parameters_named_symbols() {
         RPsiLet e = firstOfType(parseCode("let make = (~p1: (. int) => unit, ~p2: option<'a>, children) => null"), RPsiLet.class);
         assertNoParserError(e);
