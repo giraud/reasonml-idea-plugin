@@ -381,13 +381,16 @@ public class ORReferenceAnalyzer {
 
                     // build potential paths by iterating backward the resolutions
                     boolean found = false;
-                    for (int i = resolutions.size() - 1; i >= 0; i--) {
+                    int i = resolutions.size() - 1;
+                    while (i >= 0) {
+//                    for (int i = resolutions.size() - 1; i >= 0; i--) {
                         if (found || resolutions.isEmpty()) { // maybe
                             break;
                         }
 
                         ResolutionElement resolution = resolutions.get(i);
                         PsiElement resolvedElement = resolution.getOriginalElement();
+                        i = i - 1;
 
                         if (resolvedElement instanceof RPsiLet resolvedLet && resolvedLet.isDeconstruction() && !resolution.isInContext) {
                             // Special case for let deconstruction
@@ -431,7 +434,7 @@ public class ORReferenceAnalyzer {
 
                                             // The resolved element is a parameter, hence we need to remove all elements that are found
                                             // after the latest parameters, and all the latest parameters
-                                            // ex: let (x,y) => { let z = ...; <caret> }   -- x,y and z must be removed
+                                            // ex: let (x, y) => { let z = ...; <caret> }   -- x, y and z must be removed
                                             boolean parameterFound = false;
                                             for (i = resolutionElements.size() - 1; i >= 0; i--) {
                                                 if (resolutionElements.get(i).getOriginalElement() instanceof RPsiParameterDeclaration) {
