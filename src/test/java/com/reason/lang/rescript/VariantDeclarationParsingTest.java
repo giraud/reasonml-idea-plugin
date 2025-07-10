@@ -104,4 +104,20 @@ public class VariantDeclarationParsingTest extends ResParsingTestCase {
         RPsiRecord r1 = PsiTreeUtil.findChildOfType(declarations.get(1), RPsiRecord.class);
         assertSize(1, r1.getFields());
     }
+
+    @Test
+    public void test_as() {
+        RPsiType e = firstOfType(parseCode("""
+                type t =
+                | A
+                | @as("B1") B
+                | @as("C1") C
+                """), RPsiType.class);
+
+        List<RPsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), RPsiVariantDeclaration.class);
+        assertEquals(3, declarations.size());
+        assertEquals("A", declarations.get(0).getVariant().getText());
+        assertEquals("B", declarations.get(1).getVariant().getText());
+        assertEquals("C", declarations.get(2).getVariant().getText());
+    }
 }
