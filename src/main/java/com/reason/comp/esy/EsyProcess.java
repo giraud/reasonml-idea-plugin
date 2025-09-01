@@ -99,7 +99,7 @@ public class EsyProcess {
     }
 
     private static final Function<ORProcessTerminated<Void>, ProcessListener> processTerminatedListener = (onProcessTerminated) ->
-            new ProcessAdapter() {
+            new ProcessListener() {
                 @Override
                 public void processTerminated(@NotNull ProcessEvent event) {
                     onProcessTerminated.run(null);

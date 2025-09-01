@@ -3,7 +3,7 @@ package com.reason.comp;
 import com.intellij.execution.process.*;
 import org.jetbrains.annotations.*;
 
-public class ProcessFinishedListener extends ProcessAdapter {
+public class ProcessFinishedListener implements ProcessListener {
     private final long m_start;
 
     public ProcessFinishedListener() {

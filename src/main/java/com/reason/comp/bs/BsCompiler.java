@@ -73,7 +73,7 @@ public final class BsCompiler implements ORCompiler {
                 if (bscHandler != null && console != null) {
                     long start = System.currentTimeMillis();
                     bscHandler.addProcessListener(new ProcessFinishedListener(start));
-                    bscHandler.addProcessListener(new ProcessAdapter() {
+                    bscHandler.addProcessListener(new ProcessListener() {
                         @Override
                         public void processTerminated(@NotNull ProcessEvent event) {
                             myProcessStarted.compareAndSet(true, false);

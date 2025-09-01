@@ -90,7 +90,7 @@ public final class ResCompiler implements ORCompiler {
 
                         ResProcessHandler processHandler = new ResProcessHandler(cli);
                         processHandler.addProcessListener(new ProcessFinishedListener(System.currentTimeMillis()));
-                        processHandler.addProcessListener(new ProcessAdapter() {
+                        processHandler.addProcessListener(new ProcessListener() {
                             @Override
                             public void processTerminated(@NotNull ProcessEvent event) {
                                 if (onProcessTerminated != null) {

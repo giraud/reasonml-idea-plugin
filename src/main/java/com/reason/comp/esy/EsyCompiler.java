@@ -61,7 +61,7 @@ public final class EsyCompiler implements ORCompiler {
                 if (processHandler != null) {
                     processHandler.addProcessListener(new CompilerOutputListener(myProject, new DuneOutputAnalyzer()));
                     processHandler.addProcessListener(new ProcessFinishedListener());
-                    processHandler.addProcessListener(new ProcessAdapter() {
+                    processHandler.addProcessListener(new ProcessListener() {
                         @Override public void processTerminated(@NotNull ProcessEvent event) {
                             myProcessStarted.compareAndSet(true, false);
                         }

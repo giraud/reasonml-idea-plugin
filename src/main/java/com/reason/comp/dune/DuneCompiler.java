@@ -100,7 +100,7 @@ public final class DuneCompiler implements ORCompiler {
             if (processHandler != null && console != null) {
                 processHandler.addProcessListener(new CompilerOutputListener(myProject, new DuneOutputAnalyzer()));
                 processHandler.addProcessListener(new ProcessFinishedListener());
-                processHandler.addProcessListener(new ProcessAdapter() {
+                processHandler.addProcessListener(new ProcessListener() {
                     @Override public void processTerminated(@NotNull ProcessEvent event) {
                         myProcessStarted.compareAndSet(true, false);
                     }

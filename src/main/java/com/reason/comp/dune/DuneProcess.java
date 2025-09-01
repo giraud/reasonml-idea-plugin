@@ -42,7 +42,7 @@ public final class DuneProcess {
             if (cli != null) {
                 myProcessHandler = new KillableColoredProcessHandler(cli);
                 if (onProcessTerminated != null) {
-                    myProcessHandler.addProcessListener(new ProcessAdapter() {
+                    myProcessHandler.addProcessListener(new ProcessListener() {
                         @Override
                         public void processTerminated(@NotNull ProcessEvent event) {
                             onProcessTerminated.run(null);
