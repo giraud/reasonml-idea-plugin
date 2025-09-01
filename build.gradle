@@ -2,7 +2,7 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
     id('java')
-    id('org.jetbrains.intellij.platform') version('2.5.0') // IntelliJ Platform Gradle Plugin
+    id('org.jetbrains.intellij.platform') version('2.7.1') // IntelliJ Platform Gradle Plugin
 }
 
 // Configure project's dependencies
@@ -55,12 +55,7 @@ intellijPlatform {
 //        untilBuild = pluginUntilBuild
         changeNotes = """
                 <ul>
-                    <li>Fix lower element resolution with typed parameter</li>
-                    <li>Fix variant declaration with @as (Rescript)</li>
-                    <li>Parse warning message in output analyzer</li>
-                    <li>Fix anonymous function declaration in option</li>
-                    <li>Fix constraints of module signature</li>
-                    <li>Fix log level</li>
+                    <li>Fix infinite indexing (parameters)</li>
                 </ul>
                 <p><a href="https://github.com/giraud/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
                 <p/>
