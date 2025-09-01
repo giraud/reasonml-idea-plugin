@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
+import com.intellij.util.concurrency.*;
 import com.reason.ide.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
@@ -55,35 +56,36 @@ public class RincewindDownloader extends Task.Backgroundable {
             boolean downloaded = WGet.apply(myDownloadURL + rincewindFilename, myRincewindTarget, indicator, TOTAL_BYTES);
             if (downloaded) {
                 Application application = ApplicationManager.getApplication();
-                application.executeOnPooledThread(() -> {
-                    DumbService dumbService = DumbService.getInstance(myProject);
-                    dumbService.runReadActionInSmartMode(() -> {
-                        LOG.info("Rincewind downloaded, query types for opened files");
-                        PsiManager psiManager = PsiManager.getInstance(myProject);
-                        VirtualFile[] openedFiles = FileEditorManager.getInstance(myProject).getOpenFiles();
-                        for (VirtualFile openedFile : openedFiles) {
-                            // Query types and update psi cache
-                            VirtualFile cmtFile = ORFileUtils.findCmtFileFromSource(myProject, openedFile.getNameWithoutExtension(), null);
-                            if (cmtFile != null) {
-                                Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
+                application.executeOnPooledThread(() ->
+                        ReadAction.nonBlocking(() -> {
+                                    LOG.info("Rincewind downloaded, query types for opened files");
+                                    PsiManager psiManager = PsiManager.getInstance(myProject);
+                                    VirtualFile[] openedFiles = FileEditorManager.getInstance(myProject).getOpenFiles();
+                                    for (VirtualFile openedFile : openedFiles) {
+                                        // Query types and update psi cache
+                                        VirtualFile cmtFile = ORFileUtils.findCmtFileFromSource(myProject, openedFile.getNameWithoutExtension(), null);
+                                        if (cmtFile != null) {
+                                            Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 
-                                application.invokeLater(() ->
-                                        application.runReadAction(() -> {
-                                            PsiFile psiFile = psiManager.findFile(openedFile);
-                                            if (psiFile instanceof FileBase) {
-                                                LOG.debug("Query types for " + openedFile);
-                                                insightManager.queryTypes(openedFile, cmtPath, inferredTypes ->
-                                                        InferredTypesService.annotatePsiFile(
-                                                                myProject,
-                                                                ORLanguageProperties.cast(psiFile.getLanguage()),
-                                                                openedFile,
-                                                                inferredTypes));
-                                            }
-                                        }));
-                            }
-                        }
-                    });
-                });
+                                            application.invokeLater(() ->
+                                                    application.runReadAction(() -> {
+                                                        PsiFile psiFile = psiManager.findFile(openedFile);
+                                                        if (psiFile instanceof FileBase) {
+                                                            LOG.debug("Query types for " + openedFile);
+                                                            insightManager.queryTypes(openedFile, cmtPath, inferredTypes ->
+                                                                    InferredTypesService.annotatePsiFile(
+                                                                            myProject,
+                                                                            ORLanguageProperties.cast(psiFile.getLanguage()),
+                                                                            openedFile,
+                                                                            inferredTypes));
+                                                        }
+                                                    }));
+                                        }
+                                    }
+                                    return null;
+                                })
+                                .submit(AppExecutorUtil.getAppExecutorService())
+                );
             }
 
             indicator.setFraction(1.0);
