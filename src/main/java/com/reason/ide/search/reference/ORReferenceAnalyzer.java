@@ -383,7 +383,6 @@ public class ORReferenceAnalyzer {
                     boolean found = false;
                     int i = resolutions.size() - 1;
                     while (i >= 0) {
-//                    for (int i = resolutions.size() - 1; i >= 0; i--) {
                         if (found || resolutions.isEmpty()) { // maybe
                             break;
                         }
@@ -433,18 +432,9 @@ public class ORReferenceAnalyzer {
                                             ArrayList<ResolutionElement> resolutionElements = new ArrayList<>(resolutions);
 
                                             // The resolved element is a parameter, hence we need to remove all elements that are found
-                                            // after the latest parameters, and all the latest parameters
-                                            // ex: let (x, y) => { let z = ...; <caret> }   -- x, y and z must be removed
-                                            boolean parameterFound = false;
-                                            for (i = resolutionElements.size() - 1; i >= 0; i--) {
-                                                if (resolutionElements.get(i).getOriginalElement() instanceof RPsiParameterDeclaration) {
-                                                    parameterFound = true;
-                                                    resolutionElements.remove(i);
-                                                } else if (!parameterFound) {
-                                                    resolutionElements.remove(i);
-                                                } else {
-                                                    break;
-                                                }
+                                            // after it, and the parameter itself
+                                            if (resolutionElements.size() > i + 1) {
+                                                resolutionElements.subList(i + 1, resolutionElements.size()).clear();
                                             }
                                             if (LOG.isTraceEnabled()) {
                                                 LOG.trace("resolutionElements: " + Joiner.join(", ", resolutionElements));

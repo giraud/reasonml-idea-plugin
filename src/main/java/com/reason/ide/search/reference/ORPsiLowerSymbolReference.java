@@ -88,7 +88,7 @@ public class ORPsiLowerSymbolReference extends ORMultiSymbolReference<RPsiLowerS
                             + " [" + Platform.getRelativePathToModule(element.getContainingFile()) + "]"));
         }
 
-        ResolveResult[] resolveResults = new ResolveResult[((Collection<RPsiQualifiedPathElement>) resolvedInstructions).size()];
+        ResolveResult[] resolveResults = new ResolveResult[resolvedInstructions.size()];
         int i = 0;
         for (PsiElement element : resolvedInstructions) {
             resolveResults[i] = new LowerResolveResult(element, myReferenceName);

@@ -810,4 +810,20 @@ public class ResolveLowerElement_RES_Test extends ORBasePlatformTestCase {
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.y", ((RPsiType) e).getQualifiedName());
     }
+
+    // https://github.com/giraud/reasonml-idea-plugin/issues/511
+    @Test
+    public void test_GH_511_infinite_resolution() {
+        configureCode("A.res", """
+                let nothing = () => ()
+                
+                 let make = (~p1: t) => {
+                   let x = 1
+                   let y = p2 => nothing<caret>()
+                 }
+                """);
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.nothing", ((RPsiQualifiedPathElement) e).getQualifiedName());
+    }
 }

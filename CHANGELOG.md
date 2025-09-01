@@ -10,6 +10,10 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+# 0.131 - 2025/09/01
+
+- :bug: [#511](https://github.com/giraud/reasonml-idea-plugin/issues/511) Fix infinite indexing (parameters)
+
 # 0.130 - 2025/07/10
 
 - :bug: Fix lower element resolution with typed parameter
