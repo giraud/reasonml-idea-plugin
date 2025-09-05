@@ -1,5 +1,7 @@
 # Reason IDEA Plugin
 
+**!!! THIS PROJECT IS IN MAINTENANCE MODE !!!**
+
 [**giraud.github.io/reasonml-idea-plugin**](https://giraud.github.io/reasonml-idea-plugin/)
 
 ReasonML language plugin for IDEA. Supports Reason, ReScript and OCaml.
