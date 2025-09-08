@@ -25,7 +25,7 @@ Download and install the [plugin from the JetBrains Plugin Marketplace](https://
 
 ## 📔 Documentation 
 
-Please see our [website](https://giraud.github.io/reasonml-idea-plugin/docs)
+Please see our [website](https://giraud.github.io/reasonml-idea-plugin/)
 for the latest documentation and more information on how to get started.
 
 ## 💬 Language Features 
